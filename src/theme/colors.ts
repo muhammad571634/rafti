@@ -519,6 +519,9 @@ export const systemGround = isDark
       /** Inside an empty slot. */
       well: 'rgba(118,118,128,0.12)',
       groundFade: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.94)'] as const,
+      /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), nearly solid on Android. */
+      bar: 'rgba(0,0,0,0.72)',
+      barSolid: 'rgba(0,0,0,0.94)',
     }
   : {
       ground: '#FFFFFF',
@@ -529,7 +532,21 @@ export const systemGround = isDark
       dash: 'rgba(60,60,67,0.29)',
       well: 'rgba(118,118,128,0.06)',
       groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as const,
+      bar: 'rgba(255,255,255,0.78)',
+      barSolid: 'rgba(255,255,255,0.96)',
     };
+
+/**
+ * A feature's signature colour on the system ground (design-style §10, feature screens; HIG Color:
+ * a brand colour in the content layer): its home-screen tile's hue as one hero card, the screen's
+ * buttons and chips. Shells keep the Store's apricot, Plans the Pro gradient (`gradients.pro`).
+ */
+export const signature = {
+  gifts: isDark
+    ? { strong: systemColors.red, soft: 'rgba(255,69,58,0.2)', text: '#FF6961', hero: ['#FF5E57', '#B3261E'] as const }
+    : { strong: systemColors.red, soft: 'rgba(255,59,48,0.12)', text: '#D70015', hero: ['#FF6B5B', '#FF3B30'] as const },
+  shells: { hero: isDark ? (['#FFC497', '#F79E63'] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#3A1A06' },
+};
 
 /**
  * The playful layer's ground and controls (design-style §10, owner 2026-11-07): warm cream instead
@@ -630,6 +647,25 @@ export const friendHues: readonly Hue[] = isDark
 
 /** A character's own hue, the same on every screen (`friendHueIndex`). */
 export const friendColor = (characterId: string): Hue => friendHues[friendHueIndex(characterId, friendHues.length)];
+
+/** A friend's colour as an accent on the system ground: glyphs, tracks and tiles (`strong`) and tints (`soft`). */
+export interface Accent {
+  strong: string;
+  soft: string;
+}
+
+/**
+ * The eight friend hues as accents, in `friendHues`' order: deep enough for a white glyph and for a
+ * glyph on the ground by day, light enough on black at night (WCAG 3:1 for glyphs and tracks).
+ */
+const friendAccents: readonly Accent[] = (
+  isDark
+    ? ['#FF7A6B', '#E8B53A', '#FF9F4A', '#6E9BFF', '#A893F0', '#4FD1A0', '#E8749C', '#5FC3D3']
+    : ['#D93A2B', '#A67400', '#C9620A', '#2563EB', '#7B5CD6', '#1E8C63', '#D6457A', '#A07A00']
+).map((strong) => ({ strong, soft: `${strong}${isDark ? '33' : '1F'}` }));
+
+/** A character's accent, from the same hue as `friendColor`, on every screen of their own space. */
+export const friendAccent = (characterId: string): Accent => friendAccents[friendHueIndex(characterId, friendAccents.length)];
 
 /**
  * Today's widgets in the playful skin (four-tab prototype): each module's own light tint with ink

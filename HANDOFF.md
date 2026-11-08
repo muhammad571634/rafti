@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z166. Screen families: a friend's space in their colour; Gifts and the Store on the white ground (2026-11-08, Claude 1). NEXT: the next feature screens (Radio, Board, Photo Booth, Streams, worlds) the same way, when the owner says
+
+- **Owner's asks**: the remaining screens must not all be white or colourless; follow developer.apple.com/design; check the real screens on the phone, not the code; whole pages, not only their tops; the Plans tab too. Canvas of whole pages, light and dark, drawn from the A51's scrolled screens: https://claude.ai/artifact/8sbnvkhWAM8C9rQgK7ioXB (Hana's chat settings, Gifts, Store Shells, Store Plans, notification settings). Owner: "code it like the prototype, clean, senior".
+- **Built**:
+  - `friendAccent(id)` (`src/theme/colors.ts`): eight accents matching `friendHues` (`strong` for glyphs, tracks and tiles; `soft` tints), dark-mode variants. The character kit has a `FriendAccent` provider (`useFriendAccent`): quick actions, the level heart, the progress track, row tiles and the memory badge take it; no provider keeps the old peach and grey (other screens unchanged). A friend's profile and chat settings are wrapped in it; chat settings rows got icons (mic, chat, sparkles, person, book, pin, tag).
+  - `portraitOf(character, aspect, at = 0.5)` (`chat-ground.tsx`): the face lands at `at` (`FACE_AT` 0.68, shared with Today's hero); a tall or square picture comes with `stretch` and `stretchLeft` to be drawn wider. The kit's `FaceCard` uses it with a side scrim and keeps the words on the leading side. Chat grounds keep the middle (the chat is untouched, owner).
+  - `signature` (`colors.ts`): Gifts red (strong, soft, text, hero gradient) and Shells' apricot hero. Gifts: white ground, the check-in as one red gradient card with the mascot over it (white day dots, the red tick), grey cards for the wheel, ways and code, red capsules and links; the aurora glass is gone. Store: white ground, plain fill buttons, the default segmented control, the balance as an apricot gradient card, grey cards; Plans keeps the Pro gradient card on grey cards. `StoreBuyBar` takes `system` for a white bar (`systemGround.bar` / `barSolid`); Photo Booth's aurora bar is unchanged.
+  - Fixed on the way: the kit's segmented thumb was the card grey since 0z165 (invisible on a grey card); now `systemColors.thumb`.
+- **Seen on the A51** (OTA `01a1bc24`, light and dark, whole pages scrolled): Gifts, Store Shells and Plans, Hana's chat settings (her accent is the mint of her Chats bubble). Notification settings were already Apple grouped and stay as they are. Checks: tsc 0, npm test 844/844.
+
+Still to do:
+1. The next feature screens in their signature colours (Radio purple, Board cyan, Photo Booth blue, Streams plum, a world's page its hue), then retire the aurora ground.
+2. A friend's memories, photos and notes screens inside `FriendAccent` too (family 1).
+3. Not seen: a friend's profile page on the A51 after this change (the tap path missed it); a character with a tall or user photo on the face card.
+
 ### 0z165. The other screens on Apple's system ground; the chat keeps its cream (2026-11-08, Claude 1). NEXT: owner looks at them on the phone
 
 - **Owner's ask**: carry the white ground to the remaining screens; mid-way: "leave the chat, go to the other screens". A started change of every chat's default ground to white (a v16 store migration, the picker's default) was reverted unsent.

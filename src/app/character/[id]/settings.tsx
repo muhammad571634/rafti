@@ -14,6 +14,7 @@ import {
   ChoiceRow,
   DangerRow,
   FaceCard,
+  FriendAccent,
   Group,
   LinkRow,
   profileStyles,
@@ -40,7 +41,7 @@ import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
 import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, radius, space, systemGround, type } from '@/theme';
+import { colors, friendAccent, radius, space, systemGround, type } from '@/theme';
 import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -205,115 +206,125 @@ export default function CharacterSettingsScreen() {
         }
       />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
-        <FaceCard
-          character={character}
-          name={name}
-          lines={[
-            `${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`,
-            relationship ? t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) }) : null,
-          ]}
-        />
+      {/* Their own space: quick actions, the level and the row tiles in their colour. */}
+      <FriendAccent value={friendAccent(character.id)}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
+          <FaceCard
+            character={character}
+            name={name}
+            lines={[
+              `${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`,
+              relationship ? t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) }) : null,
+            ]}
+          />
 
-        <QuickRow>
-          {quick.map((q) => (
-            <QuickAction key={q.key} icon={q.icon} label={q.label} badge={q.badge} onPress={() => run(q.key)} />
-          ))}
-        </QuickRow>
+          <QuickRow>
+            {quick.map((q) => (
+              <QuickAction key={q.key} icon={q.icon} label={q.label} badge={q.badge} onPress={() => run(q.key)} />
+            ))}
+          </QuickRow>
 
-        {relationship ? (
-          <RelationshipCard
-            level={relationship.level}
-            intimacy={relationship.intimacy}
-            title={phrase(relationship.levelTitle)}
-            label={relationship.label && phrase(relationship.label)}
-            onPick={() => setLabelOpen(true)}
-            onInfo={() => setClosenessOpen(true)}
-          />
-        ) : null}
-
-        {/* The former "Chat settings" sheet, inline as on iOS. */}
-        <Group>
-          <SwitchRow
-            label={t('characterSettings.voiceReplies')}
-            value={relationship?.voiceReplies ?? true}
-            disabled={!character.voiceReady}
-            onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
-          />
-          <SwitchRow
-            label={t('characterSettings.messagesFirst')}
-            value={relationship?.messagesFirst ?? true}
-            onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
-          />
-          <SwitchRow
-            label={t('characterSettings.chatAnimation')}
-            value={chatAnimation}
-            onChange={(v) => setSetting('chatAnimation', v)}
-            last
-          />
-        </Group>
-        {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
-        {!hasPlan && character.voiceReady ? <Txt style={profileStyles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt> : null}
-
-        {/* How their replies read (Character.AI's response style and length); the next reply follows. */}
-        <Group>
-          <ChoiceRow
-            label={t('characterSettings.replyStyle')}
-            options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
-            value={replyPrefs(relationship).style}
-            onChange={(style) => setReplyPrefs(character.id, { style })}
-          />
-          <ChoiceRow
-            label={t('characterSettings.replyLength')}
-            options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
-            value={replyPrefs(relationship).length}
-            onChange={(length) => setReplyPrefs(character.id, { length })}
-            last
-          />
-        </Group>
-
-        <Group>
-          {conversation ? (
-            <LinkRow
-              label={t('personas.youAre')}
-              meta={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).name}
-              onPress={() => setPersonaOpen(true)}
+          {relationship ? (
+            <RelationshipCard
+              level={relationship.level}
+              intimacy={relationship.intimacy}
+              title={phrase(relationship.levelTitle)}
+              label={relationship.label && phrase(relationship.label)}
+              onPick={() => setLabelOpen(true)}
+              onInfo={() => setClosenessOpen(true)}
             />
           ) : null}
-          {/* What their world and the user's books tell them (Character.AI's Lorebook). */}
-          <LinkRow
-            label={t('lore.chatRow')}
-            meta={loreMeta(booksFor(character, lorebooks, localized('lorebooks', officialLorebooks)), t)}
-            onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
-          />
-          {/* What they took from the chat (A2): open threads, to see, change or stop. */}
-          <LinkRow
-            label={t('mind.title')}
-            meta={openThreads ? String(openThreads) : undefined}
-            onPress={() => router.push({ pathname: '/mind', params: { characterId: character.id } })}
-          />
-          <LinkRow label={t('characterSettings.profile')} onPress={() => run('characterSettings')} />
-          <LinkRow
-            label={t('characterSettings.nicknameRow')}
-            meta={relationship?.nickname || t('characterSettings.none')}
-            onPress={() => {
-              setDraftName(relationship?.nickname ?? '');
-              setRenaming(true);
-            }}
-            last
-          />
-        </Group>
 
-        <Group>
-          {danger.map((d, i) => (
-            <DangerRow key={d.key} label={d.label} last={i === danger.length - 1} onPress={() => run(d.key)} />
-          ))}
-        </Group>
-      </ScrollView>
+          {/* The former "Chat settings" sheet, inline as on iOS. */}
+          <Group>
+            <SwitchRow
+              label={t('characterSettings.voiceReplies')}
+              icon="mic"
+              value={relationship?.voiceReplies ?? true}
+              disabled={!character.voiceReady}
+              onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
+            />
+            <SwitchRow
+              label={t('characterSettings.messagesFirst')}
+              icon="chatbubble-ellipses"
+              value={relationship?.messagesFirst ?? true}
+              onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
+            />
+            <SwitchRow
+              label={t('characterSettings.chatAnimation')}
+              icon="sparkles"
+              value={chatAnimation}
+              onChange={(v) => setSetting('chatAnimation', v)}
+              last
+            />
+          </Group>
+          {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
+          {!hasPlan && character.voiceReady ? <Txt style={profileStyles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt> : null}
+
+          {/* How their replies read (Character.AI's response style and length); the next reply follows. */}
+          <Group>
+            <ChoiceRow
+              label={t('characterSettings.replyStyle')}
+              options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
+              value={replyPrefs(relationship).style}
+              onChange={(style) => setReplyPrefs(character.id, { style })}
+            />
+            <ChoiceRow
+              label={t('characterSettings.replyLength')}
+              options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
+              value={replyPrefs(relationship).length}
+              onChange={(length) => setReplyPrefs(character.id, { length })}
+              last
+            />
+          </Group>
+
+          <Group>
+            {conversation ? (
+              <LinkRow
+                label={t('personas.youAre')}
+                icon="person-circle"
+                meta={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).name}
+                onPress={() => setPersonaOpen(true)}
+              />
+            ) : null}
+            {/* What their world and the user's books tell them (Character.AI's Lorebook). */}
+            <LinkRow
+              label={t('lore.chatRow')}
+              icon="book"
+              meta={loreMeta(booksFor(character, lorebooks, localized('lorebooks', officialLorebooks)), t)}
+              onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
+            />
+            {/* What they took from the chat (A2): open threads, to see, change or stop. */}
+            <LinkRow
+              label={t('mind.title')}
+              icon="pin"
+              meta={openThreads ? String(openThreads) : undefined}
+              onPress={() => router.push({ pathname: '/mind', params: { characterId: character.id } })}
+            />
+            <LinkRow label={t('characterSettings.profile')} icon="person" onPress={() => run('characterSettings')} />
+            <LinkRow
+              label={t('characterSettings.nicknameRow')}
+              icon="pricetag"
+              meta={relationship?.nickname || t('characterSettings.none')}
+              onPress={() => {
+                setDraftName(relationship?.nickname ?? '');
+                setRenaming(true);
+              }}
+              last
+            />
+          </Group>
+
+          <Group>
+            {danger.map((d, i) => (
+              <DangerRow key={d.key} label={d.label} last={i === danger.length - 1} onPress={() => run(d.key)} />
+            ))}
+          </Group>
+        </ScrollView>
+      </FriendAccent>
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')} avoidKeyboard>
         <TextInput

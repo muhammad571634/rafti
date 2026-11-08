@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,10 +12,9 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { CoinDropReward, type Point, wobbleAt } from '@/components/coin-drop';
 import { LuckyWheel } from '@/components/lucky-wheel';
 import { PeekingMascot } from '@/components/peeking-mascot';
-import { CARD_SHADOW, GroupLabel, STORE } from '@/components/plans/store-look';
+import { GroupLabel } from '@/components/plans/store-look';
 import {
   Anim,
-  AuroraGlass,
   Button,
   LargeTitle,
   ListRow,
@@ -38,7 +38,7 @@ import {
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, fonts, hitSlop, palette, radius, space, systemColors } from '@/theme';
+import { colors, fonts, hitSlop, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -57,9 +57,9 @@ const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook>
  * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (invite, share)
  * and your invite code. No ads anywhere in the app (owner, 2026-10-22): shells are bought, or
  * earned by coming back and bringing friends. An invite pays 50 to both sides once the friend
- * joins with the code and comes back on a later day; sharing pays nothing. iOS look on the
- * aurora: glass back and a shell capsule, large title, white cards, peach capsule buttons as in
- * the Store. Every limit lives in the store so it survives a restart.
+ * joins with the code and comes back on a later day; sharing pays nothing. A feature screen on
+ * Apple's white ground (design-style §10): the check-in as one card in the Gifts tile's red, the
+ * wheel and the ways in grey cards, red capsules. Every limit lives in the store so it survives a restart.
  */
 export default function GiftsScreen() {
   const insets = useSafeAreaInsets();
@@ -151,7 +151,7 @@ export default function GiftsScreen() {
   const spinStatus = canSpin ? t('gifts.spinsFree') : t('gifts.spinsNone');
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <ScrollView
         ref={scroll}
         onScroll={(e) => {
@@ -161,68 +161,69 @@ export default function GiftsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
         <View style={styles.bar}>
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-            </AuroraGlass>
+          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()} style={styles.round}>
+            <Ionicons name="chevron-back" size={22} color={systemGround.label} style={styles.backIcon} />
           </PressableScale>
-          <Animated.View ref={capsuleBox} style={capsuleStyle}>
-            <AuroraGlass style={styles.capsule}>
-              <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
-                <View ref={shellMark}>
-                  <ShellIcon size={18} />
-                </View>
-                <Txt style={styles.capsuleText}>{Math.max(0, shells - pending).toLocaleString('en-US')}</Txt>
+          <Animated.View ref={capsuleBox} style={[styles.capsule, capsuleStyle]}>
+            <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
+              <View ref={shellMark}>
+                <ShellIcon size={18} />
               </View>
-            </AuroraGlass>
+              <Txt style={styles.capsuleText}>{Math.max(0, shells - pending).toLocaleString('en-US')}</Txt>
+            </View>
           </Animated.View>
         </View>
         <LargeTitle>{t('gifts.title')}</LargeTitle>
 
-        <View style={styles.labelRow}>
-          <GroupLabel>{t('gifts.checkIn')}</GroupLabel>
-          <Txt style={styles.labelValue}>
-            {t('gifts.dayOf', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
-          </Txt>
-        </View>
-        <View style={[styles.card, styles.days]}>
+        {/* The day's check-in: the screen's one card in the Gifts tile's red, the mascot over its edge. */}
+        <LinearGradient colors={signature.gifts.hero} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.checkIn}>
           <PeekingMascot width={PEEK_WIDTH} />
-          {DAILY_CHECK_IN.map((amount, index) => {
-            const day = index + 1;
-            const claimed = day <= daily.checkInDay;
-            const isToday = checkedInToday && day === daily.checkInDay;
-            const next = day === daily.checkInDay + 1;
-            const last = index === DAILY_CHECK_IN.length - 1;
-            // The surprise day shows its floor ("80+") until it is rolled.
-            const shown = last
-              ? isToday
-                ? `+${daily.checkInAmount ?? amount}`
-                : claimed
-                  ? `+${amount}`
-                  : t('common.atLeast', { count: amount })
-              : `+${amount}`;
-            const worth = last && !claimed ? t('common.range', { min: amount, max: DAILY_CHECK_IN_TOP }) : shown;
+          <View style={styles.checkInHead}>
+            <Txt style={styles.checkInTitle} lines={1}>
+              {t('gifts.checkIn')}
+            </Txt>
+            <Txt style={styles.checkInDay} lines={1}>
+              {t('gifts.dayOf', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
+            </Txt>
+          </View>
+          <View style={styles.days}>
+            {DAILY_CHECK_IN.map((amount, index) => {
+              const day = index + 1;
+              const claimed = day <= daily.checkInDay;
+              const isToday = checkedInToday && day === daily.checkInDay;
+              const next = day === daily.checkInDay + 1;
+              const last = index === DAILY_CHECK_IN.length - 1;
+              // The surprise day shows its floor ("80+") until it is rolled.
+              const shown = last
+                ? isToday
+                  ? `+${daily.checkInAmount ?? amount}`
+                  : claimed
+                    ? `+${amount}`
+                    : t('common.atLeast', { count: amount })
+                : `+${amount}`;
+              const worth = last && !claimed ? t('common.range', { min: amount, max: DAILY_CHECK_IN_TOP }) : shown;
 
-            return (
-              <View
-                key={day}
-                style={styles.day}
-                accessible
-                accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
-                <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
-                  {claimed ? <Ionicons name="checkmark" size={17} color={colors.white} /> : <Txt style={styles.dayNumber}>{day}</Txt>}
-                </View>
-                {last && !claimed ? (
-                  <View style={styles.offer}>
-                    <Txt style={styles.offerText}>{shown}</Txt>
+              return (
+                <View
+                  key={day}
+                  style={styles.day}
+                  accessible
+                  accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
+                  <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
+                    {claimed ? <Ionicons name="checkmark" size={17} color={signature.gifts.strong} /> : <Txt style={styles.dayNumber}>{day}</Txt>}
                   </View>
-                ) : (
-                  <Txt style={[styles.dayAmount, claimed && styles.dayAmountOn]}>{shown}</Txt>
-                )}
-              </View>
-            );
-          })}
-        </View>
+                  {last && !claimed ? (
+                    <View style={styles.offer}>
+                      <Txt style={styles.offerText}>{shown}</Txt>
+                    </View>
+                  ) : (
+                    <Txt style={[styles.dayAmount, claimed && styles.dayAmountOn]}>{shown}</Txt>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </LinearGradient>
 
         <View style={styles.labelRow}>
           <GroupLabel>{t('gifts.wheel')}</GroupLabel>
@@ -249,7 +250,7 @@ export default function GiftsScreen() {
             accessibilityLabel={t('gifts.inviteRulesTitle')}
             style={styles.info}
             onPress={() => setRulesOpen(true)}>
-            <Ionicons name="information-circle-outline" size={20} color={aurora.textMuted} />
+            <Ionicons name="information-circle-outline" size={20} color={systemGround.secondaryLabel} />
           </PressableScale>
         </View>
         <View style={styles.card}>
@@ -279,7 +280,7 @@ export default function GiftsScreen() {
             accessibilityLabel={t('gifts.copyCode')}
             style={styles.copy}
             onPress={() => void copyCode()}>
-            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={17} color={STORE.peachInk} />
+            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={17} color={signature.gifts.text} />
           </PressableScale>
         </View>
         {user.invitePending ? (
@@ -408,7 +409,7 @@ function WayRow({
   );
 }
 
-/** The peach capsule button of a way row (the Store's top-up look). */
+/** A way row's capsule button in the Gifts red. */
 function Capsule({
   label,
   onPress,
@@ -428,7 +429,7 @@ function Capsule({
       disabled={disabled || loading}
       onPress={onPress}
       style={[styles.capsuleButton, disabled && styles.capsuleOff]}>
-      {loading ? <ActivityIndicator size="small" color={STORE.peachInk} /> : <Txt style={styles.capsuleButtonText}>{label}</Txt>}
+      {loading ? <ActivityIndicator size="small" color={signature.gifts.text} /> : <Txt style={styles.capsuleButtonText}>{label}</Txt>}
     </PressableScale>
   );
 }
@@ -436,7 +437,8 @@ function Capsule({
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
 const PEEK_ROOM = 40;
-const WELL = colors.well;
+/** On the red card: a day still to come, and the surprise day's chip. */
+const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
 
 const styles = StyleSheet.create({
   bar: {
@@ -447,32 +449,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   backIcon: { marginLeft: -2 },
-  capsule: { height: 40, borderRadius: 20 },
+  capsule: { height: 40, borderRadius: 20, backgroundColor: systemGround.fill },
   capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
-  capsuleText: { fontSize: 15, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
-  card: { marginHorizontal: space.lg, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
+  capsuleText: { fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  card: { marginHorizontal: space.lg, borderRadius: 22, backgroundColor: systemGround.card },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: aurora.textMuted },
-  days: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // Room for the mascot peeking over the card, between the label's two texts.
-    marginTop: PEEK_ROOM,
-    paddingVertical: space.lg,
-    paddingHorizontal: space.md,
-  },
+  // Room above for the mascot peeking over the card.
+  checkIn: { marginHorizontal: space.lg, marginTop: PEEK_ROOM + space.lg, borderRadius: 26, paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
+  checkInHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: 4 },
+  checkInTitle: { flexShrink: 1, fontSize: 13, fontWeight: '700', letterSpacing: 0.3, textTransform: 'uppercase', color: colors.white },
+  checkInDay: { fontSize: 13, fontWeight: '600', color: colors.white, opacity: 0.85 },
+  days: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 14 },
   day: { alignItems: 'center', gap: 6 },
-  dayDot: { width: 36, height: 36, borderRadius: 18, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center' },
-  dayClaimed: { backgroundColor: aurora.tint },
+  dayDot: { width: 36, height: 36, borderRadius: 18, backgroundColor: ON_RED_SOFT, alignItems: 'center', justifyContent: 'center' },
+  dayClaimed: { backgroundColor: colors.white },
   // Tomorrow's day: the next one to come back for.
-  dayNext: { backgroundColor: aurora.card, borderWidth: 2, borderColor: aurora.tint },
-  dayNumber: { fontSize: 15, fontWeight: '700', color: colors.text },
-  dayAmount: { fontSize: 12, fontWeight: '700', color: aurora.textMuted, fontVariant: ['tabular-nums'] },
-  dayAmountOn: { color: colors.text },
-  offer: { paddingHorizontal: 6, borderRadius: 9, backgroundColor: STORE.peachSoft },
-  offerText: { fontSize: 12, fontWeight: '700', color: STORE.peachInk },
+  dayNext: { backgroundColor: 'transparent', borderWidth: 2.5, borderColor: colors.white },
+  dayNumber: { fontSize: 15, fontWeight: '700', color: colors.white },
+  dayAmount: { fontSize: 12, fontWeight: '700', color: colors.white, opacity: 0.85, fontVariant: ['tabular-nums'] },
+  dayAmountOn: { opacity: 1 },
+  offer: { paddingHorizontal: 6, borderRadius: 9, backgroundColor: ON_RED_SOFT },
+  offerText: { fontSize: 12, fontWeight: '800', color: colors.white },
   statusPill: {
     height: 24,
     marginBottom: 4,
@@ -480,9 +479,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 12,
     justifyContent: 'center',
-    backgroundColor: STORE.peachSoft,
+    backgroundColor: signature.gifts.soft,
   },
-  statusText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
+  statusText: { fontSize: 13, fontWeight: '700', color: signature.gifts.text },
   wheel: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -493,15 +492,15 @@ const styles = StyleSheet.create({
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
   wayBody: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  wayTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  waySub: { fontSize: 13, color: aurora.textMuted },
+  wayTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
+  waySub: { fontSize: 13, color: systemGround.secondaryLabel },
   wayLine: {
     position: 'absolute',
     left: 14 + WAY_ICON + 12,
     right: 0,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: aurora.separator,
+    backgroundColor: colors.borderStrong,
   },
   capsuleButton: {
     minWidth: 64,
@@ -510,18 +509,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: STORE.peachSoft,
+    backgroundColor: signature.gifts.soft,
   },
   capsuleOff: { opacity: 0.5 },
-  capsuleButtonText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
+  capsuleButtonText: { fontSize: 15, fontWeight: '700', color: signature.gifts.text },
   codeRow: { marginTop: 22, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: systemColors.pink },
-  codeLabel: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  code: { fontSize: 17, fontWeight: '700', letterSpacing: 3, color: colors.text },
-  copy: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.peachSoft },
+  codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.strong },
+  codeLabel: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
+  code: { fontSize: 17, fontWeight: '700', letterSpacing: 3, color: systemGround.label },
+  copy: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.soft },
   haveCode: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, marginTop: space.sm },
-  haveCodeText: { fontSize: 15, fontWeight: '600', color: STORE.peachInk },
-  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  haveCodeText: { fontSize: 15, fontWeight: '600', color: signature.gifts.text },
+  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -60 },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },

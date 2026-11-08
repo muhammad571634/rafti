@@ -9,7 +9,7 @@ import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { sceneFocus } from '@/components/chat/chat-ground';
+import { FACE_AT, sceneFocus } from '@/components/chat/chat-ground';
 import { Anim, characterImage, PressableScale, Txt } from '@/components/ui';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
@@ -17,12 +17,7 @@ import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
-/**
- * Where their face lands across the card: the friend stands on the trailing side, the name and their
- * line read on the leading side (owner, 2026-11-08, for every character).
- */
-const FACE_AT = 0.68;
-/** A tall or square picture has no width to slide: it is drawn this much wider than the card instead. */
+/** A tall or square picture has no width to slide: it is drawn this much wider than the card instead (`FACE_AT`). */
 const WIDE = 2 * FACE_AT;
 /** Tall scenes (assets/portraits) keep the face in their upper third. */
 const TALL_FOCUS: ImageContentPosition = { left: '50%', top: '18%' };

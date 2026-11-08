@@ -6,11 +6,11 @@ import { createContext, type ReactNode, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { portraitOf } from '@/components/chat/chat-ground';
+import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground';
 import { GroupAvatar } from '@/components/group-avatar';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors, fonts, friendColor, hitSlop, playful, space, systemColors, systemGround } from '@/theme';
+import { colors, fonts, friendColor, gradients, gradientStops, hitSlop, playful, space, systemColors, systemGround, type Accent } from '@/theme';
 import type { Character } from '@/types';
 
 /**
@@ -22,6 +22,15 @@ import type { Character } from '@/types';
 
 const SIDE = space.lg;
 const ROUND = 44;
+
+/**
+ * The friend whose space this is lends their colour to the kit's accents (quick actions, the level,
+ * row tiles: design-style §10, a friend's space); without one the brand peach and grey stay.
+ */
+const AccentContext = createContext<Accent | null>(null);
+export const FriendAccent = AccentContext.Provider;
+/** The accent of the friend whose space this is, for parts drawn outside the kit (a bouncing heart). */
+export const useFriendAccent = () => useContext(AccentContext);
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.72)'] as const;
 
 /** The top row: a round back button, the name once the face card has scrolled away, and a right button. */
@@ -194,7 +203,9 @@ export function FaceCard({
   const { width: screen } = useWindowDimensions();
   const width = screen - SIDE * 2;
   const height = Math.round(Math.min(width * (tall ? 1.12 : 0.74), tall ? 470 : 300));
-  const picture = portraitOf(character, width / height);
+  // Their face on the trailing side, the name and lines on the leading side.
+  const picture = portraitOf(character, width / height, FACE_AT);
+  const stretch = picture?.stretch ?? 1;
   const hue = friendColor(character.id);
   const ink = picture ? colors.onMedia : hue.ink;
   const shown = lines.filter((line): line is string => !!line);
@@ -204,8 +215,23 @@ export function FaceCard({
       <View style={[styles.face, { height, backgroundColor: picture ? colors.surfaceAlt : hue.fill }]}>
         {picture ? (
           <>
-            <Image source={picture.source} contentPosition={picture.position} contentFit="cover" transition={150} style={StyleSheet.absoluteFill} accessible={false} />
+            <Image
+              source={picture.source}
+              contentPosition={picture.position}
+              contentFit="cover"
+              transition={150}
+              style={stretch > 1 ? [styles.stretched, { width: width * stretch, left: stretchLeft(width, stretch, FACE_AT) }] : StyleSheet.absoluteFill}
+              accessible={false}
+            />
             <LinearGradient colors={SCRIM} style={styles.scrim} pointerEvents="none" />
+            <LinearGradient
+              colors={gradients.heroSideScrim}
+              locations={gradientStops.heroSideScrim}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
           </>
         ) : (
           <View style={styles.faceAvatar}>
@@ -213,7 +239,7 @@ export function FaceCard({
           </View>
         )}
         {topLeft ? <View style={styles.topLeft}>{topLeft}</View> : null}
-        <View style={styles.faceFoot}>
+        <View style={[styles.faceFoot, picture && styles.faceFootLeading]}>
           <View style={styles.nameRow}>
             <Txt
               style={[styles.faceName, picture && styles.shadow, { color: ink }]}
@@ -251,7 +277,7 @@ export function GlassPill({ icon, label, accessibilityLabel }: { icon?: ReactNod
   );
 }
 
-/** A big round white action with an ink glyph and its name under it; a small count in its corner. */
+/** A big round action with its name under it, in the friend's accent (a grey disc and ink without one); a small count in its corner. */
 export function QuickAction({
   icon,
   label,
@@ -267,6 +293,7 @@ export function QuickAction({
   accessibilityLabel?: string;
   onPress: () => void;
 }) {
+  const accent = useContext(AccentContext);
   return (
     <PressableScale
       onPress={onPress}
@@ -277,11 +304,11 @@ export function QuickAction({
       accessibilityState={{ disabled: !!disabled }}
       accessibilityLabel={accessibilityLabel ?? (badge ? `${label}, ${badge}` : label)}
       style={[styles.quick, disabled && styles.off]}>
-      <View style={styles.quickRound}>
-        <Ionicons name={icon} size={25} color={systemGround.label} />
+      <View style={[styles.quickRound, accent && { backgroundColor: accent.soft }]}>
+        <Ionicons name={icon} size={25} color={accent?.strong ?? systemGround.label} />
         {badge ? (
-          <View style={styles.badge}>
-            <Txt style={styles.badgeText} maxFontSizeMultiplier={1.2}>
+          <View style={[styles.badge, accent && { backgroundColor: accent.strong }]}>
+            <Txt style={[styles.badgeText, accent && styles.badgeTextOnAccent]} maxFontSizeMultiplier={1.2}>
               {badge > 99 ? '99+' : badge}
             </Txt>
           </View>
@@ -337,8 +364,9 @@ export function Group({ title, right, children }: { title?: string; right?: Reac
  * rounded square in its own colour with a white glyph.
  */
 function RowIcon({ icon, fill }: { icon: keyof typeof Ionicons.glyphMap; fill?: string }) {
+  const accent = useContext(AccentContext);
   return (
-    <View style={[styles.rowIcon, { backgroundColor: fill ?? systemColors.gray }]}>
+    <View style={[styles.rowIcon, { backgroundColor: fill ?? accent?.strong ?? systemColors.gray }]}>
       <Ionicons name={icon} size={19} color={colors.white} />
     </View>
   );
@@ -565,9 +593,12 @@ export function ChoiceRow<T extends string>({
 
 /** The level card's top: a soft heart, the title and a line under it, and an optional end. */
 export function BondHead({ title, line, heart, end }: { title: string; line: string; heart?: ReactNode; end?: ReactNode }) {
+  const accent = useContext(AccentContext);
   return (
     <View style={styles.bondHead}>
-      <View style={styles.heart}>{heart ?? <Ionicons name="heart" size={18} color={colors.brandText} />}</View>
+      <View style={[styles.heart, accent && { backgroundColor: accent.soft }]}>
+        {heart ?? <Ionicons name="heart" size={18} color={accent?.strong ?? colors.brandText} />}
+      </View>
       <View style={styles.grow}>
         <Txt style={styles.bondTitle} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.3}>
           {title}
@@ -579,11 +610,12 @@ export function BondHead({ title, line, heart, end }: { title: string; line: str
   );
 }
 
-/** The peach progress track to the next level. */
+/** The progress track to the next level, in the friend's accent (peach without one). */
 export function BondTrack({ progress }: { progress: number }) {
+  const accent = useContext(AccentContext);
   return (
     <View style={styles.track}>
-      <View style={[styles.fill, { width: `${Math.round(Math.min(1, Math.max(0, progress)) * 100)}%` }]} />
+      <View style={[styles.fill, accent && { backgroundColor: accent.strong }, { width: `${Math.round(Math.min(1, Math.max(0, progress)) * 100)}%` }]} />
     </View>
   );
 }
@@ -626,6 +658,9 @@ const styles = StyleSheet.create({
   faceAvatar: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingBottom: 70 },
   topLeft: { position: 'absolute', top: 14, left: 14 },
   faceFoot: { position: 'absolute', left: 20, right: 20, bottom: 18, gap: 2 },
+  // On a picture the words keep to the leading side, clear of the friend.
+  faceFootLeading: { right: '30%' },
+  stretched: { position: 'absolute', top: 0, bottom: 0 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   faceName: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 32, lineHeight: 38 },
   faceLine: { fontSize: 14, lineHeight: 19, fontWeight: '600' },
@@ -666,6 +701,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   badgeText: { fontSize: 11, fontWeight: '800', color: colors.textOnPrimary },
+  badgeTextOnAccent: { color: colors.white },
   off: { opacity: 0.42 },
   peach: { height: 56, marginHorizontal: SIDE, borderRadius: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.primaryFill },
   // System bold: the button's words come in every script.
@@ -695,7 +731,8 @@ const styles = StyleSheet.create({
   segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: systemGround.fill },
   segment: { flex: 1, minHeight: 36, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
   segmentOn: {
-    backgroundColor: systemGround.card,
+    // Apple's segmented thumb: white by day (on the fill), #636366 at night.
+    backgroundColor: systemColors.thumb,
     ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
   },
   segmentText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },

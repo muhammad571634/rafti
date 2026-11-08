@@ -7,6 +7,7 @@ import {
   BondHead,
   BondTrack,
   FaceCard,
+  FriendAccent,
   GlassPill,
   Group,
   LinkRow,
@@ -14,6 +15,7 @@ import {
   profileStyles,
   ProfileTop,
   QuickAction,
+  useFriendAccent,
   QuickRow,
   TopButton,
 } from '@/components/character/kit';
@@ -28,7 +30,7 @@ import { heightLabel } from '@/lib/character-facts';
 import { daysBetween, shortName } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, space, systemGround } from '@/theme';
+import { colors, fonts, friendAccent, space, systemGround } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
 /**
@@ -97,88 +99,91 @@ export default function CharacterProfileScreen() {
         }
       />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
-        <FaceCard
-          tall
-          character={character}
-          name={name}
-          // Store rule: an AI character is marked as one.
-          nameBadge={<GlassPill label={t('safety.ai')} accessibilityLabel={t('safety.ai')} />}
-          lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.worldRole]}
-          topLeft={
-            voiceReady ? (
-              <GlassPill
-                label={t('find.voiceReady')}
-                icon={
-                  // SF Symbols' own pulse on iPhone: the voice is alive.
-                  <SFIcon ios="waveform" icon="pulse" size={14} color={colors.onMedia} animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }} />
-                }
-              />
-            ) : undefined
-          }
-        />
-
-        {locked ? <Txt style={[profileStyles.caption, styles.bold]}>{t('find.proFirst')}</Txt> : null}
-        {character.review === 'pending' ? <Txt style={profileStyles.caption}>{t('createCharacter.inReview')}</Txt> : null}
-
-        <View style={styles.words}>
-          {shown.tagline ? (
-            <Txt style={styles.tagline} center>
-              {shown.tagline}
-            </Txt>
-          ) : null}
-          <Txt style={styles.bio} center>
-            {shown.bio}
-          </Txt>
-          {shown.tags.length > 0 ? (
-            <View style={styles.tags}>
-              {shown.tags.map((tag) => (
-                <View key={tag} style={styles.tag}>
-                  <Txt style={styles.tagText} maxFontSizeMultiplier={1.3}>
-                    {tag}
-                  </Txt>
-                </View>
-              ))}
-            </View>
-          ) : null}
-        </View>
-
-        <PeachButton
-          label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
-          icon={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
-          onPress={openChat}
-        />
-        {locked && opensAt != null ? <Txt style={profileStyles.caption}>{t('newCharacters.opensOn', { date: planDate(opensAt) })}</Txt> : null}
-        {isFriend ? (
-          <QuickRow center>
-            <QuickAction
-              icon="call"
-              label={t('characterSettings.quickCall')}
-              accessibilityLabel={t('characterProfile.call')}
-              disabled={!voiceReady}
-              onPress={() => router.push(`/call/${character.id}`)}
-            />
-            <QuickAction icon="mail" label={t('characterProfile.secretNote')} onPress={() => router.push(`/secret-note/${character.id}`)} />
-          </QuickRow>
-        ) : null}
-        {!voiceReady ? <Txt style={profileStyles.caption}>{t('characterProfile.voiceTraining')}</Txt> : null}
-
-        <AboutCard character={shown} name={shortName(name)} locale={locale} />
-
-        <StoryCard character={shown} level={relationship?.level ?? 0} />
-
-        {isFriend && relationship ? (
-          <BondCard
-            relationship={relationship}
-            memoryCount={memoryCount}
-            onMemories={() => router.push(`/character/${character.id}/memories`)}
+      {/* Their own space: quick actions, the level and the row tiles in their colour. */}
+      <FriendAccent value={friendAccent(character.id)}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
+          <FaceCard
+            tall
+            character={character}
+            name={name}
+            // Store rule: an AI character is marked as one.
+            nameBadge={<GlassPill label={t('safety.ai')} accessibilityLabel={t('safety.ai')} />}
+            lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.worldRole]}
+            topLeft={
+              voiceReady ? (
+                <GlassPill
+                  label={t('find.voiceReady')}
+                  icon={
+                    // SF Symbols' own pulse on iPhone: the voice is alive.
+                    <SFIcon ios="waveform" icon="pulse" size={14} color={colors.onMedia} animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }} />
+                  }
+                />
+              ) : undefined
+            }
           />
-        ) : null}
-      </ScrollView>
+
+          {locked ? <Txt style={[profileStyles.caption, styles.bold]}>{t('find.proFirst')}</Txt> : null}
+          {character.review === 'pending' ? <Txt style={profileStyles.caption}>{t('createCharacter.inReview')}</Txt> : null}
+
+          <View style={styles.words}>
+            {shown.tagline ? (
+              <Txt style={styles.tagline} center>
+                {shown.tagline}
+              </Txt>
+            ) : null}
+            <Txt style={styles.bio} center>
+              {shown.bio}
+            </Txt>
+            {shown.tags.length > 0 ? (
+              <View style={styles.tags}>
+                {shown.tags.map((tag) => (
+                  <View key={tag} style={styles.tag}>
+                    <Txt style={styles.tagText} maxFontSizeMultiplier={1.3}>
+                      {tag}
+                    </Txt>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+          </View>
+
+          <PeachButton
+            label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
+            icon={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
+            onPress={openChat}
+          />
+          {locked && opensAt != null ? <Txt style={profileStyles.caption}>{t('newCharacters.opensOn', { date: planDate(opensAt) })}</Txt> : null}
+          {isFriend ? (
+            <QuickRow center>
+              <QuickAction
+                icon="call"
+                label={t('characterSettings.quickCall')}
+                accessibilityLabel={t('characterProfile.call')}
+                disabled={!voiceReady}
+                onPress={() => router.push(`/call/${character.id}`)}
+              />
+              <QuickAction icon="mail" label={t('characterProfile.secretNote')} onPress={() => router.push(`/secret-note/${character.id}`)} />
+            </QuickRow>
+          ) : null}
+          {!voiceReady ? <Txt style={profileStyles.caption}>{t('characterProfile.voiceTraining')}</Txt> : null}
+
+          <AboutCard character={shown} name={shortName(name)} locale={locale} />
+
+          <StoryCard character={shown} level={relationship?.level ?? 0} />
+
+          {isFriend && relationship ? (
+            <BondCard
+              relationship={relationship}
+              memoryCount={memoryCount}
+              onMemories={() => router.push(`/character/${character.id}/memories`)}
+            />
+          ) : null}
+        </ScrollView>
+      </FriendAccent>
       {early.sheet}
     </Screen>
   );
@@ -260,6 +265,7 @@ function BondCard({
   onMemories: () => void;
 }) {
   const { t } = useTranslation();
+  const accent = useFriendAccent();
   const progress = levelForIntimacy(relationship.intimacy).progress;
   // Intimacy keeps growing past the last threshold, so the top level shows a plain total.
   const maxed = relationship.intimacy >= relationship.nextLevelAt;
@@ -268,7 +274,7 @@ function BondCard({
     <Group>
       <BondHead
         // One SF Symbols bounce when the card appears (iPhone).
-        heart={<SFIcon ios="heart.fill" icon="heart" size={18} color={colors.brandText} animation={{ effect: { type: 'bounce' } }} />}
+        heart={<SFIcon ios="heart.fill" icon="heart" size={18} color={accent?.strong ?? colors.brandText} animation={{ effect: { type: 'bounce' } }} />}
         title={t('characterProfile.levelLine', { level: relationship.level, title: phrase(relationship.levelTitle) })}
         line={`${t('us.streak', { count: relationship.streakDays })} · ${t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}`}
         end={
@@ -281,7 +287,7 @@ function BondCard({
       />
       <BondTrack progress={progress} />
       <View style={styles.bondFoot}>
-        <LinkRow label={t('characterProfile.memories')} meta={memoryCount > 0 ? String(memoryCount) : undefined} onPress={onMemories} last />
+        <LinkRow label={t('characterProfile.memories')} icon="bookmark" meta={memoryCount > 0 ? String(memoryCount) : undefined} onPress={onMemories} last />
       </View>
     </Group>
   );

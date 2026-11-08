@@ -5,7 +5,7 @@ import { Platform, type StyleProp, StyleSheet, View, type ViewStyle } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
-import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors } from '@/theme';
+import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors, systemGround } from '@/theme';
 
 /** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
 export const STORE = storeColors;
@@ -78,6 +78,7 @@ export function StoreBuyBar({
   onPress,
   left,
   children,
+  system,
 }: {
   label: string;
   caption?: string;
@@ -87,14 +88,17 @@ export function StoreBuyBar({
   left?: React.ReactNode;
   /** A line above the button (Photo Booth's pictures-left meter). */
   children?: React.ReactNode;
+  /** Over Apple's system ground (the Store) rather than the aurora. */
+  system?: boolean;
 }) {
   const insets = useSafeAreaInsets();
+  const fill = system ? (Platform.OS === 'ios' ? systemGround.bar : systemGround.barSolid) : Platform.OS === 'ios' ? STORE.bar : STORE.barSolid;
   return (
     <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) + 6 }]}>
       {Platform.OS === 'ios' ? (
         <BlurView intensity={40} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
       ) : null}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === 'ios' ? STORE.bar : STORE.barSolid }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: fill }]} />
       {children}
       <PressableScale
         scaleTo={0.97}

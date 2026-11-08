@@ -28,21 +28,34 @@ const SCENE_FACE: Record<string, number> = {
 export interface Picture {
   source: ImageSource | number;
   position?: ImageContentPosition;
+  /**
+   * How many frame widths wide to draw it so the face lands where it was asked (`stretchLeft`); 1 or
+   * none for a picture that fills the frame as it is (a wide scene slides instead).
+   */
+  stretch?: number;
 }
 
+/** Where a friend's face sits on a card with words on it: the trailing side (owner, 2026-11-08, every character). */
+export const FACE_AT = 0.68;
+
 /**
- * Their picture as a chat's ground, for a frame `aspect` (width / height) wide: the tall portrait,
- * else the wide scene slid so their face sits in the middle, else the photo a creator gave them.
- * Undefined when there is none: the chat falls back to the plain ground.
+ * Their picture for a frame `aspect` (width / height) wide, with their face at `at` of its width (the
+ * middle by default, `FACE_AT` on a card with words on it): the tall portrait, else the wide scene
+ * slid to `at`, else the photo a creator gave them. A tall or square picture cannot slide, so it is
+ * drawn `stretch` frames wide instead. Undefined when there is none: the caller falls back.
  */
-export function portraitOf(character: Character, aspect: number): Picture | undefined {
+export function portraitOf(character: Character, aspect: number, at = 0.5): Picture | undefined {
+  const stretch = 2 * Math.max(at, 1 - at);
   const tall = PORTRAITS[character.id];
-  if (tall != null) return { source: tall, position: { top: 0, left: '50%' } };
+  if (tall != null) return { source: tall, position: { top: 0, left: '50%' }, stretch };
   const scene = HEROES[character.id];
-  if (scene != null) return { source: scene, position: sceneFocus(character.id, aspect) };
-  if (character.avatarUri) return { source: { uri: character.avatarUri }, position: 'center' };
+  if (scene != null) return { source: scene, position: sceneFocus(character.id, aspect, at), stretch: 1 };
+  if (character.avatarUri) return { source: { uri: character.avatarUri }, position: 'center', stretch };
   return undefined;
 }
+
+/** Where a picture drawn `stretch` frames wide starts, so its middle lands at `at` of a `width` frame. */
+export const stretchLeft = (width: number, stretch: number, at: number) => Math.min(0, Math.max(width - width * stretch, at * width - (width * stretch) / 2));
 
 /**
  * Where a wide scene sits in a frame `aspect` (width / height) wide, so their face lands at `at` of

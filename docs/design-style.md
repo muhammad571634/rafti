@@ -244,6 +244,21 @@ pins' art or words.
   and their line sit on the leading side with a side scrim (`gradients.heroSideScrim`). Today's hero
   runs from the screen's top edge to its middle on every phone (`heroTopHeight`).
 
+- **Screen families (owner, 2026-11-08, canvas https://claude.ai/artifact/8sbnvkhWAM8C9rQgK7ioXB).**
+  Every screen keeps Apple's system ground; colour lives in the content (HIG Branding: "move your
+  brand colour into the content layer"). Four families:
+  1. *A friend's space* (their profile, chat settings, memories, photos, notes): their picture with the
+     face on the trailing side, and their accent (`friendAccent(id)`, from the same hue as their Chats
+     bubble) on the quick actions, the level, the progress track and the row tiles: wrap the screen in
+     the kit's `FriendAccent` provider; no provider keeps the brand peach and grey.
+  2. *Feature screens* (Gifts, Store, Plans, then Radio, Board, Photo Booth, Streams, worlds): white
+     ground, one hero card in the feature's signature colour (`signature` in `src/theme/colors.ts`:
+     Gifts red, Shells apricot; Plans keeps `gradients.pro`), the screen's capsules and chips in it,
+     everything else grey cards. The aurora goes from each as it moves.
+  3. *Lists and settings*: Apple's grouped ground with white cards and coloured tiles (already so).
+  4. *Moments* (calls, alarm ring, bedtime, date, onboarding, launch, level-up): full-bleed dark or
+     picture colour, as they are.
+
 Order (one at a time, each seen on the A51 before the next): 1. daily check-in (full yellow screen,
 live mascot); 2. Chats list as coloured bubbles; 3. Find's worlds as coloured folders; then the
 other screens, Today last and only when the owner says.

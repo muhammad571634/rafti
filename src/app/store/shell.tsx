@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +10,6 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { PlanPicker } from '@/components/plans/plan-picker';
 import {
   BUY_BAR_SPACE,
-  CARD_SHADOW,
   GroupLabel,
   IconTile,
   ProPill,
@@ -19,7 +19,6 @@ import {
 } from '@/components/plans/store-look';
 import {
   Anim,
-  AuroraGlass,
   Button,
   Icon3D,
   LargeTitle,
@@ -36,7 +35,7 @@ import { TRIAL } from '@/economy/plans';
 import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleFills, palette, space, systemColors } from '@/theme';
+import { colors, moduleFills, palette, signature, space, systemColors, systemGround } from '@/theme';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
@@ -80,8 +79,9 @@ function buildOffers(packs: ShellPack[]): PackOffer[] {
 }
 
 /**
- * The store on the aurora (canvas "Store: Plans and Shells", 2026-10-22): Plans (what Pro gives
- * first, prices last) and Shells (packs for pay-as-you-go chat), one buy button pinned at the
+ * The store (canvas "Store: Plans and Shells", 2026-10-22) on Apple's white ground (design-style
+ * §10, feature screens): Plans (what Pro gives first, prices last, in Pro's gradient) and Shells
+ * (packs for pay-as-you-go chat, the balance in the Store's apricot), one buy button pinned at the
  * bottom. `?tab=shells` opens on packs, `?plan=pro` picks a plan.
  */
 export default function StoreScreen() {
@@ -99,20 +99,15 @@ export default function StoreScreen() {
   const header = (
     <>
       <View style={styles.bar}>
-        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-          <AuroraGlass style={styles.round}>
-            <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-          </AuroraGlass>
+        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()} style={styles.round}>
+          <Ionicons name="chevron-back" size={22} color={systemGround.label} style={styles.backIcon} />
         </PressableScale>
-        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')}>
-          <AuroraGlass style={styles.round}>
-            <SFIcon ios="clock.arrow.circlepath" icon="time-outline" size={20} color={colors.text} />
-          </AuroraGlass>
+        <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')} style={styles.round}>
+          <SFIcon ios="clock.arrow.circlepath" icon="time-outline" size={20} color={systemGround.label} />
         </PressableScale>
       </View>
       <LargeTitle>{t('store.title')}</LargeTitle>
       <Segmented
-        tone="aurora"
         options={[
           { value: 'plans', label: t('plans.tabPlans') },
           { value: 'shells', label: t('plans.tabShells') },
@@ -125,7 +120,7 @@ export default function StoreScreen() {
   );
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       {tab === 'plans' ? (
         <PlanPicker
           header={header}
@@ -230,17 +225,17 @@ function ShellsTab({
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
         {header}
 
-        <View style={styles.balance}>
+        <LinearGradient colors={signature.shells.hero} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.balance}>
           <ShellIcon size={44} />
           <View style={styles.balanceAmount}>
             <Txt style={styles.balanceValue}>{wallet.shells.toLocaleString('en-US')}</Txt>
             <Txt style={styles.balanceUnit}>{t('store.shellsUnit')}</Txt>
           </View>
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => router.push('/gifts')} style={styles.freePill}>
-            <Ionicons name="gift-outline" size={16} color={STORE.peachInk} />
+            <Ionicons name="gift-outline" size={16} color={signature.shells.heroInk} />
             <Txt style={styles.freeText}>{t('common.free')}</Txt>
           </PressableScale>
-        </View>
+        </LinearGradient>
 
         <GroupLabel>{t('store.choose')}</GroupLabel>
         <View style={styles.card} accessibilityRole="radiogroup">
@@ -287,6 +282,7 @@ function ShellsTab({
         label={t('store.buy', { amount: selected.total.toLocaleString('en-US'), price: selected.pack.price })}
         caption={t(Platform.OS === 'ios' ? 'store.paidApple' : 'store.paidGoogle')}
         onPress={() => buy(selected)}
+        system
       />
     </>
   );
@@ -320,7 +316,7 @@ function PackRow({
             ink: STORE.peachInk,
           }
         : saving > 0
-          ? { label: t('store.save', { percent: saving }), bg: STORE.greyTag, ink: aurora.textMuted }
+          ? { label: t('store.save', { percent: saving }), bg: STORE.greyTag, ink: systemGround.secondaryLabel }
           : null;
 
   const detail =
@@ -398,7 +394,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   backIcon: { marginLeft: -2 },
   tabs: { marginHorizontal: space.lg, marginTop: 12 },
   balance: {
@@ -408,13 +404,11 @@ const styles = StyleSheet.create({
     marginHorizontal: space.lg,
     marginTop: 22,
     padding: space.lg,
-    borderRadius: 20,
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    borderRadius: 24,
   },
   balanceAmount: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: colors.text, fontVariant: ['tabular-nums'] },
-  balanceUnit: { fontSize: 15, color: aurora.textMuted },
+  balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: signature.shells.heroInk, fontVariant: ['tabular-nums'] },
+  balanceUnit: { fontSize: 15, fontWeight: '600', color: signature.shells.heroInk },
   freePill: {
     height: 36,
     paddingLeft: 12,
@@ -423,15 +417,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: STORE.peachSoft,
+    backgroundColor: 'rgba(255,255,255,0.55)',
   },
-  freeText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
+  freeText: { fontSize: 15, fontWeight: '700', color: signature.shells.heroInk },
   card: {
     marginHorizontal: space.lg,
-    borderRadius: 20,
+    borderRadius: 22,
     overflow: 'hidden',
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   packRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: space.lg },
   stack: { width: 46, height: 40 },
@@ -439,27 +432,27 @@ const styles = StyleSheet.create({
   packBody: { flex: 1, minWidth: 0, gap: 3, paddingVertical: 12 },
   // The bonus line drops under the total when both do not fit (long locales, larger text).
   packAmount: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 5 },
-  packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: colors.text, fontVariant: ['tabular-nums'] },
-  muted13: { flexShrink: 1, fontSize: 13, lineHeight: 18, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  muted13: { flexShrink: 1, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   tag: { alignSelf: 'flex-start', minHeight: 20, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
   tagText: { fontSize: 12, lineHeight: 16, fontWeight: '700' },
   price: { alignItems: 'flex-end', gap: 1 },
-  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.text, fontVariant: ['tabular-nums'] },
+  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label, fontVariant: ['tabular-nums'] },
   packLine: {
     position: 'absolute',
     left: 50,
     right: 0,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: aurora.separator,
+    backgroundColor: colors.borderStrong,
   },
   costRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
-  costLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
-  costTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  costLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  costTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
   costShells: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  costValue: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
+  costValue: { fontSize: 17, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
   restore: { alignSelf: 'center', marginTop: 10, paddingVertical: 12, paddingHorizontal: 10 },
-  restoreText: { fontSize: 15, fontWeight: '600', color: colors.text },
+  restoreText: { fontSize: 15, fontWeight: '600', color: systemGround.label },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -50 },
 });

@@ -10,13 +10,12 @@ import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { PLAN_PORTRAITS, QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
+import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
 import type { PlanId } from '@/types';
 
 import { perMonth, savingVsMonthly, storeName } from './copy';
 import {
   BUY_BAR_SPACE,
-  CARD_SHADOW,
   GroupLabel,
   IconTile,
   ProGradient,
@@ -268,7 +267,7 @@ export function PlanPicker({
         </View>
       </ScrollView>
 
-      <StoreBuyBar label={cta.label} caption={cta.caption} disabled={isCurrent} onPress={buy} />
+      <StoreBuyBar label={cta.label} caption={cta.caption} disabled={isCurrent} onPress={buy} system />
     </>
   );
 }
@@ -281,7 +280,7 @@ function Glyph({ glyph, size }: { glyph: CompareRow['glyph']; size: number }) {
 
 function CellView({ cell, plan, pro = false }: { cell: Cell; plan: string; pro?: boolean }) {
   const { t } = useTranslation();
-  const ink = pro ? STORE.proInk : aurora.textMuted;
+  const ink = pro ? STORE.proInk : systemGround.secondaryLabel;
   return (
     <View style={[styles.column, styles.cell, pro && styles.proColumn]}>
       {typeof cell === 'string' ? (
@@ -353,10 +352,9 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: GUTTER,
     marginTop: 22,
-    borderRadius: 20,
+    borderRadius: 22,
     overflow: 'hidden',
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   tableHead: {
     flexDirection: 'row',
@@ -365,16 +363,16 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: aurora.separator,
+    borderBottomColor: colors.borderStrong,
   },
-  basicHead: { width: COLUMN, textAlign: 'center', fontSize: 13, fontWeight: '700', color: aurora.textMuted },
+  basicHead: { width: COLUMN, textAlign: 'center', fontSize: 13, fontWeight: '700', color: systemGround.secondaryLabel },
   column: { width: COLUMN, alignItems: 'center', justifyContent: 'center' },
   proHeadPill: { height: 22, paddingHorizontal: 10, borderRadius: 11, justifyContent: 'center' },
   proHeadText: { fontSize: 13, fontWeight: '800', color: colors.white },
   tableRow: { flexDirection: 'row', alignItems: 'stretch', paddingLeft: GUTTER, paddingRight: GUTTER, minHeight: 48 },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   tableTitle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },
-  rowTitle: { flex: 1, fontSize: 16, letterSpacing: -0.3, color: colors.text },
+  rowTitle: { flex: 1, fontSize: 16, letterSpacing: -0.3, color: systemGround.label },
   cell: { alignSelf: 'stretch' },
   proColumn: { backgroundColor: STORE.proColumn },
   cellText: { fontSize: 16, fontWeight: '600', fontVariant: ['tabular-nums'] },
@@ -382,23 +380,23 @@ const styles = StyleSheet.create({
   planRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: GUTTER },
   planBody: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 12 },
   planName: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 8 },
-  planNameText: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  planNameText: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
   badge: { height: 22, paddingHorizontal: 8, borderRadius: 11, justifyContent: 'center', backgroundColor: STORE.peachSoft },
   badgeText: { fontSize: 12, fontWeight: '700', color: STORE.peachInk },
-  muted13: { fontSize: 13, color: aurora.textMuted },
+  muted13: { fontSize: 13, color: systemGround.secondaryLabel },
   price: { alignItems: 'flex-end', gap: 1 },
-  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: colors.text, fontVariant: ['tabular-nums'] },
+  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label, fontVariant: ['tabular-nums'] },
   planLine: {
     position: 'absolute',
     left: 50,
     right: 0,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: aurora.separator,
+    backgroundColor: colors.borderStrong,
   },
-  renew: { marginTop: 14, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  renew: { marginTop: 14, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   // Wraps: "Restore purchases · Terms · Privacy" runs wider than the screen in Russian or French.
   links: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10, marginHorizontal: space.xl },
   link: { paddingVertical: 12, paddingHorizontal: 10 },
-  linkText: { fontSize: 15, fontWeight: '600', color: colors.text },
+  linkText: { fontSize: 15, fontWeight: '600', color: systemGround.label },
 });
