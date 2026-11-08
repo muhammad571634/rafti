@@ -121,10 +121,6 @@
     },
     "bondLevel": "livello di legame {{level}}",
     "hero": {
-      "days_one": "giorno",
-      "days_other": "giorni",
-      "together_one": "insieme da {{count}} giorno",
-      "together_other": "insieme da {{count}} giorni",
       "level": "Liv {{level}}",
       "open": "Apri la chat con {{name}}"
     },

@@ -1,7 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import { Image, type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HeartIcon } from 'phosphor-react-native/src/icons/Heart';
 import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +11,10 @@ import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { sceneFocus } from '@/components/chat/chat-ground';
 import { Anim, characterImage, PressableScale, Txt } from '@/components/ui';
-import { daysBetween, relativeStamp } from '@/lib/format';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
-import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, gradientStops, radius, space } from '@/theme';
+import { colors, gradients, gradientStops, space } from '@/theme';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
 /**
@@ -152,8 +149,8 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
 
 /**
  * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): about half the
- * screen of their picture, still and lit for the user's hour; name with days and level
- * (the bond's progress as a line under it); their newest line in dark glass, typed in first while
+ * screen of their picture, still and lit for the user's hour; their name right on their newest
+ * line, which sits in dark glass, typed in first while
  * it is unread; a "Message" field under it. The whole card is one button that opens the chat; the
  * field is a cue, not a second control. Reduce Motion: no typing.
  */
@@ -175,11 +172,6 @@ export function TodayHero({
   const messages = useAppStore((s) => s.messages[conversation.id]);
   const line = useMemo(() => waitingLine(messages), [messages]);
   const name = displayName(character, relationship);
-  // Counted like the Us tab: the day you met is day 1.
-  const days = daysBetween(relationship.anniversary) + 1;
-  const together = `${days} ${t('home.hero.days', { count: days })}`;
-  const level = t('home.hero.level', { level: relationship.level });
-  const progress = levelForIntimacy(relationship.intimacy).progress;
 
   const { width, height: windowHeight } = useWindowDimensions();
   const height = heroTopHeight(windowHeight);
@@ -214,7 +206,7 @@ export function TodayHero({
     <PressableScale
       style={StyleSheet.absoluteFill}
       scaleTo={1}
-      accessibilityLabel={[t('home.hero.open', { name }), t('home.hero.together', { count: days }), level, line?.text]
+      accessibilityLabel={[t('home.hero.open', { name }), line?.text]
         .filter(Boolean)
         .join(', ')}
       onPress={onPress}>
@@ -235,25 +227,11 @@ export function TodayHero({
       />
 
       <View style={styles.bottom}>
-        <View style={styles.who}>
+        {/* The name sits right on their line, the way a message is signed (owner, 2026-11-08: no days,
+            level or time here). */}
         <Txt color={colors.onMedia} lines={1} style={styles.name}>
           {name}
         </Txt>
-        <View style={styles.chip}>
-          <Txt variant="chip" color={colors.onMedia} lines={1}>
-            {together}
-          </Txt>
-          <View style={styles.dot} />
-          <HeartIcon size={12} color={colors.bondOnMedia} weight="fill" />
-          <Txt variant="chip" color={colors.onMedia} lines={1}>
-            {level}
-          </Txt>
-          {/* How far to the next level, Replika's bar in a hairline. */}
-          <View style={styles.track}>
-            <View style={[styles.fill, { width: `${Math.round(progress * 100)}%` }]} />
-          </View>
-        </View>
-        </View>
         {line && typing ? (
           <View style={styles.said}>
             <View style={[styles.bubble, styles.typing]}>
@@ -262,9 +240,6 @@ export function TodayHero({
           </View>
         ) : line ? (
           <Animated.View entering={FadeIn.duration(220)} style={styles.said}>
-            <Txt variant="caption" color={colors.onMediaMuted} style={styles.when}>
-              {relativeStamp(line.at)}
-            </Txt>
             <View style={styles.bubble}>
               <Txt style={styles.lineText} color={colors.onMedia} lines={lines}>
                 {line.text}
@@ -300,36 +275,11 @@ const styles = StyleSheet.create({
   },
   header: { position: 'absolute', left: 0, right: 0 },
   wide: { position: 'absolute', left: 0, top: 0, bottom: 0 },
-  // The leading side: the friend keeps the trailing side clear.
-  who: { maxWidth: '72%', alignItems: 'flex-start', gap: 6, marginBottom: 2 },
-  name: { maxWidth: '100%', fontSize: 30, lineHeight: 35, fontWeight: '800', letterSpacing: -0.6 },
-  // Clear glass on the photo (HIG Materials: the clear variant is for rich media).
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xs,
-    height: 26,
-    paddingHorizontal: space.sm + 2,
-    borderRadius: radius.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-    backgroundColor: colors.onMediaGlass,
-    overflow: 'hidden',
-  },
-  dot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.onMediaSoft },
-  track: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 2,
-    backgroundColor: colors.onMediaHairline,
-  },
-  fill: { height: 2, backgroundColor: colors.bondOnMedia },
+  // The leading side: the friend keeps the trailing side clear; the name hugs their line.
+  name: { maxWidth: '72%', marginBottom: -2, fontSize: 30, lineHeight: 35, fontWeight: '800', letterSpacing: -0.6 },
   typing: { paddingVertical: 2 },
   bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.lg, gap: space.sm },
-  said: { alignItems: 'flex-start', gap: 3 },
-  when: { paddingLeft: space.xs, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
+  said: { alignItems: 'flex-start' },
   // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
   bubble: {
     maxWidth: '76%',

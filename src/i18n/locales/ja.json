@@ -118,8 +118,6 @@
     },
     "bondLevel": "絆レベル {{level}}",
     "hero": {
-      "days_other": "日",
-      "together_other": "一緒に{{count}}日",
       "level": "Lv {{level}}",
       "open": "{{name}}とのチャットを開く"
     },

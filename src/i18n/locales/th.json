@@ -118,8 +118,6 @@
     },
     "bondLevel": "สายสัมพันธ์ระดับ {{level}}",
     "hero": {
-      "days_other": "วัน",
-      "together_other": "อยู่ด้วยกันมา {{count}} วัน",
       "level": "เลเวล {{level}}",
       "open": "เปิดแชทกับ {{name}}"
     },

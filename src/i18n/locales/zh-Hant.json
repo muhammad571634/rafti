@@ -118,8 +118,6 @@
     },
     "bondLevel": "羈絆等級 {{level}}",
     "hero": {
-      "days_other": "天",
-      "together_other": "相伴{{count}}天",
       "level": "Lv {{level}}",
       "open": "開啟與{{name}}的對話"
     },

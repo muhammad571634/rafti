@@ -118,8 +118,6 @@
     },
     "bondLevel": "cấp độ gắn kết {{level}}",
     "hero": {
-      "days_other": "ngày",
-      "together_other": "bên nhau {{count}} ngày",
       "level": "Cấp {{level}}",
       "open": "Mở trò chuyện với {{name}}"
     },

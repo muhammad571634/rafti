@@ -127,16 +127,8 @@
     },
     "bondLevel": "уровень связи {{level}}",
     "hero": {
-      "days_one": "день",
-      "days_other": "дней",
-      "together_one": "вместе {{count}} день",
-      "together_other": "вместе {{count}} дней",
       "level": "Ур. {{level}}",
-      "open": "Открыть чат с {{name}}",
-      "days_few": "дня",
-      "days_many": "дней",
-      "together_few": "вместе {{count}} дня",
-      "together_many": "вместе {{count}} дней"
+      "open": "Открыть чат с {{name}}"
     },
     "gift": {
       "title": "Ежедневный подарок",

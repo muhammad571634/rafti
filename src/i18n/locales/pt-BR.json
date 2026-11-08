@@ -121,10 +121,6 @@
     },
     "bondLevel": "nível de vínculo {{level}}",
     "hero": {
-      "days_one": "dia",
-      "days_other": "dias",
-      "together_one": "juntos há {{count}} dia",
-      "together_other": "juntos há {{count}} dias",
       "level": "Nív {{level}}",
       "open": "Abrir conversa com {{name}}"
     },

@@ -121,10 +121,6 @@
     },
     "bondLevel": "bağ seviyesi {{level}}",
     "hero": {
-      "days_one": "gün",
-      "days_other": "gün",
-      "together_one": "birlikte {{count}} gün",
-      "together_other": "birlikte {{count}} gün",
       "level": "Seviye {{level}}",
       "open": "{{name}} ile sohbeti aç"
     },

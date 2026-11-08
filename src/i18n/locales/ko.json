@@ -118,8 +118,6 @@
     },
     "bondLevel": "유대감 레벨 {{level}}",
     "hero": {
-      "days_other": "일",
-      "together_other": "함께한 지 {{count}}일",
       "level": "Lv {{level}}",
       "open": "{{name}}와(과)의 대화 열기"
     },

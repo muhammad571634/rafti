@@ -121,10 +121,6 @@
     },
     "bondLevel": "Band-Stufe {{level}}",
     "hero": {
-      "days_one": "Tag",
-      "days_other": "Tage",
-      "together_one": "zusammen seit {{count}} Tag",
-      "together_other": "zusammen seit {{count}} Tagen",
       "level": "Lv {{level}}",
       "open": "Chat mit {{name}} öffnen"
     },

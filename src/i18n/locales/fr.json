@@ -121,10 +121,6 @@
     },
     "bondLevel": "niveau de lien {{level}}",
     "hero": {
-      "days_one": "jour",
-      "days_other": "jours",
-      "together_one": "ensemble depuis {{count}} jour",
-      "together_other": "ensemble depuis {{count}} jours",
       "level": "Niv {{level}}",
       "open": "Ouvrir la discussion avec {{name}}"
     },

@@ -118,8 +118,6 @@
     },
     "bondLevel": "level ikatan {{level}}",
     "hero": {
-      "days_other": "hari",
-      "together_other": "bersama {{count}} hari",
       "level": "Lv {{level}}",
       "open": "Buka obrolan dengan {{name}}"
     },

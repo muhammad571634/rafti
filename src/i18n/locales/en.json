@@ -121,10 +121,6 @@
     },
     "bondLevel": "bond level {{level}}",
     "hero": {
-      "days_one": "day",
-      "days_other": "days",
-      "together_one": "together {{count}} day",
-      "together_other": "together {{count}} days",
       "level": "Lv {{level}}",
       "open": "Open chat with {{name}}"
     },
