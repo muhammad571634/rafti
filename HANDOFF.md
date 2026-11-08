@@ -12,9 +12,10 @@
 - **Seen after the deploy (Fly v32, A51 09:57-10:02)**: a stream round (Maniki & Ronan) ran live, 6 lines, in 3,155-3,443 out 42-79. The secret note and a date were not opened on the phone (the owner's daily note, and a date costs shells); the probe covers them.
 - **Group language, still wrong on v32**: "good morning you two, what are you doing this morning?" in Velvet District -> Russian again; every user line in that group is English, the members' lines all Russian. Reproduced locally with Ronan + Isolde and that history: Russian 3 of 3. Cause: in a group the user's turn also carries the others' lines ("Ronan: …"), so "their latest messages" read as the group's. Fix: `groupLanguageCue` adds that the user's own quoted messages set the language, not the others' or the member's own earlier lines. Probe: English 3/3; Turkish user on a Russian phone 2/2; Russian user 2/2 (Russian and English phones). Needs the server deploy.
 
+- **Seen after the deploy (Fly v33, A51 10:10)**: "and what are your plans for tonight?" in Velvet District -> Ronan and Maniki both answered in English (Ronan in two bubbles, Maniki one), after weeks of Russian in that group.
+
 Still to do:
-1. Owner: deploy the server (group language fix).
-2. On the A51 after it: English message in Velvet District -> English answer.
+1. A memory-pass catch for days the model forgot to note (own day).
 
 ### 0z145. The friend's own day in groups, group calls and first texts; groups know the hour (2026-11-08, Claude 1). NEXT: owner deploys the server; then a group chat and a first text on the A51
 
