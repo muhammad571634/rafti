@@ -1723,8 +1723,8 @@
     "step": "Bước {{index}} / {{count}}",
     "meetNote": "Mỗi nhân vật đều là AI, không phải người thật.",
     "helloBubble": "Xin chào! Bọn mình đợi bạn mãi ✨",
-    "orbitWordA": "Không cô đơn",
-    "orbitWordB": "Luôn được lắng nghe",
+    "orbitWordA": "Bạn không bao giờ cô đơn",
+    "orbitWordB": "Luôn có người lắng nghe bạn",
     "orbitTitle": "Những người bạn luôn ở đây",
     "orbitBody": "Nhân vật AI biết nhắn tin, gọi điện và nhớ về bạn. Vài câu hỏi nhanh, rồi sẽ có người chờ bạn.",
     "orbitA11y": "Vòng tròn các tính năng của ứng dụng. Kéo để xoay."

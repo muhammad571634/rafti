@@ -1754,8 +1754,8 @@
     "step": "Etapa {{index}} de {{count}}",
     "meetNote": "Cada personagem é uma IA, não uma pessoa real.",
     "helloBubble": "Oi! Estávamos esperando por você ✨",
-    "orbitWordA": "Sempre com alguém",
-    "orbitWordB": "Alguém te ouve",
+    "orbitWordA": "Sempre tem alguém com você",
+    "orbitWordB": "Sempre tem alguém te ouvindo",
     "orbitTitle": "Amigos que estão sempre aqui",
     "orbitBody": "Personagens de IA que conversam, ligam e lembram de você. Algumas perguntas rápidas e alguém vai estar te esperando.",
     "orbitA11y": "Um anel com os recursos do app. Arraste para girar."

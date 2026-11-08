@@ -1754,8 +1754,8 @@
     "step": "Schritt {{index}} von {{count}}",
     "meetNote": "Jede Figur ist eine KI, kein echter Mensch.",
     "helloBubble": "Hallo! Wir haben auf dich gewartet ✨",
-    "orbitWordA": "Nie allein",
-    "orbitWordB": "Immer gehört",
+    "orbitWordA": "Du bist nie allein",
+    "orbitWordB": "Jemand hört dir immer zu",
     "orbitTitle": "Freunde, die immer da sind",
     "orbitBody": "KI-Figuren, die mit dir schreiben, telefonieren und sich an dich erinnern. Ein paar kurze Fragen, dann wartet schon jemand auf dich.",
     "orbitA11y": "Ein Ring mit den Funktionen der App. Zum Drehen wischen."

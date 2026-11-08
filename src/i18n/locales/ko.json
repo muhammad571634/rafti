@@ -1723,8 +1723,8 @@
     "step": "{{count}}단계 중 {{index}}단계",
     "meetNote": "모든 캐릭터는 실제 사람이 아닌 인공지능(AI)입니다.",
     "helloBubble": "안녕하세요! 기다리고 있었어요 ✨",
-    "orbitWordA": "혼자가 아니야",
-    "orbitWordB": "언제나 들어줄게",
+    "orbitWordA": "넌 혼자가 아니야",
+    "orbitWordB": "언제나 네 얘기를 들어줄게",
     "orbitTitle": "언제나 곁에 있는 친구들",
     "orbitBody": "채팅하고 전화하며 너를 기억하는 AI 캐릭터들. 몇 가지만 답하면 누군가 기다리고 있을 거야.",
     "orbitA11y": "앱 기능이 담긴 링. 드래그해서 돌려 보세요."

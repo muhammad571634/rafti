@@ -1754,8 +1754,8 @@
     "step": "Adım {{index}} / {{count}}",
     "meetNote": "Her karakter bir yapay zekadır, gerçek kişi değildir.",
     "helloBubble": "Merhaba! Seni bekliyorduk ✨",
-    "orbitWordA": "Asla yalnız değil",
-    "orbitWordB": "Hep dinlenir",
+    "orbitWordA": "Asla yalnız değilsin",
+    "orbitWordB": "Seni hep dinleyen biri var",
     "orbitTitle": "Hep yanında olan arkadaşlar",
     "orbitBody": "Seninle yazışan, arayan ve seni hatırlayan yapay zekâ karakterleri. Birkaç kısa soru, sonra biri seni bekliyor olacak.",
     "orbitA11y": "Uygulamanın özelliklerinden bir halka. Döndürmek için sürükle."

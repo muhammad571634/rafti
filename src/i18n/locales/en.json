@@ -1754,8 +1754,8 @@
     "step": "Step {{index}} of {{count}}",
     "meetNote": "Every character is an AI, not a real person.",
     "helloBubble": "Hi! We've been waiting for you ✨",
-    "orbitWordA": "Never alone",
-    "orbitWordB": "Always heard",
+    "orbitWordA": "You're never alone",
+    "orbitWordB": "Someone always listens",
     "orbitTitle": "Friends who are always here",
     "orbitBody": "AI characters who chat, call and remember you. A few quick questions, and someone will be waiting.",
     "orbitA11y": "A ring of the app’s features. Drag to spin it."

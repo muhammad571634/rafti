@@ -1723,8 +1723,8 @@
     "step": "Langkah {{index}} dari {{count}}",
     "meetNote": "Setiap karakter adalah AI, bukan orang sungguhan.",
     "helloBubble": "Hai! Kami sudah menunggumu ✨",
-    "orbitWordA": "Tak pernah sendiri",
-    "orbitWordB": "Selalu didengar",
+    "orbitWordA": "Kamu tak pernah sendiri",
+    "orbitWordB": "Selalu ada yang mendengarmu",
     "orbitTitle": "Teman yang selalu ada",
     "orbitBody": "Karakter AI yang mengobrol, menelepon, dan mengingatmu. Beberapa pertanyaan singkat, lalu seseorang akan menunggumu.",
     "orbitA11y": "Lingkaran fitur aplikasi. Geser untuk memutarnya."
