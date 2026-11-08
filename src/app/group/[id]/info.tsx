@@ -6,29 +6,28 @@ import { Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } f
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
-import { GroupAvatar } from '@/components/group-avatar';
 import {
-  Button,
-  CharacterAvatar,
-  GlassBar,
-  GlassButton,
-  Header,
-  InsetGroup,
-  InsetRow,
-  PressableScale,
-  Screen,
-  Sheet,
-  Toggle,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+  DangerRow,
+  FaceGlyph,
+  FaceRow,
+  Group,
+  GroupFace,
+  LinkRow,
+  ProfileTop,
+  QuickAction,
+  QuickRow,
+  SwitchRow,
+  TitleTop,
+  TopButton,
+} from '@/components/character/kit';
+import { Button, CharacterAvatar, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, space, type } from '@/theme';
+import { colors, playful, space, type } from '@/theme';
 import type { Character } from '@/types';
 
 const NAME_MAX = 40;
@@ -47,7 +46,7 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 }
 
 /**
- * Group info (approved prototype): the group's face and name, its members (open their
+ * Group info in the merged look (0z155; layout from the approved prototype): the group's face and name, its members (open their
  * profile or chat, remove one while two would stay, add one while there is room), Mute,
  * and Delete group. Levels and memories stay in the one-to-one chats.
  */
@@ -76,7 +75,7 @@ export default function GroupInfoScreen() {
   const [adding, setAdding] = useState(false);
   const [member, setMember] = useState<Character | null>(null);
   // Past the group's face and name, the bar shows the name (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(150);
+  const { scrolled, onScroll } = useScrolledPast(260);
 
   const members = useMemo(
     () => (group?.memberIds ?? []).flatMap((m) => characters.find((c) => c.id === m) ?? []),
@@ -85,8 +84,8 @@ export default function GroupInfoScreen() {
 
   if (!group || !groupId) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('group.info')} />
+      <Screen background={playful.ground}>
+        <TitleTop title={t('group.info')} onBack={() => router.back()} />
         <Txt style={styles.missing}>{t('group.notFound')}</Txt>
       </Screen>
     );
@@ -137,13 +136,14 @@ export default function GroupInfoScreen() {
   ];
 
   return (
-    // iOS contact card for the group (approved prototype `GroupInfo.dc.html`).
-    <Screen background={colors.bg}>
-      <GlassBar
+    // The merged look (0z155), twin of chat settings: cream ground, the group's mint card, white cards.
+    <Screen background={playful.ground}>
+      <ProfileTop
         title={title}
-        scrolled={scrolled}
+        showTitle={scrolled}
+        onBack={() => router.back()}
         right={
-          <GlassButton
+          <TopButton
             label={t('common.edit')}
             accessibilityLabel={t('group.rename')}
             onPress={() => {
@@ -157,100 +157,61 @@ export default function GroupInfoScreen() {
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <View style={styles.identity}>
-          <GroupAvatar members={members} size={112} ringColor={colors.bg} />
-          <Txt style={styles.name} center lines={2} accessibilityRole="header">
-            {title}
-          </Txt>
-          <Txt style={styles.caption} center>
-            {t('group.made', {
-              members: t('group.members', { count: members.length }),
-              date: planDate(Date.parse(group.createdAt)),
-            })}
-          </Txt>
-        </View>
+        contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
+        <GroupFace
+          members={members}
+          name={title}
+          line={t('group.made', {
+            members: t('group.members', { count: members.length }),
+            date: planDate(Date.parse(group.createdAt)),
+          })}
+        />
 
-        <View style={styles.quick}>
+        <QuickRow center>
           {quick.map((q) => (
-            <PressableScale
-              key={q.key}
-              scaleTo={0.95}
-              disabled={q.off}
-              onPress={q.onPress}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !!q.off }}
-              accessibilityLabel={q.label}
-              style={[styles.quickTile, q.off && styles.off]}>
-              <Ionicons name={q.icon} size={22} color={colors.brandText} />
-              <Txt style={styles.quickLabel} color={colors.brandText}>
-                {q.label}
-              </Txt>
-            </PressableScale>
+            <QuickAction key={q.key} icon={q.icon} label={q.label} disabled={q.off} onPress={q.onPress} />
           ))}
-        </View>
+        </QuickRow>
 
-        <Txt style={styles.sectionLabel}>{t('group.membersCount', { count: members.length, max: 3 })}</Txt>
-        <InsetGroup>
+        <Group title={t('group.membersCount', { count: members.length, max: 3 })}>
           {members.map((m, i) => {
             const level = relationships[m.id]?.level ?? 0;
-            const last = i === members.length - 1 && !roomLeft;
             return (
-              <Pressable
+              <FaceRow
                 key={m.id}
-                style={({ pressed }) => [styles.member, pressed && styles.pressed]}
-                accessibilityRole="button"
+                face={<CharacterAvatar character={m} size={44} />}
+                title={nameOf(m)}
+                meta={level >= 1 ? t('closeness.level', { level }) : undefined}
+                last={i === members.length - 1 && !roomLeft}
                 accessibilityLabel={level >= 1 ? `${nameOf(m)}, ${t('home.bondLevel', { level })}` : nameOf(m)}
-                onPress={() => setMember(m)}>
-                <CharacterAvatar character={m} size={40} />
-                <View style={[styles.memberBody, !last && styles.line]}>
-                  <View style={styles.flex}>
-                    <Txt style={styles.memberName} lines={1}>
-                      {nameOf(m)}
-                    </Txt>
-                    {level >= 1 ? <Txt style={styles.memberMeta}>{t('closeness.level', { level })}</Txt> : null}
-                  </View>
-                  <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
-                </View>
-              </Pressable>
+                onPress={() => setMember(m)}
+              />
             );
           })}
           {roomLeft ? (
-            <Pressable
-              style={({ pressed }) => [styles.member, pressed && styles.pressed]}
-              accessibilityRole="button"
+            <FaceRow
+              face={<FaceGlyph icon="add" />}
+              title={t('group.addMember')}
+              tint={colors.brandText}
+              end={null}
+              last
               accessibilityLabel={t('group.addMember')}
-              onPress={() => setAdding(true)}>
-              <View style={styles.addIcon}>
-                <Ionicons name="add" size={20} color={colors.brandText} />
-              </View>
-              <View style={styles.memberBody}>
-                <Txt style={styles.memberName} color={colors.brandText}>
-                  {t('group.addMember')}
-                </Txt>
-              </View>
-            </Pressable>
-          ) : null}
-        </InsetGroup>
-
-        <InsetGroup style={styles.block}>
-          <InsetRow label={t('background.title')} chevron last onPress={() => router.push({ pathname: '/group/[id]/background', params: { id: groupId } })} />
-        </InsetGroup>
-
-        <InsetGroup style={styles.block}>
-          <View style={styles.switchRow}>
-            <Txt style={[styles.memberName, styles.flex]}>{t('group.mute')}</Txt>
-            <Toggle
-              value={group.muted}
-              onChange={(v) => setGroupMuted(groupId, v)}
-              accessibilityLabel={t('group.mute')}
+              onPress={() => setAdding(true)}
             />
-          </View>
-        </InsetGroup>
+          ) : null}
+        </Group>
 
-        <InsetGroup style={styles.block}>
-          <InsetRow label={t('group.delete')} danger last onPress={askDelete} />
-        </InsetGroup>
+        <Group>
+          <LinkRow label={t('background.title')} last onPress={() => router.push({ pathname: '/group/[id]/background', params: { id: groupId } })} />
+        </Group>
+
+        <Group>
+          <SwitchRow label={t('group.mute')} value={group.muted} onChange={(v) => setGroupMuted(groupId, v)} last />
+        </Group>
+
+        <Group>
+          <DangerRow label={t('group.delete')} last onPress={askDelete} />
+        </Group>
       </ScrollView>
 
       <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('group.nameLabel')} avoidKeyboard>
@@ -367,46 +328,11 @@ function SheetRow({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { padding: space.xl },
-  identity: { alignItems: 'center', paddingHorizontal: space.xl, paddingTop: space.xs },
-  name: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3 },
-  caption: { marginTop: 4, fontSize: 15, color: colors.textSecondary },
-  quick: { flexDirection: 'row', gap: space.sm, marginTop: 22, paddingHorizontal: space.lg },
-  quickTile: {
-    flex: 1,
-    height: 62,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  quickLabel: { fontSize: 12, fontWeight: '500' },
   off: { opacity: 0.45 },
-  sectionLabel: {
-    marginTop: 22,
-    marginBottom: 6,
-    marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-  },
-  block: { marginTop: 22 },
-  member: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  memberBody: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: space.lg },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
   // No colour here: Txt's `color` prop (peach Add, red Remove) must win.
   memberName: { fontSize: 17, letterSpacing: -0.4 },
-  memberMeta: { fontSize: 13, color: colors.textSecondary },
-  addIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primarySofter,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  switchRow: { minHeight: 48, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg },
   input: {
     minHeight: 52,
     paddingHorizontal: space.md + 2,

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { portraitOf } from '@/components/chat/chat-ground';
+import { GroupAvatar } from '@/components/group-avatar';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { colors, fonts, friendColor, hitSlop, playful, space } from '@/theme';
@@ -98,23 +99,76 @@ export function SoftSegmented<T extends string>({
   );
 }
 
-/** A round head button with an icon, or a short word ("Edit") in a pill of the same height. */
-export function TopButton({ icon, label, accessibilityLabel, onPress }: { icon?: keyof typeof Ionicons.glyphMap; label?: string; accessibilityLabel: string; onPress: () => void }) {
+/**
+ * A round head button with an icon, or a short word ("Edit") in a pill of the same height.
+ * `peach` makes it the screen's one action (New group's Create); `disabled` greys it until it can run.
+ */
+export function TopButton({
+  icon,
+  label,
+  accessibilityLabel,
+  peach,
+  disabled,
+  onPress,
+}: {
+  icon?: keyof typeof Ionicons.glyphMap;
+  label?: string;
+  accessibilityLabel: string;
+  peach?: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
+  const on = peach && !disabled;
+  const ink = disabled ? colors.textFaint : on ? colors.textOnPrimary : playful.ink;
   return (
     <PressableScale
       onPress={onPress}
+      disabled={disabled}
       scaleTo={0.9}
       hitSlop={hitSlop}
       accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled }}
       accessibilityLabel={accessibilityLabel}
-      style={[styles.round, label ? styles.pill : null]}>
-      {icon ? <Ionicons name={icon} size={22} color={playful.ink} /> : null}
+      style={[styles.round, label ? styles.pill : null, on && styles.pillPeach]}>
+      {icon ? <Ionicons name={icon} size={22} color={ink} /> : null}
       {label ? (
-        <Txt style={styles.pillText} maxFontSizeMultiplier={1.2}>
+        <Txt style={[styles.pillText, { color: ink }]} maxFontSizeMultiplier={1.2}>
           {label}
         </Txt>
       ) : null}
     </PressableScale>
+  );
+}
+
+/**
+ * A group's face as a card of its own: the groups' one soft mint (as in the Chats list), the members'
+ * stacked faces in the middle, the name and a line under it in the mint's ink.
+ */
+export function GroupFace({ members, name, line }: { members: Character[]; name: string; line?: string }) {
+  const { width: screen } = useWindowDimensions();
+  const height = Math.round(Math.min((screen - SIDE * 2) * 0.74, 300));
+  return (
+    <View style={[styles.face, { height, backgroundColor: playful.group.fill }]}>
+      <View style={styles.faceAvatar}>
+        <GroupAvatar members={members} size={120} ringColor={playful.group.fill} />
+      </View>
+      <View style={styles.faceFoot}>
+        <Txt
+          style={[styles.faceName, { color: playful.group.ink }]}
+          lines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+          maxFontSizeMultiplier={1.2}
+          accessibilityRole="header">
+          {name}
+        </Txt>
+        {line ? (
+          <Txt style={[styles.faceLine, { color: playful.group.ink }]} lines={1} maxFontSizeMultiplier={1.3}>
+            {line}
+          </Txt>
+        ) : null}
+      </View>
+    </View>
   );
 }
 
@@ -303,6 +357,82 @@ export function LinkRow({ label, meta, last, onPress }: { label: string; meta?: 
   );
 }
 
+/**
+ * A row led by a face (a group's members, a friend to pick): the face, a name with an optional line
+ * under it, and an end (chevron, pick circle). `tint` colours the name (the peach "Add a friend").
+ */
+export function FaceRow({
+  face,
+  title,
+  meta,
+  tint,
+  end,
+  last,
+  disabled,
+  dim,
+  onPress,
+  accessibilityLabel,
+  accessibilityRole = 'button',
+  accessibilityState,
+}: {
+  face: ReactNode;
+  title: string;
+  meta?: string;
+  tint?: string;
+  end?: ReactNode;
+  last?: boolean;
+  disabled?: boolean;
+  /** Greyed (a friend who cannot be picked now). */
+  dim?: boolean;
+  onPress: () => void;
+  accessibilityLabel: string;
+  accessibilityRole?: 'button' | 'checkbox';
+  accessibilityState?: { checked?: boolean; disabled?: boolean };
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole={accessibilityRole}
+      accessibilityState={accessibilityState ?? { disabled: !!disabled }}
+      accessibilityLabel={accessibilityLabel}
+      style={({ pressed }) => [styles.faceRow, !last && styles.rowLine, pressed && styles.rowPressed, dim && styles.off]}>
+      {face}
+      <View style={styles.grow}>
+        <Txt style={styles.rowText} color={tint} lines={1}>
+          {title}
+        </Txt>
+        {meta ? (
+          <Txt style={styles.faceRowMeta} lines={1}>
+            {meta}
+          </Txt>
+        ) : null}
+      </View>
+      {end === undefined ? <Ionicons name="chevron-forward" size={16} color={colors.textFaint} /> : end}
+    </Pressable>
+  );
+}
+
+/** A soft round glyph in a face's place (the peach + of "Add a friend"). */
+export function FaceGlyph({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
+  return (
+    <View style={styles.faceGlyph}>
+      <Ionicons name={icon} size={22} color={colors.brandText} />
+    </View>
+  );
+}
+
+/** The pick circle at a row's end: an empty ring, or a peach disc with a tick. */
+export function PickMark({ on }: { on: boolean }) {
+  return on ? (
+    <View style={[styles.pick, styles.pickOn]}>
+      <Ionicons name="checkmark" size={16} color={colors.textOnPrimary} />
+    </View>
+  ) : (
+    <View style={styles.pick} />
+  );
+}
+
 /** A row with the app's switch. */
 export function SwitchRow({ label, value, disabled, last, onChange }: { label: string; value: boolean; disabled?: boolean; last?: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -396,6 +526,7 @@ const styles = StyleSheet.create({
   roundSpace: { width: ROUND },
   pill: { paddingHorizontal: 16 },
   pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: playful.ink },
+  pillPeach: { backgroundColor: colors.primaryFill },
   backGlyph: { marginLeft: -2 },
   bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: playful.ink },
   topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: playful.ink },
@@ -458,6 +589,11 @@ const styles = StyleSheet.create({
   // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
   rowText: { fontSize: 17, letterSpacing: -0.4 },
   meta: { flexShrink: 1, maxWidth: '50%', color: colors.textSecondary },
+  faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },
+  faceRowMeta: { marginTop: 1, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  faceGlyph: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
+  pick: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: colors.borderStrong },
+  pickOn: { borderWidth: 0, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   choice: { gap: 10, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
   segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: playful.chip },
   segment: { flex: 1, minHeight: 36, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },

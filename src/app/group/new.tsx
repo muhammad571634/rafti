@@ -6,29 +6,18 @@ import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'r
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
-import {
-  CharacterAvatar,
-  EmptyState,
-  GlassBar,
-  glassStyle,
-  Header,
-  InsetGroup,
-  LargeTitle,
-  PressableScale,
-  Screen,
-  Txt,
-  useScrolledPast,
-} from '@/components/ui';
+import { Group, profileStyles, TitleTop, TopButton } from '@/components/character/kit';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, type } from '@/theme';
+import { colors, playful, space, type } from '@/theme';
 
 /** What the user may call a group. */
 const NAME_MAX = 40;
 
 /**
- * New group (approved prototype): pick 2 or 3 friends the user already chats with, an
+ * New group in the merged look (0z155; flow from the approved prototype): pick 2 or 3 friends the user already chats with, an
  * optional name, then one primary button. The first member says hello in the new chat.
  */
 export default function NewGroupScreen() {
@@ -40,8 +29,6 @@ export default function NewGroupScreen() {
 
   const [picked, setPicked] = useState<string[]>([]);
   const [name, setName] = useState('');
-  // Past the large title, the bar shows it (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(44);
 
   const full = picked.length >= GROUP_MAX;
   const ready = picked.length >= GROUP_MIN;
@@ -60,8 +47,8 @@ export default function NewGroupScreen() {
 
   if (friends.length < GROUP_MIN) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('group.newGroup')} />
+      <Screen background={playful.ground}>
+        <TitleTop title={t('group.newGroup')} onBack={() => router.back()} />
         <EmptyState
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('group.noFriends')}
@@ -76,36 +63,28 @@ export default function NewGroupScreen() {
   const pickedFriends = friends.filter((f) => picked.includes(f.character.id));
 
   return (
-    // iOS "New group" from the approved pieces (glass bar, large title, inset groups): Create
-    // sits in the bar and wakes up once two friends are picked.
-    <Screen background={colors.bg}>
-      <GlassBar
+    // The merged look (0z155): cream ground, a heavy title with Create beside it (peach once two
+    // friends are picked), white cards for the name and the friends.
+    <Screen background={playful.ground}>
+      <TitleTop
         title={t('group.newGroup')}
-        scrolled={scrolled}
+        onBack={() => router.back()}
         right={
-          <PressableScale
-            scaleTo={0.92}
+          <TopButton
+            label={t('group.createShort')}
+            accessibilityLabel={ready ? t('group.create') : t('group.pickOneMore')}
+            peach
             disabled={!ready}
             onPress={create}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !ready }}
-            accessibilityLabel={ready ? t('group.create') : t('group.pickOneMore')}
-            style={[styles.create, ready ? styles.createOn : glassStyle]}>
-            <Txt style={styles.createText} color={ready ? colors.textOnPrimary : colors.textFaint}>
-              {t('group.createShort')}
-            </Txt>
-          </PressableScale>
+          />
         }
       />
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
-          onScroll={onScroll}
-          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag">
-          <LargeTitle>{t('group.newGroup')}</LargeTitle>
-
           {/* Who is in so far; a tap takes them out again (iOS Messages' "To:" faces). */}
           {pickedFriends.length > 0 ? (
             <View style={styles.faces}>
@@ -118,9 +97,9 @@ export default function NewGroupScreen() {
                   accessibilityLabel={t('group.unpick', { name: f.name })}
                   style={styles.face}>
                   <View>
-                    <CharacterAvatar character={f.character} size={56} />
+                    <CharacterAvatar character={f.character} size={60} />
                     <View style={styles.unpick}>
-                      <Ionicons name="close" size={11} color={colors.white} />
+                      <Ionicons name="close" size={12} color={colors.white} />
                     </View>
                   </View>
                   <Txt style={styles.faceName} lines={1}>
@@ -131,8 +110,7 @@ export default function NewGroupScreen() {
             </View>
           ) : null}
 
-          <Txt style={styles.sectionLabel}>{`${t('group.nameLabel')} · ${t('group.optional')}`}</Txt>
-          <InsetGroup>
+          <Group title={t('group.nameLabel')} right={<Txt style={styles.optional}>{t('group.optional')}</Txt>}>
             <TextInput
               value={name}
               onChangeText={setName}
@@ -142,10 +120,9 @@ export default function NewGroupScreen() {
               maxLength={NAME_MAX}
               style={styles.input}
             />
-          </InsetGroup>
+          </Group>
 
-          <Txt style={styles.sectionLabel}>{t('group.pickTitle')}</Txt>
-          <InsetGroup>
+          <Group title={t('group.pickTitle')}>
             {friends.map((friend, i) => {
               const on = picked.includes(friend.character.id);
               return (
@@ -160,8 +137,8 @@ export default function NewGroupScreen() {
                 />
               );
             })}
-          </InsetGroup>
-          <Txt style={styles.footer}>{t('group.costNote')}</Txt>
+          </Group>
+          <Txt style={profileStyles.footer}>{t('group.costNote')}</Txt>
         </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
@@ -170,33 +147,22 @@ export default function NewGroupScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  create: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
-  createOn: { backgroundColor: colors.primaryFill },
-  createText: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
-  faces: { flexDirection: 'row', gap: space.lg, paddingHorizontal: space.lg, paddingTop: space.lg },
-  face: { alignItems: 'center', gap: 6, width: 64 },
+  faces: { flexDirection: 'row', gap: space.lg, paddingHorizontal: space.lg + space.xs, paddingTop: space.sm, paddingBottom: space.xs },
+  face: { alignItems: 'center', gap: 6, width: 68 },
   unpick: {
     position: 'absolute',
     top: -2,
     right: -2,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 2,
-    borderColor: colors.bg,
+    borderColor: playful.ground,
     backgroundColor: colors.textSecondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  faceName: { fontSize: 13, color: colors.text },
-  sectionLabel: {
-    marginTop: 22,
-    marginBottom: 6,
-    marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-  },
-  input: { minHeight: 48, paddingHorizontal: space.lg, color: colors.text, ...type.body, fontSize: 17 },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, color: colors.textSecondary },
+  faceName: { fontSize: 13, fontWeight: '600', color: playful.ink },
+  optional: { fontSize: 13, color: colors.textSecondary },
+  input: { minHeight: 54, paddingHorizontal: 18, paddingBottom: 4, color: colors.text, ...type.body, fontSize: 17 },
 });
