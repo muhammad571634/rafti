@@ -21,7 +21,7 @@
 
 Still to do:
 1. Done on the A51 except: a very long line near the top held (clamp), a group chat's "+" panel and double tap.
-2. Done in code (`013046e`): the friend's sticker on your line (`src/ai/react.ts`: global rule + turn reminder, `react` field, `Message.theirReaction`, pops onto your bubble). Probe 5/5 right, 0/4 on small talk. **Owner: deploy the server**, then check on the A51 (send "I got the job!" and a "what are you up to?"). Groups do not react yet.
+2. Done in code (`013046e`): the friend's sticker on your line (`src/ai/react.ts`: global rule + turn reminder, `react` field, `Message.theirReaction`, pops onto your bubble). Probe 5/5 right, 0/4 on small talk. Deployed (Fly v36) and seen on the A51 (Zarek): "I got the job!!" got hyped before his reply; but "what are you up to now?" got hyped too, so `d2d04bc` adds `mayReact` (no sticker when one of your two lines before got one; OTA `01a1ba41`, checked: the next line got none) and a sharper turn line ("judge only the latest message, a question gets none"): **needs one more server deploy**. Groups do not react yet.
 3. Then the character profile screen in the same manner.
 4. Owner (optional): the six reactions could get a more creative look later.
 
