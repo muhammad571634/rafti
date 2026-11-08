@@ -76,4 +76,10 @@ describe('the group follows the user’s own words, not the phone (0z145)', () =
   it('names the phone’s language before they write', () => {
     assert.match(language([]), /Russian/);
   });
+  it('the turn names whose words set the language, not the others’ (0z146)', () => {
+    const now = (messages: Message[]) => groupReplyParts({ character: isolde, others: [ronan], user: ru, messages, replyLanguage: followUserLanguage('ru-RU') }).find((p) => p.name === 'languageNow')!.text;
+    assert.match(now([say('good morning you two')]), /"good morning you two"[\s\S]*Sukut's own messages[\s\S]*Not the language the others here write in/);
+    assert.doesNotMatch(now([]), /own messages/);
+    assert.match(now([]), /Russian/);
+  });
 });

@@ -9,9 +9,12 @@
 - Checks: app tsc 0, npm test 799/799; server tsc 0, 78/78. OTA `01a1b97d` (android; the app sends clock + own day, harmless before the deploy).
 - **OTA platforms**: `eas update` without `--platform` exports web too, and the web export's static render (`app.json` web.output "static") fails ("Cannot read properties of undefined (reading 'get')" in `@expo/router-server` render). `--platform ios` exports fine (checked 2026-11-08, 16 MB Hermes bundle). Use `--platform android` now; add `--platform ios` with the first iOS build. The web failure only matters if a web build is ever wanted.
 
+- **Seen after the deploy (Fly v32, A51 09:57-10:02)**: a stream round (Maniki & Ronan) ran live, 6 lines, in 3,155-3,443 out 42-79. The secret note and a date were not opened on the phone (the owner's daily note, and a date costs shells); the probe covers them.
+- **Group language, still wrong on v32**: "good morning you two, what are you doing this morning?" in Velvet District -> Russian again; every user line in that group is English, the members' lines all Russian. Reproduced locally with Ronan + Isolde and that history: Russian 3 of 3. Cause: in a group the user's turn also carries the others' lines ("Ronan: …"), so "their latest messages" read as the group's. Fix: `groupLanguageCue` adds that the user's own quoted messages set the language, not the others' or the member's own earlier lines. Probe: English 3/3; Turkish user on a Russian phone 2/2; Russian user 2/2 (Russian and English phones). Needs the server deploy.
+
 Still to do:
-1. Owner: deploy the server (0z146).
-2. On the A51 after the deploy: English message in a group -> English answer (0z145 language fix); a secret note, a date round and a stream that build on the friend's day.
+1. Owner: deploy the server (group language fix).
+2. On the A51 after it: English message in Velvet District -> English answer.
 
 ### 0z145. The friend's own day in groups, group calls and first texts; groups know the hour (2026-11-08, Claude 1). NEXT: owner deploys the server; then a group chat and a first text on the A51
 

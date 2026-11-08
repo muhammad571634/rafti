@@ -73,9 +73,25 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
     // The hour, and what this member already said of their own day (0z145): the same day as in their own chat.
     part('clock', 'turn', clockLines(input.clock)),
     ...ownDayParts(input.ownDay, input.clock),
-    part('languageNow', 'turn', followsUser(replyLanguage) ? languageCue(userLines(messages), user.locale) : []),
+    part('languageNow', 'turn', followsUser(replyLanguage) ? groupLanguageCue(userLines(messages), user.locale, persona?.name ?? user.displayName) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),
+  ];
+}
+
+/**
+ * The group's language reminder: the one-to-one cue, plus who it follows. In a group the user's turn
+ * carries the others' lines too ("Ronan: …"), so "their latest messages" read as the group's, and
+ * once the members had answered in the phone's language the group kept it (0z146: Russian answers
+ * to English, 3 of 3, also after 0z145's fix). The user is named, and the others' language and this
+ * member's own earlier lines do not count.
+ */
+export function groupLanguageCue(lines: readonly string[], phoneLocale: string | undefined, you: string): string[] {
+  const cue = languageCue(lines, phoneLocale);
+  if (!lines.length || !cue.length) return cue;
+  return [
+    ...cue,
+    `In this group that means ${you}'s own messages, quoted above. Not the language the others here write in, and not the one your own earlier lines were in: if those differ, change now to ${you}'s language.`,
   ];
 }
 
