@@ -48,7 +48,7 @@ import {
 } from '@/lib/create-character';
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, playful, space, systemColors } from '@/theme';
+import { avatarGradients, colors, fonts, playful, space, systemColors } from '@/theme';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
@@ -57,6 +57,16 @@ const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 /** How long typing waits before the unfinished character is kept on the phone. */
 const SAVE_AFTER_MS = 600;
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.68)'] as const;
+/** "Alisa Vetrova" -> "AV": the same letters their avatar shows without a picture. */
+const initialsOf = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? '')
+    .join('') || '?';
+/** Their avatar's colours without a picture, so the page, the meet moment and the chat look alike. */
+const gradientOf = (accent: number) => avatarGradients[accent % avatarGradients.length];
 
 /**
  * Sharing a creation in Find is off until moderation exists (business-plan §12, decision 4: no UGC
@@ -211,6 +221,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const language = baseLanguage(locale);
 
   const [phase, setPhase] = useState<Phase>(editing ? 'form' : 'idea');
+  /** Their avatar colour, chosen once: the page shows the same one the chat will. */
+  const [accent] = useState(() => editing?.accentIndex ?? Math.floor(Math.random() * avatarGradients.length));
   const initial = useMemo(() => (editing ? formOf(editing) : BLANK), [editing]);
   const [form, setForm] = useState<CreateForm>(initial);
   const set = useCallback((patch: Partial<CreateForm>) => setForm((f) => ({ ...f, ...patch })), []);
@@ -521,7 +533,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       avatarUri,
       handle: '@you',
       series: 'My Creations',
-      accentIndex: Math.floor(Math.random() * 6),
+      accentIndex: accent,
       voiceReady: true,
       isOfficial: false,
     });
@@ -536,11 +548,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const label = (key: string) => t(`createCharacter.${key}`);
   const rewriteLabel = (field: string) => t('createCharacter.rewrite', { field: field.toLowerCase() });
   const sparkle = (field: DraftField, name: string) => <Rewrite label={rewriteLabel(name)} busy={busy === field} disabled={busy != null && busy !== field} onPress={() => void rewrite(field)} />;
-  const hue = friendColor(form.name.trim() || 'new');
   const dialogLabels = { char: form.name.trim() || t('createCharacter.dialogChar'), other: t('createCharacter.dialogOther') };
 
   if (phase === 'meet' && made) {
-    return <MeetMoment form={form} onOpen={() => router.replace(`/chat/${made.conversationId}`)} />;
+    return <MeetMoment form={form} accent={accent} onOpen={() => router.replace(`/chat/${made.conversationId}`)} />;
   }
 
   const title = editing ? t('createCharacter.editTitle') : t('createCharacter.title');
@@ -586,37 +597,37 @@ function CharacterForm({ editing }: { editing?: Character }) {
           <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
             {/* Their picture and name, as Find shows a character: tap to choose a photo. */}
             <View onLayout={at('who')}>
-              <PressableScale onPress={() => void pickImage()} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={[styles.hero, { backgroundColor: hue.fill }]}>
+              <PressableScale onPress={() => void pickImage()} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={styles.hero}>
                 {form.imageUri ? (
-                  <>
-                    <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
-                    <LinearGradient colors={SCRIM} style={styles.heroScrim} />
-                  </>
+                  <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
                 ) : (
-                  <Txt style={[styles.initial, { color: hue.ink }]} maxFontSizeMultiplier={1}>
-                    {(form.name.trim()[0] ?? '?').toUpperCase()}
-                  </Txt>
+                  <LinearGradient colors={gradientOf(accent)} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.heroCenter]}>
+                    <Txt style={styles.initial} maxFontSizeMultiplier={1}>
+                      {initialsOf(form.name)}
+                    </Txt>
+                  </LinearGradient>
                 )}
+                <LinearGradient colors={SCRIM} style={styles.heroScrim} />
                 <View style={styles.heroFoot}>
-                  <Txt style={[styles.heroName, !form.imageUri && { color: hue.ink }]} lines={1} maxFontSizeMultiplier={1.2}>
+                  <Txt style={styles.heroName} lines={1} maxFontSizeMultiplier={1.2}>
                     {form.name.trim() || label('namePlaceholder')}
                   </Txt>
                   {form.tagline.trim() ? (
-                    <Txt style={[styles.heroLine, !form.imageUri && { color: hue.ink, opacity: 0.75 }]} lines={2}>
+                    <Txt style={styles.heroLine} lines={2}>
                       {form.tagline}
                     </Txt>
                   ) : null}
                 </View>
-                <View style={[styles.photoButton, !form.imageUri && styles.photoButtonOnHue]}>
-                  <Ionicons name="camera" size={16} color={form.imageUri ? colors.onMedia : hue.ink} />
-                  <Txt style={[styles.photoButtonText, !form.imageUri && { color: hue.ink }]}>{label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}</Txt>
+                <View style={styles.photoButton}>
+                  <Ionicons name="camera" size={16} color={colors.onMedia} />
+                  <Txt style={styles.photoButtonText}>{label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}</Txt>
                 </View>
               </PressableScale>
             </View>
 
             <Card title={label('basics')} problem={problemText('who')}>
               <Field label={label('name')} value={form.name} onChange={(name) => set({ name })} placeholder={label('namePlaceholder')} max={NAME_MAX} />
-              <Field label={label('tagline')} value={form.tagline} onChange={(tagline) => set({ tagline })} placeholder={label('taglinePlaceholder')} max={TAGLINE_MAX} action={sparkle('tagline', label('tagline'))} />
+              <Field label={label('tagline')} value={form.tagline} onChange={(tagline) => set({ tagline })} placeholder={label('taglinePlaceholder')} max={TAGLINE_MAX} multiline rows={1} action={sparkle('tagline', label('tagline'))} />
               <FieldPair>
                 <View style={styles.flex}>
                   <Field label={label('age')} value={form.age} onChange={(v) => set({ age: v.replace(/[^0-9]/g, '') })} placeholder="18+" max={3} keyboardType="number-pad" />
@@ -841,22 +852,23 @@ function Lines({
 }
 
 /** "Meet them": their face, their name and the first thing they will say, then the chat. */
-function MeetMoment({ form, onOpen }: { form: CreateForm; onOpen: () => void }) {
+function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number; onOpen: () => void }) {
   const { t } = useTranslation();
   const you = useAppStore((s) => s.user.displayName);
   const name = form.name.trim();
-  const hue = friendColor(name || 'new');
   const greeting = (form.greeting.trim() || t('createCharacter.defaultGreeting', { name })).replace(/\{\{user\}\}/g, you);
   return (
     <Screen background={playful.ground}>
       <View style={styles.meet}>
-        <Animated.View entering={ZoomIn.springify().damping(14)} style={[styles.meetFace, { backgroundColor: hue.fill }]}>
+        <Animated.View entering={ZoomIn.springify().damping(14)} style={styles.meetFace}>
           {form.imageUri ? (
             <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
           ) : (
-            <Txt style={[styles.meetInitial, { color: hue.ink }]} maxFontSizeMultiplier={1}>
-              {(name[0] ?? '?').toUpperCase()}
-            </Txt>
+            <LinearGradient colors={gradientOf(accent)} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.heroCenter]}>
+              <Txt style={styles.meetInitial} maxFontSizeMultiplier={1}>
+                {initialsOf(name)}
+              </Txt>
+            </LinearGradient>
           )}
         </Animated.View>
         <Animated.View entering={FadeIn.delay(220).duration(260)}>
@@ -881,9 +893,11 @@ const MEET = 148;
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
   // Find's featured card: radius 30, a scrim at the foot, the name in heavy rounded white.
-  hero: { height: HERO_H, marginHorizontal: space.lg, marginTop: space.sm, borderRadius: 30, overflow: 'hidden', justifyContent: 'center', alignItems: 'center' },
+  hero: { height: HERO_H, marginHorizontal: space.lg, marginTop: space.sm, borderRadius: 30, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
+  heroCenter: { alignItems: 'center', justifyContent: 'center' },
   heroScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
-  initial: { fontFamily: fonts.playful, fontSize: 112, lineHeight: 128, marginTop: -40 },
+  // Their avatar's monogram, white on its colours, set a little high so the name below stays clear.
+  initial: { fontFamily: fonts.playful, fontSize: 96, lineHeight: 112, marginTop: -56, color: colors.white },
   heroFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 18 },
   heroName: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: colors.onMedia },
   heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, fontWeight: '600', color: colors.onMediaMuted },
@@ -902,7 +916,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  photoButtonOnHue: { backgroundColor: 'rgba(255,255,255,0.35)', borderColor: 'transparent' },
   photoButtonText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.onMedia },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.md },
   toggleText: { fontSize: 15, lineHeight: 20, color: colors.text },
@@ -916,7 +929,7 @@ const styles = StyleSheet.create({
   lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: playful.chip, fontSize: 16, lineHeight: 21, color: colors.text },
   meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
   meetFace: { width: MEET, height: MEET, borderRadius: MEET / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-  meetInitial: { fontFamily: fonts.playful, fontSize: 64, lineHeight: 76 },
+  meetInitial: { fontFamily: fonts.playful, fontSize: 56, lineHeight: 66, color: colors.white },
   meetTitle: { textAlign: 'center', fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: playful.ink },
   // Their first message as the chat shows theirs: a white bubble.
   meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: playful.card },

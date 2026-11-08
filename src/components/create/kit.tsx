@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: space.sm },
   // Reads as a card title: the closed card is its own section.
   disclosureText: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: playful.ink },
-  bar: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: playful.ground },
   // The ground fades in above the bar; behind it the ground is solid, so nothing shows through.
   fade: { position: 'absolute', left: 0, right: 0, top: -28, height: 28 },
   barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm, backgroundColor: playful.ground },
