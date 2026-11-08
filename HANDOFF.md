@@ -10,7 +10,7 @@
 Still to do:
 1. Owner: share one poster from the chat and one from Us to a real app; check sharpness and that +5 comes only then (tomorrow, when the day's cap resets).
 2. Next APK: a native chooser callback on Android (which app was picked) to replace the 4 s guess.
-3. The friends' faces on the Us poster sit over the portrait's face on tall portraits: owner's taste call if it should move.
+3. Done (owner): the Us poster shows nothing of the user (no faces, no "Sukut & Hana"): only the friend, days together and the three figures; the block moved down so the portrait's face stays clear (OTA `01a1baf9`, seen on the A51). Standing rule in `.agents/rules/project-memory.md` §3: share posters advertise the character, never the user.
 
 ### 0z159. Dark mode: the tab bar's chosen tab is the brand peach (2026-11-08, Claude 1). NEXT: owner's next task (0z158 Still to do 1 waits on the owner)
 

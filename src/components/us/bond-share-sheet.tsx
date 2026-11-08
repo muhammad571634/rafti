@@ -9,10 +9,10 @@ import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { portraitOf } from '@/components/chat/chat-ground';
 import { PAPER, POSTER, POSTER_H, POSTER_W } from '@/components/share/poster-frame';
 import { ShareCardSheet } from '@/components/share-card-sheet';
-import { BrandArt, CharacterAvatar, SFIcon, Txt, UserAvatar } from '@/components/ui';
+import { BrandArt, CharacterAvatar, SFIcon, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { currentMood, temperamentFor } from '@/lib/reply-engine';
-import { displayName, useAppStore } from '@/store/use-app-store';
+import { displayName } from '@/store/use-app-store';
 import { fonts, friendColor } from '@/theme';
 import type { Character, Relationship } from '@/types';
 
@@ -22,14 +22,14 @@ const GLASS = 'rgba(255,255,255,0.16)';
 const GLASS_RIM = 'rgba(255,255,255,0.32)';
 const TOP_SCRIM = ['rgba(0,0,0,0.5)', 'rgba(0,0,0,0)'] as const;
 const BOTTOM_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,0.88)'] as const;
-const FACE = 52;
 const LOGO_H = 24;
 const WINK = 96;
 
 /**
  * Share on Us as a story poster (canvas https://claude.ai/artifact/EJDVhf2eeR8RXzfo2Aw61w, C, owner's
  * pick for Us 2026-11-08): the friend's own big picture behind everything, their face, name, "AI ·
- * mood" and the Sigmazam character badge on top; you and them, how many days together, big, and
+ * mood" and the Sigmazam character badge on top; nothing of the user (no face, no name: they stay
+ * anonymous, owner 2026-11-08); how many days together, big, and
  * the three figures Us counts (intimacy, day streak, first met) as clear glass; a cream pill with
  * the Sigmazam logo, "Talk to {name} on Sigmazam" and "Free on the App Store", the mascot winking
  * over it. Only what the app really counts (owner 2026-10-30). Captured at 1080 x 1920.
@@ -65,11 +65,8 @@ export function BondShareSheet({
 
 function BondPoster({ character, relationship, days }: { character: Character; relationship: Relationship; days: number }) {
   const { t, i18n } = useTranslation();
-  const user = useAppStore((s) => s.user);
   const name = displayName(character, relationship);
   const first = shortName(name);
-  // The title's "&" as it is, as groups write it: an English "and" reads wrong in other languages.
-  const pair = user.displayName ? `${user.displayName} & ${first}` : first;
   const met = new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
   const mood = currentMood(relationship.mood, temperamentFor(character), Date.now()).emotion;
   const picture = portraitOf(character, POSTER_W / POSTER_H);
@@ -111,20 +108,6 @@ function BondPoster({ character, relationship, days }: { character: Character; r
       </View>
 
       <View style={styles.bond}>
-        <View style={styles.faces}>
-          <View style={styles.faceRing}>
-            <UserAvatar user={user} size={FACE} />
-          </View>
-          <View style={[styles.faceRing, styles.overlap]}>
-            <CharacterAvatar character={character} size={FACE} />
-          </View>
-          <View style={styles.heart}>
-            <SFIcon ios="heart.fill" icon="heart" size={13} color="#FF6B8A" />
-          </View>
-        </View>
-        <Txt style={styles.pair} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} maxFontSizeMultiplier={1}>
-          {pair}
-        </Txt>
         <Txt style={styles.days} lines={1} maxFontSizeMultiplier={1}>
           {days}
         </Txt>
@@ -200,23 +183,7 @@ const styles = StyleSheet.create({
   appTile: { width: 20, height: 20, borderRadius: 6, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: PAPER.peach },
   appMascot: { width: 18, height: 18 },
   badgeText: { fontFamily: fonts.playfulBold, fontSize: 12, color: ON_PHOTO },
-  bond: { position: 'absolute', left: 20, right: 20, top: 236, alignItems: 'center' },
-  faces: { flexDirection: 'row', alignItems: 'center' },
-  faceRing: { padding: 3, borderRadius: 40, backgroundColor: 'rgba(255,255,255,0.92)' },
-  overlap: { marginLeft: -14 },
-  // A white coin on the seam between the two faces.
-  heart: {
-    position: 'absolute',
-    left: FACE - 6,
-    bottom: -4,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: PAPER.card,
-  },
-  pair: { marginTop: 10, fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: ON_PHOTO, textAlign: 'center' },
+  bond: { position: 'absolute', left: 20, right: 20, top: 336, alignItems: 'center' },
   days: { marginTop: 2, fontFamily: fonts.playful, fontSize: 72, lineHeight: 80, color: ON_PHOTO, fontVariant: ['tabular-nums'] },
   daysLabel: { marginTop: -6, fontFamily: fonts.playfulBold, fontSize: 17, lineHeight: 22, color: ON_PHOTO },
   stats: { alignSelf: 'stretch', flexDirection: 'row', gap: 8, marginTop: 16 },
