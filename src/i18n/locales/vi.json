@@ -459,7 +459,17 @@
     "shareHint": "Cuộc trò chuyện của bạn với {{name}} thành một thẻ sẵn sàng: đăng lên tin hoặc gửi cho bạn bè.",
     "streakShort_other": "{{count}} ngày",
     "voiceQuota": "Hạn mức phản hồi bằng giọng nói đã dùng hết trong tháng này và sẽ trở lại vào {{date}}. Phản hồi bằng văn bản vẫn tiếp tục.",
-    "addMinutes": "Thêm số phút"
+    "addMinutes": "Thêm số phút",
+    "mood": {
+      "calm": "Bình yên",
+      "happy": "Đang vui",
+      "playful": "Đang tinh nghịch",
+      "shy": "Hơi ngại",
+      "tender": "Đang dịu dàng",
+      "worried": "Hơi lo",
+      "sad": "Hơi buồn",
+      "annoyed": "Hơi khó chịu"
+    }
   },
   "paywall": {
     "title": "Hết vỏ sò",
@@ -647,7 +657,8 @@
       "desertMoonrise": "Trăng mọc trên sa mạc",
       "harborLights": "Ánh đèn bến cảng",
       "starlitRoom": "Căn phòng đầy sao"
-    }
+    },
+    "cream": "Kem"
   },
   "diary": {
     "title": "Nhật ký nhịp đập",

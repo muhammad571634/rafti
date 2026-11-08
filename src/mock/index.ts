@@ -66,6 +66,7 @@ export {
   unlockedLabels,
   newRelationship,
   PORTRAIT_BG,
+  CREAM_BG,
   relationships,
   relationshipsByCharacter,
   wallet,

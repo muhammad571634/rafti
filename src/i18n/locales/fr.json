@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} jour",
     "streakShort_other": "{{count}} jours",
     "voiceQuota": "Les réponses vocales du mois sont épuisées et reviendront le {{date}}. Les réponses textuelles continuent.",
-    "addMinutes": "Ajouter des minutes"
+    "addMinutes": "Ajouter des minutes",
+    "mood": {
+      "calm": "Au calme",
+      "happy": "De bonne humeur",
+      "playful": "D'humeur joueuse",
+      "shy": "Un peu de timidité",
+      "tender": "D'humeur tendre",
+      "worried": "Un peu d'inquiétude",
+      "sad": "Un peu de tristesse",
+      "annoyed": "D'humeur grognon"
+    }
   },
   "paywall": {
     "title": "Plus de coquillages",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Lune sur le désert",
       "harborLights": "Lumières du port",
       "starlitRoom": "Chambre étoilée"
-    }
+    },
+    "cream": "Crème"
   },
   "diary": {
     "title": "Journal intime",

@@ -459,7 +459,17 @@
     "shareHint": "你和{{name}}的聊天已做成卡片：可以發到限時動態，或傳給朋友。",
     "streakShort_other": "{{count}}天",
     "voiceQuota": "本月語音回覆額度已用完，將於{{date}}恢復。文字回覆仍正常進行。",
-    "addMinutes": "增加通話時間"
+    "addMinutes": "增加通話時間",
+    "mood": {
+      "calm": "很平靜",
+      "happy": "心情很好",
+      "playful": "想調皮",
+      "shy": "有點害羞",
+      "tender": "想撒嬌",
+      "worried": "有點擔心",
+      "sad": "有點難過",
+      "annoyed": "有點不爽"
+    }
   },
   "paywall": {
     "title": "貝殼不足",
@@ -647,7 +657,8 @@
       "desertMoonrise": "大漠月昇",
       "harborLights": "海港燈火",
       "starlitRoom": "星芒居所"
-    }
+    },
+    "cream": "奶油色"
   },
   "diary": {
     "title": "心動日記",

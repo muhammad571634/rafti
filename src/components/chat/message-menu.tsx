@@ -2,9 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { type RefObject, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { type BubbleAnchor, HeldBubble } from '@/components/chat/message-bubble';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { PressableScale, Txt } from '@/components/ui';
 import { colors, isDark, shadows, space } from '@/theme';
@@ -13,10 +15,20 @@ import type { Message } from '@/types';
 const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
 /** Their bubbles start past the avatar column of the chat (12 gutter + 28 avatar + 8 gap). */
 const THEIRS_INSET = 36;
+/** The reactions capsule, the menu's rows and the room between the lifted bubble and both. */
+const REACT_H = 62;
+const REACT_W = 6 * 50 + 5 * 2 + 14;
+const MENU_W = 250;
+const ROW_H = 44;
+const GROUP_GAP = 8;
+const GAP = 10;
+const EDGE = 12;
 
 export interface MessageMenuProps {
   /** The held message; null hides the menu. */
   message: Message | null;
+  /** Where the held bubble sits: a text line is lifted there, reactions over it, the menu under it. */
+  anchor?: BubbleAnchor;
   onClose: () => void;
   /** The picked sticker, or undefined to take the reaction back. */
   onReact: (message: Message, reaction: ReactionName | undefined) => void;
@@ -46,6 +58,7 @@ export interface MessageMenuProps {
  */
 export function MessageMenu({
   message,
+  anchor,
   onClose,
   onReact,
   onCopy,
@@ -59,6 +72,8 @@ export function MessageMenu({
   blurTarget,
 }: MessageMenuProps) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const screen = useWindowDimensions();
   useBackToClose(!!message, onClose);
   if (!message) return null;
   const mine = message.author === 'me';
@@ -71,6 +86,53 @@ export function MessageMenu({
   const why = !mine && onWhy ? { key: 'why', label: t('why.menu'), icon: 'help-circle-outline' as const, onPress: () => onWhy(message) } : null;
   const report = mine ? null : { key: 'report', label: t('safety.report'), icon: 'flag-outline' as const, onPress: () => onReport(message) };
   const firstGroup = (mine ? [copy, edit, pin] : [copy, why, pin, report]).filter((row) => row !== null);
+
+  const reactions = (
+    <View style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
+      {REACTIONS.map((name) => {
+        const on = message.reaction === name;
+        return (
+          <PressableScale
+            key={name}
+            scaleTo={0.85}
+            style={[styles.reaction, on && styles.reactionOn]}
+            accessibilityRole="button"
+            accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
+            accessibilityState={{ selected: on }}
+            onPress={() => onReact(message, on ? undefined : name)}>
+            <ReactionSticker name={name} style={styles.sticker} />
+          </PressableScale>
+        );
+      })}
+    </View>
+  );
+  const menu = (
+    <View style={styles.menu} accessibilityRole="menu">
+      {/* First group: yours Copy, Edit, Pin; theirs Copy, Why? (a line they wrote first), Pin, Report. */}
+      {firstGroup.map((row, i) => (
+        <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
+      ))}
+      <View style={styles.gap} />
+      {onRewind ? <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" danger line onPress={() => onRewind(message)} /> : null}
+      <MenuRow label={t('chat.deleteMessage')} icon="trash-outline" danger onPress={() => onDelete(message)} />
+    </View>
+  );
+
+  // A text line is lifted where it sat (iOS context menus, canvas v1): the stack moves only as far as
+  // the screen's edges need, and a very long line is cut to the room left.
+  const lifted = anchor && message.kind === 'text' && message.text ? anchor : undefined;
+  let layout: { top: number; bubbleH: number; side: number; reactSide: number; menuSide: number } | null = null;
+  if (lifted) {
+    const menuH = (firstGroup.length + (onRewind ? 2 : 1)) * ROW_H + GROUP_GAP;
+    const room = screen.height - insets.top - insets.bottom - EDGE * 2;
+    const bubbleH = Math.max(ROW_H, Math.min(lifted.height, room - REACT_H - menuH - GAP * 2));
+    const stackH = REACT_H + GAP + bubbleH + GAP + menuH;
+    const top = Math.min(Math.max(lifted.y - REACT_H - GAP, insets.top + EDGE), screen.height - insets.bottom - EDGE - stackH);
+    // Mine measure from the right edge, theirs from the left; both stay on the screen.
+    const side = mine ? screen.width - (lifted.x + lifted.width) : lifted.x;
+    const fit = (width: number) => Math.max(EDGE, Math.min(side, screen.width - EDGE - width));
+    layout = { top, bubbleH, side, reactSide: fit(REACT_W), menuSide: fit(MENU_W) };
+  }
 
   return (
     // An overlay inside the chat, not a Modal: a separate window would sit outside the blur target.
@@ -88,38 +150,22 @@ export function MessageMenu({
         <View style={styles.dim} />
       </Pressable>
 
-      <View style={[styles.stack, align]} pointerEvents="box-none">
-        <View style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
-          {REACTIONS.map((name) => {
-            const on = message.reaction === name;
-            return (
-              <PressableScale
-                key={name}
-                scaleTo={0.85}
-                style={[styles.reaction, on && styles.reactionOn]}
-                accessibilityRole="button"
-                accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
-                accessibilityState={{ selected: on }}
-                onPress={() => onReact(message, on ? undefined : name)}>
-                <ReactionSticker name={name} style={styles.sticker} />
-              </PressableScale>
-            );
-          })}
+      {lifted && layout ? (
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+          <View style={[styles.at, { top: layout.top }, mine ? { right: layout.reactSide } : { left: layout.reactSide }]}>{reactions}</View>
+          <View
+            pointerEvents="none"
+            style={[styles.at, styles.lifted, { top: layout.top + REACT_H + GAP, width: lifted.width, maxHeight: layout.bubbleH }, mine ? { right: layout.side } : { left: layout.side }]}>
+            <HeldBubble message={message} />
+          </View>
+          <View style={[styles.at, { top: layout.top + REACT_H + GAP + layout.bubbleH + GAP }, mine ? { right: layout.menuSide } : { left: layout.menuSide }]}>{menu}</View>
         </View>
-
-        {/* No copy of the message under the reactions (owner, 2026-10-16): reactions, then actions. */}
-        <View style={[styles.menu, !mine && styles.inset]} accessibilityRole="menu">
-          {/* First group: yours Copy, Edit, Pin; theirs Copy, Why? (a line they wrote first), Pin, Report. */}
-          {firstGroup.map((row, i) => (
-            <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
-          ))}
-          <View style={styles.gap} />
-          {onRewind ? (
-            <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" danger line onPress={() => onRewind(message)} />
-          ) : null}
-          <MenuRow label={t('chat.deleteMessage')} icon="trash-outline" danger onPress={() => onDelete(message)} />
+      ) : (
+        <View style={[styles.stack, align]} pointerEvents="box-none">
+          {reactions}
+          <View style={!mine && styles.inset}>{menu}</View>
         </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -181,6 +227,9 @@ const styles = StyleSheet.create({
   reactionOn: { backgroundColor: colors.primarySoft },
   sticker: { width: 42, height: 42 },
   inset: { marginLeft: THEIRS_INSET },
+  at: { position: 'absolute' },
+  // The held line, lifted a little off the blur.
+  lifted: { overflow: 'hidden', borderRadius: 19, ...shadows.raised },
   menu: {
     width: 250,
     borderRadius: 14,

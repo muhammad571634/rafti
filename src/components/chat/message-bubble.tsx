@@ -3,7 +3,8 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
@@ -33,12 +34,16 @@ export interface MessageBubbleProps {
   runEnd: boolean;
   /** The user's last message shows "Read" or "Delivered" under it. */
   receipt?: boolean;
+  /** One-to-one chats: their small face beside "Read" (a group has no one face to show). */
+  readFace?: boolean;
   /** The time under the message (`showsTime`). */
   showTime?: boolean;
   animate?: boolean;
   onCallBack?: () => void;
-  /** Long-press on a text or photo opens the message menu (react, copy, delete). */
-  onLongPress?: (message: Message) => void;
+  /** Long-press on a text or photo opens the message menu (react, copy, delete), lifted over where the bubble is. */
+  onLongPress?: (message: Message, anchor?: BubbleAnchor) => void;
+  /** A double tap on a text or photo: love it, or take the love back (Instagram). */
+  onDoubleTap?: (message: Message) => void;
   /** Group chats: the member's name over the first bubble of their run. */
   senderName?: string;
   /** Group chats: the "not real people" line names everyone. */
@@ -49,6 +54,14 @@ export interface MessageBubbleProps {
   onRetry?: () => void;
   /** Group chats: a tap on the member's avatar asks them to speak. */
   onAvatarPress?: (character: Character) => void;
+}
+
+/** Where a held bubble sits on the screen, so the menu can lift it in place (iOS context menus). */
+export interface BubbleAnchor {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 const AVATAR = 28;
@@ -66,10 +79,12 @@ export const MessageBubble = memo(function MessageBubble({
   showAvatar,
   runEnd,
   receipt,
+  readFace,
   showTime,
   animate = true,
   onCallBack,
   onLongPress,
+  onDoubleTap,
   senderName,
   aiNoticeText,
   pinned,
@@ -78,6 +93,21 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  /** The held area, measured on a long press so the menu lifts the bubble where it is. */
+  const holdRef = useRef<ViewInstance>(null);
+  const latest = useRef({ message, onDoubleTap });
+  latest.current = { message, onDoubleTap };
+  const doubleTap = useMemo(
+    () =>
+      Gesture.Tap()
+        .numberOfTaps(2)
+        .maxDelay(260)
+        .runOnJS(true)
+        .onEnd((_e, success) => {
+          if (success) latest.current.onDoubleTap?.(latest.current.message);
+        }),
+    [],
+  );
   // The name the user gave them ("Mom") is the one the chat header shows, so notes use it too.
   const nickname = useAppStore((s) => s.relationships[character.id]?.nickname);
   const name = nickname || character.name;
@@ -105,7 +135,8 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
-  const holdStyle = [styles.holdable, column && styles.wide, message.reaction ? styles.withReaction : null];
+  // With a double tap the wrapper carries the width cap, so the held area fills it.
+  const holdStyle = [styles.holdable, (column || !!onDoubleTap) && styles.wide, message.reaction ? styles.withReaction : null];
   const inner = (
     <>
       {message.kind === 'image' && message.photoId ? (
@@ -140,21 +171,37 @@ export const MessageBubble = memo(function MessageBubble({
       ) : null}
     </>
   );
+  const hold = () => {
+    if (!onLongPress) return;
+    const node = holdRef.current;
+    if (!node) return onLongPress(message);
+    node.measureInWindow((x, y, width, height) => onLongPress(message, width > 0 ? { x, y, width, height } : undefined));
+  };
+  const pressable = (
+    // Still under the finger, as in iOS Messages: a hold opens the menu, nothing shrinks or dims.
+    <Pressable
+      ref={holdRef}
+      delayLongPress={280}
+      onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
+      onLongPress={onLongPress ? hold : undefined}
+      style={holdStyle}>
+      {inner}
+    </Pressable>
+  );
   const content =
     message.kind === 'voice' ? (
       <VoiceBubble message={message} mine={mine} tail={runEnd} wide={column} />
     ) : !onLongPress && !photoId ? (
       // Nothing to press (a stream's lines): a plain view.
       <View style={holdStyle}>{inner}</View>
+    ) : onDoubleTap ? (
+      <GestureDetector gesture={doubleTap}>
+        <View collapsable={false} style={column ? styles.wide : styles.tapArea}>
+          {pressable}
+        </View>
+      </GestureDetector>
     ) : (
-      // Still under the finger, as in iOS Messages: a hold opens the menu, nothing shrinks or dims.
-      <Pressable
-        delayLongPress={280}
-        onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
-        onLongPress={onLongPress ? () => onLongPress(message) : undefined}
-        style={holdStyle}>
-        {inner}
-      </Pressable>
+      pressable
     );
 
   return (
@@ -168,7 +215,7 @@ export const MessageBubble = memo(function MessageBubble({
           {message.failed ? (
             <NotDelivered onRetry={onRetry} time={time} />
           ) : receipt ? (
-            <ReadReceipt message={message} time={time} />
+            <ReadReceipt message={message} time={time} face={readFace ? character : undefined} />
           ) : message.editedAt ? (
             <EditedNote time={time} />
           ) : time ? (
@@ -340,11 +387,14 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
   );
 }
 
-function ReadReceipt({ message, time }: { message: Message; time?: string }) {
+function ReadReceipt({ message, time, face }: { message: Message; time?: string; face?: Character }) {
   const { t } = useTranslation();
   const meta = [styles.receipt, useOnPhoto() && onPhotoText];
+  const read = !message.pending && !!message.readAt;
 
   return (
+    // Read: their small face beside the word, so you see who read it (Instagram's "Seen").
+    <View style={styles.receiptRow}>
     <Txt style={meta}>
       {message.editedAt ? (
         <>
@@ -361,7 +411,14 @@ function ReadReceipt({ message, time }: { message: Message; time?: string }) {
       )}
       {time ? ` · ${time}` : null}
     </Txt>
+    {read && face ? <CharacterAvatar character={face} size={14} /> : null}
+    </View>
   );
+}
+
+/** A held text line drawn again over the menu's blur, where it sat (iOS context menus). */
+export function HeldBubble({ message }: { message: Message }) {
+  return <TextBubble message={message} mine={message.author === 'me'} tail={false} />;
 }
 
 /** "Edited" under a message you changed (iOS Messages), once a newer one carries the receipt. */
@@ -656,7 +713,8 @@ const styles = StyleSheet.create({
   actionTheirs: { color: colors.textSecondary },
   actionMine: { color: colors.bubbleSelfText, opacity: 0.8 },
   bubbleMine: { backgroundColor: colors.bubbleSelf },
-  bubbleTheirs: { backgroundColor: colors.bubbleOther },
+  // White on the cream with a faint rim, so it holds on a white or light wallpaper too.
+  bubbleTheirs: { backgroundColor: colors.bubbleOther, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.bubbleOtherRim },
   // A run's last bubble points down at its sender's side.
   tailMine: { borderBottomRightRadius: TAIL },
   tailTheirs: { borderBottomLeftRadius: TAIL },
@@ -693,6 +751,8 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     backgroundColor: colors.surfaceAlt,
   },
+  receiptRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 3 },
+  tapArea: { flexShrink: 1, maxWidth: '72%' },
   receipt: { fontSize: 11, lineHeight: 14, color: colors.textSecondary, paddingTop: 3, paddingRight: space.xs },
   receiptStrong: { fontWeight: '600', paddingTop: 0, paddingRight: 0 },
   failed: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingTop: 3, paddingRight: space.xs },

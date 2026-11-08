@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} day",
     "streakShort_other": "{{count}} days",
     "voiceQuota": "Voice replies are used up this month and come back on {{date}}. Text replies continue.",
-    "addMinutes": "Add minutes"
+    "addMinutes": "Add minutes",
+    "mood": {
+      "calm": "Calm",
+      "happy": "In a good mood",
+      "playful": "Playful",
+      "shy": "A little shy",
+      "tender": "Feeling tender",
+      "worried": "A bit worried",
+      "sad": "A little sad",
+      "annoyed": "A bit annoyed"
+    }
   },
   "paywall": {
     "title": "Out of shells",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Desert moonrise",
       "harborLights": "Harbor lights",
       "starlitRoom": "Starlit room"
-    }
+    },
+    "cream": "Cream"
   },
   "diary": {
     "title": "Heartbeat Diary",

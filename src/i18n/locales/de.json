@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} Tag",
     "streakShort_other": "{{count}} Tage",
     "voiceQuota": "Sprachantworten für diesen Monat aufgebraucht. Neue ab {{date}}. Text geht weiter.",
-    "addMinutes": "Minuten buchen"
+    "addMinutes": "Minuten buchen",
+    "mood": {
+      "calm": "Ruhig",
+      "happy": "Gut gelaunt",
+      "playful": "Verspielt",
+      "shy": "Etwas schüchtern",
+      "tender": "Zärtlich",
+      "worried": "Etwas besorgt",
+      "sad": "Etwas traurig",
+      "annoyed": "Etwas genervt"
+    }
   },
   "paywall": {
     "title": "Keine Muscheln mehr",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Wüstenmond",
       "harborLights": "Hafenlichter",
       "starlitRoom": "Sternenzimmer"
-    }
+    },
+    "cream": "Creme"
   },
   "diary": {
     "title": "Herzschlag-Tagebuch",

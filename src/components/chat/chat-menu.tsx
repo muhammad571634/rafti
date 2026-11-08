@@ -174,7 +174,8 @@ const styles = StyleSheet.create({
   bubble: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 18 },
   // The preview shows your bubble as the chat does.
   mine: { alignSelf: 'flex-end', maxWidth: '72%', backgroundColor: colors.bubbleSelf },
-  theirs: { alignSelf: 'flex-start', maxWidth: '76%', backgroundColor: colors.bubbleOther },
+  // On the white card their white bubble needs the grey of a light fill to show.
+  theirs: { alignSelf: 'flex-start', maxWidth: '76%', backgroundColor: colors.surfaceAlt },
   bubbleText: { fontSize: 16, lineHeight: 21, color: colors.text },
   mineText: { color: colors.bubbleSelfText },
   menu: {

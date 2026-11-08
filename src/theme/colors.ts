@@ -148,9 +148,11 @@ const lightColors = {
   paperText: palette.gray800,
 
   // Chat
-  bubbleSelf: palette.apricot200,
+  // Your bubble wears the brand's one peach, their bubble is white with a faint rim (owner, 2026-11-08: calm, alive).
+  bubbleSelf: palette.apricot300,
   bubbleSelfText: palette.gray900,
-  bubbleOther: '#E9E9EB',
+  bubbleOther: '#FFFFFF',
+  bubbleOtherRim: 'rgba(31,26,23,0.07)',
   bubbleOtherText: palette.gray900,
   bubbleTranscript: 'rgba(242,242,247,0.92)',
   bubbleTranscriptText: '#636366',
@@ -202,6 +204,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   bubbleSelf: '#56392F',
   bubbleSelfText: '#FFFFFF',
   bubbleOther: '#262628',
+  bubbleOtherRim: 'rgba(255,255,255,0.06)',
   bubbleOtherText: '#FFFFFF',
   bubbleTranscript: 'rgba(28,28,30,0.92)',
   bubbleTranscriptText: '#AEAEB2',
@@ -246,6 +249,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   bubbleSelf: '#56392F',
   bubbleSelfText: '#FFFFFF',
   bubbleOther: '#1C2148',
+  bubbleOtherRim: 'rgba(255,255,255,0.06)',
   bubbleOtherText: '#F4F2FF',
   bubbleTranscript: 'rgba(28,33,72,0.92)',
   bubbleTranscriptText: '#A3A8C8',

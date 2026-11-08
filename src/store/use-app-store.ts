@@ -248,6 +248,7 @@ import {
   setupCancelledLine,
   planFollowUp,
   PORTRAIT_BG,
+  CREAM_BG,
   boardReply,
   photoReply,
   afterDateLine,
@@ -3908,7 +3909,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 14,
+      version: 15,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -3985,6 +3986,15 @@ export const useAppStore = create<AppState>()(
             Object.entries(state.relationships).map(([id, r]) => [
               id,
               r.backgroundId === 'bg_plain' ? { ...r, backgroundId: PORTRAIT_BG } : r,
+            ]),
+          );
+        }
+        // v15: cream becomes every chat's ground (owner, 2026-11-08); their picture stays a choice in Chat background.
+        if (version < 15 && state.relationships) {
+          state.relationships = Object.fromEntries(
+            Object.entries(state.relationships).map(([id, r]) => [
+              id,
+              !r.backgroundId || r.backgroundId === PORTRAIT_BG ? { ...r, backgroundId: CREAM_BG } : r,
             ]),
           );
         }

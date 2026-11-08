@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} día",
     "streakShort_other": "{{count}} días",
     "voiceQuota": "Las respuestas de voz de este mes se han agotado y vuelven el {{date}}. Las respuestas de texto continúan.",
-    "addMinutes": "Agregar minutos"
+    "addMinutes": "Agregar minutos",
+    "mood": {
+      "calm": "Con calma",
+      "happy": "De buen humor",
+      "playful": "Con ganas de jugar",
+      "shy": "Con algo de vergüenza",
+      "tender": "Con ternura",
+      "worried": "Con algo de preocupación",
+      "sad": "Con algo de tristeza",
+      "annoyed": "De mal humor"
+    }
   },
   "paywall": {
     "title": "Sin conchas",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Salida de luna en el desierto",
       "harborLights": "Luces del puerto",
       "starlitRoom": "Habitación estrellada"
-    }
+    },
+    "cream": "Crema"
   },
   "diary": {
     "title": "Diario íntimo",

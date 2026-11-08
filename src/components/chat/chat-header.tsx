@@ -6,20 +6,21 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
-import { glassStyle, IconButton, PressableScale, ShellIcon, Txt } from '@/components/ui';
-import { colors, hitSlop, space } from '@/theme';
+import { IconButton, PressableScale, Txt } from '@/components/ui';
+import { colors, fonts, hitSlop, playful, space, systemColors } from '@/theme';
 
-/** Room the glass header takes under the status bar: avatar, name chip and caption. */
-export const HEADER_ROOM = 112;
+/** Room the header takes under the status bar: one row of 46pt round buttons and the face. */
+export const HEADER_ROOM = 64;
 /** The fade under the solid header ground. */
 const FADE = 20;
+const ROUND = 46;
 
 /** The same colour, fully transparent: the end of the fade under the header. */
 const fadeOut = (color: string) => (/^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent');
 
 /**
- * The chat's ground under the glass header: solid under avatar, name and caption, then a short
- * fade, so bubbles slide away beneath it and never show through the caption.
+ * The chat's ground under the header: solid under the row, then a short fade, so bubbles slide
+ * away beneath it and never show through the name.
  */
 export function HeaderFade({ color, room }: { color: string; room: number }) {
   return (
@@ -33,9 +34,10 @@ export function HeaderFade({ color, room }: { color: string; room: number }) {
 }
 
 /**
- * The glass header of a chat or a group (approved prototypes `Chat.dc.html`, `GroupChat.dc.html`):
- * back on the left; the friend (or the group) in the middle with a name chip and a caption, a
- * tap opening their settings or info; shells and call in one capsule on the right.
+ * The header of a chat or a group in the four tabs' look (owner, 2026-11-08, canvas v3): a round
+ * back button, then the friend (or the group) left-aligned, their face and heavy rounded name with a
+ * status line under it (what they are, their mood, "typing…"); a tap opens their settings or info.
+ * One round call button on the right. On a picture the buttons are clear glass and the words white.
  */
 export function ChatHeader({
   avatar,
@@ -43,7 +45,7 @@ export function ChatHeader({
   caption,
   identityLabel,
   onIdentity,
-  shells,
+  online,
   missedCall,
   callLabel,
   onCall,
@@ -54,7 +56,8 @@ export function ChatHeader({
   caption: React.ReactNode;
   identityLabel: string;
   onIdentity: () => void;
-  shells: number;
+  /** A green dot on the face: they are here (one-to-one chats). */
+  online?: boolean;
   missedCall?: boolean;
   callLabel: string;
   onCall: () => void;
@@ -65,7 +68,8 @@ export function ChatHeader({
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const onPhoto = useOnPhoto();
-  const glass = [glassStyle, onPhoto && styles.photoGlass];
+  const round = [styles.round, onPhoto && styles.photoRound];
+  const ink = onPhoto ? colors.onMedia : colors.text;
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
@@ -76,50 +80,45 @@ export function ChatHeader({
           scaleTo={0.88}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
-          style={[...glass, styles.round]}>
-          <Ionicons name="chevron-back" size={26} color={onPhoto ? colors.onMedia : colors.text} style={styles.backGlyph} />
+          style={round}>
+          <Ionicons name="chevron-back" size={26} color={ink} style={styles.backGlyph} />
         </PressableScale>
 
-        <PressableScale
-          style={styles.identity}
-          scaleTo={0.96}
-          accessibilityRole="button"
-          accessibilityLabel={identityLabel}
-          onPress={onIdentity}>
-          {avatar}
-          <View style={[...glass, styles.nameChip]}>
-            <Txt style={styles.nameText} color={onPhoto ? colors.onMedia : undefined} lines={1}>
+        <PressableScale style={styles.identity} scaleTo={0.97} accessibilityRole="button" accessibilityLabel={identityLabel} onPress={onIdentity}>
+          <View>
+            {avatar}
+            {online ? <View style={[styles.online, onPhoto && styles.onlineOnPhoto]} /> : null}
+          </View>
+          <View style={styles.names}>
+            <Txt style={[styles.title, onPhoto && styles.photoShadow]} color={ink} lines={1}>
               {title}
             </Txt>
-            <Ionicons name="chevron-forward" size={12} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
+            <View style={styles.caption}>{caption}</View>
           </View>
-          <View style={styles.caption}>{caption}</View>
         </PressableScale>
 
-        <View style={[...glass, styles.capsule]}>
-          <PressableScale
-            scaleTo={0.92}
-            onPress={() => router.push('/store/shell?tab=shells')}
-            accessibilityRole="button"
-            accessibilityLabel={`${shells} ${t('common.shells')}`}
-            style={styles.shells}>
-            <ShellIcon size={18} />
-            <Txt style={styles.shellCount} color={onPhoto ? colors.onMedia : undefined}>
-              {shells}
-            </Txt>
-          </PressableScale>
-          <View style={[styles.capsuleLine, onPhoto && styles.photoLine]} />
-          <IconButton icon="call-outline" size={23} color={onPhoto ? colors.onMedia : undefined} dot={missedCall} style={styles.callButton} accessibilityLabel={callLabel} onPress={onCall} />
-        </View>
+        <IconButton
+          icon="call-outline"
+          size={23}
+          color={ink}
+          dot={missedCall}
+          style={round}
+          accessibilityLabel={callLabel}
+          onPress={onCall}
+        />
       </View>
       {below ? <View style={styles.below}>{below}</View> : null}
     </View>
   );
 }
 
-/** Caption text under the name chip ("AI character", "2 members"). */
-export function CaptionText({ children }: { children: React.ReactNode }) {
-  return <Txt style={[styles.captionText, useOnPhoto() && styles.photoCaption]}>{children}</Txt>;
+/** Caption text under the name ("AI character", "In a good mood", "2 members"). */
+export function CaptionText({ children, strong }: { children: React.ReactNode; strong?: boolean }) {
+  return (
+    <Txt style={[styles.captionText, strong && styles.captionStrong, useOnPhoto() && styles.photoCaption]} lines={1}>
+      {children}
+    </Txt>
+  );
 }
 
 /** The small dot between caption parts. */
@@ -129,36 +128,32 @@ export function CaptionDot() {
 
 const styles = StyleSheet.create({
   header: { position: 'absolute', top: 0, left: 0, right: 0 },
-  row: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: space.lg },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
   fade: { position: 'absolute', top: 0, left: 0, right: 0 },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  round: { width: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.round },
+  photoRound: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   backGlyph: { marginLeft: -2 },
-  // Centred between the side buttons; it may not crowd them.
-  identity: { flex: 1, alignItems: 'center', marginHorizontal: space.sm },
-  nameChip: {
-    marginTop: space.xs,
-    height: 28,
-    maxWidth: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    paddingLeft: space.md,
-    paddingRight: space.sm + 2,
-    borderRadius: 14,
+  identity: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2 },
+  online: {
+    position: 'absolute',
+    right: -1,
+    bottom: -1,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 2.5,
+    borderColor: playful.ground,
+    backgroundColor: systemColors.green,
   },
-  nameText: { fontSize: 14, fontWeight: '600', letterSpacing: -0.1, flexShrink: 1 },
-  caption: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
-  captionText: { fontSize: 12, color: colors.textSecondary },
+  onlineOnPhoto: { borderColor: colors.black },
+  names: { flex: 1, minWidth: 0 },
+  title: { fontFamily: fonts.playful, fontSize: 22, lineHeight: 27 },
+  caption: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  captionText: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.textSecondary, flexShrink: 1 },
+  captionStrong: { color: colors.text },
   captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
-  capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
-  shells: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 4, paddingLeft: space.sm + 2, paddingRight: space.sm },
-  shellCount: { fontSize: 16, fontWeight: '600', fontVariant: ['tabular-nums'] },
-  capsuleLine: { width: StyleSheet.hairlineWidth, height: 22, backgroundColor: colors.borderStrong },
-  callButton: { width: 42, height: 38 },
   below: { marginTop: space.sm },
-  // On a picture (an Art wallpaper, `useOnPhoto`): clear glass, as on the Today hero.
-  photoGlass: { backgroundColor: colors.onMediaGlass, borderColor: colors.onMediaHairline },
-  photoLine: { backgroundColor: colors.onMediaHairline },
+  photoShadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 6 },
   photoCaption: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
   photoDot: { backgroundColor: colors.onMediaSoft },
 });

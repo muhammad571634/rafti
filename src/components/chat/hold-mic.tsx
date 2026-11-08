@@ -12,16 +12,20 @@ import { colors, systemColors } from '@/theme';
 const HOLD_MS = 220;
 /** How far left the finger goes to throw the recording away. */
 const CANCEL_AT = 90;
+/** How far up the finger goes to lock the recording and let go (hands free). */
+const LOCK_AT = 70;
 /** Past the circle: an easy target for a thumb (HIG: at least 44pt, more on the move). */
 const REACH = 10;
 
 export interface HoldMicProps {
   recording: boolean;
-  /** A tap: the recorder sheet, as before. */
+  /** A tap: record hands free, right in the composer. */
   onTap: () => void;
   onHoldStart: () => void;
   /** The finger let go (`send` true), slid away or the system took the touch (false). */
   onHoldEnd: (send: boolean) => void;
+  /** The finger slid up to the lock: the recording goes on without it. */
+  onLock?: () => void;
   accessibilityLabel: string;
   accessibilityHint: string;
   style?: StyleProp<ViewStyle>;
@@ -29,17 +33,18 @@ export interface HoldMicProps {
 
 /**
  * The composer's mic, as in WhatsApp and Instagram: hold to record, let go to send, slide left to
- * cancel. The tap stays, so the hold is a shortcut and never the only way (HIG Gestures).
+ * cancel, slide up to lock and go on hands free. A tap records hands free too, so the hold is a
+ * shortcut and never the only way (HIG Gestures).
  */
-export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilityLabel, accessibilityHint, style }: HoldMicProps) {
+export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, onLock, accessibilityLabel, accessibilityHint, style }: HoldMicProps) {
   const onPhoto = useOnPhoto();
   const pressed = useSharedValue(0);
   const animated = useAnimatedStyle(() => ({ transform: [{ scale: 1 - pressed.value * 0.12 }], opacity: 1 - pressed.value * 0.15 }));
 
   // The composer redraws while recording; the gesture stays one object and reads these.
-  const latest = useRef({ onTap, onHoldStart, onHoldEnd });
+  const latest = useRef({ onTap, onHoldStart, onHoldEnd, onLock });
   useEffect(() => {
-    latest.current = { onTap, onHoldStart, onHoldEnd };
+    latest.current = { onTap, onHoldStart, onHoldEnd, onLock };
   });
   const thrown = useRef(false);
   /** The hold is on: if a reply's ■ takes the mic's place, the recording must not run on with no finger. */
@@ -66,7 +71,16 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, accessibilit
         latest.current.onHoldStart();
       })
       .onUpdate((e) => {
-        if (thrown.current || e.translationX > -CANCEL_AT) return;
+        if (thrown.current) return;
+        if (e.translationY < -LOCK_AT && latest.current.onLock) {
+          // Locked: the finger may go; the composer's own send and trash take over.
+          thrown.current = true;
+          holding.current = false;
+          haptic.selection();
+          latest.current.onLock();
+          return;
+        }
+        if (e.translationX > -CANCEL_AT) return;
         thrown.current = true;
         haptic.selection();
         latest.current.onHoldEnd(false);

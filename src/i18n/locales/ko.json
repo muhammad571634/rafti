@@ -459,7 +459,17 @@
     "shareHint": "{{name}} 님과의 대화를 카드로 만들었어요. 스토리에 올리거나 친구에게 보내 보세요.",
     "streakShort_other": "{{count}}일",
     "voiceQuota": "이번 달 음성 답변 할당량이 모두 소진되었습니다. {{date}}에 갱신됩니다. 텍스트 답변은 계속됩니다.",
-    "addMinutes": "분 추가"
+    "addMinutes": "분 추가",
+    "mood": {
+      "calm": "차분함",
+      "happy": "기분 좋음",
+      "playful": "장난기 가득",
+      "shy": "조금 수줍음",
+      "tender": "다정한 기분",
+      "worried": "조금 걱정됨",
+      "sad": "조금 슬픔",
+      "annoyed": "조금 언짢음"
+    }
   },
   "paywall": {
     "title": "조개가 부족합니다",
@@ -647,7 +657,8 @@
       "desertMoonrise": "사막의 월출",
       "harborLights": "항구의 불빛",
       "starlitRoom": "별빛 방"
-    }
+    },
+    "cream": "크림"
   },
   "diary": {
     "title": "두근두근 일기",

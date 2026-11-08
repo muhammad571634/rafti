@@ -4,7 +4,7 @@ import { BlurTargetView } from 'expo-blur';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,8 +13,10 @@ import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionDot, CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { LevelUpTakeover } from '@/components/level-up';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
+import { currentMood, temperamentFor } from '@/lib/reply-engine/mood';
 import { DayChip } from '@/components/chat/day-chip';
 import { IntroCard } from '@/components/chat/intro-card';
+import type { BubbleAnchor } from '@/components/chat/message-bubble';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
 import { OffSheet } from '@/components/chat/off-sheet';
 import { NotedChip } from '@/components/mind/noted-chip';
@@ -49,7 +51,7 @@ import { isAskReach } from '@/lib/reach-ask';
 import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
-import { shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
+import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, shadows, space } from '@/theme';
 import type { Message, MessageTone, ReplyIdea, TimeSkip } from '@/types';
@@ -171,10 +173,21 @@ export default function ChatRoomScreen() {
   /** The message being reported; `reported` flips the sheet to a short thank-you. */
   const [reporting, setReporting] = useState<Message | null>(null);
   const [reported, setReported] = useState(false);
-  const openMenu = useCallback((message: Message) => {
+  const [menuAnchor, setMenuAnchor] = useState<BubbleAnchor>();
+  const openMenu = useCallback((message: Message, anchor?: BubbleAnchor) => {
     haptic.lift();
+    setMenuAnchor(anchor);
     setMenu(message);
   }, []);
+  // A double tap loves a line, a second one takes it back (Instagram); the menu holds the rest.
+  const toggleLove = useCallback(
+    (message: Message) => {
+      if (!conversationId) return;
+      haptic.tap();
+      reactToMessage(conversationId, message.id, message.reaction === 'love' ? undefined : 'love');
+    },
+    [conversationId, reactToMessage],
+  );
 
   // Replies that land while this chat is on screen are read, not unread.
   useFocusEffect(
@@ -214,7 +227,7 @@ export default function ChatRoomScreen() {
   }, [messages?.length, typing]);
 
   const { width, height } = useWindowDimensions();
-  const backgroundId = relationship?.backgroundId ?? PORTRAIT_BG;
+  const backgroundId = relationship?.backgroundId ?? CREAM_BG;
   // Their own picture is the default ground; an Art wallpaper is a picture too. Either takes the
   // owner's prototype look (2026-11-03): the face at the top, the conversation below it. A Classic
   // wallpaper keeps the light chat; a character with no picture falls back to the plain ground.
@@ -288,9 +301,11 @@ export default function ChatRoomScreen() {
           showAvatar={run.runStart}
           runEnd={run.runEnd}
           receipt={item.id === lastMine}
+          readFace
           showTime={run.showTime}
           onCallBack={callBack}
           onLongPress={openMenu}
+          onDoubleTap={toggleLove}
           pinned={pinnedIds.has(item.id)}
           onRetry={item.failed ? retry : undefined}
         />
@@ -329,7 +344,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
+    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -436,8 +451,6 @@ export default function ChatRoomScreen() {
         return router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: conversation.id } });
       case 'timeSkip':
         return setSkipOpen(true);
-      case 'voice':
-        return setVoiceOpen(true);
       case 'photo':
         return pickPhoto((uri) => {
           if (sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
@@ -468,7 +481,8 @@ export default function ChatRoomScreen() {
     setCallGate(null);
     router.push(route);
   };
-  const streak = relationship?.streakDays ?? 0;
+  // How they feel right now, under their name (canvas v3: alive); it fades back to their usual self.
+  const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
   const dark = onPicture || !!wallpaper.dark;
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
@@ -483,7 +497,7 @@ export default function ChatRoomScreen() {
         {picture ? <PictureGround picture={picture} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
-            {!onPicture ? <ChatWallpaper hidden={dark || wallpaper.id === 'bg_plain'} /> : null}
+            {!onPicture ? <ChatWallpaper hidden={dark || wallpaper.id === 'bg_plain' || wallpaper.id === CREAM_BG} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
@@ -587,7 +601,12 @@ export default function ChatRoomScreen() {
                     setToneOpen(true);
                   }
             }
-            onAttach={() => setAttachOpen(true)}
+            onAttach={() => {
+              if (!attachOpen) Keyboard.dismiss();
+              setAttachOpen(!attachOpen);
+            }}
+            attachOpen={attachOpen}
+            onFieldFocus={() => setAttachOpen(false)}
             onVoice={() => setVoiceOpen(true)}
             onVoiceNote={sendNote}
             canRecord={canRecord}
@@ -597,29 +616,27 @@ export default function ChatRoomScreen() {
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
             onTyping={conversationId ? (isTyping) => setComposing(conversationId, isTyping) : undefined}
           />
+          <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
         </KeyboardAvoidingView>
 
         <ChatHeader
-          avatar={<CharacterAvatar character={character} size={54} />}
+          avatar={<CharacterAvatar character={character} size={46} />}
           title={name}
-          identityLabel={[name, t('chat.aiCharacter'), streak > 0 ? t('chat.streakShort', { count: streak }) : null, t('a11y.chatSettings')]
-            .filter(Boolean)
-            .join(', ')}
+          online
+          identityLabel={[name, t('chat.aiCharacter'), typing ? t('chatList.typing') : t(`chat.mood.${mood}`), t('a11y.chatSettings')].join(', ')}
           onIdentity={() => router.push(`/character/${character.id}/settings`)}
           caption={
-            // Always says what they are; the streak rides along once there is one.
-            <>
-              <CaptionText>{t('chat.aiCharacter')}</CaptionText>
-              {streak > 0 ? (
-                <>
-                  <CaptionDot />
-                  <Ionicons name="heart" size={11} color={onPicture ? colors.onMediaSoft : colors.textSecondary} />
-                  <CaptionText>{t('chat.streakShort', { count: streak })}</CaptionText>
-                </>
-              ) : null}
-            </>
+            // "typing…" while their reply is on its way; otherwise what they are and how they feel.
+            typing ? (
+              <CaptionText strong>{t('chatList.typing')}</CaptionText>
+            ) : (
+              <>
+                <CaptionText>{t('chat.aiCharacter')}</CaptionText>
+                <CaptionDot />
+                <CaptionText>{t(`chat.mood.${mood}`)}</CaptionText>
+              </>
+            )
           }
-          shells={shells}
           missedCall={missedToday}
           callLabel={t('a11y.call')}
           onCall={startCall}
@@ -648,7 +665,6 @@ export default function ChatRoomScreen() {
         />
       )}
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} />
 
       <TruthOrDareSheet visible={truthOpen} onClose={() => setTruthOpen(false)} character={character} name={name} />
       <DailyCallsSheet visible={callsOpen} onClose={() => setCallsOpen(false)} characterId={character.id} />
@@ -690,6 +706,7 @@ export default function ChatRoomScreen() {
 
       <MessageMenu
         message={menu}
+        anchor={menuAnchor}
         blurTarget={blurTarget}
         onClose={() => setMenu(null)}
         onReact={(message, reaction) => {

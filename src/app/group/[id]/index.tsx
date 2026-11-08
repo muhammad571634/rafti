@@ -4,7 +4,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo, type ViewInstance } from 'react-native';
+import { FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, type ListRenderItemInfo, type ViewInstance } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,6 +18,7 @@ import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
+import type { BubbleAnchor } from '@/components/chat/message-bubble';
 import { MessageMenu } from '@/components/chat/message-menu';
 import { ReplyControls } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
@@ -34,9 +35,9 @@ import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
-import { backgroundsById, chatArtBackgroundsById, shellCosts } from '@/mock';
+import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { colors, playful, space } from '@/theme';
 import type { Character, Message, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -97,10 +98,21 @@ export default function GroupChatScreen() {
   const [reported, setReported] = useState(false);
   /** The message a search result pointed at, tinted for a moment. */
   const [flash, setFlash] = useState<string | null>(null);
-  const openMenu = useCallback((message: Message) => {
+  const [menuAnchor, setMenuAnchor] = useState<BubbleAnchor>();
+  const openMenu = useCallback((message: Message, anchor?: BubbleAnchor) => {
+    setMenuAnchor(anchor);
     haptic.lift();
     setMenu(message);
   }, []);
+  // A double tap loves a line, a second one takes it back (Instagram), as in a one-to-one chat.
+  const toggleLove = useCallback(
+    (message: Message) => {
+      if (!groupId) return;
+      haptic.tap();
+      reactToMessage(groupId, message.id, message.reaction === 'love' ? undefined : 'love');
+    },
+    [groupId, reactToMessage],
+  );
 
   // Replies that land while the group is on screen are read, not unread.
   useFocusEffect(
@@ -170,7 +182,7 @@ export default function GroupChatScreen() {
           ? t('group.typingTwo', { a: nameOf(typers[0]), b: nameOf(typers[1]) })
           : t('group.typingMany', { a: nameOf(typers[0]), b: nameOf(typers[1]), c: nameOf(typers[2]) });
   // The group's own background (info → Chat background), drawn as a one-to-one chat draws it.
-  const backgroundId = group?.backgroundId ?? 'bg_plain';
+  const backgroundId = group?.backgroundId ?? CREAM_BG;
   const artWallpaper = chatArtBackgroundsById[backgroundId];
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   // An Art wallpaper is a picture: the one-to-one chat's picture look (`chat-ground.tsx`).
@@ -218,6 +230,7 @@ export default function GroupChatScreen() {
               senderName={author ? nameOf(author) : undefined}
               aiNoticeText={noticeText}
               onLongPress={openMenu}
+              onDoubleTap={toggleLove}
               onRetry={item.failed && groupId ? () => retryGroupReply(groupId) : undefined}
               onAvatarPress={author ? invoke : undefined}
             />
@@ -225,7 +238,7 @@ export default function GroupChatScreen() {
         </View>
       );
     },
-    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, groupId, retryGroupReply, invoke],
+    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, toggleLove, groupId, retryGroupReply, invoke],
   );
 
   if (!group || !groupId || members.length < 2) {
@@ -270,8 +283,6 @@ export default function GroupChatScreen() {
   const attach = (key: AttachKey) => {
     setAttachOpen(false);
     switch (key) {
-      case 'voice':
-        return setVoiceOpen(true);
       case 'photo':
         return pickPhoto((uri) => {
           if (sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
@@ -328,7 +339,7 @@ export default function GroupChatScreen() {
         {artWallpaper ? <PictureGround picture={{ source: artWallpaper.image }} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
-            {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain'} /> : null}
+            {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain' || backgroundId === CREAM_BG} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
@@ -366,15 +377,21 @@ export default function GroupChatScreen() {
             draftId={groupId}
             placeholder={t('group.inputPlaceholder', { names })}
             onSend={send}
-            onAttach={() => setAttachOpen(true)}
+            onAttach={() => {
+              if (!attachOpen) Keyboard.dismiss();
+              setAttachOpen(!attachOpen);
+            }}
+            attachOpen={attachOpen}
+            onFieldFocus={() => setAttachOpen(false)}
             onVoice={() => setVoiceOpen(true)}
             onVoiceNote={sendNote}
             canRecord={canRecord}
           />
+          <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} hide={['scene']} />
         </KeyboardAvoidingView>
 
         <ChatHeader
-          avatar={<GroupAvatar members={members} size={54} ringColor={colors.bgPlain} />}
+          avatar={<GroupAvatar members={members} size={46} ringColor={playful.ground} />}
           title={title}
           identityLabel={`${t('group.rowLabel', { name: title })}, ${t('group.members', { count: members.length })}, ${t('group.info')}`}
           onIdentity={openInfo}
@@ -382,13 +399,11 @@ export default function GroupChatScreen() {
             // "2 AI characters": says what they are, as the one-to-one header does.
             <CaptionText>{t('group.members', { count: members.length })}</CaptionText>
           }
-          shells={shells}
           callLabel={t('group.call')}
           onCall={startCall}
         />
       </BlurTargetView>
 
-      <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} blurTarget={blurTarget} hide={['scene']} />
       <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
@@ -458,6 +473,7 @@ export default function GroupChatScreen() {
       />
 
       <MessageMenu
+        anchor={menuAnchor}
         message={menu}
         blurTarget={blurTarget}
         onClose={() => setMenu(null)}

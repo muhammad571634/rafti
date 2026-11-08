@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     borderBottomLeftRadius: 6,
     backgroundColor: colors.bubbleOther,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.bubbleOtherRim,
   },
   photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
 });

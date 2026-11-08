@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} giorno",
     "streakShort_other": "{{count}} giorni",
     "voiceQuota": "Le risposte vocali sono esaurite per questo mese e torneranno il {{date}}. Le risposte di testo continuano.",
-    "addMinutes": "Aggiungi minuti"
+    "addMinutes": "Aggiungi minuti",
+    "mood": {
+      "calm": "In tutta calma",
+      "happy": "Di buon umore",
+      "playful": "In vena di scherzi",
+      "shy": "Un po’ di timidezza",
+      "tender": "In vena di coccole",
+      "worried": "Un po’ di ansia",
+      "sad": "Un po’ di tristezza",
+      "annoyed": "Di cattivo umore"
+    }
   },
   "paywall": {
     "title": "Conchiglie esaurite",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Luna sul deserto",
       "harborLights": "Luci del porto",
       "starlitRoom": "Stanza stellata"
-    }
+    },
+    "cream": "Crema"
   },
   "diary": {
     "title": "Diario del battito",

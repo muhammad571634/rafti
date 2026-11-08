@@ -1,5 +1,6 @@
 import type { ClayIconName } from '@/assets/brand/registry';
-import { colors, isDark } from '@/theme';
+import { colors, isDark, playful } from '@/theme';
+import { CREAM_BG } from './user';
 import type {
   ShellPack,
   CallRecord,
@@ -129,6 +130,8 @@ export const chatBackgrounds: {
   colors: readonly [string, string];
   dark?: boolean;
 }[] = [
+  // The chats' default ground (owner, 2026-11-08): the four tabs' warm cream, warm near-black in dark mode.
+  { id: CREAM_BG, nameKey: 'cream', colors: [playful.ground, playful.ground] as const, dark: isDark },
   // In dark mode each wallpaper turns into a deep shade of its own hue.
   { id: 'bg_blossom', nameKey: 'blossom', colors: isDark ? ['#2A1F2A', '#3A2630'] : ['#FFF4E8', '#FFE4CC'], dark: isDark },
   { id: 'bg_dusk', nameKey: 'dusk', colors: isDark ? ['#14283A', '#1B2448'] : ['#E6F6F3', '#DDEBFA'], dark: isDark },

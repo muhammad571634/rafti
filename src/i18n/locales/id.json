@@ -459,7 +459,17 @@
     "shareHint": "Obrolanmu dengan {{name}} jadi kartu siap pakai: unggah ke story atau kirim ke teman.",
     "streakShort_other": "{{count}} hari",
     "voiceQuota": "Balasan suara habis bulan ini dan akan kembali pada {{date}}. Balasan teks tetap berlanjut.",
-    "addMinutes": "Tambah menit"
+    "addMinutes": "Tambah menit",
+    "mood": {
+      "calm": "Tenang",
+      "happy": "Sedang senang",
+      "playful": "Lagi iseng",
+      "shy": "Agak malu",
+      "tender": "Sedang manja",
+      "worried": "Agak cemas",
+      "sad": "Agak sedih",
+      "annoyed": "Agak kesal"
+    }
   },
   "paywall": {
     "title": "Kerang habis",
@@ -647,7 +657,8 @@
       "desertMoonrise": "Bulan terbit di gurun",
       "harborLights": "Lampu pelabuhan",
       "starlitRoom": "Kamar bertabur bintang"
-    }
+    },
+    "cream": "Krem"
   },
   "diary": {
     "title": "Buku Harian Detak Hati",

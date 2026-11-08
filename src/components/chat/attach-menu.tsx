@@ -1,126 +1,99 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
-import { bottomRoom, colors, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
+import { bottomRoom, colors, moduleFills, space, systemColors } from '@/theme';
 
-export type AttachKey = 'scene' | 'timeSkip' | 'voice' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
+export type AttachKey = 'scene' | 'timeSkip' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
 /**
- * iOS-style app icons: a system-colour circle with a white glyph (approved prototype
- * `Plus.dc.html`). Modules wear their own colour (`moduleTile`), the same as on Today; the
- * games take hues no module here uses. Top to bottom; the most used sit at the bottom.
+ * Three rows of three (canvas v1 `Plus`): what you send, what you do together, the story. Modules
+ * wear their own colour (`moduleTile`), the same as on Today; the games take hues no module here
+ * uses. No Voice here: the mic in the field records.
  */
 const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
-  { key: 'scene', icon: 'film', fill: systemColors.teal },
-  // A clock's grey, as iOS's Clock: story time, not a module.
-  { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
+  { key: 'photo', icon: 'image', fill: moduleFills.photo },
+  { key: 'secretNote', ...moduleTile('note') },
   { key: 'diary', ...moduleTile('diary') },
-  { key: 'dailyCalls', ...moduleTile('calls') },
   { key: 'date', ...moduleTile('date') },
   { key: 'truthOrDare', icon: 'dice', fill: systemColors.purple },
   { key: 'quiz', icon: 'help', fill: systemColors.indigo },
-  { key: 'secretNote', ...moduleTile('note') },
-  { key: 'photo', icon: 'image', fill: moduleFills.photo },
-  { key: 'voice', icon: 'mic', fill: systemColors.red },
+  { key: 'scene', icon: 'film', fill: systemColors.teal },
+  // A clock's grey, as iOS's Clock: story time, not a module.
+  { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
+  { key: 'dailyCalls', ...moduleTile('calls') },
 ];
 
-/** The chat input's "+" and field are 46pt, 12pt in from the edge (`ChatInput`). */
-const FIELD = 46;
+const COLUMNS = 3;
 
 /**
- * The chat's "+" menu, as in iOS Messages: the chat blurs, the "+" turns into a close button
- * where it stood, and the things to send or start rise above it as icons with large labels.
+ * The chat's "+" panel (owner, 2026-11-08, canvas v1): a white card in the keyboard's place, under
+ * the composer, so the chat stays in view above it and the "+" turns into ×. Typing in the field,
+ * ×, Android's back or a pick closes it.
  */
 export function AttachMenu({
   visible,
   onClose,
   onPick,
-  blurTarget,
   hide = [],
 }: {
   visible: boolean;
   onClose: () => void;
   onPick: (key: AttachKey) => void;
-  /** Items this chat has no place for (a group has no scenes or time skips yet). */
+  /** Items this chat has no place for (a group has no scenes yet). */
   hide?: AttachKey[];
-  /** The chat's BlurTargetView: what the menu blurs on Android. */
-  blurTarget: RefObject<ViewInstance | null>;
 }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   useBackToClose(visible, onClose);
   if (!visible) return null;
-  // Same bottom gap as the input bar, so the close button lands right on the "+".
-  const bottom = bottomRoom(insets.bottom, space.md);
+  const items = ITEMS.filter((item) => !hide.includes(item.key));
 
   return (
-    <View style={styles.overlay}>
-      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')}>
-        <BlurView
-          intensity={28}
-          tint={isDark ? 'dark' : 'light'}
-          // Android blurs only with a native method and the screen's BlurTargetView.
-          blurMethod="dimezisBlurView"
-          blurReductionFactor={2}
-          blurTarget={blurTarget}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={styles.dim} />
-      </Pressable>
-
-      <View style={[styles.list, { bottom: bottom + FIELD + space.lg }]} accessibilityRole="menu">
-        {ITEMS.filter((item) => !hide.includes(item.key)).map((item) => (
-          <PressableScale
-            key={item.key}
-            scaleTo={0.95}
-            style={styles.item}
-            accessibilityRole="menuitem"
-            accessibilityLabel={t(`chat.attachments.${item.key}`)}
-            onPress={() => onPick(item.key)}>
-            <View style={[styles.icon, { backgroundColor: item.fill }]}>
-              <Ionicons name={item.icon} size={22} color={colors.white} />
-            </View>
-            <Txt style={styles.label}>{t(`chat.attachments.${item.key}`)}</Txt>
-          </PressableScale>
-        ))}
-      </View>
-
-      <PressableScale
-        scaleTo={0.9}
-        onPress={onClose}
-        accessibilityRole="button"
-        accessibilityLabel={t('common.close')}
-        style={[styles.close, { bottom }]}>
-        <Ionicons name="close" size={27} color={colors.text} />
-      </PressableScale>
+    <View style={[styles.panel, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]} accessibilityRole="menu">
+      {Array.from({ length: Math.ceil(items.length / COLUMNS) }, (_, row) => (
+        <View key={row} style={styles.row}>
+          {items.slice(row * COLUMNS, row * COLUMNS + COLUMNS).map((item) => (
+            <PressableScale
+              key={item.key}
+              scaleTo={0.94}
+              style={styles.item}
+              accessibilityRole="menuitem"
+              accessibilityLabel={t(`chat.attachments.${item.key}`)}
+              onPress={() => onPick(item.key)}>
+              <View style={[styles.icon, { backgroundColor: item.fill }]}>
+                <Ionicons name={item.icon} size={26} color={colors.white} />
+              </View>
+              <Txt style={styles.label} center lines={1}>
+                {t(`chat.attachments.${item.key}`)}
+              </Txt>
+            </PressableScale>
+          ))}
+          {/* A short last row keeps its tiles in their columns. */}
+          {Array.from({ length: COLUMNS - items.slice(row * COLUMNS, row * COLUMNS + COLUMNS).length }, (_, i) => (
+            <View key={`gap-${i}`} style={styles.item} />
+          ))}
+        </View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: { ...StyleSheet.absoluteFill, zIndex: 10 },
-  dim: { ...StyleSheet.absoluteFill, backgroundColor: isDark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.35)' },
-  list: { position: 'absolute', left: space.lg, gap: 4 },
-  item: { height: 52, flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: space.md },
-  icon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  label: { fontSize: 19, fontWeight: '500', letterSpacing: -0.4 },
-  close: {
-    position: 'absolute',
-    left: space.md,
-    width: FIELD,
-    height: FIELD,
-    borderRadius: FIELD / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.glass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
-    ...shadows.glassButton,
+  panel: {
+    marginTop: space.sm,
+    paddingTop: space.xl,
+    paddingHorizontal: space.lg,
+    gap: space.xl,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    backgroundColor: colors.surface,
   },
+  row: { flexDirection: 'row', gap: space.sm },
+  item: { flex: 1, alignItems: 'center', gap: space.sm },
+  icon: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: 13, fontWeight: '600', color: colors.text },
 });

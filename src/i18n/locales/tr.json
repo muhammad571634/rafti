@@ -473,7 +473,17 @@
     "streakShort_one": "{{count}} gün",
     "streakShort_other": "{{count}} gün",
     "voiceQuota": "Sesli yanıt kotan bu ay doldu, {{date}} tarihinde yenilenecek. Metin yanıtları devam ediyor.",
-    "addMinutes": "Dakika ekle"
+    "addMinutes": "Dakika ekle",
+    "mood": {
+      "calm": "Sakin",
+      "happy": "Keyfi yerinde",
+      "playful": "Oyunbaz",
+      "shy": "Biraz utangaç",
+      "tender": "Şefkatli",
+      "worried": "Biraz endişeli",
+      "sad": "Biraz üzgün",
+      "annoyed": "Biraz sinirli"
+    }
   },
   "paywall": {
     "title": "Kabuklar bitti",
@@ -664,7 +674,8 @@
       "desertMoonrise": "Çöl mehtabı",
       "harborLights": "Liman ışıkları",
       "starlitRoom": "Yıldızlı oda"
-    }
+    },
+    "cream": "Krem"
   },
   "diary": {
     "title": "Kalp Atışı Günlüğü",

@@ -9,7 +9,7 @@ import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { bottomRoom, colors, radius, shadows, space, systemColors } from '@/theme';
+import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
 import type { MessageTone } from '@/types';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
@@ -18,11 +18,10 @@ import { useKeptDraft } from './use-kept-draft';
 import { useToneTip } from './use-tone-tip';
 import { useVoiceNote, type VoiceNote } from './use-voice-note';
 
-/** IconButton draws a circle of `size + space.lg`, so 24pt glyphs make 40pt buttons. */
-const ICON = 24;
-const BUTTON = ICON + space.lg;
-/** The "+" circle and the one-line field are both 46pt tall. */
-const FIELD = 46;
+/** The "+" circle and the one-line field (canvas v3: a step bigger, easy for a thumb). */
+const FIELD = 54;
+/** Send, stop and the mic sit inside the field, 4pt in. */
+const ACTION = 46;
 const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
@@ -40,9 +39,15 @@ export interface ChatInputProps {
   onSend: (text: string, tone?: MessageTone) => boolean;
   /** Send was held: the chat offers the tones, then calls `send` with the one picked. Without it a hold does nothing. */
   onHoldSend?: (send: (tone: MessageTone) => void) => void;
+  /** "+": opens or closes the panel in the keyboard's place. */
   onAttach: () => void;
+  /** The "+" panel is open: "+" reads ×, and the bar sits on the panel. */
+  attachOpen?: boolean;
+  /** The field took focus (the keyboard comes up): the chat closes the "+" panel. */
+  onFieldFocus?: () => void;
+  /** The recorder sheet, where a phone cannot record here (the web). */
   onVoice: () => void;
-  /** A voice message made by holding the mic. */
+  /** A voice message made with the mic. */
   onVoiceNote?: (note: VoiceNote) => void;
   /** Asked before recording: false when the note could not be paid for (the chat says why). */
   canRecord?: () => boolean;
@@ -66,17 +71,35 @@ export interface ChatInputProps {
 }
 
 /**
- * The composer: a floating pill over the wallpaper with "+" for attachments, the
- * text field, and one primary button that records a voice message while the field
- * is empty and sends once there is text (■ stops their reply while it is on its way). The swap
- * is instant; nothing here animates.
+ * The composer (owner, 2026-11-08, canvas v1 + v3): a white "+" and a white field on the cream, dark
+ * glass on a picture. Inside the field one button: the mic while it is empty, the peach paper plane
+ * once there is text, ■ while their reply is on its way. A tap on the mic records at once, right here
+ * (trash, clock, wave, send); a hold records while held: let go to send, slide left to drop it, slide
+ * up to lock it and go on hands free. The swaps are instant.
  */
-export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, onVoiceNote, canRecord, initialValue = '', locked, editing, fill, onStop, onTyping, draftId }: ChatInputProps) {
+export function ChatInput({
+  placeholder,
+  onSend,
+  onHoldSend,
+  onAttach,
+  attachOpen,
+  onFieldFocus,
+  onVoice,
+  onVoiceNote,
+  canRecord,
+  initialValue = '',
+  locked,
+  editing,
+  fill,
+  onStop,
+  onTyping,
+  draftId,
+}: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  // With the keyboard up it covers the home indicator / nav bar, so the pill sits right on the keys.
+  // With the keyboard or the "+" panel up, the home indicator is covered, so the bar sits right on it.
   const keyboardUp = useKeyboardVisible();
-  const barBottom = keyboardUp ? space.sm : bottomRoom(insets.bottom, space.md);
+  const barBottom = keyboardUp || attachOpen ? space.sm : bottomRoom(insets.bottom, space.md);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<TextInputInstance>(null);
   /** The unsent draft waits here while a message is edited, and comes back after. */
@@ -123,9 +146,16 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
 
   const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
   const voice = useVoiceNote(draftId, (note) => onVoiceNote?.(note), canRecord);
+  const recording = voice.phase === 'recording';
   const voiceBusy = voice.phase !== 'idle';
+  /** Recording without a finger on the mic: started with a tap, or a hold slid up to the lock. */
+  const [handsFree, setHandsFree] = useState(false);
+  useEffect(() => {
+    if (voice.phase === 'idle') setHandsFree(false);
+  }, [voice.phase]);
   const onPhoto = useOnPhoto();
-  const glass = [styles.glass, onPhoto && styles.photoGlass];
+  const surface = [styles.surface, onPhoto && styles.photoSurface];
+  const ink = onPhoto ? colors.onMedia : colors.text;
 
   const submit = (tone?: MessageTone) => {
     if (!hasText) return;
@@ -150,6 +180,11 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
     onHoldSend((tone) => latestSubmit.current(tone));
   };
 
+  const recordHandsFree = () => {
+    setHandsFree(true);
+    voice.start();
+  };
+
   // A draft typed before the lock stays in state and comes back with the field.
   if (locked) {
     return (
@@ -163,6 +198,29 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
     );
   }
 
+  const leftButton =
+    handsFree && recording ? (
+      // Recording hands free: the trash takes the "+" place and drops what was said.
+      <PressableScale
+        scaleTo={0.9}
+        onPress={() => voice.finish(false)}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.delete')}
+        style={[...surface, styles.plus]}>
+        <Ionicons name="trash-outline" size={24} color={systemColors.red} />
+      </PressableScale>
+    ) : (
+      <PressableScale
+        scaleTo={0.9}
+        onPress={editing ? editing.onCancel : onAttach}
+        accessibilityRole="button"
+        accessibilityLabel={editing || attachOpen ? t('common.close') : t('a11y.attach')}
+        accessibilityState={{ expanded: !!attachOpen }}
+        style={[...surface, styles.plus]}>
+        <Ionicons name={editing || attachOpen ? 'close' : 'add'} size={editing || attachOpen ? 27 : 31} color={ink} />
+      </PressableScale>
+    );
+
   return (
     <View style={[styles.bar, { paddingBottom: barBottom }]}>
       {toneTip.show ? (
@@ -172,20 +230,22 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
           </Txt>
         </View>
       ) : null}
-      <PressableScale
-        scaleTo={0.9}
-        onPress={editing ? editing.onCancel : onAttach}
-        accessibilityRole="button"
-        accessibilityLabel={editing ? t('chat.cancelEdit') : t('a11y.attach')}
-        style={[...glass, styles.plus]}>
-        <Ionicons name={editing ? 'close' : 'add'} size={editing ? 26 : 30} color={onPhoto ? colors.onMedia : colors.text} />
-      </PressableScale>
+      {/* While a hold records: slide up to here to lock it and let go (WhatsApp). */}
+      {recording && !handsFree ? (
+        <View pointerEvents="none" style={[styles.lock, { bottom: barBottom + FIELD + space.sm }]}>
+          <Ionicons name="lock-closed-outline" size={19} color={ink} />
+          <Ionicons name="chevron-up" size={15} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
+        </View>
+      ) : null}
 
-      <View style={[...glass, styles.field]}>
+      {leftButton}
+
+      <View style={[...surface, styles.field]}>
         <TextInput
           ref={inputRef}
           value={value}
           onChangeText={setValue}
+          onFocus={onFieldFocus}
           placeholder={placeholder}
           placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
           style={[styles.input, onPhoto && styles.photoInput]}
@@ -195,12 +255,12 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
           {...webField}
         />
 
-        {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach send once there is text. */}
+        {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach paper plane once there is text. */}
         {editing ? (
           // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
           <IconButton
             icon="checkmark"
-            size={22}
+            size={23}
             color={hasText ? colors.textOnPrimary : colors.textFaint}
             background={hasText ? colors.primaryFill : colors.surfaceAlt}
             haptic={hasText}
@@ -212,7 +272,7 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
           // Typing a new line brings send back; the reply then answers both.
           <IconButton
             icon="stop"
-            size={15}
+            size={16}
             color={colors.textOnPrimary}
             background={colors.primaryFill}
             accessibilityLabel={t('a11y.stopReply')}
@@ -230,55 +290,76 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
             accessibilityLabel={t('a11y.send')}
             accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
             style={[styles.action, styles.send]}>
-            <PaperPlaneTiltIcon size={25} weight="fill" color={colors.textOnPrimary} />
+            <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
           </PressableScale>
         ) : Platform.OS === 'web' || !onVoiceNote ? (
           <IconButton
             icon="mic-outline"
-            size={27}
-            color={onPhoto ? colors.onMediaSoft : colors.textSecondary}
+            size={26}
+            color={ink}
             accessibilityLabel={t('a11y.voiceMessage')}
             onPress={onVoice}
-            style={styles.action}
+            style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
           />
         ) : (
           <HoldMic
-            recording={voice.phase === 'recording'}
-            onTap={onVoice}
-            onHoldStart={voice.start}
+            recording={recording && !handsFree}
+            onTap={recordHandsFree}
+            onHoldStart={() => {
+              setHandsFree(false);
+              voice.start();
+            }}
             onHoldEnd={voice.finish}
+            onLock={() => setHandsFree(true)}
             accessibilityLabel={t('a11y.voiceMessage')}
             accessibilityHint={t('chat.voice.hold')}
-            style={styles.mic}
+            style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
           />
         )}
 
-        {/* Over the empty field, beside the mic the finger is still on. */}
+        {/* Over the empty field while a voice message is made; a hold leaves the mic under the finger uncovered. */}
         {voiceBusy || voice.notice ? (
-          <View style={styles.voiceRow}>
-            {voice.phase === 'recording' ? (
+          <View style={[styles.voiceRow, onPhoto && styles.photoVoiceRow, handsFree && recording && styles.voiceRowFull]}>
+            {recording ? (
               <>
-                <Anim name="voiceWave" size={26} tint={systemColors.red} />
-                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
-                <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
-                  {t('chat.voice.slideCancel')}
-                </Txt>
+                <View style={styles.recDot} />
+                <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
+                {handsFree ? (
+                  <>
+                    <View style={styles.voiceWave}>
+                      <Anim name="voiceWave" size={28} tint={systemColors.red} />
+                    </View>
+                    <PressableScale
+                      onPress={() => voice.finish(true)}
+                      hitSlop={8}
+                      scaleTo={0.88}
+                      haptic
+                      accessibilityLabel={t('a11y.send')}
+                      style={[styles.action, styles.send]}>
+                      <Ionicons name="arrow-up" size={24} color={colors.textOnPrimary} />
+                    </PressableScale>
+                  </>
+                ) : (
+                  <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                    {t('chat.voice.slideCancel')}
+                  </Txt>
+                )}
               </>
             ) : voice.phase === 'sending' ? (
               <>
-                <ActivityIndicator color={colors.textSecondary} />
-                <Txt style={styles.voiceClock}>{fmtDuration(voice.seconds)}</Txt>
+                <ActivityIndicator color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+                <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
               </>
             ) : voice.phase === 'failed' ? (
               <>
                 <Txt variant="small" color={colors.danger} numberOfLines={1} style={styles.voiceHint}>
                   {t('chat.notDelivered')}
                 </Txt>
-                <IconButton icon="refresh" size={20} color={colors.text} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
-                <IconButton icon="trash-outline" size={20} color={colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
+                <IconButton icon="refresh" size={20} color={ink} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
+                <IconButton icon="trash-outline" size={20} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
               </>
             ) : (
-              <Txt variant="small" color={colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+              <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
                 {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : t('chat.voice.noSpeech')}
               </Txt>
             )}
@@ -290,7 +371,6 @@ export function ChatInput({ placeholder, onSend, onHoldSend, onAttach, onVoice, 
 }
 
 const styles = StyleSheet.create({
-  // "+" in its own glass circle, then the glass field (approved iOS prototype).
   bar: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -298,10 +378,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingTop: space.xs,
   },
-  glass: {
-    backgroundColor: colors.glass,
+  // White on the cream with a faint rim, as the tabs' cards (owner, 2026-11-08).
+  surface: {
+    backgroundColor: colors.surface,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
+    borderColor: colors.bubbleOtherRim,
     ...shadows.glassButton,
   },
   plus: { width: FIELD, height: FIELD, borderRadius: FIELD / 2, alignItems: 'center', justifyContent: 'center' },
@@ -310,35 +391,55 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     minHeight: FIELD,
-    paddingLeft: space.lg,
+    paddingLeft: space.lg + 2,
     paddingRight: 4,
     borderRadius: FIELD / 2,
     // A grown, multi-line field keeps iOS squircle corners; Android ignores it.
     borderCurve: 'continuous',
-    borderColor: colors.borderStrong,
   },
-  // A 38pt circle that sits 4pt inside the 46pt field.
-  action: { width: 38, height: 38, borderRadius: 19, marginBottom: 4, alignItems: 'center', justifyContent: 'center' },
+  action: { width: ACTION, height: ACTION, borderRadius: ACTION / 2, marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
-  // The mic is held as well as tapped, so it takes nearly the whole height of the field.
-  mic: { width: 44, height: 44, borderRadius: 22, marginBottom: 1, alignItems: 'center', justifyContent: 'center' },
+  // The plane points up and right; nudged so it looks centred in its circle.
+  plane: { marginLeft: -2, marginTop: 1 },
+  mic: { backgroundColor: playful.round },
+  photoMic: { backgroundColor: colors.onMediaGlass },
   // Covers the field up to the mic while a voice message is made.
   voiceRow: {
     position: 'absolute',
     left: 0,
     top: 0,
     bottom: 0,
-    right: 48,
+    right: ACTION + 6,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    paddingLeft: space.lg,
+    paddingLeft: space.lg + 2,
     borderRadius: FIELD / 2,
     backgroundColor: colors.surface,
   },
-  voiceClock: { fontSize: 17, fontVariant: ['tabular-nums'] },
+  // Hands free there is no finger on the mic: the row takes the whole field, send included.
+  voiceRowFull: { right: 0, paddingRight: 4 },
+  photoVoiceRow: { backgroundColor: colors.onMediaField },
+  recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: systemColors.red },
+  voiceClock: { fontSize: 17, fontWeight: '600', fontVariant: ['tabular-nums'], color: colors.text },
+  voiceWave: { flex: 1, alignItems: 'flex-start', overflow: 'hidden' },
   voiceHint: { flex: 1 },
   voiceAction: { width: 34, height: 34 },
+  // Over the mic while a hold records: where to slide to lock.
+  lock: {
+    position: 'absolute',
+    right: space.md + 4,
+    width: ACTION,
+    height: 84,
+    borderRadius: ACTION / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.bubbleOtherRim,
+    ...shadows.glassButton,
+  },
   // Once, over the send button (`useToneTip`); from the top edge, so a grown field never covers it.
   tip: {
     position: 'absolute',
@@ -351,7 +452,7 @@ const styles = StyleSheet.create({
   },
   locked: {
     flex: 1,
-    height: BUTTON + space.xs * 2 + 2,
+    height: FIELD,
     borderRadius: radius.xxl,
     backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
@@ -369,7 +470,7 @@ const styles = StyleSheet.create({
     paddingVertical: (FIELD - LINE) / 2,
     maxHeight: LINE * MAX_LINES + (FIELD - LINE),
   },
-  // On a picture (an Art wallpaper, `useOnPhoto`): dark glass and white words.
-  photoGlass: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
+  // On a picture (their portrait or an Art wallpaper, `useOnPhoto`): dark glass and white words.
+  photoSurface: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
   photoInput: { color: colors.onMedia },
 });

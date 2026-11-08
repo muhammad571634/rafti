@@ -6,6 +6,8 @@ import { dayKeyFromToday, daysAgo } from './time';
  * default; Chat background lists it on its own row above Classic and Art (`portraitOf`).
  */
 export const PORTRAIT_BG = 'bg_portrait';
+/** The default ground of every chat since 2026-11-08 (owner): the four tabs' warm cream. */
+export const CREAM_BG = 'bg_cream';
 
 export const currentUser: User = {
   id: 'u_me',
@@ -109,7 +111,7 @@ export function newRelationship(characterId: string): Relationship {
     nextLevelAt,
     streakDays: 0,
     anniversary: new Date().toISOString(),
-    backgroundId: PORTRAIT_BG,
+    backgroundId: CREAM_BG,
     voiceReplies: true,
     messagesFirst: true,
   };
@@ -120,7 +122,7 @@ function relationship(
   intimacy: number,
   streakDays: number,
   anniversaryDaysAgo: number,
-  backgroundId = PORTRAIT_BG,
+  backgroundId = CREAM_BG,
   lastChatOffset = 0,
 ): Relationship {
   const { level, levelTitle, nextLevelAt } = levelForIntimacy(intimacy);
@@ -138,7 +140,7 @@ function relationship(
 }
 
 export const relationships: Relationship[] = [
-  relationship('c_theo', 420, 1, 25, PORTRAIT_BG, 0),
+  relationship('c_theo', 420, 1, 25, CREAM_BG, 0),
   relationship('c_seren', 1600, 12, 96, 'bg_dusk', -1),
   relationship('c_oppa', 6200, 22, 180, 'bg_room', 0),
   relationship('c_elio', 40, 0, 6, 'bg_night'),

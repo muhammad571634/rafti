@@ -459,7 +459,17 @@
     "shareHint": "{{name}}とのチャットをそのままカードに。ストーリーに投稿したり、友だちに送ったりできます。",
     "streakShort_other": "{{count}}日",
     "voiceQuota": "今月の音声返信上限に達しました。{{date}}にリセットされます。テキストでの返信は継続します。",
-    "addMinutes": "分を追加"
+    "addMinutes": "分を追加",
+    "mood": {
+      "calm": "落ち着いてる",
+      "happy": "ご機嫌",
+      "playful": "いたずら気分",
+      "shy": "ちょっと照れてる",
+      "tender": "甘えたい気分",
+      "worried": "ちょっと心配",
+      "sad": "ちょっと寂しい",
+      "annoyed": "ちょっとムッとしてる"
+    }
   },
   "paywall": {
     "title": "シェルが不足しています",
@@ -647,7 +657,8 @@
       "desertMoonrise": "砂漠の月の出",
       "harborLights": "港の灯り",
       "starlitRoom": "星明かりの部屋"
-    }
+    },
+    "cream": "クリーム"
   },
   "diary": {
     "title": "ハートビート日記",

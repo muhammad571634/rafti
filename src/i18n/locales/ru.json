@@ -501,7 +501,17 @@
     "rewindTitle_few": "Удалить {{count}} последующих сообщения?",
     "rewindTitle_many": "Удалить {{count}} последующих сообщений?",
     "streakShort_few": "{{count}} дня",
-    "streakShort_many": "{{count}} дней"
+    "streakShort_many": "{{count}} дней",
+    "mood": {
+      "calm": "Спокойно",
+      "happy": "В хорошем настроении",
+      "playful": "Игривое настроение",
+      "shy": "Немного неловко",
+      "tender": "Нежное настроение",
+      "worried": "Немного тревожно",
+      "sad": "Немного грустно",
+      "annoyed": "Немного не в духе"
+    }
   },
   "paywall": {
     "title": "Закончились ракушки",
@@ -698,7 +708,8 @@
       "desertMoonrise": "Восход луны в пустыне",
       "harborLights": "Огни гавани",
       "starlitRoom": "Звездная комната"
-    }
+    },
+    "cream": "Кремовый"
   },
   "diary": {
     "title": "Дневник чувств",

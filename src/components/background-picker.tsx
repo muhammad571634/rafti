@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Picture } from '@/components/chat/chat-ground';
 import { GlassBar, glassStyle, LargeTitle, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
-import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, PORTRAIT_BG } from '@/mock';
+import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
 import { colors, gradients, gradientStops, space } from '@/theme';
 
 type BackgroundCollection = 'classic' | 'art';
@@ -40,7 +40,8 @@ export function BackgroundPicker({
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
 
-  const fallback = portrait ? PORTRAIT_BG : 'bg_plain';
+  // Cream is every chat's ground (owner, 2026-11-08); their picture is a row of its own to pick.
+  const fallback = CREAM_BG;
   const known = (id: string) => (id === PORTRAIT_BG ? !!portrait : !!(backgroundsById[id] || chatArtBackgroundsById[id]));
   const savedBackgroundId = savedId ?? fallback;
   const backgroundId = known(savedBackgroundId) ? savedBackgroundId : fallback;
@@ -53,7 +54,7 @@ export function BackgroundPicker({
   const tileWidth = (width - space.lg * 2 - GAP * (COLUMNS - 1)) / COLUMNS;
   const previewHeight = Math.min(200, Math.max(156, width * 0.45));
   const selectedArt = chatArtBackgroundsById[backgroundId];
-  const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
+  const selectedClassic = backgroundsById[backgroundId] ?? backgroundsById[CREAM_BG];
   const data: BackgroundOption[] = collection === 'art' ? [...chatArtBackgrounds] : chatBackgrounds;
   const tabs: { value: BackgroundCollection; label: string }[] = [
     { value: 'classic', label: t('background.collections.classic') },
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
   },
   // The chat's own bubble colours and tails, so the preview reads like the chat.
   previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
-  previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderBottomLeftRadius: 5 },
+  previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.bubbleOtherRim, borderBottomLeftRadius: 5 },
   previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: colors.bubbleSelf, borderBottomRightRadius: 5 },
   previewField: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, height: 32, borderRadius: 16 },
   previewTheirsOnPicture: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
