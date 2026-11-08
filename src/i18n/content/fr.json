@@ -6929,7 +6929,11 @@
           "On dirait une vieille photo d’été. J’aime beaucoup la date inscrite dessus.",
           "Celle-ci ressemble déjà à un souvenir précieux."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Attends, tu as eu un rendez-vous ? Raconte-moi tout.",
+        "Regardez-vous tous les deux. Bon, je veux toute l’histoire."
+      ]
     },
     "group": {
       "replies": [

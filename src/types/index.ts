@@ -276,6 +276,8 @@ export interface Message {
   photoNote?: string;
   /** A Photo Booth picture sent to the chat (drawn from the kept photo, not a file). */
   photoId?: string;
+  /** A date's polaroid sent to another friend (`DateRecord.id`); `text` keeps its caption. */
+  dateId?: string;
   createdAt: string;
   readAt?: string;
   /** Local-only optimistic message waiting on the model */

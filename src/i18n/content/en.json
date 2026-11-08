@@ -6929,7 +6929,11 @@
           "It looks like an old summer photo. I like that it has a date on it.",
           "This one feels like a memory already."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Wait, you went on a date? Tell me everything.",
+        "Look at you two. Okay, I want the whole story."
+      ]
     },
     "group": {
       "replies": [

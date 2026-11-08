@@ -14,6 +14,7 @@ import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { SetupCard } from '@/components/chat/setup-card';
 import { playNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
+import { Polaroid } from '@/components/date/polaroid';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
@@ -139,7 +140,9 @@ export const MessageBubble = memo(function MessageBubble({
   const holdStyle = [styles.holdable, (column || !!onDoubleTap) && styles.wide, message.reaction || (mine && message.theirReaction) ? styles.withReaction : null];
   const inner = (
     <>
-      {message.kind === 'image' && message.photoId ? (
+      {message.kind === 'image' && message.dateId ? (
+        <DatePhotoMessage dateId={message.dateId} caption={message.text ?? ''} />
+      ) : message.kind === 'image' && message.photoId ? (
         <BoothPhotoMessage photoId={message.photoId} character={character} />
       ) : message.kind === 'image' && message.imageUri ? (
         <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
@@ -655,6 +658,17 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
   );
 }
 
+/** A date's polaroid the user sent to this friend (0z157), drawn from the kept date. */
+function DatePhotoMessage({ dateId, caption }: { dateId: string; caption: string }) {
+  const { i18n } = useTranslation();
+  const record = useAppStore((s) => s.dates.find((d) => d.id === dateId));
+  const partner = useAppStore((s) => (record ? s.characters.find((c) => c.id === record.characterId) : undefined));
+  // A date whose friend is gone (blocked, deleted) keeps its caption as a plain line.
+  if (!record || !partner) return <SystemLine text={caption} />;
+  const when = new Date(record.createdAt).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
+  return <Polaroid character={partner} caption={caption} date={when} width={176} tilt={2} style={styles.datePhoto} />;
+}
+
 /** A Photo Booth picture sent to the chat, drawn from the kept photo; a tap opens it. */
 function BoothPhotoMessage({ photoId, character }: { photoId: string; character: Character }) {
   const photo = useAppStore((s) => s.photos.find((p) => p.id === photoId));
@@ -663,6 +677,8 @@ function BoothPhotoMessage({ photoId, character }: { photoId: string; character:
 }
 
 const styles = StyleSheet.create({
+  // A sent polaroid keeps clear of the next bubble's tilt.
+  datePhoto: { marginVertical: space.sm },
   // The held area carries the bubble's width cap, so the text bubble fills it.
   holdable: { flexShrink: 1, maxWidth: '72%' },
   // A bubble with a member's name or a time shares one column with them, which carries the cap instead.

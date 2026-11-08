@@ -6929,7 +6929,11 @@
           "Parece una foto vieja de verano. Me gusta que tenga la fecha.",
           "Esta foto ya se siente como un recuerdo."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Espera, ¿tuviste una cita? Cuéntamelo todo.",
+        "Mírense ustedes dos. Vale, quiero la historia completa."
+      ]
     },
     "group": {
       "replies": [

@@ -281,6 +281,11 @@ export const CHAT_VOICE = {
     'You left me a note! "{quote}" ...okay, now I am smiling at my phone.',
     '"{quote}" - I saw it on the board. Say it to me again sometime?',
   ],
+  /** Their answer to a polaroid from your date with someone else (0z157); used only with the model off. */
+  datePhotoReply: [
+    'Wait, you went on a date? Tell me everything.',
+    'Look at you two. Okay, I want the whole story.',
+  ],
   photoReply: {
     polaroid: [
       'A polaroid of us. I am keeping this one somewhere safe.',
@@ -400,6 +405,12 @@ export function boardReply(text: string, gender: CharacterGender | undefined) {
   const quote = text.length > 48 ? `${text.slice(0, 47).trim()}…` : text;
   const tpl = pickLine(v.boardReply);
   return fill(tpl, { quote }, gender);
+}
+
+/** Their answer to a polaroid from your date with someone else (0z157), with the model off. */
+export function datePhotoReply(gender: CharacterGender | undefined) {
+  const v = voice('chat', CHAT_VOICE);
+  return fill(pickLine(v.datePhotoReply), {}, gender);
 }
 
 /** Their answer to a Photo Booth picture you sent, in the photo's style. */

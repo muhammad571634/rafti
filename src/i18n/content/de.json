@@ -6929,7 +6929,11 @@
           "Sieht aus wie ein altes Sommerfoto. Ich mag es, dass ein Datum draufsteht.",
           "Das fühlt sich jetzt schon wie eine schöne Erinnerung an."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Moment, du hattest ein Date? Erzähl mir alles.",
+        "Schau euch zwei an. Okay, ich will die ganze Geschichte hören."
+      ]
     },
     "group": {
       "replies": [

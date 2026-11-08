@@ -4,15 +4,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Polaroid, sceneImage } from '@/components/date/polaroid';
+import { DateShareSheet } from '@/components/date/share-sheet';
 import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
 import { Anim, Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
-import { shareText } from '@/lib/share';
 import { localized } from '@/i18n/content';
 import { fill as fillLine } from '@/i18n/voice';
 import { DATE_PLACES, maxHearts, type DateRound } from '@/mock/dates';
@@ -64,6 +64,9 @@ export default function DateScreen() {
   const [hearts, setHearts] = useState(0);
   const [record, setRecord] = useState<DateRecord | null>(null);
   const [leaving, setLeaving] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  // The polaroid as the picture Share sends.
+  const shot = useRef<ViewInstance>(null);
 
   if (!place || !character || (!paid && !record)) {
     return (
@@ -112,13 +115,16 @@ export default function DateScreen() {
     return (
       <Screen background={colors.bg}>
         <ScrollView contentContainerStyle={[styles.end, { paddingBottom: insets.bottom + space.xl }]}>
-          <Polaroid
-            character={character}
-            caption={t('date.caption', { place: title, name })}
-            date={when}
-            width={Math.min(260, width - space.xxl * 2)}
-            tilt={-2}
-          />
+          {/* Captured as the picture: a fixed paper ground (the same in dark mode) and room for the tilt. */}
+          <View ref={shot} collapsable={false} style={styles.shot}>
+            <Polaroid
+              character={character}
+              caption={t('date.caption', { place: title, name })}
+              date={when}
+              width={Math.min(260, width - space.xxl * 2)}
+              tilt={-2}
+            />
+          </View>
           <Txt style={styles.ending} center>
             {t(`date.ending.${record.ending}`)}
           </Txt>
@@ -145,7 +151,7 @@ export default function DateScreen() {
             scaleTo={0.97}
             accessibilityRole="button"
             style={[styles.bigButton, { backgroundColor: look.ink }]}
-            onPress={() => void shareText(t('date.shareMessage', { place: title, name }))}>
+            onPress={() => setSharing(true)}>
             <Ionicons name="share-outline" size={19} color={colors.white} />
             <Txt style={styles.bigButtonText}>{t('date.share')}</Txt>
           </PressableScale>
@@ -157,6 +163,15 @@ export default function DateScreen() {
             <Txt style={[styles.bigButtonText, styles.greyButtonText]}>{t('date.backToChat')}</Txt>
           </PressableScale>
         </ScrollView>
+        <DateShareSheet
+          visible={sharing}
+          onClose={() => setSharing(false)}
+          dateId={record.id}
+          partnerId={character.id}
+          caption={t('date.caption', { place: title, name })}
+          polaroid={shot}
+          fallback={t('date.shareMessage', { place: title, name })}
+        />
       </Screen>
     );
   }
@@ -296,6 +311,8 @@ export default function DateScreen() {
 }
 
 const styles = StyleSheet.create({
+  // The shared picture's ground: cream paper in both themes, with room round the tilted polaroid.
+  shot: { padding: space.xl, borderRadius: 24, backgroundColor: '#FBF6EE' },
   grow: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   // Glass on the photo: a see-through white fill with a bright rim.

@@ -6929,7 +6929,11 @@
           "Parece uma foto antiga de verão. Gosto que tem uma data nela.",
           "Essa foto já parece uma lembrança guardada no peito."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Espera, você saiu num encontro? Me conta tudo.",
+        "Olha vocês dois. Tá, quero a história inteira."
+      ]
     },
     "group": {
       "replies": [

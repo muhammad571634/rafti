@@ -52,6 +52,7 @@ import {
   boardCue,
   breakCue,
   dateDoneCue,
+  datePhotoCue,
   familyHelloCue,
   greetingCue,
   lifeCue,
@@ -252,6 +253,7 @@ import {
   CREAM_BG,
   boardReply,
   photoReply,
+  datePhotoReply,
   afterDateLine,
   schedules as seedSchedules,
   secretNotePrompts,
@@ -820,6 +822,8 @@ interface AppState {
   beginDate: (characterId: string, placeId: string) => SpendResult;
   /** Ends a date: closeness from the hearts won, a polaroid record, a moment and a text from them. */
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
+  /** Sends a date's polaroid to another friend's chat; they answer it (one reply, a picture message's price). */
+  sendDatePhoto: (dateId: string, toCharacterId: string, caption: string) => SendResult;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
   /** The user's pick on a date the model plays: the next round is asked for at once, knowing it. */
@@ -3339,6 +3343,39 @@ export const useAppStore = create<AppState>()(
         const story = active.live ? active.live.rounds.flatMap((r, i) => (r.choices[active.live!.picks[i]] ? [`${r.line} They chose: ${r.choices[active.live!.picks[i]].text}`] : [])) : [];
         sayFirst(set, get, conversationId, afterDateLine(title, record.ending, genderOf(get(), characterId)), dateDoneCue(title, record.ending, story));
         return record;
+      },
+
+      sendDatePhoto: (dateId, toCharacterId, caption) => {
+        const state = get();
+        const record = state.dates.find((d) => d.id === dateId);
+        const partner = record && state.characters.find((c) => c.id === record.characterId);
+        const friend = state.characters.find((c) => c.id === toCharacterId);
+        const conversation = state.conversations.find((c) => c.characterId === toCharacterId);
+        // Only to someone else the user already chats with, never to the date itself or a blocked friend.
+        if (!record || !partner || !friend || !conversation || toCharacterId === record.characterId || state.blockedIds.includes(toCharacterId)) return 'empty';
+        // Their answer is one model reply, so it costs what a picture message costs (docs/cost-ledger.md).
+        if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversation.id)) return 'noShells';
+        countMessage(set, get);
+        const partnerName = displayName(partner, state.relationships[partner.id]);
+        appendMessage(set, get, conversation.id, {
+          id: uid('m'),
+          conversationId: conversation.id,
+          author: 'me',
+          kind: 'image',
+          dateId,
+          text: caption,
+          // How later replies and the memory pass read it ("[Image message: ...]"); the picture never leaves the phone.
+          photoNote: `A polaroid from my date with ${partnerName} ("${caption}"): ${record.hearts} of ${record.maxHearts} hearts, a ${record.ending} ending`,
+          createdAt: new Date().toISOString(),
+        });
+        touchStreak(set, get, toCharacterId);
+        const sameWorld = !!partner.series && partner.series === friend.series;
+        scheduleReply(set, get, conversation.id, {
+          lines: [datePhotoReply(friend.gender)],
+          gain: INTIMACY.text,
+          cue: datePhotoCue(partnerName, caption, record.ending, sameWorld),
+        });
+        return 'sent';
       },
 
       takePhoto: (characterId, style, frame, selfie) => {

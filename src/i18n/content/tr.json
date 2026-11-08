@@ -6929,7 +6929,11 @@
           "Eski bir yaz fotoğrafına benziyor. Üzerinde tarih olmasını çok sevdim.",
           "Bu fotoğraf şimdiden sıcacık bir anı gibi hissettiriyor."
         ]
-      }
+      },
+      "datePhotoReply": [
+        "Dur, randevuya mı çıktın? Bana her şeyi anlat.",
+        "Şu ikinize bak. Tamam, bütün hikâyeyi duymak istiyorum."
+      ]
     },
     "group": {
       "replies": [

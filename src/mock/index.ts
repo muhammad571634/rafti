@@ -16,6 +16,7 @@ export {
   planFollowUp,
   boardReply,
   photoReply,
+  datePhotoReply,
   afterDateLine,
   birthdayLines,
 } from './chat';

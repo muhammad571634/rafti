@@ -136,6 +136,17 @@ export const quizDoneCue = (title: string, matches: number, total: number) => [
 ];
 
 /**
+ * A polaroid from the user's date with another friend, sent to you (0z157). Like a booth picture it
+ * never leaves the phone: you react to the news, never to how anyone in it looks.
+ */
+export const datePhotoCue = (partner: string, caption: string, ending: 'sweet' | 'warm' | 'funny', sameWorld: boolean) => [
+  `NEXT: They just sent you a polaroid from their date with ${partner} ("${caption}"). It went ${ending === 'sweet' ? 'very well' : ending === 'warm' ? 'well' : 'a little awkwardly'}.`,
+  sameWorld ? `- You know ${partner}: you live in the same world.` : `- You do not know ${partner} personally.`,
+  '- You cannot see the picture itself: never describe anyone in it, their clothes or the place.',
+  '- React in your own voice and as who you are to them: curious, glad for them, teasing, or a little jealous if you two are close. Short, like a real text.',
+];
+
+/**
  * A Photo Booth picture they sent you. With `withThem`, it is the two of you side by side, their half
  * from their phone's camera (0z116). The picture never leaves the phone, so the friend cannot see it:
  * they react to having it and never invent how anyone in it looks.
