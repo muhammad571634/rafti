@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z168. The last aurora screens on the white ground; one buy bar; skills, plugins and MCPs from now on (2026-11-08, Claude 1). NEXT: read the "Next session starts here" list below
+
+- **Owner's asks**: carry on with the remaining screens; fix weak logic or architecture on the way; and (said with frustration) "use skills, plugins and MCPs to the maximum: switch on when needed, off when not". I had redesigned a dozen screens without loading a UI skill. Rule now in `.agents/rules/project-memory.md` §2 and Claude's memory: check skills / plugins / MCPs at the start of every task. This session then loaded `appllama-app-design-skill`, `expo-native-ui` and `break-ui`, and offered three plugins to install (owner decides): **Mobile App Design (iOS)** (UXKIN: real iOS journeys, for flows), **Design** (Anthropic: critique, accessibility, UX copy), **react-native-best-practices**. Appllama's own MCP is not in the registry.
+- **Built**: secret note (white ground, the friend's accent on typing / retry / new question; the swap pays shells so it keeps the Store button), My plan (white ground, grey cards, Pro gradient card, no shadow), the frame editor (Photos' blue for picked swatches and stickers and Save, white stage), the character quiz and the world quiz (white ground, grey cards, `RoundButton`, brand peach `colors.brandText` where the aurora tint was), contacts (the add circle in the brand peach with its ink), a friend's memories (inside `FriendAccent`, the pin in their accent). Board's paper shadow is a `boxShadow` (expo-native-ui: no legacy shadow props); the kit's cards and hero use `borderCurve: 'continuous'`.
+- **Architecture fixed**: `StoreBuyBar` had two looks (aurora cream vs system white) chosen per caller, and streams / quiz-write still drew the cream bar on the grouped ground. It now has one look (Apple's bar over the ground, `look` for a feature colour); the `system` prop and `storeColors.bar` / `barSolid` are gone.
+- **Seen on the A51** (OTA `01a1bc46`, light): contacts, secret note (Alice), My plan, Hana's memories; no JS errors. Not seen: frame editor, both quizzes, dark mode for this batch. Checks: tsc 0, npm test 844/844.
+
+**Next session starts here** (in order):
+1. Load the skills first (rule above): `appllama-app-design-skill`, `expo-native-ui`, `break-ui`; if the owner installed the plugins, use *Mobile App Design (iOS)* for flows.
+2. On the A51, dark mode for 0z166-0z168 screens, the frame editor, the character quiz and the world quiz; a worst-case pass in German / Russian (long words) on Gifts, Store, Radio, My plan, secret note (break-ui's catalogue, real data, no web toggle).
+3. Flow audit the owner asked for ("chains and architecture must work well"): walk every chain on the A51 (Today → widget → screen → back; Find → world → profile → chat; Store → buy → back; onboarding one-way door) against the navigation laws in `appllama-app-design-skill` (push vs modal vs sheet, back never re-enters a finished state); fix what is wrong.
+4. Retire `AuroraBackground` / `AuroraGlass` / the aurora tokens once only onboarding uses them (onboarding is a moment and keeps its ground).
+5. Architecture follow-up: colours are module constants picked once by `isDark` (a theme flip reloads the app). expo-native-ui recommends `Color` from expo-router (semantic, live); plan the move with `systemGround` first.
+
 ### 0z167. Radio, Board, Photo Booth and a world's page on the white ground; one shared feature kit (2026-11-08, Claude 1). NEXT: a friend's memories / photos / notes in their accent, then the last aurora screens
 
 - **Owner's asks**: carry the families to the next screens; and "if the logic or architecture is half-done or wrong, fix it on the way: it must be the right architecture".

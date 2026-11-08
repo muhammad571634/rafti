@@ -8,12 +8,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { OpenedNote, SealedRow } from '@/components/secret-note/opened-note';
-import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
-import { Anim, AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
+import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
+import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
+import { Anim, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, ShellIcon, Txt } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { localSecretNote } from '@/i18n/content';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space } from '@/theme';
+import { colors, friendAccent, space, systemGround } from '@/theme';
 
 const MAX_LENGTH = 400;
 /** Cards glide to their new height when a note opens or arrives (on-screen move: ease-in-out). */
@@ -21,9 +22,10 @@ const GLIDE = LinearTransition.duration(320).easing(Easing.bezier(0.77, 0, 0.175
 
 /**
  * Secret Note: a daily question, two sealed notes. The character writes theirs first
- * ("Thinking..."), you write yours, and one swap opens both at once. iOS look on the aurora
- * (2026-10-22, coded at the owner's word): the question as a card with the friend's face, their
- * note sealed in a card, yours as a field, and the Store's bar for the swap.
+ * ("Thinking..."), you write yours, and one swap opens both at once. A friend's space on Apple's
+ * white ground (design-style §10): the question as a grey card with the friend's face, their note
+ * sealed in a card, yours as a field, their accent on what they do; the swap pays in shells, so it
+ * keeps the Store's button.
  */
 export default function SecretNoteScreen() {
   const insets = useSafeAreaInsets();
@@ -52,19 +54,11 @@ export default function SecretNoteScreen() {
     if (characterId) ensureSecretNote(characterId);
   }, [characterId, ensureSecretNote]);
 
-  const bar = (
-    <View style={styles.bar}>
-      <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-        <AuroraGlass style={styles.round}>
-          <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-        </AuroraGlass>
-      </PressableScale>
-    </View>
-  );
+  const bar = <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} />;
 
   if (!character || !note) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         {bar}
         <LargeTitle>{t('secretNote.title')}</LargeTitle>
         {/* No such friend any more (deleted, blocked, an old link); with one, the note is being made. */}
@@ -79,6 +73,7 @@ export default function SecretNoteScreen() {
   const composing = note.status === 'composing';
   const canExchange = note.status === 'ready' && note.myNote.trim().length > 0;
   const name = displayName(character, relationship);
+  const accent = friendAccent(character.id);
 
   const exchange = () => {
     const result = exchangeNote(note.id);
@@ -87,7 +82,7 @@ export default function SecretNoteScreen() {
   };
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -96,7 +91,7 @@ export default function SecretNoteScreen() {
           {bar}
           <LargeTitle>{t('secretNote.title')}</LargeTitle>
 
-          <View style={[styles.card, styles.prompt]}>
+          <View style={[featureStyles.card, styles.prompt]}>
             <CharacterAvatar character={character} size={44} />
             <Txt style={styles.promptLabel}>{t('secretNote.question')}</Txt>
             <Txt style={styles.promptText} center>
@@ -105,7 +100,7 @@ export default function SecretNoteScreen() {
           </View>
 
           <GroupLabel>{t('secretNote.theirNote', { name })}</GroupLabel>
-          <Animated.View layout={GLIDE} style={[styles.card, styles.pad]}>
+          <Animated.View layout={GLIDE} style={[featureStyles.card, styles.pad]}>
             {exchanged ? (
               <OpenedNote
                 key={note.id}
@@ -118,12 +113,12 @@ export default function SecretNoteScreen() {
               <View style={styles.row}>
                 <Txt style={[styles.muted, styles.flex]}>{t('games.busy', { name })}</Txt>
                 <PressableScale scaleTo={0.95} accessibilityRole="button" onPress={() => retrySecretNote(note.id)}>
-                  <Txt style={styles.againText}>{t('common.retry')}</Txt>
+                  <Txt style={[styles.againText, { color: accent.strong }]}>{t('common.retry')}</Txt>
                 </PressableScale>
               </View>
             ) : composing ? (
               <View style={styles.row}>
-                <Anim name="typing" size={26} tint={aurora.tint} />
+                <Anim name="typing" size={26} tint={accent.strong} />
                 <Txt style={styles.muted}>{t('secretNote.thinking')}</Txt>
               </View>
             ) : (
@@ -136,12 +131,12 @@ export default function SecretNoteScreen() {
           <Animated.View layout={GLIDE}>
             <GroupLabel>{t('secretNote.yourNote')}</GroupLabel>
           </Animated.View>
-          <Animated.View layout={GLIDE} style={[styles.card, styles.pad]}>
+          <Animated.View layout={GLIDE} style={[featureStyles.card, styles.pad]}>
             <TextInput
               value={note.myNote}
               onChangeText={(text) => writeNote(note.id, text.slice(0, MAX_LENGTH))}
               placeholder={t('secretNote.placeholder')}
-              placeholderTextColor={aurora.textMuted}
+              placeholderTextColor={systemGround.secondaryLabel}
               style={styles.input}
               multiline
               editable={!exchanged}
@@ -166,9 +161,9 @@ export default function SecretNoteScreen() {
                   setJustOpened(false);
                   newSecretNote(character.id);
                 }}
-                style={styles.again}>
-                <Ionicons name="refresh" size={16} color={STORE.peachInk} />
-                <Txt style={styles.againText}>{t('secretNote.newQuestion')}</Txt>
+                style={[styles.again, { backgroundColor: accent.soft }]}>
+                <Ionicons name="refresh" size={16} color={accent.strong} />
+                <Txt style={[styles.againText, { color: accent.strong }]}>{t('secretNote.newQuestion')}</Txt>
               </PressableScale>
             </Animated.View>
           ) : null}
@@ -191,29 +186,17 @@ export default function SecretNoteScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
-  card: { marginHorizontal: space.lg, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
   pad: { padding: space.lg },
   prompt: { marginTop: 18, alignItems: 'center', gap: 6, paddingVertical: 22, paddingHorizontal: space.xl },
-  promptLabel: { marginTop: 4, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: aurora.textMuted, textTransform: 'uppercase' },
-  promptText: { fontSize: 22, lineHeight: 29, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
+  promptLabel: { marginTop: 4, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: systemGround.secondaryLabel, textTransform: 'uppercase' },
+  promptText: { fontSize: 22, lineHeight: 29, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  muted: { fontSize: 13, lineHeight: 18, color: aurora.textMuted },
-  input: { minHeight: 120, padding: 0, fontSize: 17, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
-  counter: { alignSelf: 'flex-end', marginTop: space.sm, fontSize: 12, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  muted: { fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  input: { minHeight: 120, padding: 0, fontSize: 17, lineHeight: 24, letterSpacing: -0.3, color: systemGround.label },
+  counter: { alignSelf: 'flex-end', marginTop: space.sm, fontSize: 12, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   doneBlock: { alignItems: 'center', gap: space.md, marginTop: 22 },
   done: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   doneText: { fontSize: 15, fontWeight: '600', color: colors.bondText },
-  again: {
-    height: 40,
-    paddingHorizontal: space.lg,
-    borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: STORE.peachSoft,
-  },
-  againText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
+  again: { height: 40, paddingHorizontal: space.lg, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  againText: { fontSize: 15, fontWeight: '700' },
 });

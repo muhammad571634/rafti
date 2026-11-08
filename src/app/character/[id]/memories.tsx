@@ -7,7 +7,7 @@ import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PeachButton, SoftSegmented, TitleTop, TopButton } from '@/components/character/kit';
+import { FriendAccent, PeachButton, SoftSegmented, TitleTop, TopButton, useFriendAccent } from '@/components/character/kit';
 import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
@@ -15,7 +15,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, fonts, isDark, palette, radius, space, systemGround, type } from '@/theme';
+import { bottomRoom, colors, fonts, friendAccent, isDark, palette, radius, space, systemGround, type } from '@/theme';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
 /** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
@@ -107,133 +107,136 @@ export default function MemoriesScreen() {
 
   return (
     // The four tabs' look (0z153): Apple's white ground, a heavy title by round buttons, the meter as a white
-    // card, a soft switch of the three tabs, then the chosen tab's memories in white cards.
-    <Screen background={systemGround.ground}>
-      <TitleTop
-        title={t('memories.title')}
-        onBack={() => router.back()}
-        right={<TopButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
-      />
+    // card, a soft switch of the three tabs, then the chosen tab's memories in white cards; their space,
+    // so their accent marks what is pinned.
+    <FriendAccent value={characterId ? friendAccent(characterId) : null}>
+      <Screen background={systemGround.ground}>
+        <TitleTop
+          title={t('memories.title')}
+          onBack={() => router.back()}
+          right={<TopButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
+        />
 
-      <FlatList
-        data={groups}
-        keyExtractor={(group) => group.key}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <>
-            <Meter
-              counts={counts}
-              labels={tabLabel}
-              total={open.length}
-              locked={locked.length}
-              full={full}
-            />
-            <View style={styles.tabs}>
-              <SoftSegmented
-                options={MEMORY_TABS.map((value) => ({ value, label: tabLabel[value] }))}
-                value={tab}
-                onChange={setTab}
+        <FlatList
+          data={groups}
+          keyExtractor={(group) => group.key}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <>
+              <Meter
+                counts={counts}
+                labels={tabLabel}
+                total={open.length}
+                locked={locked.length}
+                full={full}
               />
+              <View style={styles.tabs}>
+                <SoftSegmented
+                  options={MEMORY_TABS.map((value) => ({ value, label: tabLabel[value] }))}
+                  value={tab}
+                  onChange={setTab}
+                />
+              </View>
+            </>
+          }
+          renderItem={({ item: group }) => (
+            <View>
+              <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short })}</Txt>
+              {group.items.map((memory, index) => (
+                <MemoryRow
+                  key={memory.id}
+                  memory={memory}
+                  who={memory.quote ? (memory.quote.author === 'me' ? t('memories.you') : short) : undefined}
+                  first={index === 0}
+                  last={index === group.items.length - 1}
+                  onEdit={() => startEdit(memory)}
+                  onPin={() => togglePin(memory.id)}
+                  onDelete={() => deleteMemory(memory.id)}
+                />
+              ))}
             </View>
-          </>
-        }
-        renderItem={({ item: group }) => (
-          <View>
-            <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short })}</Txt>
-            {group.items.map((memory, index) => (
-              <MemoryRow
-                key={memory.id}
-                memory={memory}
-                who={memory.quote ? (memory.quote.author === 'me' ? t('memories.you') : short) : undefined}
-                first={index === 0}
-                last={index === group.items.length - 1}
-                onEdit={() => startEdit(memory)}
-                onPin={() => togglePin(memory.id)}
-                onDelete={() => deleteMemory(memory.id)}
+          )}
+          ListEmptyComponent={
+            lockedHere.length > 0 ? undefined : (
+              <EmptyState
+                compact
+                symbol={empty.symbol}
+                title={empty.title}
+                hint={empty.hint}
+                actionLabel={tab === 'you' ? t('memories.addManual') : undefined}
+                onAction={tab === 'you' ? () => setAdding(true) : undefined}
               />
+            )
+          }
+          ListFooterComponent={
+            lockedHere.length > 0 ? <LockedBox memories={lockedHere} onPress={() => setUnlocking(true)} /> : undefined
+          }
+        />
+
+        {locked.length > 0 ? (
+          <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+            <PeachButton label={t('memories.unlock')} icon="lock-open" onPress={() => setUnlocking(true)} />
+            <Txt variant="caption" color={colors.textSecondary} center>
+              {t('memories.unlockCaption', { price: PLANS.basic.price })}
+            </Txt>
+          </View>
+        ) : null}
+
+        <Sheet
+          visible={adding || editingId != null}
+          onClose={closeSheet}
+          title={editingId ? t('memories.edit') : t('memories.addManual')}
+          avoidKeyboard>
+          <TextInput
+            value={draft}
+            onChangeText={setDraft}
+            placeholder={t('memories.addManual')}
+            placeholderTextColor={colors.textFaint}
+            style={styles.input}
+            multiline
+            autoFocus
+          />
+          <Button label={t('common.save')} onPress={save} full disabled={!draft.trim()} />
+        </Sheet>
+
+        <Sheet visible={unlocking} onClose={() => setUnlocking(false)}>
+          <View style={styles.sheetHead}>
+            <View style={styles.lockArt}>
+              <Ionicons name="lock-closed" size={28} color={colors.textSecondary} />
+            </View>
+            <Txt variant="h3" center>
+              {t('memories.lockedTitle', { name: short, count: locked.length })}
+            </Txt>
+          </View>
+          <View style={styles.perks}>
+            {[
+              t('memories.allOpen'),
+              t('plans.shellsMonth', { amount: PLANS.basic.shells.toLocaleString('en-US') }),
+            ].map((perk) => (
+              <View key={perk} style={styles.perk}>
+                <Ionicons name="checkmark" size={17} color={colors.text} />
+                <Txt variant="body" style={styles.flex}>
+                  {perk}
+                </Txt>
+              </View>
             ))}
           </View>
-        )}
-        ListEmptyComponent={
-          lockedHere.length > 0 ? undefined : (
-            <EmptyState
-              compact
-              symbol={empty.symbol}
-              title={empty.title}
-              hint={empty.hint}
-              actionLabel={tab === 'you' ? t('memories.addManual') : undefined}
-              onAction={tab === 'you' ? () => setAdding(true) : undefined}
+          <View style={styles.actions}>
+            <Button
+              label={t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })}
+              size="lg"
+              full
+              onPress={unlock}
             />
-          )
-        }
-        ListFooterComponent={
-          lockedHere.length > 0 ? <LockedBox memories={lockedHere} onPress={() => setUnlocking(true)} /> : undefined
-        }
-      />
-
-      {locked.length > 0 ? (
-        <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
-          <PeachButton label={t('memories.unlock')} icon="lock-open" onPress={() => setUnlocking(true)} />
-          <Txt variant="caption" color={colors.textSecondary} center>
-            {t('memories.unlockCaption', { price: PLANS.basic.price })}
-          </Txt>
-        </View>
-      ) : null}
-
-      <Sheet
-        visible={adding || editingId != null}
-        onClose={closeSheet}
-        title={editingId ? t('memories.edit') : t('memories.addManual')}
-        avoidKeyboard>
-        <TextInput
-          value={draft}
-          onChangeText={setDraft}
-          placeholder={t('memories.addManual')}
-          placeholderTextColor={colors.textFaint}
-          style={styles.input}
-          multiline
-          autoFocus
-        />
-        <Button label={t('common.save')} onPress={save} full disabled={!draft.trim()} />
-      </Sheet>
-
-      <Sheet visible={unlocking} onClose={() => setUnlocking(false)}>
-        <View style={styles.sheetHead}>
-          <View style={styles.lockArt}>
-            <Ionicons name="lock-closed" size={28} color={colors.textSecondary} />
+            <Txt variant="caption" color={colors.textMuted} center>
+              {t('plans.billed.basic')}
+            </Txt>
+            <Button label={t('plans.notNow')} variant="ghost" full onPress={() => setUnlocking(false)} />
           </View>
-          <Txt variant="h3" center>
-            {t('memories.lockedTitle', { name: short, count: locked.length })}
-          </Txt>
-        </View>
-        <View style={styles.perks}>
-          {[
-            t('memories.allOpen'),
-            t('plans.shellsMonth', { amount: PLANS.basic.shells.toLocaleString('en-US') }),
-          ].map((perk) => (
-            <View key={perk} style={styles.perk}>
-              <Ionicons name="checkmark" size={17} color={colors.text} />
-              <Txt variant="body" style={styles.flex}>
-                {perk}
-              </Txt>
-            </View>
-          ))}
-        </View>
-        <View style={styles.actions}>
-          <Button
-            label={t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })}
-            size="lg"
-            full
-            onPress={unlock}
-          />
-          <Txt variant="caption" color={colors.textMuted} center>
-            {t('plans.billed.basic')}
-          </Txt>
-          <Button label={t('plans.notNow')} variant="ghost" full onPress={() => setUnlocking(false)} />
-        </View>
-      </Sheet>
-    </Screen>
+        </Sheet>
+      </Screen>
+    </FriendAccent>
   );
 }
 
@@ -349,6 +352,7 @@ function MemoryRow({
   onPin: () => void;
   onDelete: () => void;
 }) {
+  const accent = useFriendAccent();
   const { t } = useTranslation();
   const swipe = useRef<SwipeableMethods>(null);
   const quoted = memory.quote != null;
@@ -421,7 +425,7 @@ function MemoryRow({
                 {relativeStamp(memory.createdAt)}
               </Txt>
             </View>
-            {memory.pinned ? <Ionicons name="pin" size={16} color={colors.brandText} style={styles.pin} /> : null}
+            {memory.pinned ? <Ionicons name="pin" size={16} color={accent?.strong ?? colors.brandText} style={styles.pin} /> : null}
           </View>
         </Pressable>
       </ReanimatedSwipeable>

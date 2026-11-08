@@ -105,12 +105,7 @@ export default function BoardScreen() {
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: space.lg, paddingTop: 18 },
   // A pinned paper casts a soft shadow on the ground.
-  paper: {
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-  },
+  paper: { boxShadow: '0px 6px 14px rgba(0,0,0,0.1)' },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingHorizontal: 2 },
   who: { flex: 1, minWidth: 0 },
   name: { fontSize: 13, fontWeight: '600', color: systemGround.label },

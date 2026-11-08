@@ -9,13 +9,14 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { planDate, planPrice, planTime, SUBSCRIPTIONS_URL, wholeMinutes } from '@/components/plans/copy';
-import { CARD_SHADOW, GroupLabel, IconTile, ProGradient, ProPill, STORE } from '@/components/plans/store-look';
-import { AuroraGlass, Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
+import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
+import { GroupLabel, IconTile, ProGradient, ProPill, STORE } from '@/components/plans/store-look';
+import { Button, PressableScale, Screen, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
 import { PACK_DAYS, planStatus, PLANS, TOP_UPS, TRIAL, type MinutesKind } from '@/economy/plans';
 import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, moduleFills, space, systemColors } from '@/theme';
+import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -28,8 +29,8 @@ const CALLS = systemColors.green;
 const VOICE = systemColors.pink;
 
 /**
- * What the user is on and what is left, on the aurora in the Store's look (2026-10-22, coded at
- * the owner's word without a prototype): the plan as a card (Pro's gradient for Pro and the
+ * What the user is on and what is left, on Apple's white ground in the Store's look (design-style
+ * §10): the plan as a card (Pro's gradient for Pro and the
  * trial), this period's call and voice minutes as Fitness-style rings, extra minutes for shells,
  * and the way to change or cancel. Free users see today's free shells and the way to Pro.
  */
@@ -141,25 +142,19 @@ export default function MyPlanScreen() {
   ];
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <View style={styles.bar}>
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-            </AuroraGlass>
-          </PressableScale>
-        </View>
+        <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} />
         <Txt style={styles.largeTitle} accessibilityRole="header">
           {t('plans.myPlan')}
         </Txt>
 
-        {pro ? <ProGradient style={[styles.hero, styles.heroPro]}>{heroBody}</ProGradient> : <View style={[styles.hero, styles.card]}>{heroBody}</View>}
+        {pro ? <ProGradient style={[styles.hero, styles.heroPro]}>{heroBody}</ProGradient> : <View style={[styles.hero, featureStyles.card]}>{heroBody}</View>}
 
         {status ? (
           <>
             <GroupLabel>{status.trial ? t('plans.yourTrial') : t('plans.thisMonth')}</GroupLabel>
-            <View style={styles.card}>
+            <View style={featureStyles.card}>
               {withCalls ? (
                 <View style={styles.rings}>
                   <MinutesRing
@@ -198,7 +193,7 @@ export default function MyPlanScreen() {
         ) : (
           <>
             <GroupLabel>{t('plans.today')}</GroupLabel>
-            <View style={styles.card}>
+            <View style={featureStyles.card}>
               <View style={[styles.row, styles.rowLine]}>
                 <IconTile fill={moduleFills.store}>
                   <ShellIcon size={17} tintColor={colors.white} />
@@ -235,7 +230,7 @@ export default function MyPlanScreen() {
         {status && !status.trial && withCalls ? (
           <>
             <GroupLabel>{t('plans.needMore')}</GroupLabel>
-            <View style={styles.card}>
+            <View style={featureStyles.card}>
               {(['call', 'voice'] as const).map((kind, i) => (
                 <View key={kind} style={[styles.row, i === 0 && styles.rowLine]}>
                   <IconTile fill={kind === 'call' ? CALLS : VOICE}>
@@ -266,14 +261,14 @@ export default function MyPlanScreen() {
         ) : null}
 
         <GroupLabel>{t('plans.planSection')}</GroupLabel>
-        <View style={styles.card}>
+        <View style={featureStyles.card}>
           {links.map((link, i) => (
             <PressableScale key={link.key} scaleTo={0.985} accessibilityRole="button" onPress={link.onPress} style={[styles.row, i < links.length - 1 && styles.rowLine]}>
               <IconTile fill={link.fill}>
                 <SFIcon ios={link.ios} icon={link.icon} size={17} color={colors.white} />
               </IconTile>
               <Txt style={styles.rowTitle}>{link.title}</Txt>
-              <Ionicons name="chevron-forward" size={15} color={STORE.faint} />
+              <Ionicons name="chevron-forward" size={15} color={systemGround.secondaryLabel} />
             </PressableScale>
           ))}
         </View>
@@ -352,9 +347,6 @@ function MinutesRing({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
   largeTitle: {
     marginTop: 6,
     marginHorizontal: space.lg,
@@ -362,18 +354,14 @@ const styles = StyleSheet.create({
     lineHeight: 41,
     fontWeight: '700',
     letterSpacing: 0.4,
-    color: colors.text,
+    color: systemGround.label,
   },
-  card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },
   hero: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 20, padding: space.lg },
   heroPro: {
     marginHorizontal: space.lg,
     borderRadius: 24,
+    borderCurve: 'continuous',
     overflow: 'hidden',
-    shadowColor: '#5B3FD9',
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 14 },
   },
   heroIcon: {
     width: 48,
@@ -386,24 +374,24 @@ const styles = StyleSheet.create({
   heroIconPlain: { backgroundColor: systemColors.fill },
   heroName: { fontSize: 26, lineHeight: 32, fontWeight: '800', letterSpacing: 0.2, color: colors.white },
   heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, color: 'rgba(255,255,255,0.88)' },
-  inkText: { color: colors.text },
-  mutedText: { color: aurora.textMuted },
+  inkText: { color: systemGround.label },
+  mutedText: { color: systemGround.secondaryLabel },
   rings: { flexDirection: 'row', paddingVertical: 18, paddingHorizontal: space.sm },
   ringCell: { flex: 1, alignItems: 'center' },
   ring: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
   // The arc starts at 12 o'clock, as Fitness draws it.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
-  ringLabel: { marginTop: 10, fontSize: 13, fontWeight: '600', color: aurora.textMuted },
-  ringValue: { marginTop: 2, fontSize: 22, lineHeight: 26, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] },
-  ringTotal: { fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
+  ringLabel: { marginTop: 10, fontSize: 13, fontWeight: '600', color: systemGround.secondaryLabel },
+  ringValue: { marginTop: 2, fontSize: 22, lineHeight: 26, fontWeight: '800', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  ringTotal: { fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   ringExtra: { marginTop: 4, fontSize: 13, fontWeight: '600', color: STORE.peachInk },
   row: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
-  rowTopLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: aurora.separator },
-  rowTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  meta: { fontSize: 15, color: aurora.textMuted },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+  rowTopLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
+  rowTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
+  meta: { fontSize: 15, color: systemGround.secondaryLabel },
   value: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  valueText: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
+  valueText: { fontSize: 17, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
   buy: {
     height: 32,
     paddingHorizontal: 12,
@@ -414,10 +402,10 @@ const styles = StyleSheet.create({
     backgroundColor: STORE.peachSoft,
   },
   buyText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk, fontVariant: ['tabular-nums'] },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   cta: { gap: space.sm, marginTop: 22, marginHorizontal: space.lg },
   ctaButton: { height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
   ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
-  ctaCaption: { fontSize: 13, textAlign: 'center', color: aurora.textMuted },
+  ctaCaption: { fontSize: 13, textAlign: 'center', color: systemGround.secondaryLabel },
   done: { alignItems: 'center', gap: space.lg },
 });

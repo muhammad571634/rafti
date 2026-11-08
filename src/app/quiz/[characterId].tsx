@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
+import { RoundButton } from '@/components/feature/feature-kit';
+import { BUY_BAR_SPACE, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import {
   Anim,
-  AuroraGlass,
   Button,
   CharacterAvatar,
   LargeTitle,
@@ -28,7 +28,7 @@ import { QUIZ_LINES, QUIZ_PACKS, SELF_QUIZ } from '@/mock/games';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { askSelfQuiz, displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
-import { aurora, colors, hitSlop, isDark, moduleFills, space, systemColors } from '@/theme';
+import { colors, hitSlop, isDark, moduleFills, space, systemColors, systemGround } from '@/theme';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -52,7 +52,7 @@ const NEW_PACKS = ['qp_late_night', 'qp_habits'];
 const QUIZ_FILL = systemColors.indigo;
 
 /**
- * Couple quiz (F29), on the aurora like the world quiz it links to. Home: the friend's own quiz
+ * Couple quiz (F29), on Apple's white ground like the world quiz it links to. Home: the friend's own quiz
  * (5 questions about themselves, new each week) as the one featured card, their world's quiz that
  * wins a Photo Booth frame, the packs and the quizzes the user wrote, as iOS inset groups. In play
  * the friend's pick shows the moment you answer, with a line in their world's voice; the score
@@ -87,20 +87,12 @@ export default function QuizScreen() {
   const week = useMemo(() => weekKey(new Date()), []);
 
   const back = (onPress: () => void, icon: 'chevron-back' | 'close' = 'chevron-back') => (
-    <PressableScale
-      scaleTo={0.9}
-      accessibilityRole="button"
-      accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')}
-      onPress={onPress}>
-      <AuroraGlass style={styles.round}>
-        <Ionicons name={icon} size={22} color={colors.text} style={icon === 'chevron-back' && styles.backIcon} />
-      </AuroraGlass>
-    </PressableScale>
+    <RoundButton icon={icon} accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')} onPress={onPress} />
   );
 
   if (!character) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <View style={styles.bar}>{back(() => router.back())}</View>
         <LargeTitle>{t('games.quiz')}</LargeTitle>
       </Screen>
@@ -143,7 +135,7 @@ export default function QuizScreen() {
 
   if (asked) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <View style={styles.bar}>{back(leaveAsking)}</View>
         <View style={styles.asking}>
           <CharacterAvatar character={character} size={80} />
@@ -156,7 +148,7 @@ export default function QuizScreen() {
             </>
           ) : (
             <>
-              <Anim name="typing" size={32} tint={aurora.tint} />
+              <Anim name="typing" size={32} tint={colors.brandText} />
               <Txt style={styles.askingText} center>
                 {t('common.thinking')}
               </Txt>
@@ -178,7 +170,7 @@ export default function QuizScreen() {
     };
     const won = world ? wonFrames.includes(world.key) : false;
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
           <View style={styles.bar}>
             {back(() => router.back())}
@@ -196,10 +188,10 @@ export default function QuizScreen() {
             accessibilityLabel={t('quizHome.selfPlay', { name })}
             style={[styles.card, styles.selfCard]}
             onPress={() => (modelIsOn() ? void ask({ id: selfRun.id, title: selfRun.title }) : start(selfRun))}>
-            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? aurora.glassOn }]}>
+            <View style={[styles.selfHero, { backgroundColor: world?.tint ?? systemGround.fill }]}>
               {/* The world's pastel, quieter in dark mode (HIG Dark Mode: dimmer colours). */}
               {isDark ? <View style={styles.heroShade} /> : null}
-              <CharacterAvatar character={character} size={64} ring ringColor={aurora.card} />
+              <CharacterAvatar character={character} size={64} ring ringColor={systemGround.card} />
               {world ? (
                 <View style={styles.worldPill}>
                   <Txt style={styles.worldPillText}>{phrase(world.series)}</Txt>
@@ -296,7 +288,7 @@ export default function QuizScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={t('quizHome.edit', { title: q.title })}
                   onPress={() => router.push({ pathname: '/quiz/write', params: { id: q.id } })}>
-                  <SFIcon ios="pencil" icon="create-outline" size={20} color={aurora.textMuted} />
+                  <SFIcon ios="pencil" icon="create-outline" size={20} color={systemGround.secondaryLabel} />
                 </PressableScale>
               </View>
             ))}
@@ -312,12 +304,12 @@ export default function QuizScreen() {
   // 3. The score.
   if (done) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={[styles.result, styles.resultTop]}>
             <View style={styles.pair}>
               <UserAvatar user={user} size={80} />
-              <CharacterAvatar character={character} size={80} ring ringColor={aurora.card} style={styles.overlap} />
+              <CharacterAvatar character={character} size={80} ring ringColor={systemGround.card} style={styles.overlap} />
             </View>
             <View style={styles.score} accessible accessibilityLabel={`${matches} / ${total}`}>
               <SFIcon ios={MODULE_GLYPH.bond.ios} icon={MODULE_GLYPH.bond.icon} size={36} color={moduleFills.bond} />
@@ -363,7 +355,7 @@ export default function QuizScreen() {
   };
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <View style={[styles.bar, styles.playBar]}>
         {back(() => setRun(null), 'close')}
         <View style={styles.dots} accessible accessibilityLabel={`${index + 1} / ${total}`}>
@@ -403,7 +395,7 @@ export default function QuizScreen() {
           <View style={styles.says} accessibilityLiveRegion="polite">
             <CharacterAvatar character={character} size={32} />
             <View style={styles.bubble}>
-              <Txt style={[styles.verdict, { color: same ? colors.bondText : aurora.textMuted }]}>
+              <Txt style={[styles.verdict, { color: same ? colors.bondText : systemGround.secondaryLabel }]}>
                 {same ? t('games.same', { count: matches, n: index + 1 }) : t('games.differ', { name })}
               </Txt>
               <Txt style={styles.bubbleText}>{line}</Txt>
@@ -418,7 +410,7 @@ export default function QuizScreen() {
 }
 
 /**
- * One answer as an aurora card. Yours takes an ink border and a "You" tag (ink marks selection),
+ * One answer as a grey card. Yours takes an ink border and a "You" tag (ink marks selection),
  * theirs their face; when both picked it, the border is the bond's mint.
  */
 function Option({
@@ -460,10 +452,8 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
   playBar: { height: 56, gap: space.md },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
-  hostRing: { padding: 2, borderRadius: 20, backgroundColor: aurora.ring },
-  card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: aurora.card, ...CARD_SHADOW },
+  hostRing: { padding: 2, borderRadius: 20, backgroundColor: systemGround.fill },
+  card: { marginHorizontal: space.lg, borderRadius: 20, overflow: 'hidden', backgroundColor: systemGround.card },
   selfCard: { marginTop: 20 },
   selfHero: { height: 116, flexDirection: 'row', alignItems: 'flex-end', padding: 14 },
   heroShade: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0,0,0,0.55)' },
@@ -474,36 +464,36 @@ const styles = StyleSheet.create({
     height: 26,
     paddingHorizontal: 10,
     borderRadius: 13,
-    backgroundColor: aurora.card,
+    backgroundColor: systemGround.card,
     justifyContent: 'center',
   },
   worldPillText: { fontSize: 13, fontWeight: '600', color: colors.text },
   selfBody: { padding: space.lg, paddingTop: 14, gap: 4 },
   selfTitle: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
-  selfText: { fontSize: 15, lineHeight: 20, color: aurora.textMuted },
+  selfText: { fontSize: 15, lineHeight: 20, color: systemGround.secondaryLabel },
   cta: { marginTop: 12, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
   ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
   worldRow: { marginTop: space.md },
   row: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: aurora.separator },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
   rowTitle: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  rowHint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: aurora.textMuted },
+  rowHint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
   won: { color: colors.bondText },
   addText: { flex: 1, color: STORE.peachInk },
   newPill: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.peachSoft },
   newText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: aurora.glassOn },
-  dotOn: { backgroundColor: aurora.tint },
+  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: systemGround.fill },
+  dotOn: { backgroundColor: colors.brandText },
   progress: {
     marginTop: space.md,
     marginHorizontal: space.lg,
     fontSize: 13,
     fontWeight: '600',
     letterSpacing: 0.2,
-    color: aurora.textMuted,
+    color: systemGround.secondaryLabel,
     textTransform: 'uppercase',
   },
   question: { marginTop: 6, marginHorizontal: space.lg, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
@@ -518,8 +508,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: 'transparent',
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   optionText: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
   mine: { borderColor: colors.text },
@@ -535,13 +524,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderBottomLeftRadius: 6,
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
   bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
   asking: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingHorizontal: space.xl, paddingBottom: space.huge },
-  askingText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: aurora.textMuted },
+  askingText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: systemGround.secondaryLabel },
   result: { alignItems: 'center', gap: space.md, paddingHorizontal: space.xl },
   resultTop: { paddingTop: space.huge },
   pair: { flexDirection: 'row' },

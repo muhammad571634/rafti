@@ -7,8 +7,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { ClayIconName } from '@/assets/brand/registry';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
-import { BUY_BAR_SPACE, CARD_SHADOW, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
-import { AuroraGlass, ClayIcon, LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
+import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
+import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
+import { ClayIcon, LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
 import {
   FRAME_CAPTION_MAX,
   FRAME_COLORS,
@@ -19,12 +20,11 @@ import {
   toggleSticker,
 } from '@/lib/frames';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space, systemColors } from '@/theme';
+import { colors, signature, space, systemColors, systemGround } from '@/theme';
 import type { UserFrame } from '@/types';
 
 const GUTTER = space.lg;
 const CARD_PAD = 14;
-const WELL = colors.well;
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
 function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
@@ -41,8 +41,8 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 /**
  * Make a Photo Booth frame (F29): a color, a pattern, up to two stickers and a caption, with the
  * picture updating as you pick. Only pieces, no uploads; free and private. `id` edits a saved
- * frame; pictures already taken keep the frame they were shot in. iOS look on the aurora
- * (2026-10-22, coded at the owner's word), in Photo Booth's cards and bar.
+ * frame; pictures already taken keep the frame they were shot in. Photo Booth's look on Apple's
+ * white ground (design-style §10): grey cards, Photos' blue for what is picked and for Save.
  */
 export default function FrameEditScreen() {
   const insets = useSafeAreaInsets();
@@ -92,29 +92,26 @@ export default function FrameEditScreen() {
     );
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
           contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <View style={styles.bar}>
-            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()}>
-              <AuroraGlass style={styles.round}>
-                <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-              </AuroraGlass>
-            </PressableScale>
-            {editing ? (
-              <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('frames.delete')} onPress={remove}>
-                <AuroraGlass style={styles.round}>
+          <FeatureBar
+            backLabel={t('common.back')}
+            onBack={() => router.back()}
+            right={
+              editing ? (
+                <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('frames.delete')} onPress={remove} style={styles.round}>
                   <Ionicons name="trash" size={19} color={systemColors.red} />
-                </AuroraGlass>
-              </PressableScale>
-            ) : null}
-          </View>
+                </PressableScale>
+              ) : undefined
+            }
+          />
           <LargeTitle>{editing ? t('frames.titleEdit') : t('frames.titleNew')}</LargeTitle>
 
-          <View style={[styles.card, styles.previewCard]}>
+          <View style={[featureStyles.card, styles.previewCard]}>
             <View style={styles.preview}>
               {model ? (
                 <BoothPicture
@@ -128,7 +125,7 @@ export default function FrameEditScreen() {
           </View>
 
           <GroupLabel>{t('frames.color')}</GroupLabel>
-          <View style={[styles.card, styles.pad, styles.wrap]}>
+          <View style={[featureStyles.card, styles.pad, styles.wrap]}>
             {FRAME_COLORS.map((c) => {
               const on = c.id === color;
               return (
@@ -148,7 +145,6 @@ export default function FrameEditScreen() {
 
           <GroupLabel>{t('frames.pattern')}</GroupLabel>
           <Segmented
-            tone="aurora"
             options={FRAME_PATTERNS.map((p) => ({ value: p, label: t(`frames.patterns.${p}`) }))}
             value={pattern}
             onChange={setPattern}
@@ -159,7 +155,7 @@ export default function FrameEditScreen() {
             <GroupLabel>{t('frames.stickers')}</GroupLabel>
             <Txt style={styles.labelValue}>{t('frames.upTo')}</Txt>
           </View>
-          <View style={[styles.card, styles.pad, styles.stickers]}>
+          <View style={[featureStyles.card, styles.pad, styles.stickers]}>
             {FRAME_STICKERS.map((s) => {
               const on = stickers.includes(s);
               return (
@@ -178,12 +174,12 @@ export default function FrameEditScreen() {
           </View>
 
           <GroupLabel>{t('frames.caption')}</GroupLabel>
-          <View style={styles.card}>
+          <View style={featureStyles.card}>
             <TextInput
               value={caption}
               onChangeText={setCaption}
               placeholder={t('frames.captionPlaceholder')}
-              placeholderTextColor={aurora.textMuted}
+              placeholderTextColor={systemGround.secondaryLabel}
               accessibilityLabel={t('frames.caption')}
               maxLength={FRAME_CAPTION_MAX}
               style={styles.input}
@@ -191,12 +187,12 @@ export default function FrameEditScreen() {
           </View>
 
           <GroupLabel>{t('frames.name')}</GroupLabel>
-          <View style={styles.card}>
+          <View style={featureStyles.card}>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder={t('frames.namePlaceholder')}
-              placeholderTextColor={aurora.textMuted}
+              placeholderTextColor={systemGround.secondaryLabel}
               accessibilityLabel={t('frames.name')}
               maxLength={FRAME_NAME_MAX}
               style={styles.input}
@@ -204,7 +200,7 @@ export default function FrameEditScreen() {
           </View>
         </ScrollView>
 
-        <StoreBuyBar label={t('frames.save')} caption={t('frames.saveHint')} onPress={save} />
+        <StoreBuyBar label={t('frames.save')} caption={t('frames.saveHint')} onPress={save} look={signature.photo} />
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -212,37 +208,29 @@ export default function FrameEditScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  bar: {
-    height: 44,
-    paddingHorizontal: GUTTER,
-    paddingTop: space.xs,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
-  card: { marginHorizontal: GUTTER, borderRadius: 20, backgroundColor: aurora.card, ...CARD_SHADOW },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   previewCard: { marginTop: 18, padding: CARD_PAD, borderRadius: 24 },
-  preview: { height: 236, borderRadius: 16, backgroundColor: WELL, alignItems: 'center', justifyContent: 'center' },
+  // The picture's stage: the white ground set into the grey card.
+  preview: { height: 236, borderRadius: 16, borderCurve: 'continuous', backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
   tilt: { transform: [{ rotate: '-2deg' }] },
   pad: { padding: CARD_PAD },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   gutter: { marginHorizontal: GUTTER },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: aurora.textMuted },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: systemGround.secondaryLabel },
   swatchRing: { width: 46, height: 46, borderRadius: 23, borderWidth: 2.5, borderColor: 'transparent', padding: 3 },
-  swatchOn: { borderColor: aurora.tint },
-  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: aurora.separator },
+  swatchOn: { borderColor: signature.photo.strong },
+  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderStrong },
   stickers: { flexDirection: 'row', justifyContent: 'space-between' },
   sticker: {
     borderRadius: 14,
+    borderCurve: 'continuous',
     borderWidth: 2.5,
     borderColor: 'transparent',
-    backgroundColor: WELL,
+    backgroundColor: systemGround.ground,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stickerOn: { borderColor: aurora.tint, backgroundColor: aurora.card },
-  input: { minHeight: 50, paddingHorizontal: GUTTER, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  stickerOn: { borderColor: signature.photo.strong },
+  input: { minHeight: 50, paddingHorizontal: GUTTER, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
 });

@@ -82,7 +82,7 @@ export function TintCapsule({
 
 export const featureStyles = StyleSheet.create({
   /** A grey card on the white ground; rows inside run edge to edge. */
-  card: { marginHorizontal: space.lg, borderRadius: 22, backgroundColor: systemGround.card, overflow: 'hidden' },
+  card: { marginHorizontal: space.lg, borderRadius: 22, borderCurve: 'continuous', backgroundColor: systemGround.card, overflow: 'hidden' },
 });
 
 const styles = StyleSheet.create({
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   backNudge: { marginLeft: -2 },
   bar: { height: ROUND, paddingHorizontal: space.lg, marginTop: space.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   // No clip: a card may have something peeking over its edge (the check-in's mascot).
-  hero: { marginHorizontal: space.lg, borderRadius: 26 },
+  hero: { marginHorizontal: space.lg, borderRadius: 26, borderCurve: 'continuous' },
   capsule: { minWidth: 64, height: 32, paddingHorizontal: 14, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   capsuleText: { fontSize: 15, fontWeight: '700' },
   off: { opacity: 0.5 },

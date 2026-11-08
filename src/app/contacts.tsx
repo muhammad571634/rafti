@@ -20,7 +20,7 @@ import {
 } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
-import { aurora, colors, space } from '@/theme';
+import { colors, space } from '@/theme';
 
 type Filter = 'all' | 'mine';
 
@@ -89,7 +89,7 @@ export default function ContactsScreen() {
           <View style={styles.group}>
             <PressableScale style={styles.row} scaleTo={0.985} accessibilityRole="button" onPress={() => router.push('/create-character')}>
               <View style={styles.addCircle}>
-                <Ionicons name="add" size={26} color={colors.white} />
+                <Ionicons name="add" size={26} color={colors.textOnPrimary} />
               </View>
               <Txt style={[styles.name, styles.addText]}>{t('contacts.create')}</Txt>
               <View style={styles.line} />
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     width: AVATAR,
     height: AVATAR,
     borderRadius: AVATAR / 2,
-    backgroundColor: aurora.tint,
+    backgroundColor: colors.primaryFill,
     alignItems: 'center',
     justifyContent: 'center',
   },

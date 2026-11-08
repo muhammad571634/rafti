@@ -380,7 +380,7 @@ export default function PhotoBoothScreen() {
         caption={quota ? undefined : t('photoBooth.withPro')}
         disabled={!partner || shooting || (quota != null && quota.left <= 0)}
         onPress={shoot}
-        system
+       
         look={signature.photo}
         left={
           quota ? (

@@ -6,8 +6,9 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
-import { CARD_SHADOW, BUY_BAR_SPACE, STORE, StoreBuyBar } from '@/components/plans/store-look';
-import { AuroraGlass, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { RoundButton } from '@/components/feature/feature-kit';
+import { BUY_BAR_SPACE, STORE, StoreBuyBar } from '@/components/plans/store-look';
+import { CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import type { WriteResults } from '@/ai/writes';
 import { lineFor, pickSome, WORLD_PASS, WORLD_QUESTIONS } from '@/lib/quiz';
@@ -15,13 +16,13 @@ import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
-import { aurora, colors, space, systemColors } from '@/theme';
+import { colors, space, systemColors, systemGround } from '@/theme';
 import type { Character } from '@/types';
 
 type Phase = 'intro' | 'play' | 'done';
 
 /**
- * A world quiz (F29), on the aurora like Find and the World page: a friend from that world asks
+ * A world quiz (F29), on Apple's white ground like Find and the World page: a friend from that world asks
  * 5 questions about it and its people, in their voice. 4 right wins the world's Photo Booth frame; a miss can try again at once, with
  * other questions. The host is the friend the user came from, else their closest friend there.
  */
@@ -83,20 +84,12 @@ export default function WorldQuizScreen() {
   }, [world, hostId, questions]);
 
   const back = (onPress: () => void = () => router.back(), icon: 'chevron-back' | 'close' = 'chevron-back') => (
-    <PressableScale
-      scaleTo={0.9}
-      accessibilityRole="button"
-      accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')}
-      onPress={onPress}>
-      <AuroraGlass style={styles.round}>
-        <Ionicons name={icon} size={22} color={colors.text} style={icon === 'chevron-back' && styles.backIcon} />
-      </AuroraGlass>
-    </PressableScale>
+    <RoundButton icon={icon} accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')} onPress={onPress} />
   );
 
   if (!world) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <View style={styles.bar}>{back()}</View>
         <LargeTitle>{t('games.quiz')}</LargeTitle>
       </Screen>
@@ -107,7 +100,7 @@ export default function WorldQuizScreen() {
 
   if (!host) {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <View style={styles.bar}>{back()}</View>
         <LargeTitle>{title}</LargeTitle>
         <EmptyState
@@ -137,7 +130,7 @@ export default function WorldQuizScreen() {
   // 1. The host's intro and the prize.
   if (phase === 'intro') {
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={styles.bar}>{back()}</View>
           <LargeTitle>{title}</LargeTitle>
@@ -158,7 +151,7 @@ export default function WorldQuizScreen() {
   if (phase === 'done') {
     const total = questions.length;
     return (
-      <Screen background="aurora">
+      <Screen background={systemGround.ground}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
           <View style={styles.bar}>{back()}</View>
           <View style={styles.result}>
@@ -226,7 +219,7 @@ export default function WorldQuizScreen() {
   };
 
   return (
-    <Screen background="aurora">
+    <Screen background={systemGround.ground}>
       <View style={[styles.bar, styles.playBar]}>
         {back(() => setPhase('intro'), 'close')}
         <View style={styles.dots} accessible accessibilityLabel={`${index + 1} / ${questions.length}`}>
@@ -301,7 +294,7 @@ export default function WorldQuizScreen() {
   );
 }
 
-/** The host speaking: their face and a chat bubble on the aurora, with an optional verdict on top. */
+/** The host speaking: their face and a chat bubble on the ground, with an optional verdict on top. */
 function Says({ host, text, label, labelColor }: { host: Character; text: string; label?: string; labelColor?: string }) {
   return (
     <View style={styles.says} accessibilityLiveRegion="polite">
@@ -317,8 +310,6 @@ function Says({ host, text, label, labelColor }: { host: Character; text: string
 const styles = StyleSheet.create({
   bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
   playBar: { height: 56, gap: space.md },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { marginLeft: -2 },
   prize: { alignItems: 'center', paddingTop: space.xxl, paddingBottom: space.lg },
   tilt: { transform: [{ rotate: '-2deg' }] },
   says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, marginHorizontal: space.lg, marginTop: space.lg },
@@ -329,23 +320,22 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderBottomLeftRadius: 6,
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
   bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  rule: { marginTop: space.lg, marginHorizontal: space.xl, fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  rule: { marginTop: space.lg, marginHorizontal: space.xl, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
   result: { alignItems: 'center', gap: space.md, paddingTop: space.xl, paddingHorizontal: space.xl },
-  ring: { padding: 4, borderRadius: 52, backgroundColor: aurora.ring },
+  ring: { padding: 4, borderRadius: 52, backgroundColor: systemGround.fill },
   resultTitle: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
-  resultBody: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: aurora.textMuted },
+  resultBody: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: systemGround.secondaryLabel },
   secondary: { marginTop: space.sm, height: 40, paddingHorizontal: space.lg, borderRadius: 20, justifyContent: 'center', backgroundColor: STORE.peachSoft },
   secondaryText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: aurora.glassOn },
-  dotOn: { backgroundColor: aurora.tint },
-  hostRing: { padding: 2, borderRadius: 20, backgroundColor: aurora.ring },
-  progress: { marginTop: space.md, marginHorizontal: space.lg, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: aurora.textMuted, textTransform: 'uppercase' },
+  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: systemGround.fill },
+  dotOn: { backgroundColor: colors.brandText },
+  hostRing: { padding: 2, borderRadius: 20, backgroundColor: systemGround.fill },
+  progress: { marginTop: space.md, marginHorizontal: space.lg, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: systemGround.secondaryLabel, textTransform: 'uppercase' },
   question: { marginTop: 6, marginHorizontal: space.lg, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
   options: { gap: 10, marginTop: space.xl, marginHorizontal: space.lg },
   option: {
@@ -358,8 +348,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: 'transparent',
-    backgroundColor: aurora.card,
-    ...CARD_SHADOW,
+    backgroundColor: systemGround.card,
   },
   optionText: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
   right: { borderColor: systemColors.green },

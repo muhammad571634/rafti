@@ -212,7 +212,7 @@ export default function MakeClipScreen() {
           caption={recording ? t('radio.recordingHint') : t('radio.cost', { lines: clean.length, count: cost })}
           disabled={recording || !clean.length || crisis}
           onPress={record}
-          system
+         
           look={signature.radio}
           left={recording ? <CharacterAvatar character={friend.character} size={28} /> : undefined}>
           {recording ? (

@@ -278,7 +278,6 @@ function ShellsTab({
         label={t('store.buy', { amount: selected.total.toLocaleString('en-US'), price: selected.pack.price })}
         caption={t(Platform.OS === 'ios' ? 'store.paidApple' : 'store.paidGoogle')}
         onPress={() => buy(selected)}
-        system
       />
     </>
   );

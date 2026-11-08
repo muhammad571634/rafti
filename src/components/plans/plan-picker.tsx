@@ -267,7 +267,7 @@ export function PlanPicker({
         </View>
       </ScrollView>
 
-      <StoreBuyBar label={cta.label} caption={cta.caption} disabled={isCurrent} onPress={buy} system />
+      <StoreBuyBar label={cta.label} caption={cta.caption} disabled={isCurrent} onPress={buy} />
     </>
   );
 }

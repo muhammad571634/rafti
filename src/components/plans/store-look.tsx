@@ -67,9 +67,9 @@ export function ProPill() {
 }
 
 /**
- * The bar pinned to the bottom of the store: the one buy button and the billing line under it,
- * over the aurora. iOS blurs what scrolls under it; Android, which has no cheap blur here, gets a
- * nearly solid fill so the line stays readable.
+ * The bar pinned to a screen's bottom: the one buy button and the line under it, over Apple's
+ * ground. iOS blurs what scrolls under it; Android, which has no cheap blur here, gets a nearly
+ * solid fill so the line stays readable. `look` puts the button in a feature's own colour.
  */
 export function StoreBuyBar({
   label,
@@ -78,7 +78,6 @@ export function StoreBuyBar({
   onPress,
   left,
   children,
-  system,
   look,
 }: {
   label: string;
@@ -89,13 +88,11 @@ export function StoreBuyBar({
   left?: React.ReactNode;
   /** A line above the button (Photo Booth's pictures-left meter). */
   children?: React.ReactNode;
-  /** Over Apple's system ground (the Store) rather than the aurora. */
-  system?: boolean;
   /** The button in a feature's own colour (Radio, Photo Booth) rather than the Store's apricot. */
   look?: Look;
 }) {
   const insets = useSafeAreaInsets();
-  const fill = system ? (Platform.OS === 'ios' ? systemGround.bar : systemGround.barSolid) : Platform.OS === 'ios' ? STORE.bar : STORE.barSolid;
+  const fill = Platform.OS === 'ios' ? systemGround.bar : systemGround.barSolid;
   return (
     <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) + 6 }]}>
       {Platform.OS === 'ios' ? (

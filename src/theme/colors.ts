@@ -438,8 +438,6 @@ export const storeColors = isDark
       proInk: '#D9A6F5',
       cta: palette.apricot400,
       ctaInk: '#3A1A06',
-      bar: 'rgba(5,6,15,0.62)',
-      barSolid: 'rgba(5,6,15,0.94)',
       barLine: 'rgba(255,255,255,0.14)',
     }
   : {
@@ -458,8 +456,6 @@ export const storeColors = isDark
       proInk: '#5B3FD9',
       cta: palette.apricot400,
       ctaInk: palette.peachInk,
-      bar: 'rgba(251,246,241,0.72)',
-      barSolid: 'rgba(251,246,241,0.94)',
       barLine: 'rgba(0,0,0,0.12)',
     };
 
