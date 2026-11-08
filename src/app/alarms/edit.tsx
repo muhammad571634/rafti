@@ -157,6 +157,12 @@ export default function AlarmEditScreen() {
   // Monday first, as the Us calendar; the store keeps 0 = Sunday.
   const weekdays = weekdayNames(i18n.language).map((name, i) => ({ name, day: (i + 1) % 7 }));
   const melody = !friend;
+  /**
+   * A wake-up without a friend ("Melody") only where there is no friend to pick, or when editing one
+   * made that way (owner, 2026-11-08: the point of our alarm is a friend waking you; a bare melody is
+   * the phone's own alarm).
+   */
+  const melodyChoice = !friends.length || (!!existing && !existing.characterId);
   const cta = existing ? t('alarms.save') : melody ? t('alarms.setAlarm') : t('alarms.wakeMe');
 
   const tiles: { key: string; label: string; icon: React.ComponentProps<typeof Ionicons>['name']; on: boolean; off: boolean; flip: () => void }[] = [
@@ -234,17 +240,19 @@ export default function AlarmEditScreen() {
               {t('alarms.who').toUpperCase()}
             </Txt>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
-              {/* The picked friend first, then melody only (easy to reach with many friends), then the rest. */}
+              {/* The picked friend first, then melody only where it is offered, then the rest. */}
               {friend ? (
                 <Face name={friendName(friend, true)} on onPress={() => pick(friend)}>
                   <CharacterAvatar character={friend} size={FACE_ON} />
                 </Face>
               ) : null}
-              <Face name={t('alarms.melodyOnly')} on={melody} onPress={() => pick(undefined)}>
-                <View style={[styles.bell, melody ? styles.bellOn : null]}>
-                  <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? night.textOnPrimary : night.textSecondary} />
-                </View>
-              </Face>
+              {melodyChoice ? (
+                <Face name={t('alarms.melodyOnly')} on={melody} onPress={() => pick(undefined)}>
+                  <View style={[styles.bell, melody ? styles.bellOn : null]}>
+                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? night.textOnPrimary : night.textSecondary} />
+                  </View>
+                </Face>
+              ) : null}
               {friends
                 .filter((c) => c.id !== friend?.id)
                 .map((c) => (

@@ -78,6 +78,8 @@ export const planAddedCue = (title: string, when: string) => [`They just put a p
 /** They set an alarm that this friend wakes them with (0z135): the friend knows, as with a plan. */
 export const alarmSetCue = (at: string, days: string) => [
   `They just asked you to wake them up at ${at} (${days}). Say something real about it: that you will be there to wake them, how, or that they should sleep in time.`,
+  // Seen on the A51 (0z150): with an older 07:24 alarm in the chat, the friend confirmed "07:24" for a new 07:00 one.
+  `If you name the time, it is ${at}: this new wake-up. Another time in your memory or the chat is an older one.`,
 ];
 
 /**
@@ -88,6 +90,8 @@ export const setupCancelledCue = (kind: 'alarm' | 'plan', title: string, when: s
   kind === 'plan'
     ? `They just took your plan "${title}" (${when}) off your plans together. React as a person who notices: ask lightly what happened or what changed, or say how you feel about it. No guilt, no lecture.`
     : `They just cancelled the wake-up you were going to give them (${when}${title ? `, "${title}"` : ''}). React as a person who notices: ask lightly whether their plans changed, or tease a little. No guilt, no lecture.`,
+  // Seen twice on the A51 (0z150): a remembered older wake-up (07:24) was named for the one just changed (07:00).
+  `If you name the time, it is ${when.split(' ')[0]}: this one. Another time in your memory or the chat is an older one.`,
 ];
 
 export const planRemindCue =(title: string, timed: boolean) => [`Their plan "${title}" is coming up ${timed ? 'soon' : 'today'}. Remind them, in your own way.`];
