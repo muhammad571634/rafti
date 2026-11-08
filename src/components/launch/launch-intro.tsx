@@ -5,16 +5,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
-import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, useFrameCallback, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useDerivedValue, useFrameCallback, useReducedMotion, useSharedValue } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
-import { clamp01, drawOrbit, easeOutBack, easeOutCubic, seg, SMALL_R, type OrbitStage } from '@/components/onboarding/glass-icon-orbit';
+import { drawOrbit, easeOutBack, easeOutCubic, seg, SMALL_R, type OrbitStage } from '@/components/onboarding/glass-icon-orbit';
 import { useAppStore } from '@/store/use-app-store';
-import { colors } from '@/theme';
 
 // The few seconds of every cold start (owner, 2026-11-08: "a 1-3 s animation on every app open"):
-// onboarding's Glass Icon Orbit cut short. The splash's colour turns to black, the small ring of our
+// onboarding's Glass Icon Orbit cut short. The splash fades into black, the small ring of our
 // features spins in and is drawn into the centre tile, the friend types, the mascot springs out with
 // the logo under it, and the whole cover fades onto the app that loaded underneath meanwhile.
 // Not on a resume (it mounts once per launch), not before onboarding (onboarding opens with the full
@@ -22,13 +21,18 @@ import { colors } from '@/theme';
 // tapped push, a ringing alarm, an incoming call). A tap skips it.
 //
 // Timeline (seconds):
-//   0.00-0.20  the splash's colour turns black; the ring fades in, spinning
+//  -0.35-0.00  (under the native splash's fade) the ring fades in on black, spinning
 //   0.12-0.55  the tiles are drawn into the middle (ease-in cubic)
 //   0.35-0.65  the centre tile grows in (ease-out back)
 //   0.65-0.95  its three dots bounce once (typing)
 //   0.95-1.40  the mascot springs out (the onboarding hop, a little quicker); the logo fades up
 //   1.65-1.95  the cover fades away
 const RING_IN = 0.2;
+/**
+ * The clock starts this far below 0: the native splash takes about 0.3 s to fade after the first frame
+ * (A51, 2026-11-08), so the ring is already there, spinning, when it is gone.
+ */
+const LEAD = 0.35;
 const TYPE_AT = 0.65;
 const JUMP_AT = 0.95;
 const JUMP_END = 1.4;
@@ -43,7 +47,7 @@ function launchStage(r: number): OrbitStage {
   return {
     radius: SMALL_R * (1 - gather),
     tilt: 0,
-    ringAlpha: easeOutCubic(seg(r, 0, RING_IN)) * (1 - gather),
+    ringAlpha: easeOutCubic(seg(r, -LEAD, RING_IN - LEAD)) * (1 - gather),
     centre: easeOutBack(seg(r, 0.35, TYPE_AT)),
     jump: seg(r, JUMP_AT, JUMP_END),
     sink: 1,
@@ -85,7 +89,7 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
   const elsewhere = segments.length > 0 && segments[0] !== '(tabs)';
   const away = settled && (!onboarded || elsewhere || ringing);
 
-  const clock = useSharedValue(0);
+  const clock = useSharedValue(-LEAD);
   // Where the fade starts and ends: FADE_AT-END, held back while the app is not ready, or
   // now-now+QUICK after a skip.
   const fadeFrom = useSharedValue(FADE_AT);
@@ -94,7 +98,9 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
   const finished = useSharedValue(false);
 
   useFrameCallback((info) => {
-    const dt = Math.min((info.timeSincePreviousFrame ?? 0) / 1000, 0.05);
+    // Real time, so a launch that drops frames (the UI thread is busy mounting the first screen
+    // underneath) skips frames instead of slowing the intro down; only a stall over 0.25 s is cut.
+    const dt = Math.min((info.timeSincePreviousFrame ?? 0) / 1000, 0.25);
     const now = clock.get() + dt;
     clock.set(now);
     if (!open.get() && now > HOLD_LIMIT) open.set(true);
@@ -141,15 +147,9 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
     return recorder.finishRecordingAsPicture();
   }, [width, height, cx, cy, mascot]);
 
-  // The splash's colour (theme), read once: the cover starts in it so the splash's hand-off does not show.
-  const from = colors.bg;
-  const coverStyle = useAnimatedStyle(() => {
-    const r = clock.get();
-    return {
-      opacity: 1 - seg(r, fadeFrom.get(), fadeTo.get()),
-      backgroundColor: interpolateColor(clamp01(r / RING_IN), [0, 1], [from, '#000000']),
-    };
-  });
+  // Black from the first frame: the native splash fades into it (measured on the A51, 2026-11-08:
+  // a cream cover kept the splash's look for up to a second while the first frames came slowly).
+  const coverStyle = useAnimatedStyle(() => ({ opacity: 1 - seg(clock.get(), fadeFrom.get(), fadeTo.get()) }));
   const logoStyle = useAnimatedStyle(() => {
     const r = clock.get();
     const up = easeOutCubic(seg(r, 1.05, 1.4));
@@ -174,7 +174,7 @@ function Intro({ ready, onDone }: { ready: boolean; onDone: () => void }) {
 const LOGO_H = 30;
 
 const styles = StyleSheet.create({
-  full: { ...StyleSheet.absoluteFill, zIndex: 1000, elevation: 1000 },
+  full: { ...StyleSheet.absoluteFill, zIndex: 1000, elevation: 1000, backgroundColor: '#000000' },
   logoRow: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   logo: { width: LOGO_H * BRAND_ASPECT.logo, height: LOGO_H },
 });

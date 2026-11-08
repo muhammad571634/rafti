@@ -20,6 +20,10 @@ import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+// The splash's own fade is short: the launch intro (or the first screen) is already drawn under it.
+try {
+  SplashScreen.setOptions({ duration: 200, fade: true });
+} catch {}
 // Today's welcome back needs to know how long the app was away (src/lib/welcome-back.ts).
 startAwayClock();
 /** Longest the splash waits for saved data before it lets go anyway. */
