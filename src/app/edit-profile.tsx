@@ -146,7 +146,7 @@ export default function EditProfileScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('editProfile.interests', { count: interests.length, max: MAX_INTERESTS })}
                 style={[styles.pill, styles.add]}>
-                <Ionicons name="add" size={20} color={colors.primary} />
+                <Ionicons name="add" size={20} color={colors.brandText} />
               </PressableScale>
             ) : null}
           </View>
@@ -162,7 +162,7 @@ export default function EditProfileScreen() {
             {user.about ? (
               <Txt style={styles.aboutText}>{user.about}</Txt>
             ) : (
-              <Ionicons name="add" size={22} color={colors.primary} />
+              <Ionicons name="add" size={22} color={colors.brandText} />
             )}
           </Pressable>
         </InsetGroup>
