@@ -25,7 +25,7 @@ Still to do:
 - Checks: tsc 0 (app and server), npm test 861/861, server tests 89/89 (the eval set's size bound is now 40-120: 106 scenarios).
 
 Still to do:
-1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); then on the A51: a small fight with Hana, then "ok"; then "what did I tell you earlier?".
+1. Done 2026-11-09: deployed; seen on the A51 (0z179).
 2. Echoing the user's own detail in surprise (Character.AI's best move) is not taught: retry on the paid model.
 3. Owner: save the new Gemini key as a user env var; `JUDGE_GEMINI_KEY` is still the dead one.
 
