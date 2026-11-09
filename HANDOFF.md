@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z188. Fly v50 live but the free Gemini key is spent; the web export fixed (2026-11-09, Claude 1). NEXT: when the key resets (~13:00 Tashkent), the language check on the A51, then the evals
+
+- **Owner deployed 0z187** (Fly v50, 15:28 UTC, `/health` 200). Not seen working yet: no reply has come back since 14:56 UTC (on v49 already): `gemini-3.1-flash-lite` runs past its 10 s share and is aborted, `gemini-3-flash-preview` and `gemini-flash-latest` answer 429 (quota) or 503 (high demand), so the app shows Not Delivered. The server's key is on the free tier; nothing in code to change. My test line "I just got home, long day at work." sits Not Delivered in the owner's Hana chat (after their own undelivered Turkish line from 20:01). `GEMINI_KEY_OWNER` is 429 too.
+- **Web export** (0z187 item 4): the web static render runs every route in Node, where Skia has no engine and react-native-web has no `TurboModuleRegistry`. Three things threw at import or first render: the orbit's icon paths parsed at import (`glass-icon-orbit.tsx`, now `parseIconPaths()` with a fallback of no paths), the coin drop's shader compiled at import (`coin-drop-reward.tsx`, now `coinEffect()` on first render), `skiaReady` (`TurboModuleRegistry?.get`), and the launch intro drawing with Skia (`LaunchIntro` is not drawn when `!skiaReady`). `npx expo export --platform web` now passes; Android and iOS behave as before (same code path when Skia's native side is there).
+- Checks: tsc 0, npm test 873/873.
+
+Still to do:
+1. **When the Gemini quota resets** (midnight Pacific = 13:00 Tashkent) or the paid key comes: on the A51, Hana in Turkish after English and back (retry the two Not Delivered lines), `flyctl logs -a sigmazam-api` for `wrote=`.
+2. The 0z187 list items 2, 3, 5, 6 (evals the quota cut, photo replies on the paid model, Hana's repeated confession, the 0z183 list).
+3. OTAs can go out for every platform again (no `--platform android` needed); not yet tried with `eas update`.
+
 ### 0z187. Reply language root cause fixed; one note language for memories; Chats as Messages; one alert for the app; SF-style tab icons (2026-11-09, Claude 1). NEXT: owner deploys the server, then rerun the evals the quota cut
 
 **Start here (next agent):** everything below is committed and pushed to `local-work`. The app side is on the A51 by OTA (Android only). The server side (prompts, memory pass, first-text log) needs the owner's deploy. Reply to the owner in short plain Uzbek.

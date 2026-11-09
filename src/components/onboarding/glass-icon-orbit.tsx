@@ -1,4 +1,4 @@
-import { BlurStyle, Canvas, PaintStyle, Picture, Skia, StrokeCap, TileMode, useImage, type SkCanvas, type SkImage } from '@shopify/react-native-skia';
+import { BlurStyle, Canvas, PaintStyle, Picture, Skia, StrokeCap, TileMode, useImage, type SkCanvas, type SkImage, type SkPath } from '@shopify/react-native-skia';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { StatusBar } from 'expo-status-bar';
@@ -98,9 +98,21 @@ const PATHS: Record<string, { d: string; stroke: boolean }[]> = {
 };
 
 /** The icon paths, parsed once. */
-const SK_PATHS = Object.fromEntries(
-  Object.entries(PATHS).map(([kind, parts]) => [kind, parts.map((part) => ({ path: Skia.Path.MakeFromSVGString(part.d), stroke: part.stroke }))]),
-);
+const SK_PATHS = parseIconPaths();
+
+/**
+ * Empty where Skia has no engine: the web export renders every route in Node, where CanvasKit is not
+ * loaded and parsing at import throws, which failed the whole all-platform export (0z188).
+ */
+function parseIconPaths(): Record<string, { path: SkPath | null; stroke: boolean }[]> {
+  try {
+    return Object.fromEntries(
+      Object.entries(PATHS).map(([kind, parts]) => [kind, parts.map((part) => ({ path: Skia.Path.MakeFromSVGString(part.d), stroke: part.stroke }))]),
+    );
+  } catch {
+    return Object.fromEntries(Object.keys(PATHS).map((kind) => [kind, []]));
+  }
+}
 
 function clamp01(x: number) {
   'worklet';

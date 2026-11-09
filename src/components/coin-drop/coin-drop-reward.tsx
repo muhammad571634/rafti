@@ -1,4 +1,4 @@
-import { Canvas, Fill, Shader, Skia } from '@shopify/react-native-skia';
+import { Canvas, Fill, Shader, Skia, type SkRuntimeEffect } from '@shopify/react-native-skia';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppState, PixelRatio, StyleSheet, View, type ViewInstance } from 'react-native';
@@ -45,7 +45,18 @@ import { CDR_SKSL } from './cdr-shader';
  loop with its scripted finger; the fonts are the app's own.
 */
 
-const effect = Skia.RuntimeEffect.Make(CDR_SKSL);
+let compiled: SkRuntimeEffect | null = null;
+/**
+ * The shader, compiled on first use, not at import: the web export renders every route in Node, where
+ * CanvasKit is not loaded and Skia throws, which failed the whole all-platform export (0z188).
+ */
+function coinEffect() {
+  try {
+    return (compiled ??= Skia.RuntimeEffect.Make(CDR_SKSL));
+  } catch {
+    return null;
+  }
+}
 const pixelRatio = PixelRatio.get();
 const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
@@ -281,6 +292,7 @@ export function CoinDropReward({ amount, from, wallet, wobble, onAbsorb, onDone 
     });
   }, []);
 
+  const effect = coinEffect();
   if (!effect) return null;
 
   return (

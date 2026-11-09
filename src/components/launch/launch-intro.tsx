@@ -10,6 +10,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { drawOrbit, easeOutBack, easeOutCubic, seg, SMALL_R, type OrbitStage } from '@/components/onboarding/glass-icon-orbit';
+import { skiaReady } from '@/lib/skia-ready';
 import { useAppStore } from '@/store/use-app-store';
 
 // Cold-start intro: onboarding's orbit cut short. The ring gathers into the centre tile, the dots
@@ -54,10 +55,13 @@ function launchStage(r: number): OrbitStage {
   };
 }
 
-/** Mounted at the root from the first render; `ready` is the root's fonts and i18n. */
+/**
+ * Mounted at the root from the first render; `ready` is the root's fonts and i18n. Not drawn without
+ * Skia's native side (the web export renders every route in Node, where Skia cannot draw).
+ */
 export function LaunchIntro({ ready }: { ready: boolean }) {
   const reduced = useReducedMotion();
-  const [done, setDone] = useState(reduced);
+  const [done, setDone] = useState(reduced || !skiaReady);
   const finish = useCallback(() => setDone(true), []);
   if (done) return null;
   return <Intro ready={ready} onDone={finish} />;
