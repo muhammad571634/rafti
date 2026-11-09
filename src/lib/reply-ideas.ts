@@ -214,6 +214,28 @@ const WEEK: ReplyIdea[] = [
 const ASK: ReplyIdea[] = [idea('Yes, text me! 😊', 'Yes, text me anytime 😊', 'yes'), idea('Not now', 'Maybe later, not now', 'no')];
 
 /** The ideas for a line they wrote first; none for a reach key this build does not know. */
+/**
+ * The buttons a moment needs, for the model to write in the chat's language (0z176: a quest in an
+ * Uzbek chat showed "I'm in! / Not today"): each one's meaning in order, so a tap still does what
+ * that button does (`writtenIdeas` keeps the intents by place).
+ */
+export function ideasCue(stock: readonly ReplyIdea[]): string[] {
+  if (!stock.length) return [];
+  const meant = stock.map((idea, i) => `${i + 1}) "${idea.text}"`).join(' ');
+  return [`IDEAS: write exactly ${stock.length} ideas, in this order and with these meanings, in the language they write in and in their own voice (not word for word): ${meant}.`];
+}
+
+/**
+ * The model's buttons with each stock button's intent, by place; the stock ones when the model
+ * wrote none or a different number (then a tap could not keep its meaning).
+ */
+export function writtenIdeas(stock: readonly ReplyIdea[], written: readonly { label: string; text: string }[] | undefined): ReplyIdea[] {
+  if (!stock.length) return [];
+  const ok = (written ?? []).filter((w) => w.label.trim() && w.text.trim());
+  if (ok.length !== stock.length) return [...stock];
+  return ok.map((w, i) => ({ label: w.label.trim(), text: w.text.trim(), ...(stock[i].intent ? { intent: stock[i].intent } : {}) }));
+}
+
 export function ideasFor(reach: string): ReplyIdea[] {
   const [source, a, b] = reach.split(':');
   if (source === 'ask') return ASK;

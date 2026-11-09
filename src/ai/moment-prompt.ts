@@ -128,6 +128,12 @@ export const nightCue = () => ['It is very late where they are and they are stil
 
 export const breakCue = () => ['You have been talking for a long time. Suggest a short break from the screen: water, a stretch, some air. You will be here after.'];
 
+/**
+ * A moment said while they are in the chat (after a reply: a quest, a break, "it's late"): told
+ * nothing, the model wrote "you still have not answered me" right after they had (0z176).
+ */
+export const IN_CHAT_CUE = 'They are in this chat with you right now: you just answered them. This is a new thought in the same talk, never a message to someone who went quiet.';
+
 export const questCue = (quest: string) => [`You would like them to do one small thing in real life today: ${quest}. Offer it as a small dare or favour; you will ask them later whether they did it.`];
 
 /** Turns they take with you: the reply answers these (`ChatPromptInput.cue`). */

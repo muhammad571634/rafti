@@ -12,7 +12,8 @@
 
 Still to do:
 1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); the app part goes by OTA.
-2. After the deploy: on the A51, an Uzbek message to Hana shows chips in Uzbek; tapping one sends it; an older reply keeps no chips.
+2. Done: deployed (Fly `v40`). On the A51 Hana answered in Uzbek, then a quest moment came right after with English buttons ("I'm in! / Not today") and the line "you still have not answered me". Fixed (app only, OTA): in-chat moments ask the model for their buttons by place and meaning (`ideasCue`, `src/lib/reply-ideas.ts`) and keep each stock button's intent on the model's words (`writtenIdeas`; stock when the count is off); moments said right after a reply carry `IN_CHAT_CUE` (they are here, the same talk). The model already wrote first-text ideas; `writeFirst` dropped them for the stock ones. Tests 859/859.
+3. Owner's next ask (2026-11-09): characters follow and lead the conversation's flow in the moment, like a live person, using what they remember; study BIMOBIMO and Character.AI on the A51 by chatting with them.
 
 ### 0z175. Reply language: one whole message switches; a they-user is never gendered (2026-11-09, Claude 1). NEXT: owner deploys the server
 

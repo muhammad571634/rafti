@@ -10,10 +10,12 @@ import {
   IDEA_TTL_MS,
   ideaCategory,
   ideaEffect,
+  ideasCue,
   ideasFor,
   lifeReach,
   reachCare,
   shownIdeas,
+  writtenIdeas,
 } from './reply-ideas';
 import { ideaAnswer } from '../mock/reply-ideas';
 import type { Message } from '@/types';
@@ -94,5 +96,30 @@ describe('reply ideas', () => {
     assert.equal(react.length, 2);
     assert.notEqual(react[0].label, react[1].label);
     assert.deepEqual(everydayIdeas('I saw a cat today.', 'm1'), react);
+  });
+});
+
+describe('a moment’s buttons in the chat’s language (0z176)', () => {
+  const stock = ideasFor('quest:t1');
+
+  it('asks the model for each button by place and meaning', () => {
+    const [cue] = ideasCue(stock);
+    assert.match(cue, /exactly 2 ideas/);
+    assert.match(cue, /1\) "I’m in! 💪" 2\) "Not today"/);
+    assert.deepEqual(ideasCue([]), []);
+  });
+
+  it('keeps each stock button’s intent on the model’s words, by place', () => {
+    const ideas = writtenIdeas(stock, [
+      { label: 'Qilaman! 💪', text: 'Qilaman! 💪' },
+      { label: 'Bugun emas', text: 'Bugun emas' },
+    ]);
+    assert.deepEqual(ideas.map((i) => [i.text, i.intent]), [['Qilaman! 💪', 'yes'], ['Bugun emas', 'no']]);
+  });
+
+  it('falls back to the stock buttons when the count is off or none came', () => {
+    assert.deepEqual(writtenIdeas(stock, [{ label: 'Ha', text: 'Ha' }]), stock);
+    assert.deepEqual(writtenIdeas(stock, undefined), stock);
+    assert.deepEqual(writtenIdeas([], [{ label: 'Ha', text: 'Ha' }]), []);
   });
 });

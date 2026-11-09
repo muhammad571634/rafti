@@ -72,6 +72,7 @@ import {
   wakeCheckInCue,
   worldQuizCue,
   pushCue,
+  IN_CHAT_CUE,
 } from '@/ai/moment-prompt';
 import { dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
 import { announceIncoming } from '@/notifications/incoming';
@@ -116,7 +117,7 @@ import { resetMemorySync, startMemorySync } from '@/store/memory-sync';
 import { messagesInDb, resetMessages, restoreMessages } from '@/store/message-sync';
 import { familyName, isFamilyLabel, kinGroup, LIFE_WINDOW_MS, lifeAt, lifeKey, lifeMoments, type FamilyLabel } from '@/lib/kin';
 import { addCare, careCue, careDueAt, careStep, closeCare, detectCare, pruneCare, saysBetter } from '@/lib/care';
-import { careReach, helloReach, ideaEffect, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach } from '@/lib/reply-ideas';
+import { careReach, helloReach, ideaEffect, ideasCue, ideasFor, lifeReach, reachCare, reachThread, shownIdeas, threadReach, writtenIdeas } from '@/lib/reply-ideas';
 import { askedOnce, askReach, isAskReach, shouldAskToReach, sittingCount } from '@/lib/reach-ask';
 import { addThread, closeThread, dueTouches, extendThread, lastAsked, markTouches, moveThread, nextPlan, pruneThreads, ruleTouches, type TouchDraft } from '@/lib/threads';
 import { LIFE, lateNight, sittingMinutes } from '@/lib/life';
@@ -4587,16 +4588,18 @@ function writeFirst(
   onGiveUp?: () => void,
   attempt = 0,
 ) {
-  const send = (lines: string[]) =>
-    lines.forEach((text, i) =>
+  const send = (lines: string[], written?: { label: string; text: string }[]) =>
+    lines.forEach((text, i) => {
+      // The model's buttons in the chat's language, each keeping its stock button's intent.
+      const ideas = i === lines.length - 1 && reach ? writtenIdeas(ideasFor(reach), written) : [];
       appendMessage(
         set,
         get,
         conversationId,
-        { ...themText(conversationId, text), ...(i === lines.length - 1 ? withIdeas(reach) : {}) },
+        { ...themText(conversationId, text), ...(i === lines.length - 1 ? (reach ? { reach, ...(ideas.length ? { ideas } : {}) } : {}) : {}) },
         { countUnread: true },
-      ),
-    );
+      );
+    });
   if (!get().settings.realAi || !apiBase()) return send([scripted]);
   // A reply already "typing…" in this chat keeps the indicator; this text does not take it over.
   const owns = !get().typing[conversationId];
@@ -4622,7 +4625,7 @@ function writeFirst(
         return;
       }
       if (!reply.skip) {
-        send(reply.lines);
+        send(reply.lines, reply.ideas);
         if (reply.day?.length) keepOwnDay(set, request.input.character.id, reply.day);
       } else if (onSkip === 'scripted') send([scripted]);
     });
@@ -4674,7 +4677,9 @@ function sayFirst(set: Setter, get: Getter, conversationId: string, stock: strin
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation || !state.characters.some((c) => c.id === conversation.characterId)) return;
-  writeFirst(set, get, conversationId, stock, reach, momentRequest(get, conversationId, cue, new Date()), 'nothing');
+  // The buttons this moment needs, asked for in the chat's language (`ideasCue`).
+  const asks = reach ? ideasCue(ideasFor(reach)) : [];
+  writeFirst(set, get, conversationId, stock, reach, momentRequest(get, conversationId, [...cue, ...asks], new Date()), 'nothing');
 }
 
 /**
@@ -6096,7 +6101,8 @@ function maybeLifeMoment(set: Setter, get: Getter, conversationId: string) {
   const id = uid('m');
   const say = (text: string, cue: readonly string[], reach: string, daily: Partial<DailyState>) => {
     set((s) => ({ daily: { ...s.daily, ...daily } }));
-    sayFirst(set, get, conversationId, text, cue, reach);
+    // Said right after a reply, while they are here (`IN_CHAT_CUE`).
+    sayFirst(set, get, conversationId, text, [...cue, IN_CHAT_CUE], reach);
   };
 
   const night = lateNight(now);
