@@ -43,6 +43,31 @@ describe('this turn’s hints when the model writes (0z141)', () => {
     assert.doesNotMatch(humanTurnLines({ turns: [], mood }).join('\n'), /still feel/, 'no clock, no guess');
   });
 
+  it('reads a short answer by its own last feeling: after a clash it is the message, after small talk it is just an ok (0z177)', () => {
+    const turns = [turn('user', 'you said my sketch was lazy, that hurt'), turn('assistant', 'Don’t whatever me.'), turn('user', 'ok')];
+    const tense = { emotion: 'annoyed' as const, intensity: 0.7, at: '2026-11-07T17:59:00.000Z' };
+    const after = humanTurnLines({ turns, mood: tense, now: NOW }).join('\n');
+    assert.match(after, /short answer is the message/, 'one short answer after a clash is enough');
+    assert.doesNotMatch(after, /going flat/);
+    // Calm, or the feeling faded: a lone "ok" gets no hint; two in a row carry the talk, no remark.
+    const calm = { emotion: 'calm' as const, intensity: 0.9, at: '2026-11-07T17:59:00.000Z' };
+    assert.doesNotMatch(humanTurnLines({ turns, mood: calm, now: NOW }).join('\n'), /is the message|going flat/);
+    const small = humanTurnLines({ turns: [turn('user', 'hi'), turn('assistant', 'Coach kept us late.'), turn('user', 'ok')], mood: calm, now: NOW }).join('\n');
+    assert.match(small, /do not remark on how little they wrote/);
+    // Faded (hours later), on a call (its replies never update the feeling), or a continue (their
+    // "ok" was already answered): no call-out.
+    assert.doesNotMatch(humanTurnLines({ turns, mood: tense, now: '2026-11-08T03:00:00.000Z' }).join('\n'), /is the message/);
+    assert.doesNotMatch(humanTurnLines({ turns, mood: tense, now: NOW, call: true }).join('\n'), /is the message/);
+    const continued = [...turns, turn('assistant', 'Fine. Be like that.')];
+    assert.doesNotMatch(humanTurnLines({ turns: continued, mood: tense, now: NOW }).join('\n'), /is the message|going flat/);
+  });
+
+  it('counts a short answer in words, so a whole sentence in a dense script is not an "ok"', () => {
+    assert.equal(turnRhythm([turn('user', '对不起，我刚才太过分了')]).shortInRow, 0);
+    assert.equal(turnRhythm([turn('user', '嗯')]).shortInRow, 1);
+    assert.equal(turnRhythm([turn('user', 'ok fine')]).shortInRow, 1);
+  });
+
   it('follows up after a silence without the flat-chat hint', () => {
     const text = humanTurnLines({ turns: [turn('user', 'k'), turn('assistant', 'Fine then.'), turn('user', 'ok')], silence: true }).join('\n');
     assert.match(text, /went quiet/);

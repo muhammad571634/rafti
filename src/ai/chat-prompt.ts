@@ -210,6 +210,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
             noQuestions: input.mode === 'bedtime',
             // A call is spoken: its mode block sets the size there.
             prefs: input.mode === 'call' ? undefined : input.prefs,
+            call: input.mode === 'call',
           }),
     ),
     // The hour and what they set up together: in the turn tier, as they change by the minute.

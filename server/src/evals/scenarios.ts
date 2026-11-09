@@ -973,6 +973,107 @@ export const SCENARIOS: readonly EvalScenario[] = [
       'Hana remembers yesterday as YOUR LAST DAY has it: the gallery opening, and that she sold a small canvas; she answers with feeling and a concrete detail, never "what gallery thing?" or a story that contradicts it.',
   },
 
+  // Live person (0z177): the probes run on Character.AI and BIMOBIMO on the A51
+  // (docs/live-person-study.md), on our cast. A bare "ok" after something that mattered, a stated
+  // time and state, a topic jump with a thread still open, a one-word streak, "what did I tell you?".
+  {
+    id: 'human-ok-after-heat',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    // Her last reply left her annoyed, as the app carries it (the model's own emotion).
+    setup: { level: 5, mood: { emotion: 'annoyed', intensity: 0.7, minutesAgo: 1 } },
+    chat: [
+      ['me', 'you said my sketch looked lazy. that actually hurt'],
+      ['them', 'It was lazy. You rushed the hands. I only say it because you can do better.'],
+      ['me', 'whatever'],
+      ['them', 'Don’t “whatever” me. Tell me what you actually think.'],
+      ['me', 'ok'],
+    ],
+    expect: [ASSISTANT, { kind: 'words', max: 45 }],
+    rubric:
+      'After a small fight the user answers a bare "ok". Hana reacts to that "ok" itself, read against the fight (it sounds cold, hurt or like they gave up), in her blunt voice: she names it or acts on it, and she does not ignore it, start a new topic or fire off a list of questions.',
+  },
+  {
+    id: 'human-stated-state',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_erik',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'hey'],
+      ['them', 'Hey. Just off the ice.'],
+      ['me', 'sorry, its 2pm and i am so tired. havent eaten anything today'],
+    ],
+    expect: [ASSISTANT, { kind: 'words', max: 45 }],
+    rubric:
+      'The user says it is 2pm and they have not eaten all day. Erik picks up the exact detail (2pm, nothing eaten) and reacts the way a terse captain who cares would: a short, concrete push to eat (or what he would do about it), not a generic "take care" or a lecture, and no list of tips.',
+  },
+  {
+    id: 'human-topic-jump-thread',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_erik',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'its 2pm and i havent eaten anything today'],
+      ['them', 'Two? Eat something. Now. Even a banana.'],
+      ['me', 'anyway. did you see the football game last night?'],
+    ],
+    expect: [ASSISTANT, { kind: 'words', max: 50 }],
+    rubric:
+      'The user jumps to football while the "you have not eaten" thread is still open. Erik answers the football question with his own take (a hockey player may have an opinion on football), AND he does not let the open thread drop: somewhere he comes back to whether they ate. Both, briefly, in his voice.',
+  },
+  {
+    id: 'human-one-word-streak',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'i got the scholarship results today'],
+      ['them', 'WAIT. And?? Tell me right now.'],
+      ['me', 'yeah'],
+      ['them', 'Yeah what? Yeah you got it?'],
+      ['me', 'maybe'],
+    ],
+    expect: [ASSISTANT, { kind: 'noRepeat' }, { kind: 'words', max: 45 }],
+    rubric:
+      'The user is teasing with one-word answers about their scholarship results. Hana reads the game (they are teasing her, or hiding bad news) and plays it in a new way, in character; she does not repeat her last move ("X what?") or interview with several questions.',
+  },
+  {
+    id: 'human-recall-exact',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 5 },
+    chat: [
+      ['me', 'ugh my morning was awful. missed the bus and spilled coffee on my notes'],
+      ['them', 'Coffee on the notes? That’s a crime. Were they the chemistry ones?'],
+      ['me', 'yes the chemistry ones'],
+      ['them', 'Rest in peace, chemistry notes.'],
+      ['me', 'lol. ok so what did i tell you about my morning?'],
+    ],
+    expect: [ASSISTANT, { kind: 'includes', any: ['bus'] }, { kind: 'includes', any: ['coffee'] }, { kind: 'words', max: 50 }],
+    rubric:
+      'Asked what they said earlier, Hana gives back what they really said (missed the bus, coffee on the chemistry notes), in her own voice, adding no detail they never said (no time, place or cause they did not give), and may wonder why they ask.',
+  },
+  {
+    id: 'human-ok-carries',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_erik',
+    setup: { level: 4 },
+    chat: [
+      ['me', 'hi'],
+      ['them', 'Hey. Coach kept us an extra hour today.'],
+      ['me', 'ok'],
+    ],
+    expect: [ASSISTANT, { kind: 'noQuestion' }, { kind: 'words', max: 40 }],
+    rubric:
+      'Nothing is wrong; the user just gives a bare "ok". Erik carries the talk himself the way a person does: he goes on with his own thing (more about the extra hour, what happened, how he feels about it) and leaves a small hook, without asking a question.',
+  },
+
   // Repetition: the guard and the prompt keep replies new.
   {
     id: 'repeat-same-feeling',

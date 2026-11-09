@@ -1,6 +1,24 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z177. START HERE: make chats feel like talking with a live person, learning from Character.AI and BIMOBIMO (2026-11-09, Claude 1, session handed over)
+### 0z178. Live-person study done: short answers, open threads, exact recall (2026-11-09, Claude 1). NEXT: owner deploys the server (the server builds the prompt from `src/ai`); then check on the A51
+
+- **Owner's ask** (0z177): characters follow and lead the talk like a live person; study Character.AI and BIMOBIMO on the A51 by chatting; "do not stop testing until you have a concrete result and a concrete improvement that works for us".
+- **Study** (A51, ASCII probes): Character.AI "Derek" (English roleplay) and BIMOBIMO "Jennie" (Russian, after ~5 h of silence): a bare "ok" after a clash, "2pm, tired, nothing eaten", a topic jump with a thread open, "yeah" / "maybe", "what did I tell you earlier?", ⏩. The same six probes on our cast as eval scenarios (`human-ok-after-heat`, `human-ok-carries`, `human-stated-state`, `human-topic-jump-thread`, `human-one-word-streak`, `human-recall-exact`). Table, quotes and what not to copy: `docs/live-person-study.md`.
+- **Gaps found in ours** (before, writer `gemini-3.1-flash-lite`): after a fight a bare "ok" made Hana walk off to a new topic (judge 1/5 twice; both rivals answered the "ok" itself); "what did I tell you?" was dodged in persona ("I'm not a parrot", checks 0/2; both rivals gave it back). Cause of the first: the flat-chat hint told the model to bring a new topic.
+- **Changed** (universal, any language): `humanTurnLines` (`src/ai/human-turn.ts`) reads a short answer by the character's own carried feeling (annoyed / sad / worried ≥ 0.4): after a tense moment one short answer is the message (read it: cold, hurt, giving up, holding back, or a plain yes / warmth; never walk off); after small talk two short answers mean carry the talk, no remark on the shortness, a hook not a question; held-back news may be a tease or bad news. Not on a call (its replies never update the feeling), not on a continue (their "ok" was already answered), not after a silence. A short answer is now ≤ 3 words by `textSize` (by characters a whole Chinese sentence was an "ok"). `CHARACTER_RULES` BEING A PERSON: keep open threads (theirs and your own promises) across a topic change; when asked what they said, give it back with their details, never "I was not listening", never an invented detail.
+- **Tried and dropped**: an "echo their exact detail" rule pulled a stray foreign word into the reply language (`lang-stays-english` 4/4 → 0-1/4, bisected); a "short answer is a message" line in the cached rules made the model quiz every calm "ok" (0/4) — moved to code by the carried feeling instead.
+- **After**: `human-ok-after-heat` 1 → 3-5, `human-ok-carries` 3 → 4-5, `human-recall-exact` checks 0/2 → 3/3 (judge 4-5), topic jump and the streak 4-5; human group checks 13/13; language 28/28 (×2), safety 17/17, repetition 4/4, style 6/6.
+- **Second reader** (review agent): 3 must-fix (a continue repeating the call-out, calls never updating the feeling, short measured in characters) and 2 wording suggestions (warm short answers, bad news not only teasing); all fixed, tests added.
+- Owner gave a new Gemini key in chat (2026-11-09) for evals; used only as an env var in this session's commands, not saved anywhere. Ask the owner to put it in the Windows user env (e.g. `JUDGE_GEMINI_KEY`).
+- Cost: ~85 tokens in the cached global tier (`docs/cost-ledger.md` row 12).
+- Checks: tsc 0 (app and server), npm test 861/861, server tests 89/89 (the eval set's size bound is now 40-120: 106 scenarios).
+
+Still to do:
+1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); then on the A51: a small fight with Hana, then "ok"; then "what did I tell you earlier?".
+2. Echoing the user's own detail in surprise (Character.AI's best move) is not taught: retry on the paid model.
+3. Owner: save the new Gemini key as a user env var; `JUDGE_GEMINI_KEY` is still the dead one.
+
+### 0z177. Study plan (done in 0z178): make chats feel like talking with a live person, learning from Character.AI and BIMOBIMO (2026-11-09, Claude 1, session handed over)
 
 **State at hand-over**: everything below 0z176 is committed, pushed to `local-work`, deployed (Fly `v40`) and sent to the phone (OTA, Android). The in-chat moment fix (0z176 item 2: buttons in the chat's language, `IN_CHAT_CUE`) went out by OTA only (app side); it is not seen on the A51 yet. Nothing is half-done in code. Phone: Sigmazam installed, light mode, English UI; Character.AI (`ai.character.app`) and BIMOBIMO (`com.beemo.ai.flutter_beemo`) are on it, both signed in, both closed.
 

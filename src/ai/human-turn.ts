@@ -19,8 +19,11 @@ import type { HistoryTurn } from './prompt-layout';
 
 /** Ends with a question mark in any script (Latin, CJK full-width, Arabic), closing quotes and emoji after it allowed. */
 const ASKS = /[?？؟][\s"'»”’)\]]*(?:[☀-➿️]|[\uD83C-\uDBFF][\uDC00-\uDFFF])*\s*$/;
-/** Their reply in a few words: by length, in any language ("ok", "лол", "嗯", "👍"). */
-const SHORT_CHARS = 12;
+/**
+ * Their reply in a few words, in any script ("ok", "лол", "嗯", "👍"), counted as `textSize` counts
+ * them: by characters a whole Chinese apology ("对不起，我刚才太过分了", 11) read as a bare "ok".
+ */
+const SHORT_WORDS = 3;
 
 /** The last bubble of a turn (turns join a side's bubbles with new lines). */
 const lastLine = (text: string) => text.trim().split('\n').pop()?.trim() ?? '';
@@ -38,7 +41,7 @@ export function turnRhythm(turns: readonly HistoryTurn[]): TurnRhythm {
   let askedInRow = 0;
   for (let i = yours.length - 1; i >= 0 && ASKS.test(lastLine(yours[i].text)); i -= 1) askedInRow += 1;
   let shortInRow = 0;
-  for (let i = theirs.length - 1; i >= 0 && theirs[i].text.trim().length <= SHORT_CHARS; i -= 1) shortInRow += 1;
+  for (let i = theirs.length - 1; i >= 0 && textSize(theirs[i].text.trim()) <= SHORT_WORDS; i -= 1) shortInRow += 1;
   return { askedInRow, shortInRow };
 }
 
@@ -55,6 +58,10 @@ export function carriedMood(mood: Mood | undefined, now: number): { emotion: Moo
   return intensity < FADED ? null : { emotion: mood.emotion, intensity, hours };
 }
 
+/** Feelings after which a short answer means something (a clash, a hurt, a worry), and how strong one still has to be. */
+const TENSE: ReadonlySet<Mood['emotion']> = new Set(['annoyed', 'sad', 'worried']);
+const TENSE_MIN = 0.4;
+
 const ago = (hours: number) => (hours < 0.25 ? 'just now' : hours < 1 ? 'less than an hour ago' : `about ${Math.round(hours)} hours ago`);
 
 export interface HumanTurnInput {
@@ -69,6 +76,8 @@ export interface HumanTurnInput {
   noQuestions?: boolean;
   /** The chat's reply style and length (`replyPrefs`): the size this turn aims at. */
   prefs?: ReplyPrefs;
+  /** A call: its replies do not update the feeling, so a chat's annoyance would outlive a make-up. */
+  call?: boolean;
 }
 
 /**
@@ -101,7 +110,7 @@ export function lengthLine(prefs: ReplyPrefs | undefined, turns: readonly Histor
 }
 
 /** This turn's hints, last in the prompt, in place of the stand-in planner's. */
-export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs }: HumanTurnInput): string[] {
+export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs, call }: HumanTurnInput): string[] {
   const lines: string[] = [lengthLine(prefs, turns)];
   const at = now ? Date.parse(now) : NaN;
   const carried = Number.isNaN(at) ? null : carriedMood(mood, at);
@@ -113,8 +122,21 @@ export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs }
   if (silence) lines.push('- They went quiet after your last message: one light follow-up in your own way, not needy, no guilt.');
   const { askedInRow, shortInRow } = turnRhythm(turns);
   if (!noQuestions && askedInRow >= 2) lines.push('- Your last replies all ended with a question: this time ask nothing; say something of your own.');
-  if (!silence && shortInRow >= 2) {
-    lines.push('- They have answered in a few words lately: the chat is going flat. Bring something of your own (a story from your day, an opinion, a new topic tied to what you know of them), not another question.');
+  // Which way a few words lean is read from your own feeling, not from their words (any language):
+  // right after a clash or a worry their short answer is the message (0z177: we skipped it for a new
+  // topic where Character.AI and BIMOBIMO both answered it); after small talk it is just an "ok".
+  // Only when their message is the one being answered: a continue (⏩) or a follow-up goes on from
+  // your own last line and must not call out the same "ok" again.
+  const answersThem = !silence && turns.at(-1)?.role === 'user';
+  const tense = !call && carried !== null && TENSE.has(carried.emotion) && carried.intensity >= TENSE_MIN;
+  if (answersThem && shortInRow >= 1 && tense) {
+    lines.push(
+      '- They answered in a few words right after a tense moment: that short answer is the message. Read it against the moment: cold, hurt, giving up, holding something back, or a plain yes or a warm sign. Answer what it is, as you would (notice it, call it out, soften, or take the warmth), in a new way each time. Do not leave it for another topic or walk off.',
+    );
+  } else if (answersThem && shortInRow >= 2) {
+    lines.push(
+      '- They have answered in a few words lately and the chat is going flat. If you just asked about news they hold back, they may be teasing you or hiding bad news: read which, and play along or go gentle. Otherwise do not remark on how little they wrote: carry the talk yourself with more of your own thing (what happened, how you feel about it), ending on a small hook, not a question.',
+    );
   }
   lines.push('- Never reuse a line you already said in this chat.');
   return ['THIS TURN (hints; stay natural):', ...lines];
