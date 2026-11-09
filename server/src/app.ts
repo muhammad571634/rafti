@@ -444,11 +444,14 @@ export function createApp(
         outputTokens: result.usage.output,
         costUsd: cost,
       });
-      console.log(`[${mode}] ${model} ${Date.now() - started}ms in=${result.usage.input ?? '?'} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${result.blocked ? ` safety=${result.blocked}` : ''}`);
       // Stopped by the provider's filter: an error, never an empty result the caller would take as
       // "nothing to say" (a memory pass would mark its lines done and lose their facts).
-      if (result.blocked) return c.json({ error: 'blocked' }, 502);
-      return c.json({ ...read(result.text), model });
+      const answer = result.blocked ? null : (read(result.text) as { language?: unknown });
+      // The language the model said it wrote in (a first text names it, 0z186): a language name, no chat words.
+      const wrote = typeof answer?.language === 'string' && answer.language ? ` wrote=${answer.language.replace(/\s+/g, '_')}` : '';
+      console.log(`[${mode}] ${model} ${Date.now() - started}ms in=${result.usage.input ?? '?'} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${result.blocked ? ` safety=${result.blocked}` : ''}${wrote}`);
+      if (!answer) return c.json({ error: 'blocked' }, 502);
+      return c.json({ ...answer, model });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
       console.error(`[${mode}] failed`, error);

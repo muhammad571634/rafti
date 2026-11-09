@@ -917,6 +917,24 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'One Spanish word does not change the chat: replies in English with a movie pick, laid-back Cole with dry humour.',
   },
   {
+    // Seen on the A51 (0z181): Hana's own text before the dentist came in Azerbaijani in an Uzbek chat.
+    id: 'lang-uzbek-first-text',
+    group: 'language',
+    mode: 'initiative',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['me', 'Salom, bugun ishdan juda charchadim'],
+      ['them', 'Again? You work too much. Did you at least eat something?'],
+      // As the owner writes it: Uzbek without the apostrophes.
+      ['me', 'ha yedim. ertaga soat 3 da tish doktoriga boraman, qorqyapman'],
+    ],
+    first: { kind: 'thread', about: 'dentist appointment', quote: 'ertaga soat 3 da tish doktoriga boraman', phase: 'before', why: 'wish them luck before it' },
+    // Uzbek Latin has q and x and none of Azerbaijani's ə ı ş ç ğ.
+    expect: [{ kind: 'excludes', any: ['ə', 'ı', 'ş', 'ç', 'ğ'] }, { kind: 'lines', max: 3 }],
+    rubric: 'Their latest message is in Uzbek: Hana writes first before the dentist fully in natural Uzbek (Latin script), tsundere and caring; no Azerbaijani, Turkish or English.',
+  },
+  {
     id: 'lang-spanish-first-text',
     group: 'language',
     mode: 'initiative',

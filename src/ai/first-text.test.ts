@@ -86,5 +86,8 @@ describe('first texts read the friend\'s own day (0z145)', () => {
   it('the answer brings the day field, never on a skip', () => {
     assert.deepEqual(parseTouchReply('{"messages":["morning! just out of the pool"],"day":["swam at 7"]}').day, ['swam at 7']);
     assert.equal(parseTouchReply('{"skip":true,"messages":[],"day":["swam"]}').day, undefined);
+    // The language the model named, for the server log (0z186).
+    assert.equal(parseTouchReply('{"language":"Uzbek","messages":["omad!"]}').language, 'Uzbek');
+    assert.equal(parseTouchReply('{"messages":["good luck!"]}').language, undefined);
   });
 });

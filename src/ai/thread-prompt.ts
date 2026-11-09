@@ -201,6 +201,8 @@ export interface TouchReply {
   ideas: { label: string; text: string }[];
   /** New things the friend said of their own day (`src/ai/own-day.ts`). */
   day?: string[];
+  /** The language the model said it writes in (its "language"): for the server log only, a short name. */
+  language?: string;
 }
 
 /** Reads the model's text-first JSON; a broken answer is a skip, never a half-written text. */
@@ -214,7 +216,8 @@ export function parseTouchReply(raw: string): TouchReply {
       .slice(0, 3);
     const skip = json.skip === true || !lines.length;
     const day = skip ? [] : cleanDayNotes(json.day);
-    return { skip, lines, ideas, ...(day.length ? { day } : {}) };
+    const language = str(json.language).slice(0, 24);
+    return { skip, lines, ideas, ...(day.length ? { day } : {}), ...(language ? { language } : {}) };
   } catch {
     return { skip: true, lines: [], ideas: [] };
   }

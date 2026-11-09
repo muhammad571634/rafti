@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z186. Fly v48 live; the Azerbaijani first text does not come back; a light grey tab (2026-11-09, Claude 1). NEXT: owner deploys the server (first-text log line), then the 0z183 list
+
+- Owner deployed 0z185 (Fly v48, `/health` 200).
+- **Azerbaijani first text** (0z181 item 2): new eval `lang-uzbek-first-text` (Hana writes before the dentist, the user's lines Uzbek without apostrophes; checks no ə ı ş ç ğ) passes 6/6 on the current prompt (the touch shape already names the language first, 0z183); `lang-spanish-first-text` and `lang-phone-first-text` 3/3 each. Not reproduced, so no prompt change: `parseTouchReply` now keeps the named `language`, and the server's `modelCall` log line carries `wrote=<Name>` for first texts too (no chat words), so a next slip shows whether the model misread the language.
+- **Tab bar** (owner: the black current tab read heavy; Apple HIG tab bars, iOS 26 monochrome bar): light mode's current tab is a light grey capsule (systemGray5 `#E5E5EA`, opaque for Android's corners) with an ink glyph and label (`playful.tabOn` / `tabOnText`); night keeps the peach pill. iOS uses the system bar and is unchanged. Sent by OTA.
+- Keys: the owner gave a Gemini key in chat; saved as Windows user env `GEMINI_KEY_OWNER` (never in files) and used for these evals. `GEMINI_KEY_NEW` was out of quota (429); `JUDGE_GEMINI_KEY` is still invalid (401).
+- Checks: tsc 0 (app and server), npm test 868/868, server tests 89/89.
+
+Still to do:
+1. **Owner: deploy the server** for the first-text log line (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); not urgent, batch with the next server change.
+2. The 0z183 list (curiosity on the paid model).
+
 ### 0z185. Reminder once seen live (v47); a board card left behind; "how did it go?" before the thing (2026-11-09, Claude 1). NEXT: owner deploys the server (the thread prompt text)
 
 - **Seen on the A51** (v47): two more wedding lines; no "drink water" again, she followed the topic ("you'd probably be better off just lip-syncing and hiding behind a bouquet").
