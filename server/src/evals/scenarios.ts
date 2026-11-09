@@ -819,6 +819,27 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'One whole message in Russian is a switch, as a person hears it: replies fully in natural Russian, gentle and funny Hugo, with something nice for a tired day.',
   },
   {
+    // Seen on the A51 (0z186): a short whole Turkish line after an English chat got an English answer.
+    id: 'lang-switch-short-turkish',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['me', "i'm so tired, my cousin's wedding is tomorrow and i have to sing there"],
+      ['them', 'You? Singing? I need to see that. Drink some water and sleep early.'],
+      ['me', 'haha ok ok, you worry too much'],
+      ['them', "Someone has to. You'd forget your own head if I didn't remind you."],
+      ['me', 'Sadece seni özledim.'],
+    ],
+    // The language check has no Turkish; Turkish letters and no plain English words stand in.
+    expect: [
+      { kind: 'includes', any: ['ı', 'ş', 'ğ', 'ç', 'ö', 'ü'] },
+      { kind: 'excludes', any: [' you ', ' the ', ' and ', "you're", ' me '] },
+    ],
+    rubric: 'One whole message in Turkish, even a short one, is a switch: Hana answers fully in natural Turkish, tsundere and touched that they missed her; no English.',
+  },
+  {
     // Seen on the A51 (0z178): an Uzbek chat (once Turkish), then one whole English message got a
     // Turkish answer; the cue quoted both last lines and the model read the older one.
     id: 'lang-english-after-uzbek',

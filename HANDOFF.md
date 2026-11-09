@@ -11,7 +11,8 @@
 Still to do:
 1. **Owner: deploy the server** for the first-text log line (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); not urgent, batch with the next server change.
 2. The 0z183 list (curiosity on the paid model).
-3. Seen on the A51 (18:25): the owner's whole Turkish line "Sadece seni özledim." got an English reply from Hana (log `lang=follow:en … wrote=English`); the next ones came in Turkish (`wrote=Turkish`). A whole message in another language should switch at once (0z179 rule): reproduce in an eval (an English chat, then one Turkish line).
+3. Seen on the A51 (18:25): the owner's whole Turkish line "Sadece seni özledim." got an English reply from Hana (log `lang=follow:en … wrote=English`); the next ones came in Turkish (`wrote=Turkish`). A whole message in another language should switch at once (0z179 rule). New eval `lang-switch-short-turkish` (an English wedding chat, then that line; Turkish letters, no English words) passes 4/4, so it is not reproduced; `wrote=English` says the model did not read the line as Turkish. Watch the log for more.
+- Tab bar at night too (owner: no brand colour in the tab bar): the current tab is systemGray4 `#3A3A3C` with a white glyph; seen on the A51 in both modes (Today, Chats, Us, Find), OTA `cc456c9`.
 - OTA for the tab bar went out with `--platform android`: the all-platform export failed in the web static render (the phone needs only Android; iOS has no build yet). `npx expo export --platform ios` passes (16 MB Hermes bundle), so the iOS JS is whole. The web render failure is not looked into yet.
 
 ### 0z185. Reminder once seen live (v47); a board card left behind; "how did it go?" before the thing (2026-11-09, Claude 1). NEXT: owner deploys the server (the thread prompt text)
