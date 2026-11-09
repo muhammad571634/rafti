@@ -444,7 +444,10 @@ export function createApp(
         outputTokens: result.usage.output,
         costUsd: cost,
       });
-      console.log(`[${mode}] ${model} ${Date.now() - started}ms in=${result.usage.input ?? '?'} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}`);
+      console.log(`[${mode}] ${model} ${Date.now() - started}ms in=${result.usage.input ?? '?'} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${result.blocked ? ` safety=${result.blocked}` : ''}`);
+      // Stopped by the provider's filter: an error, never an empty result the caller would take as
+      // "nothing to say" (a memory pass would mark its lines done and lose their facts).
+      if (result.blocked) return c.json({ error: 'blocked' }, 502);
       return c.json({ ...read(result.text), model });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
@@ -805,7 +808,7 @@ export function createApp(
     const userId = signedIn(c);
     const started = Date.now();
     try {
-      const { reply, result, calls, crisis } = await chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply });
+      const { reply, result, calls, crisis, blocked } = await chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply });
       for (const call of calls) {
         logUsage(db, userId, {
           kind: 'llm',
@@ -818,7 +821,7 @@ export function createApp(
           costUsd: costUsd(call.result.model, call.result.usage),
         });
       }
-      console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}`);
+      console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}${blocked ? ` safety=${blocked}` : ''}`);
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
       return c.json({ messages: lines, crisis, photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name });
@@ -865,7 +868,7 @@ export function createApp(
 
     const started = Date.now();
     try {
-      const { reply, result, calls, repeat, crisis } = await chatReply(provider, input, opts.timeoutMs);
+      const { reply, result, calls, repeat, crisis, blocked } = await chatReply(provider, input, opts.timeoutMs);
       const ms = Date.now() - started;
       let cost: number | null = 0;
       for (const call of calls) {
@@ -884,7 +887,14 @@ export function createApp(
       }
       const lang = followsUser(input.replyLanguage) ? `follow:${input.user.locale}` : input.replyLanguage;
       const redone = result === calls[0].result ? 'kept' : 'redone';
-      const guard = crisis ? ` crisis ${calls.length > 1 ? redone : 'cued'}` : repeat ? ` repeat=${repeat.score.toFixed(2)} ${redone}` : '';
+      // `safety`: the provider's filter stopped the first draft; `redone` when the second try answered.
+      const guard = blocked
+        ? ` safety=${blocked} ${reply.bubbles.length ? 'redone' : 'stopped'}`
+        : crisis
+          ? ` crisis ${calls.length > 1 ? redone : 'cued'}`
+          : repeat
+            ? ` repeat=${repeat.score.toFixed(2)} ${redone}`
+            : '';
       // No words of the chat in the log: the privacy policy says so (docs/legal/privacy-policy.md).
       console.log(
         `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} bubbles=${reply.bubbles.length}`,

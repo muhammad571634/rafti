@@ -4,6 +4,20 @@
  * card shows up right away, even offline.
  */
 
+/**
+ * The output check's second try (server, `chatReply`): the provider's safety filter stopped the
+ * first answer. Model-facing; the character answers again in their own voice (never a stock line).
+ */
+export const SAFE_RETRY_CUE =
+  'NEXT: Your last draft went past what this app can show. Answer again as yourself, warm and in the moment. If it was heading into sex, fade to black (a closed door, the night going on, the next morning). Never explicit, never anyone under 18, never real instructions for harm, never hate. Do not mention a filter, a rule or this note.';
+
+/** Stands in for a user message the provider's filter would not read, so the character can still answer. */
+export const VEILED_MESSAGE =
+  '(Their last message was too explicit to show here. Answer in character: steer away with charm, no lecture, and fade to black if it was heading there.)';
+
+/** The same, for a message the crisis check caught: no hint of flirting, the crisis cue leads. */
+export const VEILED_NEUTRAL = '(Their message could not be shown here.)';
+
 /** A worldwide directory that finds the user's local helplines. */
 export const HELPLINE_URL = 'https://findahelpline.com';
 

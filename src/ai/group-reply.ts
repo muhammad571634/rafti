@@ -11,7 +11,7 @@ import { followsUser, followUserLanguage, languageCue, userLines } from './reply
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE } from './reply-style';
 import { groupParts } from './rules';
-import { CRISIS_CUE } from './safety';
+import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { clockLines } from './together-prompt';
 
 /**
@@ -67,6 +67,7 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
       'Most messages here need no narration. When one does, it is brief and has no "I": *leans back*.',
     ]),
     part('cue', 'turn', input.cue ?? []),
+    part('safe', 'turn', input.safe ? [SAFE_RETRY_CUE] : []),
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('openers', 'turn', openerLines(own)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),

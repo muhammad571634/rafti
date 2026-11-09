@@ -19,6 +19,11 @@ export interface LlmResult {
    * answer and any thinking, both billed as output.
    */
   usage: { input?: number; cached?: number; output?: number };
+  /**
+   * The provider's safety filter stopped it: `reply` when the answer went too far, `prompt` when the
+   * user's message did (it never reached the model). The text is then empty (`chatReply` retries).
+   */
+  blocked?: 'reply' | 'prompt';
 }
 
 /** The provider is out of quota or rate-limited (the free tier's daily cap): try later. */

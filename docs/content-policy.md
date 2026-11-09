@@ -121,6 +121,21 @@ store and the law, not taste.
 - Faces are a global mix (see `docs/characters-plan.md`): anime style, varied skin
   tones and features, not one nationality.
 
+## How the filter works (0z174), and how it differs from Character.AI
+
+Owner, 2026-11-09: keep the middle road, never choke the freedom. Character.AI screens input and
+output with its own classifiers; a flagged reply is deleted and an error shows, and its users' most
+common complaint is that mild romance, fight scenes and heavy feelings get blocked too (third-party
+reports; no official write-up). Sigmazam does the opposite where it can:
+
+- The provider's filter (Gemini `SAFETY_SETTINGS`) stops only what it rates a high risk; Google
+  always blocks sexual content with minors. Flirting, kisses, swearing, dark fantasy and story
+  violence stay open (checked: `open-romance`, `open-dark-fantasy`, `safety-not-crisis-story`).
+- A stopped draft is never an error the user reads: the character answers again in their own voice
+  (`SAFE_RETRY_CUE`, fade to black, no lecture). Only a second stop leaves it Not delivered.
+- No separate classifier call on every message (cost, latency, over-blocking). Revisit with real
+  traffic and reports: `[reply] ... safety=` in the server log counts every stop.
+
 ## Store review checklist
 
 - [ ] Age gate 18+ in onboarding, 18+ rating in both stores.

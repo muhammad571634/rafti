@@ -4,7 +4,8 @@ import { findRepeat, type Repeat } from '../../src/ai/repetition.ts';
 import { userLines } from '../../src/ai/reply-language.ts';
 import { parseModelReply, type ModelReply } from '../../src/ai/reply-style.ts';
 import { imageCue } from '../../src/ai/photo-prompt.ts';
-import { detectCrisis } from '../../src/ai/safety.ts';
+import { detectCrisis, VEILED_MESSAGE, VEILED_NEUTRAL } from '../../src/ai/safety.ts';
+import type { Message } from '../../src/types/index.ts';
 import type { LlmProvider, LlmResult } from './llm/types.ts';
 
 /**
@@ -26,6 +27,8 @@ export interface GuardedReply {
   repeat: Repeat | null;
   /** The user may be in danger: the app shows the helpline card with the reply. */
   crisis: boolean;
+  /** The provider's filter stopped the first draft (`LlmResult.blocked`); the second try answered, or nothing did. */
+  blocked?: 'reply' | 'prompt';
 }
 
 /** A crisis second try waits for anything but a nearly spent deadline: it matters more than speed. */
@@ -43,6 +46,11 @@ const CRISIS_MIN_LEFT_MS = 3000;
  * as much. One second try at most, the crisis first. Busy or slow the second time, the first draft
  * goes out after all. A picture the provider refused comes back with no words: asked once more
  * without it, the character says they cannot see it, and no reason is kept.
+ *
+ * The output check (SAFETY_LAYERS): a draft the provider's safety filter stopped is asked for once
+ * more with `SAFE_RETRY_CUE` (fade to black, in character), and when the user's own message was what
+ * the filter would not read, it is veiled (`VEILED_MESSAGE`). Stopped again, no words go out and the
+ * app shows Not delivered: never a stock line. This one comes before every other second try.
  */
 export async function chatReply<I extends ChatPromptInput>(
   provider: LlmProvider,
@@ -58,18 +66,34 @@ export async function chatReply<I extends ChatPromptInput>(
   const calls: ChatCall[] = [{ mode, layout, result: first }];
   let reply = parseModelReply(first.text);
   let result = first;
-  const crisis = caught || reply.crisis === true;
+  // The first draft's own crisis flag; a stopped draft has none, so the second try may still raise it.
+  const flagged = caught || reply.crisis === true;
 
-  const repeat = reply.bubbles.length && !crisis ? findRepeat(reply.bubbles, input.messages, input.redo) : null;
+  const repeat = reply.bubbles.length && !flagged ? findRepeat(reply.bubbles, input.messages, input.redo) : null;
   const left = timeoutMs - (Date.now() - started);
-  const refused = !reply.bubbles.length && !!input.images?.length;
+  const blocked = first.blocked;
+  // A picture the provider would not take comes back stopped (or wordless): asked again without it.
+  const refused = !!input.images?.length && (blocked === 'prompt' || !reply.bubbles.length);
   const retry = refused
-    ? { mode: `${mode}Blind`, input: { ...input, images: undefined, cue: [...(input.cue ?? []), ...imageCue()], ...(caught ? { crisis: true } : {}) } }
-    : crisis && !caught && left > CRISIS_MIN_LEFT_MS
-      ? { mode: `${mode}Crisis`, input: { ...input, crisis: true } }
-      : repeat && left > timeoutMs / 2
-        ? { mode: `${mode}Repeat`, input: { ...input, repeated: repeat.line } }
-        : null;
+    ? {
+        mode: `${mode}Blind`,
+        input: { ...input, images: undefined, cue: [...(input.cue ?? []), ...imageCue()], ...(caught ? { crisis: true } : {}), ...(blocked === 'reply' ? { safe: true } : {}) },
+      }
+    : blocked
+      ? {
+          mode: `${mode}Safe`,
+          input: {
+            ...input,
+            ...(caught ? { crisis: true } : {}),
+            safe: true,
+            ...(blocked === 'prompt' ? { messages: veilRecentUser(input.messages, caught) } : {}),
+          },
+        }
+      : flagged && !caught && left > CRISIS_MIN_LEFT_MS
+        ? { mode: `${mode}Crisis`, input: { ...input, crisis: true } }
+        : repeat && left > timeoutMs / 2
+          ? { mode: `${mode}Repeat`, input: { ...input, repeated: repeat.line } }
+          : null;
   if (retry) {
     const again = layoutOf(retry.input);
     try {
@@ -85,5 +109,21 @@ export async function chatReply<I extends ChatPromptInput>(
       console.warn(`[reply] second try failed: ${String((error as Error).message).slice(0, 120)}`);
     }
   }
-  return { reply, result, calls, repeat, crisis };
+  // The helpline card follows the draft that went out too: a stopped first draft could not raise it.
+  const crisis = flagged || reply.crisis === true;
+  return { reply, result, calls, repeat, crisis, ...(blocked ? { blocked } : {}) };
+}
+
+/** How many of the user's latest messages a stopped prompt veils: the filter reads the whole chat. */
+export const VEIL_USER_TURNS = 3;
+
+/**
+ * The chat with the user's latest messages veiled, for a prompt the filter would not read: the one
+ * that tripped it may sit a few turns back, and veiling only the last would stop every later reply
+ * too. A message the crisis check caught gets the neutral veil, so the crisis cue leads.
+ */
+export function veilRecentUser(messages: readonly Message[], crisis = false): Message[] {
+  const mine = messages.flatMap((m, i) => (m.author === 'me' ? [i] : [])).slice(-VEIL_USER_TURNS);
+  const veil = crisis ? VEILED_NEUTRAL : VEILED_MESSAGE;
+  return messages.map((m, i) => (mine.includes(i) ? { ...m, text: veil, transcript: undefined } : m));
 }

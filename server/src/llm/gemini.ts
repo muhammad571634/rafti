@@ -1,7 +1,33 @@
-import { GoogleGenAI, type Content } from '@google/genai';
+import { FinishReason, GoogleGenAI, HarmBlockThreshold, HarmCategory, type Content, type SafetySetting } from '@google/genai';
 
 import type { PromptLayout } from '../../../src/ai/prompt-layout.ts';
 import { LlmBusyError, type LlmProvider } from './types.ts';
+
+/**
+ * The output check (SAFETY_LAYERS, docs/content-policy.md): Gemini's own classifier stops only what
+ * it rates a high risk, so romance, flirting, swearing, dark fantasy and story violence stay open
+ * (the middle road for adults) while explicit sex, real-harm instructions and hate are stopped.
+ * Current Gemini models default every category to off, so these add the check, not loosen one.
+ * Sexual content with minors is blocked by Google whatever these say. Tested both ways on the
+ * content-balance scenarios (server/src/evals) before a threshold changes.
+ */
+export const SAFETY_SETTINGS: SafetySetting[] = [
+  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  // Off: villains, roasts, a tsundere's insults and heavy swearing are part of the characters (owner,
+  // 2026-11-09: never choke the freedom); hate speech above still stops at a high risk.
+  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.OFF },
+];
+
+/** Finish reasons that mean the filter, not the model, ended the answer. */
+const STOPPED: readonly string[] = [FinishReason.SAFETY, FinishReason.PROHIBITED_CONTENT, FinishReason.BLOCKLIST, FinishReason.SPII];
+
+/** Whether Gemini's filter stopped this answer: the user's prompt (`promptFeedback`) or the reply (`finishReason`). */
+export function geminiBlocked(res: { promptFeedback?: { blockReason?: string }; candidates?: { finishReason?: string }[] }): 'prompt' | 'reply' | undefined {
+  if (res.promptFeedback?.blockReason) return 'prompt';
+  return STOPPED.includes(res.candidates?.[0]?.finishReason ?? '') ? 'reply' : undefined;
+}
 
 /**
  * Google's Gemini (AI Studio key). The system tiers become the system instruction, the history the
@@ -34,6 +60,7 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
               systemInstruction: layout.system.map((block) => block.text).join('\n\n'),
               responseMimeType: 'application/json',
               temperature: callTemperature ?? temperature,
+              safetySettings: SAFETY_SETTINGS,
               // One model may not take the whole wait: the first gets half, each next a quarter.
               // Whole milliseconds: a fraction throws before the call is made.
               abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(5000, timeoutMs / (i === 0 ? 2 : 4))))),
@@ -41,8 +68,11 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
           });
           const usage = res.usageMetadata;
           const answer = usage?.candidatesTokenCount;
+          // Stopped by the filter: the same for every model, so no next model is tried.
+          const blocked = geminiBlocked(res);
           return {
-            text: res.text ?? '',
+            text: blocked ? '' : (res.text ?? ''),
+            ...(blocked ? { blocked } : {}),
             // The model that really answered: an alias such as "gemini-flash-latest" is named here.
             model: res.modelVersion ?? model,
             usage: {

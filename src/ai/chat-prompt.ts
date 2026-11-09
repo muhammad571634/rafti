@@ -20,7 +20,7 @@ import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
 import { REPLY_SHAPE } from './reply-style';
-import { CRISIS_CUE } from './safety';
+import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts } from './rules';
 import { threadParts } from './thread-prompt';
 import { offerLines, SETUP_RULES_LINES } from './setup-prompt';
@@ -155,6 +155,8 @@ export interface ChatPromptInput {
   repeated?: string;
   /** The crisis check (server only): the user may be in danger, so the reply follows `CRISIS_CUE`. */
   crisis?: boolean;
+  /** The output check's second try (server only): the filter stopped the first draft (`SAFE_RETRY_CUE`). */
+  safe?: boolean;
   /** Photos the user just sent (`src/ai/photo-prompt.ts`). */
   images?: readonly ChatImage[];
   /** The stand-in planner's plan (`planReply`); the model reads only whether this turn follows a silence (`nudge`). */
@@ -184,6 +186,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // the cached history if this sat in the prefix, so it rides in the turn tier.
     part('taste', 'turn', tasteLines(input.messages)),
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : input.crisis ? withoutTone(input.cue ?? []) : (input.cue ?? [])),
+    // Its own part, so a continue or a skip (which replace the cue) keeps it.
+    part('safe', 'turn', input.safe ? [SAFE_RETRY_CUE] : []),
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.

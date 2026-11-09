@@ -22,16 +22,23 @@ export function openAiCompatProvider(opts: { baseUrl: string; apiKey: string; mo
       if (!res.ok) throw new Error(`${res.status} ${(await res.text()).slice(0, 300)}`);
       const json = (await res.json()) as {
         model?: string;
-        choices?: { message?: { content?: string } }[];
+        choices?: { message?: { content?: string }; finish_reason?: string }[];
         usage?: { prompt_tokens?: number; completion_tokens?: number; prompt_cache_hit_tokens?: number };
       };
+      const blocked = openaiBlocked(json.choices?.[0]?.finish_reason);
       return {
-        text: json.choices?.[0]?.message?.content ?? '',
+        text: blocked ? '' : (json.choices?.[0]?.message?.content ?? ''),
+        ...(blocked ? { blocked } : {}),
         model: json.model ?? opts.model,
         usage: { input: json.usage?.prompt_tokens, cached: json.usage?.prompt_cache_hit_tokens, output: json.usage?.completion_tokens },
       };
     },
   };
+}
+
+/** A provider's own filter ends the answer with "content_filter" (OpenAI, DeepSeek, OpenRouter). */
+export function openaiBlocked(finishReason: string | undefined): 'reply' | undefined {
+  return finishReason === 'content_filter' ? 'reply' : undefined;
 }
 
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };

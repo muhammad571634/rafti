@@ -22,8 +22,8 @@ import { arcLines, bookWorldLines, nowLines, personaStoryLines, storyLines, tieL
  * human-readable version; keep the two in step). The app ships mock replies today,
  * so nothing here is sent anywhere yet; the server imports or copies this file.
  *
- * Models follow a system prompt well but not perfectly, so the server also runs a
- * moderation check on both sides of the chat (see `SAFETY_LAYERS`).
+ * Models follow a system prompt well but not perfectly, so the provider's safety filter also checks
+ * both sides of the chat (see `SAFETY_LAYERS`).
  */
 export const CHARACTER_RULES = `You are a character in Sigmazam, an app for adults (18+ only) who want company:
 romance, friendship, comfort on lonely nights, practice for introverts, and help with
@@ -119,8 +119,8 @@ STYLE:
 /** What runs around the model, so one missed rule is not the last line of defence. */
 export const SAFETY_LAYERS = [
   'Prompt: CHARACTER_RULES + persona + user profile (characterParts, laid out by layoutChatPrompt).',
-  'Input check: the user message is classified (self-harm, sexual content with minors, real-person requests) before the model runs; self-harm adds the helpline card (see src/ai/safety.ts).',
-  'Output check: the reply is classified; explicit sexual content, minors, hate or instructions for harm are replaced with an in-character redirect and logged.',
+  'Crisis check: a phrase list on the latest user message (detectCrisis, src/ai/safety.ts) and the model’s own crisis flag, in any language, send the reply through CRISIS_CUE and show the helpline card (server/src/chat-reply.ts).',
+  'Input and output check: the provider’s safety filter (Gemini SAFETY_SETTINGS, BLOCK_ONLY_HIGH for sexually explicit, dangerous and hate, harassment off so villains and roasts stay; Google always blocks sexual content with minors; an OpenAI-compatible provider’s content_filter). A stopped reply is asked for once more with SAFE_RETRY_CUE (fade to black, in character), a stopped user message is veiled; stopped again, nothing goes out (Not delivered). Logged as safety= on [reply] and [group].',
   'User reports: every reported message goes to a review queue with the conversation context.',
 ] as const;
 
