@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z181. Delete and cleanup, built and walked on the A51 (2026-11-09, Claude 1). NEXT: owner deploys the server (0z180 prompts), then see Still to do
+
+- **Owner's ask**: "Yes, build it" (`docs/delete-plan.md`).
+- **Store**: one cleanup `forgetFriend` (`src/lib/forget-friend.ts`, tested: no slice keeps the id) used by Block, the new `removeFriend` (Find keeps them) and `deleteCharacter` (made ones only). It now also clears threads (follow-up pushes), calls, their diary replies and the wake session; an alarm they woke the user with stays as a plain alarm (a removed friend must not cost a morning). New: `deleteBoardPost`, `deletePhoto` (also its chat line, no empty frame), `deleteCall`, `clearCalls`. `forgetFriendNow` / `useForgetFriend` (`src/hooks/use-forget-friend.ts`) also drop selfies, drafts and voice notes. Secret notes are a daily question that renews: no delete (the unused `deleteNote` was dropped).
+- **Screens** (Apple patterns; every delete asks first via `confirmAction`, now with a message line and closable with Android back): friend settings, red row "Remove Hana from friends" / "Delete X" for a made one, above Block; Contacts, hold a row; My diary, trash in the header deletes the open page; board, hold a note; a photo, trash beside Back; call history, hold a row, "Clear" under the list.
+- **Seen on the A51** (OTA `01a1c035`, `01a1c040`): a test character made and deleted from Contacts (gone from Chats too); a test diary page written and deleted (7 → 6, the owner's pages kept); a test board note (2 shells) pinned and deleted; the owner's friends, calls and photos: only each dialog checked, then Cancel. Fixed on the way: the photo trash sat on the title (moved beside Back); Android back did not close the dialogs.
+- Strings in all 14 locales (`friendRemove.*`, `diary.deletePage*`, `board.delete*`, `callHistory.clear*`, `photoBooth.delete*`). Checks: tsc 0, npm test 867/867, check:locales and check:content pass.
+
+Still to do:
+1. **Owner: deploy the server** for 0z180 (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`).
+2. Seen on the A51: Hana's own first text came in **Azerbaijani** ("Diş həkiminə getməzdən əvvəl bir stəkan su içdinmi?") in an Uzbek / English chat: the first-text language cue (`src/ai/first-text.ts`) lands on a neighbour of Uzbek. Same family as 0z180 item 3.
+3. The 0z180 list.
+
 ### 0z180. Romance, tone menu and "their topic leads" (A51 + eval); delete audit (2026-11-09, Claude 1). NEXT: owner deploys the server; then the delete plan (owner's yes)
 
 - **Owner's asks**: a romantic chat with Hana (kissing and so on); check the tone menu (type, long-press Send); "why does every character drag the talk to its own life (Hana: paintings, studio, brushes)? I say I'm tired and going to a wedding and she does not follow it; think about the logic, for every character"; and where to delete a friend, diary pages, board notes and the like.
