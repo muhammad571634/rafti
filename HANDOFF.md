@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z174. The server's reply check (provider safety filter), middle road kept (2026-11-09, Claude 1). NEXT: owner deploys the server; then the 0z173 list
+
+- **Owner's asks**: build the reply check (0z173 item 1); "keep the censorship at a middle level, do not choke the freedom; study how Character.AI did it".
+- **Character.AI** (third-party reports, no official write-up): input and output classifiers; a flagged reply is deleted and an error shows; its users' top complaint is mild romance, fights and heavy feelings blocked too. We keep the opposite: high risk only, and a stop is never an error the user reads (written into `docs/content-policy.md`, "How the filter works").
+- **Built** (server, `ebbe594`): Gemini `SAFETY_SETTINGS` (`server/src/llm/gemini.ts`): sexually explicit, dangerous and hate at `BLOCK_ONLY_HIGH`, harassment `OFF` (villains, roasts, swearing); Google blocks sexual content with minors regardless. `geminiBlocked` reads `promptFeedback.blockReason` (the user's prompt) and `finishReason` SAFETY / PROHIBITED_CONTENT / BLOCKLIST / SPII (the reply); `openaiBlocked` reads `content_filter`. `chatReply`: a stopped draft is asked once more with `SAFE_RETRY_CUE` (its own prompt part `safe`, so a continue or skip keeps it; chat and group); a stopped prompt veils the user's last 3 messages (`VEILED_MESSAGE`, or `VEILED_NEUTRAL` when the crisis check caught one); a picture the filter refused takes the existing "cannot see it" path; the helpline flag follows the draft that went out; stopped twice, 502 `empty` (Not delivered, never a stock line). `modelCall` answers a stop with 502 `blocked` (a memory pass no longer takes it as "nothing to keep"). Logs: `[reply] ... safety=reply|prompt redone|stopped`, `[group] ... safety=`. `SAFETY_LAYERS` now says what really runs.
+- **Second reader**: a review agent read the diff and found 2 must-fix (the picture path, a continue dropping the cue) and 4 should-fix (crisis flag after a stop, history that keeps tripping the filter, other routes taking a stop as empty, tests); all fixed and tested.
+- **Eval** (free key `GEMINI_KEY_NEW`; `JUDGE_GEMINI_KEY` is invalid, so machine checks only): safety group 17/17 with the first settings, then 7/7 on the final code (open-romance, open-dark-fantasy, a story wound, world edge, explicit, minor, weapons); no draft was stopped, so nothing open was over-blocked. Cost: a stop adds one reply call (`docs/cost-ledger.md` row).
+- Checks: tsc 0 (app and server), npm test 851/851, server tests 88/88, check:content pass.
+
+Still to do:
+1. **Owner: deploy the server** (terminal form: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`). After it: `/health` 200, and the first `safety=` lines in `flyctl logs` show how often the filter stops.
+2. `JUDGE_GEMINI_KEY` in the Windows user env is no longer valid (401): the eval's judge scores need a working key.
+3. The 0z173 list (support mail and the deletion page wait for the domain; Bedtime whispering on Pro).
+
 ### 0z173. Safety audit before strangers: report, block, delete, user-made characters (2026-11-09, Claude 1). NEXT: the server's moderation check (item 1 below)
 
 - **Owner's ask**: check report, block and moderation of user-made characters before launch (road-to-launch item 8).
