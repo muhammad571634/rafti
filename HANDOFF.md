@@ -11,7 +11,7 @@
 - Checks: tsc 0 (app and server), npm test 853/853, server tests 88/88.
 
 Still to do:
-1. **Owner: deploy the server** (the prompts run there): terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`.
+1. Done 2026-11-09: deployed (Fly `v39`); on the A51 an Uzbek line in Hana's Turkish chat got an Uzbek answer (and she kept the evening's cinema plan). Noticed: the reply-idea chips under it stay in the app's language ("And then?", "Same here") while the chat is Uzbek; tapping one sends English into the chat. Worth a look next. For reference, the deploy (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`.
 2. `JUDGE_GEMINI_KEY` is invalid (401); the eval used `GEMINI_KEY_NEW` as judge meanwhile.
 3. The 0z173 list.
 
