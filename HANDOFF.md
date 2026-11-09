@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z183. 0z180 seen live (Fly v45); a reply-language slip logged (2026-11-09, Claude 1). NEXT: owner deploys the server, then read `wrote=` in `flyctl logs`
+
+- **Seen on the A51** (owner deployed v45): Hana, "tired, my cousin's wedding tomorrow": follows it, no painting, keeps the open thread ("drink that water"), picks up the detail ("400 people? So many"), but still the flat "A wedding? That sounds exhausting."; a kiss: "You're making it very hard to be grumpy right now" + the water and the wedding; Seriously "can we talk about something important": "I'm listening… Tell me, what's on your mind?" (before: her own secret); Whispering: one short bubble "You... don't say things like that so easily." (before: two full ones); the one-tap ideas new every turn ("Will you miss me?", "Only if you kiss me again", "Are you blushing?").
+- **Still wrong**: an English message ("its my cousin Aziza… 400 people") got an **Uzbek** answer (lang=follow:en). The eval does not reproduce it: new `lang-english-with-uzbek-name` (the same lines, an Uzbek summary) passes 3/3, with the other language cases 15/15.
+- **Changed**: the turn's LANGUAGE cue asks the model to put that language's name in `"language"` before it writes, and says a name or a borrowed word does not change it (`src/ai/reply-language.ts`); `parseModelReply` keeps `language`, and the server's `[reply]` line logs it as `wrote=<Name>` (a language name, no chat words), so the next slip shows whether the model misread the language or wrote against its own reading.
+- Checks: tsc 0 (app and server), npm test 867/867, server tests 89/89.
+
+Still to do:
+1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); then English lines in Hana's chat, and read `wrote=` in `flyctl logs -a sigmazam-api`.
+2. Curiosity about the user's news is still thin on the live model ("A wedding? That sounds exhausting."): try the paid model before more prompt.
+3. The 0z181 list (the Azerbaijani first text).
+
 ### 0z182. My diary: the page counter was covered by the turned pages (2026-11-09, Claude 1). NEXT: the 0z181 list
 
 - Owner's screenshot: "Swipe for other days · 1 / 6" was cut by the page stack. The pages behind are turned up to ~10° and pushed down, so their corners reach past the stack's box and, on Android, their shadow draws over the text. The counter now keeps a gap of 10% of the card width plus `space.xl` (`src/app/diary/mine.tsx`). Seen on the A51 (OTA `01a1c045`): the line reads whole. Checks: tsc 0.

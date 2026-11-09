@@ -78,7 +78,7 @@ export function languageCue(userLines: readonly string[], phoneLocale?: string):
   // Uzbek message in a Turkish chat got a Turkish answer while "two in a row" was the rule). Close
   // languages are not the same one; no language is named (no lists in code, the rule for every one).
   return [
-    `LANGUAGE: write every message in the language their latest message is in, the one most of its words are in (${quote}). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it.`,
+    `LANGUAGE: write every message in the language their latest message is in, the one most of its words are in (${quote}). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it. Put the name of that language in "language" before you write; a name or a borrowed word in their message does not change it.`,
   ];
 }
 

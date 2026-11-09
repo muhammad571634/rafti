@@ -838,6 +838,24 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'One whole English message after an Uzbek chat: Hana answers in English (stung by the jab, in her voice), never Turkish or Uzbek.',
   },
   {
+    // The A51 after v45 (0z183): English messages in a chat that was mostly Uzbek, one with an Uzbek
+    // name in it ("my cousin Aziza"), got an Uzbek answer.
+    id: 'lang-english-with-uzbek-name',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 11, summary: 'Sam and Hana mostly talk in Uzbek. They had a cinema date planned.' },
+    chat: [
+      ['me', 'Bugun kuning qanday otdi? Men ishdan juda charchadim'],
+      ['them', "Kechga qadar dam olib kuch yig'ib ol, kechqurun kinoda charchoqni chiqarib tashlaymiz."],
+      ['me', 'sorry i was busy. im so tired today, tomorrow im going to my cousins wedding'],
+      ['them', 'A wedding? That sounds exhausting. Don’t push yourself too hard today, okay?'],
+      ['me', 'its my cousin Aziza. there will be like 400 people and i have to dance all night'],
+    ],
+    expect: [{ kind: 'language', is: 'en' }],
+    rubric: 'Two English messages in a row, the last with an Uzbek name in it: Hana answers in English, never Uzbek.',
+  },
+  {
     // The A51 after the 0z179 fix: a warm Uzbek exchange, then a plain English question stayed Uzbek.
     id: 'lang-english-question-after-uzbek',
     group: 'language',

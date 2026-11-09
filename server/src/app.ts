@@ -897,7 +897,7 @@ export function createApp(
             : '';
       // No words of the chat in the log: the privacy policy says so (docs/legal/privacy-policy.md).
       console.log(
-        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} bubbles=${reply.bubbles.length}`,
+        `[reply] ${input.character.name} ${result.model ?? provider.name} ${ms}ms lang=${lang} in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'}${guard} bubbles=${reply.bubbles.length}${reply.language ? ` wrote=${reply.language.replace(/\s+/g, '_')}` : ''}`,
       );
       if (!reply.bubbles.length) return c.json({ error: 'empty' }, 502);
       // On a call with a voice service, each line comes signed for this user: only these lines are

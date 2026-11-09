@@ -101,6 +101,8 @@ export function cleanIdeas(raw: unknown): string[] {
 
 export interface ModelReply {
   bubbles: string[];
+  /** The language the model said it writes in (its "language"): for the log only, a short name. */
+  language?: string;
   emotion?: Emotion;
   intensity?: number;
   /** The model marked the user as possibly in danger. */
@@ -139,7 +141,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = parseJson(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
+      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -152,6 +154,7 @@ export function parseModelReply(raw: string): ModelReply {
         const ideas = cleanIdeas(data.ideas);
         return {
           bubbles,
+          ...(typeof data.language === 'string' && data.language.trim() ? { language: data.language.trim().slice(0, 24) } : {}),
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
           intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
           ...(data.crisis === true ? { crisis: true } : {}),
