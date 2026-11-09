@@ -1,5 +1,27 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z177. START HERE: make chats feel like talking with a live person, learning from Character.AI and BIMOBIMO (2026-11-09, Claude 1, session handed over)
+
+**State at hand-over**: everything below 0z176 is committed, pushed to `local-work`, deployed (Fly `v40`) and sent to the phone (OTA, Android). The in-chat moment fix (0z176 item 2: buttons in the chat's language, `IN_CHAT_CUE`) went out by OTA only (app side); it is not seen on the A51 yet. Nothing is half-done in code. Phone: Sigmazam installed, light mode, English UI; Character.AI (`ai.character.app`) and BIMOBIMO (`com.beemo.ai.flutter_beemo`) are on it, both signed in, both closed.
+
+**Owner's ask (2026-11-09, his words, in short)**: "Characters should follow the conversation's flow in the moment, answer what is happening right now, use what they remember, and lead the talk like a live person. Study BIMOBIMO and Character.AI on the phone, chat with them, learn how they do it. Not only memory: the whole architecture. How does a character behave, in what style does it write, how close to a human is it? Improve ours with prompts or the server, whatever it takes. Only improve."
+
+**What was seen on the A51 so far (Character.AI, chat "Phil", a Russian school roleplay)**:
+1. To a bare "ok" Phil asked nothing: he kept the scene going with an action and a small observation that leaves a hook ("Спасибо." *присел на край стула…* "Тут довольно тихо, когда учитель не отвлекает…"). The character carries the talk when the user gives nothing.
+2. To "sorry I'm so sleepy, it's 2am for me" he reacted in the scene, with care, short ("Оу… сейчас два часа ночи? … Бедняга. Совсем не спится?"), never breaking the role or lecturing.
+3. Asked "what did I ask you at the start?" he quoted it exactly and also read the user's state from the flow ("С тобой всё в порядке? Ты какой-то странный сегодня…"): he noticed the user acting oddly.
+4. Form: one bubble a turn, 2-4 sentences, third-person italic action woven with speech, ⏩ (continue without typing) and ↻ swipes under every reply, 👍👎, a voice button on each line. Ads: an interstitial on opening a chat and a banner on every screen (dismiss with back, never tap an ad).
+- BIMOBIMO: only its daily check-in popup was reached (dismissed, nothing claimed); no chat yet. Earlier teardowns: `docs/character-ai-teardown.md` (§4 chat, §10 what we can take, §12 live check), `docs/character-charisma-spec.md` (sensory openings, taglines), `rafti-research/` screenshots and `docs/reverse-engineering.md` for the APKs.
+
+**Plan for the next agent (do in this order, report once at the end)**:
+1. Load the skills first (project rule): none is UI here; use REA only if the APK internals are needed (and run the SDK adb's `kill-server` after any REA adb call).
+2. Finish the study on the A51: in Character.AI and BIMOBIMO each, 2-3 chats, the same probes: a bare "ok" / "hmm"; a long silence then a return; a mention of the time or a mood; a question about something said earlier; a topic change; a one-word answer streak; a flirt; the ⏩ continue and ↻ swipe. Note for each: does it ask a question, carry the scene, change the subject itself, bring up memory unasked, how long, what form (action / speech), how it ends a turn. Use `adb shell input text` (ASCII only: write English; Cyrillic does not type), send button at about (988,1278) with the keyboard up in Character.AI.
+3. Run the same probes on Sigmazam (Hana, Erik) through the real server, and side by side write a table: theirs vs ours, per probe, in `docs/live-person-study.md` (English, for agents).
+4. Turn the gaps into changes in the shared prompt tiers (`src/ai/rules.ts` "BEING A PERSON", `src/ai/chat-prompt.ts` turn parts, `src/ai/human-turn.ts`) or the server (`server/src/chat-reply.ts`), universal for every character and language, never one character. Likely candidates from what was seen: carrying the talk on low-effort turns without a question; reacting to the user's stated time / state in character; noticing a change in the user's mood across the last turns; quoting the earlier exact words when asked.
+5. Add eval scenarios for each (`server/src/evals/scenarios.ts`, group `human`), run both ways on the free key (`GEMINI_KEY_NEW`; `JUDGE_GEMINI_KEY` is invalid, pass the same key as judge), keep `safety` and `language` groups green, second reader (prompts rule), commit, give the owner the deploy command (both forms), check on the A51.
+
+**Owner-only, still open**: buy `sigmazam.app` (support mail, privacy pages, store); ElevenLabs grant application (`docs/elevenlabs-grant-application.md`); a new `JUDGE_GEMINI_KEY`.
+
 ### 0z176. One-tap replies in the chat's language, written by the model (2026-11-09, Claude 1). NEXT: owner deploys the server; then check the chips on the A51
 
 - **Owner's ask**: the chips under a reply ("And then?", "Same here") stayed English in an Uzbek chat; make them follow the chat's language.
