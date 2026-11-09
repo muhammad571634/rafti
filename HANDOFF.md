@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z184. Language log live (Fly v46); a reminder said once, not every reply (2026-11-09, Claude 1). NEXT: owner deploys the server
+
+- **Seen on the A51** (v46): English lines with Uzbek names ("my aunt Dilnoza", "Samarkand for plov") answered in English; `flyctl logs` shows `wrote=English` on each `[reply]`, so the next language slip will show whether the model misread the language.
+- **Found**: "drink some water" came back in three replies running: the 0z178 open-thread rule made her repeat it. `CHARACTER_RULES`: come back to the open thread once; a reminder already given is not given again until something new comes of it. New eval `human-reminder-once` 3/3; `human-topic-jump-thread` still comes back once (3/3); `human-stated-state` 3/3; language and crisis cases pass (`lang-uzbek-not-turkish` 1/2 then 4/4: noise).
+- Checks: tsc 0, npm test 867/867.
+
+Still to do:
+1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`).
+2. The 0z183 list (curiosity on the paid model; the Azerbaijani first text).
+
 ### 0z183. 0z180 seen live (Fly v45); a reply-language slip logged (2026-11-09, Claude 1). NEXT: owner deploys the server, then read `wrote=` in `flyctl logs`
 
 - **Seen on the A51** (owner deployed v45): Hana, "tired, my cousin's wedding tomorrow": follows it, no painting, keeps the open thread ("drink that water"), picks up the detail ("400 people? So many"), but still the flat "A wedding? That sounds exhausting."; a kiss: "You're making it very hard to be grumpy right now" + the water and the wedding; Seriously "can we talk about something important": "I'm listening… Tell me, what's on your mind?" (before: her own secret); Whispering: one short bubble "You... don't say things like that so easily." (before: two full ones); the one-tap ideas new every turn ("Will you miss me?", "Only if you kiss me again", "Are you blushing?").
