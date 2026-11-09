@@ -77,7 +77,9 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
     ...ownDayParts(input.ownDay, input.clock),
     part('languageNow', 'turn', followsUser(replyLanguage) ? groupLanguageCue(userLines(messages), user.locale, persona?.name ?? user.displayName) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
-    part('shape', 'turn', [REPLY_SHAPE]),
+    // "Their latest message" is the user's here, never the last member's line (0z146, 0z187). A
+    // replacer function, so a name's "$&" is not a pattern; its quotes go, so the shape stays JSON.
+    part('shape', 'turn', [REPLY_SHAPE.replace('of their latest message', () => `of ${(persona?.name ?? user.displayName).replace(/["\\]/g, '')}'s latest message`)]),
   ];
 }
 

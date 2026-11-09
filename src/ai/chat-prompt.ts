@@ -13,7 +13,7 @@ import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { isToneLine, whispered, withoutTone } from './tone';
 import { layoutPrompt, part } from './prompt-layout';
-import { followsUser, languageCue, userLines } from './reply-language';
+import { followsUser, followUserLanguage, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
@@ -175,8 +175,12 @@ export interface ChatPromptInput {
 export function chatParts(input: ChatPromptInput): PromptPart[] {
   const { character, user, relationship, replyLanguage, persona, scene, lore, prefs } = input;
   const summary = input.summary?.trim();
+  // Once they have written, the cached REPLY LANGUAGE names no language, as in a group (0z145): its
+  // "else English (their phone's language)" was what a light model named for a Turkish line (0z187).
+  // The turn's LANGUAGE cue quotes their words; before they write, it names the phone's language.
+  const language = followsUser(replyLanguage) && userLines(input.messages).length ? followUserLanguage(user.locale, { named: false }) : replyLanguage;
   return [
-    ...characterParts(character, user, relationship, replyLanguage, persona, scene, lore, prefs, { due: relationship?.arcDue }),
+    ...characterParts(character, user, relationship, language, persona, scene, lore, prefs, { due: relationship?.arcDue }),
     modePart(input.mode ?? 'chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('facts', 'chat', factLines(input.facts ?? [])),

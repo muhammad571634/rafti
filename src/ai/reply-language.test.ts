@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Character, User } from '@/types';
 
-import { baseLanguage, FOLLOW_USER_LANGUAGE, followsUser, followUserLanguage, languageCue, languageName, lockedReplyLanguage } from './reply-language';
+import { baseLanguage, FOLLOW_USER_LANGUAGE, followsUser, followUserLanguage, languageCue, languageName, lockedReplyLanguage, noteLanguage } from './reply-language';
 import { buildCharacterPrompt } from './rules';
 
 describe('lockedReplyLanguage', () => {
@@ -45,6 +45,20 @@ describe('languageCue: any language, read off their own words', () => {
     assert.match(cue, /A whole message in another language is a switch/);
     assert.match(cue, /A word or two from another language .* changes nothing/);
     assert.match(cue, /never a neighbour of it/);
+  });
+
+  it('says their latest message sets the language, never earlier replies or the notes (0z187)', () => {
+    // The A51: after ~170 English replies a Turkish line got "language":"Turkish" and English bubbles.
+    const [cue] = languageCue(['Sadece seni özledim.']);
+    assert.match(cue, /\*actions\* included/);
+    assert.match(cue, /neither your own earlier replies .* nor your notes, memories and summary set it/);
+  });
+
+  it('names one note language from the app language', () => {
+    assert.equal(noteLanguage('pt-BR'), languageName('pt-BR'));
+    assert.match(noteLanguage('pt-BR'), /Portuguese/);
+    assert.equal(noteLanguage(undefined), 'English');
+    assert.equal(noteLanguage(' '), 'English');
   });
 
   it('quotes their newest line as the newest and the one before as context, cut when long; before they write, names the phone’s language', () => {

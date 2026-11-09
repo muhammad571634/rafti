@@ -78,9 +78,17 @@ export function languageCue(userLines: readonly string[], phoneLocale?: string):
   // Uzbek message in a Turkish chat got a Turkish answer while "two in a row" was the rule). Close
   // languages are not the same one; no language is named (no lists in code, the rule for every one).
   return [
-    `LANGUAGE: write every message in the language their latest message is in, the one most of its words are in (${quote}). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it. Put the name of that language in "language" before you write; a name or a borrowed word in their message does not change it.`,
+    `LANGUAGE: write every message in the language their latest message is in, the one most of its words are in (${quote}). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it. Put the name of that language in "language" before you write; a name or a borrowed word in their message does not change it. Then write every bubble, *actions* included, in that very language: their latest message sets it; neither your own earlier replies in this chat (in whatever language) nor your notes, memories and summary set it.`,
   ];
 }
+
+/**
+ * The one language a friend's notes about a user are kept in (0z187): the user's app language, the
+ * one their Memories screen reads in (`User.locale`: their pick, else the phone's), whatever
+ * languages they chat in. A pass that wrote in the chat's language of the moment left Hana's facts in
+ * Turkish, Russian and English at once, and that mix pulled replies into the wrong language (A51).
+ */
+export const noteLanguage = (locale?: string) => languageName(locale?.trim() || 'en');
 
 /** "pt-BR" and "pt" are one language for the lock. */
 export function baseLanguage(tag: string) {

@@ -82,4 +82,10 @@ describe('the group follows the user’s own words, not the phone (0z145)', () =
     assert.doesNotMatch(now([]), /own messages/);
     assert.match(now([]), /Russian/);
   });
+  it('the shape names the user’s latest message, never the last member’s line (0z187)', () => {
+    const shape = groupReplyParts({ character: isolde, others: [ronan], user: ru, messages: [say('hi')], replyLanguage: followUserLanguage('ru-RU') }).find((p) => p.name === 'shape')!.text;
+    assert.match(shape, /"language":"the language of Sukut's latest message, named","messages"/);
+    const odd = groupReplyParts({ character: isolde, others: [ronan], user: { ...ru, displayName: 'Mo$\'"x' }, messages: [say('hi')], replyLanguage: followUserLanguage('ru-RU') }).find((p) => p.name === 'shape')!.text;
+    assert.match(odd, /"language":"the language of Mo\$'x's latest message, named","messages"/);
+  });
 });

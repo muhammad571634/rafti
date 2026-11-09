@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { cleanMemoryPass, MEMORY_RULES, memoryPassParts, parseMemoryPass, PASS_OPS_MAX } from './memory-pass';
-import { joinParts } from './prompt-layout';
+import { cleanMemoryPass, MEMORY_RULES, memoryPassParts, parseMemoryPass, PASS_OPS_MAX } from './memory-pass';import { joinParts } from './prompt-layout';
 
 const request = {
   character: { name: 'Kai Arden', series: 'Seaside Academy', bio: 'Swim-team ace.' },
@@ -27,6 +26,28 @@ describe('the memory pass (B2)', () => {
     assert.match(text, /SUMMARY SO FAR: They met at the pool\./);
     assert.match(text, /JUST BEFORE \(already read\):\nKai Arden: How was class\?/);
     assert.match(text, /NEW SINCE LAST TIME:\nSam: my beagle Biscuit ate my socks again\nKai Arden: Biscuit is a menace\./);
+  });
+
+  it('keeps every note in one language, the user’s app language, whatever the chat is in (0z187)', () => {
+    // A chat that moved between Turkish, English and Uzbek left Hana's facts in three languages, and
+    // the mix pulled her replies into the wrong one (the A51, 0z186).
+    const text = joinParts(memoryPassParts({ ...request, user: { displayName: 'Ana', locale: 'es-ES' }, lines: [{ author: 'me', text: 'bugun juda charchadim', at: '2026-10-28T10:00:00Z' }] }));
+    assert.match(text, /NOTE LANGUAGE: [^.\n]*Spanish/);
+    assert.match(text, /whatever language the chat is in/);
+    assert.match(text, /the summary in English/);
+    // No quote of the chat's words to take the language from.
+    assert.doesNotMatch(text, /their latest message/);
+    // Old facts in another language are given back in it, a few a pass.
+    assert.match(text, /"update"[^\n]*same meaning/);
+    assert.match(joinParts(memoryPassParts({ ...request, user: { displayName: 'Sam' } })), /NOTE LANGUAGE: English/);
+    // Pinned facts and the user's own words (no owner) are never rewritten.
+    assert.match(text, /not pinned and not their own words/);
+    // Through the server's clean, as in production (it fills `about`, so the source marks own words).
+    const wire = cleanMemoryPass({ ...request, facts: [{ id: 'm2', text: 'Seni özledim hana', source: 'diary' }, { id: 'm3', text: 'glass of water: done', source: 'chat' }, { id: 'm4', text: 'x y z', source: 'nope' }] })!;
+    const quoted = joinParts(memoryPassParts(wire));
+    assert.match(quoted, /- \[m2\] \(you, their own words\) Seni özledim hana/);
+    assert.match(quoted, /- \[m3\] \(you\) glass of water: done/);
+    assert.equal(wire.facts[2].source, undefined);
   });
 
   it('keeps only important, sure facts and changes only facts it was shown', () => {

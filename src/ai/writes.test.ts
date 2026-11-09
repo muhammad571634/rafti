@@ -113,7 +113,11 @@ describe('a moment: a text because of something in the app', () => {
     const prompt = joinParts(firstTextParts(clean));
     assert.match(prompt, /Sam’s birthday/);
     assert.match(prompt, /You are texting first/);
-    assert.match(prompt, /\{"language"/);
+    // The language is named right before the texts (0z187).
+    assert.match(prompt, /"language":"[^"]*","messages"/);
+    // A stored lock carries no LANGUAGE line: the shape falls back to the REPLY LANGUAGE.
+    assert.doesNotMatch(prompt, /^LANGUAGE: (write|they have not)/m);
+    assert.match(prompt, /else the REPLY LANGUAGE/);
   });
 
   it('needs a cue', () => {

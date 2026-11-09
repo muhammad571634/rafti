@@ -1,5 +1,31 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z187. Reply language root cause fixed; one note language for memories; Chats as Messages; one alert for the app; SF-style tab icons (2026-11-09, Claude 1). NEXT: owner deploys the server, then rerun the evals the quota cut
+
+**Start here (next agent):** everything below is committed and pushed to `local-work`. The app side is on the A51 by OTA (Android only). The server side (prompts, memory pass, first-text log) needs the owner's deploy. Reply to the owner in short plain Uzbek.
+
+- **Reply language, root cause** (owner: "why do languages keep mixing; fix it on the server, for every user"). Replayed the owner's real Hana chat (read-only from Supabase `messages` / `memories` / `chat_memory` with `SUPABASE_SECRET_KEY`; a scratch script fed it through `chatReply`): a Turkish line after ~170 English replies got `"language":"Turkish"` and English bubbles, 3 of 4. Two causes:
+  1. `REPLY_SHAPE` asked for `"language":"the REPLY LANGUAGE, named"` first; the cached REPLY LANGUAGE text ends on "English (their phone's language)". Now `"language":"the language of their latest message, named"` sits right before `"messages"` (group: "of <name>'s latest message", a replacer so a `$` in a name is not a pattern); `TOUCH_SHAPE` the same ("as the LANGUAGE line says, else the REPLY LANGUAGE"). `chatParts` drops the phone language from the cached tier once the user has written (`followUserLanguage(locale, { named: false })`, as groups did since 0z145). `languageCue` ends: every bubble, *actions* included, in that language; neither earlier replies nor notes set it.
+  2. Memories were written in the chat's language of the moment: Hana's 37 facts were Turkish, Russian and English, names mixed. `memory-pass.ts` now writes every fact in one NOTE LANGUAGE (the user's app language, `noteLanguage(User.locale)`, as the Memories screen reads) and the summary in English; up to 3 old facts in another language are given back per pass ("heal", after real changes; never pinned facts or the user's own words: the app now sends `source`, and diary / board / manual memories are marked "their own words"). Replayed 4 passes on Hana's real store: summary English, facts healing.
+  - Result on the real chat: 12/12 Turkish (narration too) with the healed English notes. Language eval group 19/19 on the final code.
+  - Trade-off measured: the stronger language line made `memory-sees-photo` less literal on flash-lite ("Primary colors?" for a red ball, 0-1/4 vs 3/4); tried 4 placements, none kept both; language wins. Recheck on the paid model.
+  - Second reader: `/code-review` twice; 8 findings fixed (heal touching pinned / own words, group shape, ops crowding, cost-ledger row 16, `$` in names, owner-less facts, cached tier, eval rerun); `memory-profile-job` already failed before this change (0/3 on old code).
+- **First texts**: new eval `lang-uzbek-first-text` 6/6 (the Azerbaijani one did not come back); `parseTouchReply` keeps `language` and the server's `modelCall` log prints `wrote=<Name>`.
+- **Chats screen** (owner picked B of three, `docs/prototypes/chats-apple.html`): iOS Messages rows: face, name + bond heart, time, chevron, two lines, hairline under the text, unread dot in the brand peach (`apricot600` by day, `apricot300` at night; owner: "brand colour, not blue"), swipe actions flush, pinned faces without the friend-colour ring. Seen on the A51: unread, swipe, Edit, dark.
+- **One alert** (owner approved `docs/prototypes/android-alert.html`): `src/lib/alert.ts` `showAlert` (Alert.alert's shape): iPhone shows Apple's alert, Android and web our `AlertHost` (root `_layout.tsx`): instant, dim ground, one at a time, back / tap outside = Cancel, scrolls instead of growing past the screen, two short buttons in a row (Cancel left) else stacked. `confirmAction` uses it off iOS (iOS keeps its action sheet); seven copied `confirm()` helpers became `confirmAlert`; `common.ok` in 14 locales. Seen on the A51: delete a chat, back, tap outside, dark.
+- **Tab bar**: current tab a grey capsule day and night (no brand colour); Android draws our own SF Symbols-style icons (`TabGlyph`: house, two bubbles, heart, magnifier; Apple's licence keeps real SF Symbols on Apple platforms, iPhone already uses them).
+- **iOS**: the owner asked whether Android-only OTAs hurt iOS. No: one codebase; `npx expo export --platform ios` passes. The all-platform OTA export fails in the **web** static render (not looked into); OTAs go out with `--platform android`.
+- **Keys**: `GEMINI_KEY_OWNER` (owner's key, Windows user env) ran all evals; it hit its daily quota (429) during the final run. `GEMINI_KEY_NEW` out of quota; `JUDGE_GEMINI_KEY` invalid (401).
+- Checks: tsc 0 (app and server), npm test 873/873, server tests 89/89, check:locales pass.
+
+Still to do:
+1. **Owner: deploy the server** (all the prompt and memory changes are server-side): `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only` (chat box: the same with a leading `!`). Then on the A51: write Hana in Turkish after English (and back), check `flyctl logs -a sigmazam-api` for `wrote=`.
+2. **Rerun the evals the quota cut** when the key resets (tomorrow) or the paid key comes: `--group safety`, `human`, `memory`, `mode` with `GEMINI_KEY_OWNER` (final run: safety 12/17 answered and passing, the rest 429, no real failure).
+3. Photo replies less literal on flash-lite (see above): recheck on the paid model.
+4. Web static render fails in `eas update` all-platform export: find why (iOS/Android fine).
+5. Hana repeats her father's-painting secret often in long chats (seen in replays): a repetition guard for confessions.
+6. The 0z183 list (curiosity on the paid model).
+
 ### 0z186. Fly v48 live; the Azerbaijani first text does not come back; a light grey tab (2026-11-09, Claude 1). NEXT: owner deploys the server (first-text log line), then the 0z183 list
 
 - Owner deployed 0z185 (Fly v48, `/health` 200).

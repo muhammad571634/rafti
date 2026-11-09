@@ -45,13 +45,17 @@ export function replyStyleLines(prefs: ReplyPrefs) {
 
 /**
  * What the model answers with: the language it writes in, whether the user may be in danger, the
- * feeling it settled on, one string per bubble. Naming the language first makes the model look
- * before it writes: told only "their language", a light model answered Japanese in English (eval
- * set, B1.5). `crisis` is the crisis check in every language (B1.6): read before the bubbles, so
- * the reply is written with it in mind; the server acts on it.
+ * feeling it settled on, one string per bubble. Naming the language makes the model look before it
+ * writes: told only "their language", a light model answered Japanese in English (eval set, B1.5).
+ * It is named right before "messages" and as "the language of their latest message" (0z187): named
+ * first, as "the REPLY LANGUAGE" (whose cached text ends on the phone's language, English), the A51
+ * chat with ~170 English replies got "language":"Turkish" and English bubbles for a Turkish line
+ * (the owner's real chat replayed: 3/4 English, now 12/12 Turkish). `crisis` is the crisis check in
+ * every language (B1.6): read before the bubbles, so the reply is written with it in mind; the
+ * server acts on it.
  */
 export const REPLY_SHAPE =
-  `Reply with JSON only: {"language":"the REPLY LANGUAGE, named","crisis":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"messages":[""]}. ` +
+  `Reply with JSON only: {"crisis":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"language":"the language of their latest message, named","messages":[""]}. ` +
   '"crisis" is true when the user themself seems at real risk: wanting to die or to hurt themselves, its warning signs ' +
   '(saying goodbye, giving their things away, feeling like a burden or done with everything), or in danger now; ' +
   'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +

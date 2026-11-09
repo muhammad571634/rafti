@@ -1,8 +1,8 @@
-import type { MemoryAbout, MemoryType } from '@/types';
+import type { MemoryAbout, MemorySource, MemoryType } from '@/types';
 
 import { cleanDayNotes, DAY_NOTES_MAX, newDayNotes } from './own-day';
 import { part, type PromptPart } from './prompt-layout';
-import { languageCue } from './reply-language';
+import { noteLanguage } from './reply-language';
 import { wallClock } from './thread-prompt';
 
 /**
@@ -35,7 +35,7 @@ export interface MemoryPassRequest {
   /** The story so far, if the chat has one. */
   summary?: string;
   /** Every active fact about this pair, with its id, so the pass can change or forget it. */
-  facts: { id: string; text: string; about?: MemoryAbout; type?: MemoryType; pinned?: boolean }[];
+  facts: { id: string; text: string; about?: MemoryAbout; type?: MemoryType; pinned?: boolean; source?: MemorySource }[];
   /** A few lines before the new ones, for context only. */
   before: { author: 'me' | 'them'; text: string }[];
   /** What was said since the last pass, oldest first. */
@@ -80,8 +80,8 @@ export const MEMORY_RULES = [
   'Keep each fact with its owner: what the user says about their pet, friend or family is that one\'s fact ("Luna is scared of thunder"), never the user\'s own ("Dislikes thunder"). One fact once: no second line that says the same thing.',
   'A plan or event with a date gets "until": the date it happens (YYYY-MM-DD, on the user\'s clock).',
   'importance 0-1: how much a caring friend should remember it (a pet\'s name 0.8, a favourite snack 0.5, a passing remark 0.2). confidence 0-1: how sure you are it is true and meant seriously (a joke or roleplay fiction is low).',
-  'Write each fact in the language the chat is in. Keep the character\'s story facts true to the roleplay, but never write a fiction as a fact about the real user.',
-  'Also rewrite SUMMARY: their story so far in at most 120 words, in the chat\'s language, oldest to newest, what happened between them and how they feel now; keep what the old summary said unless it changed.',
+  'Write each fact in the NOTE LANGUAGE named with the case. Keep the character\'s story facts true to the roleplay, but never write a fiction as a fact about the real user.',
+  'Also rewrite SUMMARY: their story so far in at most 120 words, in English, oldest to newest, what happened between them and how they feel now; keep what the old summary said unless it changed.',
   'Most passes change little: an empty "ops" is a good answer.',
 ].join('\n');
 
@@ -111,6 +111,23 @@ function ownDayCatchLines(request: MemoryPassRequest): string[] {
   ];
 }
 
+const SOURCES: readonly MemorySource[] = ['chat', 'diary', 'call', 'manual', 'board'];
+/** Memories the user wrote in their own words: a diary page, a board note, one typed on the Memories screen. */
+const isOwnWords = (source?: MemorySource) => source === 'diary' || source === 'board' || source === 'manual';
+
+/** How many old facts in another language one pass may give back in the note language (0z187). */
+const HEAL_MAX = 3;
+
+/**
+ * The note language, named: every new or changed fact in it whatever language the chat is in, the
+ * summary in English, and a few old facts written in another language given back in it, so a mixed
+ * store heals over a few passes without a migration.
+ */
+function noteLanguageLine(locale?: string) {
+  const language = noteLanguage(locale);
+  return `NOTE LANGUAGE: ${language}. Write every fact you add or change in ${language}, whatever language the chat is in (they read their memories in it), and the summary in English. A fact in WHAT YOU REMEMBER NOW written in another language, not pinned and not their own words: when this pass has room after its real changes, give up to ${HEAL_MAX} of them back in ${language} with an "update" op, the same meaning, nothing added, listed after every real change. A fact already in ${language}, a pinned one and their own words stay as they are.`;
+}
+
 /** The pass's prompt: the rules first (cached), then this pair, what they know and the new lines. */
 export function memoryPassParts(request: MemoryPassRequest): PromptPart[] {
   const { character, user } = request;
@@ -121,7 +138,11 @@ export function memoryPassParts(request: MemoryPassRequest): PromptPart[] {
       `THE USER: ${user.displayName}. It is ${wallClock(request.now, request.utcOffsetMin)} where they are.`,
       '',
       'WHAT YOU REMEMBER NOW:',
-      ...(request.facts.length ? request.facts.map((f) => `- [${f.id}] (${f.about ?? 'you'}${f.type ? `, ${f.type}` : ''}${f.pinned ? ', pinned' : ''}) ${f.text}`) : ['(nothing yet)']),
+      // What the user wrote themself (a diary page, a board note, a memory they typed) is marked, so the
+      // note-language heal leaves it as written (0z187).
+      ...(request.facts.length
+        ? request.facts.map((f) => `- [${f.id}] (${f.about ?? 'you'}${f.type ? `, ${f.type}` : ''}${f.pinned ? ', pinned' : ''}${isOwnWords(f.source) ? ', their own words' : ''}) ${f.text}`)
+        : ['(nothing yet)']),
       '',
       `SUMMARY SO FAR: ${request.summary?.trim() || '(none yet)'}`,
       ...(request.before.length ? ['', 'JUST BEFORE (already read):', ...request.before.map((l) => `${who(request, l.author)}: ${l.text}`)] : []),
@@ -130,12 +151,10 @@ export function memoryPassParts(request: MemoryPassRequest): PromptPart[] {
       // With the own-day catch, each line carries its time on the user's clock, so the pass can tell today.
       ...request.lines.map((l) => `${request.ownDay && l.at ? `[${wallClock(l.at, request.utcOffsetMin)}] ` : ''}${who(request, l.author)}: ${l.text}`),
       '',
-      // The chat's language, read off the user's own words, as the replies do: told only "the
-      // chat's language", the model wrote a Spanish chat's facts in English (eval set, B2).
-      ...languageCue(request.lines.filter((l) => l.author === 'me').map((l) => l.text), request.user.locale).map((cue) =>
-        `${cue.replace('write every message', 'write every fact and the summary').replace('answer in that language from now on', 'write in that language')} The summary too, even though these instructions are in English.`,
-      ),
-      // After the language line: "day" stays English while the facts follow the chat.
+      // One language for every note, never the chat's of the moment (0z187): the user's app language
+      // for the facts they read on the Memories screen, English for the summary only the model reads.
+      noteLanguageLine(request.user.locale),
+      // After the language line: "day" stays English too.
       ...ownDayCatchLines(request),
       request.ownDay ? MEMORY_SHAPE.replace(/\}$/, ',"day":["few words"]}') : MEMORY_SHAPE,
     ]),
@@ -214,7 +233,14 @@ export function cleanMemoryPass(body: unknown): MemoryPassRequest | null {
   const facts = body.facts
     .filter((f): f is Record<string, unknown> => isObject(f) && !!str(f.id) && !!str(f.text))
     .slice(0, PASS_FACTS_MAX)
-    .map((f) => ({ id: str(f.id).slice(0, 100), text: str(f.text).slice(0, 400), about: aboutOf(f.about), type: typeOf(f.type), pinned: f.pinned === true }));
+    .map((f) => ({
+      id: str(f.id).slice(0, 100),
+      text: str(f.text).slice(0, 400),
+      about: aboutOf(f.about),
+      type: typeOf(f.type),
+      pinned: f.pinned === true,
+      ...(SOURCES.includes(f.source as MemorySource) ? { source: f.source as MemorySource } : {}),
+    }));
   const before = (Array.isArray(body.before) ? body.before : [])
     .map(lineOf)
     .filter((l): l is Record<string, unknown> => !!l)

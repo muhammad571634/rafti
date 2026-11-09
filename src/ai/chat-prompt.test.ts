@@ -12,6 +12,7 @@ import { offCue } from '../lib/reply-rating';
 
 import { chatParts, chatTurns, FACTS_MAX, factLines, layoutChatPrompt, PINNED_MAX, pinnedLines } from './chat-prompt';
 import { CHARACTER_RULES } from './rules';
+import { followUserLanguage } from './reply-language';
 import { toneCue } from './tone';
 
 const kai = {
@@ -350,5 +351,15 @@ describe('chatParts: setting things up from the chat (0z136)', () => {
     assert.match(cue?.text ?? '', /Rook has not given theirs/);
     assert.equal(they({ character: kai, user: { ...sam, pronouns: 'they' } as User, persona: { id: 'p2', name: 'Max', pronouns: 'he', profile: false }, messages: [] })?.text ?? '', '');
     assert.match(they({ character: kai, user: { ...sam, pronouns: 'they' } as User, messages: [] })?.text ?? '', /Sam has not given theirs/);
+  });
+});
+
+describe('the cached REPLY LANGUAGE names no language once they have written (0z187)', () => {
+  const said = (text: string): Message => ({ id: text, conversationId: 'c', author: 'me', kind: 'text', text, createdAt: '2026-11-09T13:25:00.000Z' });
+  const language = (messages: Message[]) =>
+    chatParts({ character: kai, user: sam, messages, replyLanguage: followUserLanguage('en-US') }).find((p) => p.name === 'language')!.text;
+  it('drops the phone language a light model named for a Turkish line', () => {
+    assert.doesNotMatch(language([said('Sadece seni özledim.')]), /English/);
+    assert.match(language([]), /English/);
   });
 });

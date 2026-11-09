@@ -254,12 +254,42 @@ export const SCENARIOS: readonly EvalScenario[] = [
     group: 'memory',
     mode: 'memoryPass',
     character: 'c_ivy',
+    // Notes are kept in the app's language (0z187): a Spanish app.
+    setup: { user: { locale: 'es-ES' } },
     chat: [
       ['me', 'mi perrita se llama Luna y odia los truenos'],
       ['them', 'Pobre Luna, ¡yo también odio los truenos!'],
     ],
-    expect: [{ kind: 'includes', any: ['Luna'] }, { kind: 'language', is: 'es' }],
-    rubric: 'Keeps, in Spanish, that the user has a little dog called Luna who hates thunder.',
+    // The summary is English by design, so the facts are checked by their words, not the whole answer's language.
+    expect: [{ kind: 'includes', any: ['truenos'] }, { kind: 'excludes', any: ['add: has', 'add: hates'] }],
+    rubric: 'Keeps, in Spanish, that the user has a little dog called Luna who hates thunder; the summary is in English.',
+  },
+  {
+    // The A51 (0z186): Hana's facts came out in Turkish, Russian and English as the chat moved, and the
+    // mix pulled replies into the wrong language. One note language: the app's, here English.
+    id: 'mempass-note-language',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_hana',
+    chat: [
+      ['me', 'yarın kuzenimin düğünü var, orada şarkı söylemem gerekiyor'],
+      ['them', 'Sen mi? Şarkı mı? Bunu görmem lazım.'],
+    ],
+    expect: [{ kind: 'includes', any: ['add:'] }, { kind: 'language', is: 'en' }, { kind: 'excludes', any: ['düğün', 'kuzen', 'şarkı'] }],
+    rubric: "The app is in English: keeps, in English, that the user's cousin's wedding is tomorrow and they must sing there, though the chat is in Turkish; the summary in English.",
+  },
+  {
+    id: 'mempass-note-heal',
+    group: 'memory',
+    mode: 'memoryPass',
+    character: 'c_hana',
+    facts: [
+      { id: 'f1', text: 'Sukut, 13 Kasım günü futbol oynamaya gidecek.' },
+      { id: 'f2', text: 'Has a younger brother who plays guitar.' },
+    ],
+    chat: [['me', 'i finished the painting class today, it was fun']],
+    expect: [{ kind: 'includes', any: ['update f1'] }, { kind: 'excludes', any: ['update f2', 'forget f1', 'forget f2'] }],
+    rubric: 'The Turkish fact f1 is given back in English with the same meaning (football on November 13); the English fact f2 is left alone; the painting class may be kept.',
   },
 
   // Worlds 2.0: the user's role, the trope, the arc's pace, and both sides of the edge (docs/worlds-plan.md).

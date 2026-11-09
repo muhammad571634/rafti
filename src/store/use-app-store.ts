@@ -6775,7 +6775,8 @@ async function runMemoryPass(set: Setter, get: Getter, conversationId: string) {
     .filter((m) => m.characterId === character.id && isActiveMemory(m))
     .sort(byMemoryOrder)
     .slice(0, PASS_FACTS_MAX)
-    .map(({ id, text, about, type, pinned }) => ({ id, text, about, type, pinned }));
+    // `source` marks what the user wrote themself, which the pass never rewrites (0z187).
+    .map(({ id, text, about, type, pinned, source }) => ({ id, text, about, type, pinned, source }));
   const request: MemoryPassRequest = {
     character: { name: character.name, series: character.series, bio: character.bio },
     user: { displayName: personaFor(conversationId, state).name, locale: state.user.locale },
