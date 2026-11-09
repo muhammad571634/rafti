@@ -589,11 +589,12 @@ export const playful = isDark
       sun: '#8A6400',
       sunInk: '#FFFFFF',
       /**
-       * The tab bar's chosen tab: the brand peach of the + buttons on Us and Find (owner 2026-11-08:
-       * the white pill read harsh at night); light mode has a light grey pill.
+       * The tab bar's chosen tab: a grey capsule with a white glyph, as by day (owner 2026-11-09: no
+       * brand colour in the tab bar; before it was the peach of the + buttons). systemGray4 at night,
+       * one step lighter than the bar so it reads; opaque so Android keeps its corners.
        */
-      tabOn: palette.apricot300,
-      tabOnText: palette.peachInk,
+      tabOn: '#3A3A3C',
+      tabOnText: '#FFFFFF',
       /** The floating tab bar's fill, a tab that is off, and the fade under the bar. */
       bar: 'rgba(28,28,30,0.94)',
       tabOff: 'rgba(235,235,245,0.6)',

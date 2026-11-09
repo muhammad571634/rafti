@@ -67,7 +67,7 @@ function Floating({ style, children }: { style: StyleProp<ViewStyle>; children: 
 /**
  * The playful tab bar of the approved four-tab prototype (0z124): a white pill holding Today,
  * Chats and Us, with Find as its own round button beside it, the way iOS sets the search tab apart.
- * The current tab is a light grey capsule with an ink icon and label (peach at night); the rest are ink at 60 %. Chats
+ * The current tab is a light grey capsule with an ink icon and label (a darker grey with a white one at night); the rest are ink at 60 %. Chats
  * carries the number of chats waiting, the same number Today's bubble and Chats' Unread pill show.
  * Content fades out under the bar instead of showing through the navigation bar area (the iOS 26
  * scroll edge effect, as a plain gradient). Tapping the current tab again scrolls it to the top
