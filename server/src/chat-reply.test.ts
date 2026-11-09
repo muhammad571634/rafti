@@ -135,4 +135,13 @@ describe('the output check (the provider’s safety filter)', () => {
     assert.equal(by.HARM_CATEGORY_HATE_SPEECH, 'BLOCK_ONLY_HIGH');
     assert.equal(by.HARM_CATEGORY_HARASSMENT, 'OFF');
   });
+  it('sends the one-tap replies when texting, never on a call or after a crisis', async () => {
+    const said = '{"messages":["Kel, choy ichamiz."],"ideas":["Kelyapman!","Kofe bo‘lsa"]}';
+    const texting = await post(scripted({ text: said, usage: {} }).provider);
+    assert.deepEqual((await texting.json()).ideas, ['Kelyapman!', 'Kofe bo‘lsa']);
+    const call = await post(scripted({ text: said, usage: {} }).provider, { ...body, mode: 'call' });
+    assert.equal((await call.json()).ideas, undefined);
+    const crisis = await post(scripted({ text: '{"messages":["Are you safe right now?"],"crisis":true,"ideas":["Yes","No"]}', usage: {} }).provider);
+    assert.equal((await crisis.json()).ideas, undefined);
+  });
 });

@@ -322,6 +322,11 @@ export interface Message {
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];
   /**
+   * The chips are the model's own, in the chat's language (`IDEAS_CUE`, 0z176): shown and sent as
+   * written, never through the app's phrase table (which follows the screen's language).
+   */
+  chipsWritten?: boolean;
+  /**
    * Reply ideas under a line they wrote first (`src/lib/reply-ideas.ts`): "I ate!" / "Not yet".
    * Gone once the user answers; a tap sends the idea's text, free.
    */

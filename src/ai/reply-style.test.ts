@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
+import { cleanIdeas, enforceStyle, IDEAS_CUE, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -106,5 +106,26 @@ describe('texting splits a paragraph into bubbles (owner, 2026-11-07)', () => {
   it('keeps an *action* whole with what follows it', () => {
     const acted = `*puts the brush down and wipes her hands on the old apron. She looks at you for a long moment.* ${'Fine. '.repeat(25)}`;
     assert.ok(!splitBubbles([acted]).some((b) => (b.match(/\*/g)?.length ?? 0) % 2 === 1));
+  });
+});
+
+describe('one-tap replies written with the reply (0z176)', () => {
+  it('keeps two short distinct strings and drops the rest', () => {
+    assert.deepEqual(cleanIdeas(['  Charchadim  juda ', 'Kino qachon?', 'Kino qachon?', 7, '']), ['Charchadim juda', 'Kino qachon?']);
+    assert.deepEqual(cleanIdeas(['x'.repeat(49), 'ok']), ['ok']);
+    assert.deepEqual(cleanIdeas('nope'), []);
+  });
+
+  it('reads them off the reply, and leaves them out when there are none', () => {
+    assert.deepEqual(parseModelReply('{"messages":["Kel, choy ichamiz."],"ideas":["Kelyapman!","Choy emas, kofe"]}').ideas, ['Kelyapman!', 'Choy emas, kofe']);
+    assert.equal(parseModelReply('{"messages":["Hi"]}').ideas, undefined);
+  });
+
+  it('asks for them when texting, never on a call', () => {
+    const ideasOf = (extra: { mode?: 'chat' | 'call'; crisis?: boolean }) => chatParts({ character, user, messages: [], ...extra }).find((p) => p.name === 'ideas')?.text ?? '';
+    assert.equal(ideasOf({}), IDEAS_CUE);
+    assert.equal(ideasOf({ mode: 'chat' }), IDEAS_CUE);
+    assert.equal(ideasOf({ mode: 'call' }), '');
+    assert.equal(ideasOf({ crisis: true }), '');
   });
 });

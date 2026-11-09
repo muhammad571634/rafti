@@ -37,6 +37,8 @@ interface Result {
   group: string;
   mode: string;
   lines: string[];
+  /** The one-tap replies the reply carried. */
+  ideas?: string[];
   failed: string[];
   verdict?: Verdict;
   /** The judge model that scored it. */
@@ -111,7 +113,7 @@ async function runOne(s: EvalScenario, writer: LlmProvider, judge: LlmProvider |
   const mark = failed.length ? '✗' : '✓';
   const scores = verdict ? ` ${verdict.task}/${verdict.voice}` : '';
   console.log(`${mark} ${s.id}${scores}${got.repeat ? ` (repeat ${got.repeat.toFixed(2)}, ${got.calls} calls)` : ''}${failed.length ? `  ${failed.join(', ')}` : ''}`);
-  return { id: s.id, group: s.group, mode: s.mode, lines: got.lines, failed, verdict, judgedBy, model: got.model, promptVersion: got.promptVersion, ms: got.ms, calls: got.calls, repeat: got.repeat, crisis: got.crisis };
+  return { id: s.id, group: s.group, mode: s.mode, lines: got.lines, ideas: got.ideas, failed, verdict, judgedBy, model: got.model, promptVersion: got.promptVersion, ms: got.ms, calls: got.calls, repeat: got.repeat, crisis: got.crisis };
 }
 
 const avg = (xs: number[]) => (xs.length ? (xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(2) : '–');

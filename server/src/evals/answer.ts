@@ -29,6 +29,8 @@ const MORNING = '2026-10-28T07:30:00.000Z';
 export interface EvalAnswer {
   /** What the user would see: the bubbles, the lines, the note or the rounds; [] for a skip or a broken answer. */
   lines: string[];
+  /** The one-tap replies a chat reply carried (`IDEAS_CUE`). */
+  ideas?: string[];
   raw: string;
   model?: string;
   promptVersion: string;
@@ -255,6 +257,8 @@ export async function answer(provider: LlmProvider, s: EvalScenario, timeoutMs: 
     const { reply, result, calls, repeat, crisis } = await chatReply(provider, prompt.input, timeoutMs);
     return {
       lines: reply.bubbles,
+      // The one-tap replies it wrote (0z176), kept so a run shows their language.
+      ...(reply.ideas ? { ideas: reply.ideas } : {}),
       raw: result.text,
       model: result.model,
       promptVersion: promptVersion(calls[0].layout, prompt.input.mode),

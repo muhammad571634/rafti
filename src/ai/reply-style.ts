@@ -57,6 +57,29 @@ export const REPLY_SHAPE =
   'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +
   'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
+/**
+ * The chat's one-tap replies (0z176): written by the model with the reply, in the chat's language,
+ * so a Turkish or Uzbek chat never shows English chips ("Same here"). Texting only (not a call,
+ * bedtime or a group). About a dozen output tokens a reply (docs/cost-ledger.md).
+ */
+export const IDEAS_CUE =
+  'IDEAS: also give "ideas": two short replies (two to six words each) they could send next with one tap, in the language they write in and in their own voice, each answering this reply of yours (a question you asked, a thing you said). Never a stock line that would fit any chat. Leave it [] when nothing fits.';
+
+/** How many one-tap replies the chat shows, and how long one may be. */
+export const IDEAS_MAX = 2;
+const IDEA_CHARS_MAX = 48;
+
+/** The model's one-tap replies, kept only when they are short plain strings. */
+export function cleanIdeas(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  return raw
+    .filter((idea): idea is string => typeof idea === 'string')
+    .map((idea) => idea.trim().replace(/\s+/g, ' '))
+    .filter((idea) => idea && idea.length <= IDEA_CHARS_MAX && !seen.has(idea.toLowerCase()) && seen.add(idea.toLowerCase()))
+    .slice(0, IDEAS_MAX);
+}
+
 export interface ModelReply {
   bubbles: string[];
   emotion?: Emotion;
@@ -73,6 +96,8 @@ export interface ModelReply {
   day?: string[];
   /** A sticker it put on the user's latest message (`src/ai/react.ts`). */
   react?: React;
+  /** One-tap replies the user could send next (`IDEAS_CUE`). */
+  ideas?: string[];
 }
 
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
@@ -80,7 +105,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown };
+      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -90,6 +115,7 @@ export function parseModelReply(raw: string): ModelReply {
         const threads = cleanThreadOps(data.threads);
         const day = cleanDayNotes(data.day);
         const react = cleanReact(data.react);
+        const ideas = cleanIdeas(data.ideas);
         return {
           bubbles,
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
@@ -100,6 +126,7 @@ export function parseModelReply(raw: string): ModelReply {
           ...(hasThreadOps(threads) ? { threads } : {}),
           ...(day.length ? { day } : {}),
           ...(react ? { react } : {}),
+          ...(ideas.length ? { ideas } : {}),
         };
       }
     } catch {

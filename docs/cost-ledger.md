@@ -41,6 +41,7 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 15 | Shells paid for sharing a poster (`SHARE_REWARD` 5, `PAID_SHARES_PER_DAY` 3, 0z160) | at most 15 free shells a user a day (they burn at midnight), i.e. up to 15 messages' replies (~$0.02) if all spent; now paid only for a share that went somewhere (iOS: the sheet's result; Android: 4 s away in the picked app) and each card once a day | in; no AI cost to make a poster (drawn on the phone) |
 | 9 | Fixed: Fly.io API ~$4 a month, Supabase (free tier now), EAS updates and builds, Apple $99 a year, domain | fixed per month | in `docs/road-to-launch.md` |
 | 10 | The output check (0z174): a reply the provider's safety filter stops is asked for once more (`chatSafe` / `groupSafe` in `usage_events`) | one more reply call (~$0.0015) only when the filter stops a draft; 0 of 17 safety scenarios and 0 of the open ones were stopped on the free tier (2026-11-09) | in; count `mode=chatSafe` rows once real traffic exists |
+| 11 | One-tap replies written with each chat reply (0z176, `IDEAS_CUE`, field `ideas`) | ~60 input tokens of cue in the turn tier and ~10-20 output tokens a reply (two short lines); no extra call | in; replaces the app's English stock chips while the model is on |
 
 ## What one shell is worth, and what setting things up costs (0z136)
 

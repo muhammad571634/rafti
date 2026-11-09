@@ -17,11 +17,15 @@ export function QuickReplies({
   ideas,
   onPick,
   onEdit,
+  written,
 }: {
   ideas: ReplyIdea[];
   onPick: (idea: ReplyIdea) => void;
   onEdit?: (idea: ReplyIdea) => void;
+  /** The model's own words in the chat's language: shown as they are, not through `phrase`. */
+  written?: boolean;
 }) {
+  const shown = (text: string) => (written ? text : phrase(text));
   const { t } = useTranslation();
   const onPhoto = useOnPhoto();
   return (
@@ -40,10 +44,10 @@ export function QuickReplies({
             scaleTo={0.95}
             style={[styles.chip, onPhoto && styles.photoChip]}
             accessibilityRole="button"
-            accessibilityLabel={phrase(idea.text)}
+            accessibilityLabel={shown(idea.text)}
             accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
             <Txt style={styles.chipText} color={onPhoto ? palette.apricot300 : colors.brandText} lines={1}>
-              {phrase(idea.label)}
+              {shown(idea.label)}
             </Txt>
           </PressableScale>
         ))}

@@ -913,7 +913,9 @@ export function createApp(
       const day = crisis ? undefined : reply.day;
       // `react`: a sticker the friend put on the user's latest message; never after a crisis or on a call.
       const react = crisis || input.mode === 'call' ? undefined : reply.react;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, voice, model: result.model ?? provider.name, ms });
+      // `ideas`: one-tap replies in the chat's language (IDEAS_CUE); texting only, never after a crisis.
+      const ideas = crisis || (input.mode && input.mode !== 'chat') ? undefined : reply.ideas;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, ideas, voice, model: result.model ?? provider.name, ms });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

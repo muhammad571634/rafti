@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z176. One-tap replies in the chat's language, written by the model (2026-11-09, Claude 1). NEXT: owner deploys the server; then check the chips on the A51
+
+- **Owner's ask**: the chips under a reply ("And then?", "Same here") stayed English in an Uzbek chat; make them follow the chat's language.
+- **Cause**: chat chips came from the app's English pool (`everydayIdeas`, `src/lib/reply-ideas.ts`), only translated to the screen's language by the phrase table; moments already had model-written ideas, chat replies had none.
+- **Built**: `IDEAS_CUE` + `cleanIdeas` (`src/ai/reply-style.ts`): the chat reply asks for two short replies (2-6 words) in the language they write in, answering this reply; texting only (not call, bedtime, group) and never under a crisis (the part sits before `crisis`). The server returns `ideas` (not on a call, never after a crisis); `serverReply` cleans them again; `deliver` puts them on the last bubble as `chips` with `chipsWritten` (a tap goes through `pickChip` → `sendText`: batching, the wake alarm, the price as any message), shown and sent as written (no phrase table), only on the newest line. With the model on, the stock English chips no longer show (gate = `realAi` and a server, as `modelOn`).
+- **Second reader**: must-fix found and fixed (as `ideas` they would have held back the reach ask, the late-night nudge and quests, which wait while a line carries ideas; as chips they do not); also the send path, the phrase table, the model-on gate; tests added (server: ideas only when texting).
+- **Eval** (free key): the four language scenarios pass and their ideas are in the chat's language (ru "Что случилось?", ja "大丈夫？", uz "Ish juda ko'p edi", en "Is it scary?"); the eval now keeps `ideas` per answer.
+- Cost: ~60 input + 10-20 output tokens a reply (`docs/cost-ledger.md`).
+- Checks: tsc 0 (app and server), npm test 856/856, server tests 89/89.
+
+Still to do:
+1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); the app part goes by OTA.
+2. After the deploy: on the A51, an Uzbek message to Hana shows chips in Uzbek; tapping one sends it; an older reply keeps no chips.
+
 ### 0z175. Reply language: one whole message switches; a they-user is never gendered (2026-11-09, Claude 1). NEXT: owner deploys the server
 
 - **Owner's ask**: next task; I proposed checking that characters answer in the user's language (on the A51 an Uzbek line in a Turkish chat with Hana got a Turkish answer).

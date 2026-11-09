@@ -11,7 +11,7 @@ import { cleanDayNotes } from './own-day';
 import { cleanReact, type React } from './react';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
-import { EMOTIONS } from './reply-style';
+import { cleanIdeas, EMOTIONS } from './reply-style';
 import type { Emotion, PlanId } from '@/types';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
@@ -195,8 +195,8 @@ export const serverMemories = {
 export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; emotion?: Emotion; intensity?: number } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; emotion?: unknown; intensity?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; ideas?: string[]; emotion?: Emotion; intensity?: number } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -223,6 +223,8 @@ export async function serverReply(
     day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day),
     // A sticker the friend put on the user's latest message (owner, 2026-11-08).
     react: reply?.crisis === true ? undefined : cleanReact(reply?.react),
+    // One-tap replies in the chat's language (0z176), checked again: they come over the network.
+    ideas: reply?.crisis === true ? undefined : cleanIdeas(reply?.ideas),
     // How the friend feels after this reply, in the model's own reading (0z141): it carries into the next one.
     ...(EMOTIONS.includes(reply?.emotion as Emotion)
       ? { emotion: reply?.emotion as Emotion, intensity: typeof reply?.intensity === 'number' ? Math.min(1, Math.max(0, reply.intensity)) : 0.5 }

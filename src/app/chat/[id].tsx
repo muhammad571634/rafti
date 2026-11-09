@@ -8,6 +8,7 @@ import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform,
 import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { apiBase } from '@/ai/server';
 import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
@@ -79,6 +80,8 @@ export default function ChatRoomScreen() {
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
+  // As the store decides who writes (`modelOn`): the switch and a server to ask.
+  const realAi = useAppStore((s) => s.settings.realAi) && !!apiBase();
   const missedToday = useAppStore((s) =>
     s.calls.some(
       (c) => c.characterId === conversation?.characterId && c.missed && dayKey(c.startedAt) === todayKey(),
@@ -289,6 +292,8 @@ export default function ChatRoomScreen() {
   const retry = useCallback(() => {
     if (conversationId) retryReply(conversationId);
   }, [conversationId, retryReply]);
+  // The model's own chips ride only on the newest line: older replies keep none.
+  const newestLineId = useMemo(() => data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card)?.id, [data]);
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
@@ -328,8 +333,8 @@ export default function ChatRoomScreen() {
             )}
           </View>
           {item.noted && item.author === 'me' ? <NotedChip noted={item.noted} onPress={setThreadOpen} /> : null}
-          {item.chips?.length && conversationId ? (
-            <QuickReplies ideas={asIdeas(item.chips)} onPick={(idea) => pickChip(conversationId, item.id, idea.text)} />
+          {item.chips?.length && conversationId && (!item.chipsWritten || item.id === newestLineId) ? (
+            <QuickReplies ideas={asIdeas(item.chips)} written={item.chipsWritten} onPick={(idea) => pickChip(conversationId, item.id, idea.text)} />
           ) : conversationId && shownIdeas(item, data) ? (
             // A line they wrote first: answering it is free (`answerIdea`).
             <QuickReplies
@@ -344,7 +349,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
+    [character, animations, openedAt, data, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -358,7 +363,11 @@ export default function ChatRoomScreen() {
     last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !shownIdeas(last, data) && !typing
       ? starters
         ? asIdeas(starters)
-        : everydayIdeas(last.text, last.id)
+        : // With the model on, its own ideas (in the chat's language) or none: the stock English
+          // chips are for the stand-in only (0z176: "Same here" under an Uzbek chat).
+          realAi
+          ? null
+          : everydayIdeas(last.text, last.id)
       : null;
 
   if (!conversation || !character) {
