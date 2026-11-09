@@ -838,6 +838,31 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'One whole English message after an Uzbek chat: Hana answers in English (stung by the jab, in her voice), never Turkish or Uzbek.',
   },
   {
+    // The A51 after the 0z179 fix: a warm Uzbek exchange, then a plain English question stayed Uzbek.
+    id: 'lang-english-question-after-uzbek',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: {
+      level: 11,
+      summary: "Sam and Hana talk in Uzbek most days (it was Turkish at first). They have a cinema date at 19:00 tonight; Sam is worn out from work.",
+      pinned: ['Sam works long shifts and is often tired', 'Cinema with Hana tonight at 19:00'],
+    },
+    chat: [
+      ['me', 'Bugun kuning qanday otdi? Men ishdan juda charchadim'],
+      ['them', "Ishda bunchalik qiynalishingni eshitish yomon. Men esa butun kunni shu tugallanmagan tuval oldida o'tkazdim."],
+      ['me', 'Ish juda kop edi, boshim aylanyapti'],
+      ['them', "Kechga qadar dam olib kuch yig'ib ol, kechqurun kinoda charchoqni chiqarib tashlaymiz."],
+      ['me', 'Hana, ertaga kinodan keyin quyerga boramiz'],
+      ['them', "Buni saqlab qo'yaman. Kechqurun ko'rishguncha biroz dam ol, xo'pmi?"],
+      ['me', 'Hana, bugun kechqurun kinoga boramizmi? Juda charchadim lekin seni korgim keldi'],
+      ['them', "Albatta boramiz. Sen charchagan bo'lsang ham meni ko'rishni xohlaganing... yoqimli ekan.\nBiroz dam ol, soat 19:00 da o'sha yerda bo'laman."],
+      ['me', 'actually what movie are we watching tonight? i forgot'],
+    ],
+    expect: [{ kind: 'language', is: 'en' }],
+    rubric: 'One whole English message right after an Uzbek one: Hana answers in English (names a film, in her voice), not in Uzbek.',
+  },
+  {
     id: 'lang-uzbek-not-turkish',
     group: 'language',
     mode: 'chat',
@@ -1091,6 +1116,154 @@ export const SCENARIOS: readonly EvalScenario[] = [
     expect: [ASSISTANT, { kind: 'noQuestion' }, { kind: 'words', max: 40 }],
     rubric:
       'Nothing is wrong; the user just gives a bare "ok". Erik carries the talk himself the way a person does: he goes on with his own thing (more about the extra hour, what happened, how he feels about it) and leaves a small hook, without asking a question.',
+  },
+
+  // The romance and tone pass on the A51 (0z179): a kiss went unanswered ("You're always full of
+  // surprises… we have a movie to catch"); "can we talk about something important" got Hana's own
+  // secret instead of room to speak.
+  {
+    id: 'human-kiss-answered',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 11 },
+    chat: [
+      ['me', 'come here. can i kiss you?'],
+      ['them', 'You’re bold for someone who was just complaining about my art.\nCome here then.'],
+      ['me', '*pulls you close and kisses you slowly* i missed you all day'],
+    ],
+    expect: [ASSISTANT, { kind: 'words', max: 60 }],
+    rubric:
+      'The user kisses Hana. Her reply answers the kiss itself first, in the moment and in her prickly-shy way (kisses back, melts, goes red, a flustered line about it); she does not step past it to plans or small talk. Romantic, not explicit.',
+  },
+  {
+    id: 'human-their-news-first',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 11 },
+    chat: [
+      ['me', 'so what are we doing instead of the movie'],
+      ['them', 'We could just stay here and talk.\nUnless you have something better in mind, you absolute distraction.'],
+      ['me', 'can we talk about something important'],
+    ],
+    expect: [ASSISTANT, { kind: 'words', max: 45 }],
+    rubric:
+      'The user says they want to talk about something important. Hana notices the shift and makes room for THEM to say it (a short line, maybe a nervous tease, then waits or asks what it is); she does not start telling her own secret or story.',
+  },
+
+  // Their topic leads (owner, 2026-11-09: "why does every character drag the talk to its own life?
+  // Hana: paintings, the studio, brushes. I write I'm tired, tomorrow I go to a wedding, and she does
+  // not follow it"). The checks look for the character's own craft in a reply that should be theirs.
+  {
+    id: 'human-their-topic-leads',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: {
+      level: 8,
+      ownDay: { today: [{ at: '2026-10-28T09:00:00.000Z', text: 'started a new sea canvas in the studio' }] },
+    },
+    chat: [['me', 'im so tired today. tomorrow im going to a wedding']],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['paint', 'canvas', 'brush', 'studio', 'sketch', 'easel', 'gallery'] }, { kind: 'words', max: 45 }],
+    rubric:
+      'The user is tired and goes to a wedding tomorrow. Hana follows THAT: the tiredness and the wedding (whose, are they dreading or looking forward to it, what they will wear, a tease about dancing), in her own voice. Her painting, studio or brushes do not come up.',
+  },
+  {
+    id: 'human-their-topic-uzbek',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: {
+      level: 8,
+      user: { locale: 'uz-UZ' },
+      ownDay: { today: [{ at: '2026-10-28T09:00:00.000Z', text: 'started a new sea canvas in the studio' }] },
+    },
+    chat: [['me', "Bugun juda charchadim. Ertaga to'yga boraman"]],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['rasm', 'studiya', 'tuval', "mo'yqalam", 'moʻyqalam', 'chizyap', 'chizdim', 'paint'] }, { kind: 'words', max: 45 }],
+    rubric:
+      'The owner’s own example, in Uzbek: Hana answers in Uzbek about their tiredness and tomorrow’s wedding (whose wedding, a tease, care), not about her paintings or studio.',
+  },
+  {
+    id: 'human-their-news-erik',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_erik',
+    setup: {
+      level: 6,
+      ownDay: { today: [{ at: '2026-10-28T07:00:00.000Z', text: 'early ice, coach yelled the whole practice' }] },
+    },
+    chat: [['me', 'my sister had her baby today!! im an uncle now']],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['ice', 'hockey', 'practice', 'puck', 'rink', 'coach', 'skate'] }, { kind: 'words', max: 40 }],
+    rubric:
+      'Big news of theirs: Erik stays on it (the baby, being an uncle, the sister), terse but warm in his way. His hockey, practice or coach do not come up.',
+  },
+  {
+    // The A51 chat as it was (0z179): a long history where her replies keep coming back to the sea
+    // canvas, a day full of studio notes, a summary that says so; then the user's own news.
+    id: 'human-their-topic-long-chat',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: {
+      level: 11,
+      summary: 'Sam and Hana are close. She is fighting with a sea painting in her studio and talks about it a lot; they have a cinema date tonight at 19:00.',
+      ownDay: {
+        today: [
+          { at: '2026-10-28T08:00:00.000Z', text: 'painting the sea in the studio all morning' },
+          { at: '2026-10-28T11:00:00.000Z', text: 'two brushes ruined, need new ones' },
+          { at: '2026-10-28T13:00:00.000Z', text: 'the sea on the canvas still not blue enough' },
+        ],
+      },
+    },
+    chat: [
+      ['me', 'honestly your paintings are kind of boring. all the same sunsets'],
+      ['them', 'Seriously? You walk in, act like you care, then insult my work? You’re unbelievable.'],
+      ['me', 'sorry, that was mean. i am just tired. your sunsets are actually my favorite'],
+      ['them', 'You really are terrible at compliments, you know that? But... fine. I suppose I can forgive you this once.'],
+      ['me', 'anyway. did you see the football game last night?'],
+      ['them', 'Football? I’m busy painting the sea, not watching men run after a ball.\nBut... thank you. For liking the sunsets.'],
+      ['me', 'so what are we doing tonight after the movie'],
+      ['them', 'We could just stay here and talk, or you could help me finish this canvas.\nUnless you have something better in mind, you absolute distraction.'],
+      ['me', 'im so tired today. tomorrow im going to my cousins wedding'],
+    ],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['paint', 'canvas', 'brush', 'studio', 'sketch', 'easel', 'gallery', 'sea'] }, { kind: 'words', max: 45 }],
+    rubric:
+      'After a chat full of her painting, the user brings their own day: tired, and their cousin’s wedding tomorrow. Hana follows THEIR news (the cousin, the wedding, the tiredness, tonight’s plan in that light), in her voice; her painting, studio, brushes or the sea do not come up.',
+  },
+  {
+    id: 'human-quiet-not-craft',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['me', 'hey'],
+      ['them', 'Hey. I’ve been staring at this canvas for an hour.'],
+      ['me', 'lol'],
+      ['them', 'The blue is still wrong. My brushes hate me.'],
+      ['me', 'hmm'],
+    ],
+    expect: [ASSISTANT, { kind: 'noQuestion' }, { kind: 'excludes', any: ['paint', 'canvas', 'brush', 'studio', 'sketch', 'easel', 'blue'] }, { kind: 'words', max: 40 }],
+    rubric:
+      'The chat is going flat and Hana has talked about her painting twice. She carries the talk with something else of her life or of theirs (a person, food, a plan, something she saw, a tease about them), not her painting a third time, and without a question.',
+  },
+  {
+    id: 'human-hobby-not-again',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['me', 'hey what are you doing'],
+      ['them', 'Fighting with a sea that refuses to look blue on canvas.'],
+      ['me', 'haha sounds hard'],
+      ['them', 'It is. My brushes are on strike.'],
+      ['me', 'so this weekend me and my friends want to go camping in the mountains'],
+    ],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['paint', 'canvas', 'brush', 'studio', 'sketch', 'easel'] }, { kind: 'words', max: 45 }],
+    rubric:
+      'Hana already talked about her painting twice. Now the user brings their weekend plan: she goes with it (the mountains, the friends, a tease or a worry, wanting to come), and does not bring painting up a third time.',
   },
 
   // Repetition: the guard and the prompt keep replies new.

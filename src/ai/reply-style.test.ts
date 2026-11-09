@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { cleanIdeas, enforceStyle, IDEAS_CUE, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
+import { cleanIdeas, enforceStyle, IDEAS_CUE, ideasCue, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -116,6 +116,12 @@ describe('one-tap replies written with the reply (0z176)', () => {
     assert.deepEqual(cleanIdeas('nope'), []);
   });
 
+  it('mends a list the model split in two, so a crisis flag is never lost to broken JSON (0z179)', () => {
+    const reply = parseModelReply('{"language":"Spanish","crisis":true,"messages":["Sam, escúchame."],["¿Estás a salvo?"],"ideas":["Estoy en casa."]}');
+    assert.equal(reply.crisis, true);
+    assert.deepEqual(reply.bubbles, ['Sam, escúchame.', '¿Estás a salvo?']);
+  });
+
   it('reads them off the reply, and leaves them out when there are none', () => {
     assert.deepEqual(parseModelReply('{"messages":["Kel, choy ichamiz."],"ideas":["Kelyapman!","Choy emas, kofe"]}').ideas, ['Kelyapman!', 'Choy emas, kofe']);
     assert.equal(parseModelReply('{"messages":["Hi"]}').ideas, undefined);
@@ -127,5 +133,14 @@ describe('one-tap replies written with the reply (0z176)', () => {
     assert.equal(ideasOf({ mode: 'chat' }), IDEAS_CUE);
     assert.equal(ideasOf({ mode: 'call' }), '');
     assert.equal(ideasOf({ crisis: true }), '');
+  });
+
+  it('names the ideas its last lines already offered, so they are not the same again (0z179)', () => {
+    const them = (chips?: string[], chipsWritten = true) => ({ author: 'them' as const, chips, chipsWritten });
+    const cue = ideasCue([them(['Old one']), { author: 'me' as const }, them(["I'll be there, I promise.", 'Can’t wait to see you.']), them(["I'll be there, I promise.", 'Stay here with me.'])]).join(' ');
+    assert.match(cue, /already offered "Old one", "I'll be there, I promise\.", "Can’t wait to see you\.", "Stay here with me\.": give new ones/);
+    // Stock chips (not the model's) and a chat with none: the plain cue.
+    assert.deepEqual(ideasCue([them(['Same here'], false)]), [IDEAS_CUE]);
+    assert.deepEqual(ideasCue([]), [IDEAS_CUE]);
   });
 });

@@ -11,7 +11,7 @@ import { callTurnLines } from './call-prompt';
 
 import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
-import { withoutTone } from './tone';
+import { isToneLine, whispered, withoutTone } from './tone';
 import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
@@ -19,7 +19,7 @@ import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
-import { IDEAS_CUE, REPLY_SHAPE } from './reply-style';
+import { ideasCue, REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
 import { threadParts } from './thread-prompt';
@@ -211,6 +211,9 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
             // A call is spoken: its mode block sets the size there.
             prefs: input.mode === 'call' ? undefined : input.prefs,
             call: input.mode === 'call',
+            steered: !!input.steer,
+            // Only when the tone cue is in this turn, as the app adds it (not under a game's own cue).
+            whisper: input.mode !== 'call' && whispered(input.messages) && (input.cue ?? []).some(isToneLine),
           }),
     ),
     // The hour and what they set up together: in the turn tier, as they change by the minute.
@@ -228,7 +231,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     // One-tap replies: texting only, and never under a crisis (the helpline card leads).
-    part('ideas', 'turn', !input.crisis && (!input.mode || input.mode === 'chat') ? [IDEAS_CUE] : []),
+    part('ideas', 'turn', !input.crisis && (!input.mode || input.mode === 'chat') ? ideasCue(input.messages) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];

@@ -53,6 +53,24 @@ Do not take:
   "ok" ("Just 'ok'?", BIMOBIMO's habit): 0/4. Moving the decision to code, by the carried feeling, fixed
   both sides.
 
+## Second pass on the A51 after the deploy (0z179)
+
+Live with Hana (Fly v41/v42): the bare "ok" after a fight, exact recall, the topic jump and the calm
+"ok" all behaved as in the eval. Then a romance pass and the tone menu (long-press Send: Whispering,
+Playfully, Flirting, Seriously), and the owner's own observation:
+
+| Seen | Cause | Change |
+|---|---|---|
+| A kiss ("*pulls you close and kisses you slowly*") got "You're always full of surprises… we have a movie to catch": the kiss itself unanswered | nothing told the model a touch is an event in the scene | rule: a touch (kiss, hug, hand) is answered first, in the moment, as themselves |
+| Seriously: "can we talk about something important" got Hana's own secret | the "their moment" rule covered hurt and good news, not "I have something to tell you" | rule: make room and let them say it; your news waits |
+| Whispering got two full bubbles, not quiet | the length line ignored the tone | a whispered last text sets the length to short, and the cue asks for one short bubble |
+| The one-tap ideas "I'll be there, I promise." / "Can't wait to see you." under four replies in a row | the model never sees its old ideas | `ideasCue` names the ideas the last three lines carried: "never these again" |
+| A crisis reply in broken JSON (`"messages":["a"],["b"]`) lost `crisis:true` (eval) | `JSON.parse` failed, the reply went out as prose | `parseModelReply` mends a list split in two before giving up |
+| Owner: "every character drags the talk to its own life: Hana paints, the studio, brushes; I say I'm tired and going to a wedding and she does not follow" | "bring your life up unasked", the flat-chat hint "more of your own thing", the own-day notes repeated every turn, and a persona with one trait: her life shrank to her craft | rules: the talk follows them first, with a friend's curiosity about their news; your life is wider than your craft (people, food, a small thing seen, a worry), the craft only now and then, never two replies running; own day: most replies need none of it |
+
+Measured in the eval with short context, she already followed the wedding (no painting in 11 of 12),
+but always the same flat "A wedding? You'll be exhausted. Get some sleep.": no curiosity about it.
+
 ## Still weak
 
 - Echoing the user's own detail in surprise (Character.AI's best move) is not taught: it fights the

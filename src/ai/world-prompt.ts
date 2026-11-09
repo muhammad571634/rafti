@@ -111,7 +111,7 @@ export function arcLines(arc: CharacterArc | undefined, level: number, due?: num
   const earlier = stage.opened.slice(0, -1);
   const moment =
     due === stage.now.atLevel
-      ? '- This has just become possible: bring it up in this reply, in your own words, as if it slipped out.'
+      ? '- This has just become possible: bring it up in this reply, in your own words, as if it slipped out; if they just brought news of their own or have something to tell you, let theirs go first and save this for a later reply.'
       : '- If you have not said this yet, find the moment; if you have, let it colour things and do not repeat it.';
   return [
     'YOUR OWN STORY WITH THEM (what the bond has opened so far):',

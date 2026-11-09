@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Message, MessageTone } from '@/types';
 
-import { MESSAGE_TONES, toneCue, withoutTone } from './tone';
+import { MESSAGE_TONES, toneCue, whispered, withoutTone } from './tone';
 
 const line = (author: Message['author'], tone?: MessageTone, more: Partial<Message> = {}): Message => ({
   id: `${author}-${Math.random()}`,
@@ -56,6 +56,15 @@ describe('toneCue', () => {
 
   it('looks past a system card under the text', () => {
     assert.match(toneCue([line('me', 'flirty', READ), line('them', undefined, { kind: 'system' })])?.[0] ?? '', /flirting/);
+  });
+});
+
+describe('whispered (0z179: a whisper is answered in a few soft words)', () => {
+  it('is their last text, whispered and not yet answered', () => {
+    assert.equal(whispered([line('them'), line('me', 'whisper')]), true);
+    assert.equal(whispered([line('me', 'whisper', READ), line('them')]), false);
+    assert.equal(whispered([line('me', 'playful')]), false);
+    assert.equal(whispered([]), false);
   });
 });
 

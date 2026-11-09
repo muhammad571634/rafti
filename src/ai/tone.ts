@@ -4,7 +4,7 @@ import type { Message, MessageTone } from '@/types';
 export const MESSAGE_TONES: readonly MessageTone[] = ['whisper', 'playful', 'flirty', 'serious'];
 
 const HEARD: Record<MessageTone, string> = {
-  whisper: 'They whispered their last message, low and close, as if only you should hear it. Answer close and quiet, in few words.',
+  whisper: 'They whispered their last message, low and close, as if only you should hear it. Answer close and quiet: one short bubble of a few soft words.',
   playful: 'They said their last message playfully, teasing or joking. Tease back and keep this reply light.',
   flirty: 'They said their last message flirting with you. You notice, and it shows in this reply, in your own way and as far as your bond allows.',
   serious: 'They said their last message seriously, with no joking. Drop the teasing for this reply and answer it straight.',
@@ -29,6 +29,17 @@ export function toneCue(messages: readonly Message[]): string[] | undefined {
       'Never mention a menu, a setting or a "tone". The tone never changes "crisis": if their words say they are hurting or in danger, answer the words. ' +
       'If they say they are under 18, your rules win and there is no flirting.',
   ];
+}
+
+/** A line `toneCue` wrote: the tone is heard in this turn (not on a game's or a steer's own cue). */
+export const isToneLine = (line: string) => line.startsWith(MARK);
+
+/** Their last text was whispered and is still unanswered (as `toneCue` reads it). */
+export function whispered(messages: readonly Message[]): boolean {
+  const last = messages.findLastIndex((m) => m.author === 'me');
+  const message = messages[last];
+  if (message?.tone !== 'whisper') return false;
+  return !(message.readAt && messages.slice(last + 1).some((m) => m.kind !== 'system'));
 }
 
 /** A cue with the tone taken out: in a crisis (`CRISIS_CUE`) nobody teases or flirts. */

@@ -62,6 +62,22 @@ describe('this turn’s hints when the model writes (0z141)', () => {
     assert.doesNotMatch(humanTurnLines({ turns: continued, mood: tense, now: NOW }).join('\n'), /is the message|going flat/);
   });
 
+  it('lets their own news lead when their message has something in it (owner, 2026-11-09)', () => {
+    const news = humanTurnLines({ turns: [turn('user', 'im so tired today. tomorrow im going to a wedding')] }).join('\n');
+    assert.match(news, /brings something of their own .* keep your own life out of it/);
+    assert.doesNotMatch(humanTurnLines({ turns: [turn('user', 'ok')] }).join('\n'), /brings something of their own/);
+    // Two questions in a row and their news: ask nothing, answer them (never "say something of your own").
+    const asked = humanTurnLines({ turns: [turn('assistant', 'Did you sleep?'), turn('user', 'no'), turn('assistant', 'Why not?'), turn('user', 'im so tired, tomorrow i go to a wedding')] }).join('\n');
+    assert.match(asked, /ask nothing; answer what they said/);
+    assert.doesNotMatch(asked, /say something of your own/);
+    // A time skip is a marker in the history, not their message.
+    assert.doesNotMatch(humanTurnLines({ turns: [turn('user', '[Time skip: The next morning]')], steered: true }).join('\n'), /brings something/);
+    // A whisper: one soft bubble.
+    assert.match(humanTurnLines({ turns: [turn('user', 'i really like you')], whisper: true }).join('\n'), /About 8 words, in one bubble/);
+    // A continue goes on from your own line.
+    assert.doesNotMatch(humanTurnLines({ turns: [turn('user', 'im so tired today, a wedding tomorrow'), turn('assistant', 'A wedding?')] }).join('\n'), /brings something/);
+  });
+
   it('counts a short answer in words, so a whole sentence in a dense script is not an "ok"', () => {
     assert.equal(turnRhythm([turn('user', '对不起，我刚才太过分了')]).shortInRow, 0);
     assert.equal(turnRhythm([turn('user', '嗯')]).shortInRow, 1);

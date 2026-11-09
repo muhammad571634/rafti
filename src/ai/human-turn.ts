@@ -58,6 +58,9 @@ export function carriedMood(mood: Mood | undefined, now: number): { emotion: Moo
   return intensity < FADED ? null : { emotion: mood.emotion, intensity, hours };
 }
 
+/** A message this long (`textSize`, any script) may carry news of theirs worth following. */
+const THEIR_NEWS_WORDS = 5;
+
 /** Feelings after which a short answer means something (a clash, a hurt, a worry), and how strong one still has to be. */
 const TENSE: ReadonlySet<Mood['emotion']> = new Set(['annoyed', 'sad', 'worried']);
 const TENSE_MIN = 0.4;
@@ -78,6 +81,10 @@ export interface HumanTurnInput {
   prefs?: ReplyPrefs;
   /** A call: its replies do not update the feeling, so a chat's annoyance would outlive a make-up. */
   call?: boolean;
+  /** A steer (continue, a time skip, a scene move): the last turn is a marker, not their message. */
+  steered?: boolean;
+  /** Their last text was whispered and the tone cue is in this turn: one soft bubble. */
+  whisper?: boolean;
 }
 
 /**
@@ -110,8 +117,9 @@ export function lengthLine(prefs: ReplyPrefs | undefined, turns: readonly Histor
 }
 
 /** This turn's hints, last in the prompt, in place of the stand-in planner's. */
-export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs, call }: HumanTurnInput): string[] {
-  const lines: string[] = [lengthLine(prefs, turns)];
+export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs, call, steered, whisper }: HumanTurnInput): string[] {
+  // A whisper is answered in a few soft words (0z179: "short" still allowed two bubbles on the A51).
+  const lines: string[] = [whisper && prefs?.style !== 'story' ? '- About 8 words, in one bubble: soft and close.' : lengthLine(prefs, turns)];
   const at = now ? Date.parse(now) : NaN;
   const carried = Number.isNaN(at) ? null : carriedMood(mood, at);
   if (carried) {
@@ -121,13 +129,19 @@ export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs, 
   }
   if (silence) lines.push('- They went quiet after your last message: one light follow-up in your own way, not needy, no guilt.');
   const { askedInRow, shortInRow } = turnRhythm(turns);
-  if (!noQuestions && askedInRow >= 2) lines.push('- Your last replies all ended with a question: this time ask nothing; say something of your own.');
+  // Only when their message is the one being answered: a continue (⏩), a time skip or a follow-up
+  // goes on from your own last line (a skip marker is a user turn in the history).
+  const answersThem = !silence && !steered && turns.at(-1)?.role === 'user';
+  // Their own news leads (owner, 2026-11-09: "I write I'm tired, tomorrow I go to a wedding, and she
+  // talks about her studio"). Only on a message with something in it; the model judges whether it is
+  // theirs, in any language.
+  const news = answersThem && textSize(turns.at(-1)?.text ?? '') >= THEIR_NEWS_WORDS;
+  if (!noQuestions && askedInRow >= 2) {
+    lines.push(`- Your last replies all ended with a question: this time ask nothing; ${news ? 'answer what they said' : 'say something of your own'}.`);
+  }
   // Which way a few words lean is read from your own feeling, not from their words (any language):
   // right after a clash or a worry their short answer is the message (0z177: we skipped it for a new
   // topic where Character.AI and BIMOBIMO both answered it); after small talk it is just an "ok".
-  // Only when their message is the one being answered: a continue (⏩) or a follow-up goes on from
-  // your own last line and must not call out the same "ok" again.
-  const answersThem = !silence && turns.at(-1)?.role === 'user';
   const tense = !call && carried !== null && TENSE.has(carried.emotion) && carried.intensity >= TENSE_MIN;
   if (answersThem && shortInRow >= 1 && tense) {
     lines.push(
@@ -135,7 +149,12 @@ export function humanTurnLines({ turns, mood, now, silence, noQuestions, prefs, 
     );
   } else if (answersThem && shortInRow >= 2) {
     lines.push(
-      '- They have answered in a few words lately and the chat is going flat. If you just asked about news they hold back, they may be teasing you or hiding bad news: read which, and play along or go gentle. Otherwise do not remark on how little they wrote: carry the talk yourself with more of your own thing (what happened, how you feel about it), ending on a small hook, not a question.',
+      '- They have answered in a few words lately and the chat is going flat. If you just asked about news they hold back, they may be teasing you or hiding bad news: read which, and play along or go gentle. Otherwise do not remark on how little they wrote: carry the talk yourself with something of your own (any part of your life, not always your craft) or something you know of theirs, ending on a small hook, not a question.',
+    );
+  }
+  if (news) {
+    lines.push(
+      '- If their message brings something of their own (their day, a plan, news, a feeling), this reply is about it: stay with it and carry it forward (one detail you are curious about, or what you feel about it); keep your own life out of it unless they ask about yours.',
     );
   }
   lines.push('- Never reuse a line you already said in this chat.');

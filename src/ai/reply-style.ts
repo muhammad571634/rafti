@@ -1,5 +1,5 @@
 import type { ReplyPrefs } from '@/lib/reply-engine';
-import type { Emotion, SetupOffer } from '@/types';
+import type { Emotion, Message, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
@@ -65,6 +65,25 @@ export const REPLY_SHAPE =
 export const IDEAS_CUE =
   'IDEAS: also give "ideas": two short replies (two to six words each) they could send next with one tap, in the language they write in and in their own voice, each answering this reply of yours (a question you asked, a thing you said). Never a stock line that would fit any chat. Leave it [] when nothing fits.';
 
+/** How many of your recent lines' one-tap replies the cue names, so new ones are not the same again. */
+const IDEAS_SEEN_LINES = 3;
+
+/**
+ * `IDEAS_CUE`, and the ideas your last lines already carried: the model does not see its old ideas
+ * (they are not in the history), so on the A51 (0z179) "I'll be there, I promise." / "Can't wait to
+ * see you." came back under four replies in a row, through a kiss.
+ */
+export function ideasCue(messages: readonly Pick<Message, 'author' | 'chips' | 'chipsWritten'>[]): string[] {
+  // The last few lines of theirs first, then the ones that carried ideas: never days-old ones.
+  const seen = messages
+    .filter((m) => m.author === 'them')
+    .slice(-IDEAS_SEEN_LINES)
+    .filter((m) => m.chipsWritten && m.chips?.length)
+    .flatMap((m) => m.chips ?? []);
+  const said = [...new Set(seen)].map((idea) => `"${idea}"`).join(', ');
+  return said ? [`${IDEAS_CUE} Your last replies already offered ${said}: give new ones that answer this reply, never these again.`] : [IDEAS_CUE];
+}
+
 /** How many one-tap replies the chat shows, and how long one may be. */
 export const IDEAS_MAX = 2;
 const IDEA_CHARS_MAX = 48;
@@ -100,12 +119,27 @@ export interface ModelReply {
   ideas?: string[];
 }
 
+/**
+ * JSON.parse, and once more with the light model's usual slip mended: a list split into several
+ * (`"messages":["a"],["b"]`). Seen twice in the eval (0z179), once with `"crisis":true`, which the
+ * broken JSON lost: the reply went out as prose without the helpline card.
+ */
+function parseJson(json: string): unknown {
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    const mended = json.replace(/"\]\s*,\s*\["/g, '","');
+    if (mended === json) throw error;
+    return JSON.parse(mended);
+  }
+}
+
 /** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
 export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = JSON.parse(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
+      const data = parseJson(json) as { emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
