@@ -10,7 +10,7 @@
 - Checks: tsc 0 (app and server), npm test 851/851, server tests 88/88, check:content pass.
 
 Still to do:
-1. **Owner: deploy the server** (terminal form: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`). After it: `/health` 200, and the first `safety=` lines in `flyctl logs` show how often the filter stops.
+1. Done 2026-11-09: the owner deployed (Fly `v38`); `/health` 200, `/v1/reports` 401 unsigned, and a live message to Hana from the A51 answered in 1.8 s with the safety settings on (`[reply] ... bubbles=2`, no `safety=`). Kept for reference, the deploy (terminal form: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`). After it: `/health` 200, and the first `safety=` lines in `flyctl logs` show how often the filter stops.
 2. `JUDGE_GEMINI_KEY` in the Windows user env is no longer valid (401): the eval's judge scores need a working key.
 3. The 0z173 list (support mail and the deletion page wait for the domain; Bedtime whispering on Pro).
 
