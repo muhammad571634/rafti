@@ -19,10 +19,10 @@ import type { Character, Message, Relationship, Thread, ThreadKind, ThreadOutcom
 export const THREAD_RULES_LINES = [
   'THREADS: you remember what the user tells you that has a future, and you come back to it like a real person texting.',
   '- Anything can be a thread, on any topic: an exam, a job interview, a report to finish, a fight, a trip, a doctor visit, results to wait for, something they want to start, a habit they want to change. Small talk with no future is not.',
-  '- For each thread decide when you would text and why: the evening before ("eve": sleep early, offer to wake them), before it ("before": luck), at leaving time ("leave"), after it ("after": how did it go?), a check on a task ("check"), a goal they set ("goal": every few days, cheer, never scold). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then. A small thing may need none.',
+  '- For each thread decide when you would text and why: the evening before ("eve": sleep early, offer to wake them), before it ("before": luck), at leaving time ("leave"), after it ("after": how did it go?, once it is surely over: an evening or all-day thing such as a wedding, the next day), a check on a task ("check"), a goal they set ("goal": every few days, cheer, never scold). One to four texts, at times a caring person would pick for that thing, never at night unless it is happening then. A small thing may need none.',
   '- When the user says how it went or that it is off, settle the thread. When the time moves, move it.',
   '- Now and then (at most once a day) give a small real-life quest ("quest"): a few minutes, easy to start, away from the screen, from their life (a walk, the sky, a friend to message). Never preach; they can always say no.',
-  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"YYYY-MM-DDTHH:MM or null","touches":[{"at":"YYYY-MM-DDTHH:MM","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"YYYY-MM-DDTHH:MM","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Every time on their clock (IT IS NOW), no time zone. Leave it out when nothing changed.',
+  'Add to the same JSON a "threads" field: {"add":[{"kind":"follow|plan|goal|quest","about":"few words","quote":"their words","happensAt":"YYYY-MM-DDTHH:MM, or null when they gave no hour","touches":[{"at":"YYYY-MM-DDTHH:MM","phase":"eve|before|leave|after|check|goal|quest","why":"your reason, own words"}]}],"move":[{"id":"","happensAt":"YYYY-MM-DDTHH:MM","touches":[...]}],"close":[{"id":"","outcome":"good|bad|done|off"}]}. Every time on their clock (IT IS NOW), no time zone. Leave it out when nothing changed.',
   'REAL LIFE: you care about their life away from the screen (sleep, food, friends, outdoors). When they have been here a long time or it is late, you may suggest a break or sleep, in your own way, and accept what they choose.',
 ];
 
@@ -91,6 +91,21 @@ const drafts = (v: unknown): TouchDraft[] =>
     return at && phase && why ? [{ at, phase, why }] : [];
   });
 
+/** The next day at 11:00 on the same wall clock: "how did it go?" once the thing is surely over. */
+const nextMorning = (wall: string) => {
+  const day = new Date(`${wall.slice(0, 10)}T12:00:00Z`);
+  day.setUTCDate(day.getUTCDate() + 1);
+  return `${day.toISOString().slice(0, 10)}T11:00`;
+};
+
+/**
+ * "How did it go?" never comes before the thing (0z185: a wedding "tomorrow" got its after-text at
+ * 10:00 that morning, the same minute the model guessed it starts): an after-touch at or before
+ * the time moves to the next day.
+ */
+const afterIt = (touches: TouchDraft[], happensAt: string | undefined) =>
+  happensAt ? touches.map((t) => (t.phase === 'after' && t.at <= happensAt ? { ...t, at: nextMorning(happensAt) } : t)) : touches;
+
 /** The model's `threads` field; anything malformed is dropped, never guessed. The server and the app both run it. */
 export function cleanThreadOps(value: unknown): ThreadOps {
   const empty: ThreadOps = { add: [], move: [], close: [] };
@@ -101,9 +116,13 @@ export function cleanThreadOps(value: unknown): ThreadOps {
     add: list('add').flatMap((x) => {
       const about = str(x.about);
       const kind = KINDS.find((k) => k === x.kind) ?? 'follow';
-      return about ? [{ kind, about: about.slice(0, 60), quote: str(x.quote).slice(0, 160), happensAt: wallTime(x.happensAt), touches: drafts(x.touches) }] : [];
+      const happensAt = wallTime(x.happensAt);
+      return about ? [{ kind, about: about.slice(0, 60), quote: str(x.quote).slice(0, 160), happensAt, touches: afterIt(drafts(x.touches), happensAt) }] : [];
     }),
-    move: list('move').flatMap((x) => (str(x.id) ? [{ id: str(x.id).slice(0, 40), happensAt: wallTime(x.happensAt), touches: drafts(x.touches) }] : [])),
+    move: list('move').flatMap((x) => {
+      const happensAt = wallTime(x.happensAt);
+      return str(x.id) ? [{ id: str(x.id).slice(0, 40), happensAt, touches: afterIt(drafts(x.touches), happensAt) }] : [];
+    }),
     close: list('close').flatMap((x) => {
       const outcome = OUTCOMES.find((o) => o === x.outcome);
       return str(x.id) && outcome ? [{ id: str(x.id).slice(0, 40), outcome }] : [];

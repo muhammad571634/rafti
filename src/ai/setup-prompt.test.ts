@@ -185,3 +185,26 @@ describe('the same thing offered twice stays one (seen on the A51: two 09:00 ala
     assert.equal(sameSetup({ kind: 'alarm', date: '2026-11-08', time: '09:00' }, { kind: 'plan', date: '2026-11-08', time: '09:00' }), false);
   });
 });
+
+describe('"how did it go?" never before the thing (0z185, seen on the A51)', () => {
+  it('moves an after-touch at or before the time to the next day, and leaves a good one alone', () => {
+    const ops = cleanThreadOps({
+      add: [
+        {
+          kind: 'follow',
+          about: 'cousin’s wedding',
+          happensAt: '2026-11-10T10:00',
+          touches: [
+            { at: '2026-11-10T10:00', phase: 'after', why: 'how did it go' },
+            { at: '2026-11-09T21:00', phase: 'eve', why: 'sleep early' },
+          ],
+        },
+        { kind: 'follow', about: 'exam', happensAt: '2026-11-10T09:00', touches: [{ at: '2026-11-10T13:00', phase: 'after', why: 'how did it go' }] },
+      ],
+    });
+    assert.deepEqual(ops.add[0].touches.map((t) => [t.phase, t.at]), [['after', '2026-11-11T11:00'], ['eve', '2026-11-09T21:00']]);
+    assert.equal(ops.add[1].touches[0].at, '2026-11-10T13:00');
+    // A month's end rolls over.
+    assert.equal(cleanThreadOps({ move: [{ id: 't1', happensAt: '2026-11-30T20:00', touches: [{ at: '2026-11-30T19:00', phase: 'after', why: 'x' }] }] }).move[0].touches[0].at, '2026-12-01T11:00');
+  });
+});

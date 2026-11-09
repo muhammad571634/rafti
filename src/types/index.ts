@@ -278,6 +278,8 @@ export interface Message {
   photoId?: string;
   /** A date's polaroid sent to another friend (`DateRecord.id`); `text` keeps its caption. */
   dateId?: string;
+  /** A board note's card in the chat (`BoardPost.id`): deleting the note takes the card with it. */
+  boardId?: string;
   createdAt: string;
   readAt?: string;
   /** Local-only optimistic message waiting on the model */

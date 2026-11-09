@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z185. Reminder once seen live (v47); a board card left behind; "how did it go?" before the thing (2026-11-09, Claude 1). NEXT: owner deploys the server (the thread prompt text)
+
+- **Seen on the A51** (v47): two more wedding lines; no "drink water" again, she followed the topic ("you'd probably be better off just lip-syncing and hiding behind a bouquet").
+- **Found and fixed**:
+  - A deleted board note left its card in the friend's chat ("Message board: …"). Board cards now carry `boardId` (`Message`), and `deleteBoardPost` takes the card too (a card from before by friend and words). Seen on the A51 (OTA `01a1c066`): a second test note pinned, deleted, its card gone from Kai's chat. One card from the first test (0z181, before this fix) stays in Kai's chat: a system card cannot be held; harmless.
+  - Hana's thread for the wedding "tomorrow" had happensAt tomorrow 10:00 (the user gave no hour) and "How did it go?" at the same 10:00. `cleanThreadOps` (server and app) moves an after-touch at or before the time to the next day 11:00 (tested, month end rolls over); the thread prompt says happensAt is null when they gave no hour, and "after" is once it is surely over (an evening or all-day thing: the next day).
+- Not mine, left untouched: icon / brand PNGs modified in the working tree (`assets/images/*icon*`, `assets/brand/sigmazam-mark.png`, `docs/branding/icon-art.png`); only `app.json` uses them, so the OTA did not carry them.
+- Checks: tsc 0 (app and server), npm test 868/868, server tests 89/89.
+
+Still to do:
+1. **Owner: deploy the server** for the thread prompt text (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); the guard already runs in the app.
+2. The 0z183 list (curiosity on the paid model; the Azerbaijani first text).
+
 ### 0z184. Language log live (Fly v46); a reminder said once, not every reply (2026-11-09, Claude 1). NEXT: owner deploys the server
 
 - **Seen on the A51** (v46): English lines with Uzbek names ("my aunt Dilnoza", "Samarkand for plov") answered in English; `flyctl logs` shows `wrote=English` on each `[reply]`, so the next language slip will show whether the model misread the language.

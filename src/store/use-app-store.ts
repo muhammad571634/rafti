@@ -2751,7 +2751,18 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ ...forgetFriend(s, characterId), characters: s.characters.filter((c) => c.id !== characterId) }));
       },
 
-      deleteBoardPost: (id) => set((s) => ({ boardPosts: s.boardPosts.filter((p) => p.id !== id) })),
+      // The note and its card in the friend's chat (by its id; a card from before 0z185 by its words).
+      deleteBoardPost: (id) =>
+        set((s) => {
+          const post = s.boardPosts.find((p) => p.id === id);
+          if (!post) return {};
+          const chat = s.conversations.find((c) => c.characterId === post.characterId)?.id;
+          const isCard = (m: Message) => m.card === 'board' && (m.boardId ? m.boardId === id : m.text === post.text);
+          return {
+            boardPosts: s.boardPosts.filter((p) => p.id !== id),
+            ...(chat && s.messages[chat]?.some(isCard) ? { messages: { ...s.messages, [chat]: s.messages[chat].filter((m) => !isCard(m)) } } : {}),
+          };
+        }),
       // The picture and the chat line that carried it (an empty frame would stay behind).
       deletePhoto: (id) =>
         set((s) => ({
@@ -3813,11 +3824,12 @@ export const useAppStore = create<AppState>()(
         const createdAt = new Date();
         // A crisis note is answered in their chat right away and never quoted back.
         const crisis = detectCrisis(clean);
+        const postId = uid('bp');
         set((s) => ({
           boardPosts: [
             ...s.boardPosts,
             {
-              id: uid('bp'),
+              id: postId,
               characterId,
               text: clean,
               style,
@@ -3834,7 +3846,7 @@ export const useAppStore = create<AppState>()(
         // note is never quoted back.
         if (!crisis) {
           const conversationId = get().addFriend(characterId);
-          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'system', card: 'board', text: clean, createdAt: createdAt.toISOString() }, { quiet: true });
+          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'system', card: 'board', text: clean, boardId: postId, createdAt: createdAt.toISOString() }, { quiet: true });
         }
         get().addIntimacy(characterId, INTIMACY.boardNote);
         addMoment(set, characterId, 'board');
