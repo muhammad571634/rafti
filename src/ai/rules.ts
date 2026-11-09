@@ -125,6 +125,29 @@ export const SAFETY_LAYERS = [
 ] as const;
 
 /**
+ * The pronouns this chat goes by: a persona's own (one they made, not their profile), else the
+ * user's. Undefined when none are set.
+ */
+export function chatPronouns(user: Pick<User, 'pronouns'>, persona?: { profile?: boolean; pronouns?: Pronouns }): Pronouns | undefined {
+  return persona && !persona.profile ? persona.pronouns : user.pronouns;
+}
+
+/**
+ * The turn's reminder for a user whose gender is not given (pronouns they), by name so a group's
+ * other members are not meant: told only in the cached profile, the model still wrote "ты упрямый"
+ * to a they-user in Russian (eval gender-ru-they, 2026-11-09). No language named: it holds wherever
+ * a language marks gender.
+ */
+export const theyCue = (name: string) =>
+  `THEIR GENDER: ${name} has not given theirs. Whenever your language marks gender, never put a gendered adjective, participle or past tense on ${name} by itself: use a noun ("honesty, warmth"), or the adjective with a neutral noun such as person or soul ("you are an honest person").`;
+
+/** The they-reminder as a turn part, or nothing when the chat's pronouns are not they. */
+export function theyLines(user: Pick<User, 'pronouns' | 'displayName'>, persona?: { profile?: boolean; pronouns?: Pronouns; name?: string }): string[] {
+  if (chatPronouns(user, persona) !== 'they') return [];
+  return [theyCue(persona && !persona.profile && persona.name ? persona.name : user.displayName)];
+}
+
+/**
  * The user's gender as the character needs it (onboarding asks it, Profile changes it): in Russian,
  * French, Arabic and other languages the verbs and adjectives aimed at them change with it.
  */
@@ -142,8 +165,8 @@ export function pronounLine(pronouns: Pronouns): string {
 /**
  * The rules, the persona and the user, as prompt parts in tiers (src/ai/prompt-layout.ts): what
  * every chat shares first, the bond, scene and lore last, after the history, as they change
- * between replies. `replyLanguage` is the chat's lock (`lockedReplyLanguage`); before the user's
- * first message it falls back to their app language.
+ * between replies. `replyLanguage` follows the user's own words (`followUserLanguage`, with
+ * `languageCue` in the turn); before the user's first message, their phone's language.
  */
 export function characterParts(
   character: Character,

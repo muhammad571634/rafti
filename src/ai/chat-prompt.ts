@@ -21,7 +21,7 @@ import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
 import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
-import { characterParts } from './rules';
+import { characterParts, theyLines } from './rules';
 import { threadParts } from './thread-prompt';
 import { offerLines, SETUP_RULES_LINES } from './setup-prompt';
 import { clockLines, togetherLines, type ChatClock, type Together } from './together-prompt';
@@ -188,6 +188,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : input.crisis ? withoutTone(input.cue ?? []) : (input.cue ?? [])),
     // Its own part, so a continue or a skip (which replace the cue) keeps it.
     part('safe', 'turn', input.safe ? [SAFE_RETRY_CUE] : []),
+    part('they', 'turn', theyLines(input.user, input.persona)),
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
     // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.

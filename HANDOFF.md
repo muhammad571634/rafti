@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z175. Reply language: one whole message switches; a they-user is never gendered (2026-11-09, Claude 1). NEXT: owner deploys the server
+
+- **Owner's ask**: next task; I proposed checking that characters answer in the user's language (on the A51 an Uzbek line in a Turkish chat with Hana got a Turkish answer).
+- **Cause**: the turn's `languageCue` told the model to switch only after two messages in a row in a new language, so one whole Uzbek message stayed Turkish (as designed, not as a person hears it). `lockedReplyLanguage` / `SWITCH_AFTER` are not used in production (marked unused).
+- **Fixed** (`src/ai/reply-language.ts`): one whole message in another language is a switch; a word or two (a name, a borrowed word, a thank-you) changes nothing; two close languages are still two. No language named (test checks, Turkish and Uzbek added to it). The memory pass's copy of the cue says "write in that language".
+- **Found on the way and fixed**: `gender-ru-they` scored 2/4 on today's model (it was 4 in the baseline), with the old cue too: the model called a they-user "упрямый". `theyLines` / `theyCue(name)` (`src/ai/rules.ts`) put a turn reminder, by the user's (or their persona's) name, in replies (chat, group, calls via the chat layout), first texts and writes; `chatPronouns` follows `characterParts` (a made persona's pronouns over the profile).
+- **Eval** (free key `GEMINI_KEY_NEW`, also as judge): new `lang-switch-one-message` (English → one Russian message) and `lang-uzbek-not-turkish` (the A51 chat, Uzbek without apostrophes); language group 14/14; `gender-ru-they` 2/4 → 5/5; she / he 9/9 checks; final pass 5/5.
+- **Second reader**: no must-fix; 7 suggestions applied (doc order, first texts and writes, no eval word in the cue, memory-pass wording, the unused lock, the cue by name for groups, tests).
+- Checks: tsc 0 (app and server), npm test 853/853, server tests 88/88.
+
+Still to do:
+1. **Owner: deploy the server** (the prompts run there): terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`.
+2. `JUDGE_GEMINI_KEY` is invalid (401); the eval used `GEMINI_KEY_NEW` as judge meanwhile.
+3. The 0z173 list.
+
 ### 0z174. The server's reply check (provider safety filter), middle road kept (2026-11-09, Claude 1). NEXT: owner deploys the server; then the 0z173 list
 
 - **Owner's asks**: build the reply check (0z173 item 1); "keep the censorship at a middle level, do not choke the freedom; study how Character.AI did it".

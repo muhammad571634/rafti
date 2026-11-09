@@ -95,7 +95,7 @@ describe('sigmazam-api', () => {
     assert.match(system, /REPLY LANGUAGE: .*Japanese \(Japan\) \(their phone's language\)/);
     assert.match(turn, /LANGUAGE: they have not written to you yet: write every message in Japanese \(Japan\)/);
     await post(app, { ...greeting, messages: body.messages });
-    assert.match(turn, /LANGUAGE: write every message in the language their latest messages are in \("I had a long day"\)/);
+    assert.match(turn, /LANGUAGE: write every message in the language their latest message is in \(their last lines: "I had a long day"\)/);
   });
 
   it('runs the memory pass at a low temperature and answers only ops on facts it was shown', async () => {

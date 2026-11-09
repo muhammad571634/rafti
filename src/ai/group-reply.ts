@@ -10,7 +10,7 @@ import { layoutPrompt, part } from './prompt-layout';
 import { followsUser, followUserLanguage, languageCue, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { REPLY_SHAPE } from './reply-style';
-import { groupParts } from './rules';
+import { groupParts, theyLines } from './rules';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { clockLines } from './together-prompt';
 
@@ -68,6 +68,7 @@ export function groupReplyParts(input: GroupPromptInput): PromptPart[] {
     ]),
     part('cue', 'turn', input.cue ?? []),
     part('safe', 'turn', input.safe ? [SAFE_RETRY_CUE] : []),
+    part('they', 'turn', theyLines(input.user, input.persona)),
     part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
     part('openers', 'turn', openerLines(own)),
     part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),

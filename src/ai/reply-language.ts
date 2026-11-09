@@ -11,7 +11,11 @@
 
 import type { Message } from '@/types';
 
-/** New-language messages in a row the user must send before the lock moves. */
+/**
+ * New-language messages in a row the user must send before a stored lock moves. Unused since the
+ * reply follows the user's words (`followUserLanguage` + `languageCue`, where one whole message
+ * switches, 0z175); kept with `lockedReplyLanguage` for a stored per-chat lock if one comes back.
+ */
 export const SWITCH_AFTER = 2;
 
 const FOLLOW = "the language of the user's latest messages, whatever language that is, written naturally as a native speaker would text";
@@ -65,8 +69,11 @@ export function languageCue(userLines: readonly string[], phoneLocale?: string):
     return phone ? [`LANGUAGE: they have not written to you yet: write every message in ${languageName(phone)}, their phone's language.`] : [];
   }
   const quote = latest.length > CUE_CHARS ? `${latest.slice(0, CUE_CHARS)}…` : latest;
+  // A whole message in another language is a switch, as a person hears it (owner, 2026-11-09: one
+  // Uzbek message in a Turkish chat got a Turkish answer while "two in a row" was the rule). Close
+  // languages are not the same one; no language is named (no lists in code, the rule for every one).
   return [
-    `LANGUAGE: write every message in the language their latest messages are in ("${quote}"). If they just switched language for two messages in a row, switch with them; a word or two from another language changes nothing.`,
+    `LANGUAGE: write every message in the language their latest message is in (their last lines: "${quote}"). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it.`,
   ];
 }
 

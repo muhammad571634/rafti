@@ -7,6 +7,7 @@ import { followsUser, languageCue, userLines } from './reply-language';
 import { touchParts, type TouchInput } from './thread-prompt';
 import { weekParts, type WeekInput } from './week-prompt';
 import { worldNewsParts, type WorldNewsInput } from './world-news-prompt';
+import { theyLines } from './rules';
 
 /**
  * A text a friend writes first, unprompted (B1.4a): a thread's text, the morning brief, the evening
@@ -38,7 +39,10 @@ export const FIRST_TEXT_KINDS: readonly FirstTextKind[] = ['thread', 'brief', 'd
 export function firstTextParts(request: FirstTextRequest): PromptPart[] {
   const now = new Date(request.input.now);
   const lines = request.kind === 'day' ? request.input.today : request.kind === 'week' ? [] : request.input.recent;
-  const cue = part('languageNow', 'turn', followsUser(request.input.replyLanguage) ? languageCue(userLines(lines), request.input.user.locale) : []);
+  const cue = part('languageNow', 'turn', [
+    ...(followsUser(request.input.replyLanguage) ? languageCue(userLines(lines), request.input.user.locale) : []),
+    ...theyLines(request.input.user),
+  ]);
   const own = ownDayParts(request.input.ownDay, { now: request.input.now, utcOffsetMin: request.input.utcOffsetMin ?? 0 });
   switch (request.kind) {
     case 'thread':

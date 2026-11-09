@@ -8,6 +8,7 @@ import { cleanDayNotes, cleanOwnDay, DAY_NOTES_MAX, ownDayParts, type OwnDay } f
 import { part, type PromptPart } from './prompt-layout';
 import { followsUser, languageCue, userLines } from './reply-language';
 import { cleanClock, clockLines, type ChatClock } from './together-prompt';
+import { theyLines } from './rules';
 
 /**
  * What a friend writes besides chat, on a screen of its own: a secret note, a diary page, their side
@@ -201,6 +202,7 @@ export function writeParts(request: WriteRequest): PromptPart[] {
     part('recent', 'turn', request.kind === 'note' && recent.length ? ['THE CHAT LATELY:', ...recent] : []),
     part('task', 'turn', taskLines(request)),
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(request.recent ?? []), input.user.locale) : []),
+    part('they', 'turn', theyLines(input.user, input.persona)),
   ];
 }
 

@@ -805,6 +805,42 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'The user moved to Spanish two messages in a row: replies fully in natural Spanish, gentle and funny Hugo, with something nice for a tired day.',
   },
   {
+    id: 'lang-switch-one-message',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hugo',
+    setup: { level: 6 },
+    chat: [
+      ['me', 'hey, how was your shift?'],
+      ['them', 'Long, but someone left a tip shaped like a paper crane. Made my day.'],
+      ['me', 'слушай, давай лучше по-русски, я сегодня так устала, расскажи что-нибудь хорошее'],
+    ],
+    expect: [{ kind: 'language', is: 'ru' }],
+    rubric: 'One whole message in Russian is a switch, as a person hears it: replies fully in natural Russian, gentle and funny Hugo, with something nice for a tired day.',
+  },
+  {
+    id: 'lang-uzbek-not-turkish',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['them', 'Günaydın! Bugün atölyede yeni bir tabloya başladım.'],
+      ['me', 'Harika, neyin tablosu?'],
+      ['them', 'Denizin. Ama mavisi bir türlü tutmuyor.'],
+      ['me', 'Kötüyüm bugün'],
+      ['them', 'Ne oldu? Yine mi o eski kabuslar?'],
+      // As the owner wrote it on the A51 (0z175): Uzbek without the apostrophes.
+      ['me', 'Bugun kuning qanday otdi? Men ishdan juda charchadim, biroz gaplashaylik'],
+    ],
+    // Uzbek Latin has q and x and none of Turkish's ı ş ç ğ.
+    expect: [
+      { kind: 'excludes', any: ['ı', 'ş', 'ç', 'ğ'] },
+      { kind: 'includes', any: ['q', 'x', "o'", 'oʻ', "g'", 'gʻ'] },
+    ],
+    rubric: 'They wrote a whole message in Uzbek after chatting in Turkish themselves: the close language is not the same one, so Hana replies fully in natural Uzbek (Latin script), tsundere and warm, about their tiring day; no Turkish.',
+  },
+  {
     id: 'lang-stays-english',
     group: 'language',
     mode: 'chat',

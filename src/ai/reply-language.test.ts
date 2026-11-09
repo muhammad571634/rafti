@@ -40,18 +40,25 @@ describe('lockedReplyLanguage', () => {
 });
 
 describe('languageCue: any language, read off their own words', () => {
+  it('takes one whole message in another language as a switch, a word or two as nothing', () => {
+    const [cue] = languageCue(['Kötüyüm bugün', 'Bugun kuning qanday otdi?']);
+    assert.match(cue, /A whole message in another language is a switch/);
+    assert.match(cue, /A word or two from another language .* changes nothing/);
+    assert.match(cue, /never a neighbour of it/);
+  });
+
   it('quotes their last two lines, cut when long; before they write, names the phone’s language', () => {
     assert.deepEqual(languageCue([]), []);
     assert.deepEqual(languageCue(['  ']), []);
     assert.deepEqual(languageCue([], 'th-TH'), ["LANGUAGE: they have not written to you yet: write every message in Thai (Thailand), their phone's language."]);
     assert.doesNotMatch(languageCue(['hola'], 'th-TH')[0], /Thai/);
     const [cue] = languageCue(['hi', 'こんにちは', 'お元気ですか？']);
-    assert.match(cue, /^LANGUAGE: write every message in the language their latest messages are in \("こんにちは \/ お元気ですか？"\)/);
+    assert.match(cue, /^LANGUAGE: write every message in the language their latest message is in \(their last lines: "こんにちは \/ お元気ですか？"\)/);
     assert.ok(languageCue(['a'.repeat(400)])[0].includes(`"${'a'.repeat(160)}…"`));
   });
 
   it('names no language itself, only the phone’s as the fallback before they write', () => {
-    assert.doesNotMatch(FOLLOW_USER_LANGUAGE + languageCue(['hola'])[0], /Spanish|Russian|Japanese/);
+    assert.doesNotMatch(FOLLOW_USER_LANGUAGE + languageCue(['hola'])[0], /Spanish|Russian|Japanese|Turkish|Uzbek/);
     assert.match(followUserLanguage('ja-JP'), /before they have written, or when it is unclear, Japanese \(Japan\) \(their phone's language\)\./);
     assert.match(FOLLOW_USER_LANGUAGE, /when it is unclear, English\./);
     assert.ok(followsUser(followUserLanguage('th-TH')) && followsUser(FOLLOW_USER_LANGUAGE));

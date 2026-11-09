@@ -341,4 +341,14 @@ describe('chatParts: setting things up from the chat (0z136)', () => {
     assert.equal(offers?.tier, 'turn');
     assert.match(offers?.text ?? '', /07:00: not set yet/);
   });
+  it('reminds the turn of an ungiven gender by name, following a persona over the profile', () => {
+    const they = (input: Parameters<typeof chatParts>[0]) => chatParts(input).find((p) => p.name === 'they');
+    const heProfile = { ...sam, pronouns: 'he' } as User;
+    const theyPersona = { id: 'p1', name: 'Rook', pronouns: 'they', profile: false } as const;
+    const cue = they({ character: kai, user: heProfile, persona: theyPersona, messages: [] });
+    assert.equal(cue?.tier, 'turn');
+    assert.match(cue?.text ?? '', /Rook has not given theirs/);
+    assert.equal(they({ character: kai, user: { ...sam, pronouns: 'they' } as User, persona: { id: 'p2', name: 'Max', pronouns: 'he', profile: false }, messages: [] })?.text ?? '', '');
+    assert.match(they({ character: kai, user: { ...sam, pronouns: 'they' } as User, messages: [] })?.text ?? '', /Sam has not given theirs/);
+  });
 });

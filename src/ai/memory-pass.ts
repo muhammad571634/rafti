@@ -133,7 +133,7 @@ export function memoryPassParts(request: MemoryPassRequest): PromptPart[] {
       // The chat's language, read off the user's own words, as the replies do: told only "the
       // chat's language", the model wrote a Spanish chat's facts in English (eval set, B2).
       ...languageCue(request.lines.filter((l) => l.author === 'me').map((l) => l.text), request.user.locale).map((cue) =>
-        `${cue.replace('write every message', 'write every fact and the summary')} The summary too, even though these instructions are in English.`,
+        `${cue.replace('write every message', 'write every fact and the summary').replace('answer in that language from now on', 'write in that language')} The summary too, even though these instructions are in English.`,
       ),
       // After the language line: "day" stays English while the facts follow the chat.
       ...ownDayCatchLines(request),
