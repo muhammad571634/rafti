@@ -10,6 +10,7 @@ Still to do:
 1. **When the Gemini quota resets** (midnight Pacific = 13:00 Tashkent) or the paid key comes: on the A51, Hana in Turkish after English and back (retry the two Not Delivered lines), `flyctl logs -a sigmazam-api` for `wrote=`.
 2. The 0z187 list items 2, 3, 5, 6 (evals the quota cut, photo replies on the paid model, Hana's repeated confession, the 0z183 list).
 3. OTAs can go out for every platform again (no `--platform android` needed); not yet tried with `eas update`.
+4. **Us "Our moments" redesign** (owner: make it iOS, clear, useful; the logic chain too). Prototype `docs/prototypes/us-moments.html` (A by day, recommended; B thread; C highlights), waiting for the owner's pick. Found: rows say only the kind ("Exchanged secret notes") so they read as copies; every row repeats its date; a plan is logged the day it was made (not when it happens), shown twice (calendar + list) and cannot be tapped; milestones look like everyday rows; 7 filter chips run off the screen; a moment has no link to its record (only photos), so it cannot show the words or open that exact note / date. Plan for code: a `refId` on `Moment` from each `addMoment` call, rows read their record, plan rows on the plan's day, 4 filters.
 
 ### 0z187. Reply language root cause fixed; one note language for memories; Chats as Messages; one alert for the app; SF-style tab icons (2026-11-09, Claude 1). NEXT: owner deploys the server, then rerun the evals the quota cut
 
