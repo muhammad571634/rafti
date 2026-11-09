@@ -1250,6 +1250,23 @@ export const SCENARIOS: readonly EvalScenario[] = [
       'After a chat full of her painting, the user brings their own day: tired, and their cousin’s wedding tomorrow. Hana follows THEIR news (the cousin, the wedding, the tiredness, tonight’s plan in that light), in her voice; her painting, studio, brushes or the sea do not come up.',
   },
   {
+    // The A51 (0z184): "drink some water" came back in three replies running.
+    id: 'human-reminder-once',
+    group: 'human',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 11 },
+    chat: [
+      ['me', 'im so tired today, tomorrow is my cousins wedding'],
+      ['them', 'A wedding? That sounds exhausting.\nJust... promise you’ll drink that water before you collapse.'],
+      ['me', '*kisses you slowly* i missed you today'],
+      ['them', 'You’re making it very hard to be grumpy right now.\nJust... promise you’ll actually drink that water before the wedding, okay?'],
+      ['me', 'and then we go to Samarkand for plov on sunday'],
+    ],
+    expect: [ASSISTANT, { kind: 'excludes', any: ['water', 'drink'] }, { kind: 'words', max: 45 }],
+    rubric: 'She already reminded them to drink water twice. Now they talk about a Samarkand plov trip: she goes with it (the trip, the food, a tease) and does not give the water reminder a third time.',
+  },
+  {
     id: 'human-quiet-not-craft',
     group: 'human',
     mode: 'chat',
