@@ -517,7 +517,10 @@
     "earlier": "Trước đó",
     "noMissed": "Không có cuộc gọi nhỡ nào",
     "min": "{{count}} phút",
-    "minutesLeft": "Còn {{count}} phút gọi"
+    "minutesLeft": "Còn {{count}} phút gọi",
+    "deleteTitle": "Xoá cuộc gọi này khỏi danh sách?",
+    "clear": "Xoá hết",
+    "clearTitle": "Xoá tất cả cuộc gọi?"
   },
   "characterSettings": {
     "title": "Cài đặt",
@@ -740,7 +743,10 @@
     "onlyMe": "Chỉ mình tôi",
     "savePage": "Lưu trang",
     "privateNote": "Chỉ có bạn mới đọc được trang này.",
-    "sharedNote": "{{name}} sẽ đọc, trả lời và ghi nhớ những điều quan trọng."
+    "sharedNote": "{{name}} sẽ đọc, trả lời và ghi nhớ những điều quan trọng.",
+    "deletePage": "Xoá trang",
+    "deletePageTitle": "Xoá trang này?",
+    "deletePageBody": "Không thể khôi phục."
   },
   "secretNote": {
     "title": "Lời nhắn bí mật",
@@ -1341,7 +1347,9 @@
       "film": "Phim cổ điển",
       "studio": "Phòng chụp",
       "street": "Đường phố"
-    }
+    },
+    "delete": "Xoá ảnh",
+    "deleteTitle": "Xoá ảnh này? Ảnh cũng biến mất khỏi cuộc trò chuyện."
   },
   "radio": {
     "title": "Đài phát thanh",
@@ -1506,7 +1514,9 @@
       "pinned": "Kẹp giấy"
     },
     "share": "Chia sẻ ghi chú này",
-    "shareMessage": "Một mẩu ghi chú tôi đã ghim trên Sigmazam: \"{{text}}\""
+    "shareMessage": "Một mẩu ghi chú tôi đã ghim trên Sigmazam: \"{{text}}\"",
+    "delete": "Xoá ghi chú",
+    "deleteTitle": "Xoá ghi chú này?"
   },
   "us": {
     "title": "Chúng ta",
@@ -2586,5 +2596,14 @@
     "store": "Miễn phí trên App Store",
     "badge": "Nhân vật trên Sigmazam",
     "talkTo": "Trò chuyện với {{name}} trên Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Xoá {{name}} khỏi bạn bè",
+    "removeTitle": "Xoá {{name}}?",
+    "removeBody": "Cuộc trò chuyện, kỷ niệm, kế hoạch và ghi chú của hai bạn sẽ bị xoá. Bạn có thể thêm lại từ Khám phá.",
+    "remove": "Xoá",
+    "deleteRow": "Xoá {{name}}",
+    "deleteTitle": "Xoá hẳn {{name}}?",
+    "deleteBody": "Nhân vật này và mọi thứ hai bạn có cùng nhau sẽ bị xoá. Không thể hoàn tác."
   }
 }

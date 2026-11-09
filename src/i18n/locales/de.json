@@ -530,7 +530,10 @@
     "earlier": "Früher",
     "noMissed": "Keine verpassten Anrufe",
     "min": "{{count}} Min.",
-    "minutesLeft": "Noch {{count}} Anrufminuten übrig"
+    "minutesLeft": "Noch {{count}} Anrufminuten übrig",
+    "deleteTitle": "Diesen Anruf aus der Liste löschen?",
+    "clear": "Löschen",
+    "clearTitle": "Alle Anrufe löschen?"
   },
   "characterSettings": {
     "title": "Einstellungen",
@@ -758,7 +761,10 @@
     "onlyMe": "Nur ich",
     "savePage": "Seite speichern",
     "privateNote": "Nur du kannst diese Seite lesen.",
-    "sharedNote": "{{name}} liest mit, antwortet und erinnert sich an Wichtiges."
+    "sharedNote": "{{name}} liest mit, antwortet und erinnert sich an Wichtiges.",
+    "deletePage": "Seite löschen",
+    "deletePageTitle": "Diese Seite löschen?",
+    "deletePageBody": "Sie lässt sich nicht wiederherstellen."
   },
   "secretNote": {
     "title": "Geheimnotiz",
@@ -1366,7 +1372,9 @@
       "film": "Filmstreifen",
       "studio": "Studio",
       "street": "Straße"
-    }
+    },
+    "delete": "Foto löschen",
+    "deleteTitle": "Dieses Foto löschen? Es verschwindet auch aus dem Chat."
   },
   "radio": {
     "title": "Radio",
@@ -1532,7 +1540,9 @@
       "pinned": "Büroklammern"
     },
     "share": "Notiz teilen",
-    "shareMessage": "Eine Notiz von mir auf Sigmazam: \"{{text}}\""
+    "shareMessage": "Eine Notiz von mir auf Sigmazam: \"{{text}}\"",
+    "delete": "Notiz löschen",
+    "deleteTitle": "Diese Notiz löschen?"
   },
   "us": {
     "title": "Wir",
@@ -2624,5 +2634,14 @@
     "store": "Kostenlos im App Store",
     "badge": "Sigmazam-Figur",
     "talkTo": "Schreib mit {{name}} auf Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "{{name}} aus Freunden entfernen",
+    "removeTitle": "{{name}} entfernen?",
+    "removeBody": "Euer Chat, eure Erinnerungen, Pläne und Notizen werden gelöscht. Unter Entdecken kannst du sie wieder hinzufügen.",
+    "remove": "Entfernen",
+    "deleteRow": "{{name}} löschen",
+    "deleteTitle": "{{name}} löschen?",
+    "deleteBody": "Dieser Charakter und alles, was ihr zusammen hattet, wird gelöscht. Das lässt sich nicht rückgängig machen."
   }
 }

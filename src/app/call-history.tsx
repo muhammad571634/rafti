@@ -19,6 +19,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
+import { confirmAction } from '@/lib/confirm';
 import { clockTime, relativeStamp, shortName } from '@/lib/format';
 import { dayKey, dayKeyFromToday } from '@/mock';
 import { displayName, minutesOf, useAppStore } from '@/store/use-app-store';
@@ -46,6 +47,13 @@ export default function CallHistoryScreen() {
   const relationships = useAppStore((s) => s.relationships);
   const wallet = useAppStore((s) => s.wallet);
   const [filter, setFilter] = useState<Filter>('all');
+  const deleteCall = useAppStore((s) => s.deleteCall);
+  const clearCalls = useAppStore((s) => s.clearCalls);
+  // Hold a row to take that call off the list; "Clear" under the list takes them all (0z181).
+  const removeCall = (id: string) =>
+    confirmAction({ title: t('callHistory.deleteTitle'), action: t('common.delete'), cancel: t('common.cancel'), onConfirm: () => deleteCall(id) });
+  const clearAll = () =>
+    confirmAction({ title: t('callHistory.clearTitle'), action: t('callHistory.clear'), cancel: t('common.cancel'), onConfirm: clearCalls });
 
   const minutesLeft = Math.floor(minutesOf(wallet, 'call').total / 60);
 
@@ -134,6 +142,7 @@ export default function CallHistoryScreen() {
                       when={section.key === 'earlier' ? relativeStamp(call.startedAt) : clockTime(call.startedAt)}
                       last={i === section.calls.length - 1}
                       onOpen={() => router.push(`/character/${character.id}`)}
+                      onRemove={() => removeCall(call.id)}
                       onCall={() => router.push(`/call/${character.id}`)}
                     />
                   );
@@ -142,6 +151,11 @@ export default function CallHistoryScreen() {
             </View>
           ))
         )}
+        {calls.length > 0 ? (
+          <PressableScale scaleTo={0.97} accessibilityRole="button" onPress={clearAll} style={styles.clear}>
+            <Txt style={styles.clearText}>{t('callHistory.clear')}</Txt>
+          </PressableScale>
+        ) : null}
       </ScrollView>
     </Screen>
   );
@@ -155,6 +169,7 @@ function CallRow({
   last,
   onOpen,
   onCall,
+  onRemove,
 }: {
   call: CallRecord;
   name: string;
@@ -163,6 +178,7 @@ function CallRow({
   last: boolean;
   onOpen: () => void;
   onCall: () => void;
+  onRemove: () => void;
 }) {
   const { t } = useTranslation();
   const incoming = call.direction === 'incoming';
@@ -177,7 +193,11 @@ function CallRow({
       <Pressable
         style={({ pressed }) => [styles.rowTap, pressed && styles.pressed]}
         onPress={onOpen}
+        delayLongPress={400}
+        onLongPress={onRemove}
         accessibilityRole="button"
+        accessibilityActions={[{ name: 'longpress', label: t('common.delete') }]}
+        onAccessibilityAction={onRemove}
         accessibilityLabel={`${name}, ${line}, ${when}`}>
         <CharacterAvatar character={character} size={AVATAR} />
         <View style={styles.body}>
@@ -210,6 +230,8 @@ function CallRow({
 }
 
 const styles = StyleSheet.create({
+  clear: { alignSelf: 'center', marginTop: space.xl, paddingVertical: 10, paddingHorizontal: space.lg },
+  clearText: { fontSize: 17, color: systemColors.red },
   minutes: {
     height: 44,
     borderRadius: 22,

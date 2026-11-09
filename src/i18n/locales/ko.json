@@ -517,7 +517,10 @@
     "earlier": "이전",
     "noMissed": "부재중 전화 없음",
     "min": "{{count}}분",
-    "minutesLeft": "통화 가능 시간 {{count}}분 남음"
+    "minutesLeft": "통화 가능 시간 {{count}}분 남음",
+    "deleteTitle": "이 통화를 목록에서 삭제할까요?",
+    "clear": "지우기",
+    "clearTitle": "모든 통화를 지울까요?"
   },
   "characterSettings": {
     "title": "설정",
@@ -740,7 +743,10 @@
     "onlyMe": "나만 보기",
     "savePage": "페이지 저장",
     "privateNote": "오직 회원님만 이 페이지를 볼 수 있습니다.",
-    "sharedNote": "{{name}}이(가) 읽고 답장을 쓰며 소중한 기억을 간직합니다."
+    "sharedNote": "{{name}}이(가) 읽고 답장을 쓰며 소중한 기억을 간직합니다.",
+    "deletePage": "페이지 삭제",
+    "deletePageTitle": "이 페이지를 삭제할까요?",
+    "deletePageBody": "다시 되돌릴 수 없어요."
   },
   "secretNote": {
     "title": "비밀 쪽지",
@@ -1341,7 +1347,9 @@
       "film": "필름",
       "studio": "스튜디오",
       "street": "스트리트"
-    }
+    },
+    "delete": "사진 삭제",
+    "deleteTitle": "이 사진을 삭제할까요? 채팅에서도 사라져요."
   },
   "radio": {
     "title": "라디오",
@@ -1506,7 +1514,9 @@
       "pinned": "클립"
     },
     "share": "이 메모 공유하기",
-    "shareMessage": "Sigmazam 게시판에 메모를 남겼어요: \"{{text}}\""
+    "shareMessage": "Sigmazam 게시판에 메모를 남겼어요: \"{{text}}\"",
+    "delete": "노트 삭제",
+    "deleteTitle": "이 노트를 삭제할까요?"
   },
   "us": {
     "title": "우리",
@@ -2586,5 +2596,14 @@
     "store": "App Store에서 무료",
     "badge": "Sigmazam 캐릭터",
     "talkTo": "Sigmazam에서 {{name}}와 대화해 보세요"
+  },
+  "friendRemove": {
+    "removeRow": "{{name}}을(를) 친구에서 삭제",
+    "removeTitle": "{{name}}을(를) 삭제할까요?",
+    "removeBody": "채팅, 추억, 약속, 노트가 모두 삭제돼요. 찾기에서 다시 추가할 수 있어요.",
+    "remove": "삭제",
+    "deleteRow": "{{name}} 지우기",
+    "deleteTitle": "{{name}}을(를) 지울까요?",
+    "deleteBody": "이 캐릭터와 함께한 모든 것이 삭제돼요. 되돌릴 수 없어요."
   }
 }

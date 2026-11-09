@@ -8,6 +8,8 @@ import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { planDate } from '@/components/plans/copy';
 import { BackButton, CharacterAvatar, glassStyle, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
+import { dropSelfie } from '@/lib/booth-selfies';
+import { confirmAction } from '@/lib/confirm';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, space } from '@/theme';
 
@@ -27,6 +29,7 @@ export default function PhotoScreen() {
   const friend = useAppStore((s) => s.characters.find((c) => c.id === photo?.characterId));
   const chat = useAppStore((s) => s.conversations.find((c) => c.characterId === photo?.characterId));
   const sendPhoto = useAppStore((s) => s.sendPhoto);
+  const deletePhoto = useAppStore((s) => s.deletePhoto);
 
   if (!photo || !friend) {
     return (
@@ -42,7 +45,30 @@ export default function PhotoScreen() {
   return (
     <Screen background={colors.bg}>
       <View style={styles.bar}>
-        <BackButton />
+        <View style={styles.left}>
+          <BackButton />
+          {/* Delete, after asking (0z181): the picture, its selfie file and its line in the chat. */}
+          <PressableScale
+            scaleTo={0.88}
+            accessibilityRole="button"
+            accessibilityLabel={t('photoBooth.delete')}
+            onPress={() =>
+              confirmAction({
+                title: t('photoBooth.deleteTitle'),
+                action: t('common.delete'),
+                cancel: t('common.cancel'),
+                onConfirm: () => {
+                  const selfie = photo.selfie;
+                  deletePhoto(photo.id);
+                  if (selfie) void dropSelfie(selfie);
+                  router.back();
+                },
+              })
+            }
+            style={[styles.trash, glassStyle]}>
+            <Ionicons name="trash-outline" size={18} color={colors.text} />
+          </PressableScale>
+        </View>
         <View style={styles.titles}>
           <Txt style={styles.date}>{planDate(Date.parse(photo.createdAt))}</Txt>
           <Txt style={styles.with}>{t('photoBooth.withName', { name })}</Txt>
@@ -90,6 +116,9 @@ export default function PhotoScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Back and delete share the left; the centred titles keep 120 on each side free.
+  left: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  trash: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',

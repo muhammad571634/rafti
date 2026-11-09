@@ -517,7 +517,10 @@
     "earlier": "較早",
     "noMissed": "無未接來電",
     "min": "{{count}}分鐘",
-    "minutesLeft": "剩餘通話時長{{count}}分鐘"
+    "minutesLeft": "剩餘通話時長{{count}}分鐘",
+    "deleteTitle": "要從清單刪除這通通話嗎？",
+    "clear": "清除",
+    "clearTitle": "要清除所有通話嗎？"
   },
   "characterSettings": {
     "title": "設定",
@@ -740,7 +743,10 @@
     "onlyMe": "僅限自己",
     "savePage": "儲存日記",
     "privateNote": "只有你自己可以閱讀這一頁。",
-    "sharedNote": "{{name}}將會閱讀並回信，珍藏對你重要的一切。"
+    "sharedNote": "{{name}}將會閱讀並回信，珍藏對你重要的一切。",
+    "deletePage": "刪除這頁",
+    "deletePageTitle": "要刪除這一頁嗎？",
+    "deletePageBody": "刪除後無法復原。"
   },
   "secretNote": {
     "title": "秘密便籤",
@@ -1341,7 +1347,9 @@
       "film": "底片感",
       "studio": "影棚寫真",
       "street": "街頭隨拍"
-    }
+    },
+    "delete": "刪除照片",
+    "deleteTitle": "要刪除這張照片嗎？聊天裡也會一起消失。"
   },
   "radio": {
     "title": "廣播",
@@ -1506,7 +1514,9 @@
       "pinned": "別針"
     },
     "share": "分享此便簽",
-    "shareMessage": "我在Sigmazam留言板上留下了一張便簽：\"{{text}}\""
+    "shareMessage": "我在Sigmazam留言板上留下了一張便簽：\"{{text}}\"",
+    "delete": "刪除便條",
+    "deleteTitle": "要刪除這張便條嗎？"
   },
   "us": {
     "title": "我們",
@@ -2586,5 +2596,14 @@
     "store": "App Store 免費下載",
     "badge": "Sigmazam 角色",
     "talkTo": "在 Sigmazam 和{{name}}聊天"
+  },
+  "friendRemove": {
+    "removeRow": "將{{name}}從朋友中移除",
+    "removeTitle": "要移除{{name}}嗎？",
+    "removeBody": "你們的聊天、回憶、計畫和便條都會被刪除。之後可以從「探索」再加回來。",
+    "remove": "移除",
+    "deleteRow": "刪除{{name}}",
+    "deleteTitle": "要刪除{{name}}嗎？",
+    "deleteBody": "這個角色和你們之間的一切都會被刪除，無法復原。"
   }
 }

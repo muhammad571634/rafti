@@ -517,7 +517,10 @@
     "earlier": "過去",
     "noMissed": "不在着信はありません",
     "min": "{{count}}分",
-    "minutesLeft": "通話残り{{count}}分"
+    "minutesLeft": "通話残り{{count}}分",
+    "deleteTitle": "この通話を履歴から削除しますか？",
+    "clear": "消去",
+    "clearTitle": "すべての通話を消去しますか？"
   },
   "characterSettings": {
     "title": "設定",
@@ -740,7 +743,10 @@
     "onlyMe": "自分のみ",
     "savePage": "ページを保存",
     "privateNote": "あなただけがこのページを読めます。",
-    "sharedNote": "{{name}}が読んでお返事を書き、大切なことを覚えます。"
+    "sharedNote": "{{name}}が読んでお返事を書き、大切なことを覚えます。",
+    "deletePage": "ページを削除",
+    "deletePageTitle": "このページを削除しますか？",
+    "deletePageBody": "元に戻せません。"
   },
   "secretNote": {
     "title": "秘密のメモ",
@@ -1341,7 +1347,9 @@
       "film": "フィルム",
       "studio": "スタジオ",
       "street": "ストリート"
-    }
+    },
+    "delete": "写真を削除",
+    "deleteTitle": "この写真を削除しますか？チャットからも消えます。"
   },
   "radio": {
     "title": "ラジオ",
@@ -1506,7 +1514,9 @@
       "pinned": "クリップ"
     },
     "share": "このメモをシェア",
-    "shareMessage": "Sigmazamの掲示板にメモを貼りました: \"{{text}}\""
+    "shareMessage": "Sigmazamの掲示板にメモを貼りました: \"{{text}}\"",
+    "delete": "ノートを削除",
+    "deleteTitle": "このノートを削除しますか？"
   },
   "us": {
     "title": "ふたり",
@@ -2586,5 +2596,14 @@
     "store": "App Storeで無料",
     "badge": "Sigmazamのキャラクター",
     "talkTo": "Sigmazamで{{name}}と話そう"
+  },
+  "friendRemove": {
+    "removeRow": "{{name}}を友だちから外す",
+    "removeTitle": "{{name}}を外しますか？",
+    "removeBody": "チャット、思い出、予定、ノートが削除されます。「さがす」からまた追加できます。",
+    "remove": "外す",
+    "deleteRow": "{{name}}を削除",
+    "deleteTitle": "{{name}}を削除しますか？",
+    "deleteBody": "このキャラクターと、ふたりのすべてが削除されます。元に戻せません。"
   }
 }

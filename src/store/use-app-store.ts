@@ -95,6 +95,7 @@ import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
+import { forgetFriend } from '@/lib/forget-friend';
 import {
   canAddMember,
   canRemoveMember,
@@ -404,7 +405,7 @@ export type ThemeResult = { status: 'saved'; id: string } | { status: ThemeProbl
 /** Making a Radio clip: its id, or why it was not made. */
 export type ClipResult = { status: 'made'; id: string } | { status: 'noShells' | ClipProblem };
 
-interface AppState {
+export interface AppState {
   user: User;
   wallet: Wallet;
   characters: Character[];
@@ -747,6 +748,14 @@ interface AppState {
   /** Ends the bond (chat, memories, plans, moments) and hides the character. */
   blockCharacter: (characterId: string) => void;
   unblockCharacter: (characterId: string) => void;
+  /** Takes a friend out of the user's life without blocking: everything with them goes, Find keeps them. */
+  removeFriend: (characterId: string) => void;
+  /** Deletes a character the user made, with everything they had together (official ones stay). */
+  deleteCharacter: (characterId: string) => void;
+  deleteBoardPost: (id: string) => void;
+  deletePhoto: (id: string) => void;
+  deleteCall: (id: string) => void;
+  clearCalls: () => void;
 
   /* Find's search page: what was looked up and opened lately, newest first */
   recentSearches: string[];
@@ -2725,35 +2734,32 @@ export const useAppStore = create<AppState>()(
         sendReports(set, get);
       },
 
-      blockCharacter: (characterId) =>
-        set((s) => {
-          const gone = new Set(s.conversations.filter((c) => c.characterId === characterId).map((c) => c.id));
-          // They leave every group; a group left with one member ends with its messages.
-          const groups = s.groups.flatMap((g) => {
-            const rest = withoutMember(g.memberIds, characterId);
-            if (!rest) gone.add(g.id);
-            return rest ? [{ ...g, memberIds: rest }] : [];
-          });
-          const { [characterId]: _bond, ...relationships } = s.relationships;
-          return {
-            blockedIds: s.blockedIds.includes(characterId) ? s.blockedIds : [...s.blockedIds, characterId],
-            conversations: s.conversations.filter((c) => !gone.has(c.id)),
-            groups,
-            messages: Object.fromEntries(Object.entries(s.messages).filter(([id]) => !gone.has(id))),
-            relationships,
-            memories: s.memories.filter((m) => m.characterId !== characterId),
-            moments: s.moments.filter((m) => m.characterId !== characterId),
-            schedules: s.schedules.filter((x) => x.characterId !== characterId),
-            notes: s.notes.filter((n) => n.characterId !== characterId),
-            // A note waiting on its answer would bring them back after the block.
-            boardPosts: s.boardPosts.filter((p) => p.characterId !== characterId),
-            photos: s.photos.filter((p) => p.characterId !== characterId),
-            radioClips: s.radioClips.filter((c) => c.characterId !== characterId),
-            dateThemes: s.dateThemes.filter((d) => d.characterId !== characterId),
-            activeDate: s.activeDate?.characterId === characterId ? null : s.activeDate,
-            settings: s.settings.callerId === characterId ? { ...s.settings, callerId: undefined } : s.settings,
-          };
-        }),
+      blockCharacter: (characterId) => {
+        cancelFriendReplies(get, set, characterId);
+        set((s) => ({ ...forgetFriend(s, characterId), blockedIds: s.blockedIds.includes(characterId) ? s.blockedIds : [...s.blockedIds, characterId] }));
+      },
+
+      removeFriend: (characterId) => {
+        cancelFriendReplies(get, set, characterId);
+        set((s) => forgetFriend(s, characterId));
+      },
+
+      deleteCharacter: (characterId) => {
+        const character = get().characters.find((c) => c.id === characterId);
+        if (!character || character.isOfficial) return;
+        cancelFriendReplies(get, set, characterId);
+        set((s) => ({ ...forgetFriend(s, characterId), characters: s.characters.filter((c) => c.id !== characterId) }));
+      },
+
+      deleteBoardPost: (id) => set((s) => ({ boardPosts: s.boardPosts.filter((p) => p.id !== id) })),
+      // The picture and the chat line that carried it (an empty frame would stay behind).
+      deletePhoto: (id) =>
+        set((s) => ({
+          photos: s.photos.filter((p) => p.id !== id),
+          messages: Object.fromEntries(Object.entries(s.messages).map(([chat, list]) => [chat, list.some((m) => m.photoId === id) ? list.filter((m) => m.photoId !== id) : list])),
+        })),
+      deleteCall: (id) => set((s) => ({ calls: s.calls.filter((c) => c.id !== id) })),
+      clearCalls: () => set({ calls: [] }),
 
       unblockCharacter: (characterId) =>
         set((s) => ({ blockedIds: s.blockedIds.filter((id) => id !== characterId) })),
@@ -5633,6 +5639,11 @@ const opinionsAsked = new Set<string>();
  * 0z148 has none, so the model writes them once from what the creator wrote. The official cast has
  * none yet (the owner may remake it); a reply works without them.
  */
+/** Replies still on their way in a friend's chats must not land after the friend is gone. */
+function cancelFriendReplies(get: Getter, set: Setter, characterId: string) {
+  for (const c of get().conversations) if (c.characterId === characterId) cancelReplies(set, c.id);
+}
+
 function ensureOpinions(set: Setter, get: Getter, characterId: string) {
   const state = get();
   const character = state.characters.find((c) => c.id === characterId);

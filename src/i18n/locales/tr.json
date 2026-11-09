@@ -530,7 +530,10 @@
     "earlier": "Daha önce",
     "noMissed": "Cevapsız arama yok",
     "min": "{{count}} dk",
-    "minutesLeft": "{{count}} dakika arama hakkı kaldı"
+    "minutesLeft": "{{count}} dakika arama hakkı kaldı",
+    "deleteTitle": "Bu arama listeden silinsin mi?",
+    "clear": "Temizle",
+    "clearTitle": "Tüm aramalar temizlensin mi?"
   },
   "characterSettings": {
     "title": "Ayarlar",
@@ -758,7 +761,10 @@
     "onlyMe": "Yalnızca ben",
     "savePage": "Sayfayı kaydet",
     "privateNote": "Bu sayfayı yalnızca sen okuyabilirsin.",
-    "sharedNote": "{{name}} bunu okur, yanıt yazar ve önemli olanı hatırlar."
+    "sharedNote": "{{name}} bunu okur, yanıt yazar ve önemli olanı hatırlar.",
+    "deletePage": "Sayfayı sil",
+    "deletePageTitle": "Bu sayfa silinsin mi?",
+    "deletePageBody": "Geri getirilemez."
   },
   "secretNote": {
     "title": "Gizli not",
@@ -1366,7 +1372,9 @@
       "film": "Film",
       "studio": "Stüdyo",
       "street": "Sokak"
-    }
+    },
+    "delete": "Fotoğrafı sil",
+    "deleteTitle": "Bu fotoğraf silinsin mi? Sohbetten de kalkar."
   },
   "radio": {
     "title": "Radyo",
@@ -1532,7 +1540,9 @@
       "pinned": "Ataşlar"
     },
     "share": "Bu notu paylaş",
-    "shareMessage": "Sigmazam'da panoya iliştirdiğim bir not: \"{{text}}\""
+    "shareMessage": "Sigmazam'da panoya iliştirdiğim bir not: \"{{text}}\"",
+    "delete": "Notu sil",
+    "deleteTitle": "Bu not silinsin mi?"
   },
   "us": {
     "title": "Biz",
@@ -2624,5 +2634,14 @@
     "store": "App Store'da ücretsiz",
     "badge": "Sigmazam karakteri",
     "talkTo": "{{name}} ile Sigmazam'da konuş"
+  },
+  "friendRemove": {
+    "removeRow": "{{name}} arkadaşlardan çıkarılsın",
+    "removeTitle": "{{name}} çıkarılsın mı?",
+    "removeBody": "Sohbetiniz, anılarınız, planlarınız ve notlarınız silinir. Keşfet’ten tekrar ekleyebilirsin.",
+    "remove": "Çıkar",
+    "deleteRow": "{{name}} silinsin",
+    "deleteTitle": "{{name}} silinsin mi?",
+    "deleteBody": "Bu karakter ve birlikte olan her şey silinir. Geri alınamaz."
   }
 }

@@ -530,7 +530,10 @@
     "earlier": "Précédents",
     "noMissed": "Aucun appel manqué",
     "min": "{{count}} min",
-    "minutesLeft": "{{count}} minutes d'appel restantes"
+    "minutesLeft": "{{count}} minutes d'appel restantes",
+    "deleteTitle": "Supprimer cet appel de la liste ?",
+    "clear": "Effacer",
+    "clearTitle": "Effacer tous les appels ?"
   },
   "characterSettings": {
     "title": "Paramètres",
@@ -758,7 +761,10 @@
     "onlyMe": "Moi uniquement",
     "savePage": "Enregistrer la page",
     "privateNote": "Vous seul(e) pouvez lire cette page.",
-    "sharedNote": "{{name}} la lit, répond et retient l'essentiel."
+    "sharedNote": "{{name}} la lit, répond et retient l'essentiel.",
+    "deletePage": "Supprimer la page",
+    "deletePageTitle": "Supprimer cette page ?",
+    "deletePageBody": "Elle ne pourra pas être récupérée."
   },
   "secretNote": {
     "title": "Mot secret",
@@ -1366,7 +1372,9 @@
       "film": "Pellicule",
       "studio": "Studio",
       "street": "Rue"
-    }
+    },
+    "delete": "Supprimer la photo",
+    "deleteTitle": "Supprimer cette photo ? Elle disparaît aussi de la discussion."
   },
   "radio": {
     "title": "Radio",
@@ -1532,7 +1540,9 @@
       "pinned": "Trombone"
     },
     "share": "Partager ce mot",
-    "shareMessage": "Un mot que j'ai épinglé sur Sigmazam : « {{text}} »"
+    "shareMessage": "Un mot que j'ai épinglé sur Sigmazam : « {{text}} »",
+    "delete": "Supprimer la note",
+    "deleteTitle": "Supprimer cette note ?"
   },
   "us": {
     "title": "Nous",
@@ -2624,5 +2634,14 @@
     "store": "Gratuit sur l'App Store",
     "badge": "Personnage Sigmazam",
     "talkTo": "Parle avec {{name}} sur Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Retirer {{name}} de mes amis",
+    "removeTitle": "Retirer {{name}} ?",
+    "removeBody": "Votre discussion, vos souvenirs, vos projets et vos notes sont supprimés. Vous pourrez l’ajouter à nouveau depuis Découvrir.",
+    "remove": "Retirer",
+    "deleteRow": "Supprimer {{name}}",
+    "deleteTitle": "Supprimer {{name}} ?",
+    "deleteBody": "Ce personnage et tout ce que vous aviez ensemble sont supprimés. C’est définitif."
   }
 }

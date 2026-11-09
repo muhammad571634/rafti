@@ -24,6 +24,7 @@ import {
 import { localDiaryEntry } from '@/i18n/content';
 import { diaryDate, relativeStamp } from '@/lib/format';
 import { dateFromKey } from '@/mock';
+import { confirmAction } from '@/lib/confirm';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
 import type { DiaryEntry } from '@/types';
@@ -51,6 +52,7 @@ export default function MyDiaryScreen() {
 
   const [newestFirst, setNewestFirst] = useState(true);
   const [index, setIndex] = useState(0);
+  const deleteDiaryEntry = useAppStore((s) => s.deleteDiaryEntry);
   const [open, setOpen] = useState<DiaryEntry | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
   const [datesOpen, setDatesOpen] = useState(false);
@@ -94,6 +96,26 @@ export default function MyDiaryScreen() {
                 },
               },
               { icon: 'information-circle-outline', label: t('a11y.about'), onPress: () => setInfoOpen(true) },
+              // The open page, after asking (0z181: the store could delete a page, no screen did).
+              ...(current
+                ? [
+                    {
+                      icon: 'trash-outline' as const,
+                      label: t('diary.deletePage'),
+                      onPress: () =>
+                        confirmAction({
+                          title: t('diary.deletePageTitle'),
+                          message: t('diary.deletePageBody'),
+                          action: t('common.delete'),
+                          cancel: t('common.cancel'),
+                          onConfirm: () => {
+                            deleteDiaryEntry(current.id);
+                            setIndex((i) => Math.max(0, Math.min(i, entries.length - 2)));
+                          },
+                        }),
+                    },
+                  ]
+                : []),
             ]}
           />
         }

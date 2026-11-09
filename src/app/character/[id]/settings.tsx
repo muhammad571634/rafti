@@ -30,7 +30,7 @@ import { FAMILY_LABELS } from '@/lib/kin';
 import { planDate } from '@/components/plans/copy';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { chatDrafts } from '@/lib/chat-drafts';
-import { dropSelfie } from '@/lib/booth-selfies';
+import { forgetFriendNow } from '@/hooks/use-forget-friend';
 import { forgetNotes } from '@/lib/voice-files';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -58,6 +58,7 @@ type ActionKey =
   | 'changeBackground'
   | 'clearChat'
   | 'reset'
+  | 'remove'
   | 'block';
 
 /** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
@@ -90,7 +91,6 @@ export default function CharacterSettingsScreen() {
   const chatAnimation = useAppStore((s) => s.settings.chatAnimation);
   const clearChat = useAppStore((s) => s.clearChat);
   const resetRelationship = useAppStore((s) => s.resetRelationship);
-  const blockCharacter = useAppStore((s) => s.blockCharacter);
   const setNickname = useAppStore((s) => s.setNickname);
   const setCharacterPref = useAppStore((s) => s.setCharacterPref);
   const setReplyPrefs = useAppStore((s) => s.setReplyPrefs);
@@ -120,6 +120,7 @@ export default function CharacterSettingsScreen() {
   }
 
   const name = displayName(character, relationship);
+  const own = !character.isOfficial;
 
   const run = (key: ActionKey) => {
     switch (key) {
@@ -156,27 +157,34 @@ export default function CharacterSettingsScreen() {
           () => resetRelationship(character.id),
           t('common.cancel'),
         );
+      case 'remove':
+        // A friend from Find leaves the user's friends (Find keeps them); one the user made is deleted.
+        return confirm(
+          t(own ? 'friendRemove.deleteTitle' : 'friendRemove.removeTitle', { name: shortName(name) }),
+          t(own ? 'friendRemove.deleteBody' : 'friendRemove.removeBody'),
+          t(own ? 'common.delete' : 'friendRemove.remove'),
+          () => leave(own ? 'delete' : 'remove'),
+          t('common.cancel'),
+        );
       case 'block':
         return confirm(
           t('safety.blockTitle', { name: shortName(name) }),
           t('safety.blockBody'),
           t('safety.block'),
-          () => {
-            // Their photos go with the block; the user's selfies in them must not stay behind.
-            const selfies = useAppStore
-              .getState()
-              .photos.flatMap((p) => (p.characterId === character.id && p.selfie ? [p.selfie] : []));
-            blockCharacter(character.id);
-            for (const name of selfies) void dropSelfie(name);
-            if (router.canDismiss()) router.dismissAll();
-            router.replace('/(tabs)/chat');
-          },
+          () => leave('block'),
           t('common.cancel'),
         );
     }
   };
 
-  const own = !character.isOfficial;
+  // Everything with them goes: their photos too, and the user's selfies in them must not stay behind.
+  const friendId = character.id;
+  const leave = (how: 'remove' | 'delete' | 'block') => {
+    forgetFriendNow(friendId, how);
+    if (router.canDismiss()) router.dismissAll();
+    router.replace('/(tabs)/chat');
+  };
+
   const quick: { key: ActionKey; icon: IoniconName; label: string; badge?: number }[] = [
     { key: 'voiceCall', icon: 'call', label: t('characterSettings.quickCall') },
     { key: 'searchHistory', icon: 'search', label: t('characterSettings.quickSearch') },
@@ -186,6 +194,7 @@ export default function CharacterSettingsScreen() {
   const danger: { key: ActionKey; label: string }[] = [
     { key: 'clearChat', label: t('characterSettings.clearChat') },
     { key: 'reset', label: t('characterSettings.reset') },
+    { key: 'remove', label: t(own ? 'friendRemove.deleteRow' : 'friendRemove.removeRow', { name: shortName(name) }) },
     { key: 'block', label: t('characterSettings.blockName', { name: shortName(name) }) },
   ];
   // How they feel right now, as under their name in the chat; it fades back to their usual self.

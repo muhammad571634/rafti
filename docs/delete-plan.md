@@ -1,4 +1,4 @@
-# Delete and cleanup: what exists, what is missing, the plan (0z180, 2026-11-09)
+# Delete and cleanup: what exists, what is missing, the plan (0z180, 2026-11-09; built in 0z181)
 
 Owner's ask: "I don't see delete anywhere: removing a character, taking it out of my friends, clearing
 the board, the diary and the like, deleting what I don't like or need. Where and how?"

@@ -530,7 +530,10 @@
     "earlier": "Precedenti",
     "noMissed": "Nessuna chiamata persa",
     "min": "{{count}} min",
-    "minutesLeft": "{{count}} minuti di chiamata rimasti"
+    "minutesLeft": "{{count}} minuti di chiamata rimasti",
+    "deleteTitle": "Eliminare questa chiamata dall’elenco?",
+    "clear": "Cancella",
+    "clearTitle": "Cancellare tutte le chiamate?"
   },
   "characterSettings": {
     "title": "Impostazioni",
@@ -758,7 +761,10 @@
     "onlyMe": "Solo io",
     "savePage": "Salva pagina",
     "privateNote": "Solo tu puoi leggere questa pagina.",
-    "sharedNote": "{{name}} la leggerà, ti risponderà e ricorderà ciò che conta."
+    "sharedNote": "{{name}} la leggerà, ti risponderà e ricorderà ciò che conta.",
+    "deletePage": "Elimina pagina",
+    "deletePageTitle": "Eliminare questa pagina?",
+    "deletePageBody": "Non si potrà recuperare."
   },
   "secretNote": {
     "title": "Nota segreta",
@@ -1366,7 +1372,9 @@
       "film": "Pellicola",
       "studio": "Studio",
       "street": "Strada"
-    }
+    },
+    "delete": "Elimina foto",
+    "deleteTitle": "Eliminare questa foto? Sparisce anche dalla chat."
   },
   "radio": {
     "title": "Radio",
@@ -1532,7 +1540,9 @@
       "pinned": "Graffette"
     },
     "share": "Condividi questa nota",
-    "shareMessage": "Una nota che ho fissato su Sigmazam: \"{{text}}\""
+    "shareMessage": "Una nota che ho fissato su Sigmazam: \"{{text}}\"",
+    "delete": "Elimina nota",
+    "deleteTitle": "Eliminare questa nota?"
   },
   "us": {
     "title": "Noi",
@@ -2624,5 +2634,14 @@
     "store": "Gratis sull'App Store",
     "badge": "Personaggio di Sigmazam",
     "talkTo": "Parla con {{name}} su Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Rimuovi {{name}} dagli amici",
+    "removeTitle": "Rimuovere {{name}}?",
+    "removeBody": "La vostra chat, i ricordi, i piani e le note vengono eliminati. Puoi aggiungerlo di nuovo da Scopri.",
+    "remove": "Rimuovi",
+    "deleteRow": "Elimina {{name}}",
+    "deleteTitle": "Eliminare {{name}}?",
+    "deleteBody": "Questo personaggio e tutto ciò che avevate insieme vengono eliminati. Non si può annullare."
   }
 }

@@ -556,7 +556,10 @@
     "earlier": "Ранее",
     "noMissed": "Нет пропущенных звонков",
     "min": "{{count}} мин",
-    "minutesLeft": "Осталось {{count}} мин звонков"
+    "minutesLeft": "Осталось {{count}} мин звонков",
+    "deleteTitle": "Удалить этот звонок из списка?",
+    "clear": "Очистить",
+    "clearTitle": "Очистить все звонки?"
   },
   "characterSettings": {
     "title": "Настройки",
@@ -794,7 +797,10 @@
     "pagesAboutYou_few": "{{count}} страницы о вас",
     "pagesAboutYou_many": "{{count}} страниц о вас",
     "lineMine_few": "{{count}} страницы · последняя {{date}}.",
-    "lineMine_many": "{{count}} страниц · последняя {{date}}."
+    "lineMine_many": "{{count}} страниц · последняя {{date}}.",
+    "deletePage": "Удалить страницу",
+    "deletePageTitle": "Удалить эту страницу?",
+    "deletePageBody": "Её нельзя будет вернуть."
   },
   "secretNote": {
     "title": "Секретная записка",
@@ -1416,7 +1422,9 @@
       "film": "Пленка",
       "studio": "Студия",
       "street": "Улица"
-    }
+    },
+    "delete": "Удалить фото",
+    "deleteTitle": "Удалить это фото? Оно исчезнет и из чата."
   },
   "radio": {
     "title": "Радио",
@@ -1584,7 +1592,9 @@
       "pinned": "Скрепки"
     },
     "share": "Поделиться запиской",
-    "shareMessage": "Моя записка на доске в Sigmazam: «{{text}}»"
+    "shareMessage": "Моя записка на доске в Sigmazam: «{{text}}»",
+    "delete": "Удалить записку",
+    "deleteTitle": "Удалить эту записку?"
   },
   "us": {
     "title": "Мы",
@@ -2700,5 +2710,14 @@
     "store": "Бесплатно в App Store",
     "badge": "Персонаж Sigmazam",
     "talkTo": "Поговори с {{name}} в Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Убрать {{name}} из друзей",
+    "removeTitle": "Убрать {{name}}?",
+    "removeBody": "Ваш чат, воспоминания, планы и записки будут удалены. Добавить снова можно в Поиске.",
+    "remove": "Убрать",
+    "deleteRow": "Удалить {{name}}",
+    "deleteTitle": "Удалить {{name}}?",
+    "deleteBody": "Этот персонаж и всё, что было у вас вместе, будут удалены. Это нельзя отменить."
   }
 }

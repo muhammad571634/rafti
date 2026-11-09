@@ -530,7 +530,10 @@
     "earlier": "Anteriores",
     "noMissed": "Sem chamadas perdidas",
     "min": "{{count}} min",
-    "minutesLeft": "Restam {{count}} minutos de chamadas"
+    "minutesLeft": "Restam {{count}} minutos de chamadas",
+    "deleteTitle": "Excluir esta chamada da lista?",
+    "clear": "Limpar",
+    "clearTitle": "Limpar todas as chamadas?"
   },
   "characterSettings": {
     "title": "Ajustes",
@@ -758,7 +761,10 @@
     "onlyMe": "Apenas eu",
     "savePage": "Salvar página",
     "privateNote": "Apenas você pode ler esta página.",
-    "sharedNote": "{{name}} lê, responde e lembra do que importa."
+    "sharedNote": "{{name}} lê, responde e lembra do que importa.",
+    "deletePage": "Excluir página",
+    "deletePageTitle": "Excluir esta página?",
+    "deletePageBody": "Ela não poderá ser recuperada."
   },
   "secretNote": {
     "title": "Recado secreto",
@@ -1366,7 +1372,9 @@
       "film": "Filme",
       "studio": "Estúdio",
       "street": "Rua"
-    }
+    },
+    "delete": "Excluir foto",
+    "deleteTitle": "Excluir esta foto? Ela também sai da conversa."
   },
   "radio": {
     "title": "Rádio",
@@ -1532,7 +1540,9 @@
       "pinned": "Com clipes"
     },
     "share": "Compartilhar este recado",
-    "shareMessage": "Um recado que fixei no Sigmazam: \"{{text}}\""
+    "shareMessage": "Um recado que fixei no Sigmazam: \"{{text}}\"",
+    "delete": "Excluir nota",
+    "deleteTitle": "Excluir esta nota?"
   },
   "us": {
     "title": "Nós",
@@ -2624,5 +2634,14 @@
     "store": "Grátis na App Store",
     "badge": "Personagem do Sigmazam",
     "talkTo": "Converse com {{name}} no Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Remover {{name}} dos amigos",
+    "removeTitle": "Remover {{name}}?",
+    "removeBody": "A conversa, as memórias, os planos e as notas de vocês serão apagados. Você pode adicionar de novo em Explorar.",
+    "remove": "Remover",
+    "deleteRow": "Excluir {{name}}",
+    "deleteTitle": "Excluir {{name}}?",
+    "deleteBody": "Este personagem e tudo o que vocês tinham juntos serão excluídos. Não dá para desfazer."
   }
 }

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { boardStyle, Stationery } from '@/components/board/stationery';
 import { FeatureBar, RoundButton } from '@/components/feature/feature-kit';
 import { CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { confirmAction } from '@/lib/confirm';
 import { relativeStamp, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -27,6 +28,10 @@ export default function BoardScreen() {
   const { width } = useWindowDimensions();
 
   const posts = useAppStore((s) => s.boardPosts);
+  const deleteBoardPost = useAppStore((s) => s.deleteBoardPost);
+  // Hold a note: it comes off the board, after asking (0z181).
+  const remove = (id: string) =>
+    confirmAction({ title: t('board.deleteTitle'), action: t('common.delete'), cancel: t('common.cancel'), onConfirm: () => deleteBoardPost(id) });
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
@@ -64,6 +69,10 @@ export default function BoardScreen() {
                     scaleTo={0.97}
                     accessibilityRole="button"
                     accessibilityLabel={`${name}: ${post.text}`}
+                    accessibilityActions={[{ name: 'longpress', label: t('board.delete') }]}
+                    onAccessibilityAction={() => remove(post.id)}
+                    delayLongPress={400}
+                    onLongPress={() => remove(post.id)}
                     onPress={() => conversation && router.push(`/chat/${conversation.id}`)}
                     style={styles.paper}>
                     <Stationery id={post.style} width={cardW} height={cardH}>

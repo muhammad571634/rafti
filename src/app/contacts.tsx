@@ -18,6 +18,8 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
+import { useForgetFriend } from '@/hooks/use-forget-friend';
+import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -44,6 +46,8 @@ export default function ContactsScreen() {
 
   const [filter, setFilter] = useState<Filter>('all');
   const [closenessOpen, setClosenessOpen] = useState(false);
+  // Hold a row: a friend from Find is removed, one the user made is deleted (0z181), after asking.
+  const forget = useForgetFriend();
 
   const known = useMemo(() => {
     const withBond = characters.filter((c) => relationships[c.id]);
@@ -103,6 +107,10 @@ export default function ContactsScreen() {
                   style={styles.row}
                   scaleTo={0.985}
                   accessibilityRole="button"
+                  accessibilityActions={[{ name: 'longpress', label: t(character.isOfficial ? 'friendRemove.remove' : 'common.delete') }]}
+                  onAccessibilityAction={() => forget(character, shortName(character.name))}
+                  delayLongPress={400}
+                  onLongPress={() => forget(character, shortName(character.name))}
                   onPress={() => router.push(`/character/${character.id}`)}>
                   <CharacterAvatar character={character} size={AVATAR} verified={character.voiceReady} />
                   <View style={styles.body}>

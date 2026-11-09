@@ -530,7 +530,10 @@
     "earlier": "Anteriores",
     "noMissed": "No hay llamadas pérdidas",
     "min": "{{count}} min",
-    "minutesLeft": "Quedan {{count}} minutos de llamadas"
+    "minutesLeft": "Quedan {{count}} minutos de llamadas",
+    "deleteTitle": "¿Eliminar esta llamada de la lista?",
+    "clear": "Borrar",
+    "clearTitle": "¿Borrar todas las llamadas?"
   },
   "characterSettings": {
     "title": "Ajustes",
@@ -758,7 +761,10 @@
     "onlyMe": "Solo yo",
     "savePage": "Guardar página",
     "privateNote": "Solo tú puedes leer esta página.",
-    "sharedNote": "{{name}} la lee, responde y recuerda lo importante."
+    "sharedNote": "{{name}} la lee, responde y recuerda lo importante.",
+    "deletePage": "Eliminar página",
+    "deletePageTitle": "¿Eliminar esta página?",
+    "deletePageBody": "No se podrá recuperar."
   },
   "secretNote": {
     "title": "Nota secreta",
@@ -1366,7 +1372,9 @@
       "film": "Película",
       "studio": "Estudio",
       "street": "Calle"
-    }
+    },
+    "delete": "Eliminar foto",
+    "deleteTitle": "¿Eliminar esta foto? También desaparece del chat."
   },
   "radio": {
     "title": "Radio",
@@ -1532,7 +1540,9 @@
       "pinned": "Con clips"
     },
     "share": "Compartir esta nota",
-    "shareMessage": "Una nota que fijé en Sigmazam: \"{{text}}\""
+    "shareMessage": "Una nota que fijé en Sigmazam: \"{{text}}\"",
+    "delete": "Eliminar nota",
+    "deleteTitle": "¿Eliminar esta nota?"
   },
   "us": {
     "title": "Nosotros",
@@ -2624,5 +2634,14 @@
     "store": "Gratis en el App Store",
     "badge": "Personaje de Sigmazam",
     "talkTo": "Habla con {{name}} en Sigmazam"
+  },
+  "friendRemove": {
+    "removeRow": "Quitar a {{name}} de amigos",
+    "removeTitle": "¿Quitar a {{name}}?",
+    "removeBody": "Se borran vuestro chat, recuerdos, planes y notas. Puedes volver a añadirle desde Explorar.",
+    "remove": "Quitar",
+    "deleteRow": "Eliminar a {{name}}",
+    "deleteTitle": "¿Eliminar a {{name}}?",
+    "deleteBody": "Este personaje y todo lo que teníais juntos se eliminan. No se puede deshacer."
   }
 }

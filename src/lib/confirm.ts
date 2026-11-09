@@ -8,30 +8,36 @@ import { ActionSheetIOS, Alert, Platform } from 'react-native';
  */
 export function confirmAction({
   title,
+  message,
   action,
   cancel,
   onConfirm,
 }: {
   title: string;
+  /** What goes, in a line under the title. */
+  message?: string;
   action: string;
   cancel: string;
   onConfirm: () => void;
 }) {
   if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(title)) onConfirm();
+    if (globalThis.confirm?.(message ? `${title}
+
+${message}` : title)) onConfirm();
     return;
   }
   if (Platform.OS === 'ios') {
     ActionSheetIOS.showActionSheetWithOptions(
-      { title, options: [action, cancel], destructiveButtonIndex: 0, cancelButtonIndex: 1 },
+      { title, message, options: [action, cancel], destructiveButtonIndex: 0, cancelButtonIndex: 1 },
       (index) => {
         if (index === 0) onConfirm();
       },
     );
     return;
   }
-  Alert.alert(title, undefined, [
+  Alert.alert(title, message, [
     { text: cancel, style: 'cancel' },
     { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
+    // Android's back button and a tap outside close it, as Cancel does.
+  ], { cancelable: true });
 }
