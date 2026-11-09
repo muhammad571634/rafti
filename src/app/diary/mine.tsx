@@ -155,7 +155,9 @@ export default function MyDiaryScreen() {
               );
             })}
           </View>
-          <Txt variant="caption" color={colors.textMuted} style={styles.counter}>
+          {/* The pages behind are turned up to ~10° and pushed down, so their corners reach past the
+              stack's box (and on Android their shadow draws over what is there): clear them. */}
+          <Txt variant="caption" color={colors.textMuted} style={[styles.counter, { marginTop: Math.round(cardWidth * 0.1) + space.xl }]}>
             {t('diary.swipeHint', { index: index + 1, count: entries.length })}
           </Txt>
         </View>
@@ -364,7 +366,7 @@ const styles = StyleSheet.create({
   monthCount: { fontSize: 15, color: colors.textSecondary },
   stackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   stack: { alignItems: 'center', justifyContent: 'center' },
-  counter: { marginTop: space.xxl },
+  counter: { textAlign: 'center' },
   cardPos: { position: 'absolute' },
   card: {
     aspectRatio: 0.76,

@@ -1,5 +1,9 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z182. My diary: the page counter was covered by the turned pages (2026-11-09, Claude 1). NEXT: the 0z181 list
+
+- Owner's screenshot: "Swipe for other days · 1 / 6" was cut by the page stack. The pages behind are turned up to ~10° and pushed down, so their corners reach past the stack's box and, on Android, their shadow draws over the text. The counter now keeps a gap of 10% of the card width plus `space.xl` (`src/app/diary/mine.tsx`). Seen on the A51 (OTA `01a1c045`): the line reads whole. Checks: tsc 0.
+
 ### 0z181. Delete and cleanup, built and walked on the A51 (2026-11-09, Claude 1). NEXT: owner deploys the server (0z180 prompts), then see Still to do
 
 - **Owner's ask**: "Yes, build it" (`docs/delete-plan.md`).
