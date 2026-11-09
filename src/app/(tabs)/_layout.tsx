@@ -5,26 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SFIcon, Txt } from '@/components/ui';
+import { TabGlyph, Txt, type TabGlyphName } from '@/components/ui';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
 import { colors, playful, space, systemGround } from '@/theme';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
-type Icon = React.ComponentProps<typeof SFIcon>;
 
 /**
- * Each tab's line icon and the filled twin it shows while current: the iOS bar's SF Symbols, and
- * the Ionicons closest to them where SF Symbols may not be drawn.
+ * Each tab's icon, a line one and its filled twin while current: our own drawings in the manner of
+ * the iOS bar's SF Symbols (house, bubble.left.and.bubble.right, heart), which may not be drawn here.
  */
-const ICONS: Record<string, { off: Pick<Icon, 'ios' | 'icon'>; on: Pick<Icon, 'ios' | 'icon'> }> = {
-  index: { off: { ios: 'house', icon: 'home-outline' }, on: { ios: 'house.fill', icon: 'home' } },
-  chat: {
-    off: { ios: 'bubble.left.and.bubble.right', icon: 'chatbubbles-outline' },
-    on: { ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' },
-  },
-  us: { off: { ios: 'heart', icon: 'heart-outline' }, on: { ios: 'heart.fill', icon: 'heart' } },
-};
+const GLYPHS: Record<string, TabGlyphName> = { index: 'home', chat: 'chats', us: 'us' };
 
 /** The bar's height; `TAB_BAR_HEIGHT` leaves room for it. */
 const BAR = 62;
@@ -104,14 +96,13 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
             .filter(({ route }) => route.name !== 'find')
             .map(({ route, focused }) => {
               const label = t(`tabs.${route.name === 'index' ? 'home' : route.name}`);
-              const icon = ICONS[route.name] ?? ICONS.index;
               const count = route.name === 'chat' ? unread : 0;
               return (
                 <TabItem
                   key={route.key}
                   routeKey={route.key}
                   label={label}
-                  icon={focused ? icon.on : icon.off}
+                  glyph={GLYPHS[route.name] ?? 'home'}
                   focused={focused}
                   count={count}
                   a11yLabel={count > 0 ? t('a11y.unreadTab', { label, count }) : label}
@@ -131,7 +122,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
               onPress={() => open(find.route.key, find.focused)}>
               {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
               <View collapsable={false} style={[styles.roundInner, find.focused && styles.on]}>
-                <SFIcon ios="magnifyingglass" icon="search" size={24} color={find.focused ? playful.tabOnText : systemGround.label} />
+                <TabGlyph name="find" filled={find.focused} color={find.focused ? playful.tabOnText : systemGround.label} bg={find.focused ? playful.tabOn : playful.bar} />
               </View>
             </Pressable>
           </Floating>
@@ -145,7 +136,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
 const TabItem = memo(function TabItem({
   routeKey,
   label,
-  icon,
+  glyph,
   focused,
   count,
   a11yLabel,
@@ -153,7 +144,7 @@ const TabItem = memo(function TabItem({
 }: {
   routeKey: string;
   label: string;
-  icon: Pick<Icon, 'ios' | 'icon'>;
+  glyph: TabGlyphName;
   focused: boolean;
   count: number;
   a11yLabel: string;
@@ -168,7 +159,7 @@ const TabItem = memo(function TabItem({
       accessibilityState={{ selected: focused }}
       onPress={() => onOpen(routeKey, focused)}>
       <View>
-        <SFIcon {...icon} size={24} color={tint} />
+        <TabGlyph name={glyph} filled={focused} color={tint} bg={focused ? playful.tabOn : playful.bar} />
         {count > 0 ? (
           <View style={styles.badge}>
             <Txt style={styles.badgeText} maxFontSizeMultiplier={1.1}>
