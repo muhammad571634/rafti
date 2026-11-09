@@ -30,38 +30,31 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, friendHues, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT, type Hue } from '@/theme';
+import { colors, fonts, friendHues, isDark, palette, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT, type Hue } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
 
-/** A face inside a bubble, and the white ring round it. */
-const AVATAR = 48;
-const AVATAR_RING = 3;
+/** A row's face (iOS Messages' list size). */
+const AVATAR = 52;
 const PINNED_AVATAR = 56;
-/** The pinned face's ring in the friend's colour, and the gap of ground inside it. */
+/** The pinned face's ring, now in the ground (owner, 2026-11-09: no friend colours in the list), and the gap inside it. */
 const PINNED_RING = 3;
 const PINNED_GAP = 2;
-/** A bubble's corners, and the strip of actions under it. */
-const BUBBLE_RADIUS = 28;
-/** The bubble's tail: it hangs below the bubble into the gap before the next one. */
-const TAIL_W = 26;
-const TAIL_H = 12;
-/** Space under each bubble: the tail plus a little air. Padding, so the tail stays inside the list cell. */
-const ROW_GAP = TAIL_H + 6;
-/** One swipe action: a full-height coloured column with its glyph and label. */
-const ACTION = 70;
-/** The ground between the actions strip and the bubble once it is open. */
-const ACTION_GAP = 6;
-/** The width under a row for this many actions, with the gap to the bubble. */
-const actionsWidth = (count: number) => count * ACTION + ACTION_GAP;
+/** The unread dot's column before the face, as in Messages. */
+const DOT_COLUMN = 18;
+/** One swipe action: a full-height coloured column with its glyph and label, flush with the row. */
+const ACTION = 74;
+/** The width under a row for this many actions. */
+const actionsWidth = (count: number) => count * ACTION;
 const MENU_AVATAR = 36;
 /** How many of the chat's last lines the long-press preview shows. */
 const PREVIEW_LINES = 3;
-/** The white ring round faces on a bubble, and the level chip on it. */
-const RING = 'rgba(255,255,255,0.85)';
-/** The bond's mint heart on a light bubble (white on a deep one). */
-const HEART = '#1E9E78';
 const WHITE = '#FFFFFF';
-const INK = '#1F1A17';
+/**
+ * The unread dot in the brand's peach (owner, 2026-11-09: brand colour, not Messages' blue): the
+ * brand #FFC497 itself at night, a deeper step of the same peach by day, where the pale one would
+ * fade into the white ground.
+ */
+const UNREAD = isDark ? palette.apricot300 : palette.apricot600;
 
 type Filter = 'all' | 'unread' | 'groups';
 const FILTERS: Filter[] = ['all', 'unread', 'groups'];
@@ -92,8 +85,6 @@ type ChatItem =
 const rowOf = (item: ChatItem) => (item.kind === 'chat' ? item.conversation : item.group);
 const isPinned = (item: ChatItem) => item.kind === 'chat' && item.conversation.pinned;
 const isUnread = (item: ChatItem) => rowOf(item).unreadCount > 0;
-/** A friend wears their own hue (the same on Us); a group wears one soft mint. */
-const hueOf = (item: ChatItem): Hue => (item.kind === 'chat' ? friendColor(item.character.id) : playful.group);
 /** A deep bubble (the blue, every dark-mode hue) takes white marks instead of ink ones. */
 const isDeep = (hue: Hue) => hue.ink === WHITE;
 const countText = (n: number) => (n > 99 ? '99+' : String(n));
@@ -124,13 +115,13 @@ interface RowActions {
 }
 
 /**
- * Every chat and group as coloured speech bubbles on Apple's white ground (design-style §10, the
- * approved four-tab prototype): Edit, search and new chat on top; the big rounded title; All /
- * Unread / Groups as pills; pinned chats as faces ringed in their friend's colour; then one bubble
- * per chat in the friend's own hue, tails turning left and right. Search opens from the magnifier
- * in place of the title. A bubble swipes right to mark it read or pin it and left to mute or delete
- * it (iOS Messages), one open at a time; a long press opens the same actions over a preview of the
- * chat; Edit shows a remove button by every bubble and an unpin badge on every pinned face.
+ * Every chat and group as iOS Messages draws them, on Apple's white ground (owner's pick B,
+ * 2026-11-09, docs/prototypes/chats-apple.html; before, coloured speech bubbles): Edit, search and
+ * new chat on top; the big rounded title; All / Unread / Groups as pills; pinned chats as big faces;
+ * then one row per chat with a hairline under its text and a brand-peach dot when unread. Search
+ * opens from the magnifier in place of the title. A row swipes right to mark it read or pin it and
+ * left to mute or delete it, one open at a time; a long press opens the same actions over a preview
+ * of the chat; Edit shows a remove button by every row and an unpin badge on every pinned face.
  */
 export default function ChatListScreen() {
   const { t } = useTranslation();
@@ -324,10 +315,9 @@ export default function ChatListScreen() {
   };
 
   const renderItem = useCallback(
-    ({ item, index }: { item: ChatItem; index: number }) => (
+    ({ item }: { item: ChatItem }) => (
       <ChatRow
         item={item}
-        tailRight={index % 2 === 1}
         level={levelOf(item)}
         typing={isTyping(item)}
         editing={editing}
@@ -649,7 +639,7 @@ function PinnedTile({
         accessibilityRole="button"
         accessibilityLabel={label}
         style={styles.pinnedTile}>
-        <View style={[styles.pinnedRing, { borderColor: hueOf(item).fill }]}>
+        <View style={styles.pinnedRing}>
           {item.kind === 'chat' ? (
             <CharacterAvatar character={item.character} size={PINNED_AVATAR} />
           ) : (
@@ -740,42 +730,21 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
   );
 }
 
-/** The bubble's tail: a soft triangle under one corner, in the bubble's own colour. */
-function Tail({ color, right }: { color: string; right: boolean }) {
-  return (
-    <Svg
-      width={TAIL_W}
-      height={TAIL_H}
-      viewBox={`0 0 ${TAIL_W} ${TAIL_H}`}
-      style={[styles.tail, right ? styles.tailRight : styles.tailLeft]}
-      pointerEvents="none">
-      <Path
-        fill={color}
-        d={
-          right
-            ? 'M26 0 L0 0 C9 3 17 7 21 12 C21 7 23 3 26 0 Z'
-            : 'M0 0 L26 0 C17 3 9 7 5 12 C5 7 3 3 0 0 Z'
-        }
-      />
-    </Svg>
-  );
-}
-
 /**
- * One chat or group as a speech bubble in the friend's hue: swipe right to mark it read or pin it,
- * left to mute or delete it (iOS Messages), hold for the menu; in Edit mode a remove button leads.
- * Memoised: a bubble redraws only when its own chat, typing or level changes.
+ * One chat or group as a row of iOS Messages (owner's pick B, 2026-11-09, prototype
+ * docs/prototypes/chats-apple.html): a blue dot when unread, the face, the name with the time and a
+ * chevron, two lines of the last message, a hairline under the text. Swipe right to mark it read or
+ * pin it, left to mute or delete it, hold for the menu; in Edit mode a remove button leads.
+ * Memoised: a row redraws only when its own chat, typing or level changes.
  */
 const ChatRow = memo(function ChatRow({
   item,
-  tailRight,
   level,
   typing,
   editing,
   actions,
 }: {
   item: ChatItem;
-  tailRight: boolean;
   level: number | null;
   typing: boolean;
   editing: boolean;
@@ -787,8 +756,6 @@ const ChatRow = memo(function ChatRow({
   const row = rowOf(item);
   const unread = row.unreadCount > 0;
   const canPin = item.kind === 'chat';
-  const hue = hueOf(item);
-  const deep = isDeep(hue);
   const pinLabel = isPinned(item) ? t('chatList.unpin') : t('chatList.pin');
   const muteLabel = row.muted ? t('chatList.unmute') : t('chatList.mute');
   const readLabel = unread ? t('chatList.read') : t('chatList.unread');
@@ -873,7 +840,7 @@ const ChatRow = memo(function ChatRow({
         <PressableScale
           scaleTo={0.98}
           dimOnPress={false}
-          style={[styles.bubble, { backgroundColor: hue.fill }]}
+          style={styles.row}
           onPress={press}
           onLongPress={editing ? undefined : () => actions.hold(item)}
           delayLongPress={350}
@@ -887,54 +854,44 @@ const ChatRow = memo(function ChatRow({
             else if (name === 'mute') actions.mute(item);
             else if (name === 'delete') actions.remove(item);
           }}>
+          {/* Messages' unread mark: a blue dot in its own column; the column stays when read, so faces line up. */}
+          <View style={styles.dotColumn}>{unread ? <View style={styles.unreadDot} /> : null}</View>
           {item.kind === 'chat' ? (
-            <View style={styles.avatarRing}>
-              <CharacterAvatar character={item.character} size={AVATAR} />
-            </View>
+            <CharacterAvatar character={item.character} size={AVATAR} />
           ) : (
-            <GroupAvatar members={item.members} size={AVATAR + AVATAR_RING * 2} ringColor={RING} />
+            <GroupAvatar members={item.members} size={AVATAR} ringColor={systemGround.ground} />
           )}
 
           <View style={styles.body}>
             <View style={styles.line}>
-              <Txt style={[styles.name, { color: hue.ink }]} lines={1} maxFontSizeMultiplier={1.3}>
+              <Txt style={styles.name} lines={1} maxFontSizeMultiplier={1.3}>
                 {item.name}
               </Txt>
               {level != null ? (
-                <View style={[styles.level, deep && styles.levelDeep]}>
-                  <Ionicons name="heart" size={10} color={deep ? WHITE : HEART} />
-                  <Txt style={[styles.levelText, { color: hue.ink }]} maxFontSizeMultiplier={1.2}>
+                <View style={styles.level}>
+                  <Ionicons name="heart" size={10} color={systemColors.pink} />
+                  <Txt style={styles.levelText} maxFontSizeMultiplier={1.2}>
                     {level}
                   </Txt>
                 </View>
               ) : null}
-              {row.muted ? <Ionicons name="notifications-off" size={14} color={hue.ink} style={styles.muted} /> : null}
+              {row.muted ? <Ionicons name="notifications-off" size={13} color={systemGround.secondaryLabel} /> : null}
+              <View style={styles.spacer} />
+              <Txt style={styles.stamp} maxFontSizeMultiplier={1.3}>
+                {relativeStamp(row.lastMessageAt)}
+              </Txt>
+              <Ionicons name="chevron-forward" size={15} color={systemGround.secondaryLabel} />
             </View>
             {typing ? (
               <View style={styles.typing}>
-                <TypingDots color={hue.ink} size={7} />
+                <TypingDots color={systemGround.secondaryLabel} size={7} />
               </View>
             ) : row.lastMessagePreview ? (
-              <Txt style={[styles.preview, { color: hue.ink }]} lines={2}>
+              <Txt style={styles.preview} lines={2}>
                 {row.lastMessagePreview}
               </Txt>
             ) : null}
           </View>
-
-          <View style={styles.end}>
-            <Txt style={[styles.stamp, { color: hue.ink }]} maxFontSizeMultiplier={1.3}>
-              {relativeStamp(row.lastMessageAt)}
-            </Txt>
-            {unread ? (
-              <View style={[styles.count, { backgroundColor: deep ? WHITE : INK }]}>
-                <Txt style={[styles.countText, { color: deep ? INK : WHITE }]} maxFontSizeMultiplier={1.2}>
-                  {countText(row.unreadCount)}
-                </Txt>
-              </View>
-            ) : null}
-          </View>
-
-          <Tail color={hue.fill} right={tailRight} />
         </PressableScale>
       </SwipeRow>
     </View>
@@ -1080,6 +1037,7 @@ const styles = StyleSheet.create({
     padding: PINNED_GAP,
     borderWidth: PINNED_RING,
     borderRadius: PINNED_AVATAR / 2 + PINNED_GAP + PINNED_RING,
+    borderColor: systemGround.ground,
     backgroundColor: systemGround.ground,
   },
   pinMark: {
@@ -1112,7 +1070,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2.5,
     borderColor: systemGround.ground,
-    backgroundColor: playful.red,
+    backgroundColor: UNREAD,
   },
   pinnedName: {
     maxWidth: PINNED_AVATAR + 14,
@@ -1135,59 +1093,36 @@ const styles = StyleSheet.create({
     borderColor: systemGround.ground,
   },
   dots: { flexDirection: 'row', alignItems: 'center' },
-  // The gap under a bubble is padding, so its tail stays inside the list cell (Android clips
-  // offscreen cells to their bounds).
-  rowWrap: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingBottom: ROW_GAP },
-  removeCell: { width: 40, alignItems: 'center', justifyContent: 'center' },
-  // No fill and no clip: the ground shows round the bubble and its tail can hang below.
+  rowWrap: { flexDirection: 'row', alignItems: 'center' },
+  removeCell: { width: 44, paddingLeft: 8, alignItems: 'center', justifyContent: 'center' },
   swipe: { flex: 1 },
-  // No elevation: a shadowed card on Android draws over what follows it (check-in lesson).
-  bubble: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    paddingTop: 14,
-    paddingBottom: 16,
-    paddingLeft: 14,
-    paddingRight: 16,
-    borderRadius: BUBBLE_RADIUS,
-  },
-  avatarRing: { padding: AVATAR_RING, borderRadius: AVATAR / 2 + AVATAR_RING, backgroundColor: RING },
-  body: { flex: 1, minWidth: 0, gap: 3, paddingTop: 1 },
-  line: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  // The name shrinks first, so the level heart stays right after it.
-  name: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 16, lineHeight: 21 },
-  level: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    paddingHorizontal: 6,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: 'rgba(255,255,255,0.6)',
-  },
-  levelDeep: { backgroundColor: 'rgba(255,255,255,0.25)' },
-  levelText: { fontFamily: fonts.playfulBold, fontSize: 11, lineHeight: 14 },
-  muted: { opacity: 0.75 },
-  preview: { fontSize: 14, lineHeight: 19, letterSpacing: -0.1 },
-  typing: { height: 19, justifyContent: 'center', paddingTop: 4 },
-  end: { alignItems: 'flex-end', gap: 6, paddingTop: 2 },
-  stamp: { fontSize: 12, lineHeight: 16, fontWeight: '600' },
-  count: {
-    minWidth: 22,
-    height: 22,
-    paddingHorizontal: 6,
-    borderRadius: 11,
-    alignItems: 'center',
+  // Opaque, so the swipe actions under it never show through a closed row.
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingRight: space.lg, backgroundColor: systemGround.ground },
+  dotColumn: { width: DOT_COLUMN - 12 + 6, marginRight: -6, alignItems: 'flex-end' },
+  unreadDot: { width: 11, height: 11, borderRadius: 5.5, backgroundColor: UNREAD },
+  // The hairline runs under the text only, as in Messages, from the name to the edge.
+  body: {
+    flex: 1,
+    minWidth: 0,
+    gap: 2,
+    paddingVertical: 11,
+    minHeight: AVATAR + 22,
     justifyContent: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: systemGround.dash,
   },
-  countText: { fontSize: 12, lineHeight: 15, fontWeight: '800' },
-  tail: { position: 'absolute', bottom: -(TAIL_H - 1) },
-  tailLeft: { left: 30 },
-  tailRight: { right: 36 },
-  actions: { flex: 1, flexDirection: 'row', borderRadius: BUBBLE_RADIUS, overflow: 'hidden' },
-  actionsLeft: { marginRight: ACTION_GAP },
-  actionsRight: { marginLeft: ACTION_GAP },
+  line: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  // The name shrinks first, so the level heart stays right after it and the time stays whole.
+  name: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 16, lineHeight: 21, color: systemGround.label },
+  level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  levelText: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, color: systemGround.secondaryLabel },
+  spacer: { flex: 1, minWidth: 6 },
+  preview: { fontSize: 14.5, lineHeight: 19, letterSpacing: -0.1, color: systemGround.secondaryLabel },
+  typing: { height: 19, justifyContent: 'center', paddingTop: 4 },
+  stamp: { fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
+  actions: { flex: 1, flexDirection: 'row', overflow: 'hidden' },
+  actionsLeft: {},
+  actionsRight: {},
   action: { width: ACTION, alignItems: 'center', justifyContent: 'center' },
   actionInner: { alignItems: 'center', gap: 4 },
   actionText: { maxWidth: ACTION - 6, fontSize: 11, fontWeight: '700', color: WHITE },
@@ -1195,7 +1130,7 @@ const styles = StyleSheet.create({
   caughtUp: {
     height: 120,
     marginHorizontal: space.lg,
-    borderRadius: BUBBLE_RADIUS,
+    borderRadius: 28,
     backgroundColor: systemGround.card,
     alignItems: 'center',
     justifyContent: 'center',

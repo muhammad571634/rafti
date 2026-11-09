@@ -17,7 +17,8 @@ export function TabGlyph({ name, filled, color, bg, size = 26 }: { name: TabGlyp
     <Svg width={size} height={size} viewBox="0 0 24 24">
       {name === 'home' ? <Path d={HOUSE} {...shape} /> : null}
       {name === 'chats' ? (
-        <G transform="translate(0 1.6)">
+        // A tenth larger around the middle: at the house's size the pair read small on the A51.
+        <G transform="translate(12 12.4) scale(1.1) translate(-12 -10.8)">
           <Path d={BACK_BUBBLE} {...shape} />
           {/* The front bubble covers the back one: a line icon fills it with the ground, a filled one rings it in the ground. */}
           {filled ? <Path d={FRONT_BUBBLE} fill={color} stroke={bg} strokeWidth={1.6} strokeLinejoin="round" /> : <Path d={FRONT_BUBBLE} {...line} fill={bg} />}
