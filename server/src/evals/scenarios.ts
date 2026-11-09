@@ -819,6 +819,25 @@ export const SCENARIOS: readonly EvalScenario[] = [
     rubric: 'One whole message in Russian is a switch, as a person hears it: replies fully in natural Russian, gentle and funny Hugo, with something nice for a tired day.',
   },
   {
+    // Seen on the A51 (0z178): an Uzbek chat (once Turkish), then one whole English message got a
+    // Turkish answer; the cue quoted both last lines and the model read the older one.
+    id: 'lang-english-after-uzbek',
+    group: 'language',
+    mode: 'chat',
+    character: 'c_hana',
+    setup: { level: 8 },
+    chat: [
+      ['them', 'Günaydın! Bugün atölyede yeni bir tabloya başladım.'],
+      ['me', 'Bugun kuning qanday otdi? Men ishdan juda charchadim'],
+      ['them', "Kechga qadar dam olib kuch yig'ib ol, kechqurun kinoda charchoqni chiqarib tashlaymiz."],
+      ['me', 'Hana, ertaga kinodan keyin quyerga boramiz'],
+      ['them', "Buni saqlab qo'yaman. Kechqurun ko'rishguncha biroz dam ol, xo'pmi?"],
+      ['me', 'honestly your paintings are kind of boring. all the same sunsets'],
+    ],
+    expect: [{ kind: 'language', is: 'en' }],
+    rubric: 'One whole English message after an Uzbek chat: Hana answers in English (stung by the jab, in her voice), never Turkish or Uzbek.',
+  },
+  {
     id: 'lang-uzbek-not-turkish',
     group: 'language',
     mode: 'chat',

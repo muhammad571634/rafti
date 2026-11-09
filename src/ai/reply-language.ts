@@ -63,17 +63,22 @@ export const userLines = (messages: readonly Pick<Message, 'author' | 'card' | '
  * good morning in English (eval set, B1.8). [] when neither is known.
  */
 export function languageCue(userLines: readonly string[], phoneLocale?: string): string[] {
-  const latest = userLines.map((line) => line.trim()).filter(Boolean).slice(-2).join(' / ');
-  if (!latest) {
+  // Their newest line, named as the newest, and the one before as context. Quoting both alike ("a / b"),
+  // a whole English line after an Uzbek one got a Turkish answer on the A51 (0z178); quoting the newest
+  // alone, "haha gracias but I have plans…" lost its English context and got Spanish.
+  const lines = userLines.map((line) => line.trim()).filter(Boolean);
+  if (!lines.length) {
     const phone = phoneLocale?.trim();
     return phone ? [`LANGUAGE: they have not written to you yet: write every message in ${languageName(phone)}, their phone's language.`] : [];
   }
-  const quote = latest.length > CUE_CHARS ? `${latest.slice(0, CUE_CHARS)}…` : latest;
+  const cut = (line: string) => (line.length > CUE_CHARS ? `${line.slice(0, CUE_CHARS)}…` : line);
+  const newest = `their latest message: "${cut(lines[lines.length - 1])}"`;
+  const quote = lines.length > 1 ? `${newest}; the one before it: "${cut(lines[lines.length - 2])}"` : newest;
   // A whole message in another language is a switch, as a person hears it (owner, 2026-11-09: one
   // Uzbek message in a Turkish chat got a Turkish answer while "two in a row" was the rule). Close
   // languages are not the same one; no language is named (no lists in code, the rule for every one).
   return [
-    `LANGUAGE: write every message in the language their latest message is in (their last lines: "${quote}"). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it.`,
+    `LANGUAGE: write every message in the language their latest message is in, the one most of its words are in (${quote}). A whole message in another language is a switch: answer in that language from now on. A word or two from another language (a name, a borrowed word, a thank-you) changes nothing. Two close languages are still two: answer in the very one they wrote, never a neighbour of it.`,
   ];
 }
 

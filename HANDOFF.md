@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z179. 0z178 seen live on the A51; a reply-language slip fixed (2026-11-09, Claude 1). NEXT: owner deploys the server once more
+
+- **Seen on the A51** (owner deployed 0z178): Hana, after "your paintings are kind of boring" (her mood: "A bit annoyed"), got a bare "ok": "Seriously? You walk in, act like you care, then insult my work? You're unbelievable. / If it's so boring, why are you even bothering to meet me later?" (answers the ok, ties it to the fight and to tonight's cinema plan). "What exactly did I say about your paintings?": "You said they were boring, sunsets every time." A make-up, then a football jump: "Football? I'm busy painting the sea…" and back to the thread ("thank you. For liking the sunsets."). A calm "ok": she went on with her own take and a hook, no "just ok?".
+- **Found**: the first English message in that chat (after an Uzbek one) got a **Turkish** answer. `languageCue` quoted the last two lines alike ("Uzbek line / English line") and the light model read the older one (Uzbek without apostrophes looks Turkish). New eval `lang-english-after-uzbek` reproduced it 0/6.
+- **Fixed** (`src/ai/reply-language.ts`): the cue names the newest line as the newest and the one before only as context ("their latest message: …; the one before it: …"), and says the language is the one most of its words are in. Quoting the newest alone fixed it but broke `lang-stays-english` ("haha gracias but I have plans…" lost its English context, 0/5); the labelled form passes both 5/5. Language group 30/30 (×2), human 13/13, safety 17/17, repetition 4/4.
+- Checks: tsc 0 (app and server), npm test 861/861, server tests 89/89.
+
+Still to do:
+1. **Owner: deploy the server** (terminal form `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`); then on the A51 an English line in Hana's chat answers in English.
+2. The 0z178 list (echoing the user's own detail on the paid model; the new Gemini key into the user env).
+
 ### 0z178. Live-person study done: short answers, open threads, exact recall (2026-11-09, Claude 1). NEXT: owner deploys the server (the server builds the prompt from `src/ai`); then check on the A51
 
 - **Owner's ask** (0z177): characters follow and lead the talk like a live person; study Character.AI and BIMOBIMO on the A51 by chatting; "do not stop testing until you have a concrete result and a concrete improvement that works for us".

@@ -47,13 +47,15 @@ describe('languageCue: any language, read off their own words', () => {
     assert.match(cue, /never a neighbour of it/);
   });
 
-  it('quotes their last two lines, cut when long; before they write, names the phone’s language', () => {
+  it('quotes their newest line as the newest and the one before as context, cut when long; before they write, names the phone’s language', () => {
     assert.deepEqual(languageCue([]), []);
     assert.deepEqual(languageCue(['  ']), []);
     assert.deepEqual(languageCue([], 'th-TH'), ["LANGUAGE: they have not written to you yet: write every message in Thai (Thailand), their phone's language."]);
     assert.doesNotMatch(languageCue(['hola'], 'th-TH')[0], /Thai/);
-    const [cue] = languageCue(['hi', 'こんにちは', 'お元気ですか？']);
-    assert.match(cue, /^LANGUAGE: write every message in the language their latest message is in \(their last lines: "こんにちは \/ お元気ですか？"\)/);
+    const [cue] = languageCue(['hi', 'こんにちは', 'うん']);
+    assert.match(cue, /^LANGUAGE: write every message in the language their latest message is in, the one most of its words are in \(their latest message: "うん"; the one before it: "こんにちは"\)/);
+    // The A51 chat (0z178): the newest line is named as the newest, the older one only as context.
+    assert.match(languageCue(['honestly your paintings are boring'])[0], /\(their latest message: "honestly your paintings are boring"\)/);
     assert.ok(languageCue(['a'.repeat(400)])[0].includes(`"${'a'.repeat(160)}…"`));
   });
 
