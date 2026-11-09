@@ -1558,15 +1558,6 @@
     "noRelationshipsHint": "Starte einen Chat, um euer Band hier wachsen zu sehen.",
     "momentText": {
       "met": "Ihr wurdet Freunde",
-      "levelUp": "Stufe {{level}} erreicht · {{title}}",
-      "call": "{{duration}} lang telefoniert",
-      "diary": "Hat dein Tagebuch gelesen und geantwortet",
-      "secretNote": "Geheimnotizen getauscht",
-      "dating": "Date: {{title}}",
-      "photo": "Foto zusammen gemacht",
-      "plan": "Geplant: {{title}}",
-      "board": "Notiz an die Pinnwand geheftet",
-      "quiz": "Pärchen-Quiz: {{title}} · {{score}}",
       "arc": "Hat sich geöffnet: {{title}}"
     },
     "showMore": "{{count}} weitere anzeigen",
@@ -1602,12 +1593,9 @@
     "addPlan": "Plan anlegen",
     "filter": {
       "all": "Alle",
-      "plans": "Pläne",
-      "dates": "Dates",
-      "calls": "Anrufe",
-      "notes": "Notizen",
-      "diary": "Tagebuch",
-      "games": "Spiele"
+      "together": "Zusammen",
+      "words": "Worte",
+      "milestones": "Meilensteine"
     },
     "day": "Tag",
     "time": "Zeit",
@@ -1620,6 +1608,12 @@
       "plan": "Tag und Uhrzeit mit {{name}}",
       "diary": "Über heute schreiben",
       "board": "Notiz für {{name}} anheften"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Anruf",
+      "quiz": "Paar-Quiz",
+      "arc": "Neues Kapitel"
     }
   },
   "profile": {

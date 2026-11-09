@@ -1,42 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient as Gradient } from 'expo-linear-gradient';
-import { type Href, useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
-import type { SFSymbol } from 'sf-symbols-typescript';
+import { ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
-import { CharacterAvatar, EmptyState, moduleTile, PressableScale, Screen, SFIcon, ShellIcon, Txt, UserAvatar } from '@/components/ui';
-import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, SFIcon, ShellIcon, Txt, UserAvatar } from '@/components/ui';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
+import { OurMoments } from '@/components/us/moments';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
-import { localCharacter } from '@/i18n/content';
-import { daysBetween, relativeStamp, shortName } from '@/lib/format';
-import { groupMoments, momentTarget } from '@/lib/moment-groups';
+import { daysBetween, shortName } from '@/lib/format';
 import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
-import type { MomentKind } from '@/types';
 
-const MOMENT_PAGE = 20;
 /** The friend picker's faces, and the ring of their own hue round the chosen one. */
 const STORY = 56;
 const STORY_RING = 3;
 const STORY_GAP = 2;
-/** The picture at the end of a photo moment. */
-const PHOTO_THUMB = 40;
-/** A moment's round icon; the timeline's thread runs through their centres. */
-const MOMENT_ICON = 40;
 /** The level ring on the bond card: its size, stroke and circumference. */
 const RING = 92;
 const RING_STROKE = 10;
@@ -68,36 +59,6 @@ const BOND = isDark
     };
 
 /**
- * Each moment kind as an iOS-style icon: a system-colour circle with a white SF Symbol (an
- * Ionicon off iPhone). Modules wear their own colour and glyph (`moduleTile`), the same as on
- * Today; a level-up is the bond's mint.
- */
-const MOMENT_STYLE: Record<MomentKind, { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }> = {
-  met: { ios: 'sparkles', icon: 'sparkles', fill: systemColors.purple },
-  levelUp: moduleTile('bond'),
-  call: moduleTile('calls'),
-  diary: moduleTile('diary'),
-  secretNote: moduleTile('note'),
-  dating: moduleTile('date'),
-  photo: moduleTile('photo'),
-  plan: { ios: 'calendar', icon: 'calendar', fill: systemColors.red },
-  board: moduleTile('board'),
-  quiz: { ios: 'questionmark', icon: 'help', fill: systemColors.indigo },
-  arc: { ios: 'key.fill', icon: 'key', fill: systemColors.pink },
-};
-
-/** Moment filters; a chip shows only when the bond has moments of that kind. */
-const FILTERS = {
-  plans: ['plan'],
-  dates: ['dating', 'photo'],
-  calls: ['call'],
-  notes: ['secretNote', 'board'],
-  diary: ['diary'],
-  games: ['quiz'],
-} satisfies Record<string, MomentKind[]>;
-type FilterKey = keyof typeof FILTERS | 'all';
-
-/**
  * [Us]: one bond at a time — how long, how close, what's next and what you've shared. The playful
  * skin (design-style §10, the approved four-tab prototype): Apple's white ground, friends ringed in their
  * own hue, the bond as a mint card with its level ring, the week as chips, moments on a thread.
@@ -116,8 +77,6 @@ export default function UsScreen() {
   const relationships = useAppStore((s) => s.relationships);
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
-  const moments = useAppStore((s) => s.moments);
-  const photos = useAppStore((s) => s.photos);
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
   const addSchedule = useAppStore((s) => s.addSchedule);
@@ -129,7 +88,6 @@ export default function UsScreen() {
   const [day, setDay] = useState(today);
   const [publishOpen, setPublishOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterKey>('all');
   const [sharing, setSharing] = useState(false);
   const reward = useAppStore((s) => shareReward(s.daily, selectedId ? `bond:${selectedId}` : undefined));
   const unread = useInboxUnread();
@@ -154,32 +112,20 @@ export default function UsScreen() {
     if (opened.day && /^\d{4}-\d{2}-\d{2}$/.test(opened.day)) setDay(opened.day);
   }
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
-  // Moments pile up for as long as a bond lasts; render them a page at a time.
-  const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
-  const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
 
-  const allMoments = useMemo(
-    () =>
-      moments
-        .filter((m) => m.characterId === selected?.character.id)
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    [moments, selected],
-  );
-  const filters = (Object.keys(FILTERS) as (keyof typeof FILTERS)[]).filter((key) =>
-    allMoments.some((m) => (FILTERS[key] as MomentKind[]).includes(m.kind)),
-  );
-  const activeFilter: FilterKey = filter !== 'all' && filters.includes(filter) ? filter : 'all';
-  // A day's run of secret notes (or board notes, diary replies) reads as one row with a count.
-  const timeline = useMemo(
-    () =>
-      groupMoments(
-        activeFilter === 'all' ? allMoments : allMoments.filter((m) => (FILTERS[activeFilter] as MomentKind[]).includes(m.kind)),
-      ),
-    [allMoments, activeFilter],
-  );
-
-  // One lookup per photo moment instead of a scan of every photo for each row.
-  const photoById = useMemo(() => new Map(photos.map((p) => [p.id, p])), [photos]);
+  // A plan in the moments opens its day in the calendar: the day is picked and the screen scrolls up to it.
+  const calendarY = useRef(0);
+  const toCalendar = () => scrollRef.current?.scrollTo({ y: Math.max(0, calendarY.current - space.md), animated: true });
+  const openDay = (key: string) => {
+    setDay(key);
+    toCalendar();
+  };
+  // Opened for a day (a plan in the whole story, a plan set from the chat): its day is picked while
+  // rendering above; here the screen scrolls up to the calendar that shows it.
+  useEffect(() => {
+    if (openedAt && opened.day) toCalendar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openedAt]);
 
   const plans = useMemo(
     () => schedules.filter((x) => x.characterId === selected?.character.id),
@@ -279,8 +225,6 @@ export default function UsScreen() {
   const { progress } = levelForIntimacy(relationship.intimacy);
   const conversation = conversations.find((c) => c.characterId === character.id);
   const days = daysBetween(relationship.anniversary) + 1;
-  const shownMoments = timeline.slice(0, visibleMoments);
-  const filterKeys = ['all', ...filters] as FilterKey[];
 
   return (
     <Screen background={systemGround.ground}>
@@ -386,7 +330,9 @@ export default function UsScreen() {
           </PressableScale>
         </Gradient>
 
-        <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />
+        <View onLayout={(e) => (calendarY.current = e.nativeEvent.layout.y)}>
+          <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />
+        </View>
 
         <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
           {day === today ? t('common.today') : dayTitle(day, i18n.language)}
@@ -453,87 +399,7 @@ export default function UsScreen() {
           )}
         </View>
 
-        <Txt style={styles.sectionBig} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-          {t('us.moments')}
-        </Txt>
-        {filters.length > 1 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pills} accessibilityRole="tablist">
-            {filterKeys.map((key) => {
-              const on = activeFilter === key;
-              return (
-                <PressableScale
-                  key={key}
-                  scaleTo={0.95}
-                  dimOnPress={false}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: on }}
-                  onPress={() => setFilter(key)}
-                  style={[styles.pill, on && styles.pillOn]}>
-                  <Txt style={[styles.pillText, on && styles.pillTextOn]} maxFontSizeMultiplier={1.3}>
-                    {t(`us.filter.${key}`)}
-                  </Txt>
-                </PressableScale>
-              );
-            })}
-          </ScrollView>
-        ) : null}
-        {timeline.length === 0 ? (
-          <Txt style={styles.hint}>{t('us.noMoments')}</Txt>
-        ) : (
-          <View style={styles.moments}>
-            {shownMoments.map(({ moment, count }, i) => {
-              const photo = moment.photoId ? photoById.get(moment.photoId) : undefined;
-              const target = momentTarget(moment);
-              const last = i === shownMoments.length - 1;
-              return (
-                <MomentRow
-                  key={moment.id}
-                  kind={moment.kind}
-                  count={count}
-                  text={t(
-                    `us.momentText.${moment.kind}`,
-                    {
-                      ...moment.params,
-                      ...(moment.params?.title
-                        ? {
-                            // An arc beat's title is the character's own text, in the screen language.
-                            title:
-                              (moment.kind === 'arc' ? localCharacter(selected.character).arc?.beats.find((b) => b.atLevel === moment.params?.level)?.title : undefined) ??
-                              phrase(String(moment.params.title)),
-                          }
-                        : {}),
-                    },
-                  )}
-                  when={relativeStamp(moment.createdAt)}
-                  last={last}
-                  // A photo moment shows the picture and opens it.
-                  thumb={
-                    photo ? (
-                      <BoothPicture
-                        photo={photo}
-                        character={selected.character}
-                        width={fitWidth(photo.style, { width: PHOTO_THUMB, height: PHOTO_THUMB })}
-                      />
-                    ) : undefined
-                  }
-                  // Every moment but a plan opens the place it happened (`momentTarget`).
-                  onPress={target ? () => router.push(target as Href) : undefined}
-                />
-              );
-            })}
-            {timeline.length > visibleMoments ? (
-              <PressableScale
-                style={styles.showMore}
-                scaleTo={0.95}
-                accessibilityRole="button"
-                onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
-                <Txt style={styles.showMoreText} maxFontSizeMultiplier={1.3}>
-                  {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
-                </Txt>
-              </PressableScale>
-            ) : null}
-          </View>
-        )}
+        <OurMoments character={character} relationship={relationship} today={today} onOpenDay={openDay} />
       </ScrollView>
 
       <PublishSheet
@@ -572,7 +438,7 @@ function dayTitle(key: string, locale: string) {
 function TimeTile({ time }: { time?: string }) {
   if (!time) {
     return (
-      <View style={[styles.planIcon, { backgroundColor: MOMENT_STYLE.plan.fill }]}>
+      <View style={[styles.planIcon, { backgroundColor: systemColors.red }]}>
         <SFIcon ios="calendar" icon="calendar" size={16} color={colors.white} />
       </View>
     );
@@ -583,57 +449,6 @@ function TimeTile({ time }: { time?: string }) {
         {time}
       </Txt>
     </View>
-  );
-}
-
-/** One moment on the thread: its kind's coloured circle, the line, when (and the photo, if any). */
-function MomentRow({
-  kind,
-  count,
-  text,
-  when,
-  thumb,
-  last,
-  onPress,
-}: {
-  kind: MomentKind;
-  /** How many moments of one day this row stands for; shown as "×N" past one. */
-  count: number;
-  text: string;
-  when: string;
-  thumb?: React.ReactNode;
-  last?: boolean;
-  onPress?: () => void;
-}) {
-  const look = MOMENT_STYLE[kind];
-  return (
-    <Pressable
-      style={({ pressed }) => [styles.moment, pressed && onPress ? styles.pressed : null]}
-      disabled={!onPress}
-      accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityLabel={count > 1 ? `${text}, ×${count}, ${when}` : `${text}, ${when}`}
-      onPress={onPress}>
-      {/* The thread to the next moment, from under this circle. */}
-      {last ? null : <View style={styles.thread} pointerEvents="none" />}
-      <View style={[styles.momentIcon, { backgroundColor: look.fill }]}>
-        <SFIcon ios={look.ios} icon={look.icon} size={19} color={colors.white} />
-      </View>
-      <View style={[styles.grow, styles.momentLine]}>
-        <Txt style={[styles.momentText, styles.momentTextShrink]} lines={2}>
-          {text}
-        </Txt>
-        {count > 1 ? (
-          <View style={styles.times}>
-            <Txt style={styles.timesText} maxFontSizeMultiplier={1.2}>{`×${count}`}</Txt>
-          </View>
-        ) : null}
-      </View>
-      <View style={styles.momentEnd}>
-        {thumb ? <View style={styles.thumb}>{thumb}</View> : null}
-        <Txt style={styles.when}>{when}</Txt>
-        {onPress ? <Ionicons name="chevron-forward" size={14} color={colors.textFaint} /> : null}
-      </View>
-    </Pressable>
   );
 }
 
@@ -814,40 +629,4 @@ const styles = StyleSheet.create({
   time: { fontFamily: fonts.playful, fontSize: 17, color: systemGround.label, fontVariant: ['tabular-nums'] },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   remindText: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  pills: { gap: 8, paddingHorizontal: space.lg, paddingBottom: 4 },
-  pill: {
-    minHeight: 34,
-    paddingHorizontal: 14,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: systemGround.fill,
-  },
-  pillOn: { backgroundColor: systemGround.label },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: systemGround.label },
-  pillTextOn: { color: systemGround.ground },
-  hint: { marginTop: space.sm, marginHorizontal: 18, fontSize: 15, color: colors.textSecondary },
-  // Moments on a thread, straight on the ground (the prototype's timeline).
-  moments: { paddingHorizontal: 14, paddingTop: 6 },
-  moment: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: MOMENT_ICON + 18, paddingVertical: 9 },
-  thread: {
-    position: 'absolute',
-    left: MOMENT_ICON / 2 - 1,
-    top: 9 + MOMENT_ICON,
-    bottom: -9,
-    width: 2,
-    borderRadius: 1,
-    backgroundColor: systemGround.dash,
-  },
-  momentIcon: { width: MOMENT_ICON, height: MOMENT_ICON, borderRadius: MOMENT_ICON / 2, alignItems: 'center', justifyContent: 'center' },
-  momentLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  momentText: { fontSize: 14.5, lineHeight: 19, color: systemGround.label },
-  momentTextShrink: { flexShrink: 1 },
-  times: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: systemGround.label },
-  timesText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: systemGround.ground },
-  momentEnd: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  when: { fontSize: 12, color: colors.textSecondary },
-  thumb: { width: PHOTO_THUMB, height: PHOTO_THUMB, alignItems: 'center', justifyContent: 'center' },
-  showMore: { alignSelf: 'center', minHeight: 44, paddingHorizontal: space.lg, justifyContent: 'center' },
-  showMoreText: { fontFamily: fonts.playful, fontSize: 14, color: colors.brandText },
 });

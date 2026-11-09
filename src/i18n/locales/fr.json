@@ -1558,15 +1558,6 @@
     "noRelationshipsHint": "Démarrez une discussion pour faire grandir votre lien ici.",
     "momentText": {
       "met": "Vous êtes devenus amis",
-      "levelUp": "Niveau {{level}} atteint · {{title}}",
-      "call": "Discussion au téléphone pendant {{duration}}",
-      "diary": "A lu votre journal et a répondu",
-      "secretNote": "Échange de mots secrets",
-      "dating": "Rendez-vous : {{title}}",
-      "photo": "Photo prise ensemble",
-      "plan": "Projet : {{title}}",
-      "board": "Mot épinglé sur le panneau",
-      "quiz": "Quiz de couple : {{title}} · {{score}}",
       "arc": "S'est confié : {{title}}"
     },
     "showMore": "Afficher {{count}} de plus",
@@ -1602,12 +1593,9 @@
     "addPlan": "Ajouter le projet",
     "filter": {
       "all": "Tous",
-      "plans": "Projets",
-      "dates": "Rendez-vous",
-      "calls": "Appels",
-      "notes": "Mots",
-      "diary": "Journal",
-      "games": "Jeux"
+      "together": "Ensemble",
+      "words": "Mots",
+      "milestones": "Étapes"
     },
     "day": "Jour",
     "time": "Heure",
@@ -1620,6 +1608,12 @@
       "plan": "Un jour et une heure avec {{name}}",
       "diary": "Raconter la journée d'aujourd'hui",
       "board": "Épingler un mot pour {{name}}"
+    },
+    "said": "{{name}} : {{text}}",
+    "momentTitle": {
+      "call": "Appel",
+      "quiz": "Quiz de couple",
+      "arc": "Nouveau chapitre"
     }
   },
   "profile": {

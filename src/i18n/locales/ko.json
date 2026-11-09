@@ -1532,15 +1532,6 @@
     "noRelationshipsHint": "대화를 시작하면 둘 사이의 유대감이 여기에 쌓입니다.",
     "momentText": {
       "met": "친구가 되었습니다",
-      "levelUp": "레벨 {{level}} 달성 · {{title}}",
-      "call": "{{duration}} 동안 통화했습니다",
-      "diary": "일기를 읽고 답장을 남겼습니다",
-      "secretNote": "비밀 쪽지를 교환했습니다",
-      "dating": "데이트: {{title}}",
-      "photo": "함께 사진을 찍었습니다",
-      "plan": "약속: {{title}}",
-      "board": "게시판에 메모를 남겼습니다",
-      "quiz": "커플 퀴즈: {{title}} · 스코어 {{score}}",
       "arc": "마음을 열었어요: {{title}}"
     },
     "showMore": "{{count}}개 더 보기",
@@ -1573,12 +1564,9 @@
     "addPlan": "약속 추가",
     "filter": {
       "all": "전체",
-      "plans": "약속",
-      "dates": "데이트",
-      "calls": "통화",
-      "notes": "쪽지",
-      "diary": "일기",
-      "games": "게임"
+      "together": "함께",
+      "words": "글",
+      "milestones": "이정표"
     },
     "day": "날짜",
     "time": "시간",
@@ -1591,6 +1579,12 @@
       "plan": "{{name}}와(과)의 약속 날짜와 시간",
       "diary": "오늘 하루를 기록하기",
       "board": "{{name}}에게 메모 남기기"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "통화",
+      "quiz": "커플 퀴즈",
+      "arc": "새 챕터"
     }
   },
   "profile": {

@@ -1532,15 +1532,6 @@
     "noRelationshipsHint": "Mulai obrolan dan ikatan kalian akan tumbuh di sini.",
     "momentText": {
       "met": "Kalian menjadi teman",
-      "levelUp": "Mencapai level {{level}} · {{title}}",
-      "call": "Mengobrol di telepon selama {{duration}}",
-      "diary": "Membaca buku harianmu dan membalasnya",
-      "secretNote": "Bertukar catatan rahasia",
-      "dating": "Kencan: {{title}}",
-      "photo": "Berfoto bersama",
-      "plan": "Rencana: {{title}}",
-      "board": "Menyematkan catatan di papan",
-      "quiz": "Kuis pasangan: {{title}} · {{score}}",
       "arc": "Mulai terbuka: {{title}}"
     },
     "showMore": "Tampilkan {{count}} lainnya",
@@ -1573,12 +1564,9 @@
     "addPlan": "Tambah rencana",
     "filter": {
       "all": "Semua",
-      "plans": "Rencana",
-      "dates": "Kencan",
-      "calls": "Panggilan",
-      "notes": "Catatan",
-      "diary": "Buku harian",
-      "games": "Game"
+      "together": "Bersama",
+      "words": "Kata",
+      "milestones": "Tonggak"
     },
     "day": "Hari",
     "time": "Waktu",
@@ -1591,6 +1579,12 @@
       "plan": "Hari dan waktu bersama {{name}}",
       "diary": "Tulis tentang hari ini",
       "board": "Sematkan sesuatu untuk {{name}}"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Panggilan",
+      "quiz": "Kuis pasangan",
+      "arc": "Bab baru"
     }
   },
   "profile": {

@@ -1532,15 +1532,6 @@
     "noRelationshipsHint": "開啟一場對話，你們的情感牽絆將在這裡悄然滋長。",
     "momentText": {
       "met": "初次結識為好友",
-      "levelUp": "晉升至等級 {{level}} · {{title}}",
-      "call": "通話暢聊了 {{duration}}",
-      "diary": "閱讀了你的日記並寫下回信",
-      "secretNote": "交換了互訴心事的秘密便籤",
-      "dating": "赴約：{{title}}",
-      "photo": "定格了一張合影相片",
-      "plan": "約定：{{title}}",
-      "board": "在留言板上留下一張專屬便簽",
-      "quiz": "情侶問答：{{title}} · 默契得分 {{score}}",
       "arc": "敞開心扉:{{title}}"
     },
     "showMore": "展開其餘 {{count}} 條記錄",
@@ -1573,12 +1564,9 @@
     "addPlan": "新增約定",
     "filter": {
       "all": "全部",
-      "plans": "約定",
-      "dates": "約會",
-      "calls": "通話",
-      "notes": "便簽",
-      "diary": "日記",
-      "games": "遊戲"
+      "together": "一起",
+      "words": "文字",
+      "milestones": "里程碑"
     },
     "day": "日期",
     "time": "時間",
@@ -1591,6 +1579,12 @@
       "plan": "與{{name}}相約的日子與時刻",
       "diary": "記錄今天的故事",
       "board": "為{{name}}貼上一張便簽"
+    },
+    "said": "{{name}}：{{text}}",
+    "momentTitle": {
+      "call": "通話",
+      "quiz": "情侶測驗",
+      "arc": "新篇章"
     }
   },
   "profile": {

@@ -2583,7 +2583,8 @@ export const useAppStore = create<AppState>()(
         return id;
       },
 
-      deleteDiaryEntry: (id) => set((s) => ({ diary: s.diary.filter((d) => d.id !== id) })),
+      // The page and the "wrote back" line on Us it made.
+      deleteDiaryEntry: (id) => set((s) => ({ diary: s.diary.filter((d) => d.id !== id), moments: s.moments.filter((m) => !(m.kind === 'diary' && m.refId === id)) })),
 
       markDiaryPageRead: (id) =>
         set((s) => (s.diaryPagesRead.includes(id) ? s : { diaryPagesRead: [...s.diaryPagesRead, id] })),
@@ -2662,7 +2663,7 @@ export const useAppStore = create<AppState>()(
           notes: s.notes.map((n) => (n.id === noteId ? { ...n, status: 'exchanged' } : n)),
         }));
         get().addIntimacy(note.characterId, INTIMACY.secretNote);
-        addMoment(set, note.characterId, 'secretNote');
+        addMoment(set, note.characterId, 'secretNote', undefined, note.id);
         return 'ok';
       },
 
@@ -2760,13 +2761,16 @@ export const useAppStore = create<AppState>()(
           const isCard = (m: Message) => m.card === 'board' && (m.boardId ? m.boardId === id : m.text === post.text);
           return {
             boardPosts: s.boardPosts.filter((p) => p.id !== id),
+            // Its line on Us goes with it (older lines without `refId` are hidden there, `moment-groups.ts`).
+            moments: s.moments.filter((m) => m.refId !== id),
             ...(chat && s.messages[chat]?.some(isCard) ? { messages: { ...s.messages, [chat]: s.messages[chat].filter((m) => !isCard(m)) } } : {}),
           };
         }),
-      // The picture and the chat line that carried it (an empty frame would stay behind).
+      // The picture, the chat line that carried it (an empty frame would stay behind) and its line on Us.
       deletePhoto: (id) =>
         set((s) => ({
           photos: s.photos.filter((p) => p.id !== id),
+          moments: s.moments.filter((m) => m.photoId !== id),
           messages: Object.fromEntries(Object.entries(s.messages).map(([chat, list]) => [chat, list.some((m) => m.photoId === id) ? list.filter((m) => m.photoId !== id) : list])),
         })),
       deleteCall: (id) => set((s) => ({ calls: s.calls.filter((c) => c.id !== id) })),
@@ -3208,7 +3212,8 @@ export const useAppStore = create<AppState>()(
       },
 
       addCall: (record, lines) => {
-        set((s) => ({ calls: [{ ...record, id: uid('call') }, ...s.calls] }));
+        const callId = uid('call');
+        set((s) => ({ calls: [{ ...record, id: callId }, ...s.calls] }));
         const kept = lines?.length ? keptCallLines(lines) : [];
 
         // The call also lands in the chat, like a phone's call log line.
@@ -3242,7 +3247,7 @@ export const useAppStore = create<AppState>()(
         const minutes = Math.max(1, Math.round(record.durationSec / 60));
         get().addIntimacy(record.characterId, minutes * INTIMACY.callPerMinute);
         if (record.durationSec >= 60) {
-          addMoment(set, record.characterId, 'call', { duration: clock(record.durationSec) });
+          addMoment(set, record.characterId, 'call', { duration: clock(record.durationSec) }, callId);
         }
       },
 
@@ -3361,7 +3366,7 @@ export const useAppStore = create<AppState>()(
         // Showing up is worth the base; every heart won on the way adds to it.
         get().addIntimacy(characterId, INTIMACY.date + hearts);
         // The 'dating' moment is what tomorrow's diary page is written from.
-        addMoment(set, characterId, 'dating', { title });
+        addMoment(set, characterId, 'dating', { title }, record.id);
         const conversationId = get().addFriend(characterId);
         const story = active.live ? active.live.rounds.flatMap((r, i) => (r.choices[active.live!.picks[i]] ? [`${r.line} They chose: ${r.choices[active.live!.picks[i]].text}`] : [])) : [];
         sayFirst(set, get, conversationId, afterDateLine(title, record.ending, genderOf(get(), characterId)), dateDoneCue(title, record.ending, story));
@@ -3540,7 +3545,7 @@ export const useAppStore = create<AppState>()(
             },
           ],
         }));
-        addMoment(set, characterId, 'plan', { title: clean });
+        addMoment(set, characterId, 'plan', { title: clean }, id);
         if (!quiet) {
           // The card first, on their side; then the friend's word under it (0z139).
           const conversationId = setupInChat(set, get, characterId, planOffer({ title: clean, date, time }), id);
@@ -3849,7 +3854,7 @@ export const useAppStore = create<AppState>()(
           appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'me', kind: 'system', card: 'board', text: clean, boardId: postId, createdAt: createdAt.toISOString() }, { quiet: true });
         }
         get().addIntimacy(characterId, INTIMACY.boardNote);
-        addMoment(set, characterId, 'board');
+        addMoment(set, characterId, 'board', undefined, postId);
         setTimeout(() => useAppStore.getState().runTimers(), BOARD_REPLY_MS + 50);
         return 'ok';
       },
@@ -4837,7 +4842,7 @@ function writeDiaryReply(set: Setter, entryId: string, characterId: string, body
     set((s) => ({
       diary: s.diary.map((d) => (d.id === entryId && !d.reply ? { ...d, reply: { characterId, text: written.reply, createdAt: new Date().toISOString() } } : d)),
     }));
-    addMoment(set, characterId, 'diary');
+    addMoment(set, characterId, 'diary', undefined, entryId);
   });
 }
 
@@ -5125,9 +5130,11 @@ function touchStreak(set: Setter, get: Getter, characterId: string) {
   updateRelationship(set, characterId, () => ({ streakDays, lastChatDay: today }));
 }
 
-function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: Moment['params'], photoId?: string) {
+/** A line on Us; `refId` is the record it is about (a photo's goes in `photoId`, as before). */
+function addMoment(set: Setter, characterId: string, kind: MomentKind, params?: Moment['params'], refId?: string) {
+  const ref = refId ? (kind === 'photo' ? { photoId: refId } : { refId }) : {};
   set((s) => ({
-    moments: [...s.moments, { id: uid('mo'), characterId, kind, createdAt: new Date().toISOString(), params, photoId }],
+    moments: [...s.moments, { id: uid('mo'), characterId, kind, createdAt: new Date().toISOString(), params, ...ref }],
   }));
 }
 
@@ -5504,7 +5511,7 @@ function answerText(
       ],
     }));
     get().addMemory(conversation.characterId, planMemoryLine(plan), 'chat');
-    addMoment(set, conversation.characterId, 'plan', { title: plan.title });
+    addMoment(set, conversation.characterId, 'plan', { title: plan.title }, scheduleId);
     reply = scheduleAck(plan.title, plan.when, !!plan.time, genderOf(get(), conversation.characterId));
   }
 
@@ -6679,14 +6686,15 @@ function wakeReply(set: Setter, get: Getter, conversationId: string, text: strin
     const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
     if (!characterId) return false;
     const plan = { title, date: todayKey(), time };
+    const id = uid('sch');
     set((s) => ({
       schedules: [
         ...s.schedules,
-        { id: uid('sch'), characterId, ...plan, remindAt: remind, createdAt: new Date().toISOString(), reminded: false, source: 'chat' as const },
+        { id, characterId, ...plan, remindAt: remind, createdAt: new Date().toISOString(), reminded: false, source: 'chat' as const },
       ],
     }));
     get().addMemory(characterId, planMemoryLine(plan), 'chat');
-    addMoment(set, characterId, 'plan', { title });
+    addMoment(set, characterId, 'plan', { title }, id);
     reply(CHAIN_LINES.saved(remind, gender));
     // The "Plan saved" line lands under the friend's answer, once it has arrived.
     const after = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now()) + 300;
@@ -6918,7 +6926,7 @@ function answerDiary(set: RawSetter, entryId: string) {
   }));
   const entry = useAppStore.getState().diary.find((d) => d.id === entryId);
   if (entry?.sharedWithCharacterId) {
-    addMoment(set as Setter, entry.sharedWithCharacterId, 'diary');
+    addMoment(set as Setter, entry.sharedWithCharacterId, 'diary', undefined, entry.id);
   }
 }
 

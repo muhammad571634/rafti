@@ -1532,15 +1532,6 @@
     "noRelationshipsHint": "Bắt đầu cuộc trò chuyện và sự gắn kết của hai bạn sẽ phát triển tại đây.",
     "momentText": {
       "met": "Hai bạn đã trở thành bạn bè",
-      "levelUp": "Đã đạt cấp {{level}} · {{title}}",
-      "call": "Trò chuyện điện thoại trong {{duration}}",
-      "diary": "Đã đọc nhật ký của bạn và phản hồi",
-      "secretNote": "Đã trao đổi lời nhắn bí mật",
-      "dating": "Hẹn hò: {{title}}",
-      "photo": "Đã chụp ảnh cùng nhau",
-      "plan": "Đã lên kế hoạch: {{title}}",
-      "board": "Đã ghim một ghi chú lên bảng tin",
-      "quiz": "Đố vui đôi lứa: {{title}} · {{score}}",
       "arc": "Đã mở lòng: {{title}}"
     },
     "showMore": "Hiển thị thêm {{count}}",
@@ -1573,12 +1564,9 @@
     "addPlan": "Thêm kế hoạch",
     "filter": {
       "all": "Tất cả",
-      "plans": "Kế hoạch",
-      "dates": "Hẹn hò",
-      "calls": "Cuộc gọi",
-      "notes": "Ghi chú",
-      "diary": "Nhật ký",
-      "games": "Trò chơi"
+      "together": "Cùng nhau",
+      "words": "Lời nhắn",
+      "milestones": "Cột mốc"
     },
     "day": "Ngày",
     "time": "Thời gian",
@@ -1591,6 +1579,12 @@
       "plan": "Một ngày và thời gian cùng {{name}}",
       "diary": "Viết về ngày hôm nay",
       "board": "Ghim điều gì đó cho {{name}}"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Cuộc gọi",
+      "quiz": "Quiz cặp đôi",
+      "arc": "Chương mới"
     }
   },
   "profile": {

@@ -1532,15 +1532,6 @@
     "noRelationshipsHint": "チャットを始めると、ここにふたりの絆が育まれます。",
     "momentText": {
       "met": "友達になりました",
-      "levelUp": "レベル{{level}}に到達 · {{title}}",
-      "call": "{{duration}}電話で話しました",
-      "diary": "日記を読んでお返事を書きました",
-      "secretNote": "秘密のメモを交換しました",
-      "dating": "デート: {{title}}",
-      "photo": "一緒に写真を撮りました",
-      "plan": "予定: {{title}}",
-      "board": "掲示板にメモを貼りました",
-      "quiz": "カップルクイズ: {{title}} · スコア{{score}}",
       "arc": "打ち明けた:{{title}}"
     },
     "showMore": "他{{count}}件を表示",
@@ -1573,12 +1564,9 @@
     "addPlan": "予定を追加",
     "filter": {
       "all": "すべて",
-      "plans": "予定",
-      "dates": "デート",
-      "calls": "通話",
-      "notes": "メモ",
-      "diary": "日記",
-      "games": "ゲーム"
+      "together": "一緒に",
+      "words": "ことば",
+      "milestones": "節目"
     },
     "day": "日付",
     "time": "時間",
@@ -1591,6 +1579,12 @@
       "plan": "{{name}}との日時と約束",
       "diary": "今日の出来事を書く",
       "board": "{{name}}へのメモを貼る"
+    },
+    "said": "{{name}}：{{text}}",
+    "momentTitle": {
+      "call": "通話",
+      "quiz": "カップルクイズ",
+      "arc": "新しい章"
     }
   },
   "profile": {

@@ -1610,15 +1610,6 @@
     "noRelationshipsHint": "Начните диалог, и ваша связь начнет расти здесь.",
     "momentText": {
       "met": "Вы познакомились",
-      "levelUp": "Достигли уровня {{level}} · {{title}}",
-      "call": "Говорили по телефону {{duration}}",
-      "diary": "Прочитал(а) ваш дневник и ответил(а)",
-      "secretNote": "Обменялись секретными записками",
-      "dating": "Свидание: {{title}}",
-      "photo": "Сделали совместное фото",
-      "plan": "Запланировано: {{title}}",
-      "board": "Прикрепил(а) записку на доску",
-      "quiz": "Викторина для двоих: {{title}} · {{score}}",
       "arc": "Открылись: {{title}}"
     },
     "showMore": "Показать еще {{count}}",
@@ -1654,12 +1645,9 @@
     "addPlan": "Добавить план",
     "filter": {
       "all": "Все",
-      "plans": "Планы",
-      "dates": "Свидания",
-      "calls": "Звонки",
-      "notes": "Записки",
-      "diary": "Дневник",
-      "games": "Игры"
+      "together": "Вместе",
+      "words": "Слова",
+      "milestones": "Вехи"
     },
     "day": "День",
     "time": "Время",
@@ -1678,7 +1666,13 @@
     "daysShort_few": "дня",
     "daysShort_many": "дней",
     "notificationsNew_few": "Уведомления, {{count}} новых",
-    "notificationsNew_many": "Уведомления, {{count}} новых"
+    "notificationsNew_many": "Уведомления, {{count}} новых",
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Звонок",
+      "quiz": "Тест для пары",
+      "arc": "Новая глава"
+    }
   },
   "profile": {
     "title": "Профиль",

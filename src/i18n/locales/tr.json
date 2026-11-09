@@ -1558,15 +1558,6 @@
     "noRelationshipsHint": "Bir sohbet başlat ve bağınız burada büyüsün.",
     "momentText": {
       "met": "Arkadaş oldunuz",
-      "levelUp": "Seviye {{level}}'ye ulaşıldı · {{title}}",
-      "call": "Telefonda {{duration}} konuştunuz",
-      "diary": "Günlüğünü okudu ve yanıtladı",
-      "secretNote": "Gizli notlar değiş tokuş edildi",
-      "dating": "Buluşma: {{title}}",
-      "photo": "Birlikte bir fotoğraf çektiniz",
-      "plan": "Planlandı: {{title}}",
-      "board": "Panoya bir not iliştirdi",
-      "quiz": "Çift testi: {{title}} · {{score}}",
       "arc": "Açıldı: {{title}}"
     },
     "showMore": "{{count}} tane daha göster",
@@ -1602,12 +1593,9 @@
     "addPlan": "Plan ekle",
     "filter": {
       "all": "Tümü",
-      "plans": "Planlar",
-      "dates": "Buluşmalar",
-      "calls": "Aramalar",
-      "notes": "Notlar",
-      "diary": "Günlük",
-      "games": "Oyunlar"
+      "together": "Birlikte",
+      "words": "Sözler",
+      "milestones": "Özel anlar"
     },
     "day": "Gün",
     "time": "Saat",
@@ -1620,6 +1608,12 @@
       "plan": "{{name}} ile bir gün ve saat",
       "diary": "Bugün hakkında yaz",
       "board": "{{name}} için bir şey iliştir"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Arama",
+      "quiz": "Çift testi",
+      "arc": "Yeni bölüm"
     }
   },
   "profile": {

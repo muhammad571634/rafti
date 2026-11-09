@@ -631,6 +631,11 @@ export interface Moment {
   params?: Record<string, string | number>;
   /** The Photo Booth picture this moment shows (photo moments). */
   photoId?: string;
+  /**
+   * The record it is about, so Us shows its words and opens it: a secret note, board post, date,
+   * diary entry, call or plan id (0z188; older moments are matched by time, `moment-groups.ts`).
+   */
+  refId?: string;
 }
 
 export type BoothStyle = 'polaroid' | 'film' | 'studio' | 'street';

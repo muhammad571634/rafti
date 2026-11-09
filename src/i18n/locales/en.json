@@ -1558,15 +1558,6 @@
     "noRelationshipsHint": "Start a chat and your bond will grow here.",
     "momentText": {
       "met": "You became friends",
-      "levelUp": "Reached level {{level}} · {{title}}",
-      "call": "Talked on the phone for {{duration}}",
-      "diary": "Read your diary and wrote back",
-      "secretNote": "Exchanged secret notes",
-      "dating": "Date: {{title}}",
-      "photo": "Took a photo together",
-      "plan": "Planned: {{title}}",
-      "board": "Pinned a note on the board",
-      "quiz": "Couple quiz: {{title}} · {{score}}",
       "arc": "Opened up: {{title}}"
     },
     "showMore": "Show {{count}} more",
@@ -1602,12 +1593,9 @@
     "addPlan": "Add plan",
     "filter": {
       "all": "All",
-      "plans": "Plans",
-      "dates": "Dates",
-      "calls": "Calls",
-      "notes": "Notes",
-      "diary": "Diary",
-      "games": "Games"
+      "together": "Together",
+      "words": "Words",
+      "milestones": "Milestones"
     },
     "day": "Day",
     "time": "Time",
@@ -1620,6 +1608,12 @@
       "plan": "A day and time with {{name}}",
       "diary": "Write about today",
       "board": "Pin something for {{name}}"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Call",
+      "quiz": "Couple quiz",
+      "arc": "New chapter"
     }
   },
   "profile": {

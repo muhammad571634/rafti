@@ -1558,15 +1558,6 @@
     "noRelationshipsHint": "Comece uma conversa e o vínculo de vocês crescerá aqui.",
     "momentText": {
       "met": "Vocês viraram amigos",
-      "levelUp": "Alcançaram o nível {{level}} · {{title}}",
-      "call": "Conversaram por telefone durante {{duration}}",
-      "diary": "Leu seu diário e respondeu",
-      "secretNote": "Trocaram recados secretos",
-      "dating": "Encontro: {{title}}",
-      "photo": "Tiraram uma foto juntos",
-      "plan": "Planejaram: {{title}}",
-      "board": "Fixou um recado no mural",
-      "quiz": "Quiz de casal: {{title}} · {{score}}",
       "arc": "Se abriu: {{title}}"
     },
     "showMore": "Mostrar mais {{count}}",
@@ -1602,12 +1593,9 @@
     "addPlan": "Adicionar plano",
     "filter": {
       "all": "Todos",
-      "plans": "Planos",
-      "dates": "Encontros",
-      "calls": "Chamadas",
-      "notes": "Recados",
-      "diary": "Diário",
-      "games": "Jogos"
+      "together": "Juntos",
+      "words": "Palavras",
+      "milestones": "Marcos"
     },
     "day": "Dia",
     "time": "Horário",
@@ -1620,6 +1608,12 @@
       "plan": "Um dia e horário com {{name}}",
       "diary": "Escreva sobre o dia de hoje",
       "board": "Fixe algo para {{name}}"
+    },
+    "said": "{{name}}: {{text}}",
+    "momentTitle": {
+      "call": "Chamada",
+      "quiz": "Quiz de casal",
+      "arc": "Novo capítulo"
     }
   },
   "profile": {
