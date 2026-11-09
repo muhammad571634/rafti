@@ -1,9 +1,9 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 
 import { apiBase } from '@/ai/server';
 import { useAppStore } from '@/store/use-app-store';
+import { showAlert } from '@/lib/alert';
 
 /**
  * Picks a photo to send in a chat. With the model on, the photo goes to an outside AI service, so the
@@ -24,7 +24,7 @@ export function usePickPhoto() {
 
   return (send: (uri: string) => void) => {
     if (!modelOn || shared) return void pick(send);
-    Alert.alert(t('chat.photoConsent.title'), t('chat.photoConsent.body'), [
+    showAlert(t('chat.photoConsent.title'), t('chat.photoConsent.body'), [
       { text: t('chat.photoConsent.notNow'), style: 'cancel' },
       {
         text: t('chat.photoConsent.allow'),

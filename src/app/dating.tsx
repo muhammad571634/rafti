@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { artLook, DateTicket, placeLook } from '@/components/date/ticket';
@@ -27,22 +27,11 @@ import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, isDark, space } from '@/theme';
 import type { Character, DateTheme } from '@/types';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 /** A closed ticket shows its header strip; an open one (and the last) shows all of it. */
 const PEEK = 62;
 const FULL = 236;
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /**
  * Dates as Apple Wallet event tickets (owner's pick B, canvas "DateWallet", 2026-10-21): the five

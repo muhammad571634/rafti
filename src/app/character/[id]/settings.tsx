@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, Header, ListRow, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
@@ -43,6 +43,7 @@ import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, radius, space, systemGround, type } from '@/theme';
 import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -60,18 +61,6 @@ type ActionKey =
   | 'reset'
   | 'remove'
   | 'block';
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 export default function CharacterSettingsScreen() {
   const insets = useSafeAreaInsets();

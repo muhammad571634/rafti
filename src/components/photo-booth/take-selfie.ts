@@ -1,8 +1,9 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 
 import { keepSelfie } from '@/lib/booth-selfies';
+import { showAlert } from '@/lib/alert';
 
 /**
  * The Photo Booth's shutter: the phone's front camera takes the user's half of the picture, as a
@@ -17,7 +18,7 @@ export function useTakeSelfie() {
     try {
       const allowed = await ImagePicker.requestCameraPermissionsAsync();
       if (!allowed.granted) {
-        Alert.alert(t('photoBooth.cameraOff'), t('photoBooth.cameraOffBody'), [
+        showAlert(t('photoBooth.cameraOff'), t('photoBooth.cameraOffBody'), [
           { text: t('common.cancel'), style: 'cancel' },
           { text: t('notifications.openSettings'), onPress: () => void Linking.openSettings() },
         ]);

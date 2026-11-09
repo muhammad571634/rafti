@@ -1,7 +1,7 @@
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, AppState } from 'react-native';
+import { AppState } from 'react-native';
 
 import { accessToken } from '@/ai/account';
 import { serverTranscribe } from '@/ai/server';
@@ -10,6 +10,7 @@ import { OPTIONS, VOICE_DB, VOICE_MOMENTS } from '@/components/chat/use-voice-no
 import { PLAYBACK_MODE } from '@/components/chat/voice-player';
 import { dropClip, readClip } from '@/lib/voice-files';
 import { useAppStore } from '@/store/use-app-store';
+import { showAlert } from '@/lib/alert';
 
 /** How often the level is read. */
 const LOOK_MS = 150;
@@ -106,7 +107,7 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
       const answer = await AudioModule.requestRecordingPermissionsAsync();
       if (!answer.granted) {
         refused.current = true;
-        if (!answer.canAskAgain && !canAskAgain) Alert.alert(t('chat.voice.noMic'));
+        if (!answer.canAskAgain && !canAskAgain) showAlert(t('chat.voice.noMic'));
         return;
       }
       // Leaving for the system prompt counts as leaving the app; coming back opens the mic too.
@@ -162,7 +163,7 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
   useEffect(() => {
     if (!on || allowed || asked.current) return;
     asked.current = true;
-    Alert.alert(t('chat.voiceConsent.title'), t('chat.voiceConsent.body'), [
+    showAlert(t('chat.voiceConsent.title'), t('chat.voiceConsent.body'), [
       { text: t('chat.photoConsent.notNow'), style: 'cancel' },
       { text: t('chat.photoConsent.allow'), onPress: () => setSetting('voiceToAi', true) },
     ]);

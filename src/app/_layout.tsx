@@ -12,7 +12,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
-import { Button, Mascot, Txt } from '@/components/ui';
+import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { useThemeReload, useThemeRestore } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
 import { startAwayClock } from '@/lib/away-clock';
@@ -97,6 +97,8 @@ function AppRoot() {
       </Stack>
       <AlarmRuntime />
       <OnboardingGate />
+      {/* The app's own dialog on Android and the web (`showAlert`); iPhone shows Apple's. */}
+      <AlertHost />
     </SafeAreaProvider>
   );
 }

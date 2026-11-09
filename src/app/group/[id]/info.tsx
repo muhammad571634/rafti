@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
@@ -29,21 +29,10 @@ import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemGround, type } from '@/theme';
 import type { Character } from '@/types';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 const NAME_MAX = 40;
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in chat settings). */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /**
  * Group info in the merged look (0z155; layout from the approved prototype): the group's face and name, its members (open their

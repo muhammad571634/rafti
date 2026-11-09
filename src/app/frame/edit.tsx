@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { ClayIconName } from '@/assets/brand/registry';
@@ -22,21 +22,10 @@ import {
 import { useAppStore } from '@/store/use-app-store';
 import { colors, signature, space, systemColors, systemGround } from '@/theme';
 import type { UserFrame } from '@/types';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 const GUTTER = space.lg;
 const CARD_PAD = 14;
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /**
  * Make a Photo Booth frame (F29): a color, a pattern, up to two stickers and a caption, with the

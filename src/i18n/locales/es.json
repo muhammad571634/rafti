@@ -4,6 +4,7 @@
     "tagline": "Con tu personaje favorito"
   },
   "common": {
+    "ok": "Aceptar",
     "save": "Guardar",
     "findSomeone": "Buscar a alguien",
     "planDate": "Planear una cita",

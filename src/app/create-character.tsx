@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 
 import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
@@ -50,6 +50,7 @@ import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, fonts, space, systemColors, systemGround } from '@/theme';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
+import { showAlert } from '@/lib/alert';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
@@ -319,7 +320,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       return setPhase('idea');
     }
     if (phase === 'form' && editing && changed) {
-      return Alert.alert(t('createCharacter.flow.discardTitle'), undefined, [
+      return showAlert(t('createCharacter.flow.discardTitle'), undefined, [
         { text: t('createCharacter.flow.keepEditing'), style: 'cancel' },
         { text: t('createCharacter.flow.discard'), style: 'destructive', onPress: leave },
       ]);

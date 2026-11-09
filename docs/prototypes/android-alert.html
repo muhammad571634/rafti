@@ -1,0 +1,119 @@
+<title>Confirm Dialog</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap">
+<style>
+/* Layout: four phone screens (light/dark x two-button/three-button), the dialog over a dimmed Chats list. */
+:root {
+  --page: #ECECF1; --ink: #1C1C1E; --muted: #6E6E73; --frame: #0B0B0C;
+  --screen: #FFFFFF; --label: #000000; --label2: rgba(60,60,67,0.6); --sep: rgba(60,60,67,0.29);
+  --card: #F2F2F7; --alert: rgba(242,242,247,0.98); --scrim: rgba(0,0,0,0.32); --red: #FF3B30; --link: #000000;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  --display: "Nunito", -apple-system, "SF Pro Rounded", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E; color-scheme: dark } }
+:root[data-theme="dark"] { --page: #000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E; color-scheme: dark }
+.dark { --screen: #000000; --label: #FFFFFF; --label2: rgba(235,235,245,0.6); --sep: rgba(84,84,88,0.65); --card: #1C1C1E; --alert: rgba(44,44,46,0.98); --scrim: rgba(0,0,0,0.5); --red: #FF453A; --link: #FFFFFF; }
+body { background: var(--page); color: var(--ink); font-family: var(--font); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 20px; }
+h1 { font-family: var(--display); font-weight: 900; font-size: 28px; margin: 0; }
+.lede { color: var(--muted); margin: 0; font-size: 15px; max-width: 64ch; line-height: 1.45; }
+.row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 1000px) { .row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr); max-width: 340px; margin: 0 auto; width: 100%; } }
+.opt { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.cap { font-weight: 700; font-size: 14px; }
+.phone { background: var(--frame); border-radius: 38px; padding: 8px; }
+.screen { background: var(--screen); color: var(--label); border-radius: 31px; height: 560px; overflow: hidden; position: relative; }
+.title { font-family: var(--display); font-weight: 900; font-size: 30px; padding: 46px 16px 10px; }
+.item { display: flex; gap: 10px; align-items: center; padding: 8px 14px 8px 18px; }
+.ava { width: 44px; height: 44px; border-radius: 50%; flex: none; background: linear-gradient(140deg, #7D5A8C, #C9A0B5); }
+.ava.b { background: linear-gradient(140deg, #D9825B, #F2C48D); } .ava.c { background: linear-gradient(140deg, #3D5A6E, #8FB3C7); }
+.lines { flex: 1; display: grid; gap: 6px; padding-bottom: 10px; border-bottom: 0.5px solid var(--sep); }
+.l1 { height: 11px; width: 55%; border-radius: 6px; background: var(--label); opacity: 0.85; }
+.l2 { height: 9px; width: 85%; border-radius: 6px; background: var(--label2); }
+.scrim { position: absolute; inset: 0; background: var(--scrim); display: grid; place-items: center; }
+.alert { width: 76%; background: var(--alert); border-radius: 16px; overflow: hidden; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+.alert .t { font-weight: 700; font-size: 16px; padding: 18px 16px 4px; line-height: 1.25; text-wrap: balance; }
+.alert .m { font-size: 13px; line-height: 1.35; color: var(--label); opacity: 0.85; padding: 0 16px 16px; text-wrap: balance; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; border-top: 0.5px solid var(--sep); }
+.btns.stack { grid-template-columns: 1fr; }
+.btn { padding: 12px 6px; font-size: 16px; color: var(--link); }
+.btns:not(.stack) .btn + .btn { border-left: 0.5px solid var(--sep); }
+.btns.stack .btn + .btn { border-top: 0.5px solid var(--sep); }
+.btn.cancel { font-weight: 600; }
+.btn.red { color: var(--red); }
+.notes { display: grid; gap: 6px; font-size: 14px; line-height: 1.45; color: var(--muted); max-width: 70ch; margin: 0; padding-left: 18px; }
+.notes b { color: var(--ink); }
+</style>
+
+<div class="wrap">
+  <h1>Confirm dialog on Android</h1>
+  <p class="lede">Android today shows the phone's own Material box. This is ours instead, drawn like Apple's alert so Android matches the rest of the app. iPhone keeps Apple's real one, which looks the same.</p>
+
+  <div class="row">
+    <section class="opt">
+      <div class="cap">Delete a chat · light</div>
+      <div class="phone"><div class="screen">
+        <div class="title">Chats</div>
+        <div class="item"><div class="ava"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava c"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="scrim"><div class="alert">
+          <div class="t">Delete the chat with Hana?</div>
+          <div class="m">Your messages with her are deleted. This can't be undone.</div>
+          <div class="btns"><div class="btn cancel">Cancel</div><div class="btn red">Delete</div></div>
+        </div></div>
+      </div></div>
+    </section>
+
+    <section class="opt">
+      <div class="cap">Delete a chat · dark</div>
+      <div class="phone"><div class="screen dark">
+        <div class="title">Chats</div>
+        <div class="item"><div class="ava"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava c"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="scrim"><div class="alert">
+          <div class="t">Delete the chat with Hana?</div>
+          <div class="m">Your messages with her are deleted. This can't be undone.</div>
+          <div class="btns"><div class="btn cancel">Cancel</div><div class="btn red">Delete</div></div>
+        </div></div>
+      </div></div>
+    </section>
+
+    <section class="opt">
+      <div class="cap">Delete account · light</div>
+      <div class="phone"><div class="screen">
+        <div class="title">Account</div>
+        <div class="item"><div class="ava c"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="scrim"><div class="alert">
+          <div class="t">Delete your account?</div>
+          <div class="m">Your friends, chats, memories and shells are deleted for good.</div>
+          <div class="btns stack"><div class="btn red">Delete account</div><div class="btn cancel">Cancel</div></div>
+        </div></div>
+      </div></div>
+    </section>
+
+    <section class="opt">
+      <div class="cap">Three choices · dark</div>
+      <div class="phone"><div class="screen dark">
+        <div class="title">Hana</div>
+        <div class="item"><div class="ava"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="item"><div class="ava b"></div><div class="lines"><div class="l1"></div><div class="l2"></div></div></div>
+        <div class="scrim"><div class="alert">
+          <div class="t">Remove Hana from friends?</div>
+          <div class="m">She stays in Find, so you can add her again.</div>
+          <div class="btns stack"><div class="btn red">Remove</div><div class="btn">Block instead</div><div class="btn cancel">Cancel</div></div>
+        </div></div>
+      </div></div>
+    </section>
+  </div>
+
+  <ul class="notes">
+    <li><b>Two buttons</b> sit side by side, <b>Cancel</b> left and bold, the red action right, as on iPhone. Three or a long label stack, the red one first.</li>
+    <li>It appears <b>instantly</b> (our rule for popups), the screen dims, and the red button gives a light vibration when tapped.</li>
+    <li>Android's <b>back</b> button and a tap on the dim area both cancel; it never shows two at once.</li>
+    <li>Words follow the app's language (all 14). Big text settings make it taller, never cut off.</li>
+  </ul>
+</div>

@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -23,20 +23,9 @@ import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, friendAccent, isDark, space, systemColors, systemGround } from '@/theme';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 const COVER = 240;
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /**
  * Clip player (F27), as Music's Now Playing: the friend's picture as the cover, the title, the

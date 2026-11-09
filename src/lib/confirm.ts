@@ -1,10 +1,12 @@
-import { ActionSheetIOS, Alert, Platform } from 'react-native';
+import { ActionSheetIOS, Platform } from 'react-native';
+
+import { showAlert } from './alert';
 
 /**
  * Asks before a destructive choice the user started. iOS shows an action sheet, as HIG Action
  * sheets asks for "choices related to an intentional action" (the red choice on top, Cancel at
- * the bottom); Android shows its dialog, and the web the browser's confirm, since Alert.alert
- * does nothing there.
+ * the bottom); Android and the web show the app's own alert (`showAlert`, drawn like Apple's), where
+ * the back button and a tap on the dim ground cancel.
  */
 export function confirmAction({
   title,
@@ -20,12 +22,6 @@ export function confirmAction({
   cancel: string;
   onConfirm: () => void;
 }) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(message ? `${title}
-
-${message}` : title)) onConfirm();
-    return;
-  }
   if (Platform.OS === 'ios') {
     ActionSheetIOS.showActionSheetWithOptions(
       { title, message, options: [action, cancel], destructiveButtonIndex: 0, cancelButtonIndex: 1 },
@@ -35,9 +31,8 @@ ${message}` : title)) onConfirm();
     );
     return;
   }
-  Alert.alert(title, message, [
+  showAlert(title, message, [
     { text: cancel, style: 'cancel' },
     { text: action, style: 'destructive', onPress: onConfirm },
-    // Android's back button and a tap outside close it, as Cancel does.
-  ], { cancelable: true });
+  ]);
 }

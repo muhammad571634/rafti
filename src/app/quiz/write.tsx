@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Linking, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
@@ -19,21 +19,10 @@ import {
 } from '@/lib/quiz';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, space, systemColors } from '@/theme';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 type Draft = { text: string; options: string[] };
 const blank = (): Draft => ({ text: '', options: ['', ''] });
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there (as in group info). */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /**
  * Write a quiz (F29, approved prototype): a name and up to 5 questions with 2 to 4 answers.

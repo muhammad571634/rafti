@@ -3,7 +3,7 @@ import { BlurTargetView } from 'expo-blur';
 import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
+import { FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -32,6 +32,7 @@ import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, friendHues, isDark, palette, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT, type Hue } from '@/theme';
 import type { Character, Conversation, GroupChat } from '@/types';
+import { confirmAlert as confirm } from '@/lib/alert';
 
 /** A row's face (iOS Messages' list size). */
 const AVATAR = 52;
@@ -88,18 +89,6 @@ const isUnread = (item: ChatItem) => rowOf(item).unreadCount > 0;
 /** A deep bubble (the blue, every dark-mode hue) takes white marks instead of ink ones. */
 const isDeep = (hue: Hue) => hue.ink === WHITE;
 const countText = (n: number) => (n > 99 ? '99+' : String(n));
-
-/** Alert.alert is a no-op on web; fall back to the browser's confirm there. */
-function confirm(title: string, message: string, action: string, onConfirm: () => void, cancel: string) {
-  if (Platform.OS === 'web') {
-    if (globalThis.confirm?.(`${title}\n\n${message}`)) onConfirm();
-    return;
-  }
-  Alert.alert(title, message, [
-    { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
-  ]);
-}
 
 /** The handlers every row shares; stable, so a row re-renders only when its own chat changes. */
 interface RowActions {

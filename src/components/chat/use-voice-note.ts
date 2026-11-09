@@ -9,7 +9,7 @@ import {
 } from 'expo-audio';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, AppState, Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 import { accessToken } from '@/ai/account';
 import { apiBase, serverTranscribe } from '@/ai/server';
@@ -18,6 +18,7 @@ import { dropClip, keepNote, readClip } from '@/lib/voice-files';
 import { useAppStore } from '@/store/use-app-store';
 
 import { PLAYBACK_MODE, stopNote } from './voice-player';
+import { showAlert } from '@/lib/alert';
 
 /** Small and clear enough for speech; a minute stays near 240 KB (`CLIP_CHARS_MAX`). Calls record the same. */
 export const OPTIONS: RecordingOptions = {
@@ -136,7 +137,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
       // on Android (seen on the A51), yet the system still shows its prompt. A real "never" returns
       // at once, and then only Settings can help.
       const answer = await AudioModule.requestRecordingPermissionsAsync();
-      if (!answer.granted && !answer.canAskAgain && !canAskAgain) Alert.alert(t('chat.voice.noMic'));
+      if (!answer.granted && !answer.canAskAgain && !canAskAgain) showAlert(t('chat.voice.noMic'));
       return;
     }
     // Let go while looking: nothing was meant.
@@ -170,7 +171,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     discard();
     if (canRecord && !canRecord()) return;
     if (modelOn && !allowed) {
-      Alert.alert(t('chat.voiceConsent.title'), t('chat.voiceConsent.body'), [
+      showAlert(t('chat.voiceConsent.title'), t('chat.voiceConsent.body'), [
         { text: t('chat.photoConsent.notNow'), style: 'cancel' },
         { text: t('chat.photoConsent.allow'), onPress: () => setSetting('voiceToAi', true) },
       ]);

@@ -33,6 +33,7 @@ export { Toggle } from './toggle';
 export { Txt } from './text';
 export { AddRow, BackButton, GlassBar, GlassButton, GlassIcons, glassStyle, IconRow, InsetGroup, InsetRow, LargeTitle, useScrolledPast } from './glass';
 export { SFIcon } from './symbol';
+export { AlertHost } from './alert-host';
 export { TabGlyph } from './tab-glyph';
 export type { TabGlyphName } from './tab-glyph';
 export { FrostIcon, MODULE_GLYPH, MODULE_LINE, ModuleIcon, ModuleLine, moduleTile, SymbolTile } from './module-icon';
