@@ -2024,7 +2024,12 @@
       "reminders": "약속 리마인더",
       "gifts": "선물 및 룰렛",
       "alarms": "알람"
-    }
+    },
+    "giftWaiting": "🎁 오늘의 선물: 조개 {{count}}개. 자정 전에 앱을 열어 받으세요.",
+    "giftLadder": "🎁 {{day}}일차 선물: 조개 {{count}}개. 오늘 놓치면 처음부터 다시 시작해요.",
+    "streak": "🔥 {{name}}와 {{count}}일 연속. 자정에 끊겨요. 메시지 하나면 이어져요.",
+    "streakLast": "⏳ 마지막 기회: {{name}}와의 {{count}}일 연속이 자정에 끊겨요.",
+    "shellsBurn": "🐚 무료 조개 {{count}}개가 자정에 사라져요. 채팅이나 통화에 써 보세요."
   },
   "notifications": {
     "title": "알림",
@@ -2082,7 +2087,8 @@
       "empty": "아직 알림이 없습니다",
       "markAll": "모두 읽음으로 표시",
       "earlier": "이전 알림"
-    }
+    },
+    "notifyStreak": "연속 기록"
   },
   "plans": {
     "tabPlans": "플랜",

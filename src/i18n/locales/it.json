@@ -2055,7 +2055,12 @@
       "reminders": "Promemoria programma",
       "gifts": "Regali e giri",
       "alarms": "Sveglie"
-    }
+    },
+    "giftWaiting": "🎁 Regalo di oggi: {{count}} conchiglie. Apri l’app prima di mezzanotte.",
+    "giftLadder": "🎁 Regalo del giorno {{day}}: {{count}} conchiglie. Salta oggi e la scala riparte da capo.",
+    "streak": "🔥 {{count}} giorni di fila con {{name}}. La serie finisce a mezzanotte: basta un messaggio.",
+    "streakLast": "⏳ Ultima occasione: la tua serie di {{count}} giorni con {{name}} finisce a mezzanotte.",
+    "shellsBurn": "🐚 {{count}} conchiglie gratis scadono a mezzanotte. Usale per una chat o una chiamata."
   },
   "notifications": {
     "title": "Notifiche",
@@ -2113,7 +2118,8 @@
       "empty": "Nessuna notifica ancora",
       "markAll": "Segna tutte come lette",
       "earlier": "Precedenti"
-    }
+    },
+    "notifyStreak": "Serie"
   },
   "plans": {
     "tabPlans": "Piani",

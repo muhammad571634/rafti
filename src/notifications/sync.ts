@@ -4,6 +4,7 @@ import { apiBase } from '@/ai/server';
 import i18n, { phrase } from '@/i18n';
 import { allReachKeys, ideaCategory, ideasFor } from '@/lib/reply-ideas';
 
+import { errorText } from './health';
 import { MESSAGE_CHANNEL, MESSAGE_SOUND, hasMessageSound } from './incoming';
 import { notificationsModule } from './native';
 import { planPushes, type PlannedPush, type PlanState, type PushChannel } from './plan';
@@ -11,10 +12,13 @@ import { writtenCategory } from './written';
 import type { ReplyIdea } from '@/types';
 
 /**
- * Hands the planner's list to the OS (docs/push-plan.md). The app owns everything while
- * it is open, so pushes live only while it is away: `clearPushes` on the way in,
- * `syncPushes` on the way out. Where notifications are not available (web, Android
- * Expo Go) every call is a no-op and the app works as before.
+ * Hands the planner's list to the OS (docs/push-plan.md). Since 0z189 the pushes are handed over
+ * while the app is open (on coming back and after every change that matters, `use-push-notifications`):
+ * on Android every expo-notifications call is a broadcast to the app itself, and a backgrounded app is
+ * frozen within moments, so a hand-over started on the way out never finished (seen on the A51: a
+ * whole evening with nothing scheduled). A push that comes due while the app is open is not shown:
+ * its line lands in the chat at that moment instead (`runTimers` → `landDuePushes`). Where
+ * notifications are not available (web, Android Expo Go) every call is a no-op.
  */
 
 /** iOS keeps at most 64 pending notifications per app; stay under it. */
@@ -70,14 +74,14 @@ export async function configurePushes() {
   const N = notificationsModule();
   if (!N || configured) return;
   configured = true;
-  // Anything due while the app is open is already happening inside it; stay quiet.
-  // Test pushes are the exception: they exist to be seen.
+  // Anything due while the app is open is already happening inside it (its line lands in the chat):
+  // no banner, no sound, nothing left in the tray. Test pushes exist to be seen, and a wake-up alarm
+  // rings even with the app open.
   N.setNotificationHandler({
     handleNotification: async (notification) => {
       const data = notification.request.content.data as unknown as PushData | undefined;
-      // A wake-up alarm rings even with the app open.
       const loud = data?.test === true || data?.kind === 'alarm';
-      return { shouldPlaySound: loud, shouldSetBadge: false, shouldShowBanner: loud, shouldShowList: true };
+      return { shouldPlaySound: loud, shouldSetBadge: false, shouldShowBanner: loud, shouldShowList: loud };
     },
   });
   if (Platform.OS === 'android') {
@@ -128,10 +132,16 @@ function replyButton() {
   };
 }
 
+/** The written buttons last handed over, so an unchanged set is not set again on every re-plan. */
+let categoriesSet = '';
+
 /** The buttons the model wrote are this plan's alone: each gets its action set, and old sets go. Best effort, as above. */
 async function syncWrittenCategories(plan: readonly PlannedPush[]) {
   const N = notificationsModule()!;
   const written = plan.filter((push) => push.ideas?.length);
+  const key = written.map((push) => `${push.id}:${push.ideas!.map((idea) => idea.label).join(',')}`).join('|');
+  if (key === categoriesSet) return;
+  categoriesSet = key;
   const keep = new Set(written.map((push) => writtenCategory(push.id)));
   try {
     const old = await N.getNotificationCategoriesAsync();
@@ -197,33 +207,80 @@ export async function requestPushPermission() {
   return granted;
 }
 
-/** Cancels every planned push; test pushes keep going. */
-export async function clearPushes() {
-  const N = notificationsModule();
-  if (!N) return;
-  const pending = await N.getAllScheduledNotificationsAsync();
-  await Promise.all(
-    pending
-      .filter((n) => !n.identifier.startsWith(TEST_PREFIX) && !n.identifier.startsWith(ALARM_PREFIX))
-      .map((n) => N.cancelScheduledNotificationAsync(n.identifier)),
-  );
-}
+/** A planned push (not a test push, not an alarm ring, not a live banner), which planning owns. */
+const plannedId = (identifier: string) => !identifier.startsWith(TEST_PREFIX) && !identifier.startsWith(ALARM_PREFIX) && !identifier.startsWith('live:');
 
 /**
- * Re-plans from the current state and replaces every pending push. Returns what was handed to the
- * OS (the caller logs the counted ones, `nextPushLog`), or null when pushes are off.
+ * What each pending push was handed over as (its time and words), so a re-plan only touches the
+ * pushes that changed: the app re-plans after every change that matters while it is open, and each
+ * OS call costs a round trip. Empty after a restart, when everything is handed over once again.
  */
-export async function syncPushes(state: PlanState, now = new Date()): Promise<PlannedPush[] | null> {
+const handedOver = new Map<string, string>();
+const signature = (push: PlannedPush, preview: boolean) => [push.at.getTime(), push.title, bodyFor(push, preview), categoryFor(push) ?? '', push.channel].join('|');
+
+let queue: Promise<unknown> = Promise.resolve();
+/** The longest one hand-over holds the next back: an OS call that never answers must not stop all later ones. */
+const TURN_LIMIT_MS = 15_000;
+/**
+ * One hand-over to the OS at a time (0z189): leaving and coming back a second apart used to run their
+ * cancels and schedules into each other, so the one that finished last could wipe the other's pushes.
+ */
+export function serially<T>(task: () => Promise<T>): Promise<T> {
+  const run = queue.then(task, task);
+  queue = Promise.race([run.catch(() => undefined), new Promise((resolve) => setTimeout(resolve, TURN_LIMIT_MS))]);
+  return run;
+}
+
+/** What a sync handed over: the plan, the pushes the OS took, and the first that it refused. */
+export interface SyncResult {
+  plan: PlannedPush[];
+  scheduled: PlannedPush[];
+  error?: string;
+}
+
+/** An OS call that never answers must not hold the pushes back. */
+const BUTTONS_WAIT_MS = 3_000;
+
+/**
+ * Re-plans from the current state and brings the pending pushes in line with it, or null when pushes
+ * are off: what is no longer planned is cancelled, what is new or changed is scheduled (under its own
+ * id, which replaces the old one), and what is unchanged is left alone. Each push is handed over on
+ * its own (one the OS refuses no longer loses the rest), and only the ones the OS holds count: the
+ * caller keeps them as the outbox and the day's log. The model's buttons go after, with a time limit,
+ * since a push without its buttons is better than no push. `step` names where it is, for the record.
+ */
+export async function syncPushes(state: PlanState, now = new Date(), step: (name: string) => void = () => {}): Promise<SyncResult | null> {
+  step('permission');
   if (!(await pushesAllowed())) return null;
+  step('configure');
   await configurePushes();
-  await clearPushes();
-  // Alarm rings share iOS's 64 pending notifications; the planner takes what is left.
   const N = notificationsModule()!;
-  const alarms = (await N.getAllScheduledNotificationsAsync()).filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
+  step('pending');
+  const pending = await N.getAllScheduledNotificationsAsync();
+  const pendingIds = new Set(pending.map((n) => n.identifier));
+  // Alarm rings share iOS's 64 pending notifications; the planner takes what is left.
+  const alarms = pending.filter((n) => n.identifier.startsWith(ALARM_PREFIX)).length;
+  step('plan');
+  const preview = state.settings.notificationPreview;
   const plan = planPushes(state, now, { model: !!state.settings.realAi && !!apiBase() }).slice(0, Math.max(0, MAX_PENDING - alarms));
-  await syncWrittenCategories(plan);
-  await Promise.all(plan.map((push) => schedule(push, push.id, push.at, state.settings.notificationPreview)));
-  return plan;
+  const keep = new Set(plan.map((push) => push.id));
+  step('cancel');
+  const gone = pending.filter((n) => plannedId(n.identifier) && !keep.has(n.identifier)).map((n) => n.identifier);
+  await Promise.allSettled(gone.map((id) => N.cancelScheduledNotificationAsync(id)));
+  gone.forEach((id) => handedOver.delete(id));
+  const fresh = plan.filter((push) => !pendingIds.has(push.id) || handedOver.get(push.id) !== signature(push, preview));
+  step(`schedule ${fresh.length}/${plan.length}`);
+  const results = await Promise.allSettled(fresh.map((push) => schedule(push, push.id, push.at, preview)));
+  const refusedIds = new Set<string>();
+  results.forEach((result, i) => {
+    if (result.status === 'fulfilled') handedOver.set(fresh[i].id, signature(fresh[i], preview));
+    else refusedIds.add(fresh[i].id);
+  });
+  const scheduled = plan.filter((push) => !refusedIds.has(push.id));
+  const refused = results.find((r): r is PromiseRejectedResult => r.status === 'rejected');
+  step('buttons');
+  await Promise.race([syncWrittenCategories(plan), new Promise((resolve) => setTimeout(resolve, BUTTONS_WAIT_MS))]);
+  return { plan, scheduled, ...(refused ? { error: errorText(refused.reason) } : {}) };
 }
 
 /**
@@ -292,7 +349,7 @@ function categoryFor(push: PlannedPush) {
 /** What they said, as a text shows it; hidden only when the user turned previews off in Profile. */
 function bodyFor(push: PlannedPush, preview: boolean) {
   if (push.textKey === 'push.voiceNote') return preview ? `🎤 ${i18n.t('push.voiceMessage')}` : i18n.t(push.textKey);
-  if (push.textKey) return i18n.t(push.textKey);
+  if (push.textKey) return i18n.t(push.textKey, push.textParams);
   if (!preview || !push.line) return i18n.t('push.hidden');
   return push.line;
 }

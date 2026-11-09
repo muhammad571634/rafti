@@ -13,7 +13,8 @@ import type { ReplyIdea } from '@/types';
  */
 export type PushLines = Record<string, { line: string; writtenAt: string; ideas?: ReplyIdea[] }>;
 
-const WRITTEN = new Set<PushKind>(['morning', 'evening', 'brief', 'day', 'week', 'world', 'remind', 'followUp', 'life', 'care', 'touch', 'birthday', 'comeback', 'diary', 'gift']);
+// The gift, spins, streak and shells pushes are the app's own words (0z189), never the model's.
+const WRITTEN = new Set<PushKind>(['morning', 'evening', 'brief', 'day', 'week', 'world', 'remind', 'followUp', 'life', 'care', 'touch', 'birthday', 'comeback', 'diary']);
 /**
  * Pushes whose buttons the model writes. A check-in's, a thread's and the evening question's buttons
  * do something ("Still not great" asks again, "It's off" settles it, "Tell you later" keeps a diary

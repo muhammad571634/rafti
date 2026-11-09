@@ -2024,7 +2024,12 @@
       "reminders": "日程相約提醒",
       "gifts": "福利與轉盤領取",
       "alarms": "每日晨喚鬧鐘"
-    }
+    },
+    "giftWaiting": "🎁 今日禮物：{{count}} 個貝殼。午夜前打開 App 領取。",
+    "giftLadder": "🎁 第 {{day}} 天禮物：{{count}} 個貝殼。今天錯過就要從頭開始。",
+    "streak": "🔥 和 {{name}} 連續 {{count}} 天。連續紀錄在午夜中斷，一則訊息就能延續。",
+    "streakLast": "⏳ 最後機會：你和 {{name}} 的 {{count}} 天連續紀錄將在午夜中斷。",
+    "shellsBurn": "🐚 {{count}} 個免費貝殼會在午夜消失。拿去聊天或通話吧。"
   },
   "notifications": {
     "title": "推播通知",
@@ -2082,7 +2087,8 @@
       "empty": "通知收件匣暫無任何消息",
       "markAll": "全數標記為已讀",
       "earlier": "較早前的通知記錄"
-    }
+    },
+    "notifyStreak": "連續紀錄"
   },
   "plans": {
     "tabPlans": "專屬方案",

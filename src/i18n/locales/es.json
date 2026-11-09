@@ -2055,7 +2055,12 @@
       "reminders": "Recordatorios de planes",
       "gifts": "Regalos y giros",
       "alarms": "Alarmas"
-    }
+    },
+    "giftWaiting": "🎁 Regalo de hoy: {{count}} conchas. Abre la app antes de medianoche.",
+    "giftLadder": "🎁 Regalo del día {{day}}: {{count}} conchas. Si fallas hoy, la escalera vuelve a empezar.",
+    "streak": "🔥 {{count}} días seguidos con {{name}}. La racha termina a medianoche: un mensaje la salva.",
+    "streakLast": "⏳ Última oportunidad: tu racha de {{count}} días con {{name}} termina a medianoche.",
+    "shellsBurn": "🐚 {{count}} conchas gratis se queman a medianoche. Úsalas en un chat o una llamada."
   },
   "notifications": {
     "title": "Notificaciones",
@@ -2113,7 +2118,8 @@
       "empty": "Aún no hay notificaciones",
       "markAll": "Marcar todo como leído",
       "earlier": "Anteriores"
-    }
+    },
+    "notifyStreak": "Rachas"
   },
   "plans": {
     "tabPlans": "Planes",

@@ -2024,7 +2024,12 @@
       "reminders": "予定リマインダー",
       "gifts": "ギフトとスピン",
       "alarms": "アラーム"
-    }
+    },
+    "giftWaiting": "🎁 今日のギフト：貝殻{{count}}個。深夜0時までにアプリを開いて受け取ろう。",
+    "giftLadder": "🎁 {{day}}日目のギフト：貝殻{{count}}個。今日を逃すと1日目に戻ります。",
+    "streak": "🔥 {{name}}と{{count}}日連続。深夜0時に途切れます。メッセージ1通で続きます。",
+    "streakLast": "⏳ ラストチャンス：{{name}}との{{count}}日連続が深夜0時に途切れます。",
+    "shellsBurn": "🐚 無料の貝殻{{count}}個は深夜0時に消えます。チャットや通話に使おう。"
   },
   "notifications": {
     "title": "通知",
@@ -2082,7 +2087,8 @@
       "empty": "通知はまだありません",
       "markAll": "すべて既読にする",
       "earlier": "過去の通知"
-    }
+    },
+    "notifyStreak": "連続記録"
   },
   "plans": {
     "tabPlans": "プラン",

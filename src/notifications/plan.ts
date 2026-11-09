@@ -11,6 +11,7 @@ import { temperOf } from '@/lib/temper';
 import { beforeThing } from '@/lib/threads';
 import { followUpAt, reminderAt } from '@/lib/schedule';
 import { pickSeeded } from '@/lib/seeded';
+import { shortName } from '@/lib/names';
 import { lastTalkedAt } from '@/lib/talk';
 import {
   birthdayLines,
@@ -26,7 +27,9 @@ import { dayLine } from '@/mock/day-ask';
 import { weekLine } from '@/mock/week';
 import { careLine } from '@/mock/care';
 import { lifeLine } from '@/mock/kin';
-import { COMEBACK_DAYS, comebackLines, diaryNudgeLines, giftNudgeLines } from '@/mock/push';
+import { COMEBACK_DAYS, comebackLines, diaryNudgeLines } from '@/mock/push';
+import { onPaidPlan } from '@/economy/plans';
+import { DAILY_CHECK_IN } from '@/economy/shells';
 import { temperComeback } from '@/mock/temper';
 import { mockTouchLine } from '@/mock/threads';
 import { worldNewsLine } from '@/mock/world-voice';
@@ -34,8 +37,11 @@ import { WORLDS } from '@/mock/worlds';
 import { pickWorldNews, WORLD_NEWS_HOUR } from '@/lib/world-story';
 import { content } from '@/i18n/voice';
 
-import { asleep, placeFlexible, PUSH_BUDGET, rhythm, type Budget } from './budget';
+import { asleep, placeFlexible, rhythm } from './budget';
+import { capped } from './caps';
 import { withWritten, type PushLines } from './written';
+
+export { counts } from './caps';
 import type {
   AppSettings,
   CareItem,
@@ -81,7 +87,9 @@ export type PushKind =
   | 'unread'
   | 'comeback'
   | 'gift'
-  | 'spins';
+  | 'spins'
+  | 'streak'
+  | 'shells';
 
 /** Android channels; the user can mute each one in the phone's settings. */
 export type PushChannel = 'messages' | 'calls' | 'reminders' | 'gifts';
@@ -96,7 +104,9 @@ export interface PlannedPush {
   title?: string;
   /** What the character says. Absent when `textKey` names a fixed app string. */
   line?: string;
-  textKey?: 'push.incomingCall' | 'push.voiceNote' | 'push.spins';
+  textKey?: 'push.incomingCall' | 'push.voiceNote' | 'push.spins' | 'push.giftWaiting' | 'push.giftLadder' | 'push.streak' | 'push.streakLast' | 'push.shellsBurn';
+  /** The numbers and names an app push's `textKey` reads ("12 free shells burn at midnight"). */
+  textParams?: Record<string, string | number>;
   /** Where a tap goes. */
   route: string;
   channel: PushChannel;
@@ -128,7 +138,7 @@ export interface PlanState {
   /** What the user said that has a future (`src/lib/threads.ts`); older saved states have none. */
   threads?: Thread[];
   /** Free users get a voice note instead of the daily call (`canRing`). */
-  wallet: Pick<Wallet, 'subscription'>;
+  wallet: Pick<Wallet, 'subscription' | 'free'>;
   /** Blocked friends tell no world news; older saved states have none. */
   blockedIds?: string[];
   /** The lines the model wrote ahead (`src/notifications/written.ts`); older saved states have none. */
@@ -151,33 +161,15 @@ export const PUSH_RULES = {
   /** Comeback pushes go out at this time on their day: clear of the morning and night greetings. */
   comebackAt: [19, 30] as const,
   quoteMax: 40,
+  /** A streak worth saving is at least this long; the evening nudge, then the last call before quiet hours. */
+  streakMin: 2,
+  streakAt: [19, 0] as const,
+  streakLastAt: [22, 15] as const,
+  /** Free shells left in the evening, if at least this many: they burn at midnight. */
+  shellsMin: 5,
+  shellsAt: [21, 0] as const,
 } as const;
 
-/** Lower runs first when the budget is short. */
-const PRIORITY: Record<PushKind, number> = {
-  call: 0,
-  remind: 0,
-  birthday: 0,
-  followUp: 1,
-  care: 1,
-  touch: 1,
-  life: 3,
-  brief: 2,
-  day: 2,
-  week: 3,
-  world: 4,
-  unread: 2,
-  morning: 3,
-  evening: 3,
-  voiceNote: 3,
-  comeback: 3,
-  diary: 4,
-  gift: 5,
-  spins: 6,
-};
-
-/** Never dropped for the budget or the spacing: the user asked for them. */
-const EXEMPT = new Set<PushKind>(['call', 'remind', 'birthday']);
 
 const DAY_MS = 86_400_000;
 
@@ -223,7 +215,11 @@ function kindOn(kind: PushKind, settings: AppSettings) {
       return settings.notifyAway;
     case 'gift':
     case 'spins':
+    case 'shells':
       return settings.notifyGifts;
+    // On unless switched off (saved settings from before 0z189 have no such key).
+    case 'streak':
+      return settings.notifyStreak !== false;
     default:
       return true;
   }
@@ -243,9 +239,6 @@ function quoteOf(messages: readonly Message[] | undefined) {
 /** Pushes without an exact time: they move to an hour the user is active in, with a little jitter. */
 const FLEXIBLE = new Set<PushKind>(['morning', 'evening', 'day', 'week', 'world', 'life', 'care', 'comeback', 'touch']);
 // The brief is not flexible: it has to come before the things it wishes luck for.
-
-/** Whether a planned push uses the day's budget (and so goes into `daily.pushLog`). */
-export const counts = (push: PlannedPush) => !EXEMPT.has(push.kind) && !push.timeSensitive;
 
 /** `model`: friends' lines are the model's, and a push whose line is not written yet stays unsent (`withWritten`). */
 export function planPushes(state: PlanState, now: Date, { model = false }: { model?: boolean } = {}): PlannedPush[] {
@@ -469,19 +462,54 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
       }
     }
 
-    // The check-in gift is still waiting in the evening.
-    if (!(isToday && daily.lastLoginDay === today) && closest[0]) {
+    // What the user loses at midnight, Duolingo's way (owner, 2026-11-09): said by the app in its own
+    // words with the real numbers, never put in a friend's mouth, so it goes whatever state the model
+    // is in. The app re-plans while it is open, so doing the thing takes its push away: these only
+    // reach someone who has not done it yet.
+    const yesterday = dayKey(at(new Date(day.getTime() - DAY_MS), 12));
+    // The check-in gift (free users; a paid plan has its own shells): past day 1, missing a day
+    // starts the ladder over, and the push says so.
+    if (!onPaidPlan(state.wallet.subscription, day.getTime()) && !(isToday && daily.lastLoginDay === today)) {
       const when = at(day, PUSH_RULES.giftHour);
       if (inHorizon(when)) {
+        const ladderDay = daily.lastLoginDay === yesterday ? (daily.checkInDay % DAILY_CHECK_IN.length) + 1 : 1;
         say({
           id: `gift:${key}`,
           kind: 'gift',
           at: when,
-          characterId: closest[0].id,
-          line: pickSeeded(giftNudgeLines(closest[0].gender), key),
+          textKey: ladderDay > 1 ? 'push.giftLadder' : 'push.giftWaiting',
+          textParams: { day: ladderDay, count: DAILY_CHECK_IN[ladderDay - 1] },
           route: '/',
           channel: 'gifts',
         });
+      }
+    }
+
+    // A friend's streak (Us): the longest one still alive that a message that day would keep, in the
+    // evening and once more before quiet hours.
+    const streak = friends
+      .map((c) => ({ c, r: relationships[c.id] }))
+      .filter(({ r }) => r.streakDays >= PUSH_RULES.streakMin && r.lastChatDay === yesterday)
+      .sort((a, b) => b.r.streakDays - a.r.streakDays)[0];
+    if (streak) {
+      // The first name, as a friend is spoken of ("8 days in a row with Hana").
+      const textParams = { count: streak.r.streakDays, name: shortName(nameOf(streak.c, relationships)) };
+      const steps = [
+        { id: `streak:${key}`, time: PUSH_RULES.streakAt, textKey: 'push.streak' as const },
+        { id: `streakLast:${key}`, time: PUSH_RULES.streakLastAt, textKey: 'push.streakLast' as const },
+      ];
+      for (const step of steps) {
+        const when = at(day, step.time[0], step.time[1]);
+        if (inHorizon(when)) say({ id: step.id, kind: 'streak', at: when, textKey: step.textKey, textParams, route: chatRoute(streak.c.id) });
+      }
+    }
+
+    // Today's free shells burn at midnight (`creditFree`): how many are left, in the evening.
+    const free = state.wallet.free;
+    if (isToday && free && free.day === today && free.amount >= PUSH_RULES.shellsMin) {
+      const when = at(day, PUSH_RULES.shellsAt[0], PUSH_RULES.shellsAt[1]);
+      if (inHorizon(when)) {
+        say({ id: `shells:${key}`, kind: 'shells', at: when, textKey: 'push.shellsBurn', textParams: { count: free.amount }, route: '/', channel: 'gifts' });
       }
     }
 
@@ -640,62 +668,4 @@ export function pushCandidates(state: PlanState, now: Date): PlannedPush[] {
   }
 
   return out;
-}
-
-/** A counted push as the budget sees it: when, and from whom. */
-type Slot = Pick<PlannedPush, 'at' | 'characterId'>;
-
-/**
- * Applies quiet hours and sleep, the day budget, the gap between pushes and each friend's share.
- * Today's pushes that already went out (`sent`) count first, so planning again later in the day
- * never hands out a fresh budget. Exempt kinds and time-sensitive texts before the user's own plans
- * always stay (a user-set call or plan may ring at night). A push too close to a more important one
- * moves later the same day instead of being dropped; it is dropped only when the day has no room left.
- */
-function capped(
-  all: PlannedPush[],
-  isQuiet: (d: Date) => boolean,
-  budget: Budget,
-  temperFor: (characterId: string) => Temper,
-  sent: readonly PushSent[],
-): PlannedPush[] {
-  const kept: PlannedPush[] = [];
-  const counted: Slot[] = sent.map((p) => ({ at: new Date(p.at), characterId: p.characterId }));
-  const ordered = [...all].sort((a, b) => PRIORITY[a.kind] - PRIORITY[b.kind] || a.at.getTime() - b.at.getTime());
-
-  for (const push of ordered) {
-    if (!counts(push)) {
-      kept.push(push);
-      continue;
-    }
-    const day = dayKey(push.at);
-    const sameDay = counted.filter((p) => dayKey(p.at) === day);
-    if (sameDay.length >= budget.day) continue;
-    const theirs = push.characterId ? sameDay.filter((p) => p.characterId === push.characterId) : [];
-    if (push.characterId && theirs.length >= budget.perFriend(temperFor(push.characterId))) continue;
-    const at = firstFreeSlot(push.at, sameDay, theirs, isQuiet);
-    if (!at) continue;
-    const placed = { ...push, at };
-    kept.push(placed);
-    counted.push(placed);
-  }
-  return kept.sort((a, b) => a.at.getTime() - b.at.getTime());
-}
-
-const SHIFT_STEP_MS = 15 * 60_000;
-
-/**
- * The wanted time, or the first later time that day outside quiet hours and sleep with room around
- * it: `minGapMs` from any counted push, `friendGapMs` from the same friend's.
- */
-function firstFreeSlot(wanted: Date, sameDay: Slot[], theirs: Slot[], isQuiet: (d: Date) => boolean): Date | null {
-  const day = dayKey(wanted);
-  for (let t = wanted.getTime(); dayKey(new Date(t)) === day; t += SHIFT_STEP_MS) {
-    const candidate = new Date(t);
-    if (isQuiet(candidate)) continue;
-    const spaced = sameDay.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_BUDGET.minGapMs);
-    const spacedFromFriend = theirs.every((p) => Math.abs(p.at.getTime() - t) >= PUSH_BUDGET.friendGapMs);
-    if (spaced && spacedFromFriend) return candidate;
-  }
-  return null;
 }

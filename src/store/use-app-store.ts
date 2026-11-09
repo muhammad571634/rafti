@@ -74,7 +74,8 @@ import {
   pushCue,
   IN_CHAT_CUE,
 } from '@/ai/moment-prompt';
-import { dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
+import type { PushHealth } from '@/notifications/health';
+import { alreadySaid, dueOutbox, landedMarks, type OutboxItem } from '@/notifications/outbox';
 import { announceIncoming } from '@/notifications/incoming';
 import { planPushes } from '@/notifications/plan';
 import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pushLine, writesIdeas, writtenKey, type PushLines } from '@/notifications/written';
@@ -438,6 +439,8 @@ export interface AppState {
   care: CareItem[];
   pushOutbox: OutboxItem[];
   pushLines: PushLines;
+  /** How the last hand-over of pushes to the phone went (`src/notifications/health.ts`). */
+  pushHealth?: PushHealth;
   /** What the user said that has a future, followed up like a person would (`src/lib/threads.ts`). */
   threads: Thread[];
   /** Notes the user pinned on the message board, oldest first */
@@ -633,6 +636,7 @@ export interface AppState {
   setPushLog: (log: PushSent[]) => void;
   /** What the phone will show while the app is away (`src/notifications/outbox.ts`). */
   setPushOutbox: (outbox: OutboxItem[]) => void;
+  setPushHealth: (health: PushHealth) => void;
   /** Lines whose push has gone out go into their chats with that time. Safe to call often. */
   landDuePushes: () => void;
   /** The model writes the next pushes' lines ahead (`src/notifications/written.ts`); how many it wrote. */
@@ -932,6 +936,7 @@ export type ProfilePatch = Partial<
 
 type PersistedKeys =
   | 'pushOutbox'
+  | 'pushHealth'
   | 'pushLines'
   | 'user'
   | 'wallet'
@@ -2153,18 +2158,21 @@ export const useAppStore = create<AppState>()(
 
       setPushLog: (pushLog) => set((s) => ({ daily: { ...s.daily, pushLog } })),
       setPushOutbox: (pushOutbox) => set({ pushOutbox }),
+      setPushHealth: (pushHealth) => set({ pushHealth }),
 
       landDuePushes: () => {
         const now = new Date();
-        const due = dueOutbox(get().pushOutbox, now);
-        if (!due.length) return;
+        const all = dueOutbox(get().pushOutbox, now);
+        if (!all.length) return;
+        // What the app already said itself (it got there first while open) is not said again; it still leaves the outbox.
+        const due = all.filter((item) => !alreadySaid(item, get()));
         due.forEach(({ id, kind, characterId, line, at, reach, ideas }) => {
           // Only over a line that lands: `receivePushLine` drops a crisis line, and a card alone is no recap.
           if (kind === 'week' && !detectCrisis(line)) landWeekCard(set, get, id, characterId, at);
           get().receivePushLine({ id, characterId, text: line, at, reach, ideas });
         });
         const marks = landedMarks(due);
-        const left = new Set(due.map((item) => item.id));
+        const left = new Set(all.map((item) => item.id));
         set((s) => ({
           pushOutbox: s.pushOutbox.filter((item) => !left.has(item.id)),
           daily: {
@@ -4131,6 +4139,7 @@ export const useAppStore = create<AppState>()(
         schedules: s.schedules,
         care: s.care,
         pushOutbox: s.pushOutbox,
+        pushHealth: s.pushHealth,
         pushLines: s.pushLines,
         threads: s.threads,
         boardPosts: s.boardPosts,

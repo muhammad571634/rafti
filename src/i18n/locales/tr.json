@@ -2055,7 +2055,12 @@
       "reminders": "Plan hatırlatıcıları",
       "gifts": "Hediyeler ve çevirmeler",
       "alarms": "Alarmlar"
-    }
+    },
+    "giftWaiting": "🎁 Bugünün hediyesi: {{count}} deniz kabuğu. Gece yarısından önce uygulamayı aç.",
+    "giftLadder": "🎁 {{day}}. gün hediyesi: {{count}} deniz kabuğu. Bugünü kaçırırsan merdiven baştan başlar.",
+    "streak": "🔥 {{name}} ile {{count}} gündür aralıksız. Seri gece yarısı biter: tek bir mesaj onu korur.",
+    "streakLast": "⏳ Son şans: {{name}} ile {{count}} günlük serin gece yarısı bitiyor.",
+    "shellsBurn": "🐚 {{count}} ücretsiz deniz kabuğu gece yarısı yanacak. Bir sohbet ya da arama için kullan."
   },
   "notifications": {
     "title": "Bildirimler",
@@ -2113,7 +2118,8 @@
       "empty": "Henüz bildirim yok",
       "markAll": "Tümünü okundu işaretle",
       "earlier": "Daha önce"
-    }
+    },
+    "notifyStreak": "Seriler"
   },
   "plans": {
     "tabPlans": "Planlar",

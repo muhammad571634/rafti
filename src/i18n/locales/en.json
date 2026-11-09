@@ -2055,7 +2055,12 @@
       "reminders": "Plan reminders",
       "gifts": "Gifts and spins",
       "alarms": "Alarms"
-    }
+    },
+    "giftWaiting": "🎁 Today's gift: {{count}} shells. Open the app before midnight to get it.",
+    "giftLadder": "🎁 Day {{day}} gift: {{count}} shells. Miss today and the ladder starts over.",
+    "streak": "🔥 {{count}} days in a row with {{name}}. The streak ends at midnight: one message keeps it.",
+    "streakLast": "⏳ Last call: your {{count}}-day streak with {{name}} ends at midnight.",
+    "shellsBurn": "🐚 {{count}} free shells burn at midnight. Spend them on a chat or a call."
   },
   "notifications": {
     "title": "Notifications",
@@ -2113,7 +2118,8 @@
       "empty": "No notifications yet",
       "markAll": "Mark all read",
       "earlier": "Earlier"
-    }
+    },
+    "notifyStreak": "Streaks"
   },
   "plans": {
     "tabPlans": "Plans",

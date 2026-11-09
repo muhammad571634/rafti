@@ -14,6 +14,30 @@ reminder. Every line that goes out lands in its chat with its own time, tapped o
 
 **Changed 2026-11-02 (0z90):** with the model on and previews on, the buttons under a friend's push are replies the model wrote from that chat (`pushCue`, `pushIdeas`), and the same replies stand under the line in the chat. A check-in, a thread, the evening question and a family day keep the code's buttons, whose answers do something.
 
+**Changed 2026-11-09 (0z189), after the owner got two or three pushes a day on the A51:**
+- **Handed over while the app is open.** On Android every expo-notifications call is a broadcast to
+  the app itself, and a backgrounded app is frozen within moments: the hand-over on the way out
+  stopped at its first call (traced: `stuck at pending`), so most evenings nothing was scheduled.
+  Now `use-push-notifications` hands the plan over on coming back, after every change the planner
+  reads (settled 5 s, at most once a minute), every 10 minutes while open, and once more on the way
+  out (best effort, it matters for the unread nudge). Pushes are no longer cleared on opening: one
+  that comes due while the app is open is hidden (no banner, nothing in the tray) and its line lands
+  in the chat at that moment (`runTimers` → `landDuePushes`); a line the app already said itself is
+  not landed twice (`alreadySaid`). A re-plan only touches pushes that changed (`handedOver`).
+- **Never silent.** One hand-over at a time (`serially`, 15 s turns), each push scheduled on its own
+  (`allSettled`), the model's buttons after with a 3 s limit, alarms outside the push queue. Each
+  sync keeps a record (`PushHealth`: when, why, planned/scheduled, the step it stopped at, the list);
+  developer builds show it in Notification settings, failures go to the device log as `[push]`.
+- **A hello keeps to its hour**: a greeting moves at most an hour for the gaps, else it is not sent
+  (a real plan had a "good morning" at 11:18, after the same friend's 09:16 check-in).
+- **FOMO in the app's own words** (Duolingo): a friend's streak ending at midnight (19:00, and a last
+  call at 22:15; "Streaks" switch), today's free shells that burn at midnight (21:00, 5 or more), the
+  check-in gift with its ladder ("miss today and it starts over", free users). App pushes with the
+  real numbers, never a line in a friend's mouth, so they go whatever state the model is in; doing
+  the thing takes them away at the next re-plan.
+- The brakes (priority, budget, gaps, quiet hours, the greeting hour) live in `caps.ts`, tested on
+  their own (`caps.test.ts`); the inbox on Us marks itself read when you leave it (it had piled up to 39).
+
 **How hard we push (owner: be aggressive; founder's limits):** frequency stays at the budget above,
 and the words do the work: each line names something real and leaves open what only a reply settles
 (`pushCue`). Sulking, teasing and counting days are fine. Never threats, harm, "I will vanish", or

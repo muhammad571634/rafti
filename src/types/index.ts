@@ -1119,6 +1119,8 @@ export interface AppSettings {
   /** The comeback ladder: the friend you talked with last writes while you are away. */
   notifyAway: boolean;
   notifyGifts: boolean;
+  /** A friend's streak about to end at midnight, Duolingo's way (0z189). */
+  notifyStreak: boolean;
   /** Store offers: opt-in only (App Store 4.5.4), so off until the user turns it on. */
   notifyOffers: boolean;
   quietHours: boolean;

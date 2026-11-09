@@ -2055,7 +2055,12 @@
       "reminders": "Lembretes de planos",
       "gifts": "Presentes e giros",
       "alarms": "Alarmes"
-    }
+    },
+    "giftWaiting": "🎁 Presente de hoje: {{count}} conchas. Abra o app antes da meia-noite.",
+    "giftLadder": "🎁 Presente do dia {{day}}: {{count}} conchas. Perca hoje e a escada recomeça.",
+    "streak": "🔥 {{count}} dias seguidos com {{name}}. A sequência acaba à meia-noite: uma mensagem a mantém.",
+    "streakLast": "⏳ Última chance: sua sequência de {{count}} dias com {{name}} acaba à meia-noite.",
+    "shellsBurn": "🐚 {{count}} conchas grátis queimam à meia-noite. Use num chat ou numa ligação."
   },
   "notifications": {
     "title": "Notificações",
@@ -2113,7 +2118,8 @@
       "empty": "Nenhuma notificação ainda",
       "markAll": "Marcar tudo como lido",
       "earlier": "Anteriores"
-    }
+    },
+    "notifyStreak": "Sequências"
   },
   "plans": {
     "tabPlans": "Planos",

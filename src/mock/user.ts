@@ -48,6 +48,7 @@ export const initialSettings: AppSettings = {
   notifyDiary: true,
   notifyAway: true,
   notifyGifts: true,
+  notifyStreak: true,
   notifyOffers: false,
   quietHours: true,
   quietFrom: '23:00',

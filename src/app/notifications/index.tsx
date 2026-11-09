@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, type Href } from 'expo-router';
-import { useMemo } from 'react';
+import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,6 +27,7 @@ const AVATAR = 44;
  * The bell on Us → Notifications (canvas "NotifInbox", 2026-10-21; BIMOBIMO keeps them on Us):
  * what happened lately, newest first, as iOS inset groups under Today and Earlier. Every row
  * opens the place it talks about; the glass capsule marks all read and opens the push settings.
+ * Leaving the screen marks it all read too.
  */
 export default function NotificationsScreen() {
   const insets = useSafeAreaInsets();
@@ -44,6 +45,9 @@ export default function NotificationsScreen() {
   const daily = useAppStore((s) => s.daily);
   const seenAt = useAppStore((s) => s.inboxSeenAt);
   const markSeen = useAppStore((s) => s.markInboxSeen);
+  // As on iOS, looking is reading (0z189: the bell on Us had piled up to 39): the dots show for this
+  // visit, and leaving the screen marks it all read, so the count starts from what is new next time.
+  useFocusEffect(useCallback(() => () => markSeen(), [markSeen]));
 
   const items = useMemo(
     () => buildInbox({ characterDiary, calls, schedules, moments, boardPosts, daily }),

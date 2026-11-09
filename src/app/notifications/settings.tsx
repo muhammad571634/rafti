@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Updates from 'expo-updates';
 import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, StyleSheet } from 'react-native';
@@ -8,6 +9,7 @@ import { LockPreview } from '@/components/notifications/lock-preview';
 import { canRing } from '@/economy/plans';
 import { GlassBar, IconRow, InsetGroup, InsetRow, LargeTitle, PressableScale, Screen, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { usePushPermission } from '@/hooks/use-push-permission';
+import { clockTime } from '@/lib/format';
 import { pickSeeded } from '@/lib/seeded';
 import { dayKey, morningGreetings } from '@/mock';
 import { hourClock, pushDay } from '@/notifications/budget';
@@ -17,6 +19,8 @@ import { colors, moduleFills, space, systemColors } from '@/theme';
 import type { AppSettings } from '@/types';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
+/** Developer and preview builds, as in Profile. */
+const SHOW_DEV = __DEV__ || Updates.channel === 'preview';
 type SwitchKey = { [K in keyof AppSettings]-?: AppSettings[K] extends boolean ? K : never }[keyof AppSettings];
 
 /** Every switch on the screen with its iOS system-colour icon; `hint` rows carry one line under the title. */
@@ -38,6 +42,7 @@ const GROUPS: { title: string; rows: { key: SwitchKey; icon: IconName; fill: str
   {
     title: 'rafti',
     rows: [
+      { key: 'notifyStreak', icon: 'flame', fill: systemColors.orange },
       { key: 'notifyGifts', icon: 'gift', fill: moduleFills.gifts },
       { key: 'notifyOffers', icon: 'pricetag', fill: systemColors.purple },
     ],
@@ -68,6 +73,7 @@ export default function NotificationSettingsScreen() {
   const messages = useAppStore((s) => s.messages);
   const care = useAppStore((s) => s.care);
   const daily = useAppStore((s) => s.daily);
+  const health = useAppStore((s) => s.pushHealth);
   const { status, refresh } = usePushPermission();
   const { scrolled, onScroll } = useScrolledPast(40);
 
@@ -174,8 +180,19 @@ export default function NotificationSettingsScreen() {
             fill={systemColors.teal}
             title={t('notifications.sleep')}
             meta={`${hourClock(today.sleep.from)} – ${hourClock(today.sleep.to)}`}
-            last
+            last={!SHOW_DEV}
           />
+          {SHOW_DEV ? (
+            // Developer builds: how the last hand-over to the phone went (`PushHealth`), English only.
+            <IconRow
+              icon="pulse"
+              fill={health?.error ? systemColors.red : systemColors.gray}
+              title={`Last sync · ${health?.event ?? 'none yet'}`}
+              meta={health ? `${clockTime(health.at)} · ${health.off ? 'off' : `${health.scheduled}/${health.planned}`}` : '—'}
+              hint={[health?.error, ...(health?.next ?? [])].filter(Boolean).join('\n') || undefined}
+              last
+            />
+          ) : null}
         </InsetGroup>
 
         {GROUPS.map((group) => (

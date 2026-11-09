@@ -2024,7 +2024,12 @@
       "reminders": "Pengingat rencana",
       "gifts": "Hadiah dan putaran",
       "alarms": "Alarm"
-    }
+    },
+    "giftWaiting": "🎁 Hadiah hari ini: {{count}} kerang. Buka aplikasi sebelum tengah malam.",
+    "giftLadder": "🎁 Hadiah hari ke-{{day}}: {{count}} kerang. Lewatkan hari ini dan tangganya mulai dari awal.",
+    "streak": "🔥 {{count}} hari berturut-turut dengan {{name}}. Streak berakhir tengah malam: satu pesan menyelamatkannya.",
+    "streakLast": "⏳ Kesempatan terakhir: streak {{count}} hari dengan {{name}} berakhir tengah malam.",
+    "shellsBurn": "🐚 {{count}} kerang gratis hangus tengah malam. Pakai untuk chat atau telepon."
   },
   "notifications": {
     "title": "Notifikasi",
@@ -2082,7 +2087,8 @@
       "empty": "Belum ada notifikasi",
       "markAll": "Tandai semua telah dibaca",
       "earlier": "Sebelumnya"
-    }
+    },
+    "notifyStreak": "Streak"
   },
   "plans": {
     "tabPlans": "Paket",

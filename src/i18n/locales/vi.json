@@ -2024,7 +2024,12 @@
       "reminders": "Lời nhắc kế hoạch",
       "gifts": "Quà tặng và vòng quay",
       "alarms": "Báo thức"
-    }
+    },
+    "giftWaiting": "🎁 Quà hôm nay: {{count}} vỏ sò. Mở ứng dụng trước nửa đêm để nhận.",
+    "giftLadder": "🎁 Quà ngày {{day}}: {{count}} vỏ sò. Bỏ lỡ hôm nay là chuỗi quà bắt đầu lại.",
+    "streak": "🔥 {{count}} ngày liên tiếp với {{name}}. Chuỗi kết thúc lúc nửa đêm: một tin nhắn là giữ được.",
+    "streakLast": "⏳ Cơ hội cuối: chuỗi {{count}} ngày với {{name}} kết thúc lúc nửa đêm.",
+    "shellsBurn": "🐚 {{count}} vỏ sò miễn phí sẽ mất lúc nửa đêm. Dùng cho một cuộc trò chuyện hoặc cuộc gọi."
   },
   "notifications": {
     "title": "Thông báo",
@@ -2082,7 +2087,8 @@
       "empty": "Chưa có thông báo nào",
       "markAll": "Đánh dấu tất cả là đã đọc",
       "earlier": "Trước đó"
-    }
+    },
+    "notifyStreak": "Chuỗi ngày"
   },
   "plans": {
     "tabPlans": "Gói",

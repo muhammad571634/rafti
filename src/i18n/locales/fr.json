@@ -2055,7 +2055,12 @@
       "reminders": "Rappels de projets",
       "gifts": "Cadeaux et tirages",
       "alarms": "Alarmes"
-    }
+    },
+    "giftWaiting": "🎁 Cadeau du jour : {{count}} coquillages. Ouvre l'app avant minuit.",
+    "giftLadder": "🎁 Cadeau du jour {{day}} : {{count}} coquillages. Rate aujourd'hui et l'échelle repart à zéro.",
+    "streak": "🔥 {{count}} jours de suite avec {{name}}. La série s’arrête à minuit : un message la sauve.",
+    "streakLast": "⏳ Dernière chance : ta série de {{count}} jours avec {{name}} s’arrête à minuit.",
+    "shellsBurn": "🐚 {{count}} coquillages gratuits brûlent à minuit. Utilise-les pour un chat ou un appel."
   },
   "notifications": {
     "title": "Notifications",
@@ -2113,7 +2118,8 @@
       "empty": "Aucune notification pour l'instant",
       "markAll": "Tout marquer comme lu",
       "earlier": "Précédents"
-    }
+    },
+    "notifyStreak": "Séries"
   },
   "plans": {
     "tabPlans": "Abonnements",

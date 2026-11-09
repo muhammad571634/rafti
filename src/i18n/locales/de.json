@@ -2055,7 +2055,12 @@
       "reminders": "Terminerinnerungen",
       "gifts": "Geschenke und Drehs",
       "alarms": "Wecker"
-    }
+    },
+    "giftWaiting": "🎁 Dein Geschenk heute: {{count}} Muscheln. Öffne die App vor Mitternacht.",
+    "giftLadder": "🎁 Geschenk Tag {{day}}: {{count}} Muscheln. Verpasst du heute, beginnt die Leiter neu.",
+    "streak": "🔥 {{count}} Tage am Stück mit {{name}}. Die Serie endet um Mitternacht: eine Nachricht hält sie.",
+    "streakLast": "⏳ Letzte Chance: deine Serie mit {{name}} ({{count}} Tage) endet um Mitternacht.",
+    "shellsBurn": "🐚 {{count}} Gratis-Muscheln verfallen um Mitternacht. Nutze sie für einen Chat oder einen Anruf."
   },
   "notifications": {
     "title": "Mitteilungen",
@@ -2113,7 +2118,8 @@
       "empty": "Noch keine Mitteilungen",
       "markAll": "Alle gelesen",
       "earlier": "Früher"
-    }
+    },
+    "notifyStreak": "Serien"
   },
   "plans": {
     "tabPlans": "Abos",

@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z189. Pushes fixed at the root (handed over while the app is open), FOMO pushes Duolingo's way, sync health on record (2026-11-09, Claude 1). NEXT: watch the A51 for a day (Notification settings → Last sync in the preview build), then the 0z188 list
+
+- **Owner's report**: on the APK only the morning hellos (Hana, Maniki, Kai) and two or three pushes a day; no "your shells burn" kind of push. Traced on the A51 (`dumpsys alarm`, a `[push]` trace): leaving the app planned the pushes, but Android freezes a backgrounded app and every expo-notifications call is a broadcast to the app itself, so the hand-over stopped at its first call (`stuck at pending`); nothing was scheduled after 21:04, and an evening with no sync means a night and morning with no pushes. A slow alarm hand-over (`stuck at alarms`) also held the next one back.
+- **Fixed** (`docs/push-plan.md`, "Changed 2026-11-09"): the plan is handed over while the app is open (coming back, any change the planner reads, every 10 min, best effort on leaving); pushes are not cleared on opening any more, one due while open is hidden and its line lands in the chat then (`runTimers`), never twice (`alreadySaid`, tested). One sync at a time, each push on its own, buttons after with a limit, alarms outside the queue, only changed pushes re-scheduled. `PushHealth` keeps each sync's result and list; preview builds show it in Notification settings ("Last sync"). Seen on the A51: 18/18 scheduled while open, `dumpsys alarm` sets at 22:16 and 22:49.
+- **Content**: a greeting moves at most an hour for the gaps (a real plan had Hana's "good morning" at 11:18 after her 09:16 check-in; gone now). New app pushes with real numbers, in the app's words so they go whatever the model's state: a friend's streak ends at midnight (19:00 + last call 22:15, new "Streaks" switch), free shells burn at midnight (21:00), the check-in gift and its ladder (free users; was a friend line the model had to write, so it never went). Seen on the A51 as a test push: "🔥 8 days in a row with Hana Reyes. The streak ends at midnight: one message keeps it." (now the first name only). 14 locales.
+- **Brakes** moved to `src/notifications/caps.ts` with `caps.test.ts` (plan.ts cannot load under node: it pulls in React Native). Inbox on Us marks itself read when you leave it (the bell had 39).
+- Test pushes from the dev button are in the owner's tray (Hana, Erik, Kai, a streak, a spin): harmless.
+- Still true: with the model on and the server's free key spent, friends' own lines (hellos, comebacks, check-ins) stay unsent by the owner's rule; the paid key brings them back.
+- Checks: tsc 0, npm test 896/896, check:locales, check:content.
+
+Still to do:
+1. Owner: a day with the phone as a real user; then read Notification settings → Last sync (preview build) if anything feels off.
+2. The 0z188 list (language check when the key resets, evals, moments on the phone).
+
 ### 0z188. Us "Our moments" by day, the whole story on its own screen; the web export fixed; Fly v50 live but the free Gemini key is spent (2026-11-09, Claude 1). NEXT: when the key resets (~13:00 Tashkent), the language check on the A51, then the evals
 
 - **Our moments** (owner picked A of `docs/prototypes/us-moments.html`, then: "the list must stop somewhere"): `src/lib/moment-groups.ts` (pure, 19 tests) + `src/components/us/moments.tsx` + new route `src/app/moments/[characterId].tsx`.

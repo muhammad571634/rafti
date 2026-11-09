@@ -38,6 +38,35 @@ export function dueOutbox(outbox: readonly OutboxItem[], now: Date): OutboxItem[
   return outbox.filter((item) => Date.parse(item.at) <= now.getTime()).sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
 }
 
+/** What `alreadySaid` reads: the marks the app sets when it says these things itself. */
+export interface SaidState {
+  daily: { greetedSlots: readonly string[]; lifeSent?: readonly string[]; worldNewsSent?: readonly string[] };
+  schedules: readonly { id: string; reminded: boolean; followedUp?: boolean }[];
+  care: readonly { id: string; done?: boolean }[];
+  threads: readonly { touches: readonly { id: string; sent?: boolean }[] }[];
+  user: { birthdayWishedYear?: number };
+}
+
+/**
+ * Whether the app already said what this line says, so landing it would say it twice (0z189: the
+ * pushes now stay handed over while the app is open, and the app may get there first). Only lines
+ * that settle one thing each: a reminder, a follow-up, a check-in, a thread's touch, a family moment,
+ * world news, the birthday, the brief and the evening question. A greeting slot can carry two friends'
+ * hellos, so a greeting is not checked: the re-plan after the app's own hello takes its push away.
+ */
+export function alreadySaid(item: OutboxItem, state: SaidState): boolean {
+  const marks = landedMarks([item]);
+  if ((item.kind === 'brief' || item.kind === 'day') && marks.slots.some((slot) => state.daily.greetedSlots.includes(slot))) return true;
+  if (marks.reminded.some((id) => state.schedules.find((x) => x.id === id)?.reminded)) return true;
+  if (marks.followedUp.some((id) => state.schedules.find((x) => x.id === id)?.followedUp)) return true;
+  if (marks.life.some((key) => state.daily.lifeSent?.includes(key))) return true;
+  if (marks.care.some((id) => state.care.find((x) => x.id === id)?.done)) return true;
+  if (marks.worlds.some((key) => state.daily.worldNewsSent?.includes(key))) return true;
+  if (marks.birthdayYear !== undefined && state.user.birthdayWishedYear === marks.birthdayYear) return true;
+  const touch = item.kind === 'touch' ? item.id.slice(item.id.indexOf(':') + 1) : undefined;
+  return !!touch && state.threads.some((thread) => thread.touches.some((x) => x.id === touch && x.sent));
+}
+
 /** What each landed line settles, read from the ids the planner gave it (`pushCandidates`). */
 export function landedMarks(items: readonly OutboxItem[]) {
   const afterKind = (id: string) => id.slice(id.indexOf(':') + 1);
