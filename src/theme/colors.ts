@@ -590,7 +590,7 @@ export const playful = isDark
       sunInk: '#FFFFFF',
       /**
        * The tab bar's chosen tab: the brand peach of the + buttons on Us and Find (owner 2026-11-08:
-       * the white pill read harsh at night); light mode keeps the ink pill.
+       * the white pill read harsh at night); light mode has a light grey pill.
        */
       tabOn: palette.apricot300,
       tabOnText: palette.peachInk,
@@ -615,8 +615,10 @@ export const playful = isDark
       red: systemColors.red,
       sun: '#FFC93C',
       sunInk: '#1F1A17',
-      tabOn: '#000000',
-      tabOnText: '#FFFFFF',
+      // A light grey capsule with an ink glyph (owner 2026-11-09: the black pill read heavy): the
+      // selected tab of iOS 26's monochrome tab bar, systemGray5, opaque so Android keeps its corners.
+      tabOn: '#E5E5EA',
+      tabOnText: '#000000',
       bar: 'rgba(255,255,255,0.94)',
       tabOff: 'rgba(60,60,67,0.6)',
       groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
