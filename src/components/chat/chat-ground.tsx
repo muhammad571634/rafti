@@ -16,14 +16,8 @@ export const PICTURE_EDGE = 56;
 /** Wide scenes are 16:9. */
 const SCENE_ASPECT = 16 / 9;
 /** Scenes put the face up and right of centre (`today-hero.tsx`); where each one sits, 0 left to 1 right. */
-const SCENE_FACE: Record<string, number> = {
-  c_adrian: 0.63, c_ari: 0.56, c_aurelian: 0.64, c_cass: 0.76, c_castor: 0.6, c_cole: 0.8, c_corvin: 0.74,
-  c_dex: 0.67, c_elio: 0.62, c_ezra: 0.61, c_felix: 0.75, c_gideon: 0.68, c_hana: 0.66, c_haze: 0.74,
-  c_hugo: 0.4, c_iris: 0.65, c_ivy: 0.76, c_jun: 0.6, c_juno: 0.7, c_kael: 0.74, c_kai: 0.6, c_kiro: 0.56,
-  c_lucas: 0.62, c_lyra: 0.8, c_marco: 0.76, c_minu: 0.45, c_nadia: 0.68, c_noah: 0.62, c_orin: 0.76,
-  c_ren: 0.8, c_rhys: 0.76, c_rio: 0.8, c_rowan: 0.66, c_seraphine: 0.58, c_seren: 0.76, c_sol: 0.6,
-  c_tessa: 0.74, c_theo: 0.66, c_vesper: 0.76, c_zarek: 0.72,
-};
+// Filled per character as the Cast 2.0 art comes in (docs/nano-banana-cast-2.md); the first cast's went with it.
+const SCENE_FACE: Record<string, number> = {};
 
 export interface Picture {
   source: ImageSource | number;
