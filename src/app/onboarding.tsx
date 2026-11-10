@@ -40,10 +40,12 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { LockPreview } from '@/components/notifications/lock-preview';
 import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
 import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { characterImage } from '@/components/ui/avatar';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
@@ -556,7 +558,7 @@ function DeckCard({ character, depth, width, height, onPress }: { character: Cha
         accessibilityRole="button"
         accessibilityLabel={`${character.name}, ${character.relation ?? (character.series ? phrase(character.series) : '')}`}
         style={StyleSheet.absoluteFill}>
-        <Image source={HEROES[character.id] ?? character.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
+        <Image source={HEROES[character.id] ?? PORTRAITS[character.id] ?? characterImage(character)} style={StyleSheet.absoluteFill} contentFit="cover" />
         <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.78)']} style={styles.deckShade} />
         <View style={styles.deckText}>
           <View style={styles.deckChip}>

@@ -27,6 +27,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { FamilyRow, familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -56,7 +57,7 @@ const WHITE = '#FFFFFF';
 /** The press that fans a folder's cards: lively, settles fast, still under Reduce Motion. */
 const FAN = { damping: 14, stiffness: 260, mass: 0.7, reduceMotion: ReduceMotion.System };
 
-const heroOf = (c: Character) => HEROES[c.id] ?? characterImage(c);
+const heroOf = (c: Character) => HEROES[c.id] ?? PORTRAITS[c.id] ?? characterImage(c);
 const imageOf = (c: Character) => {
   const src = characterImage(c);
   return typeof src === 'string' ? { uri: src } : src;
