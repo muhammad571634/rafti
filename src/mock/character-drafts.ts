@@ -227,6 +227,11 @@ export function mockDraft(input: DraftInput, genderParam?: CharacterGender): Cha
     dislikes: some(v.dislikes, `${seed}|dislikes`, 3).map((d) => fill(d, {}, gender)),
     // Opinions are for the model only: with the model off nothing reads them.
     opinions: [],
+    // Who they are to the user and the arc are the model's to write (Cast 2.0); with it off they stay empty.
+    relation: '',
+    history: '',
+    mask: '',
+    exception: '',
     heightCm: (gender === 'male' ? 175 : 160) + (hashSeed(`${seed}|height`) % 14),
   };
 }
@@ -302,5 +307,13 @@ export function mockFieldReply(field: DraftField, character: FieldContext, attem
       return JSON.stringify({ values: some(v.dislikes, `${name}|${attempt}`, 3).map((d) => fill(d, {}, gender)) });
     case 'opinions':
       return JSON.stringify({ values: [] });
+    // Who they are to the user and what they hold back are the model's to write (Cast 2.0); the stand-in leaves them.
+    case 'relation':
+    case 'history':
+    case 'mask':
+    case 'exception':
+      return JSON.stringify({ value: '' });
+    case 'arc':
+      return JSON.stringify({});
   }
 }

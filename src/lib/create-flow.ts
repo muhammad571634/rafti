@@ -1,4 +1,4 @@
-import type { CharacterCategory, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
+import type { ArcBeat, CharacterCategory, CharacterGender, CharacterRole, SpeakingStyle, VoicePreset } from '@/types';
 
 import type { CreationProblem } from './create-character';
 
@@ -74,6 +74,18 @@ export interface CreateForm {
   opinions: string[];
   preset?: VoicePreset;
   category: CharacterCategory;
+  /**
+   * Who they are to the user (Cast 2.0, docs/cast-2.md §4): the three the form asks (relation, how they
+   * act with them, what they hide), and two the model writes (history, exception). `arcBeats` are the
+   * beats written for `arcFor`; a changed secret drops them and the model writes new ones.
+   */
+  relation: string;
+  mask: string;
+  secret: string;
+  history: string;
+  exception: string;
+  arcBeats: ArcBeat[];
+  arcFor: string;
 }
 
 /** An unfinished new character, kept so leaving the screen (or Android closing the app) loses nothing. */

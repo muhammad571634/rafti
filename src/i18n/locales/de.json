@@ -1242,7 +1242,14 @@
       "discardTitle": "Änderungen verwerfen?",
       "discard": "Verwerfen",
       "keepEditing": "Weiter bearbeiten"
-    }
+    },
+    "youTwo": "Ihr zwei",
+    "relation": "Wer ist das für dich",
+    "relationPlaceholder": "Dein bester Freund, dein Ex, dein Chef…",
+    "mask": "Wie verhält er sich dir gegenüber",
+    "maskPlaceholder": "Zieht dich auf, tut so, als würdest du nerven…",
+    "secret": "Was verheimlicht er",
+    "secretPlaceholder": "Etwas, das er dir erst später erzählt"
   },
   "dating": {
     "title": "Dating",

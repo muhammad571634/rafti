@@ -1218,7 +1218,14 @@
       "discardTitle": "ทิ้งการแก้ไขไหม?",
       "discard": "ทิ้ง",
       "keepEditing": "แก้ไขต่อ"
-    }
+    },
+    "youTwo": "เธอกับเขา",
+    "relation": "เขาเป็นใครสำหรับเธอ",
+    "relationPlaceholder": "เพื่อนสนิท แฟนเก่า เจ้านาย…",
+    "mask": "เขาทำตัวกับเธอยังไง",
+    "maskPlaceholder": "ชอบแซว ทำเป็นรำคาญ…",
+    "secret": "สิ่งที่เขาซ่อนไว้",
+    "secretPlaceholder": "เรื่องที่เขาจะเล่าให้ฟังทีหลัง"
   },
   "dating": {
     "title": "เดต",

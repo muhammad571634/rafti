@@ -23,6 +23,9 @@ import {
   BACKSTORY_MAX,
   BIO_MAX,
   checkCreation,
+  MASK_MAX,
+  RELATION_MAX,
+  SECRET_MAX,
   DEFINITION_MAX,
   GENDERS,
   GREETING_MAX,
@@ -105,6 +108,13 @@ const BLANK: CreateForm = {
   opinions: [],
   preset: 'warm',
   category: 'original',
+  relation: '',
+  mask: '',
+  secret: '',
+  history: '',
+  exception: '',
+  arcBeats: [],
+  arcFor: '',
 };
 
 /** A character the user made, as the form holds it. */
@@ -134,6 +144,13 @@ function formOf(c: Character): CreateForm {
     opinions: c.opinions ?? [],
     preset: c.voicePreset,
     category: c.category,
+    relation: c.relation ?? '',
+    mask: c.mask ?? '',
+    secret: c.arc?.secret ?? '',
+    history: c.history ?? '',
+    exception: c.exception ?? '',
+    arcBeats: c.arc?.beats ?? [],
+    arcFor: c.arc?.secret ?? '',
   };
 }
 
@@ -161,6 +178,13 @@ const fromDraft = (form: CreateForm, d: CharacterDraft): CreateForm => ({
   dislikes: d.dislikes.join(', '),
   opinions: d.opinions,
   preset: d.voicePreset,
+  relation: d.relation,
+  mask: d.mask,
+  secret: d.arc?.secret ?? '',
+  history: d.history,
+  exception: d.exception,
+  arcBeats: d.arc?.beats ?? [],
+  arcFor: d.arc?.secret ?? '',
 });
 
 /**
@@ -288,7 +312,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     greeting: form.greeting,
     hasPhoto: !!form.imageUri,
     look: form.look,
-    more: [form.tagline, form.opening, form.quirk, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes],
+    more: [form.tagline, form.opening, form.quirk, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes, form.relation, form.mask],
     photoRights: form.photoRights,
     voice,
     voiceConsent: true,
@@ -402,10 +426,20 @@ function CharacterForm({ editing }: { editing?: Character }) {
       haptic.error();
       return setError(t('createCharacter.quick.problems.busy'));
     }
+    // What they hide comes back as a whole arc: the secret shows, the beats ride along for it.
+    if (typeof value === 'object' && !Array.isArray(value)) return set({ secret: value.secret, arcBeats: value.beats, arcFor: value.secret });
     const text = Array.isArray(value) ? value.join('\n') : value;
     const list = Array.isArray(value) ? value : [value];
     const patch: Partial<CreateForm> =
-      field === 'tagline'
+      field === 'relation'
+        ? { relation: text }
+        : field === 'mask'
+          ? { mask: text }
+          : field === 'history'
+            ? { history: text }
+            : field === 'exception'
+              ? { exception: text }
+              : field === 'tagline'
         ? { tagline: text }
         : field === 'bio'
           ? { bio: text }
@@ -487,6 +521,13 @@ function CharacterForm({ editing }: { editing?: Character }) {
       role: form.role,
       voicePreset: ownVoice ? undefined : form.preset,
       visibility: 'private' as const,
+      // Who they are to the user (Cast 2.0). A secret keeps its beats only if they were written for it;
+      // a new one goes with none, and the model writes them once (`ensureStory` in the store).
+      relation: form.relation.trim() || undefined,
+      mask: form.mask.trim() || undefined,
+      history: form.history.trim() || undefined,
+      exception: form.exception.trim() || undefined,
+      arc: form.secret.trim() ? { secret: form.secret.trim(), beats: form.secret.trim() === form.arcFor.trim() ? form.arcBeats : [] } : undefined,
     };
   };
 
@@ -514,6 +555,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         !same(next.greetings, editing.greetings) ||
         !same(next.starters, editing.starters) ||
         next.backstory !== editing.backstory ||
+        next.relation !== editing.relation ||
         !same(next.likes, editing.likes) ||
         !same(next.dislikes, editing.dislikes) ||
         next.avatarUri !== editing.avatarUri;
@@ -569,7 +611,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
               <ContinueCard
                 name={kept.name.trim()}
                 onContinue={() => {
-                  setForm(kept);
+                  setForm({ ...BLANK, ...kept });
                   setKept(null);
                   setChecked(false);
                   setPhase('form');
@@ -692,6 +734,12 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 addLabel={label('addGreeting')}
                 action={sparkle('greetings', label('addGreeting'))}
               />
+            </Card>
+
+            <Card title={label('youTwo')}>
+              <Field label={label('relation')} value={form.relation} onChange={(relation) => set({ relation })} placeholder={label('relationPlaceholder')} max={RELATION_MAX} action={sparkle('relation', label('relation'))} />
+              <Field label={label('mask')} value={form.mask} onChange={(mask) => set({ mask })} placeholder={label('maskPlaceholder')} max={MASK_MAX} multiline rows={2} action={sparkle('mask', label('mask'))} />
+              <Field label={label('secret')} value={form.secret} onChange={(secret) => set({ secret })} placeholder={label('secretPlaceholder')} max={SECRET_MAX} multiline rows={2} action={sparkle('arc', label('secret'))} />
             </Card>
 
             <Card title={label('story')} onLayout={at('story')}>

@@ -1218,7 +1218,14 @@
       "discardTitle": "Buang perubahan?",
       "discard": "Buang",
       "keepEditing": "Lanjut mengedit"
-    }
+    },
+    "youTwo": "Kalian berdua",
+    "relation": "Siapa dia buatmu",
+    "relationPlaceholder": "Sahabatmu, mantanmu, bosmu…",
+    "mask": "Sikapnya ke kamu",
+    "maskPlaceholder": "Suka godain kamu, pura-pura kesal…",
+    "secret": "Yang dia sembunyikan",
+    "secretPlaceholder": "Sesuatu yang baru akan dia ceritakan nanti"
   },
   "dating": {
     "title": "Kencan",

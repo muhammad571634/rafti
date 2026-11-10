@@ -17,6 +17,7 @@ import {
   fillNames,
   ideaText,
   parseDefinition,
+  parseArc,
   parseDraft,
   parseField,
   pickOpening,
@@ -309,5 +310,75 @@ describe('what a creation thinks (0z148)', () => {
     const mira = { id: 'c_mira', name: 'Mira', bio: 'Keeper.', greeting: 'Hi.', tags: ['calm'], isOfficial: false } as unknown as Character;
     assert.match(buildCharacterPrompt({ ...mira, opinions: ['Storms beat sunshine.', 'Tea fixes most things.'] }, user), /What you think \(your own views;[^)]*\): Storms beat sunshine\. Tea fixes most things\./);
     assert.doesNotMatch(buildCharacterPrompt(mira, user), /What you think/);
+  });
+});
+
+describe('who they are to the user (Cast 2.0)', () => {
+  const arc = {
+    secret: 'She kept every letter they ever wrote her.',
+    beats: [
+      { title: 'The drawer', beat: 'Let slip there is a drawer you never open in front of them.' },
+      { title: 'Paper', beat: 'Admit you still write letters you never send.' },
+      { title: 'Every letter', beat: 'Tell them you kept every letter they ever wrote you.' },
+    ],
+  };
+  const withRelation = {
+    ...good,
+    relation: 'Your oldest friend',
+    history: 'You have known them since you were children at the harbour.',
+    mask: 'You tease them about their bad sense of direction.',
+    exception: 'Gentle with everyone; only with them do you argue.',
+    arc,
+  };
+
+  it('asks the whole draft for the relation, the mask and the arc', () => {
+    const prompt = buildDraftPrompt({ idea: 'a lighthouse keeper', sparks: [], language: 'English' });
+    for (const key of ['relation:', 'history:', 'mask:', 'exception:', 'arc:']) assert.ok(prompt.includes(key), key);
+    assert.match(prompt, /never control, threats or guilt/);
+    assert.match(prompt, /already know the user/);
+  });
+
+  it('keeps them from the model, with the arc at its three levels', () => {
+    const result = parseDraft(JSON.stringify(withRelation));
+    assert.ok(result.ok);
+    if (!result.ok) return;
+    assert.equal(result.draft.relation, 'Your oldest friend');
+    assert.match(result.draft.mask, /bad sense of direction/);
+    assert.deepEqual(result.draft.arc?.beats.map((b) => b.atLevel), [2, 4, 6]);
+    assert.equal(result.draft.arc?.secret, arc.secret);
+  });
+
+  it('leaves the arc out unless it has a secret and three beats', () => {
+    assert.equal(parseArc({ ...arc, beats: arc.beats.slice(0, 2) }), undefined);
+    assert.equal(parseArc({ ...arc, secret: '' }), undefined);
+    assert.equal(parseArc('a string'), undefined);
+    const result = parseDraft(JSON.stringify({ ...withRelation, arc: { secret: 'x' } }));
+    assert.ok(result.ok && !result.draft.arc);
+  });
+
+  it('turns down explicit content in the arc and a minor in who they are now', () => {
+    assert.equal(parseField('arc', JSON.stringify({ ...arc, secret: 'She keeps nude photos of them.' })), null);
+    assert.deepEqual(parseDraft(JSON.stringify({ ...withRelation, mask: 'You act like a shy teenager with them.' })), { ok: false, problem: 'minors' });
+  });
+
+  it('lets a shared past go back to childhood: both are adults now', () => {
+    assert.ok(parseDraft(JSON.stringify(withRelation)).ok, 'history "since you were children"');
+    assert.equal(parseField('history', JSON.stringify({ value: 'Best friends since you were kids.' })), 'Best friends since you were kids.');
+  });
+
+  it('writes one relation field or the arc again from what the form holds', () => {
+    assert.equal(parseField('relation', JSON.stringify({ value: 'Your boss' })), 'Your boss');
+    assert.deepEqual((parseField('arc', JSON.stringify(arc)) as { beats: unknown[] }).beats.length, 3);
+    const prompt = buildFieldPrompt('arc', { name: 'Mira', relation: 'Your oldest friend', arc: { secret: 'She kept the letters.', beats: [] } }, 'English');
+    assert.match(prompt, /Who they are to the user: Your oldest friend/);
+    assert.match(prompt, /What they hold back: She kept the letters/);
+    assert.match(prompt, /beats: exactly 3/);
+  });
+
+  it('leaves them empty with the model off', () => {
+    const draft = mockDraft({ idea: 'a lighthouse keeper', sparks: [], language: 'English' });
+    assert.equal(draft.relation, '');
+    assert.equal(draft.arc, undefined);
+    assert.equal(JSON.parse(mockFieldReply('arc', {}, 0)).secret, undefined);
   });
 });

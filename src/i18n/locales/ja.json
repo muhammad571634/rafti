@@ -1218,7 +1218,14 @@
       "discardTitle": "変更を破棄しますか？",
       "discard": "破棄",
       "keepEditing": "編集を続ける"
-    }
+    },
+    "youTwo": "ふたりの関係",
+    "relation": "あなたにとって誰？",
+    "relationPlaceholder": "親友、元恋人、上司…",
+    "mask": "あなたへの態度",
+    "maskPlaceholder": "からかう、うっとうしそうにする…",
+    "secret": "隠していること",
+    "secretPlaceholder": "あとになって打ち明けること"
   },
   "dating": {
     "title": "デート",

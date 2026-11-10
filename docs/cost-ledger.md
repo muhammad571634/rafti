@@ -44,6 +44,8 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 10 | The output check (0z174): a reply the provider's safety filter stops is asked for once more (`chatSafe` / `groupSafe` in `usage_events`) | one more reply call (~$0.0015) only when the filter stops a draft; 0 of 17 safety scenarios and 0 of the open ones were stopped on the free tier (2026-11-09) | in; count `mode=chatSafe` rows once real traffic exists |
 | 11 | One-tap replies written with each chat reply (0z176, `IDEAS_CUE`, field `ideas`) | ~60 input tokens of cue in the turn tier and ~10-20 output tokens a reply (two short lines); no extra call | in; replaces the app's English stock chips while the model is on |
 | 12 | Live-person rules (0z177): open threads and exact recall in BEING A PERSON; the short-answer hint split by the carried feeling | ~85 tokens in the global (cached) tier; the turn hint is ~same size as before (one of two lines, only after short answers) | in; no extra call, no new output field |
+| 13 | Cast 2.0 relation block (0z192, `relationLines`): relation, history, mask, exception in the character tier, for every character | ~120-180 tokens in the cached character tier; no extra call (estimate; measure after the deploy) |
+| 14 | Cast 2.0 arc for a character the user made (0z192, `ensureStory`, field `arc`): once per creation without beats, beside `ensureOpinions` | one side call (~$0.001, estimate); the quick-create draft writes the arc itself, so most creations make none (~60 more output tokens in the draft) |
 
 ## What one shell is worth, and what setting things up costs (0z136)
 

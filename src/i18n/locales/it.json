@@ -1242,7 +1242,14 @@
       "discardTitle": "Annullare le modifiche?",
       "discard": "Annulla modifiche",
       "keepEditing": "Continua a modificare"
-    }
+    },
+    "youTwo": "Voi due",
+    "relation": "Chi è per te",
+    "relationPlaceholder": "Il tuo migliore amico, il tuo ex, il tuo capo…",
+    "mask": "Come si comporta con te",
+    "maskPlaceholder": "Ti prende in giro, fa finta che lo infastidisci…",
+    "secret": "Cosa nasconde",
+    "secretPlaceholder": "Qualcosa che ti dirà solo più avanti"
   },
   "dating": {
     "title": "Appuntamenti",

@@ -1242,7 +1242,14 @@
       "discardTitle": "¿Descartar cambios?",
       "discard": "Descartar",
       "keepEditing": "Seguir editando"
-    }
+    },
+    "youTwo": "Ustedes dos",
+    "relation": "Quién es para ti",
+    "relationPlaceholder": "Tu mejor amigo, tu ex, tu jefe…",
+    "mask": "Cómo se comporta contigo",
+    "maskPlaceholder": "Te pica, hace como que le molestas…",
+    "secret": "Qué esconde",
+    "secretPlaceholder": "Algo que solo te contará más adelante"
   },
   "dating": {
     "title": "Citas",

@@ -1242,7 +1242,14 @@
       "discardTitle": "Discard changes?",
       "discard": "Discard",
       "keepEditing": "Keep editing"
-    }
+    },
+    "youTwo": "You two",
+    "relation": "Who they are to you",
+    "relationPlaceholder": "Your best friend, your ex, your boss…",
+    "mask": "How they act with you",
+    "maskPlaceholder": "Teases you, acts like you annoy them…",
+    "secret": "What they hide",
+    "secretPlaceholder": "Something they will only tell you later"
   },
   "dating": {
     "title": "Dating",

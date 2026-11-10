@@ -12,7 +12,7 @@ import { cleanReact, type React } from './react';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
-import type { Emotion, PlanId } from '@/types';
+import type { CharacterArc, Emotion, PlanId } from '@/types';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
@@ -247,7 +247,7 @@ export const serverStudio = {
   draft: (input: DraftInput, accessToken?: string | null) =>
     call<DraftResult>('/v1/characters/draft', withOptionalToken(accessToken, input), DRAFT_TIMEOUT_MS),
   field: async (field: DraftField, character: FieldContext, language: string, accessToken?: string | null) => {
-    const reply = await call<{ value?: string | string[] | null }>('/v1/characters/draft/field', withOptionalToken(accessToken, { field, character, language }));
+    const reply = await call<{ value?: string | string[] | CharacterArc | null }>('/v1/characters/draft/field', withOptionalToken(accessToken, { field, character, language }));
     return reply ? (reply.value ?? null) : undefined;
   },
 };

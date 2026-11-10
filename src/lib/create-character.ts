@@ -36,6 +36,18 @@ export const OPINION_MAX = 120;
 /** A height the form keeps; anything outside is left out. */
 export const HEIGHT_MIN = 140;
 export const HEIGHT_MAX = 220;
+/**
+ * Who they are to the user (Cast 2.0, docs/cast-2.md §4), the same anatomy as the official cast:
+ * the shown relation ("Your best friend"), and for the model only what is already between them, the
+ * face they keep on, how that differs from everyone else, and what they hold back (the arc).
+ */
+export const RELATION_MAX = 30;
+export const HISTORY_MAX = 300;
+export const MASK_MAX = 240;
+export const EXCEPTION_MAX = 200;
+export const SECRET_MAX = 300;
+export const BEAT_TITLE_MAX = 34;
+export const BEAT_MAX = 320;
 
 /** Loves or can't stand as the form holds them ("tea, rain, jazz"): trimmed, no repeats, capped. */
 export const thingsOf = (text: string) =>

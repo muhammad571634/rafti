@@ -1218,7 +1218,14 @@
       "discardTitle": "변경 사항을 버릴까요?",
       "discard": "버리기",
       "keepEditing": "계속 편집"
-    }
+    },
+    "youTwo": "너와 그 사람",
+    "relation": "너에게 어떤 사람이야",
+    "relationPlaceholder": "절친, 전 애인, 상사…",
+    "mask": "너를 대하는 태도",
+    "maskPlaceholder": "놀리고, 귀찮은 척하고…",
+    "secret": "숨기고 있는 것",
+    "secretPlaceholder": "나중에야 털어놓을 이야기"
   },
   "dating": {
     "title": "데이트",

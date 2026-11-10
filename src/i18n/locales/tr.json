@@ -1242,7 +1242,14 @@
       "discardTitle": "Değişiklikler silinsin mi?",
       "discard": "Sil",
       "keepEditing": "Düzenlemeye devam et"
-    }
+    },
+    "youTwo": "Siz ikiniz",
+    "relation": "Senin için kim",
+    "relationPlaceholder": "En yakın arkadaşın, eski sevgilin, patronun…",
+    "mask": "Sana nasıl davranıyor",
+    "maskPlaceholder": "Sana takılıyor, sinir oluyormuş gibi yapıyor…",
+    "secret": "Ne saklıyor",
+    "secretPlaceholder": "Sana ancak sonra anlatacağı bir şey"
   },
   "dating": {
     "title": "Buluşma",

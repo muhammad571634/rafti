@@ -1218,7 +1218,14 @@
       "discardTitle": "Bỏ các thay đổi?",
       "discard": "Bỏ",
       "keepEditing": "Tiếp tục sửa"
-    }
+    },
+    "youTwo": "Hai người",
+    "relation": "Người đó là ai với bạn",
+    "relationPlaceholder": "Bạn thân, người yêu cũ, sếp…",
+    "mask": "Cách người đó đối xử với bạn",
+    "maskPlaceholder": "Hay trêu, giả vờ thấy bạn phiền…",
+    "secret": "Điều người đó giấu",
+    "secretPlaceholder": "Điều chỉ kể cho bạn sau này"
   },
   "dating": {
     "title": "Hẹn hò",

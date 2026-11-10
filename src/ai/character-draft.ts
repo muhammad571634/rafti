@@ -1,15 +1,22 @@
 import {
   BACKSTORY_MAX,
+  BEAT_MAX,
+  BEAT_TITLE_MAX,
   BIO_MAX,
   contentProblems,
   DEFINITION_MAX,
+  EXCEPTION_MAX,
   GREETING_MAX,
+  HISTORY_MAX,
   LOOK_MAX,
+  MASK_MAX,
   MAX_TRAITS,
   MIN_AGE,
   MORE_GREETINGS_MAX,
   NAME_MAX,
+  RELATION_MAX,
   ROLES,
+  SECRET_MAX,
   STARTER_MAX,
   STARTERS_MAX,
   STYLE_VOICE,
@@ -27,7 +34,8 @@ import {
   VOICES,
 } from '../lib/create-character';
 import { pickSeeded } from '../lib/seeded';
-import type { Character, CharacterGender, CharacterRole, ReplyStyle, SpeakingStyle, VoicePreset } from '@/types';
+import { ARC_LEVELS } from '../lib/world-story';
+import type { Character, CharacterArc, CharacterGender, CharacterRole, ReplyStyle, SpeakingStyle, VoicePreset } from '@/types';
 
 /**
  * Quick create: the creation chain taken from Character.AI (docs/character-ai-teardown.md §11).
@@ -113,6 +121,14 @@ export interface CharacterDraft {
   /** What they think (0z148): model-only, never shown on the form. */
   opinions: string[];
   heightCm?: number;
+  /** Who they are to the user (Cast 2.0): shown under the name ("Your best friend"). */
+  relation: string;
+  /** For the model only (`relationLines`): what is already between them, the face they keep on, the exception. */
+  history: string;
+  mask: string;
+  exception: string;
+  /** What they hold back and how it comes out, beat by beat with the bond; missing when the model wrote none. */
+  arc?: CharacterArc;
 }
 
 /** What the form holds when one field is written again. */
@@ -161,10 +177,15 @@ export type DraftField =
   | 'backstory'
   | 'likes'
   | 'dislikes'
-  | 'opinions';
+  | 'opinions'
+  | 'relation'
+  | 'history'
+  | 'mask'
+  | 'exception'
+  | 'arc';
 
 /** One rule per field, shared by the whole-draft and the single-field prompt. */
-const FIELD_RULES: Record<DraftField, string> = {
+const BASE_RULES = {
   tagline: `tagline: how they would sum themselves up in a few words, max ${TAGLINE_MAX} characters.`,
   bio: `bio: who they are, what they want, their world and habits, in their own voice (first person), max ${BIO_MAX} characters.`,
   look: `look: what they look like, for their picture: hair, eyes, clothes, one detail. Adult features. Max ${LOOK_MAX} characters.`,
@@ -180,6 +201,16 @@ const FIELD_RULES: Record<DraftField, string> = {
   dislikes: `dislikes: 2-3 small things they can't stand, harmless and a little funny, a few words each, max ${THING_MAX} characters each.`,
   opinions: `opinions: ${OPINIONS_MAX} opinions they really hold and would argue for, the way a person does: about everyday things, taste, people or their world, a little arguable ("Cold pizza is better than hot."). Never politics, religion or anything hateful; no real people, artists or brands by name. One short sentence each, max ${OPINION_MAX} characters.`,
 };
+
+/** The relation fields (Cast 2.0, docs/cast-2.md §4): written to the character as "you", the user as "them". */
+const RELATION_RULES = {
+  relation: `relation: who they are to the user, in a few words as the user would say it in the reply language ("Your best friend", "Your ex", "Your boss"), max ${RELATION_MAX} characters.`,
+  history: `history: what is already between them and the user before the first message (how they know each other, for how long, one shared thing; it may go back to childhood, but both are adults now), 1-2 sentences written to the character as "you" and the user as "them", max ${HISTORY_MAX} characters.`,
+  mask: `mask: how they act with the user, the face they keep on (teasing, cold, formal, bossy, shy), 1-2 sentences to the character as "you", the user as "them"; jealous or protective is a feeling they own, never control, threats or guilt. Max ${MASK_MAX} characters.`,
+  exception: `exception: how they are with everyone else against how they are only with the user ("Warm with everyone; only with them you go quiet."), one sentence to the character as "you", max ${EXCEPTION_MAX} characters.`,
+  arc: `arc: what they hold back from the user and how it comes out. secret: 1-2 sentences, third person, something of their own (a feeling, a fear, a past), never the user's fault, nothing illegal or abusive, max ${SECRET_MAX} characters. beats: exactly 3, in order, each a title the user will see once it opens (no spoiler, max ${BEAT_TITLE_MAX} characters) and a beat, an instruction to the character as "you" for that moment (max ${BEAT_MAX} characters), each telling a little more; the third tells the secret.`,
+};
+const FIELD_RULES: Record<DraftField, string> = { ...BASE_RULES, ...RELATION_RULES };
 
 /** Every field one "write it for me" may ask for (the server checks requests against it). */
 export const DRAFT_FIELDS = Object.keys(FIELD_RULES) as DraftField[];
@@ -198,6 +229,11 @@ const FIELD_SHAPES: Record<DraftField, string> = {
   likes: '{"values":[]}',
   dislikes: '{"values":[]}',
   opinions: '{"values":[]}',
+  relation: '{"value":""}',
+  history: '{"value":""}',
+  mask: '{"value":""}',
+  exception: '{"value":""}',
+  arc: '{"secret":"","beats":[{"title":"","beat":""},{"title":"","beat":""},{"title":"","beat":""}]}',
 };
 
 /** One call that writes the whole character from the idea. */
@@ -210,6 +246,7 @@ export function buildDraftPrompt(input: DraftInput) {
     'THE IDEA (from the creator):',
     ideaText(input.idea, input.sparks),
     input.role ? `What they are to the user: their ${input.role}.` : 'Pick what they are to the user.',
+    "They already know the user: write them as someone from the user's life with a history, not a stranger.",
     '',
     'TASK: Write the whole character. Keep everything the idea says; invent the rest so it fits.',
     `- name: a first name, or first and last, max ${NAME_MAX} characters. Original, not famous.`,
@@ -230,8 +267,13 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${FIELD_RULES.dislikes}`,
     `- ${FIELD_RULES.opinions}`,
     `- heightCm: their height in centimetres, ${HEIGHT_MIN}-${HEIGHT_MAX}, fitting the look.`,
+    `- ${RELATION_RULES.relation}`,
+    `- ${RELATION_RULES.history}`,
+    `- ${RELATION_RULES.mask}`,
+    `- ${RELATION_RULES.exception}`,
+    `- ${RELATION_RULES.arc}`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[],"opinions":[]}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[],"opinions":[],"relation":"","history":"","mask":"","exception":"","arc":{"secret":"","beats":[{"title":"","beat":""},{"title":"","beat":""},{"title":"","beat":""}]}}',
   ].join('\n');
 }
 
@@ -251,6 +293,11 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
     character.backstory && `Story: ${character.backstory}`,
     character.likes?.length && `Loves: ${character.likes.join(', ')}`,
     character.dislikes?.length && `Can't stand: ${character.dislikes.join(', ')}`,
+    character.relation && `Who they are to the user: ${character.relation}`,
+    character.history && `Already between them: ${character.history}`,
+    character.mask && `How they act with the user: ${character.mask}`,
+    character.exception && `Only with the user: ${character.exception}`,
+    character.arc?.secret && `What they hold back: ${character.arc.secret}`,
   ].filter(Boolean);
   return [
     CREATION_RULES,
@@ -313,6 +360,11 @@ export function parseDraft(raw: string): DraftResult {
     likes: lines(data.likes, THING_MAX, THINGS_MAX),
     dislikes: lines(data.dislikes, THING_MAX, THINGS_MAX),
     opinions: lines(data.opinions, OPINION_MAX, OPINIONS_MAX),
+    relation: clip(text(data.relation), RELATION_MAX),
+    history: clip(text(data.history), HISTORY_MAX),
+    mask: clip(text(data.mask), MASK_MAX),
+    exception: clip(text(data.exception), EXCEPTION_MAX),
+    ...(parseArc(data.arc) ? { arc: parseArc(data.arc) } : {}),
     ...(typeof data.heightCm === 'number' && data.heightCm >= HEIGHT_MIN && data.heightCm <= HEIGHT_MAX
       ? { heightCm: Math.round(data.heightCm) }
       : {}),
@@ -333,17 +385,39 @@ export function parseDraft(raw: string): DraftResult {
       ...draft.likes,
       ...draft.dislikes,
       ...draft.opinions,
+      draft.relation,
+      draft.mask,
+      draft.exception,
     ].join(' '),
   );
+  // A shared past may go back to childhood ("best friends since we were kids"): the past and the arc are
+  // checked for explicit content only; who they are now (age, bio, look) is held to the adult rule above.
+  problems.push(...pastProblems([draft.history, ...arcTexts(draft.arc)].join(' ')));
   return problems.length > 0 ? { ok: false, problem: problems[0] } : { ok: true, draft };
 }
 
 /** The value of one rewritten field, checked like a draft; null when it is unusable. */
-export function parseField(field: DraftField, raw: string): string | string[] | null {
+export function parseField(field: DraftField, raw: string): string | string[] | CharacterArc | null {
   const data = readJson(raw);
   if (!data || data.refused != null) return null;
+  if (field === 'arc') {
+    const arc = parseArc(data);
+    return arc && pastProblems(arcTexts(arc).join(' ')).length === 0 ? arc : null;
+  }
   let value: string | string[];
   switch (field) {
+    case 'relation':
+      value = clip(text(data.value), RELATION_MAX);
+      break;
+    case 'history':
+      value = clip(text(data.value), HISTORY_MAX);
+      break;
+    case 'mask':
+      value = clip(text(data.value), MASK_MAX);
+      break;
+    case 'exception':
+      value = clip(text(data.value), EXCEPTION_MAX);
+      break;
     case 'tagline':
       value = clip(text(data.value), TAGLINE_MAX);
       break;
@@ -383,9 +457,32 @@ export function parseField(field: DraftField, raw: string): string | string[] | 
       break;
   }
   const all = Array.isArray(value) ? value.join(' ') : value;
-  if (!all.trim() || contentProblems(all).length > 0) return null;
+  if (!all.trim() || (field === 'history' ? pastProblems(all) : contentProblems(all)).length > 0) return null;
   return value;
 }
+
+/**
+ * What they hold back, as the model wrote it: a secret and exactly three beats at the arc's levels
+ * (`ARC_LEVELS`), each with a title and a beat. Anything short of that is no arc at all.
+ */
+export function parseArc(value: unknown): CharacterArc | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const data = value as { secret?: unknown; beats?: unknown };
+  const secret = clip(text(data.secret), SECRET_MAX);
+  const beats = Array.isArray(data.beats)
+    ? data.beats
+        .map((b) => (b && typeof b === 'object' ? (b as { title?: unknown; beat?: unknown }) : {}))
+        .map((b) => ({ title: clip(text(b.title), BEAT_TITLE_MAX), beat: clip(text(b.beat), BEAT_MAX) }))
+        .filter((b) => b.title && b.beat)
+    : [];
+  if (!secret || beats.length < ARC_LEVELS.length) return undefined;
+  return { secret, beats: ARC_LEVELS.map((atLevel, i) => ({ atLevel, ...beats[i] })) };
+}
+
+/** The past and the arc: explicit content is refused; a childhood memory is not a minor in the story now. */
+const pastProblems = (text: string) => contentProblems(text).filter((p) => p === 'explicit');
+
+const arcTexts = (arc?: CharacterArc) => (arc ? [arc.secret, ...arc.beats.flatMap((b) => [b.title, b.beat])] : []);
 
 /** The model's dialog lines as a definition: `{{char}}:` for them, `{{random_user_1}}:` for the other side. */
 export function definitionFromDialog(dialog: unknown) {

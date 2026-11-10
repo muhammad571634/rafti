@@ -2232,6 +2232,8 @@ export const useAppStore = create<AppState>()(
         const conversationId = get().addFriend(characterId);
         // Made by hand, with no draft: the model writes what they think (0z148).
         ensureOpinions(set, get, characterId);
+
+        ensureStory(set, get, characterId);
         return { characterId, conversationId };
       },
 
@@ -5683,6 +5685,8 @@ function rememberPhotos(set: Setter, chatId: string, photos: readonly PreparedPh
 /** New things the friend said of their own day (0z144): kept on today's page of their days for the next replies. */
 /** Characters whose opinions were asked for this session, so a busy model is asked once. */
 const opinionsAsked = new Set<string>();
+/** Creations whose arc was asked for this session (`ensureStory`). */
+const storyAsked = new Set<string>();
 
 /**
  * A creation's opinions (0z148, model-only): a draft writes them, a character made by hand or before
@@ -5707,6 +5711,25 @@ function ensureOpinions(set: Setter, get: Getter, characterId: string) {
       const opinions = Array.isArray(value) ? value : [];
       if (!opinions.length) return;
       set((s) => ({ characters: s.characters.map((c) => (c.id === characterId && !c.isOfficial && !c.opinions?.length ? { ...c, opinions } : c)) }));
+    });
+}
+
+/**
+ * A character the user made gets what the official cast has (Cast 2.0, docs/cast-2.md §4): what they hold
+ * back and how it comes out, three beats with the bond. The model writes it once from everything the
+ * character has, keeping a secret the creator wrote. One side call, like `ensureOpinions`.
+ */
+function ensureStory(set: Setter, get: Getter, characterId: string) {
+  const character = get().characters.find((c) => c.id === characterId);
+  if (!character || character.isOfficial || (character.arc?.beats.length ?? 0) > 0 || storyAsked.has(characterId) || !modelOn(get)) return;
+  storyAsked.add(characterId);
+  const { name, tagline, bio, age, gender, speakingStyle, role, tags, greeting, quirk, backstory, likes, dislikes, relation, history, mask, exception, arc } = character;
+  const context = { name, tagline, bio, age, gender, speakingStyle, role, tags, greeting, quirk, backstory, likes, dislikes, relation, history, mask, exception, arc };
+  void accessToken()
+    .then((token) => serverStudio.field('arc', context, 'English', token))
+    .then((value) => {
+      if (!value || typeof value !== 'object' || Array.isArray(value) || !value.beats.length) return;
+      set((s) => ({ characters: s.characters.map((c) => (c.id === characterId && !c.isOfficial && !c.arc?.beats.length ? { ...c, arc: value } : c)) }));
     });
 }
 
@@ -5874,6 +5897,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   if (modelTurn && ctx && turn && character && bond && state.settings.realAi && apiBase()) {
     // A creation from before 0z148 gets its opinions for the next replies.
     ensureOpinions(set, get, character.id);
+
+    ensureStory(set, get, character.id);
     const messages = ctx.history.filter((m) => !m.pending);
     const input = {
       character,

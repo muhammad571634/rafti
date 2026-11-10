@@ -1242,7 +1242,14 @@
       "discardTitle": "Abandonner les modifications ?",
       "discard": "Abandonner",
       "keepEditing": "Continuer à modifier"
-    }
+    },
+    "youTwo": "Vous deux",
+    "relation": "Qui c’est pour toi",
+    "relationPlaceholder": "Ton meilleur ami, ton ex, ton boss…",
+    "mask": "Comment il se comporte avec toi",
+    "maskPlaceholder": "Te taquine, fait comme si tu l’agaçais…",
+    "secret": "Ce qu’il cache",
+    "secretPlaceholder": "Quelque chose qu’il ne te dira que plus tard"
   },
   "dating": {
     "title": "Rendez-vous",

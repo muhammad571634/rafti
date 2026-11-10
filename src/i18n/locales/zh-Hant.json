@@ -1218,7 +1218,14 @@
       "discardTitle": "要捨棄變更嗎？",
       "discard": "捨棄",
       "keepEditing": "繼續編輯"
-    }
+    },
+    "youTwo": "你們兩個",
+    "relation": "他對你來說是誰",
+    "relationPlaceholder": "最好的朋友、前任、老闆…",
+    "mask": "他怎麼對你",
+    "maskPlaceholder": "愛捉弄你、假裝嫌你煩…",
+    "secret": "他藏著什麼",
+    "secretPlaceholder": "以後才會告訴你的事"
   },
   "dating": {
     "title": "約會",
