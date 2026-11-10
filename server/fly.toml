@@ -3,6 +3,9 @@
 # Tokyo, next to the Supabase project (AWS ap-northeast-1). Keys are Fly secrets, never here.
 app = "sigmazam-api"
 primary_region = "nrt"
+# A deploy waits for the replies being written (the server finishes them within 25 s, src/index.ts).
+kill_signal = "SIGTERM"
+kill_timeout = "30s"
 
 [env]
   PORT = "8080"
@@ -18,6 +21,15 @@ primary_region = "nrt"
   auto_stop_machines = "off"
   auto_start_machines = true
   min_machines_running = 1
+
+  # Requests at once per machine: past the soft limit the proxy prefers another machine, at the hard
+  # limit it queues. The model gate inside is narrower (120 calls, src/llm/gate.ts); the rest is
+  # wallet and sync traffic. A second machine: `flyctl scale count 2` plus the LINE_SIGN_KEY secret
+  # (docs/scale-plan.md).
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 400
 
   [[http_service.checks]]
     grace_period = "15s"

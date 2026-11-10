@@ -8,6 +8,22 @@ export interface ModelLimits {
   userPerDay: number;
   addressPerMinute: number;
   addressPerDay: number;
+  /** Lines a friend writes first (`/v1/ai/first-text`), per account a day: nobody is waiting on them. */
+  firstTextPerDay: number;
+  /** Every other call (wallet, sync, bootstrap), per account and per address a minute. */
+  dataPerMinute: number;
+  addressDataPerMinute: number;
+  /** Replies that carry photos, in flight at once: each holds megabytes while the model reads. */
+  photosInFlight: number;
+  /** Model work nobody is talking through (streams, writes, the memory pass, drafts), per account a day. */
+  sidePerDay: number;
+  /**
+   * The reply allowance (`mayReply` in app.ts): replies a day an account gets beyond the shells it
+   * spent that day (hellos, a version asked for again, a wake-up talk are free), and replies on calls
+   * (paid in minutes, not per message).
+   */
+  freeRepliesPerDay: number;
+  callRepliesPerDay: number;
 }
 
 export const MODEL_LIMITS: ModelLimits = {
@@ -17,6 +33,20 @@ export const MODEL_LIMITS: ModelLimits = {
   // Higher: many people can share one mobile network's address.
   addressPerMinute: 180,
   addressPerDay: 6000,
+  // Measured 2026-11-10: about 5 a user a day; an app open writes at most 5 ahead (`MAX_PER_RUN`).
+  firstTextPerDay: 80,
+  // An app open is a bootstrap, a wallet read and a few syncs; a spend follows each message.
+  dataPerMinute: 240,
+  addressDataPerMinute: 1200,
+  // Up to 3 photos of 2 MB each a reply: 16 at once is under 100 MB of the machine's 512.
+  photosInFlight: 16,
+  // A heavy day is ~25 memory passes, a stream or two (20-60 lines) and a few writes.
+  sidePerDay: 300,
+  // Measured 2026-11-10 over 14 days: an account's replies a day stay within a few of its spends
+  // (91 to 98, 62 to 61, 58 to 62); one early day had 37 replies on 5 spends.
+  freeRepliesPerDay: 40,
+  // About half an hour of a call's turns.
+  callRepliesPerDay: 300,
 };
 
 /** Old windows are swept once this many keys are held, so an attacker's many keys cannot fill the memory. */

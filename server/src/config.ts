@@ -23,6 +23,12 @@ function voiceMap(raw: string | undefined): Record<string, string> {
   }
 }
 
+/** A number from the environment; anything that is not a number of 0 or more is the fallback. */
+function count(raw: string | undefined, fallback: number): number {
+  const value = raw === undefined || raw.trim() === '' ? NaN : Number(raw);
+  return Number.isFinite(value) && value >= 0 ? value : fallback;
+}
+
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   /** 0.0.0.0 so a phone on the same Wi-Fi reaches the laptop during testing. */
@@ -86,4 +92,25 @@ export const config = {
   },
   /** A longer wait than this and the app writes the stand-in reply instead. */
   timeoutMs: Number(process.env.LLM_TIMEOUT_MS ?? 20_000),
+  /**
+   * The brakes on the model's side (`llm/gate.ts`, docs/scale-plan.md). `MODEL_BUDGET_USD_PER_DAY` is
+   * the whole service's spend a UTC day at list price: at 80% of it side work pauses (lines written
+   * ahead, streams, the memory pass), at 100% every model call answers busy. 0, the default, is no cap.
+   */
+  gate: {
+    maxInFlight: count(process.env.MODEL_MAX_IN_FLIGHT, 120),
+    maxQueued: count(process.env.MODEL_MAX_QUEUED, 240),
+    budgetUsdPerDay: count(process.env.MODEL_BUDGET_USD_PER_DAY, 0),
+  },
+  /**
+   * `ENFORCE_WALLET=1`: a reply past the account's allowance (its spends of the day plus a free
+   * share, `mayReply` in app.ts) is refused with 402. Off, the default, it is only counted and a
+   * crossing logged as `[allowance] would refuse`: read those lines on real traffic before turning it on.
+   */
+  enforceWallet: process.env.ENFORCE_WALLET === '1',
+  /**
+   * Signs the lines a call may read aloud (`speech/sign.ts`). One machine needs none (a key per
+   * process); with two, both must hold the same secret or a line signed on one fails on the other.
+   */
+  lineSignKey: process.env.LINE_SIGN_KEY ?? '',
 } as const;

@@ -77,6 +77,15 @@ const MAX_GROUP_OTHERS = 4;
 
 /** Every route that calls the model and so costs money (`modelGuard`). */
 const MODEL_ROUTES = ['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe', '/v1/voice/speak', '/v1/ai/first-text', '/v1/memory/pass', '/v1/characters/draft', '/v1/characters/draft/field', '/v1/streams/line', '/v1/ai/write'];
+/** Where someone is talking; every other model route is side work with a day's cap of its own (`sidePerDay`). */
+const TALK_ROUTES = new Set(['/v1/chat/reply', '/v1/chat/group', '/v1/voice/transcribe', '/v1/voice/speak']);
+/** The ledger is read again for an account at its allowance at most this often. */
+const LEDGER_READ_MS = 20_000;
+/**
+ * Writes nobody is waiting on (`/v1/ai/write`): a friend's diary page, their weekly quiz, a world
+ * quiz's host lines. A date round, a note or an answer to the user's own page is someone waiting.
+ */
+const SIDE_WRITES = new Set<string>(['diary', 'selfQuiz', 'worldLines']);
 /** A line read aloud: its text and the character's id. */
 const SPEAK_BODY_MAX_BYTES = SPEAK_CHARS_MAX * 4 + 1000;
 /** A line takes about a second to read out; more than this and the call shows the caption alone. */
@@ -90,7 +99,33 @@ const REPORT_BODY_MAX_BYTES = (REPORT_LIMITS.context + 1) * REPORT_LIMITS.textCh
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
+/** A token the sign-in service refused is not asked about again for this long: a flood of bad tokens stays here. */
+const TOKEN_REFUSED_MS = 30_000;
 const MAX_KNOWN_TOKENS = 20_000;
+/** How long one answer of the database's health stands (`/health` is asked every 30 s by the host, and by every app open). */
+const DB_HEALTH_MS = 30_000;
+
+/**
+ * When a token says it ends, in ms, or null when it cannot be read. Only for a token the sign-in
+ * check already vouched for: it caps how long that answer is remembered, it proves nothing.
+ */
+export function tokenEnds(token: string): number | null {
+  try {
+    const exp = JSON.parse(Buffer.from(token.split('.')[1] ?? '', 'base64url').toString('utf8'))?.exp;
+    return typeof exp === 'number' && Number.isFinite(exp) ? exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+/** What the server counts about itself, for the log (`index.ts`): answers by kind since the start. */
+export interface Served {
+  ok: number;
+  /** 429 and 503: a limit, a full gate, a busy model. */
+  busy: number;
+  /** 500 and 502. */
+  failed: number;
+}
 
 /** A BCP 47 tag the profile may keep ("en-US", "uz-Latn-UZ"); anything else is dropped. */
 export function cleanLocale(value: unknown): string | undefined {
@@ -339,6 +374,13 @@ export function createApp(
     /** User ids that may start a plan with no store behind it (`TEST_SUBSCRIBERS`, before billing). */
     testSubscribers?: readonly string[];
     limits?: Partial<ModelLimits>;
+    /** Counted into as answers go out (`Served`); the caller owns it and logs it. */
+    served?: Served;
+    /**
+     * `ENFORCE_WALLET`: a reply past the account's allowance (`mayReply`) is refused with 402. Off,
+     * the allowance is only counted and a crossing logged, so it can be checked on real traffic first.
+     */
+    enforceWallet?: boolean;
   },
 ) {
   const app = new Hono();
@@ -346,6 +388,63 @@ export function createApp(
   const limits = { ...MODEL_LIMITS, ...opts.limits };
   const userMinute = windowLimiter(limits.userPerMinute, MINUTE_MS);
   const userDay = windowLimiter(limits.userPerDay, DAY_MS);
+  const firstTextDay = windowLimiter(limits.firstTextPerDay, DAY_MS);
+  const userData = windowLimiter(limits.dataPerMinute, MINUTE_MS);
+  const addressData = windowLimiter(limits.addressDataPerMinute, MINUTE_MS);
+  const sideDay = windowLimiter(limits.sidePerDay, DAY_MS);
+  let photosInFlight = 0;
+
+  /**
+   * The reply allowance: the model answers an account as often as it paid for, read from the
+   * ledger. The app spends a shell and asks for the reply as two calls with nothing tying them, so
+   * the server does not charge here (it could charge twice); it counts the day's replies against
+   * the day's spends plus a free share (hellos, a version asked for again, a wake-up talk). A group
+   * message is one spend and up to four replies; a call is paid in minutes and has its own count.
+   * An account that never spends gets the free share and no more, where it had 1,500 a day.
+   * The ledger is read only when an account reaches its allowance, and a failed read lets the
+   * reply out: a database hiccup must never stop someone who paid. Per machine and per UTC day.
+   */
+  const allowance = new Map<string, { replies: number; calls: number; spends: number; readAt: number; blind: boolean; said: boolean }>();
+  let allowanceDay = 0;
+  async function mayReply(userId: string, kind: 'chat' | 'group' | 'call'): Promise<boolean> {
+    if (!db?.spendsToday) return true;
+    const day = Math.floor(Date.now() / DAY_MS);
+    if (day !== allowanceDay) {
+      allowance.clear();
+      allowanceDay = day;
+    }
+    let entry = allowance.get(userId);
+    if (!entry) {
+      entry = { replies: 0, calls: 0, spends: 0, readAt: 0, blind: false, said: false };
+      allowance.set(userId, entry);
+    }
+    if (kind === 'call') return ++entry.calls <= limits.callRepliesPerDay;
+    const weight = kind === 'group' ? 1 / MAX_GROUP_OTHERS : 1;
+    const within = (e: { replies: number; spends: number }) => e.replies + weight <= limits.freeRepliesPerDay + e.spends;
+    if (!within(entry) && Date.now() - entry.readAt >= LEDGER_READ_MS) {
+      entry.readAt = Date.now();
+      const spends = await db.spendsToday(userId).catch(() => null);
+      entry.blind = spends === null;
+      if (spends !== null) entry.spends = spends;
+    }
+    // The ledger could not be read: replies go out until the next read says otherwise.
+    if (entry.blind) return true;
+    if (!within(entry)) return false;
+    entry.replies += weight;
+    return true;
+  }
+
+  /** Null when the reply may go out; else the 402 to answer with (only while `enforceWallet` is on). */
+  async function overAllowance(c: Context, userId: string | null, kind: 'chat' | 'group' | 'call') {
+    if (!userId || (await mayReply(userId, kind))) return null;
+    const entry = allowance.get(userId);
+    if (entry && !entry.said) {
+      entry.said = true;
+      console.info(`[allowance] ${opts.enforceWallet ? 'refused' : 'would refuse'} ${kind}: replies=${Math.round(entry.replies)} calls=${entry.calls} spends=${entry.spends}`);
+    }
+    if (!opts.enforceWallet) return null;
+    return c.json({ error: 'noShells', wallet: await db!.walletState(userId).catch(() => null) }, 402);
+  }
   // Accounts start anonymous and free, so reports have their own cap.
   const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
   // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
@@ -354,17 +453,62 @@ export function createApp(
   const signer = opts.signer ?? lineSigner();
   const addressMinute = windowLimiter(limits.addressPerMinute, MINUTE_MS);
   const addressDay = windowLimiter(limits.addressPerDay, DAY_MS);
-  const knownTokens = new Map<string, { userId: string; until: number }>();
+  const knownTokens = new Map<string, { userId: string | null; until: number; ends: number | null }>();
+  const asking = new Map<string, Promise<string | null>>();
 
-  /** The account behind a token, asked once in a while: every reply must not wait on the sign-in service. */
-  async function accountOf(token: string) {
+  function remember(token: string, entry: { userId: string | null; until: number; ends: number | null }) {
+    if (knownTokens.size >= MAX_KNOWN_TOKENS) {
+      // The oldest tenth goes (a Map keeps the order of arrival), never the whole lot: emptying it
+      // would send every user to the sign-in service in the same second.
+      let drop = MAX_KNOWN_TOKENS / 10;
+      for (const key of knownTokens.keys()) {
+        if (drop-- <= 0) break;
+        knownTokens.delete(key);
+      }
+    }
+    knownTokens.delete(token);
+    knownTokens.set(token, entry);
+  }
+
+  /**
+   * The account behind a token, for every route. Asked once in a while and once at a time: no
+   * request waits on the sign-in service twice, and many requests with one new token ask together.
+   * A refusal is remembered briefly too. When the service cannot be reached, a token it vouched for
+   * a moment ago still stands until the token's own end.
+   */
+  function accountOf(token: string): Promise<string | null> {
+    if (!db) return Promise.resolve(null);
     const known = knownTokens.get(token);
-    if (known && known.until > Date.now()) return known.userId;
-    const userId = await db!.userIdFromToken(token).catch(() => null);
-    if (!userId) return null;
-    if (knownTokens.size >= MAX_KNOWN_TOKENS) knownTokens.clear();
-    knownTokens.set(token, { userId, until: Date.now() + TOKEN_KNOWN_MS });
-    return userId;
+    if (known && known.until > Date.now()) return Promise.resolve(known.userId);
+    const pending = asking.get(token);
+    if (pending) return pending;
+    const ask = (async () => {
+      try {
+        const userId = await db.userIdFromToken(token);
+        const ends = userId ? tokenEnds(token) : null;
+        remember(token, { userId, ends, until: userId ? Math.min(Date.now() + TOKEN_KNOWN_MS, ends ?? Infinity) : Date.now() + TOKEN_REFUSED_MS });
+        return userId;
+      } catch (error) {
+        if (known?.userId && (known.ends ?? 0) > Date.now()) return known.userId;
+        console.warn(`[auth] not checked: ${String((error as Error).message).slice(0, 120)}`);
+        return null;
+      } finally {
+        asking.delete(token);
+      }
+    })();
+    asking.set(token, ask);
+    return ask;
+  }
+
+  if (opts.served) {
+    const served = opts.served;
+    app.use('*', async (c, next) => {
+      await next();
+      const status = c.res.status;
+      if (status === 429 || status === 503) served.busy += 1;
+      else if (status >= 500) served.failed += 1;
+      else served.ok += 1;
+    });
   }
 
   // Whoever spends the model's money: a signed-in account (anonymous counts, every install has one)
@@ -377,10 +521,23 @@ export function createApp(
       const userId = token ? await accountOf(token) : null;
       if (!userId) return c.json({ error: 'signIn' }, 401);
       if (!userMinute(userId) || !userDay(userId)) return c.json({ error: 'busy' }, 429);
+      if (!TALK_ROUTES.has(c.req.path) && !sideDay(userId)) return c.json({ error: 'busy' }, 429);
     }
     await next();
   };
   for (const route of MODEL_ROUTES) app.use(route, modelGuard);
+
+  // Everything else under /v1 (the wallet, the syncs, bootstrap): no model behind it, but each call
+  // is work for the database, so a script cannot loop on them either. An unknown token is left to
+  // the route, which answers 401.
+  app.use('/v1/*', async (c, next) => {
+    if (MODEL_ROUTES.includes(c.req.path)) return next();
+    if (!addressData(c.req.header('fly-client-ip') ?? 'local')) return c.json({ error: 'busy' }, 429);
+    const token = bearer(c.req.header('authorization'));
+    const userId = token ? await accountOf(token) : null;
+    if (userId && !userData(userId)) return c.json({ error: 'busy' }, 429);
+    await next();
+  });
   for (const route of ['/v1/chat/reply', '/v1/chat/group']) {
     app.use(route, bodyLimit({ maxSize: CHAT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   }
@@ -394,8 +551,7 @@ export function createApp(
    */
   async function wallet(c: Context, run: (userId: string) => Promise<unknown>) {
     if (!db) return c.json({ error: 'noDatabase' }, 503);
-    const token = bearer(c.req.header('authorization'));
-    const userId = token ? await db.userIdFromToken(token) : null;
+    const userId = await signedIn(c);
     if (!userId) return c.json({ error: 'signIn' }, 401);
     try {
       try {
@@ -416,22 +572,41 @@ export function createApp(
   }
 
   /** The signed-in user's id, or null (no database, no token, a stale token). */
-  async function signedIn(c: Context) {
+  function signedIn(c: Context): Promise<string | null> {
     const token = bearer(c.req.header('authorization'));
-    return db && token ? db.userIdFromToken(token).catch(() => null) : null;
+    return token ? accountOf(token) : Promise.resolve(null);
+  }
+
+  /** A reply that carries photos holds megabytes until the model answers: only so many at once, the next is busy. */
+  async function withPhotos<T>(images: readonly unknown[] | undefined, run: () => Promise<T>): Promise<T> {
+    if (!images?.length) return run();
+    if (photosInFlight >= limits.photosInFlight) throw new LlmBusyError('photos: too many at once');
+    photosInFlight += 1;
+    try {
+      return await run();
+    } finally {
+      photosInFlight -= 1;
+    }
   }
 
   /**
    * One model call for a feature: the cost row is written under `mode` (without holding the answer
    * up), `read` turns the model's text into the answer. Busy (the free tier's cap) is 503.
    * `template` is the mode block the prompt carries (src/ai/modes.ts), for `promptVersion`;
-   * `temperature` is for work that must be exact (the memory pass).
+   * `temperature` is for work that must be exact (the memory pass). `side`: nobody is waiting on
+   * the answer, so it gives way first when the service is full (`llm/gate.ts`).
    */
-  async function modelCall(c: Context, mode: string, layout: PromptLayout, read: (text: string) => object, template?: PromptMode, temperature?: number, using: LlmProvider | null = provider) {
+  async function modelCall(
+    c: Context,
+    mode: string,
+    layout: PromptLayout,
+    read: (text: string) => object,
+    { template, temperature, using = provider, side = false }: { template?: PromptMode; temperature?: number; using?: LlmProvider | null; side?: boolean } = {},
+  ) {
     if (!using) return c.json({ error: 'noModel' }, 503);
     const started = Date.now();
     try {
-      const result = await using.complete(layout, { timeoutMs: opts.timeoutMs, temperature });
+      const result = await using.complete(layout, { timeoutMs: opts.timeoutMs, temperature, ...(side ? { priority: 'side' as const } : {}) });
       const model = result.model ?? using.name;
       const cost = costUsd(result.model, result.usage);
       logUsage(db, signedIn(c), {
@@ -459,7 +634,21 @@ export function createApp(
     }
   }
 
-  app.get('/health', (c) => c.json({ ok: true, model: provider?.name ?? null, db: db?.name ?? null }));
+  // `dbOk` is for people and monitors. The answer stays 200 when the database is away: replies need
+  // only the model, and a host that took the machine out for it would stop those too.
+  let dbHealth: { ok: boolean; until: number } | null = null;
+  async function dbOk() {
+    if (!db?.ping) return undefined;
+    if (!dbHealth || dbHealth.until <= Date.now()) {
+      const ok = await db.ping().then(
+        () => true,
+        () => false,
+      );
+      dbHealth = { ok, until: Date.now() + DB_HEALTH_MS };
+    }
+    return dbHealth.ok;
+  }
+  app.get('/health', async (c) => c.json({ ok: true, model: provider?.name ?? null, db: db?.name ?? null, dbOk: await dbOk() }));
 
   // Where the app signs in. A development build asks here so no key sits in the app's files; a
   // release build reads EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY instead.
@@ -469,9 +658,7 @@ export function createApp(
   // call with the welcome gift paid once (backend-plan §5). Safe to call on every launch.
   app.post('/v1/session/bootstrap', async (c) => {
     if (!db) return c.json({ error: 'noDatabase' }, 503);
-    const token = bearer(c.req.header('authorization'));
-    if (!token) return c.json({ error: 'signIn' }, 401);
-    const userId = await db.userIdFromToken(token);
+    const userId = await signedIn(c);
     if (!userId) return c.json({ error: 'signIn' }, 401);
 
     let body: Record<string, unknown> = {};
@@ -518,8 +705,7 @@ export function createApp(
   // stores' webhooks): only the accounts in `TEST_SUBSCRIBERS`, or a laptop server with DEV_GRANTS.
   app.post('/v1/subscription/test', async (c) => {
     if (!db?.startTestSubscription) return c.json({ error: 'noDatabase' }, 503);
-    const token = bearer(c.req.header('authorization'));
-    const userId = token ? await db.userIdFromToken(token) : null;
+    const userId = await signedIn(c);
     if (!userId) return c.json({ error: 'signIn' }, 401);
     if (!opts.devGrants && !opts.testSubscribers?.includes(userId)) {
       console.info(`[subscription] test plan refused for ${userId}`);
@@ -649,6 +835,9 @@ export function createApp(
     if (!userId) return c.json({ error: 'signIn' }, 401);
     try {
       await db.deleteUser(userId);
+      // The token outlives the account by up to an hour on its own: here it ends now.
+      const token = bearer(c.req.header('authorization'));
+      if (token) remember(token, { userId: null, ends: null, until: tokenEnds(token) ?? Date.now() + 60 * MINUTE_MS });
       return c.json({ ok: true });
     } catch (error) {
       console.error('[account] delete failed', error);
@@ -665,7 +854,10 @@ export function createApp(
     if (!request) return c.json({ error: 'badInput' }, 400);
     const user = { ...request.input.user, locale: request.input.user.locale || 'en-US' };
     request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
-    return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, 'initiative');
+    // Written ahead for pushes nobody may read: capped per account a day, and side work for the gate.
+    const userId = await signedIn(c);
+    if (userId && !firstTextDay(userId)) return c.json({ error: 'busy' }, 429);
+    return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, { template: 'initiative', side: true });
   });
 
   // The memory pass (B2): what was said since the last pass becomes facts and the story so far. The
@@ -675,7 +867,8 @@ export function createApp(
     const request = cleanMemoryPass(await readJson(c));
     if (!request) return c.json({ error: 'badInput' }, 400);
     const ids = new Set(request.facts.map((f) => f.id));
-    return modelCall(c, 'memory', layoutPrompt(memoryPassParts(request)), (text) => parseMemoryPass(text, ids, request.ownDay), undefined, 0.2);
+    // Side work: a pass turned away runs again after the next lines (the app marks lines done only on an answer).
+    return modelCall(c, 'memory', layoutPrompt(memoryPassParts(request)), (text) => parseMemoryPass(text, ids, request.ownDay), { temperature: 0.2, side: true });
   });
 
   // Quick create (B1.4b, backend-plan §12.17): the whole character from the creator's idea. The idea
@@ -720,7 +913,7 @@ export function createApp(
         const day = line ? streamDayNotes(text) : [];
         return { line, ...(day.length ? { day } : {}) };
       },
-      'stream',
+      { template: 'stream', side: true },
     );
   });
 
@@ -741,7 +934,7 @@ export function createApp(
         const day = result ? writeDayNotes(request, text) : [];
         return { result, ...(day.length ? { day } : {}) };
       },
-      WRITE_MODE[request.kind],
+      { template: WRITE_MODE[request.kind], side: SIDE_WRITES.has(request.kind) },
     );
   });
 
@@ -751,7 +944,7 @@ export function createApp(
   app.post('/v1/voice/transcribe', async (c) => {
     const clip = cleanClip((await readJson(c))?.clip);
     if (!clip) return c.json({ error: 'badInput' }, 400);
-    return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => parseTranscript(text) ?? { text: null }, undefined, 0, opts.voiceProvider ?? null);
+    return modelCall(c, 'transcribe', transcribeLayout(clip), (text) => parseTranscript(text) ?? { text: null }, { temperature: 0, using: opts.voiceProvider ?? null });
   });
 
   // One of the character's lines read aloud, on a call (ElevenLabs). Without a voice service it says
@@ -809,9 +1002,11 @@ export function createApp(
       ownDay: cleanOwnDay(raw.ownDay),
     };
     const userId = signedIn(c);
+    const over = await overAllowance(c, await userId, 'group');
+    if (over) return over;
     const started = Date.now();
     try {
-      const { reply, result, calls, crisis, blocked } = await chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply });
+      const { reply, result, calls, crisis, blocked } = await withPhotos(images, () => chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply }));
       for (const call of calls) {
         logUsage(db, userId, {
           kind: 'llm',
@@ -864,14 +1059,14 @@ export function createApp(
       ownDay: cleanOwnDay(input.ownDay),
     };
 
-    // Who is asking, looked up while the model writes: the reply never waits on it, and a missing or
-    // stale token only leaves the cost row without a user.
-    const token = bearer(c.req.header('authorization'));
-    const userId = db && token ? db.userIdFromToken(token).catch(() => null) : Promise.resolve(null);
+    // Who is asking: the guard above already checked the token, so this is its remembered answer.
+    const userId = signedIn(c);
+    const over = await overAllowance(c, await userId, input.mode === 'call' ? 'call' : 'chat');
+    if (over) return over;
 
     const started = Date.now();
     try {
-      const { reply, result, calls, repeat, crisis, blocked } = await chatReply(provider, input, opts.timeoutMs);
+      const { reply, result, calls, repeat, crisis, blocked } = await withPhotos(images, () => chatReply(provider, input, opts.timeoutMs));
       const ms = Date.now() - started;
       let cost: number | null = 0;
       for (const call of calls) {

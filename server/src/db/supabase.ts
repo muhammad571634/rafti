@@ -41,9 +41,41 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
   return {
     name: 'supabase',
 
+    // Checked here, against the project's public signing keys (fetched once and kept): no round trip
+    // to the sign-in service per request. A token signed the old way (a shared secret) is still
+    // asked about over the network, inside `getClaims`. Not valid is null; could not ask throws.
     async userIdFromToken(token) {
-      const { data, error } = await client.auth.getUser(token);
-      return error || !data.user ? null : data.user.id;
+      const { data, error } = await client.auth.getClaims(token);
+      if (error) {
+        const status = (error as { status?: number }).status;
+        if (error.name === 'AuthRetryableFetchError' || (typeof status === 'number' && status >= 500)) throw new Error(`auth: ${error.message}`);
+        return null;
+      }
+      const sub = data?.claims?.sub;
+      return typeof sub === 'string' && sub ? sub : null;
+    },
+
+    async spendsToday(userId) {
+      const dayStart = new Date(Math.floor(Date.now() / 86_400_000) * 86_400_000).toISOString();
+      const { count, error } = await client.from('shell_ledger').select('id', { count: 'exact', head: true }).eq('user_id', userId).lt('delta', 0).neq('reason', 'expired').gte('created_at', dayStart);
+      if (error) throw new Error(`shell_ledger: ${error.message}`);
+      return count ?? 0;
+    },
+
+    async ping() {
+      const { error } = await client.from('profiles').select('id').limit(1);
+      if (error) throw new Error(`ping: ${error.message}`);
+    },
+
+    // `model_spend_today` comes with the usage_daily migration; until it is applied this answers
+    // null and the gate counts only its own process.
+    async modelSpendToday() {
+      const { data, error } = await client.rpc('model_spend_today');
+      if (error) {
+        if (error.code === 'PGRST202') return null;
+        throw new Error(`model_spend_today: ${error.message}`);
+      }
+      return data == null ? 0 : Number(data);
     },
 
     async bootstrap(userId, input: BootstrapInput) {

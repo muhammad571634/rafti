@@ -55,8 +55,17 @@ export interface LiveSubscription {
 
 export interface Db {
   name: string;
-  /** The signed-in user behind an access token, or null when the token is not valid. */
+  /**
+   * The signed-in user behind an access token, or null when the token is not valid. It throws when
+   * the sign-in service could not be asked: that says nothing about the token (`accountOf` in app.ts).
+   */
   userIdFromToken(token: string): Promise<string | null>;
+  /** How many times the user spent shells since the UTC day began, for the reply allowance (`mayReply` in app.ts). */
+  spendsToday?(userId: string): Promise<number>;
+  /** A cheap read that fails when the database is away, for `/health`. */
+  ping?(): Promise<void>;
+  /** What the model cost since the UTC day began, at list price, for the day's budget (`llm/gate.ts`); null when it cannot be read. */
+  modelSpendToday?(): Promise<number | null>;
   /** First call creates the profile and wallet and pays the welcome gift; later calls only read. */
   bootstrap(userId: string, input: BootstrapInput): Promise<BootstrapResult>;
   /** One row of the cost log (`usage_events`, server only, never shown to users). */
