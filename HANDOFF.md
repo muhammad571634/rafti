@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z192. Cast 2.0, phase A: twelve new present-day people proposed, built on what wins on Character.AI (2026-11-10, Claude, cast session). NEXT: the owner approves or edits the twelve in `docs/cast-2.md`, then phase B (no app code is changed yet). 0z191 is Claude 1's block in progress
+
+- **Owner's ask**: 55 characters in 7 themed worlds are too many and feel invented. A small cast of present-day people, the circle a real person has around them, so the user never feels alone; chosen by what people actually like (Character.AI, trends); all new, not the old ones rewritten; everything behind the characters stays, and a user-made character runs on the same logic. Approved plan (phases A-E): `C:\Users\joray\.claude\plans\hozir-men-qarab-nima-replicated-fountain.md`.
+- **Done (docs only)**: `docs/cast-2.md` v2: how others launch, chat counts of the winning relationship types read on the A51 (Character.AI 1.17.4, browse only, 36 searches, then its search stopped loading: do not hammer it), TikTok saves (Apify, $0.48 of the $5 free credit; token in User env `APIFY_TOKEN`), the nine rules the winners follow, one anatomy for official and user-made characters (new fields `relation`, `history`, `mask`, `want`, `exception`), the twelve (7 for her, 5 for him), what changes in code. `docs/later-list.md` holds everything postponed, by what it waits for.
+- **Decided with the owner**: no text, name or picture of anyone's character is copied (he asked to take twelve Character.AI characters whole and change only the name and picture; a character there is five text fields on their server-side engine, and the fields are other people's writing). We take the types, the numbers and the shape.
+- **Found**: push chain checked on the A51 (4 delivered today, 5 scheduled tonight, plans through 11-12); friends' own lines still wait for the paid key (free Gemini answered 503 at 18:22); server push waits for the next APK. The 0z190 server work changed no app code; first texts are now side work (80 an account a day).
+
+Still to do:
+1. Owner: approve or edit the twelve; say what "all 18+ talk allowed" should mean (today: romance, heat, swearing open, explicit sex fades to black; Apple 1.1.4 and Google Play remove explicit apps, the provider blocks it too). No prompt was changed.
+2. Phase B-E after the approval: fields + relationship and texting blocks in `characterParts`, create flow asks three things, cast swap with a v16 persist migration (retired official ids must not survive as undeletable friends), Supabase rows, 14 languages, evals repointed (28 on `c_hana`, 12 on `c_kai`), art (one test image of Milo first).
+3. When the paid model key comes: remind the owner of `docs/later-list.md` section 1 and start it.
+4. The Apify token was pasted in chat: the owner should rotate it in Apify when this work is done.
+
 ### 0z190. Backend ready for 10,000 installs, phase 1: sign-in check, model gate, limits, load test (2026-11-10, Claude 1). NEXT: the owner's deploy + migration b9, then the wallet enforced on the server, then phase 2 (shared content)
 
 - **Owner's ask**: "do not load everything onto the model, the rest is yours", and "review the server and Supabase as a senior backend developer so it does not fall if 10,000 people download it". The owner chose the mixed road (talking stays personal, what can be the same for everyone is written once per character). The plan, the findings and the numbers: `docs/scale-plan.md`.

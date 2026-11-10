@@ -1,124 +1,167 @@
-# Cast 2.0: twelve present-day people (proposal, 2026-11-10, waits for the owner)
+# Cast 2.0: twelve people close to you (proposal v2, 2026-11-10, waits for the owner)
 
-Owner, 2026-11-10: 55 characters in 7 themed worlds are too many and feel invented (palace, fantasy realm,
-noir, idols). The cast becomes a few present-day people who read like someone you talk to on Instagram:
-your best friend, an ex, a coworker, the neighbour. All fictional, art drawn by us, built on current trends.
-Everything behind the characters stays (prompt tiers, memory, pushes, plans, diary, voice, groups); user-made
-characters run on the same engine. Plan: `C:\Users\joray\.claude\plans\hozir-men-qarab-nima-replicated-fountain.md`
-(phases A-E). This file is phase A.
+Owner, 2026-11-10, in order:
+- 55 characters in 7 themed worlds are too many and feel invented. A small cast of present-day people, like someone
+  you talk to on Instagram. All fictional, art drawn by us.
+- Pick by what people actually like (Character.AI, trends), not by a role or a world we made up.
+- The cast is the circle a real person has around them: the user should feel their close people are in their
+  phone and never feel alone.
+- Not the old characters rewritten: twelve new ones, each built like the ones that win.
+- Everything behind the characters stays (prompt tiers, memory, pushes, plans, diary, voice, groups), and a
+  character a user makes must run on the same logic, as smoothly as ours.
+- They think and text like people of today; the model must carry that.
+- Open ask, not decided here: "all 18+ talk allowed" (see §7).
 
-## 1. What the market does
+v1 of this file (the old cast rewritten into three circles) is dropped. Plan and phases:
+`C:\Users\joray\.claude\plans\hozir-men-qarab-nima-replicated-fountain.md`. This file is phase A.
 
-**Launch pattern.** Nobody launches empty.
-- Character.AI (public beta 2022-09): a seeded library plus user creation from day one; 2.7M user characters
-  by 2023-03 ([Wikipedia](https://en.wikipedia.org/wiki/Character.ai)). Today its feed is almost all
-  user-made scenario characters.
-- Talkie (MiniMax, 2023-06): official characters and millions of user-made ones in one feed; reviews say quality
-  swings between the curated and the community ones ([App Store](https://apps.apple.com/tz/app/id6450140383?l=en-gb),
-  [DreamGen review](https://dreamgen.com/blog/articles/talkie-ai-review)).
-- Replika, Nomi, Kindroid: no shelf, you make one companion (from product knowledge; not re-checked this session).
-- Love and Deepspace: official leads only, grown from 3 to 5 over two years
-  ([HerWorld](https://www.herworld.com/pov/love-and-deep-space-ai-boyfriends)).
-- BIMOBIMO: a big fan catalogue (idols, anime), an "Original Character" tab with 3 characters, no everyday
-  modern people (`rafti-research/teardown/`).
+Rule kept from `AGENTS.md`: structure and logic only. No text, name or picture of anyone's character is copied;
+the notes below describe shapes and counts, the twelve are written from zero. A Character.AI character has no
+code of its own: it is five text fields (name, tagline, description, greeting, example dialog) on the platform's
+shared engine, which runs on their servers. Our engine already does that job.
 
-Conclusion: a small curated cast is the first minute (a new user has someone to talk to at once, and the
-cast shows what the app can do); creation gives depth and length. Curated quality is our edge over Talkie's
-uneven community shelf.
+## 1. How others launch
 
-**Character.AI on the A51 today** (1.17.4, Russian locale, browse only, nothing sent):
-- "For you" leads with modern relationship scenarios: a best friend who "doesn't see you as a friend" (2.5M
-  chats), a fake husband your sister likes (2.6M), an arranged husband (0.8M), a baby with your enemy (1.5M).
-- "Trending": an ex who wants you back, an ex with a child (250k), special forces where "you are the dog
-  handler" (262k), plus franchise characters (game, Harry Potter, K-pop) that we never do.
-- Cards now carry relationship tags under the tagline: Classmate, Schoolmate, Love Interest, Boyfriend.
-- The card names who the user is ("You are…"): the scenario gives the user a role. Our `userRole` does this.
+Nobody launches empty. Character.AI (public beta 2022-09) had a seeded library and user creation from day one,
+2.7M user characters by 2023-03 ([Wikipedia](https://en.wikipedia.org/wiki/Character.ai)). Talkie (2023-06)
+mixes official and user-made; reviews say quality swings between them
+([DreamGen](https://dreamgen.com/blog/articles/talkie-ai-review)). Love and Deepspace ships official leads only,
+3 at launch, 5 now ([HerWorld](https://www.herworld.com/pov/love-and-deep-space-ai-boyfriends)). So: a small
+curated cast for the first minute, creation for depth, and curated quality as the edge.
 
-**TikTok** (Apify `clockworks/tiktok-hashtag-scraper`, top 10 videos per hashtag, medians, 2026-11-10, $0.48):
+## 2. What wins on Character.AI (A51, app 1.17.4, 2026-11-10; browse only, nothing sent)
 
-| Hashtag | Views | Saves | All-time tag views |
-| --- | ---: | ---: | ---: |
-| friendstolovers | 923k | 16.9k | 6.0B |
-| situationship | 739k | 13.6k | 32.5B |
-| boyfriendpov | 1.8M | 11.6k | 122M |
-| gymcrush | 566k | 5.5k | 15.3B |
-| textingstory | 529k | 4.6k | 21.1B |
-| bestfriendsbrother | 247k | 2.7k | 812M |
-| childhoodfriendstolovers | 118k | 2.1k | 126M |
-| aigirlfriend | 193k | 1.8k | 701M |
-| workplaceromance | 51k | 0.4k | 678M |
-| officeromance | 47k | 0.2k | 1.6B |
-| collegeromance | 12k | 0.1k | 816M |
-| neighborromance | 51k | 0.1k | 10M |
-| roommateromance | 18k | 0.1k | 10M |
-| smalltownromance | 12k | 0.3k | 2.0B |
-| aicompanion | 7k | 0.1k | 242M |
-| longdistancerelationship | 6k | 0.0k | 54.3B |
+Chat counts from its search (36 queries; the app stopped loading results after that, so the family and
+comfort queries were not measured). Franchise, real-person and school-age characters left out.
 
-With the 2026-10-30 runs (`docs/worlds-plan.md` §2): tsundere 12.5k saves, yandere 13.0k, protective
-("touch her and you die") 10.8k, enemies to lovers 10.0k, slow burn 9.4k, arranged marriage 8.2k,
-golden retriever 1.4k, kuudere 2.8k, grumpy-sunshine 0.8k.
+| Relationship + tension | Chats |
+| --- | ---: |
+| Best friend with a secret crush on you | 304M |
+| Arranged marriage, cold husband from a dangerous family | 196M |
+| Your brother's best friend (off-limits) | 179M |
+| The bad boy only you can calm down | 176M |
+| Possessive, jealous husband | 170M |
+| Your brother's best friend: he hates you, you hate him | 164M |
+| Possessive, loving boyfriend | 164M |
+| Boss / boyfriend, boss after one night, cold CEO | 129M, 59M, 53M |
+| Your enemy needs you to fake-date him | 129M |
+| Your enemy is now your roommate | 111M |
+| Bodyguard who does not take no | 83M |
+| The crush who turned you down (her) | 81M |
+| Ex-girlfriend, rude, secretly wants you back | 79M |
+| Roommate, cold until she knows you (her) | 71M |
+| Older girlfriend: workaholic, sarcastic, protective | 55M |
+| Childhood friend, every summer together | 54M |
+| Ex-boyfriend | 51M |
+| Girl best friend / tomboy childhood friend | 44M, 40M |
 
-What it says:
-- **Dynamics win, settings lose.** Friends to lovers, situationship, "boyfriend POV" (daily life with a
-  partner), gym crush and the best friend's brother pull; office, college, neighbour and roommate as
-  settings are weak. So each person is a dynamic first; the setting is only "where you know them from".
-- **The chat itself is a format people love**: texting stories have 21B views. A DM-like friend fits.
-- Men are an audience too (aigirlfriend 1.8k saves): the cast needs women with strong dynamics, not
-  only as side characters.
+Comfort characters are their own demand: a "Psychologist" character had 78M messages by 2024-01
+([The Decoder](https://the-decoder.com/teens-are-reaching-out-to-ai-therapy-bots-at-character-ai/)), and 31% of
+people who use AI for social support call it a friend
+([Elon University, 2026](https://www.elon.edu/u/news/2026/09/02/imagining-the-digital-future-center-reports-on-the-rise-of-ai-companions/)).
 
-## 2. The rule for every character (official and user-made)
+TikTok agrees (Apify `clockworks/tiktok-hashtag-scraper`, top 10 videos per tag, median saves, $0.48):
+friends to lovers 16.9k, situationship 13.6k, boyfriend POV 11.6k, gym crush 5.5k, texting story 4.6k, best
+friend's brother 2.7k; settings alone are weak (office 0.2k, college 0.1k, neighbour 0.1k, roommate 0.1k).
 
-1. A present-day adult (21-33), in one unnamed modern city, with a normal job or study and a phone.
-2. One dynamic from the trend list, one way you know them ("how you met"), one temperament, one secret
-   that opens with closeness (arc beats at levels 2, 4, 6), opinions of their own.
-3. Never: royalty, magic, crime families, idols, real people or look-alikes, franchises, minors.
-4. Possessive / yandere is not used as such (store risk, and it teaches control); jealousy may show
-   as a feeling a character owns, never as control.
+## 3. The rule the winners follow
 
-## 3. The twelve
+Read from the cards, profiles and first messages of the fourteen most-chatted (shapes only):
 
-Three circles (the old "worlds", same engine: circle page, news, quiz, group chat, entry scene):
-**Since forever** (old friends), **From work**, **Around you** (the neighbourhood, the gym, online).
-Every one reuses an existing id, so evals, memory tests and art slots carry over; text is rewritten.
+1. **The title is who they are to you**, not their name: best friend, husband, ex, roommate, boss.
+2. **A knot is built in**: a secret crush, hate, something forbidden, jealousy, being stuck together.
+   A plain nice person does not rise.
+3. **Already close.** Most are not strangers: there is history (friend, husband, ex). No getting-to-know-you
+   stage; the chat starts in the middle.
+4. **A mask and a want.** Cold or rude outside, wants you inside. People write to crack the mask.
+5. **"Everyone but you."** Warm with all and ice with you, or ice with all and soft with you: the user is
+   the exception.
+6. **The description is tiny**: 1 to 5 sentences. Who they are (age, job, standing), what they are to you, how
+   they treat you against everyone else, what they hide. The top one (304M) is four sentences.
+7. **The first message is a scene, not a hello**: where you are and what just happened, then their first line
+   in their voice carrying a hook (a favour, a taunt, a refusal). It ends on something only a reply settles;
+   never "how are you".
+8. **The user has a role with power**: the only one who can calm him, the one who can say yes or no.
+9. Top complaint under the most-chatted character: he "suddenly became a girl". The persona drifts. Holding
+   gender, body and pronouns is a visible edge (same finding as `docs/worlds-plan.md` §2).
 
-| # | Id | Name, age | How you know them | Dynamic / temperament | Their job | Secret (opens with closeness) |
+How we choose: rank relationship + tension pairs by chats, merge duplicates, balance leads for women and for
+men, drop what we do not ship (school age, real people, franchises), and keep cruelty out: jealousy and
+possessiveness are feelings a character owns and admits, never control, threats or harm.
+
+## 4. The anatomy (one shape for official and user-made characters)
+
+| Part | What it is | Field |
+| --- | --- | --- |
+| Relation | who they are to you, the card's title | new `relation` |
+| Tagline | "Your … who …": one line holding the knot | `tagline` |
+| History | what is already between you (2 sentences) | new `history` |
+| Mask | how they act with you | new `mask` |
+| Want | what they hide; opens with closeness | new `want` (the arc's secret) |
+| Exception | with everyone X, with you Y | new `exception` |
+| Standing | age, job, what makes them someone | `age`, `role`, `look` |
+| Voice | how they text | `speakingStyle`, `definition` |
+| First text | a moment with a hook, in their voice | `opening`, `greetings` |
+| Starters | three things the user can say | `starters` |
+
+Our chats are messages, not narrated roleplay, so the first text is a DM that carries the scene and the hook
+("ok don't be mad. I told my parents we're dating. dinner is at 8."). Scenes stay for narrated play.
+
+The prompt gets one relationship block from these fields (character tier): the history is real from the first
+message, the mask outside and the want inside, the mask gives a little at levels 2, 4 and 6 (the arc), the
+persona's gender, body and pronouns never change. A texting block makes them text like people of today:
+lower case when relaxed, short bubbles, reactions, no narration in a DM.
+
+## 5. The twelve (all new, written from zero)
+
+One present-day city. The title on the card is the relation.
+
+**For her**
+
+| # | Name, age | Relation | Tagline | Mask / want | Standing | First text (the hook) |
 |---|---|---|---|---|---|---|
-| 1 | c_kai | Kai Arden, 24 (m) | Your best friend since school | Friends to lovers, golden retriever | Swim coach, physio student | Has been in love with you for years; almost said it twice |
-| 2 | c_hana | Hana Reyes, 24 (f) | Your oldest friend, two streets away | Tsundere, grumpy-sunshine | Tattoo artist and illustrator | Her father finished the painting that made her "talented" at nine |
-| 3 | c_theo | Theo Lancaster, 28 (m) | Your best friend's older brother | Off-limits, slow burn, protective | Works in finance | Promised his sister he would never date her friends |
-| 4 | c_adrian | Adrian Wells, 29 (m) | Your ex; broke up a year ago | Second chance, texts at 1 a.m. | Architect | Kept the ring he never gave you |
-| 5 | c_elio | Elio Vance, 26 (m) | Sits at the next desk | Kuudere, forced proximity | Software engineer | Rewrote your broken code at night so you would not be blamed |
-| 6 | c_tessa | Tessa Moreau, 26 (f) | Your rival for the same promotion | Enemies / rivals to lovers | Marketing lead | Asked the boss to give the promotion to you |
-| 7 | c_priya | Priya Raman, 27 (f) | The coworker you are "not dating" | Situationship, flirt | Designer | Turned down a job abroad to stay near you; won't say so |
-| 8 | c_felix | Felix Grant, 27 (m) | On a three-month transfer to your office | Ticking clock, slow burn | Consultant from another city | His return ticket is booked; he is looking for a reason to stay |
-| 9 | c_erik | Erik Holt, 31 (m) | Coach at your gym | Grumpy, protective, gym crush | Strength coach, ex-pro hockey | An injury ended his career; he never talks about that night |
-| 10 | c_sol | Sol Rivera, 30 (f) | Owns the café under your flat | Caring, protective, older | Café owner | The café is in debt; she smiles anyway |
-| 11 | c_cole | Cole Ashby, 28 (m) | Your new neighbour across the hall | Morally grey, protective ("who did this to you") | Mechanic | Did time at nineteen for his uncle's debts |
-| 12 | c_ivy | Ivy Chen, 25 (f) | You matched on a dating app | Chaotic flirt, makes plans | Florist | Deleted the app after your first chat; still pretends to swipe |
+| 1 | Milo Reyes, 24 | Your best friend | Roasts you daily. Has loved you for years. | Teases, acts like your attention annoys him / wants you, afraid to lose the friendship | Bartender who makes beats | "you left your hoodie here again. not giving it back btw" |
+| 2 | Roman Castell, 31 | Your husband | Married you for the family. Was not supposed to care. | Cold, formal, sleeps down the hall / learns how you take your coffee, gets attached | Heir of a family nobody says no to | "Dinner with my father at eight. Wear the green. …Please." |
+| 3 | Caleb Hart, 27 | Your brother's best friend | Sunshine with everyone. Ice with you. There is a reason. | Short and sarcastic only with you / has liked you for years, promised your brother | Firefighter on your brother's crew | "your brother asked me to drive you home. don't make it weird." |
+| 4 | Jace Navarro, 23 | Your trouble | Fights everyone. Listens to one person. | Reckless, split knuckles, laughs it off / only calm near you, scared he is too much | Amateur boxer, works at a garage | "don't freak out. need you to come get me. bring ice." |
+| 5 | Ethan Cole, 26 | Your boyfriend | Two years in. Still jealous of your coworkers. | "I'm fine", easygoing / wants all your attention and says so in the end | Photographer | "who's 'daniel 🙂' and why does he like everything you post" |
+| 6 | Asher Lin, 25 | Your rival | Told his parents you two are dating. Dinner is tonight. | Smug, has competed with you for years / cannot stop looking at you | Resident on the same programme | "ok don't hang up. i need a favor. a big one." |
+| 7 | Victor Hale, 34 | Your boss | Cold in every meeting. Remembers your coffee order. | Demanding, formal / that night after the launch party neither of you mentions | Runs the company | "My office. Five minutes. It is not about the report." |
 
-7 men, 5 women; the Everyone / Him / Her filter keeps working. Onboarding's four picks: Kai, Hana, Theo, Ivy.
-Eval coverage carried over: Hana 28 scenarios, Kai 12, Sol 6, Erik 6, Ivy 3, Adrian 3, Theo 2, Tessa 2.
+**For him**
 
-**Retired (43):** all of Moonlit Realm, NEON TIDE, Velvet District and Gilded Empire, and from the modern
-worlds Iris, Rowan, Jun, Noah, Lucas, Marco, Gideon, Ren, Hugo, Nadia, Teddy, Freya, Sasha. The two seeded
-creations (`c_oppa`, `c_luna`) stay as examples of user-made characters. A v16 migration removes the retired
-ids and their seed data from phones; chats a user had with them go with them (phase B of the plan).
+| # | Name, age | Relation | Tagline | Mask / want | Standing | First text (the hook) |
+|---|---|---|---|---|---|---|
+| 8 | Mia Castillo, 25 | Your ex | Broke up with you. Still wears your hoodie. | Mean, "I'm doing great" / wants you back, too proud to say it | Nurse on night shifts | "you still have my charger. also hi. don't read into this." |
+| 9 | Yuna Seo, 24 | Your roommate | Three rules on the fridge. Breaks all of them for you. | Cold, headphones on / leaves food out for you, waits up | Illustrator who works nights | "you're loud when you come home. …did you eat?" |
+| 10 | Clara Whitmore, 33 | Your girlfriend | Runs a company all day. Comes home to you. | Sarcastic, in control / wants to be looked after for once | Founder | "Meeting ran late. Don't cook, I'm bringing food. Don't argue." |
+| 11 | Sam Okafor, 24 | Your best friend | Has beaten you at everything since you were seven. | Loud, punches your arm, one of the guys / wants you to notice her | Physio, plays five-a-side | "who was that in your story. asking for no reason." |
+| 12 | Lena Brandt, 23 | Your crush | Said no last year. Keeps texting first. | "We're just friends" / regrets it, watches who you are with | Final-year architecture student | "random question. are you seeing anyone. asking for a friend. the friend is me." |
 
-## 4. User-made characters get the same depth
+Him / Her / Everyone keeps working, and every one can be anyone's friend: the model follows the user's own
+persona. Milo and Sam are the two "safe people" (warm, always there); the rest carry more heat.
 
-- Create asks "how do you know them?" (Since forever / From work / Around you / Online / Other) and the
-  dynamic; the model writes the secret and three arc beats once, as it already writes opinions.
-- They join that circle's group chat, news and quiz like an official character.
+Onboarding's four picks: Milo, Caleb, Mia, Sam (two for her, two for him, the top types).
 
-## 5. Art brief
+Next to add, in order of the numbers: the enemy who is now your roommate, the bodyguard, the ex-boyfriend,
+the new neighbour, a comfort listener. One at a time after launch.
 
-Semi-realistic drawn scenes framed like a phone photo: café table, gym mirror, office kitchen, a street at
-night; the face large, the friend on the trailing side of the frame. Not photoreal (no look-alike risk in
-store review), not anime. One test image first (Kai), the owner looks, then the other 11 (count stated).
-Prompts go to `docs/nano-banana-cast-2.md`; the owner draws in Nano Banana, the agent wires them.
+**Retired:** all 55 official characters and the seven worlds as content. The world engine (page, news, quiz,
+group chat) is kept in code and switched off in the UI until there is content for it; nothing is deleted
+that a later season could use.
 
-## 6. Open for the owner
+## 6. What changes in code (after the owner approves the twelve)
 
-- The twelve names, jobs and dynamics above (edit any row).
-- The art style after the test image.
+1. `Character` gains `relation`, `history`, `mask`, `want`, `exception`; `characterParts`
+   (`src/ai/rules.ts`) gets the relationship block and a texting block, the same for every character.
+2. Create asks three things (who they are to you, how they act, what they hide) and the model writes the
+   rest; a user-made character gets the same block, an arc and opinions.
+3. The cast swap, the v16 migration, 14 languages, evals, art: phases B to E of the plan.
+
+## 7. Open for the owner
+
+1. The twelve rows above: any name, job, tagline or line can change.
+2. "All 18+ talk allowed": today the rules open romance, flirting, heat, swearing and dark stories, and
+   close the door on explicit sex ("fade to black"). Apple (guideline 1.1.4) and Google Play remove apps with
+   explicit sexual content, and the model provider blocks it on its side. To decide before any prompt change.
+3. The art style after one test image (Milo).
