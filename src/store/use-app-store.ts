@@ -97,6 +97,7 @@ import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@
 import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
 import { forgetFriend } from '@/lib/forget-friend';
+import { endedChats, retireCast } from '@/lib/retire-cast';
 import {
   canAddMember,
   canRemoveMember,
@@ -3984,7 +3985,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 15,
+      version: 16,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -4073,6 +4074,13 @@ export const useAppStore = create<AppState>()(
             ]),
           );
         }
+        // v16: Cast 2.0 (docs/cast-2.md) retired the first official cast: each one goes as Remove friend
+        // would take them (chats, bond, memories, plans…); the user's own characters stay untouched.
+        if (version < 16) {
+          const before = state;
+          state = retireCast(state, new Set(seedCharacters.map((c) => c.id)));
+          retiredChats = endedChats(before, state);
+        }
         return state as AppState;
       },
       storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),
@@ -4090,7 +4098,8 @@ export const useAppStore = create<AppState>()(
           wallet: { ...current.wallet, ...saved.wallet },
           daily: { ...current.daily, ...saved.daily },
           settings: { ...current.settings, ...saved.settings },
-          characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id))],
+          // An official character the cast no longer has is never kept: it could not be deleted (v16).
+          characters: [...seedCharacters, ...(saved.characters ?? []).filter((c) => !seedIds.has(c.id) && !c.isOfficial)],
           // Crisis text saved as a memory before the guard existed is dropped on load.
           // Repeats left by an older sample loader are dropped too (`uniqueById`).
           memories: withoutCrisisMemories(uniqueById(saved.memories ?? current.memories)),
@@ -4167,11 +4176,24 @@ export const useAppStore = create<AppState>()(
         // Memory changes from here on reach the server, the hydration work's own included.
         startMemorySync(useAppStore);
         // The messages come from the database first, so the work below sees them all.
-        void restoreMessages(useAppStore).finally(finishHydration);
+        void restoreMessages(useAppStore).finally(() => {
+          dropChats(retiredChats);
+          finishHydration();
+        });
       },
     },
   ),
 );
+
+/** Chats the v16 migration ended (Cast 2.0): their lines are dropped once the database has loaded them. */
+let retiredChats: string[] = [];
+
+/** Lines of chats that no longer exist, out of the state (and so out of the database, `message-sync.ts`). */
+function dropChats(ids: readonly string[]) {
+  if (!ids.length) return;
+  const gone = new Set(ids);
+  useAppStore.setState((s) => ({ messages: Object.fromEntries(Object.entries(s.messages).filter(([id]) => !gone.has(id))) }));
+}
 
 /** Work that was mid-flight when the app closed finishes now; then the app opens. */
 async function finishHydration() {

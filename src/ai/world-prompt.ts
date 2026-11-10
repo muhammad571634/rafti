@@ -71,6 +71,26 @@ export function personaStoryLines(character: Pick<Character, 'worldRole' | 'trop
   ];
 }
 
+/**
+ * Who they are to the user before the chat began (docs/cast-2.md §4): the relation, what is already
+ * between them, the face they keep on and how that differs from everyone else. One block for the
+ * official cast and for a character a user made; it never changes, so it sits in the character tier.
+ * What they hide is the arc's secret, which only `arcLines` may tell.
+ */
+export function relationLines(character: Pick<Character, 'relation' | 'history' | 'mask' | 'exception'>) {
+  const { relation, history, mask, exception } = character;
+  if (!relation && !history && !mask && !exception) return [];
+  return [
+    'YOU AND THE USER (true before this chat began; live it, never recite it):',
+    ...(relation ? [`- Who you are to them, as they would put it: "${relation}"`] : []),
+    ...(history ? [`- What is already between you: ${history}`] : []),
+    ...(mask ? [`- How you act with them: ${mask}`] : []),
+    ...(exception ? [`- Only with them: ${exception}`] : []),
+    '- You already know each other: never introduce yourself, never ask who they are, never act as if you had just met. If they play it another way, follow them.',
+    '- Your closeness level says how far your guard is down with them, not how long you have known them. What you hold back comes out only as your own story opens.',
+  ];
+}
+
 /** What is going on in their world and who the user is in it. */
 export function storyLines(world: WorldPrompt) {
   return [

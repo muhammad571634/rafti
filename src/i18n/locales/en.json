@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Find",
-    "searchPlaceholder": "Characters, worlds",
+    "searchPlaceholder": "Characters",
     "who": {
       "everyone": "Everyone",
       "male": "Him",
@@ -188,7 +188,7 @@
     "newSection": "New",
     "proFirst": "Pro first",
     "newBadge": "New",
-    "worlds": "Worlds",
+    "worlds": "Relationships",
     "talkNow": "Talk now",
     "missTitle": "Who do you miss?",
     "chooseRole": "Choose your {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "You first!",
     "Long story 😅": "Long story 😅",
     "Can you wake me up for it?": "Can you wake me up for it?",
-    "Seaside Academy": "Seaside Academy",
     "My Creations": "My Creations",
-    "Moonlit Realm": "Moonlit Realm",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Café",
-    "Velvet District": "Velvet District",
-    "Gilded Empire": "Gilded Empire",
-    "Ice & Arena": "Ice & Arena"
+    "Friends": "Friends",
+    "Partners": "Partners",
+    "Around you": "Around you"
   },
   "welcomeBack": {
     "line1": "You're back! Missed you 💛",

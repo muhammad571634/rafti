@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Buscar",
-    "searchPlaceholder": "Personagens, mundos",
+    "searchPlaceholder": "Personagens",
     "who": {
       "everyone": "Todos",
       "male": "Ele",
@@ -188,7 +188,7 @@
     "newSection": "Novo",
     "proFirst": "Pro primeiro",
     "newBadge": "Novo",
-    "worlds": "Mundos",
+    "worlds": "Relações",
     "talkNow": "Conversar agora",
     "missTitle": "De quem você sente saudade?",
     "chooseRole": "Escolha seu {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "Você primeiro!",
     "Long story 😅": "Longa história 😅",
     "Can you wake me up for it?": "Me acorda pra isso?",
-    "Seaside Academy": "Academia Seaside",
     "My Creations": "Minhas criações",
-    "Moonlit Realm": "Reino do Luar",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool",
-    "Velvet District": "Distrito Velvet",
-    "Gilded Empire": "Império Dourado",
-    "Ice & Arena": "Gelo e Arena"
+    "Friends": "Amigos",
+    "Partners": "Casal",
+    "Around you": "Ao seu redor"
   },
   "welcomeBack": {
     "line1": "Você voltou! Senti sua falta 💛",

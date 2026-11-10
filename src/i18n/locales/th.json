@@ -154,7 +154,7 @@
   },
   "find": {
     "title": "ค้นหา",
-    "searchPlaceholder": "ตัวละคร, โลก",
+    "searchPlaceholder": "ตัวละคร",
     "who": {
       "everyone": "ทุกคน",
       "male": "ชาย",
@@ -184,7 +184,7 @@
     "newSection": "ใหม่",
     "proFirst": "สิทธิ์ Pro ก่อนใคร",
     "newBadge": "ใหม่",
-    "worlds": "โลก",
+    "worlds": "ความสัมพันธ์",
     "talkNow": "คุยตอนนี้เลย",
     "missTitle": "คุณกำลังคิดถึงใครอยู่?",
     "chooseRole": "เลือก {{role}} ของคุณ",
@@ -2519,14 +2519,10 @@
     "You first!": "เธอก่อน!",
     "Long story 😅": "เรื่องยาว 😅",
     "Can you wake me up for it?": "ปลุกหน่อยได้ไหมตอนนั้น?",
-    "Seaside Academy": "สถาบันซีไซด์",
     "My Creations": "ผลงานของฉัน",
-    "Moonlit Realm": "แดนจันทรา",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "ไทดพูลคาเฟ่",
-    "Velvet District": "เขตเวลเวต",
-    "Gilded Empire": "จักรวรรดิทองคำ",
-    "Ice & Arena": "น้ำแข็งและสนาม"
+    "Friends": "เพื่อน",
+    "Partners": "คนรัก",
+    "Around you": "รอบตัวคุณ"
   },
   "welcomeBack": {
     "line1": "กลับมาแล้ว! คิดถึงนะ 💛",

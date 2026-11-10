@@ -82,6 +82,18 @@ export interface Character {
   archetype?: Archetype;
   /** What they hold back, opening with the bond (`src/lib/world-story.ts`). */
   arc?: CharacterArc;
+  /**
+   * Who they are to the user before the first message (docs/cast-2.md §4), for the official cast and
+   * creations alike. `relation` is shown as the card's line ("Your best friend"); the other three are
+   * for the model only (`relationLines`). What they hide is `arc.secret`.
+   */
+  relation?: string;
+  /** What is already between the two of them, in a sentence or two. */
+  history?: string;
+  /** How they act with the user: the face they keep on. */
+  mask?: string;
+  /** How that differs from how they are with everyone else. */
+  exception?: string;
 }
 
 /** The dynamic a character has with the user; a world never has two of the same. */

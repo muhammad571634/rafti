@@ -154,7 +154,7 @@
   },
   "find": {
     "title": "Temukan",
-    "searchPlaceholder": "Karakter, dunia",
+    "searchPlaceholder": "Karakter",
     "who": {
       "everyone": "Semua",
       "male": "Dia (pria)",
@@ -184,7 +184,7 @@
     "newSection": "Baru",
     "proFirst": "Pro lebih dulu",
     "newBadge": "Baru",
-    "worlds": "Dunia",
+    "worlds": "Hubungan",
     "talkNow": "Bicara sekarang",
     "missTitle": "Siapa yang Anda rindukan?",
     "chooseRole": "Pilih {{role}} Anda",
@@ -2519,14 +2519,10 @@
     "You first!": "Kamu duluan!",
     "Long story 😅": "Panjang ceritanya 😅",
     "Can you wake me up for it?": "Bisa bangunin aku buat itu?",
-    "Seaside Academy": "Akademi Seaside",
     "My Creations": "Kreasiku",
-    "Moonlit Realm": "Alam Cahaya Bulan",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Kafe Tidepool",
-    "Velvet District": "Distrik Velvet",
-    "Gilded Empire": "Kekaisaran Emas",
-    "Ice & Arena": "Es & Arena"
+    "Friends": "Teman",
+    "Partners": "Pasangan",
+    "Around you": "Di sekitarmu"
   },
   "welcomeBack": {
     "line1": "Kamu kembali! Aku kangen 💛",

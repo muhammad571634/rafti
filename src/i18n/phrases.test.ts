@@ -6,6 +6,7 @@ import { describe, it } from 'node:test';
 import { FAMILY_LABELS } from '../lib/kin';
 import { INTEREST_OPTIONS } from '../lib/profile';
 import { allReachKeys, everydayIdeas, ideasFor } from '../lib/reply-ideas';
+import { characters } from '../mock/characters';
 import { TIERS } from '../mock/user';
 import { WORLDS } from '../mock/worlds';
 
@@ -31,6 +32,8 @@ describe('phrases: the English words kept as data, in every screen language', ()
     ...INTEREST_OPTIONS,
     ...allIdeas().flatMap((idea) => [idea.label, idea.text]),
     ...WORLDS.map((w) => w.series),
+    // The circles Find groups the cast under (`Character.series`).
+    ...characters.flatMap((c) => (c.series ? [c.series] : [])),
   ];
 
   it('covers every label, tier, interest and reply idea', () => {

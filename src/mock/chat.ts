@@ -7,7 +7,7 @@ import { daysAgo, hoursAgo, minutesAgo } from './time';
 export const conversations: Conversation[] = [
   {
     id: 'conv_theo',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     lastMessagePreview:
       'Signing permission slips and pretending to listen to the treasurer. Then you texted, so obviously I stopped.',
     lastMessageAt: minutesAgo(3),
@@ -17,7 +17,7 @@ export const conversations: Conversation[] = [
   },
   {
     id: 'conv_seren',
-    characterId: 'c_seren',
+    characterId: 'c_ethan',
     lastMessagePreview: 'I baked cookies again. Guess who gets the first one~',
     lastMessageAt: minutesAgo(48),
     unreadCount: 0,
@@ -35,8 +35,8 @@ export const conversations: Conversation[] = [
   },
   {
     id: 'conv_castor',
-    characterId: 'c_castor',
-    lastMessagePreview: 'Then let me tell you how the lighthouse star got its name.',
+    characterId: 'c_roman',
+    lastMessagePreview: 'Then let me tell you about the night I almost proposed in a car park.',
     lastMessageAt: hoursAgo(21),
     unreadCount: 0,
     pinned: false,
@@ -44,7 +44,7 @@ export const conversations: Conversation[] = [
   },
   {
     id: 'conv_elio',
-    characterId: 'c_elio',
+    characterId: 'c_yuna',
     lastMessagePreview: '...Fine. But only because you asked.',
     lastMessageAt: daysAgo(2),
     unreadCount: 0,
@@ -54,7 +54,7 @@ export const conversations: Conversation[] = [
 ];
 
 /**
- * The Theo thread follows the reference screenshot's rhythm:
+ * The Milo thread follows the reference screenshot's rhythm:
  * voice note -> text -> your reply with a read receipt -> muted echo -> voice reply.
  */
 const theoThread: Message[] = [
@@ -72,7 +72,7 @@ const theoThread: Message[] = [
     conversationId: 'conv_theo',
     author: 'them',
     kind: 'text',
-    text: 'Well, well. Finally remembered I exist? Need a favour from the union president, or just missing me?',
+    text: 'well well. finally remembered i exist? need a favour or just missing me',
     createdAt: minutesAgo(9),
   },
   {
@@ -177,7 +177,7 @@ const castorThread: Message[] = [
     conversationId: 'conv_castor',
     author: 'me',
     kind: 'text',
-    text: 'tell me a story about the stars',
+    text: 'tell me a story',
     createdAt: hoursAgo(22),
     readAt: hoursAgo(22),
   },
@@ -186,7 +186,7 @@ const castorThread: Message[] = [
     conversationId: 'conv_castor',
     author: 'them',
     kind: 'text',
-    text: 'Then let me tell you how the lighthouse star got its name.',
+    text: 'Then let me tell you about the night I almost proposed in a car park.',
     createdAt: hoursAgo(21),
   },
 ];

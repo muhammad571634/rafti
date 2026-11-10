@@ -63,6 +63,8 @@ for (const c of characters.filter((c) => c.isOfficial)) {
   if (cleanStr(c.backstory)) item.backstory = c.backstory;
   if (cleanStrArray(c.tags)) item.tags = c.tags;
   if (cleanStr(c.worldRole)) item.worldRole = c.worldRole;
+  // Who they are to the user (Cast 2.0): the line under their name on cards and the first chat card.
+  if (cleanStr(c.relation)) item.relation = c.relation;
   // Only a beat's title shows on screen; the secret and the beats are for the model and stay English.
   if (c.arc) item.arc = { beats: c.arc.beats.map((b) => ({ title: b.title })) };
   if (Object.keys(item).length > 0) {

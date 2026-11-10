@@ -171,3 +171,41 @@ describe('world news as a first text', () => {
     assert.match(out, /Riders reached the Thorn Gate/);
   });
 });
+
+describe('who they are to the user', () => {
+  const milo = {
+    ...vesper,
+    series: undefined,
+    worldRole: undefined,
+    relation: 'Your best friend',
+    history: 'You have been best friends since school.',
+    mask: 'You tease them and act as if their attention annoys you.',
+    exception: 'You are loud with everyone; only with them do you go quiet.',
+  } as Character;
+
+  it('tells the model the relation, the history and the mask, in the cached character tier', () => {
+    const parts = characterParts(milo, sam, bond(1));
+    const relation = text(parts, 'relation');
+    assert.equal(tier(parts, 'relation'), 'character');
+    assert.match(relation, /"Your best friend"/);
+    assert.match(relation, /best friends since school/);
+    assert.match(relation, /act as if their attention annoys you/);
+    assert.match(relation, /only with them do you go quiet/);
+    assert.match(relation, /never act as if you had just met/);
+    // The secret is the arc's to tell, never this block's.
+    assert.doesNotMatch(relation, /forgetting potion/);
+  });
+
+  it('is the same block for a character a user made, and replaces the plain role line', () => {
+    const made = { ...milo, isOfficial: false, role: 'friend' } as Character;
+    const parts = characterParts(made, sam, bond(1));
+    assert.match(text(parts, 'relation'), /"Your best friend"/);
+    assert.doesNotMatch(text(parts, 'persona'), /What you are to the user/);
+  });
+
+  it('adds nothing for a character without one, and keeps the plain role line', () => {
+    const parts = characterParts({ ...vesper, role: 'friend' } as Character, sam, bond(1));
+    assert.equal(text(parts, 'relation'), '');
+    assert.match(text(parts, 'persona'), /What you are to the user: their friend/);
+  });
+});

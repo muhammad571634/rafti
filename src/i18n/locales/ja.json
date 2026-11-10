@@ -154,7 +154,7 @@
   },
   "find": {
     "title": "見つける",
-    "searchPlaceholder": "キャラクター、世界観",
+    "searchPlaceholder": "キャラクター",
     "who": {
       "everyone": "全員",
       "male": "彼",
@@ -184,7 +184,7 @@
     "newSection": "新着",
     "proFirst": "Pro先行",
     "newBadge": "新着",
-    "worlds": "世界観",
+    "worlds": "関係",
     "talkNow": "今すぐ話す",
     "missTitle": "誰に会いたいですか？",
     "chooseRole": "あなたの{{role}}を選択",
@@ -2519,14 +2519,10 @@
     "You first!": "先にどうぞ！",
     "Long story 😅": "話せば長い😅",
     "Can you wake me up for it?": "そのために起こしてくれる？",
-    "Seaside Academy": "シーサイド学園",
     "My Creations": "マイ作品",
-    "Moonlit Realm": "月光の領域",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "タイドプール・カフェ",
-    "Velvet District": "ベルベット地区",
-    "Gilded Empire": "黄金の帝国",
-    "Ice & Arena": "氷とアリーナ"
+    "Friends": "友だち",
+    "Partners": "恋人",
+    "Around you": "あなたのまわり"
   },
   "welcomeBack": {
     "line1": "おかえり！会いたかったよ 💛",

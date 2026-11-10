@@ -56,8 +56,8 @@ import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
 import type { Character, Pronouns } from '@/types';
 
-/** One friend from each world, so the first choice is about taste, not scrolling. */
-const PICKS = ['c_kai', 'c_aurelian', 'c_sol', 'c_seren'];
+/** The four people most talk to (docs/cast-2.md §5): two for her, two for him, so the first choice is about taste, not scrolling. */
+const PICKS = ['c_milo', 'c_caleb', 'c_mia', 'c_sam'];
 const MIN_AGE = 18;
 const NAME_MAX = 20;
 const YEAR_ROW = 44;
@@ -554,14 +554,14 @@ function DeckCard({ character, depth, width, height, onPress }: { character: Cha
         onPress={onPress}
         disabled={depth !== 0}
         accessibilityRole="button"
-        accessibilityLabel={`${character.name}${character.series ? `, ${phrase(character.series)}` : ''}`}
+        accessibilityLabel={`${character.name}, ${character.relation ?? (character.series ? phrase(character.series) : '')}`}
         style={StyleSheet.absoluteFill}>
         <Image source={HEROES[character.id] ?? character.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
         <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.78)']} style={styles.deckShade} />
         <View style={styles.deckText}>
           <View style={styles.deckChip}>
             <Txt style={styles.deckChipText} lines={1}>
-              {character.series ? phrase(character.series) : ''}
+              {character.relation ?? (character.series ? phrase(character.series) : '')}
             </Txt>
           </View>
           <Txt style={styles.deckName} lines={1}>

@@ -166,7 +166,7 @@
   },
   "find": {
     "title": "Поиск",
-    "searchPlaceholder": "Персонажи, миры",
+    "searchPlaceholder": "Персонажи",
     "who": {
       "everyone": "Все",
       "male": "Он",
@@ -196,7 +196,7 @@
     "newSection": "Новые",
     "proFirst": "Сначала с Pro",
     "newBadge": "Новинка",
-    "worlds": "Миры",
+    "worlds": "Отношения",
     "talkNow": "Начать диалог",
     "missTitle": "По кому вы скучаете?",
     "chooseRole": "Выберите: {{role}}",
@@ -2633,14 +2633,10 @@
     "You first!": "Ты первый!",
     "Long story 😅": "Долгая история 😅",
     "Can you wake me up for it?": "Разбудишь меня к этому?",
-    "Seaside Academy": "Академия Сисайд",
     "My Creations": "Мои творения",
-    "Moonlit Realm": "Лунное королевство",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Кафе Тайдпул",
-    "Velvet District": "Вельветный квартал",
-    "Gilded Empire": "Золотая империя",
-    "Ice & Arena": "Лёд и арена"
+    "Friends": "Друзья",
+    "Partners": "Любимые",
+    "Around you": "Рядом с тобой"
   },
   "welcomeBack": {
     "line1": "Ты снова здесь! Мне тебя не хватало 💛",

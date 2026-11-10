@@ -141,11 +141,11 @@ function relationship(
 }
 
 export const relationships: Relationship[] = [
-  relationship('c_theo', 420, 1, 25, CREAM_BG, 0),
-  relationship('c_seren', 1600, 12, 96, 'bg_dusk', -1),
+  relationship('c_milo', 420, 1, 25, CREAM_BG, 0),
+  relationship('c_ethan', 1600, 12, 96, 'bg_dusk', -1),
   relationship('c_oppa', 6200, 22, 180, 'bg_room', 0),
-  relationship('c_elio', 40, 0, 6, 'bg_night'),
-  relationship('c_castor', 260, 3, 40, 'bg_tea', -1),
+  relationship('c_yuna', 40, 0, 6, 'bg_night'),
+  relationship('c_roman', 260, 3, 40, 'bg_tea', -1),
 ];
 
 export const relationshipsByCharacter = Object.fromEntries(

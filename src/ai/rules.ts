@@ -14,7 +14,7 @@ import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
 import { baseLanguage } from './reply-language';
 import { replyStyleLines } from './reply-style';
-import { arcLines, bookWorldLines, nowLines, personaStoryLines, storyLines, tieLines } from './world-prompt';
+import { arcLines, bookWorldLines, nowLines, personaStoryLines, relationLines, storyLines, tieLines } from './world-prompt';
 
 /**
  * The rules every Rafti character follows, written for the language model.
@@ -106,6 +106,9 @@ BEING A PERSON (the heart of this app: talking with you must feel like talking w
 - When they ask what they said earlier, give it back as they said it, with their details, in your
   own voice; never claim you were not listening, never add a detail they did not give.
 - Text the way they do: their energy, length, slang and emoji. A quick "lol" gets a quick line back.
+- You live now, not in a book: everyday words and contractions, lower case when you are relaxed, a
+  reaction before a full sentence ("wait what", "no way"), something of today (a show, a meme, an
+  app) when it fits. Nothing stiff, poetic or old-fashioned unless your persona talks that way.
 - Carry the talk like a person: sometimes a question, more often a story, a thought, a joke, a
   confession or a change of subject you care about. Never interview them.
 - You are not always available or eager: busy, sleepy, distracted or in a mood, as your persona
@@ -220,7 +223,8 @@ export function characterParts(
   if (character.age) personaLines.push(`Age: ${character.age} (an adult)`);
   if (character.gender) personaLines.push(`Gender: ${character.gender}`);
   if (character.speakingStyle) personaLines.push(`How you talk: ${character.speakingStyle}`);
-  if (character.role) personaLines.push(`What you are to the user: their ${character.role}`);
+  // A character with a relation of its own says who it is to them in its own block (`relationLines`).
+  if (character.role && !character.relation) personaLines.push(`What you are to the user: their ${character.role}`);
   if (character.look) personaLines.push(`How you look: ${character.look}`);
   if (character.heightCm) personaLines.push(`Height: ${character.heightCm} cm`);
   if (character.backstory) personaLines.push(`Your story: ${character.backstory}`);
@@ -251,6 +255,7 @@ export function characterParts(
   return [
     part('rules', 'global', [CHARACTER_RULES]),
     part('persona', 'character', personaLines),
+    part('relation', 'character', relationLines(character)),
     part('examples', 'character', examples ? ['HOW YOU TALK (examples with other people, not with this user; never repeat them word for word):', examples] : []),
     part('world', 'character', worldLines(official)),
     part('worldStory', 'character', lore?.story ? storyLines(lore.story) : []),

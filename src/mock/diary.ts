@@ -9,9 +9,9 @@ export const diaryEntries: DiaryEntry[] = [
     body: 'Missed the bus and walked the whole way. Somehow it was not bad at all - the street lights on the wet road looked like someone spilled honey.',
     mood: 'soft',
     images: [],
-    sharedWithCharacterId: 'c_theo',
+    sharedWithCharacterId: 'c_milo',
     reply: {
-      characterId: 'c_theo',
+      characterId: 'c_milo',
       text: 'You walked home in the rain and did not even text me? Next time call. I will keep you company the whole way.',
       createdAt: hoursAgo(2),
     },
@@ -24,9 +24,9 @@ export const diaryEntries: DiaryEntry[] = [
     body: 'Three chapters down, two to go. I keep rereading the same paragraph. Tomorrow I start earlier, promise.',
     mood: 'tired',
     images: [],
-    sharedWithCharacterId: 'c_elio',
+    sharedWithCharacterId: 'c_yuna',
     reply: {
-      characterId: 'c_elio',
+      characterId: 'c_yuna',
       text: 'Two chapters is not nothing. Sleep first. I will check on you in the morning.',
       createdAt: daysAgo(1),
     },
@@ -39,7 +39,7 @@ export const diaryEntries: DiaryEntry[] = [
     body: 'Tried the recipe he described. Burned the first batch. The second one was actually good!',
     mood: 'happy',
     images: [],
-    sharedWithCharacterId: 'c_seren',
+    sharedWithCharacterId: 'c_ethan',
     accentIndex: 3,
   },
   {
@@ -67,7 +67,7 @@ const morningOf = (n: number, hour: number, minute: number) => {
 export const characterDiaryPages: CharacterDiaryPage[] = [
   {
     id: 'cdp_theo_0',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     date: dayKey(),
     writtenAt: morningOf(0, 7, 12),
     mood: 'excited',
@@ -80,7 +80,7 @@ export const characterDiaryPages: CharacterDiaryPage[] = [
   },
   {
     id: 'cdp_theo_2',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     date: dayKey(daysAgo(2)),
     writtenAt: morningOf(2, 8, 40),
     mood: 'soft',
@@ -92,7 +92,7 @@ export const characterDiaryPages: CharacterDiaryPage[] = [
   },
   {
     id: 'cdp_theo_5',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     date: dayKey(daysAgo(5)),
     writtenAt: morningOf(5, 7, 55),
     mood: 'happy',
@@ -101,7 +101,7 @@ export const characterDiaryPages: CharacterDiaryPage[] = [
   },
   {
     id: 'cdp_seren_1',
-    characterId: 'c_seren',
+    characterId: 'c_ethan',
     date: dayKey(daysAgo(1)),
     writtenAt: morningOf(1, 9, 3),
     mood: 'soft',
@@ -113,7 +113,7 @@ export const characterDiaryPages: CharacterDiaryPage[] = [
   },
   {
     id: 'cdp_seren_4',
-    characterId: 'c_seren',
+    characterId: 'c_ethan',
     date: dayKey(daysAgo(4)),
     writtenAt: morningOf(4, 10, 20),
     mood: 'tired',
@@ -122,14 +122,14 @@ export const characterDiaryPages: CharacterDiaryPage[] = [
   },
   {
     id: 'cdp_castor_3',
-    characterId: 'c_castor',
+    characterId: 'c_roman',
     date: dayKey(daysAgo(3)),
     writtenAt: morningOf(3, 6, 30),
     mood: 'blue',
     source: 'chat',
     body: [
-      'A thousand years of skies in the archive, and tonight I wrote down a new one.',
-      'You asked which star I would give you. I have not answered yet. It is a serious question and deserves the right star.',
+      'The house was quiet tonight, and for once I did not mind.',
+      'You asked what I would give you if I could give you anything. I have not answered yet. It deserves the right answer.',
     ],
   },
 ];
@@ -147,7 +147,7 @@ export const secretNotePrompts = [
 export const secretNotes: SecretNote[] = [
   {
     id: 'sn_1',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     date: dayKey(),
     prompt: secretNotePrompts[0],
     myNote: '',
@@ -157,7 +157,7 @@ export const secretNotes: SecretNote[] = [
   },
   {
     id: 'sn_2',
-    characterId: 'c_seren',
+    characterId: 'c_ethan',
     date: dayKey(daysAgo(1)),
     prompt: secretNotePrompts[4],
     myNote: 'The one you hummed on the live. I still have it on repeat.',

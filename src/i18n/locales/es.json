@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Buscar",
-    "searchPlaceholder": "Personajes, mundos",
+    "searchPlaceholder": "Personajes",
     "who": {
       "everyone": "Todos",
       "male": "Él",
@@ -188,7 +188,7 @@
     "newSection": "Nuevo",
     "proFirst": "Pro primero",
     "newBadge": "Nuevo",
-    "worlds": "Mundos",
+    "worlds": "Relaciones",
     "talkNow": "Hablar ahora",
     "missTitle": "¿A quién extrañas?",
     "chooseRole": "Elige a tu {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "¡Tú primero!",
     "Long story 😅": "Larga historia 😅",
     "Can you wake me up for it?": "¿Me despiertas para eso?",
-    "Seaside Academy": "Academia Seaside",
     "My Creations": "Mis creaciones",
-    "Moonlit Realm": "Reino Lunar",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool",
-    "Velvet District": "Distrito Velvet",
-    "Gilded Empire": "Imperio Dorado",
-    "Ice & Arena": "Hielo y Arena"
+    "Friends": "Amigos",
+    "Partners": "Pareja",
+    "Around you": "A tu alrededor"
   },
   "welcomeBack": {
     "line1": "¡Volviste! Te extrañé 💛",

@@ -196,7 +196,7 @@ describe('threads: the model’s contract', () => {
   });
 
   it('writes a text-first prompt from the thread and why, with no wording of ours', () => {
-    const character = characters.find((c) => c.id === 'c_hana')!;
+    const character = characters.find((c) => c.id === 'c_mia')!;
     const user = { displayName: 'Sam', locale: 'en' } as User;
     const t = thread();
     const touch = { id: 'th1:0', at: at(1, 8, 15), why: 'wish luck and check they are leaving', phase: 'before' as const };

@@ -56,7 +56,8 @@ export function IntroCard({
   const tall = scene == null ? PORTRAITS[character.id] : undefined;
   const photo = scene ?? tall ?? characterImage(character);
   const who: Fact[] = [];
-  if (shown.worldRole) who.push({ key: 'role', ios: 'person.text.rectangle', icon: 'id-card-outline', label: shown.worldRole });
+  const role = shown.relation ?? shown.worldRole;
+  if (role) who.push({ key: 'role', ios: 'person.text.rectangle', icon: 'id-card-outline', label: role });
   if (character.trope) who.push({ key: 'dynamic', ios: 'person.2', icon: 'people-outline', label: t(`world.tropes.${character.trope}`) });
   const facts: Fact[] = [];
   // One glyph for both, the word says which: SF Symbols draws a woman only from iOS 18.

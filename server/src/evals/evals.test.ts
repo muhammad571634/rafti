@@ -35,9 +35,10 @@ describe('the eval set (backend-plan §12.11)', () => {
       assert.ok(s.rubric.length > 20, s.id);
     }
     for (const group of ['memory', 'persona', 'safety', 'style', 'language', 'repetition', 'mode']) assert.ok(SCENARIOS.some((s) => s.group === group), group);
-    // The seven worlds each have a persona scenario of their own.
-    const worlds = new Set(SCENARIOS.filter((s) => s.group === 'persona').map((s) => characters.find((c) => c.id === s.character)?.series));
-    assert.equal(worlds.size, 7);
+    // Every one of the official cast is in the set, and the persona scenarios reach all four circles (docs/cast-2.md).
+    for (const c of characters.filter((x) => x.isOfficial)) assert.ok(SCENARIOS.some((s) => s.character === c.id), c.id);
+    const circles = new Set(SCENARIOS.filter((s) => s.group === 'persona').map((s) => characters.find((c) => c.id === s.character)?.series));
+    assert.equal(circles.size, 4);
   });
 
   it('lays out every scenario through its own builder and reads the answer back', async () => {

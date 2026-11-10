@@ -55,7 +55,7 @@ describe('charm: openings, quirks and new versions for every character', () => {
 
   it('gives every official character an opening and a healthy quirk (the custom one is built by the user)', () => {
     const cast = characters.filter((c) => c.isOfficial && c.id !== 'c_oppa');
-    assert.ok(cast.length >= 40);
+    assert.ok(cast.length >= 12);
     for (const c of cast) {
       assert.match(c.opening ?? '', /^\*[^*]+\*$/, c.id);
       assert.ok((c.quirk ?? '').length > 10, c.id);

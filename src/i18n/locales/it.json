@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Trova",
-    "searchPlaceholder": "Personaggi, mondi",
+    "searchPlaceholder": "Personaggi",
     "who": {
       "everyone": "Tutti",
       "male": "Lui",
@@ -188,7 +188,7 @@
     "newSection": "Nuovi",
     "proFirst": "Prima con Pro",
     "newBadge": "Nuovo",
-    "worlds": "Mondi",
+    "worlds": "Relazioni",
     "talkNow": "Parla ora",
     "missTitle": "Chi ti manca?",
     "chooseRole": "Scegli il tuo {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "Prima tu!",
     "Long story 😅": "Lunga storia 😅",
     "Can you wake me up for it?": "Mi svegli per quello?",
-    "Seaside Academy": "Accademia Seaside",
     "My Creations": "Le mie creazioni",
-    "Moonlit Realm": "Regno Lunare",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Caffè Tidepool",
-    "Velvet District": "Quartiere Velvet",
-    "Gilded Empire": "Impero Dorato",
-    "Ice & Arena": "Ghiaccio e Arena"
+    "Friends": "Amici",
+    "Partners": "Coppia",
+    "Around you": "Intorno a te"
   },
   "welcomeBack": {
     "line1": "Eccoti di nuovo! Sentivo la tua mancanza 💛",

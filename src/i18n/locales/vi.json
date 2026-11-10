@@ -154,7 +154,7 @@
   },
   "find": {
     "title": "Khám phá",
-    "searchPlaceholder": "Nhân vật, thế giới",
+    "searchPlaceholder": "Nhân vật",
     "who": {
       "everyone": "Tất cả",
       "male": "Nam",
@@ -184,7 +184,7 @@
     "newSection": "Mới",
     "proFirst": "Dành riêng cho Pro trước",
     "newBadge": "Mới",
-    "worlds": "Thế giới",
+    "worlds": "Mối quan hệ",
     "talkNow": "Trò chuyện ngay",
     "missTitle": "Bạn đang nhớ ai?",
     "chooseRole": "Chọn {{role}} của bạn",
@@ -2519,14 +2519,10 @@
     "You first!": "Cậu trước!",
     "Long story 😅": "Chuyện dài lắm 😅",
     "Can you wake me up for it?": "Gọi mình dậy cho việc đó nhé?",
-    "Seaside Academy": "Học viện Seaside",
     "My Creations": "Sáng tạo của tôi",
-    "Moonlit Realm": "Cõi Ánh Trăng",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Quán Cà Phê Tidepool",
-    "Velvet District": "Khu Velvet",
-    "Gilded Empire": "Đế chế Vàng",
-    "Ice & Arena": "Băng & Đấu trường"
+    "Friends": "Bạn bè",
+    "Partners": "Người yêu",
+    "Around you": "Quanh bạn"
   },
   "welcomeBack": {
     "line1": "Bạn về rồi! Nhớ bạn ghê 💛",

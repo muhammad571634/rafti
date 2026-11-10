@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Finden",
-    "searchPlaceholder": "Figuren, Welten",
+    "searchPlaceholder": "Figuren",
     "who": {
       "everyone": "Alle",
       "male": "Er",
@@ -188,7 +188,7 @@
     "newSection": "Neu",
     "proFirst": "Pro zuerst",
     "newBadge": "Neu",
-    "worlds": "Welten",
+    "worlds": "Beziehungen",
     "talkNow": "Jetzt sprechen",
     "missTitle": "Wen vermisst du?",
     "chooseRole": "Wähle deine {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "Du zuerst!",
     "Long story 😅": "Lange Geschichte 😅",
     "Can you wake me up for it?": "Weckst du mich dafür?",
-    "Seaside Academy": "Seaside-Akademie",
     "My Creations": "Meine Kreationen",
-    "Moonlit Realm": "Mondschein-Reich",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Café",
-    "Velvet District": "Velvet-Viertel",
-    "Gilded Empire": "Goldenes Kaiserreich",
-    "Ice & Arena": "Eis & Arena"
+    "Friends": "Freunde",
+    "Partners": "Partner",
+    "Around you": "Um dich herum"
   },
   "welcomeBack": {
     "line1": "Du bist zurück! Hab dich vermisst 💛",

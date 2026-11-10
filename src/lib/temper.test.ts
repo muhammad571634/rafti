@@ -10,12 +10,14 @@ import type { Message } from '@/types';
 const byId = (id: string) => characters.find((c) => c.id === id)!;
 
 describe('temper', () => {
-  it('comes from the persona: a distinct tag first, then a leaning one', () => {
-    assert.equal(temperOf(byId('c_hana')), 'sulky');
-    assert.equal(temperOf(byId('c_minu')), 'clingy');
-    assert.equal(temperOf(byId('c_iris')), 'shy');
-    assert.equal(temperOf(byId('c_theo')), 'teasing');
-    assert.equal(temperOf(byId('c_kai')), 'warm');
+  it('comes from the persona: their own temper, else a distinct tag first, then a leaning one', () => {
+    assert.equal(temperOf(byId('c_mia')), 'sulky');
+    assert.equal(temperOf(byId('c_jace')), 'clingy');
+    assert.equal(temperOf(byId('c_lena')), 'shy');
+    assert.equal(temperOf(byId('c_milo')), 'teasing');
+    assert.equal(temperOf(byId('c_clara')), 'warm');
+    assert.equal(temperOf({ tags: ['playful', 'tsundere'] }), 'sulky');
+    assert.equal(temperOf({ tags: ['sarcastic'] }), 'teasing');
     assert.equal(temperOf({ tags: [] }), 'warm');
   });
 
@@ -25,9 +27,9 @@ describe('temper', () => {
   });
 
   it('follows a family role, then a temper the creator picked', () => {
-    assert.equal(temperOf(byId('c_hana'), 'Mom'), 'warm');
-    assert.equal(temperOf(byId('c_iris'), 'Big brother'), 'teasing');
-    assert.equal(temperOf(byId('c_iris'), 'Grandpa'), 'warm');
+    assert.equal(temperOf(byId('c_mia'), 'Mom'), 'warm');
+    assert.equal(temperOf(byId('c_lena'), 'Big brother'), 'teasing');
+    assert.equal(temperOf(byId('c_lena'), 'Grandpa'), 'warm');
     assert.equal(temperOf({ tags: ['shy'], temper: 'clingy' }), 'clingy');
   });
 

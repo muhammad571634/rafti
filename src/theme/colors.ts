@@ -720,23 +720,18 @@ export interface WorldHue extends Hue {
   back: string;
 }
 
+// The circles of the cast (docs/cast-2.md): friends warm, partners pink, it's complicated violet, around you sky.
 const worldHuesLight: Record<string, WorldHue> = {
-  'Seaside Academy': { fill: '#7CC4F5', back: '#6BA9D3', ink: INK },
-  'Moonlit Realm': { fill: '#B9A4F0', back: '#9F8DCE', ink: INK },
-  'NEON TIDE': { fill: '#FF7AB6', back: '#DB699D', ink: INK },
-  'Tidepool Café': { fill: '#FFD25C', back: '#DBB54F', ink: INK },
-  'Velvet District': { fill: '#FF6B5B', back: '#DB5C4E', ink: INK },
-  'Gilded Empire': { fill: '#FFB347', back: '#DB9A3D', ink: INK },
-  'Ice & Arena': { fill: '#8EDBD0', back: '#7ABCB3', ink: INK },
+  Friends: { fill: '#FFD25C', back: '#DBB54F', ink: INK },
+  Partners: { fill: '#FF7AB6', back: '#DB699D', ink: INK },
+  "It's complicated": { fill: '#B9A4F0', back: '#9F8DCE', ink: INK },
+  'Around you': { fill: '#7CC4F5', back: '#6BA9D3', ink: INK },
 };
 const worldHuesDark: Record<string, WorldHue> = {
-  'Seaside Academy': { fill: '#1F5F8B', back: '#194C6F', ink: '#FFFFFF' },
-  'Moonlit Realm': { fill: '#4B3C99', back: '#3C307A', ink: '#FFFFFF' },
-  'NEON TIDE': { fill: '#9A2F6B', back: '#7B2656', ink: '#FFFFFF' },
-  'Tidepool Café': { fill: '#8A6400', back: '#6E5000', ink: '#FFFFFF' },
-  'Velvet District': { fill: '#9E3B32', back: '#7E2F28', ink: '#FFFFFF' },
-  'Gilded Empire': { fill: '#93560F', back: '#76450C', ink: '#FFFFFF' },
-  'Ice & Arena': { fill: '#16707F', back: '#125A66', ink: '#FFFFFF' },
+  Friends: { fill: '#8A6400', back: '#6E5000', ink: '#FFFFFF' },
+  Partners: { fill: '#9A2F6B', back: '#7B2656', ink: '#FFFFFF' },
+  "It's complicated": { fill: '#4B3C99', back: '#3C307A', ink: '#FFFFFF' },
+  'Around you': { fill: '#1F5F8B', back: '#194C6F', ink: '#FFFFFF' },
 };
 /** User creations and any world without its own colour: warm sand. */
 const otherWorld: WorldHue = isDark

@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Keşfet",
-    "searchPlaceholder": "Karakterler, dünyalar",
+    "searchPlaceholder": "Karakterler",
     "who": {
       "everyone": "Herkes",
       "male": "Erkek",
@@ -188,7 +188,7 @@
     "newSection": "Yeni",
     "proFirst": "Önce Pro",
     "newBadge": "Yeni",
-    "worlds": "Dünyalar",
+    "worlds": "İlişkiler",
     "talkNow": "Şimdi konuş",
     "missTitle": "Kimi özledin?",
     "chooseRole": "{{role}} seç",
@@ -2557,14 +2557,10 @@
     "You first!": "Önce sen!",
     "Long story 😅": "Uzun hikaye 😅",
     "Can you wake me up for it?": "Bunun için beni uyandırır mısın?",
-    "Seaside Academy": "Seaside Akademisi",
     "My Creations": "Oluşturduklarım",
-    "Moonlit Realm": "Ay Işığı Diyarı",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Tidepool Kafe",
-    "Velvet District": "Velvet Bölgesi",
-    "Gilded Empire": "Altın İmparatorluk",
-    "Ice & Arena": "Buz ve Arena"
+    "Friends": "Arkadaşlar",
+    "Partners": "Sevgililer",
+    "Around you": "Çevrende"
   },
   "welcomeBack": {
     "line1": "Döndün! Seni özledim 💛",

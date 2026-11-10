@@ -148,7 +148,13 @@ describe('triggeredLore', () => {
 describe('world books in the prompt', () => {
   const character = { id: 'c_kai', name: 'Kai Arden', bio: 'Swim-team ace.', greeting: 'Hi.', tags: [], series: 'Seaside Academy' } as unknown as Character;
   const user = { displayName: 'Sam', locale: 'en-US' } as User;
-  const seaside = officialLorebooks.find((b) => b.series === 'Seaside Academy')!;
+  // A world's own book, as one would come with the app (none does since Cast 2.0, docs/cast-2.md).
+  const seaside = book('seaside', [entry('cats', 'Campus cats', ['cats'], 'A small colony lives behind the library.', { kind: 'thing' })], {
+    name: 'Seaside Academy',
+    about: 'A university town by the sea.',
+    series: 'Seaside Academy',
+    official: true,
+  });
   const mine = book('mine', [entry('dog', 'Biscuit', ['dog'], 'Sam’s old beagle.')], { name: 'Our story', about: 'We met on the night ferry.', characterIds: ['c_kai'] });
   const lore = lorePrompt([seaside, mine], ['Did you feed the cats?', 'Biscuit says hi'], character.id);
 
@@ -188,28 +194,8 @@ describe('world books in the prompt', () => {
 });
 
 describe('the worlds’ books', () => {
-  it('has one book per world, within every limit and the content rules', () => {
-    assert.deepEqual(officialLorebooks.map((b) => b.series), ['Seaside Academy', 'Moonlit Realm', 'NEON TIDE', 'Tidepool Café', 'Velvet District', 'Gilded Empire', 'Ice & Arena']);
-    for (const b of officialLorebooks) {
-      assert.ok(b.official && b.name.length <= LORE_NAME_MAX && b.about.length <= LORE_ABOUT_MAX, b.name);
-      assert.deepEqual(checkLorebook(b, 0, 1), [], b.name);
-      assert.equal(new Set(b.entries.map((e) => e.id)).size, b.entries.length, b.name);
-      for (const e of b.entries) {
-        assert.ok(e.name.length <= LORE_NAME_MAX && e.text.length <= LORE_TEXT_MAX, e.name);
-        assert.ok(e.keywords.length <= LORE_KEYWORDS_MAX && e.keywords.every((k) => k.length <= LORE_KEYWORD_MAX), e.name);
-        assert.deepEqual(checkLoreEntry(e, 0, 100), [], e.name);
-        // A keyword that only repeats the name adds nothing (the name always counts).
-        assert.equal(keywordsOf(e).length, e.keywords.length + 1, e.name);
-      }
-    }
-  });
-
-  it('knows every official character of the world by their short name', () => {
-    for (const c of characters.filter((x) => x.isOfficial && x.series !== 'My Creations')) {
-      const b = officialLorebooks.find((x) => x.series === c.series);
-      assert.ok(b?.entries.some((e) => e.characterId === c.id), c.name);
-    }
-    const moonlit = officialLorebooks.find((b) => b.series === 'Moonlit Realm')!;
-    assert.deepEqual(triggeredLore([moonlit], ['Have you seen Castor today?'], 'c_kael').map((h) => h.entry.name), ['Lord Castor']);
+  it('has none since Cast 2.0: the cast has no world (docs/cast-2.md)', () => {
+    assert.deepEqual(officialLorebooks, []);
+    for (const c of characters.filter((x) => x.isOfficial)) assert.deepEqual(booksFor(c, [], officialLorebooks), [], c.name);
   });
 });

@@ -236,7 +236,8 @@ function Row({
   onAdd: () => void;
 }) {
   const { t } = useTranslation();
-  const role = localCharacter(character).worldRole;
+  const shown = localCharacter(character);
+  const role = shown.relation ?? shown.worldRole;
   return (
     <View style={styles.row}>
       <PressableScale

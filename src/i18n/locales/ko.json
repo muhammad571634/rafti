@@ -154,7 +154,7 @@
   },
   "find": {
     "title": "찾기",
-    "searchPlaceholder": "캐릭터, 세계관 검색",
+    "searchPlaceholder": "캐릭터 검색",
     "who": {
       "everyone": "모두",
       "male": "그",
@@ -184,7 +184,7 @@
     "newSection": "신규",
     "proFirst": "Pro 우선 공개",
     "newBadge": "신규",
-    "worlds": "세계관",
+    "worlds": "관계",
     "talkNow": "지금 대화하기",
     "missTitle": "누가 보고 싶으신가요?",
     "chooseRole": "당신의 {{role}} 선택",
@@ -2519,14 +2519,10 @@
     "You first!": "너 먼저!",
     "Long story 😅": "얘기하자면 길어 😅",
     "Can you wake me up for it?": "그때 깨워 줄 수 있어?",
-    "Seaside Academy": "시사이드 아카데미",
     "My Creations": "내 작품",
-    "Moonlit Realm": "달빛의 영역",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "타이드풀 카페",
-    "Velvet District": "벨벳 디스트릭트",
-    "Gilded Empire": "황금 제국",
-    "Ice & Arena": "얼음과 아레나"
+    "Friends": "친구",
+    "Partners": "연인",
+    "Around you": "내 주변"
   },
   "welcomeBack": {
     "line1": "돌아왔구나! 보고 싶었어 💛",

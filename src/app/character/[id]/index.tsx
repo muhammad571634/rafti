@@ -114,7 +114,7 @@ export default function CharacterProfileScreen() {
             name={name}
             // Store rule: an AI character is marked as one.
             nameBadge={<GlassPill label={t('safety.ai')} accessibilityLabel={t('safety.ai')} />}
-            lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.worldRole]}
+            lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.relation ?? shown.worldRole]}
             topLeft={
               voiceReady ? (
                 <GlassPill

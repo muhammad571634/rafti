@@ -158,7 +158,7 @@
   },
   "find": {
     "title": "Explorer",
-    "searchPlaceholder": "Personnages, univers",
+    "searchPlaceholder": "Personnages",
     "who": {
       "everyone": "Tous",
       "male": "Lui",
@@ -188,7 +188,7 @@
     "newSection": "Nouveaux",
     "proFirst": "Pro en premier",
     "newBadge": "Nouveau",
-    "worlds": "Univers",
+    "worlds": "Relations",
     "talkNow": "Parler maintenant",
     "missTitle": "Qui vous manque ?",
     "chooseRole": "Choisissez votre {{role}}",
@@ -2557,14 +2557,10 @@
     "You first!": "Toi d'abord !",
     "Long story 😅": "Longue histoire 😅",
     "Can you wake me up for it?": "Tu me réveilles pour ça ?",
-    "Seaside Academy": "Académie Seaside",
     "My Creations": "Mes créations",
-    "Moonlit Realm": "Royaume au Clair de Lune",
-    "NEON TIDE": "NEON TIDE",
-    "Tidepool Café": "Café Tidepool",
-    "Velvet District": "Quartier Velvet",
-    "Gilded Empire": "Empire Doré",
-    "Ice & Arena": "Glace et Arène"
+    "Friends": "Amis",
+    "Partners": "En couple",
+    "Around you": "Autour de toi"
   },
   "welcomeBack": {
     "line1": "Te revoilà ! Tu m'as manqué 💛",

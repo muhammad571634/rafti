@@ -78,33 +78,33 @@ export const INVITE_REWARD = 50;
 export const INVITES_PER_WEEK = 6;
 
 export const callHistory: CallRecord[] = [
-  { id: 'call_1', characterId: 'c_theo', startedAt: minutesAgo(20), durationSec: 247, direction: 'outgoing', missed: false },
+  { id: 'call_1', characterId: 'c_milo', startedAt: minutesAgo(20), durationSec: 247, direction: 'outgoing', missed: false },
   { id: 'call_2', characterId: 'c_oppa', startedAt: hoursAgo(6), durationSec: 63, direction: 'incoming', missed: false },
-  { id: 'call_3', characterId: 'c_seren', startedAt: hoursAgo(26), durationSec: 0, direction: 'incoming', missed: true },
-  { id: 'call_4', characterId: 'c_castor', startedAt: daysAgo(2), durationSec: 512, direction: 'outgoing', missed: false },
-  { id: 'call_5', characterId: 'c_theo', startedAt: daysAgo(4), durationSec: 128, direction: 'incoming', missed: false },
+  { id: 'call_3', characterId: 'c_ethan', startedAt: hoursAgo(26), durationSec: 0, direction: 'incoming', missed: true },
+  { id: 'call_4', characterId: 'c_roman', startedAt: daysAgo(2), durationSec: 512, direction: 'outgoing', missed: false },
+  { id: 'call_5', characterId: 'c_milo', startedAt: daysAgo(4), durationSec: 128, direction: 'incoming', missed: false },
 ];
 
 export const memories: MemoryItem[] = [
-  { id: 'mem_1', characterId: 'c_theo', text: 'Their exam week ends on Friday - they get nervous about the oral part.', source: 'diary', createdAt: daysAgo(1), pinned: true, type: 'schedule' },
-  { id: 'mem_2', characterId: 'c_theo', text: 'Hates being called by their full name.', source: 'chat', createdAt: daysAgo(3), pinned: false, type: 'dislike' },
-  { id: 'mem_3', characterId: 'c_theo', text: 'Drinks peach tea, never coffee after 6pm.', source: 'chat', createdAt: daysAgo(5), pinned: false, type: 'preference' },
-  { id: 'mem_4', characterId: 'c_theo', text: 'Walked home in the rain and liked it.', source: 'diary', createdAt: hoursAgo(3), pinned: false, type: 'event' },
-  // Story and them (the Memories tabs): a moment you share, and what Theo said about himself.
-  { id: 'mem_5', characterId: 'c_theo', text: 'Said my voice is easier to fall asleep to than the radio.', source: 'call', createdAt: daysAgo(4), pinned: true, about: 'story' },
-  { id: 'mem_6', characterId: 'c_theo', text: 'His favourite place is the old library roof.', source: 'chat', createdAt: daysAgo(6), pinned: false, about: 'them' },
-  { id: 'mem_7', characterId: 'c_theo', text: 'He plays the piano when he cannot sleep.', source: 'chat', createdAt: daysAgo(8), pinned: false, about: 'them' },
+  { id: 'mem_1', characterId: 'c_milo', text: 'Their exam week ends on Friday - they get nervous about the oral part.', source: 'diary', createdAt: daysAgo(1), pinned: true, type: 'schedule' },
+  { id: 'mem_2', characterId: 'c_milo', text: 'Hates being called by their full name.', source: 'chat', createdAt: daysAgo(3), pinned: false, type: 'dislike' },
+  { id: 'mem_3', characterId: 'c_milo', text: 'Drinks peach tea, never coffee after 6pm.', source: 'chat', createdAt: daysAgo(5), pinned: false, type: 'preference' },
+  { id: 'mem_4', characterId: 'c_milo', text: 'Walked home in the rain and liked it.', source: 'diary', createdAt: hoursAgo(3), pinned: false, type: 'event' },
+  // Story and them (the Memories tabs): a moment you share, and what Milo said about himself.
+  { id: 'mem_5', characterId: 'c_milo', text: 'Said my voice is easier to fall asleep to than the radio.', source: 'call', createdAt: daysAgo(4), pinned: true, about: 'story' },
+  { id: 'mem_6', characterId: 'c_milo', text: 'His favourite place is the old library roof.', source: 'chat', createdAt: daysAgo(6), pinned: false, about: 'them' },
+  { id: 'mem_7', characterId: 'c_milo', text: 'He plays the piano when he cannot sleep.', source: 'chat', createdAt: daysAgo(8), pinned: false, about: 'them' },
 ];
 
 /** Seed for the [Us] timeline. */
 export const moments: Moment[] = [
-  { id: 'mo_1', characterId: 'c_theo', kind: 'met', createdAt: daysAgo(25) },
+  { id: 'mo_1', characterId: 'c_milo', kind: 'met', createdAt: daysAgo(25) },
   // Level-up moments carry the tier title, as `addMoment` does, and end at the seeded level.
-  { id: 'mo_2', characterId: 'c_theo', kind: 'levelUp', createdAt: daysAgo(9), params: { level: 10, title: 'More than friends' } },
-  { id: 'mo_3', characterId: 'c_theo', kind: 'call', createdAt: daysAgo(4), params: { duration: '2:08' } },
-  { id: 'mo_4', characterId: 'c_theo', kind: 'diary', createdAt: hoursAgo(2) },
-  { id: 'mo_5', characterId: 'c_seren', kind: 'met', createdAt: daysAgo(96) },
-  { id: 'mo_6', characterId: 'c_seren', kind: 'secretNote', createdAt: daysAgo(1) },
+  { id: 'mo_2', characterId: 'c_milo', kind: 'levelUp', createdAt: daysAgo(9), params: { level: 10, title: 'More than friends' } },
+  { id: 'mo_3', characterId: 'c_milo', kind: 'call', createdAt: daysAgo(4), params: { duration: '2:08' } },
+  { id: 'mo_4', characterId: 'c_milo', kind: 'diary', createdAt: hoursAgo(2) },
+  { id: 'mo_5', characterId: 'c_ethan', kind: 'met', createdAt: daysAgo(96) },
+  { id: 'mo_6', characterId: 'c_ethan', kind: 'secretNote', createdAt: daysAgo(1) },
   { id: 'mo_7', characterId: 'c_oppa', kind: 'met', createdAt: daysAgo(180) },
   { id: 'mo_9', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(70), params: { level: 16, title: 'Beloved' } },
   { id: 'mo_8', characterId: 'c_oppa', kind: 'levelUp', createdAt: daysAgo(12), params: { level: 32, title: 'Beloved' } },
@@ -113,7 +113,7 @@ export const moments: Moment[] = [
 export const schedules: ScheduleItem[] = [
   {
     id: 'sch_1',
-    characterId: 'c_theo',
+    characterId: 'c_milo',
     title: 'Oral exam',
     date: dayKey(new Date(Date.now() + 86_400_000)),
     time: '15:00',

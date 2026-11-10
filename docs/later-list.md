@@ -42,6 +42,7 @@ Tick items off here as they land; add new postponed items under the right headin
 4. Age gate, report, block, moderation of user-made characters; a lawyer reads the terms.
 5. 12 testers opted in for 14 days on Google Play before production.
 
-## 5. Waits for art
+## 5. Waits for art (Cast 2.0 replaced the 55 old characters, 2026-11-10)
 
-1. The owner redraws the characters (`docs/nano-banana-worlds.md`), the agent wires them; the 40 old ones too.
+1. The owner draws the twelve of Cast 2.0 (`docs/nano-banana-cast-2.md`, Milo first as the test), the agent wires
+   them and deletes the old cast's art from the bundle.
