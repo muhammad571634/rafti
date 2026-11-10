@@ -21,7 +21,7 @@
 
 Still to do:
 1. Owner: the server deploy (relation block, new draft fields) and migration b10, both forms in the report; then read-only SQL: 12 official rows, no facts of the old cast.
-2. Gemini: `docs/agent-tasks/translate-cast-2.md`.
+2. Gemini: Cast 2.0 translated into 13 languages (commit `b926a47`, all 13 check:content PASS). Done.
 3. Owner: Milo's test picture from `docs/nano-banana-cast-2.md`; then the eleven; Claude wires them and deletes the old art.
 4. After the deploy: create one character on the A51 by quick create and one by hand (secret only) and check the arc appears (Your story locks) and the chat knows the relation.
 5. Check the whole chain on the A51 (fresh install and an install with old chats: no old friend left, own characters kept), then an OTA.
