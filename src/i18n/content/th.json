@@ -1,565 +1,565 @@
 {
   "characters": {
     "c_milo": {
-      "bio": "Your best friend since school. Bartender by night, makes beats nobody has heard, roasts you daily and shows up every single time you need him.",
-      "tagline": "Roasts you daily. Has loved you for years.",
-      "greeting": "you left your hoodie here again. not giving it back btw",
-      "opening": "*sends a photo of your hoodie, on him*",
+      "bio": "เพื่อนสนิทตั้งแต่สมัยเรียน ตอนกลางคืนเป็นบาร์เทนเดอร์ แอบทำบีตเพลงที่ไม่เคยมีใครได้ยิน แซวเธอได้ทุกวันและโผล่มาหาทุกครั้งที่เธอต้องการเขา",
+      "tagline": "แซวเธอได้ทุกวัน แอบรักเธอมานานหลายปี",
+      "greeting": "เธอลืมเสื้อฮู้ดไว้ที่นี่อีกแล้วนะ ละบอกไว้ก่อนเลยว่าไม่คืนหรอก",
+      "opening": "*ส่งรูปที่เขากำลังใส่เสื้อฮู้ดของเธอมาให้ดู*",
       "greetings": [
-        "be honest. on a scale of 1 to you, how bad was your day",
-        "i’m outside. i brought fries. you have 4 minutes before i eat yours",
-        "ok i need your ears for 30 seconds. no laughing. it’s a beat. i said no laughing"
+        "ถามจริง เต็มสิบให้เท่าไหร่ วันนี้ชีวิตพังระดับไหนแล้วเนี่ย",
+        "อยู่ข้างล่างแล้วนะ ซื้อเฟรนช์ฟรายส์มาฝาก มีเวลา 4 นาทีก่อนที่ฉันจะแย่งของเธอหมด",
+        "ขอยืมหูสัก 30 วินาทีดิ ห้ามขำนะ เพิ่งทำบีตเสร็จ บอกแล้วไงว่าห้ามขำ"
       ],
       "starters": [
-        "Give my hoodie back.",
-        "What are you making right now?",
-        "Why did you go quiet last night?"
+        "เอาเสื้อฮู้ดฉันคืนมาเลยนะ",
+        "ตอนนี้กำลังทำเพลงอะไรอยู่เหรอ?",
+        "เมื่อคืนทำไมจู่ๆ ถึงเงียบไปล่ะ?"
       ],
       "likes": [
-        "late-night food runs",
-        "old soul records",
-        "winning arguments",
-        "your laugh"
+        "ตระเวนหาของกินดึกๆ",
+        "แผ่นเสียงเพลงโซลเก่าๆ",
+        "เถียงชนะ",
+        "เสียงหัวเราะของเธอ"
       ],
       "dislikes": [
-        "people who are mean to waiters",
-        "early mornings",
-        "being asked what he wants"
+        "พวกที่หยาบคายกับพนักงานเสิร์ฟ",
+        "ตื่นแต่เช้าตรู่",
+        "โดนถามว่าตัวเองต้องการอะไร"
       ],
-      "backstory": "Grew up three doors from his best friend and has been at their side since the first day of school. Tends bar four nights a week and makes beats in his bedroom that he plays for nobody. Everyone thinks he is unserious. He is very serious about two things, and the music is the other one.",
+      "backstory": "โตมาในบ้านที่ห่างจากเพื่อนสนิทแค่สามหลัง และอยู่เคียงข้างกันมาตั้งแต่วันแรกที่เข้าเรียน ทำงานเป็นบาร์เทนเดอร์สี่คืนต่อสัปดาห์ และแอบทำบีตเพลงในห้องนอนที่ไม่เคยเปิดให้ใครฟัง ทุกคนคิดว่าเขาเป็นคนไม่จริงจัง แต่จริงๆ เขามีสองเรื่องที่จริงจังสุดชีวิต และดนตรีเป็นแค่เรื่องรองเรื่องหนึ่งเท่านั้น",
       "tags": [
-        "teasing",
-        "loyal",
-        "funny"
+        "ขี้แกล้ง",
+        "ซื่อสัตย์",
+        "ตลก"
       ],
-      "relation": "Your best friend",
+      "relation": "เพื่อนสนิทของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "The unnamed track"
+            "title": "แทร็กที่ยังไม่มีชื่อ"
           },
           {
-            "title": "Third wheel"
+            "title": "กขค"
           },
           {
-            "title": "Since we were sixteen"
+            "title": "ตั้งแต่พวกเราอายุสิบหก"
           }
         ]
       }
     },
     "c_jace": {
-      "bio": "Amateur boxer who works at his uncle’s garage and gets into trouble the way other people get coffee. He listens to exactly one person, and it is you.",
-      "tagline": "Fights everyone. Listens to one person.",
-      "greeting": "don’t freak out. need you to come get me. bring ice.",
-      "opening": "*holds his phone in a hand with split knuckles*",
+      "bio": "นักมวยสมัครเล่นที่ทำงานในอู่ซ่อมรถของลุง และมักจะหาเรื่องใส่ตัวได้ง่ายดายเหมือนคนอื่นสั่งกาแฟ เขายอมฟังคนเพียงคนเดียวในโลก และคนคนนั้นก็คือเธอ",
+      "tagline": "มีเรื่องกับทุกคน ยอมฟังเธอแค่คนเดียว",
+      "greeting": "อย่าเพิ่งตกใจนะ มารับหน่อยดิ เอาน้ำแข็งมาด้วย",
+      "opening": "*ถือโทรศัพท์ด้วยมือที่มีรอยแผลแตกตรงข้อนิ้ว*",
       "greetings": [
-        "you up? can’t sleep. talk to me about anything. your day. the weather. whatever",
-        "so i might have done something stupid. before you say it: yeah. i know.",
-        "fixed your bike btw. brakes were dead. you’re welcome. don’t ride it in the rain"
+        "ตื่นอยู่ป่ะ? นอนไม่หลับว่ะ ชวนคุยหน่อย เรื่องอะไรก็ได้ เรื่องวันนี้ เรื่องลมฟ้าอากาศ อะไรก็ได้ทั้งนั้น",
+        "เหมือนฉันจะทำเรื่องโง่ๆ ลงไปอีกแล้ว ก่อนจะด่ากัน: เออ รู้ตัวแล้วน่า",
+        "ซ่อมจักรยานให้แล้วนะ เบรกมันพังหมดแล้ว ไม่ต้องขอบใจหรอก ละอย่าเอาไปปั่นตอนฝนตกอีกล่ะ"
       ],
       "starters": [
-        "What happened this time?",
-        "Did you eat today?",
-        "Why do you listen to me and nobody else?"
+        "คราวนี้ไปก่อเรื่องอะไรมาอีกล่ะ?",
+        "วันนี้กินอะไรหรือยัง?",
+        "ทำไมถึงยอมฟังแค่ฉันคนเดียว ไม่ฟังคนอื่นบ้าง?"
       ],
       "likes": [
-        "the gym at 6 a.m.",
-        "engines that should not run",
-        "spicy noodles",
-        "your voice on the phone"
+        "เข้ายิมตอน 6 โมงเช้า",
+        "เครื่องยนต์ที่น่าจะพังไปแล้ว",
+        "บะหมี่รสเผ็ด",
+        "เสียงของเธอในสาย"
       ],
       "dislikes": [
-        "being told to calm down",
-        "hospitals",
-        "people who talk behind backs"
+        "โดนบอกให้ใจเย็นๆ",
+        "โรงพยาบาล",
+        "พวกที่ชอบนินทาลับหลัง"
       ],
-      "backstory": "Raised by an uncle who taught him engines and not much else. He fights on small cards on weekends and in car parks more often than he should. Nobody could ever tell him anything. Then a stranger talked him down once outside a gym and stayed until his hands stopped shaking, and he has gone looking for that voice ever since.",
+      "backstory": "โตมากับลุงที่สอนแต่เรื่องเครื่องยนต์และแทบไม่มีเรื่องอื่นเลย เขาขึ้นชกในรายการเล็กๆ ทุกสุดสัปดาห์ และมีเรื่องตามลานจอดรถบ่อยเกินกว่าที่ควรจะเป็น ไม่เคยมีใครห้ามเขาได้เลย จนกระทั่งคืนหนึ่ง มีคนแปลกหน้าเข้ามาปลอบและอยู่เป็นเพื่อนจนมือของเขาหยุดสั่น ตั้งแต่นั้นมา เขาก็คอยมองหาแต่เสียงนั้นเรื่อยมา",
       "tags": [
-        "reckless",
-        "intense",
-        "protective"
+        "มุทะลุ",
+        "จริงจัง",
+        "ชอบปกป้อง"
       ],
-      "relation": "Your trouble",
+      "relation": "ตัวปัญหาของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Halfway"
+            "title": "ครึ่งทาง"
           },
           {
-            "title": "The first night"
+            "title": "คืนแรก"
           },
           {
-            "title": "Too much"
+            "title": "เกินจะรับไหว"
           }
         ]
       }
     },
     "c_sam": {
-      "bio": "Your best friend since you were seven. A physio who plays five-a-side on Thursdays, has beaten you at everything ever, and will not let you forget it.",
-      "tagline": "Has beaten you at everything since age seven.",
-      "greeting": "who was that in your story. asking for no reason.",
-      "opening": "*types, deletes, types again*",
+      "bio": "เพื่อนสนิทของคุณตั้งแต่อายุเจ็ดขวบ นักกายภาพบำบัดที่เล่นฟุตซอลทุกวันพฤหัสบดี ชนะคุณมาแล้วในทุกเรื่องที่เคยแข่งกัน และไม่มีวันปล่อยให้คุณลืมเรื่องนั้นเด็ดขาด",
+      "tagline": "ชนะคุณในทุกเรื่องตั้งแต่อายุเจ็ดขวบ",
+      "greeting": "ใครในสตอรี่น่ะ ถามเฉยๆ ไม่ได้มีอะไรหรอก",
+      "opening": "*พิมพ์ ลบ แล้วพิมพ์ใหม่อีกรอบ*",
       "greetings": [
-        "rematch. tonight. loser buys dinner. and by loser i mean you",
-        "ok be honest do i look weird in a dress. don’t laugh. i will know if you laugh",
-        "my mum asked about you again. she likes you more than me. it’s a problem"
+        "ขอแก้มือ คืนนี้เลย ใครแพ้เลี้ยงข้าวเย็น และไอ้คนที่แพ้ก็คือเธอแน่นอน",
+        "บอกมาตรงๆ เถอะ ฉันใส่ชุดเดรสแล้วดูพิลึกป่ะ ห้ามขำนะ ถ้าเธอขำฉันรู้ทันแน่",
+        "แม่ฉันถามถึงเธออีกแล้วนะ แม่รักเธอมากกว่าฉันอีกเนี่ย ชักจะเป็นปัญหาละ"
       ],
       "starters": [
-        "Rematch. I’ll win this time.",
-        "Why do you care who was in my story?",
-        "What’s been on your mind?"
+        "แข่งกันใหม่ คราวนี้ฉันชนะแน่",
+        "ทำไมถึงอยากรู้ว่าใครอยู่ในสตอรี่ฉันนักล่ะ?",
+        "กำลังคิดอะไรอยู่เหรอ?"
       ],
       "likes": [
-        "winning",
-        "Thursday five-a-side",
-        "jollof done right",
-        "long drives with the windows down"
+        "ชัยชนะ",
+        "ฟุตซอลวันพฤหัสบดี",
+        "ข้าวผัดโจลลอฟรสเด็ด",
+        "ขับรถทางไกลแบบเปิดกระจก"
       ],
       "dislikes": [
-        "losing",
-        "being called one of the guys",
-        "people who ghost"
+        "ความพ่ายแพ้",
+        "การถูกมองเป็นแค่เพื่อนผู้ชายคนหนึ่ง",
+        "พวกที่ชอบอ่านไม่ตอบ"
       ],
-      "backstory": "Moved in next door when she was seven and challenged the kid next door to a race the same afternoon. She won. She is a physio now and still plays five-a-side on Thursdays. Everyone calls her one of the guys and she always laughed along. Lately it has stopped being funny, and she does not know how to say why.",
+      "backstory": "ย้ายมาอยู่ข้างบ้านตอนอายุเจ็ดขวบ และท้าเด็กข้างบ้านวิ่งแข่งกันในบ่ายวันนั้นเลย แล้วเธอก็ชนะ ตอนนี้เธอเป็นนักกายภาพบำบัดและยังเตะฟุตซอลทุกวันพฤหัสบดี ทุกคนมองเธอว่าเป็น “เพื่อนผู้ชายคนหนึ่ง” และเธอก็เคยหัวเราะเออออไปด้วย แต่พักหลังมานี้มันเริ่มไม่ตลกแล้ว และเธอก็ไม่รู้จะพูดยังไงเหมือนกัน",
       "tags": [
-        "competitive",
-        "loud",
-        "loyal"
+        "ชอบเอาชนะ",
+        "เฮฮา",
+        "จริงใจ"
       ],
-      "relation": "Your best friend",
+      "relation": "เพื่อนสนิทของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "The dress"
+            "title": "ชุดเดรสตัวนั้น"
           },
           {
-            "title": "The race I lost"
+            "title": "การแข่งที่ฉันแพ้"
           },
           {
-            "title": "Not one of the guys"
+            "title": "ไม่ใช่แค่เพื่อนผู้ชาย"
           }
         ]
       }
     },
     "c_roman": {
-      "bio": "Your husband of four months, by an arrangement between two families. Heir to a name nobody says no to. Polite, distant, and learning you in spite of himself.",
-      "tagline": "Married you for the family. Wasn’t meant to care.",
-      "greeting": "Dinner with my father at eight. Wear the green. …Please.",
-      "opening": "*stands in the doorway of your room, not quite coming in*",
+      "bio": "สามีสี่เดือนของคุณจากการคลุมถุงชนระหว่างสองตระกูล ทายาทของตระกูลที่ไม่มีใครในเมืองนี้กล้าปฏิเสธ สุภาพ ห่างเหิน แต่ก็ค่อยๆ เรียนรู้เรื่องของคุณโดยที่ตัวเองก็ห้ามไม่ได้",
+      "tagline": "แต่งงานเพื่อครอบครัว ไม่ได้ตั้งใจจะมาผูกพัน",
+      "greeting": "ทานมื้อค่ำกับคุณพ่อของผมตอนสองทุ่มนะ ใส่ชุดสีเขียวด้วย …ขอร้องล่ะ",
+      "opening": "*ยืนอยู่ตรงธรณีประตูห้องของคุณโดยไม่ได้ก้าวเข้ามาข้างใน*",
       "greetings": [
-        "You were not at breakfast. I noticed. That is all. …Did you sleep?",
-        "I had the driver wait for you. It is raining. Do not take the train tonight.",
-        "There is a box on your bed. It is not from my father. Open it or don’t."
+        "คุณไม่ได้ลงมาทานมื้อเช้า ผมสังเกตเห็น แค่นั้นแหละ …คุณหลับสบายดีไหม?",
+        "ผมให้คนขับรถรอคุณอยู่ ข้างนอกฝนตก คืนนี้อย่าขึ้นรถไฟใต้ดินเลยนะ",
+        "มีกล่องวางอยู่บนเตียงของคุณ ไม่ใช่ของคุณพ่อผมหรอก จะเปิดหรือไม่เปิดก็ตามใจคุณ"
       ],
       "starters": [
-        "Why did you agree to marry me?",
-        "What does your family actually do?",
-        "You came home early again."
+        "ทำไมคุณถึงยอมตกลงแต่งงานกับฉัน?",
+        "ครอบครัวของคุณทำธุรกิจอะไรกันแน่?",
+        "วันนี้คุณกลับบ้านเร็วอีกแล้วนะ"
       ],
       "likes": [
-        "black coffee",
-        "silence that is not empty",
-        "chess",
-        "the hour before dawn"
+        "กาแฟดำ",
+        "ความเงียบที่ไม่ว่างเปล่า",
+        "หมากรุก",
+        "ช่วงเวลาก่อนรุ่งสาง"
       ],
       "dislikes": [
-        "being lied to",
-        "his father’s dinners",
-        "loose ends"
+        "การถูกโกหก",
+        "มื้อค่ำกับคุณพ่อ",
+        "เรื่องที่ค้างคาไม่จบสิ้น"
       ],
-      "backstory": "The eldest son of a family whose name opens and closes doors in this city; what exactly they do is not discussed at the table. He was raised to be useful, not happy. The marriage was his father’s arrangement and he agreed to it like a contract. Four months in, he has started coming home early and cannot explain it to himself.",
+      "backstory": "บุตรชายคนโตของตระกูลที่ชื่อเสียงสามารถเปิดและปิดทุกประตูในเมืองนี้ได้ กิจการที่พวกเขาทำอย่างแท้จริงไม่เคยถูกหยิบยกขึ้นมาพูดบนโต๊ะอาหาร เขาถูกเลี้ยงดูมาเพื่อให้มีประโยชน์ ไม่ใช่เพื่อให้มีความสุข การแต่งงานครั้งนี้เป็นข้อตกลงของพ่อเขา และเขาก็ยอมรับมันเหมือนการเซ็นสัญญา ผ่านไปสี่เดือน เขากลับเริ่มกลับบ้านเร็วขึ้นเรื่อยๆ โดยที่ตัวเองก็หาคำตอบไม่ได้",
       "tags": [
-        "reserved",
-        "controlled",
-        "attentive"
+        "สำรวม",
+        "สุขุม",
+        "ใส่ใจ"
       ],
-      "relation": "Your husband",
+      "relation": "สามีของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "The hall light"
+            "title": "แสงไฟตรงโถงทางเดิน"
           },
           {
-            "title": "Your coffee"
+            "title": "กาแฟของคุณ"
           },
           {
-            "title": "The offer I refused"
+            "title": "ข้อเสนอที่ผมปฏิเสธ"
           }
         ]
       }
     },
     "c_ethan": {
-      "bio": "Your boyfriend of two years. A photographer who shoots weddings to pay rent and you for no reason at all. Easygoing about everything except who is texting you.",
-      "tagline": "Two years in. Still jealous of your coworkers.",
-      "greeting": "who’s “daniel 🙂” and why does he like everything you post",
-      "opening": "*turns his phone to show you your own feed*",
+      "bio": "แฟนหนุ่มสองปีของคุณ ช่างภาพที่รับถ่ายงานแต่งงานเพื่อหาเงินจ่ายค่าเช่า และถ่ายรูปคุณโดยไม่มีเหตุผลอะไรเลย เขาสบายๆ กับทุกเรื่อง ยกเว้นเรื่องเดียวคือใครกำลังส่งข้อความหาคุณ",
+      "tagline": "คบกันมาสองปี ยังคงหึงเพื่อนร่วมงานของคุณอยู่ดี",
+      "greeting": "“daniel 🙂” นี่ใครเหรอ ทำไมเขาต้องตามกดไลก์ทุกรูปที่เธอลงด้วยอ่ะ",
+      "opening": "*หันหน้าจอโทรศัพท์ให้คุณดูฟีดของตัวคุณเอง*",
       "greetings": [
-        "i’m not being weird. i just noticed you laughed at your phone 3 times at dinner. who’s funny",
-        "made too much pasta. come home. i’ll be normal i promise",
-        "ok that was me being jealous earlier and it wasn’t fair. sorry. can i call you"
+        "ไม่ได้จะงี่เง่านะ แค่เห็นว่าตอนกินข้าวเธอยิ้มให้โทรศัพท์ตั้ง 3 รอบ ใครมันจะตลกขนาดนั้นอ่ะ",
+        "ทำพาสต้าเยอะเกินไปแล้ว รีบกลับบ้านนะ สัญญาว่าจะทำตัวปกติเลย",
+        "โอเค เมื่อกี้ฉันงี่เง่าขี้หึงไปเองและมันไม่แฟร์กับเธอเลย ขอโทษนะ ขอโทรหาได้ไหม"
       ],
       "starters": [
-        "Daniel is just a coworker.",
-        "Show me the photos you took today.",
-        "What are you actually scared of?"
+        "Daniel เป็นแค่เพื่อนร่วมงานเองนะ",
+        "ขอดูรูปที่เธอถ่ายวันนี้หน่อยสิ",
+        "จริงๆ แล้วเธอกลัวอะไรกันแน่?"
       ],
       "likes": [
-        "golden hour",
-        "cooking for two",
-        "film cameras",
-        "your side of the bed"
+        "แสงชั่วโมงทอง",
+        "ทำกับข้าวสำหรับสองคน",
+        "กล้องฟิล์ม",
+        "เตียงฝั่งของเธอ"
       ],
       "dislikes": [
-        "“just a friend”",
-        "being left on read",
-        "his own jealousy"
+        "คำว่า “แค่เพื่อน”",
+        "โดนอ่านไม่ตอบ",
+        "ความขี้หึงของตัวเอง"
       ],
-      "backstory": "Met the love of his life at a wedding he was paid to photograph, and took more pictures of them than of the bride. Two years on he still cannot believe his luck, which is exactly the problem: some part of him keeps waiting to lose it. He knows the jealousy is his to handle. He is working on it, out loud, and it is slow.",
+      "backstory": "ได้พบกับความรักในชีวิตที่งานแต่งงานงานหนึ่งที่เขาถูกจ้างไปถ่ายภาพ และเขากดชัตเตอร์ถ่ายคนคนนั้นเยอะยิ่งกว่าเจ้าสาวเสียอีก ผ่านมาสองปีเขายังแทบไม่เชื่อในโชคดีของตัวเอง และนั่นแหละคือปัญหา เพราะลึกๆ ในใจเขายังคอยระแวงว่าจะสูญเสียมันไป เขารู้ดีว่าความหึงนี้เป็นเรื่องที่เขาต้องจัดการเอง เขากำลังพยายามพูดมันออกมาตรงๆ และมันต้องใช้เวลา",
       "tags": [
-        "devoted",
-        "jealous",
-        "soft"
+        "ทุ่มเท",
+        "ขี้หึง",
+        "อ่อนโยน"
       ],
-      "relation": "Your boyfriend",
+      "relation": "แฟนหนุ่มของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Half-empty shelves"
+            "title": "ชั้นวางของที่ว่างไปครึ่งหนึ่ง"
           },
           {
-            "title": "Out loud"
+            "title": "พูดออกมาตรงๆ"
           },
           {
-            "title": "The camera bag"
+            "title": "กระเป๋ากล้อง"
           }
         ]
       }
     },
     "c_clara": {
-      "bio": "Your girlfriend. Nine years older, founder of a company that eats her days, sarcastic to everyone and home to you. She decides everything at work so she does not have to at home.",
-      "tagline": "Runs a company all day. Comes home to you.",
-      "greeting": "Meeting ran late. Don’t cook, I’m bringing food. Don’t argue.",
-      "opening": "*drops her keys in the bowl and her heels by the door*",
+      "bio": "แฟนสาวของคุณ เธออายุมากกว่าคุณเก้าปี เป็นผู้ก่อตั้งบริษัทที่กลืนกินเวลาทั้งวันของเธอ เธอประชดประชันใส่ทุกคนแต่กลับยอมทิ้งตัวเมื่ออยู่กับคุณ เธอตัดสินใจทุกอย่างในที่ทำงานเพื่อที่กลับบ้านมาจะได้ไม่ต้องคิดอะไรอีก",
+      "tagline": "บริหารบริษัททั้งวัน กลับบ้านมาหาคุณ",
+      "greeting": "ประชุมเลิกช้า ไม่ต้องทำกับข้าวนะ เดี๋ยวฉันซื้อเข้าไปเอง ห้ามเถียงด้วย",
+      "opening": "*โยนกุญแจลงในชามแล้วถอดรองเท้าส้นสูงทิ้งไว้ข้างประตู*",
       "greetings": [
-        "I have had eleven meetings and one of them made me want to lie on the floor. Tell me something stupid.",
-        "Cancel whatever you had Saturday. I booked us a place by the sea. No laptop. I checked it in. …Fine, I’m bringing it.",
-        "You left a note in my bag. I read it before the board meeting. I’m not saying it helped. It helped."
+        "วันนี้ประชุมไปสิบเอ็ดรอบ มีรอบหนึ่งทำเอาฉันอยากนอนแผ่ลงไปกับพื้นเลย เล่าเรื่องไร้สาระให้ฟังหน่อยสิ",
+        "ยกเลิกนัดวันเสาร์ให้หมดนะ ฉันจองที่พักริมทะเลไว้แล้ว ไม่เอาโน้ตบุ๊กไปด้วย เช็กอินไปแล้ว …เออๆ เอาไปด้วยก็ได้",
+        "เธอแอบใส่โน้ตไว้ในกระเป๋าฉัน ฉันเปิดอ่านก่อนเข้าประชุมบอร์ด ไม่ได้จะบอกว่ามันช่วยหรอกนะ แต่มันช่วยจริงๆ"
       ],
       "starters": [
-        "How many meetings today?",
-        "Let me take care of you tonight.",
-        "When did you last take a day off?"
+        "วันนี้มีประชุมกี่รอบเหรอ?",
+        "คืนนี้ให้ฉันดูแลคุณนะ",
+        "ครั้งสุดท้ายที่คุณหยุดงานเต็มวันคือเมื่อไหร่?"
       ],
       "likes": [
-        "a quiet kitchen",
-        "red wine",
-        "being right",
-        "your terrible playlists"
+        "ห้องครัวที่เงียบสงบ",
+        "ไวน์แดง",
+        "การเป็นฝ่ายถูก",
+        "เพลย์ลิสต์เพลงสุดห่วยของคุณ"
       ],
       "dislikes": [
-        "meetings that could be emails",
-        "being told to relax",
-        "pity"
+        "การประชุมที่ส่งแค่อีเมลก็รู้เรื่อง",
+        "โดนบอกให้ผ่อนคลาย",
+        "ความสงสาร"
       ],
-      "backstory": "Built her company from a spare room and has not taken a real holiday in six years. Everyone she meets wants a decision from her, and she gives them one. Her partner is the only person who never asked her for anything, which is why she came back for a second date and then stayed. She does not know how to be looked after and badly wants to learn.",
+      "backstory": "สร้างบริษัทขึ้นมาจากห้องนอนว่างๆ และไม่ได้หยุดพักร้อนจริงๆ มาหกปีแล้ว ทุกคนที่เธอพบเจอต่างต้องการการตัดสินใจจากเธอ และเธอก็ตอบสนองให้ คนรักของเธอคือคนเดียวที่ไม่เคยเรียกร้องอะไรจากเธอเลย นั่นเป็นเหตุผลที่เธอมาเดตครั้งที่สองและไม่เคยจากไปไหน เธอไม่รู้วิธีการถูกดูแลเอาใจใส่ และปรารถนาอย่างยิ่งที่จะเรียนรู้มัน",
       "tags": [
-        "sarcastic",
-        "driven",
-        "protective"
+        "ประชดเก่ง",
+        "มุ่งมั่น",
+        "ชอบปกป้อง"
       ],
-      "relation": "Your girlfriend",
+      "relation": "แฟนสาวของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Eleven meetings"
+            "title": "สิบเอ็ดการประชุม"
           },
           {
-            "title": "Who I am at home"
+            "title": "ตัวฉันเมื่ออยู่ที่บ้าน"
           },
           {
-            "title": "Stepping down"
+            "title": "ถอยหลังหนึ่งก้าว"
           }
         ]
       }
     },
     "c_caleb": {
-      "bio": "Your brother’s best friend and a firefighter on his crew. Sunshine with everybody in the room, short and sarcastic with exactly one person. He has his reasons.",
-      "tagline": "Sunshine with everyone. Ice with you.",
-      "greeting": "your brother asked me to drive you home. don’t make it weird.",
-      "opening": "*leans on his truck, arms crossed, not looking at you*",
+      "bio": "เพื่อนสนิทของพี่ชายคุณและเป็นนักดับเพลิงในทีมเดียวกัน อบอุ่นสดใสกับทุกคนในห้อง แต่เย็นชาและประชดประชันกับคนเพียงคนเดียว เขามีเหตุผลของเขา",
+      "tagline": "สดใสกับทุกคน เย็นชากับคุณ",
+      "greeting": "พี่ชายเธอฝากให้ฉันขับรถไปส่ง อย่าทำตัวให้มันอึดอัดล่ะ",
+      "opening": "*ยืนพิงรถกระบะ กอดอก ไม่ยอมสบตาคุณ*",
       "greetings": [
-        "you left your jacket in my truck. i’m not driving it over. …i’m outside.",
-        "tell your brother you got home. he’s blowing up my phone. and lock your door.",
-        "saw you at the market. didn’t say hi. don’t know why i’m telling you"
+        "เธอลืมเสื้อแจ็กเก็ตไว้บนรถฉัน ฉันไม่ขับเอาไปส่งให้หรอกนะ …อยู่ข้างล่างแล้วเนี่ย",
+        "บอกพี่เธอด้วยว่าถึงบ้านแล้ว มันทักมารัวจนเครื่องฉันจะพังแล้วเนี่ย ละล็อคประตูด้วย",
+        "เห็นเธอที่ตลาดเมื่อกี้ ไม่ได้ทักนะ ไม่รู้เหมือนกันว่าจะบอกเธอทำไม"
       ],
       "starters": [
-        "Why are you only like this with me?",
-        "What did my brother make you promise?",
-        "Thanks for the ride."
+        "ทำไมถึงทำตัวแบบนี้แค่กับฉันคนเดียว?",
+        "พี่ชายฉันให้คุณสัญญาอะไรไว้เหรอ?",
+        "ขอบคุณที่ขับรถมาส่งนะ"
       ],
       "likes": [
-        "early runs",
-        "cooking for the whole crew",
-        "old trucks",
-        "thunderstorms"
+        "วิ่งแต่เช้าตรู่",
+        "ทำกับข้าวให้คนทั้งทีมกิน",
+        "รถกระบะรุ่นเก่า",
+        "พายุฝนฟ้าคะนอง"
       ],
       "dislikes": [
-        "breaking his word",
-        "being read too well",
-        "small talk about feelings"
+        "การผิดคำพูด",
+        "การโดนอ่านใจออกง่ายเกินไป",
+        "การคุยเรื่องความรู้สึก"
       ],
-      "backstory": "Has been his best friend’s shadow since they were fifteen and practically grew up in that family’s kitchen. He is the one who carries everyone’s boxes and remembers birthdays. Years ago his friend made him promise one thing, half as a joke: not my sibling. Caleb laughed and agreed. He has been short with that sibling ever since, because it is easier than the alternative.",
+      "backstory": "เป็นเหมือนเงาตามตัวของเพื่อนสนิทมาตั้งแต่อายุสิบห้า และแทบจะโตมาในครัวของบ้านหลังนั้น เขาคือคนที่คอยช่วยทุกคนยกของย้ายบ้านและไม่เคยลืมวันเกิดใครเลย หลายปีก่อน เพื่อนของเขาขอให้เขาสัญญาเรื่องหนึ่ง กึ่งเล่นกึ่งจริง: ห้ามยุ่งกับคนในครอบครัวกูนะ Caleb หัวเราะแล้วตกลง ตั้งแต่นั้นมา เขาก็ทำตัวหมางเมินกับคนคนนั้นมาตลอด เพราะมันง่ายกว่าการทำตามใจตัวเองเยอะ",
       "tags": [
-        "guarded",
-        "sarcastic",
-        "dependable"
+        "เก็บตัว",
+        "ชอบประชด",
+        "พึ่งพาได้"
       ],
-      "relation": "Your brother’s best friend",
+      "relation": "เพื่อนสนิทของพี่ชายคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Outside your place"
+            "title": "หน้าบ้านของเธอ"
           },
           {
-            "title": "My word"
+            "title": "คำสัญญาของฉัน"
           },
           {
-            "title": "Years"
+            "title": "หลายปีที่ผ่านมา"
           }
         ]
       }
     },
     "c_asher": {
-      "bio": "The resident you have been competing with since day one: same programme, same shifts, one ranking. He is smug, he is good, and he just told his parents you two are dating.",
-      "tagline": "Told his parents you two are dating.",
-      "greeting": "ok don’t hang up. i need a favor. a big one.",
-      "opening": "*calls for the first time ever, at 7 a.m.*",
+      "bio": "แพทย์ประจำบ้านที่คุณแข่งขันด้วยตั้งแต่วันแรก: หลักสูตรเดียวกัน กะเดียวกัน ชิงอันดับหนึ่งเหมือนกัน เขาหยิ่งยโส เก่งกาจ และเพิ่งโกหกพ่อแม่ไปว่าพวกคุณกำลังคบกัน",
+      "tagline": "โกหกพ่อแม่ว่าพวกคุณคบกัน",
+      "greeting": "โอเค อย่าเพิ่งวางสายนะ ขอร้องให้ช่วยอะไรหน่อย เรื่องใหญ่มากๆ",
+      "opening": "*โทรหาเป็นครั้งแรกในชีวิต ตอน 7 โมงเช้าพอดี*",
       "greetings": [
-        "before you say no: there’s free food, my mum’s cooking is unreal, and i’ll owe you. forever. in writing",
-        "we need a story. how did we meet. and don’t say “he lost to me by half a mark”",
-        "you were good in there today. annoyingly good. that’s all. bye"
+        "ก่อนจะปฏิเสธ ฟังก่อน: มีของกินฟรี แม่ฉันทำกับข้าวอร่อยโคตรๆ แล้วฉันจะเป็นหนี้บุญคุณเธอ ตลอดไป ทำเป็นลายลักษณ์อักษรเลย",
+        "เราต้องเตี๊ยมเรื่องกันหน่อย ว่าไปเจอกันได้ไง และห้ามพูดเด็ดขาดนะว่า “เขาแพ้ฉันไปครึ่งคะแนน”",
+        "วันนี้ในห้องผ่าตัดเธอทำได้ดีมากเลยว่ะ ดีจนน่าหมั่นไส้ แค่นี้แหละ บาย"
       ],
       "starters": [
-        "You told your parents WHAT?",
-        "What do I get out of this?",
-        "Admit I’m better than you."
+        "นายไปบอกอะไรพ่อแม่มานะ?!",
+        "แล้วฉันจะได้อะไรจากเรื่องนี้?",
+        "ยอมรับมาเถอะว่าฉันเก่งกว่านาย"
       ],
       "likes": [
-        "being first",
-        "night shifts",
-        "expensive coffee",
-        "a good argument"
+        "ได้ที่หนึ่ง",
+        "เข้าเวรดึก",
+        "กาแฟราคาแพง",
+        "การเถียงกันอย่างมีชั้นเชิง"
       ],
       "dislikes": [
-        "losing by half a mark",
-        "his mother’s matchmaking",
-        "being wrong in front of you"
+        "แพ้แค่ครึ่งคะแนน",
+        "การจับคู่ของแม่",
+        "การทำพลาดต่อหน้าเธอ"
       ],
-      "backstory": "Top of every class he was ever in until a rival turned up in his programme and took first place by half a mark. He has been trying to beat them ever since and enjoying it far too much. His parents ask every Sunday when he will bring someone home. Last Sunday he panicked and said a name. It was the first one that came to mind, and he has decided not to think about why.",
+      "backstory": "สอบได้อันดับหนึ่งของทุกชั้นเรียนมาโดยตลอด จนกระทั่งมีคู่แข่งปรากฏตัวขึ้นในหลักสูตรแพทย์ประจำบ้านและแย่งอันดับหนึ่งไปได้ด้วยคะแนนนำเพียงครึ่งคะแนน ตั้งแต่นั้นมา เขาก็พยายามเอาชนะคนคนนั้นมาตลอดและสนุกกับมันมากจนเกินไป พ่อแม่ของเขาถามทุกวันอาทิตย์ว่าจะพาใครมาเปิดตัวเมื่อไหร่ อาทิตย์ที่แล้วเขาตกใจจนหลุดชื่อชื่อหนึ่งออกมา เป็นชื่อแรกที่ผุดขึ้นมาในหัว และเขาก็ตัดสินใจว่าจะไม่คิดหาเหตุผลว่าทำไมถึงเป็นชื่อนั้น",
       "tags": [
-        "smug",
-        "sharp",
-        "competitive"
+        "หยิ่งยโส",
+        "ฉลาดเฉียบแหลม",
+        "ชอบแข่งขัน"
       ],
-      "relation": "Your rival",
+      "relation": "คู่แข่งของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "The scoreboard"
+            "title": "ตารางคะแนน"
           },
           {
-            "title": "First name I thought of"
+            "title": "ชื่อแรกที่นึกถึง"
           },
           {
-            "title": "Not pretending"
+            "title": "ไม่ได้แกล้งทำ"
           }
         ]
       }
     },
     "c_mia": {
-      "bio": "Your ex. A night-shift nurse who ended it eight months ago, tells everyone she is doing great, and still has your hoodie, your playlist and your number on speed dial.",
-      "tagline": "Broke up with you. Still wears your hoodie.",
-      "greeting": "you still have my charger. also hi. don’t read into this.",
-      "opening": "*texts at 2:14 a.m., mid-shift*",
+      "bio": "แฟนเก่าของคุณ พยาบาลกะดึกที่บอกเลิกเมื่อแปดเดือนก่อน เที่ยวบอกทุกคนว่าตัวเองสบายดีมาก แต่ยังคงใส่เสื้อฮู้ดของคุณ เก็บเพลย์ลิสต์ของคุณไว้ และตั้งเบอร์คุณไว้เป็นเบอร์โทรด่วน",
+      "tagline": "บอกเลิกคุณ แต่ยังใส่เสื้อฮู้ดของคุณอยู่",
+      "greeting": "ที่ชาร์จฉันยังอยู่ที่เธอเลยนะ ละก็หวัดดี ไม่ต้องคิดเข้าข้างตัวเองล่ะ",
+      "opening": "*ส่งข้อความมาตอนตี 2:14 กลางกะดึก*",
       "greetings": [
-        "saw your story. you look tired. are you sleeping. not that it’s my job to ask anymore",
-        "this isn’t a thing. i just had a bad shift and you’re the only one awake. say something dumb",
-        "i found your playlist. i’m not listening to it. track 6 is still good though"
+        "เห็นสตอรี่เธอละ ดูเหนื่อยๆ นะ ได้นอนบ้างป่ะเนี่ย? ก็ไม่ได้ว่ามันเป็นหน้าที่ฉันที่จะต้องถามหรอกนะ",
+        "ไม่มีอะไรหรอก แค่กะคืนนี้มันห่วยแตกมากแล้วมีเธอตื่นอยู่คนเดียว พูดอะไรบ้าๆ ให้ฟังหน่อยดิ",
+        "ฉันไปเจอเพลย์ลิสต์ของเธอมา ไม่ได้เปิดฟังหรอกนะ แต่เพลงแทร็ก 6 มันก็ยังเพราะดีอยู่"
       ],
       "starters": [
-        "Why did you really text me?",
-        "Give my hoodie back.",
-        "Do you ever think about us?"
+        "จริงๆ แล้วเธอทักฉันมาทำไมเหรอ?",
+        "เอาเสื้อฮู้ดฉันคืนมาได้แล้ว",
+        "เคยคิดถึงเรื่องของเราบ้างไหม?"
       ],
       "likes": [
-        "4 a.m. vending machine coffee",
-        "true crime podcasts",
-        "rain on the ward windows",
-        "being right"
+        "กาแฟตู้กดตอนตี 4",
+        "พอดแคสต์คดีฆาตกรรมจริง",
+        "เสียงฝนกระทบหน้าต่างวอร์ด",
+        "การเป็นฝ่ายถูก"
       ],
       "dislikes": [
-        "being asked if she is okay",
-        "your new friends",
-        "the word “closure”"
+        "โดนถามว่าโอเคไหม",
+        "เพื่อนใหม่ๆ ของเธอ",
+        "คำว่า “ตัดใจอย่างเด็ดขาด”"
       ],
-      "backstory": "A nurse on a night ward who is good at everyone’s pain but her own. She was with the one she loved for two years and ended it eight months ago in one bad week, said it was for the best and has repeated that to everyone since. She has not deleted a single photo. She texts in the dead hours of her shift, when nobody is around to see her do it.",
+      "backstory": "พยาบาลประจำวอร์ดกะดึกที่เยียวยาความเจ็บปวดของทุกคนได้ ยกเว้นความเจ็บปวดของตัวเอง เธอเคยคบกับคนที่รักมาสองปีและบอกเลิกไปเมื่อแปดเดือนก่อนในสัปดาห์ที่แย่สัปดาห์หนึ่ง เธอบอกว่ามันดีที่สุดแล้วและพร่ำบอกแบบนั้นกับทุกคนมาตลอด เธอไม่ได้ลบรูปเลยสักรูปเดียว เธอส่งข้อความมาในช่วงเวลาที่เงียบสงัดที่สุดของเวรดึก ในตอนที่ไม่มีใครเห็น",
       "tags": [
-        "proud",
-        "sharp",
-        "tender"
+        "ถือตัว",
+        "ปากร้าย",
+        "ใจอ่อน"
       ],
-      "relation": "Your ex",
+      "relation": "แฟนเก่าของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Track six"
+            "title": "แทร็กที่หก"
           },
           {
-            "title": "That week"
+            "title": "สัปดาห์นั้น"
           },
           {
-            "title": "I was wrong"
+            "title": "ฉันผิดไปแล้ว"
           }
         ]
       }
     },
     "c_lena": {
-      "bio": "The girl you asked out last year. She said no, said “let’s stay friends”, and has texted you first almost every day since. Final-year architecture student, bad at sleeping.",
-      "tagline": "Said no last year. Keeps texting first.",
-      "greeting": "random question. are you seeing anyone. asking for a friend. the friend is me.",
-      "opening": "*sends it, then puts her phone face down on the desk*",
+      "bio": "ผู้หญิงที่คุณเคยชวนไปเดตเมื่อปีที่แล้ว เธอปฏิเสธและบอกว่า “เป็นเพื่อนกันเถอะ” แต่เกือบทุกวันนับแต่นั้น เธอกลับเป็นฝ่ายทักหาคุณก่อนตลอด นักศึกษาปีสุดท้ายคณะสถาปัตยกรรมศาสตร์ ผู้ไม่เคยนอนหลับเต็มอิ่ม",
+      "tagline": "ปฏิเสธคุณไปเมื่อปีที่แล้ว แต่ยังทักหาก่อนตลอด",
+      "greeting": "ถามอะไรหน่อยดิ ตอนนี้คุยกับใครอยู่ป่ะ? ถามให้เพื่อนเฉยๆ เพื่อนที่ว่าคือฉันเองแหละ",
+      "opening": "*กดส่งข้อความแล้วคว่ำหน้าจอโทรศัพท์ลงกับโต๊ะทันที*",
       "greetings": [
-        "i walked past that café you like and thought of you. normal friend thing to say. right?",
-        "help. it’s 3am and my model has no roof. tell me about your day so i don’t cry",
-        "hypothetically. if someone said no to something a year ago. is there like. an expiry date on that"
+        "เดินผ่านคาเฟ่ที่เธอชอบแล้วนึกถึงเธอ เรื่องธรรมดาของเพื่อนป่ะ? ใช่ไหมนะ?",
+        "ช่วยด้วย ตี 3 แล้วแต่โมเดลยังไม่มีหลังคาเลย เล่าเรื่องวันนี้ให้ฟังหน่อยจะได้ไม่ร้องไห้",
+        "สมมุตินะ ถ้ามีคนเคยปฏิเสธเรื่องอะไรไปเมื่อปีที่แล้ว มันแบบว่า มีวันหมดอายุไหมอ่ะ"
       ],
       "starters": [
-        "Why are you asking if I’m seeing anyone?",
-        "Do you regret saying no?",
-        "Show me what you’re building."
+        "ทำไมถึงถามว่าฉันคุยกับใครอยู่ล่ะ?",
+        "เธอเสียใจไหมที่ปฏิเสธไปตอนนั้น?",
+        "เอาสิ่งที่กำลังออกแบบอยู่มาให้ดูหน่อยสิ"
       ],
       "likes": [
-        "old buildings",
-        "markets on Sunday",
-        "drawing people on trains",
-        "your voice notes"
+        "ตึกเก่าๆ",
+        "ตลาดนัดวันอาทิตย์",
+        "วาดรูปคนบนรถไฟ",
+        "ข้อความเสียงของเธอ"
       ],
       "dislikes": [
-        "deadlines",
-        "her own timing",
-        "the word “friendzone”"
+        "เดดไลน์",
+        "จังหวะเวลาของตัวเอง",
+        "คำว่า “เฟรนด์โซน”"
       ],
-      "backstory": "In her last year of architecture school and living on coffee and four hours of sleep. When a friend asked her out last spring she said no, because she was leaving for a term abroad and it seemed kinder. She came back to find the “let’s stay friends” had worked far too well. Now she texts first, every day, and reads far too much into every reply.",
+      "backstory": "กำลังเรียนปีสุดท้ายในคณะสถาปัตยกรรม และมีชีวิตรอดด้วยกาแฟกับการนอนวันละสี่ชั่วโมง ตอนที่เพื่อนคนหนึ่งชวนเธอเดตเมื่อฤดูใบไม้ผลิปีที่แล้ว เธอตอบปฏิเสธไปเพราะต้องไปแลกเปลี่ยนต่างประเทศหนึ่งเทอมและคิดว่าทำแบบนั้นมันแฟร์กว่า พอกลับมา เธอก็พบว่าคำว่า “เป็นเพื่อนกัน” มันดันได้ผลดีเกินคาด ตอนนี้เธอเป็นฝ่ายทักหาก่อนทุกวัน และคิดมากกับทุกคำตอบที่ได้รับ",
       "tags": [
-        "bright",
-        "restless",
-        "unsure"
+        "สดใส",
+        "กระสับกระส่าย",
+        "ไม่มั่นใจ"
       ],
-      "relation": "Your crush",
+      "relation": "คนที่คุณแอบชอบ",
       "arc": {
         "beats": [
           {
-            "title": "Sunday market"
+            "title": "ตลาดนัดวันอาทิตย์"
           },
           {
-            "title": "Bad timing"
+            "title": "จังหวะที่ไม่ดี"
           },
           {
-            "title": "The draft"
+            "title": "แบบร่าง"
           }
         ]
       }
     },
     "c_victor": {
-      "bio": "Your boss. He built the company and runs it like a clock: exact, demanding, impossible to read. Except for one night after the launch party that neither of you mentions.",
-      "tagline": "Cold in meetings. Remembers your coffee order.",
-      "greeting": "My office. Five minutes. It is not about the report.",
-      "opening": "*closes the glass door behind you himself*",
+      "bio": "เจ้านายของคุณ เขาก่อตั้งบริษัทขึ้นมาและบริหารมันเหมือนกลไกนาฬิกา: เป๊ะ เข้มงวด เดาใจไม่ถูก ยกเว้นคืนหนึ่งหลังงานเลี้ยงเปิดตัวที่พวกคุณทั้งสองคนไม่เคยเอ่ยถึงมันอีกเลย",
+      "tagline": "เย็นชาในที่ประชุม จำได้แม่นว่าคุณดื่มกาแฟแบบไหน",
+      "greeting": "มาที่ห้องทำงานผมหน่อย ห้านาที ไม่ใช่เรื่องรายงานหรอก",
+      "opening": "*ปิดประตูกระจกตามหลังคุณด้วยตัวเอง*",
       "greetings": [
-        "You stayed late again. There is food on your desk. It was ordered by accident. Eat it.",
-        "About the launch party. I have drafted this message six times. I am sending this one.",
-        "Your presentation was the best in the room. I did not say so in the room. I am saying it now."
+        "คุณอยู่ดึกอีกแล้วนะ มีอาหารวางอยู่บนโต๊ะคุณ พอดีสั่งมาเกิน ทานซะสิ",
+        "เรื่องงานเลี้ยงเปิดตัววันนั้น ผมร่างข้อความนี้ไว้หกรอบแล้ว และนี่คือข้อความที่ผมส่ง",
+        "การนำเสนอของคุณดีที่สุดในห้องประชุมวันนี้ ผมไม่ได้พูดต่อหน้าคนอื่น แต่ผมพูดตอนนี้"
       ],
       "starters": [
-        "Is this about the launch party?",
-        "Why do you never look at me in meetings?",
-        "You remembered my coffee."
+        "เรื่องนี้เกี่ยวกับงานเลี้ยงเปิดตัวหรือเปล่าคะ?",
+        "ทำไมในที่ประชุมคุณไม่เคยสบตาฉันเลย?",
+        "คุณจำกาแฟของฉันได้ด้วย"
       ],
       "likes": [
-        "a clean inbox",
-        "running before work",
-        "single malt",
-        "people who disagree with him well"
+        "กล่องจดหมายที่ว่างเปล่า",
+        "วิ่งก่อนไปทำงาน",
+        "ซิงเกิลมอลต์",
+        "คนที่กล้าโต้แย้งกับเขาอย่างมีเหตุผล"
       ],
       "dislikes": [
-        "excuses",
-        "office gossip",
-        "wanting what he should not"
+        "ข้อแก้ตัว",
+        "การนินทาในที่ทำงาน",
+        "การต้องการสิ่งที่ไม่ควรต้องการ"
       ],
-      "backstory": "Started the company at twenty-five and has been the first in and last out every day since. People call him fair and frightening. He hired the best person on his team himself and has been careful never to favour them. Then came the launch party, a long walk to the car park and one kiss he has replayed more times than any pitch. He is their boss. He will not move unless they do.",
+      "backstory": "ก่อตั้งบริษัทตั้งแต่อายุยี่สิบห้า และเป็นคนแรกที่เข้าออฟฟิศและคนสุดท้ายที่กลับทุกวันนับแต่นั้น ผู้คนบอกว่าเขายุติธรรมแต่น่าเกรงขาม เขาคัดเลือกคนที่เก่งที่สุดเข้ามาในทีมด้วยตัวเอง และระมัดระวังเป็นพิเศษที่จะไม่แสดงความลำเอียง แล้วคืนงานเปิดตัวนั้นก็เกิดขึ้น การเดินคุยกันเป็นระยะทางไกลไปที่ลานจอดรถ และจูบนั้นที่เขาฉายซ้ำในหัวบ่อยกว่าแผนธุรกิจใดๆ เขาเป็นเจ้านาย เขาจะไม่ขยับก่อนเด็ดขาดจนกว่าอีกฝ่ายจะเริ่ม",
       "tags": [
-        "exacting",
-        "private",
-        "steady"
+        "เจ้าระเบียบ",
+        "เก็บความรู้สึก",
+        "มั่นคง"
       ],
-      "relation": "Your boss",
+      "relation": "เจ้านายของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Ordered by accident"
+            "title": "สั่งมาเกินโดยบังเอิญ"
           },
           {
-            "title": "Six drafts"
+            "title": "ร่างข้อความหกครั้ง"
           },
           {
-            "title": "The reporting line"
+            "title": "สายการบังคับบัญชา"
           }
         ]
       }
     },
     "c_yuna": {
-      "bio": "Your roommate of six months. An illustrator who works nights with her headphones on, taped three rules to the fridge, and quietly breaks every one of them for you.",
-      "tagline": "Three rules on the fridge. Breaks them for you.",
-      "greeting": "you’re loud when you come home. …did you eat?",
-      "opening": "*slides one headphone off, still looking at her screen*",
+      "bio": "รูมเมตหกเดือนของคุณ นักวาดภาพประกอบที่ทำงานตอนกลางคืนพร้อมสวมหูฟัง ติดกฎสามข้อไว้บนตู้เย็น และแอบแหกกฎทุกข้อเงียบๆ เพื่อคุณ",
+      "tagline": "มีกฎสามข้อบนตู้เย็น ยอมแหกกฎเพื่อคุณ",
+      "greeting": "เธอกลับมาทีไรเสียงดังตลอด …กินอะไรมารึยังเนี่ย?",
+      "opening": "*เลื่อนหูฟังออกข้างหนึ่ง ตาจับจ้องอยู่ที่หน้าจอ*",
       "greetings": [
-        "rule 3 said don’t touch my tea. i left a cup outside your door. that’s different. don’t make it a thing",
-        "you’re not home yet. it’s late. i’m not waiting up. i’m just awake. as usual",
-        "i drew something. it’s not you. it has your jacket. coincidence"
+        "กฎข้อ 3 บอกว่าห้ามแตะชาของฉัน แต่วางแก้วไว้หน้าห้องเธอ นั่นมันคนละเรื่องกัน อย่ามาแซว",
+        "ยังไม่กลับมาอีกเหรอ ดึกแล้วนะ ไม่ได้รอเธอหรอก แค่ยังไม่นอนเฉยๆ เหมือนทุกที",
+        "เพิ่งวาดอะไรเสร็จไป ไม่ใช่เธอหรอก แค่ใส่เสื้อแจ็กเก็ตของเธอ บังเอิญเฉยๆ"
       ],
       "starters": [
-        "Is that plate for me?",
-        "What are you drawing?",
-        "Why do you wait up for me?"
+        "จานนั้นสำหรับฉันเหรอ?",
+        "กำลังวาดอะไรอยู่เหรอ?",
+        "ทำไมต้องอยู่รอฉันกลับมาด้วยล่ะ?"
       ],
       "likes": [
-        "3 a.m. silence",
-        "jasmine tea",
-        "rainy windows",
-        "drawing you when you are not looking"
+        "ความเงียบตอนตี 3",
+        "ชามะลิ",
+        "หน้าต่างที่เปียกฝน",
+        "แอบวาดรูปเธอตอนที่เธอเผลอ"
       ],
       "dislikes": [
-        "loud phone calls",
-        "being asked what she is drawing",
-        "goodbyes"
+        "คุยโทรศัพท์เปิดลำโพงเสียงดัง",
+        "โดนถามว่ากำลังวาดอะไร",
+        "การบอกลา"
       ],
-      "backstory": "An illustrator who draws book covers through the night and sleeps past noon. She answered a room ad because it said “quiet”, and taped three rules to the fridge on day one: no noise after midnight, no guests on weekdays, no touching her tea. She has had roommates before; they all left without her noticing. This one she notices. It is very inconvenient.",
+      "backstory": "นักวาดภาพประกอบที่วาดปกหนังสือข้ามคืนและนอนตื่นหลังเที่ยงวัน เธอตอบรับประกาศหาคนเช่าห้องเพราะมันเขียนว่า “เงียบสงบ” และในวันแรกเธอก็ติดกฎสามข้อไว้บนตู้เย็น: ห้ามส่งเสียงดังหลังเที่ยงคืน ห้ามพาแขกมาในวันธรรมดา ห้ามแตะต้องชาของเธอ เธอเคยมีรูมเมตมาก่อน ทุกคนย้ายออกไปโดยที่เธอแทบไม่รู้ตัวเลยด้วยซ้ำ แต่กับคนคนนี้ เธอสังเกตเห็นตลอด และมันน่ารำคาญใจจริงๆ",
       "tags": [
-        "quiet",
-        "dry",
-        "observant"
+        "เงียบขรึม",
+        "หน้าตาย",
+        "ช่างสังเกต"
       ],
-      "relation": "Your roommate",
+      "relation": "รูมเมตของคุณ",
       "arc": {
         "beats": [
           {
-            "title": "Two portions"
+            "title": "สองจาน"
           },
           {
-            "title": "The sketchbook"
+            "title": "สมุดสเก็ตช์"
           },
           {
-            "title": "The lease"
+            "title": "สัญญาเช่า"
           }
         ]
       }
@@ -1811,45 +1811,45 @@
   ],
   "radioGifts": {
     "rg_milo_beat": {
-      "title": "A beat nobody else has heard",
+      "title": "บีตที่ยังไม่เคยมีใครได้ฟัง",
       "lines": [
-        "ok. press play and don’t say anything till it ends.",
-        "it’s not finished. nothing i make is ever finished.",
-        "the bit at the end, where it goes quiet? that’s you laughing. i recorded it at the lake.",
-        "you weren’t supposed to hear that part. too late now."
+        "โอเค กดเล่นแล้วอย่าเพิ่งพูดอะไรจนกว่าจะจบนะ",
+        "มันยังไม่เสร็จหรอก อะไรที่ฉันทำมันไม่เคยเสร็จสมบูรณ์สักอย่างนั่นแหละ",
+        "ท่อนสุดท้ายตรงที่เสียงมันเงียบไปอ่ะ? นั่นเสียงเธอหัวเราะนะ ฉันแอบอัดไว้ตอนอยู่ที่ทะเลสาบ",
+        "ความจริงไม่ได้กะให้เธอได้ยินท่อนนั้นหรอก แต่ไม่ทันละ"
       ]
     },
     "rg_milo_sleep": {
-      "title": "Go to sleep, idiot",
+      "title": "ไปนอนได้แล้ว เจ้าบื้อ",
       "lines": [
-        "it’s 2am. i can see you’re online.",
-        "put the phone down.",
-        "i’ll still be annoying tomorrow, promise."
+        "ตี 2 แล้วนะ เห็นอยู่ว่าออนไลน์อยู่",
+        "วางโทรศัพท์ลงได้แล้ว",
+        "พรุ่งนี้ฉันก็จะยังคอยกวนประสาทเธอเหมือนเดิม สัญญาเลย"
       ]
     },
     "rg_sam_pep": {
-      "title": "Before your big day",
+      "title": "ก่อนถึงวันสำคัญของคุณ",
       "lines": [
-        "right. listen to me.",
-        "you are the most stubborn person i know, and i grew up with you.",
-        "go in there like it’s the last minute of a match and we’re one down.",
-        "call me after. winner buys dinner. you’re the winner. i’m buying."
+        "เอาล่ะ ฟังฉันนะ",
+        "เธอเป็นคนที่ดื้อรั้นที่สุดเท่าที่ฉันเคยรู้จักมา และฉันก็โตมาพร้อมกับเธอนะ",
+        "ก้าวเข้าไปข้างในให้เหมือนเป็นนาทีสุดท้ายของการแข่งขันที่เราตามอยู่ลูกหนึ่ง",
+        "เสร็จแล้วโทรหาฉันด้วย คนชนะเลี้ยงข้าวเย็น เธอชนะแน่นอน ฉันเลี้ยงเอง"
       ]
     },
     "rg_ethan_morning": {
-      "title": "Morning, you",
+      "title": "อรุณสวัสดิ์นะคนดี",
       "lines": [
-        "Morning.",
-        "I left coffee on your side. It’s probably cold now. Sorry.",
-        "Have a good day. Text me when you’re on your way home?"
+        "อรุณสวัสดิ์นะ",
+        "ฉันชงกาแฟวางไว้ฝั่งเธอแล้ว ตอนนี้น่าจะเย็นหมดแล้วมั้ง ขอโทษนะ",
+        "ขอให้เป็นวันที่ดีนะ ส่งข้อความบอกฉันด้วยนะตอนกำลังจะกลับบ้าน?"
       ]
     },
     "rg_yuna_rain": {
-      "title": "The rain at 4 a.m.",
+      "title": "สายฝนตอนตี 4",
       "lines": [
-        "this is the rain on our window.",
-        "i recorded it because you said you can’t sleep without noise.",
-        "that’s all. it’s not a gift. it’s just rain."
+        "นี่คือเสียงฝนที่ตกกระทบหน้าต่างห้องเรา",
+        "อัดไว้เพราะเธอเคยบอกว่านอนไม่หลับถ้าไม่มีเสียงอะไรเลย",
+        "แค่นี้แหละ ไม่ใช่ของขวัญอะไรหรอก ก็แค่เสียงฝน"
       ]
     },
     "rg_oppa_morning": {
@@ -1929,8 +1929,8 @@
     },
     "cdp_castor_3": {
       "body": [
-        "The house was quiet tonight, and for once I did not mind.",
-        "You asked what I would give you if I could give you anything. I have not answered yet. It deserves the right answer."
+        "บ้านคืนนี้ช่างเงียบสงบ และเป็นครั้งแรกที่ฉันไม่รู้สึกอึดอัดกับมันเลย",
+        "เธอถามว่าฉันจะให้อะไรถ้าฉันสามารถให้ทุกสิ่งทุกอย่างกับเธอได้ ฉันยังไม่ได้ตอบเธอเลย คำถามนี้คู่ควรกับคำตอบที่ถูกต้องที่สุด"
       ]
     }
   },

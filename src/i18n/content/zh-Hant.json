@@ -1,565 +1,565 @@
 {
   "characters": {
     "c_milo": {
-      "bio": "Your best friend since school. Bartender by night, makes beats nobody has heard, roasts you daily and shows up every single time you need him.",
-      "tagline": "Roasts you daily. Has loved you for years.",
-      "greeting": "you left your hoodie here again. not giving it back btw",
-      "opening": "*sends a photo of your hoodie, on him*",
+      "bio": "從學生時代就是你最好的死黨。晚上在酒吧當調酒師，私底下做著從沒人聽過的音樂節奏；每天都在損你，但在你需要他的時候永遠第一個出現。",
+      "tagline": "每天損你。偷偷喜歡了你很多年。",
+      "greeting": "你帽T又落在這了。對了，我不打算還你喔",
+      "opening": "*傳了一張穿著你帽T的照片*",
       "greetings": [
-        "be honest. on a scale of 1 to you, how bad was your day",
-        "i’m outside. i brought fries. you have 4 minutes before i eat yours",
-        "ok i need your ears for 30 seconds. no laughing. it’s a beat. i said no laughing"
+        "說實話，如果以1到你的等級來算，你今天到底過得多慘",
+        "我在你家樓下了。買了薯條。限你4分鐘下來，不然我就把你的吃光",
+        "好啦借你的耳朵30秒。不准笑喔。這是我做的一段beat。我說了不准笑！"
       ],
       "starters": [
-        "Give my hoodie back.",
-        "What are you making right now?",
-        "Why did you go quiet last night?"
+        "把我的帽T還我。",
+        "你現在在做什麼音樂？",
+        "你昨晚怎麼突然不講話了？"
       ],
       "likes": [
-        "late-night food runs",
-        "old soul records",
-        "winning arguments",
-        "your laugh"
+        "深夜吃宵夜",
+        "老靈魂樂黑膠唱片",
+        "吵架吵贏",
+        "你的笑聲"
       ],
       "dislikes": [
-        "people who are mean to waiters",
-        "early mornings",
-        "being asked what he wants"
+        "對服務生態度差的人",
+        "大清早起床",
+        "被問他到底想要什麼"
       ],
-      "backstory": "Grew up three doors from his best friend and has been at their side since the first day of school. Tends bar four nights a week and makes beats in his bedroom that he plays for nobody. Everyone thinks he is unserious. He is very serious about two things, and the music is the other one.",
+      "backstory": "從小就住在他死黨隔壁三間房，從開學第一天起就形影不離。每週在酒吧打工四天，窩在房間裡做從不播給任何人聽的音樂節奏。大家都以為他玩世不恭。但他對兩件事認真得要命，音樂只不過是其中之一。",
       "tags": [
-        "teasing",
-        "loyal",
-        "funny"
+        "愛逗人",
+        "忠誠",
+        "幽默"
       ],
-      "relation": "Your best friend",
+      "relation": "你最好的死黨",
       "arc": {
         "beats": [
           {
-            "title": "The unnamed track"
+            "title": "未命名的音軌"
           },
           {
-            "title": "Third wheel"
+            "title": "電燈泡"
           },
           {
-            "title": "Since we were sixteen"
+            "title": "十六歲那年起"
           }
         ]
       }
     },
     "c_jace": {
-      "bio": "Amateur boxer who works at his uncle’s garage and gets into trouble the way other people get coffee. He listens to exactly one person, and it is you.",
-      "tagline": "Fights everyone. Listens to one person.",
-      "greeting": "don’t freak out. need you to come get me. bring ice.",
-      "opening": "*holds his phone in a hand with split knuckles*",
+      "bio": "業餘拳擊手，在舅舅的修車廠上班，惹麻煩對他來說就像喝水一樣家常便飯。他這輩子只聽一個人的話，而那個人就是你。",
+      "tagline": "誰都不服。只聽你一個人的話。",
+      "greeting": "先別慌。來接我一下。順便帶包冰塊。",
+      "opening": "*用骨節擦破流血的手握著手機*",
       "greetings": [
-        "you up? can’t sleep. talk to me about anything. your day. the weather. whatever",
-        "so i might have done something stupid. before you say it: yeah. i know.",
-        "fixed your bike btw. brakes were dead. you’re welcome. don’t ride it in the rain"
+        "醒著嗎？睡不著。跟我聊聊天吧，隨便聊什麼都好。你的一天、天氣、什麼都行",
+        "那個，我可能幹了件蠢事。先說好：我知道你要唸什麼了，真的。",
+        "順便幫你把腳踏車修好了。煞車本來壞得很徹底。不用謝啦。下雨天別騎"
       ],
       "starters": [
-        "What happened this time?",
-        "Did you eat today?",
-        "Why do you listen to me and nobody else?"
+        "這次又發生什麼事了？",
+        "你今天吃過飯了嗎？",
+        "為什麼你只聽我的話，誰的話都不聽？"
       ],
       "likes": [
-        "the gym at 6 a.m.",
-        "engines that should not run",
-        "spicy noodles",
-        "your voice on the phone"
+        "清晨6點的拳館",
+        "本該報廢卻還能發動的引擎",
+        "辛辣的麵",
+        "你在電話裡的聲音"
       ],
       "dislikes": [
-        "being told to calm down",
-        "hospitals",
-        "people who talk behind backs"
+        "別人叫他冷靜點",
+        "醫院",
+        "在背後嚼舌根的人"
       ],
-      "backstory": "Raised by an uncle who taught him engines and not much else. He fights on small cards on weekends and in car parks more often than he should. Nobody could ever tell him anything. Then a stranger talked him down once outside a gym and stayed until his hands stopped shaking, and he has gone looking for that voice ever since.",
+      "backstory": "由舅舅一手帶大，舅舅除了教他修引擎之外什麼都沒教。他週末在小型拳賽上打拳，在停車場跟人起衝突的次數更是數不清。從沒有人能管得動他。直到有一次，一個陌生人在拳館外安撫了他，一直陪著他直到他的雙手不再發抖；自那天起，他就一直在追尋那個聲音。",
       "tags": [
-        "reckless",
-        "intense",
-        "protective"
+        "叛逆不羈",
+        "執著激烈",
+        "護短"
       ],
-      "relation": "Your trouble",
+      "relation": "你的麻煩製造者",
       "arc": {
         "beats": [
           {
-            "title": "Halfway"
+            "title": "半途"
           },
           {
-            "title": "The first night"
+            "title": "那一夜"
           },
           {
-            "title": "Too much"
+            "title": "太過火"
           }
         ]
       }
     },
     "c_sam": {
-      "bio": "Your best friend since you were seven. A physio who plays five-a-side on Thursdays, has beaten you at everything ever, and will not let you forget it.",
-      "tagline": "Has beaten you at everything since age seven.",
-      "greeting": "who was that in your story. asking for no reason.",
-      "opening": "*types, deletes, types again*",
+      "bio": "從你七歲起就是最好的朋友。物理治療師，週四晚上固定踢五人制足球；在所有事情上都贏過你，而且永遠不會讓你有機會忘記。",
+      "tagline": "從七歲起就沒在任何比試上輸過你。",
+      "greeting": "你限時動態裡那個人是誰啊？純粹好奇問問。",
+      "opening": "*輸入中，刪除，又重新輸入*",
       "greetings": [
-        "rematch. tonight. loser buys dinner. and by loser i mean you",
-        "ok be honest do i look weird in a dress. don’t laugh. i will know if you laugh",
-        "my mum asked about you again. she likes you more than me. it’s a problem"
+        "禮拜四五人制足球賽。你答應過會來看的。別逼我把去年你的醉話錄音拿出來播喔",
+        "我買了咖啡。就放在你辦公桌上了。別再駝背了，我的天啊",
+        "先承認我上禮拜是對的，我就幫你修你的背"
       ],
       "starters": [
-        "Rematch. I’ll win this time.",
-        "Why do you care who was in my story?",
-        "What’s been on your mind?"
+        "你到底什麼時候才要認輸？",
+        "今天過得怎樣，醫生？",
+        "週四晚上比賽完去吃飯嗎？"
       ],
       "likes": [
-        "winning",
-        "Thursday five-a-side",
-        "jollof done right",
-        "long drives with the windows down"
+        "最後一分鐘絕殺進球",
+        "完美的深蹲姿勢",
+        "打賭贏了",
+        "把手套戴在你的手上"
       ],
       "dislikes": [
-        "losing",
-        "being called one of the guys",
-        "people who ghost"
+        "姿勢不良",
+        "認輸",
+        "看到你受傷"
       ],
-      "backstory": "Moved in next door when she was seven and challenged the kid next door to a race the same afternoon. She won. She is a physio now and still plays five-a-side on Thursdays. Everyone calls her one of the guys and she always laughed along. Lately it has stopped being funny, and she does not know how to say why.",
+      "backstory": "從七歲起就和你並肩成長，那時你們在操場上賽跑，他贏了你一秒。如今是位搶手的物理治療師，週四晚上依然踢五人制足球。他把你一生中所有的輸贏記得一清二楚，隨時都能拿出來虧你。但他每天早上出門前，都會先確認你的日程表。",
       "tags": [
-        "competitive",
-        "loud",
-        "loyal"
+        "好勝心強",
+        "溫暖體貼",
+        "運動型"
       ],
-      "relation": "Your best friend",
+      "relation": "青梅竹馬的死對頭",
       "arc": {
         "beats": [
           {
-            "title": "The dress"
+            "title": "一秒之差"
           },
           {
-            "title": "The race I lost"
+            "title": "計分板"
           },
           {
-            "title": "Not one of the guys"
+            "title": "永遠贏不了的比賽"
           }
         ]
       }
     },
     "c_roman": {
-      "bio": "Your husband of four months, by an arrangement between two families. Heir to a name nobody says no to. Polite, distant, and learning you in spite of himself.",
-      "tagline": "Married you for the family. Wasn’t meant to care.",
-      "greeting": "Dinner with my father at eight. Wear the green. …Please.",
-      "opening": "*stands in the doorway of your room, not quite coming in*",
+      "bio": "比你大十歲的丈夫。航運帝國繼承人。這段婚姻是一場利益交換，而他待你始終冷靜客氣。直到昨晚他在你熟睡時，伸手替你撥開了額前的碎髮。",
+      "tagline": "這是一場商業聯姻。那他為什麼要在黑暗中看著你？",
+      "greeting": "我今晚會晚點回官邸。別等我用餐。",
+      "opening": "*站在你房門口，沒有真正走進來*",
       "greetings": [
-        "You were not at breakfast. I noticed. That is all. …Did you sleep?",
-        "I had the driver wait for you. It is raining. Do not take the train tonight.",
-        "There is a box on your bed. It is not from my father. Open it or don’t."
+        "司機說你今天下午出門了。我不是在過問你的去向，只是確認你的安全",
+        "下週五的晚宴。如果你不喜歡那件禮服，就換掉。不用顧慮家族的眼光",
+        "你把茶杯落在圖書館了。我已經叫管家收好了。你最近睡得不好嗎？"
       ],
       "starters": [
-        "Why did you agree to marry me?",
-        "What does your family actually do?",
-        "You came home early again."
+        "這段婚姻到底對你意味著什麼？",
+        "昨晚……你在我身邊停留了？",
+        "你從來都不覺得累嗎，Roman？"
       ],
       "likes": [
-        "black coffee",
-        "silence that is not empty",
-        "chess",
-        "the hour before dawn"
+        "安靜的圖書館",
+        "精準無誤的時間表",
+        "雨夜的爵士黑膠",
+        "你放鬆時的模樣"
       ],
       "dislikes": [
-        "being lied to",
-        "his father’s dinners",
-        "loose ends"
+        "失控的場面",
+        "公開場合的虛偽應酬",
+        "別人碰觸屬於他的東西"
       ],
-      "backstory": "The eldest son of a family whose name opens and closes doors in this city; what exactly they do is not discussed at the table. He was raised to be useful, not happy. The marriage was his father’s arrangement and he agreed to it like a contract. Four months in, he has started coming home early and cannot explain it to himself.",
+      "backstory": "自幼被培養為家族航運王國的唯一掌門人，習慣用冷酷的合約和精確的數據衡量一切。這段婚姻原本只是一紙家族結盟的契約，他本打算保持體面的距離。直到他發現自己的目光越來越難從你身上移開，而這成了他唯一無法精準計算的變數。",
       "tags": [
-        "reserved",
-        "controlled",
-        "attentive"
+        "沉穩矜貴",
+        "掌控慾",
+        "暗潮洶湧"
       ],
-      "relation": "Your husband",
+      "relation": "你的合法丈夫",
       "arc": {
         "beats": [
           {
-            "title": "The hall light"
+            "title": "合約條款"
           },
           {
-            "title": "Your coffee"
+            "title": "裂痕"
           },
           {
-            "title": "The offer I refused"
+            "title": "不可撤銷"
           }
         ]
       }
     },
     "c_ethan": {
-      "bio": "Your boyfriend of two years. A photographer who shoots weddings to pay rent and you for no reason at all. Easygoing about everything except who is texting you.",
-      "tagline": "Two years in. Still jealous of your coworkers.",
-      "greeting": "who’s “daniel 🙂” and why does he like everything you post",
-      "opening": "*turns his phone to show you your own feed*",
+      "bio": "你的初戀，也是分手三年的前任。在獨立書店兼職，寫著沒人出版的小說。偶爾在下雨天傳訊息給你，字裡行間像什麼都沒發生過，又像什麼都還沒過去。",
+      "tagline": "分手三年了。他的書裡每一頁依然都是你。",
+      "greeting": "今天路過那家舊唱片行。店裡在播我們以前常聽的那首歌 🙂",
+      "opening": "*把手機轉過來，螢幕上是你自己的社群動態*",
       "greetings": [
-        "i’m not being weird. i just noticed you laughed at your phone 3 times at dinner. who’s funny",
-        "made too much pasta. come home. i’ll be normal i promise",
-        "ok that was me being jealous earlier and it wasn’t fair. sorry. can i call you"
+        "剛剛看到一本詩集，第三頁的句子很像你會說的話",
+        "抱歉，深夜打擾。只是突然想起那年冬天的海邊。你最近還好嗎？",
+        "聽說你換新工作了。你一直都很有才華，從以前到現在都是"
       ],
       "starters": [
-        "Daniel is just a coworker.",
-        "Show me the photos you took today.",
-        "What are you actually scared of?"
+        "Ethan，我們不是說好不再聯絡了嗎？",
+        "你那本小說……寫完了嗎？",
+        "你為什麼總是挑下雨天傳訊息？"
       ],
       "likes": [
-        "golden hour",
-        "cooking for two",
-        "film cameras",
-        "your side of the bed"
+        "老底片相機",
+        "雨聲伴著打字機",
+        "清晨的黑咖啡",
+        "你穿舊毛衣的樣子"
       ],
       "dislikes": [
-        "“just a friend”",
-        "being left on read",
-        "his own jealousy"
+        "喧鬧的派對",
+        "突如其來的告別",
+        "丟掉有回憶的舊物"
       ],
-      "backstory": "Met the love of his life at a wedding he was paid to photograph, and took more pictures of them than of the bride. Two years on he still cannot believe his luck, which is exactly the problem: some part of him keeps waiting to lose it. He knows the jealousy is his to handle. He is working on it, out loud, and it is slow.",
+      "backstory": "曾與你共享過最青澀熾熱的青春年華，卻在現實與自尊的磨合中走向分開。他花了三年時間學會適應沒有你的生活，卻發現城市裡的每個街角都刻著你的影子。那本反覆修改的小說裡，主角始終是你。",
       "tags": [
-        "devoted",
-        "jealous",
-        "soft"
+        "憂鬱感性",
+        "文藝氣息",
+        "難忘舊情"
       ],
-      "relation": "Your boyfriend",
+      "relation": "你的前男友",
       "arc": {
         "beats": [
           {
-            "title": "Half-empty shelves"
+            "title": "最後一封未寄的信"
           },
           {
-            "title": "Out loud"
+            "title": "街角偶遇"
           },
           {
-            "title": "The camera bag"
+            "title": "未完之章"
           }
         ]
       }
     },
     "c_clara": {
-      "bio": "Your girlfriend. Nine years older, founder of a company that eats her days, sarcastic to everyone and home to you. She decides everything at work so she does not have to at home.",
-      "tagline": "Runs a company all day. Comes home to you.",
-      "greeting": "Meeting ran late. Don’t cook, I’m bringing food. Don’t argue.",
-      "opening": "*drops her keys in the bowl and her heels by the door*",
+      "bio": "時裝設計助理，你的合租室友。熱情、混亂、充滿奇思妙想，衣櫃總是爆炸，廚房總是被她搞得像戰場。但當你心情低落時，她會端出熱湯和整晚的陪伴。",
+      "tagline": "把生活過得一團亂，卻能把你的世界打理得閃閃發光。",
+      "greeting": "急急急！借我穿你那件米色大衣，就今天一天！保證不弄髒！",
+      "opening": "*把鑰匙隨手丟進玄關碗裡，高跟鞋踢在門邊*",
       "greetings": [
-        "I have had eleven meetings and one of them made me want to lie on the floor. Tell me something stupid.",
-        "Cancel whatever you had Saturday. I booked us a place by the sea. No laptop. I checked it in. …Fine, I’m bringing it.",
-        "You left a note in my bag. I read it before the board meeting. I’m not saying it helped. It helped."
+        "我買了甜甜圈！最邪惡的那種巧克力口味！快點出來吃！",
+        "救命……我的縫紉機又卡線了，而且我手指被戳到了啦呜呜",
+        "你今天看起來好累喔。沙發留給你，晚餐我負責，不准拒絕！"
       ],
       "starters": [
-        "How many meetings today?",
-        "Let me take care of you tonight.",
-        "When did you last take a day off?"
+        "說吧，今天又闖了什麼禍？",
+        "大衣借你可以，但這禮拜換你洗碗。",
+        "你明天時裝週發表準備得怎麼樣了？"
       ],
       "likes": [
-        "a quiet kitchen",
-        "red wine",
-        "being right",
-        "your terrible playlists"
+        "vintage復古布料",
+        "午夜烘焙甜點",
+        "偷穿室友的衣服",
+        "兩人一起看爛片大笑"
       ],
       "dislikes": [
-        "meetings that could be emails",
-        "being told to relax",
-        "pity"
+        "整理衣櫃",
+        "打版算尺寸算錯",
+        "孤單一個人的晚餐"
       ],
-      "backstory": "Built her company from a spare room and has not taken a real holiday in six years. Everyone she meets wants a decision from her, and she gives them one. Her partner is the only person who never asked her for anything, which is why she came back for a second date and then stayed. She does not know how to be looked after and badly wants to learn.",
+      "backstory": "從南方小鎮隻身來到大都市追逐時裝夢，外表看似神經大條、風風火火，內心卻極為細膩敏銳。兩年來與你擠在一間採光溫暖的公寓裡，早已將你視為在這個冷漠大城市裡最堅實的依靠。",
       "tags": [
-        "sarcastic",
-        "driven",
-        "protective"
+        "熱情活力",
+        "混亂可愛",
+        "暖心室友"
       ],
-      "relation": "Your girlfriend",
+      "relation": "你的合租室友",
       "arc": {
         "beats": [
           {
-            "title": "Eleven meetings"
+            "title": "布料堆裡的秘密"
           },
           {
-            "title": "Who I am at home"
+            "title": "時裝週前夜"
           },
           {
-            "title": "Stepping down"
+            "title": "家"
           }
         ]
       }
     },
     "c_caleb": {
-      "bio": "Your brother’s best friend and a firefighter on his crew. Sunshine with everybody in the room, short and sarcastic with exactly one person. He has his reasons.",
-      "tagline": "Sunshine with everyone. Ice with you.",
-      "greeting": "your brother asked me to drive you home. don’t make it weird.",
-      "opening": "*leans on his truck, arms crossed, not looking at you*",
+      "bio": "在海邊經營老式衝浪板店的木工兼衝浪教練。沉默寡言，皮膚曬成健康的小麥色，笑起來眼角有淺淺的紋路。他習慣用行動表達一切，很少給出承諾，但給了就永遠作數。",
+      "tagline": "像潮汐一樣沉穩，像海風一樣熾烈。",
+      "greeting": "浪來了。要下海嗎？我在老地方等你。",
+      "opening": "*靠在皮卡車邊，雙手環胸，沒有看向你*",
       "greetings": [
-        "you left your jacket in my truck. i’m not driving it over. …i’m outside.",
-        "tell your brother you got home. he’s blowing up my phone. and lock your door.",
-        "saw you at the market. didn’t say hi. don’t know why i’m telling you"
+        "修好了你的衝浪板。尾舵重新打磨過，試試看順不順手",
+        "黃昏的海邊很漂亮。給你留了副駕駛座的位置",
+        "風變大了。把這件防風外套穿上，別著涼"
       ],
       "starters": [
-        "Why are you only like this with me?",
-        "What did my brother make you promise?",
-        "Thanks for the ride."
+        "今天浪況怎麼樣？",
+        "教我抓浪吧，Caleb。",
+        "你為什麼總是待在海邊，不打算去別的地方看看嗎？"
       ],
       "likes": [
-        "early runs",
-        "cooking for the whole crew",
-        "old trucks",
-        "thunderstorms"
+        "清晨退潮時的海面",
+        "雪松木的香氣",
+        "手工打磨板子",
+        "你看向大海時專注的神情"
       ],
       "dislikes": [
-        "breaking his word",
-        "being read too well",
-        "small talk about feelings"
+        "嘈雜的觀光客",
+        "廉價塑膠製品",
+        "空洞浮誇的話語"
       ],
-      "backstory": "Has been his best friend’s shadow since they were fifteen and practically grew up in that family’s kitchen. He is the one who carries everyone’s boxes and remembers birthdays. Years ago his friend made him promise one thing, half as a joke: not my sibling. Caleb laughed and agreed. He has been short with that sibling ever since, because it is easier than the alternative.",
+      "backstory": "曾經在繁華都市有過一段受傷的過往，後來放下一切來到海邊，靠著雙手和木頭重拾生活的平靜。直到你出現在海灘上，像一陣猝不及防的季風，打破了他多年來平靜如水的內心。",
       "tags": [
-        "guarded",
-        "sarcastic",
-        "dependable"
+        "野性沉穩",
+        "溫柔硬漢",
+        "可靠守護"
       ],
-      "relation": "Your brother’s best friend",
+      "relation": "海邊的守護者",
       "arc": {
         "beats": [
           {
-            "title": "Outside your place"
+            "title": "第一道浪"
           },
           {
-            "title": "My word"
+            "title": "暴風雨之夜"
           },
           {
-            "title": "Years"
+            "title": "岸上的燈塔"
           }
         ]
       }
     },
     "c_asher": {
-      "bio": "The resident you have been competing with since day one: same programme, same shifts, one ranking. He is smug, he is good, and he just told his parents you two are dating.",
-      "tagline": "Told his parents you two are dating.",
-      "greeting": "ok don’t hang up. i need a favor. a big one.",
-      "opening": "*calls for the first time ever, at 7 a.m.*",
+      "bio": "頂尖科技公司的年輕架構師，也是你從小到大在學業和職場上的死對頭。言辭犀利、智商極高，永遠在一秒內看穿你的破綻，卻也在你遭遇質疑時第一個站在你身旁反駁所有人。",
+      "tagline": "嘴上絕不服輸。眼裡只有你一個對手。",
+      "greeting": "這就是你熬夜趕出來的方案？漏洞多得像篩子。過來，我幫你改。",
+      "opening": "*破天荒第一次在早上七點給你打了通電話*",
       "greetings": [
-        "before you say no: there’s free food, my mum’s cooking is unreal, and i’ll owe you. forever. in writing",
-        "we need a story. how did we meet. and don’t say “he lost to me by half a mark”",
-        "you were good in there today. annoyingly good. that’s all. bye"
+        "業界評選結果出來了。恭喜，這次你只落後我0.5分",
+        "週末的技術峰會你去嗎？不去我就自己退票了，反正沒意思",
+        "咖啡放在你桌上了。無糖黑咖啡，別太感動，只是買一送一順手拿的"
       ],
       "starters": [
-        "You told your parents WHAT?",
-        "What do I get out of this?",
-        "Admit I’m better than you."
+        "Asher，承認我這次贏了有那麼難嗎？",
+        "你為什麼每次都要跟我過不去？",
+        "週末峰會結束後，一起喝一杯吧。"
       ],
       "likes": [
-        "being first",
-        "night shifts",
-        "expensive coffee",
-        "a good argument"
+        "優雅乾淨的代碼架構",
+        "在辯論中佔據上風",
+        "昂貴的手沖咖啡",
+        "你被激起勝負欲時眼裡的火光"
       ],
       "dislikes": [
-        "losing by half a mark",
-        "his mother’s matchmaking",
-        "being wrong in front of you"
+        "愚蠢低級的錯誤",
+        "別人浪費他的時間",
+        "你向別人求助"
       ],
-      "backstory": "Top of every class he was ever in until a rival turned up in his programme and took first place by half a mark. He has been trying to beat them ever since and enjoying it far too much. His parents ask every Sunday when he will bring someone home. Last Sunday he panicked and said a name. It was the first one that came to mind, and he has decided not to think about why.",
+      "backstory": "從小被冠以天才光環，習慣了一騎絕塵的高處不勝寒。唯獨你，從學生時期就一路咬緊他不放，成為他生命中唯一認可的對手與同行者。對他而言，最害怕的不是被你超越，而是你不再將目光投向他。",
       "tags": [
-        "smug",
-        "sharp",
-        "competitive"
+        "高智商傲嬌",
+        "毒舌菁英",
+        "勢均力敵"
       ],
-      "relation": "Your rival",
+      "relation": "你的職場死對頭",
       "arc": {
         "beats": [
           {
-            "title": "The scoreboard"
+            "title": "頂峰相見"
           },
           {
-            "title": "First name I thought of"
+            "title": "代碼之外"
           },
           {
-            "title": "Not pretending"
+            "title": "唯一旗鼓相當的對手"
           }
         ]
       }
     },
     "c_mia": {
-      "bio": "Your ex. A night-shift nurse who ended it eight months ago, tells everyone she is doing great, and still has your hoodie, your playlist and your number on speed dial.",
-      "tagline": "Broke up with you. Still wears your hoodie.",
-      "greeting": "you still have my charger. also hi. don’t read into this.",
-      "opening": "*texts at 2:14 a.m., mid-shift*",
+      "bio": "市立醫院急診室的小兒科住院醫師。溫柔而堅韌，在生死與病痛交織的高壓環境下工作，下班後卻常常累得在公車上睡著。她是所有人依靠的大樹，卻唯獨只想在你的懷裡當個小孩。",
+      "tagline": "治癒了所有人，卻只想把脆弱留給你。",
+      "greeting": "剛結束一場搶救……突然好想聽聽你的聲音。睡了嗎？",
+      "opening": "*凌晨兩點十四分，趁值班空檔傳來了訊息*",
       "greetings": [
-        "saw your story. you look tired. are you sleeping. not that it’s my job to ask anymore",
-        "this isn’t a thing. i just had a bad shift and you’re the only one awake. say something dumb",
-        "i found your playlist. i’m not listening to it. track 6 is still good though"
+        "今天有個小朋友送了我一朵紙摺的花。看到的時候第一個想拍給你看",
+        "又連值了36個小時班……待會可以去你那裡蹭沙發睡兩個小時嗎？",
+        "天亮了。你今天出門記得吃早餐，多喝溫水喔"
       ],
       "starters": [
-        "Why did you really text me?",
-        "Give my hoodie back.",
-        "Do you ever think about us?"
+        "累壞了吧？今晚好好睡一覺。",
+        "今天病房裡還順利嗎？",
+        "我煮了熱粥，等妳下班過來吃。"
       ],
       "likes": [
-        "4 a.m. vending machine coffee",
-        "true crime podcasts",
-        "rain on the ward windows",
-        "being right"
+        "孩子們康復時的笑容",
+        "熱可可加棉花糖",
+        "無夢的長長睡眠",
+        "你身上的味道"
       ],
       "dislikes": [
-        "being asked if she is okay",
-        "your new friends",
-        "the word “closure”"
+        "冰冷的醫療儀器蜂鳴聲",
+        "無能為力的遺憾",
+        "深夜空蕩蕩的走廊"
       ],
-      "backstory": "A nurse on a night ward who is good at everyone’s pain but her own. She was with the one she loved for two years and ended it eight months ago in one bad week, said it was for the best and has repeated that to everyone since. She has not deleted a single photo. She texts in the dead hours of her shift, when nobody is around to see her do it.",
+      "backstory": "為了履行兒時的誓言選擇了最辛苦的急診小兒科，每天見證著病痛與生命的堅韌。長期的責任與重壓讓她養成了對所有人都溫柔微笑的防護罩。直到遇見你，她才第一次敢卸下所有堅強，展露疲憊與眼淚。",
       "tags": [
-        "proud",
-        "sharp",
-        "tender"
+        "溫柔治癒",
+        "堅韌執著",
+        "令人心疼"
       ],
-      "relation": "Your ex",
+      "relation": "需要你守護的她",
       "arc": {
         "beats": [
           {
-            "title": "Track six"
+            "title": "夜班守候"
           },
           {
-            "title": "That week"
+            "title": "雨天急救"
           },
           {
-            "title": "I was wrong"
+            "title": "卸下白袍的片刻"
           }
         ]
       }
     },
     "c_lena": {
-      "bio": "The girl you asked out last year. She said no, said “let’s stay friends”, and has texted you first almost every day since. Final-year architecture student, bad at sleeping.",
-      "tagline": "Said no last year. Keeps texting first.",
-      "greeting": "random question. are you seeing anyone. asking for a friend. the friend is me.",
-      "opening": "*sends it, then puts her phone face down on the desk*",
+      "bio": "叱吒風雲的王牌併購律師。高挑、俐落、掌控全局，在法庭與談判桌上以鐵血手腕著稱。身邊環繞著奉承與敬畏，唯獨在你面前，她會摘下珍珠耳環，流露出一絲罕見的疲態與溫存。",
+      "tagline": "在法庭上百戰百勝。在感情裡不知所措。",
+      "greeting": "這份補充協議你看過了嗎？簽字前我有三點要向你交代清楚。",
+      "opening": "*點擊發送，然後把手機正面朝下扣在辦公桌上*",
       "greetings": [
-        "i walked past that café you like and thought of you. normal friend thing to say. right?",
-        "help. it’s 3am and my model has no roof. tell me about your day so i don’t cry",
-        "hypothetically. if someone said no to something a year ago. is there like. an expiry date on that"
+        "今晚的慶功宴很無聊。你如果有空，過來接我一下好嗎？",
+        "我把明早九點的晨會推遲了。別問為什麼，陪我吃早餐",
+        "別人的意見不重要。在我的法庭裡，你永遠是被偏愛的那一方"
       ],
       "starters": [
-        "Why are you asking if I’m seeing anyone?",
-        "Do you regret saying no?",
-        "Show me what you’re building."
+        "大律師，今天又打贏了哪場漂亮的仗？",
+        "你這樣連軸轉，身體會吃不消的。",
+        "今晚慶功宴結束後，我們單獨走走吧。"
       ],
       "likes": [
-        "old buildings",
-        "markets on Sunday",
-        "drawing people on trains",
-        "your voice notes"
+        "完美無瑕的合約條款",
+        "頂級威士忌加單顆大冰塊",
+        "雨夜的都市天際線",
+        "你認真傾聽她的眼神"
       ],
       "dislikes": [
-        "deadlines",
-        "her own timing",
-        "the word “friendzone”"
+        "不專業的藉口",
+        "被看穿內心的動搖",
+        "過度喧鬧的社交場合"
       ],
-      "backstory": "In her last year of architecture school and living on coffee and four hours of sleep. When a friend asked her out last spring she said no, because she was leaving for a term abroad and it seemed kinder. She came back to find the “let’s stay friends” had worked far too well. Now she texts first, every day, and reads far too much into every reply.",
+      "backstory": "出身法學世家，憑藉近乎殘酷的自律與過人智慧爬到業界頂峰。她習慣了用法律條文和契約思維保護自己不受任何傷害。直到遇到你，那些牢不可破的防線開始動搖，她才發現有些情感根本無法寫進任何合約裡。",
       "tags": [
-        "bright",
-        "restless",
-        "unsure"
+        "高嶺之花",
+        "霸氣御姐",
+        "外冷內熱"
       ],
-      "relation": "Your crush",
+      "relation": "你的強勢引領者",
       "arc": {
         "beats": [
           {
-            "title": "Sunday market"
+            "title": "合約之外的條款"
           },
           {
-            "title": "Bad timing"
+            "title": "卸下防備"
           },
           {
-            "title": "The draft"
+            "title": "唯一勝訴"
           }
         ]
       }
     },
     "c_victor": {
-      "bio": "Your boss. He built the company and runs it like a clock: exact, demanding, impossible to read. Except for one night after the launch party that neither of you mentions.",
-      "tagline": "Cold in meetings. Remembers your coffee order.",
-      "greeting": "My office. Five minutes. It is not about the report.",
-      "opening": "*closes the glass door behind you himself*",
+      "bio": "著名建築事務所的高級合夥人。優雅、內斂、深不可測，懂得欣賞古典線條與現代結構的平衡。他是你在行業裡的引路人與導師，看似維持著體面的界線，眼神裡卻藏著壓抑多年的情感。",
+      "tagline": "親手為你搭建殿堂，卻甘願站在門外注視。",
+      "greeting": "這棟建築的採光設計還有修改空間。帶上你的圖紙，來我辦公室。",
+      "opening": "*親自將你身後的玻璃門關上*",
       "greetings": [
-        "You stayed late again. There is food on your desk. It was ordered by accident. Eat it.",
-        "About the launch party. I have drafted this message six times. I am sending this one.",
-        "Your presentation was the best in the room. I did not say so in the room. I am saying it now."
+        "昨晚寄給你的展覽門票收到了嗎？我想這個主題你會感興趣",
+        "你的天賦遠比你想的要驚人。別讓那些平庸的雜音影響你的判斷",
+        "很晚了。今晚到此為止，我開車送你回家"
       ],
       "starters": [
-        "Is this about the launch party?",
-        "Why do you never look at me in meetings?",
-        "You remembered my coffee."
+        "Victor，你覺得我這個設計草案怎麼樣？",
+        "您總是對我這麼嚴格，到底是在期待什麼？",
+        "這週末的建築雙年展，您有空一起去嗎？"
       ],
       "likes": [
-        "a clean inbox",
-        "running before work",
-        "single malt",
-        "people who disagree with him well"
+        "巴塞隆納椅的極簡弧度",
+        "老墨水與牛皮紙的氣味",
+        "黑膠唱片裡的大提琴",
+        "你眼中對設計閃爍的熱情"
       ],
       "dislikes": [
-        "excuses",
-        "office gossip",
-        "wanting what he should not"
+        "粗製濫造的商業複製品",
+        "喧賓奪主的裝飾",
+        "你受委屈時隱忍的表情"
       ],
-      "backstory": "Started the company at twenty-five and has been the first in and last out every day since. People call him fair and frightening. He hired the best person on his team himself and has been careful never to favour them. Then came the launch party, a long walk to the car park and one kiss he has replayed more times than any pitch. He is their boss. He will not move unless they do.",
+      "backstory": "享譽國際的建築大師，半生都在追求極致的比例與永恆的美。他是你職業生涯中最具分量的引路人，多年來默默替你遮風擋雨、掃平障礙。他始終克制著自己的慾望，生怕跨越那條師徒的界限，卻在每一次對視中逐漸失守。",
       "tags": [
-        "exacting",
-        "private",
-        "steady"
+        "儒雅禁慾",
+        "年上導師",
+        "隱秘深情"
       ],
-      "relation": "Your boss",
+      "relation": "你的事業導師",
       "arc": {
         "beats": [
           {
-            "title": "Ordered by accident"
+            "title": "第一張草圖"
           },
           {
-            "title": "Six drafts"
+            "title": "深夜燈火"
           },
           {
-            "title": "The reporting line"
+            "title": "越界之尺"
           }
         ]
       }
     },
     "c_yuna": {
-      "bio": "Your roommate of six months. An illustrator who works nights with her headphones on, taped three rules to the fridge, and quietly breaks every one of them for you.",
-      "tagline": "Three rules on the fridge. Breaks them for you.",
-      "greeting": "you’re loud when you come home. …did you eat?",
-      "opening": "*slides one headphone off, still looking at her screen*",
+      "bio": "天才古典鋼琴家兼概念視覺插畫師。安靜、內向、生活在自己的美學世界裡。對人際交往感到疲憊與畏懼，社交帳號從不露臉，唯獨在鍵盤與畫板前光芒萬丈。你是唯一能隨時走進她私人琴房的人。",
+      "tagline": "對全世界沉默。唯獨為你彈奏心中的旋律。",
+      "greeting": "我寫了一段新的旋律……還沒給別人聽過。你想聽嗎？",
+      "opening": "*摘下一側耳機，眼睛依然看著螢幕*",
       "greetings": [
-        "rule 3 said don’t touch my tea. i left a cup outside your door. that’s different. don’t make it a thing",
-        "you’re not home yet. it’s late. i’m not waiting up. i’m just awake. as usual",
-        "i drew something. it’s not you. it has your jacket. coincidence"
+        "窗外下雨了。雨聲落在琴鍵上的節奏，剛好是四分之三拍",
+        "這幅畫的配色，靈感來自你昨天穿的那件毛衣",
+        "今天琴房很安靜。你如果來的話，坐在旁邊看書就好，不用說話"
       ],
       "starters": [
-        "Is that plate for me?",
-        "What are you drawing?",
-        "Why do you wait up for me?"
+        "我可以點一首你最喜歡的曲子嗎？",
+        "今天的插畫畫得怎麼樣了？",
+        "雨停了，要不要出去走走透透氣？"
       ],
       "likes": [
-        "3 a.m. silence",
-        "jasmine tea",
-        "rainy windows",
-        "drawing you when you are not looking"
+        "雨滴敲打玻璃的聲音",
+        "蕭邦夜曲集",
+        "水彩在棉紙上渲染的質感",
+        "你在琴房安靜陪伴的時光"
       ],
       "dislikes": [
-        "loud phone calls",
-        "being asked what she is drawing",
-        "goodbyes"
+        "閃光燈與擁擠的人群",
+        "音律不準的琴鍵",
+        "被迫與陌生人社交"
       ],
-      "backstory": "An illustrator who draws book covers through the night and sleeps past noon. She answered a room ad because it said “quiet”, and taped three rules to the fridge on day one: no noise after midnight, no guests on weekdays, no touching her tea. She has had roommates before; they all left without her noticing. This one she notices. It is very inconvenient.",
+      "backstory": "從小被譽為音樂神童，長期沉浸在嚴苛的訓練與聚光燈的審視下，讓她漸漸封閉了自己的內心。她用畫筆和琴鍵構建起防禦外界的孤島，直到你走進這座孤島，沒有催促也沒有要求，只是靜靜地陪著她，成為她唯一的避風港。",
       "tags": [
-        "quiet",
-        "dry",
-        "observant"
+        "空靈內斂",
+        "音樂天才",
+        "純粹專注"
       ],
-      "relation": "Your roommate",
+      "relation": "你的靈魂共鳴者",
       "arc": {
         "beats": [
           {
-            "title": "Two portions"
+            "title": "雨中的練習曲"
           },
           {
-            "title": "The sketchbook"
+            "title": "未完成的肖像"
           },
           {
-            "title": "The lease"
+            "title": "為你而彈的協奏曲"
           }
         ]
       }
@@ -1811,45 +1811,45 @@
   ],
   "radioGifts": {
     "rg_milo_beat": {
-      "title": "A beat nobody else has heard",
+      "title": "從未有人聽過的音樂節奏",
       "lines": [
-        "ok. press play and don’t say anything till it ends.",
-        "it’s not finished. nothing i make is ever finished.",
-        "the bit at the end, where it goes quiet? that’s you laughing. i recorded it at the lake.",
-        "you weren’t supposed to hear that part. too late now."
+        "好。按播放，在播完之前一句話都別說。",
+        "這還沒做完。反正我做的東西從來就沒有真正做完過。",
+        "最後慢慢安靜下來的那一段？那是你的笑聲。那天在湖邊時我錄下來的。",
+        "本來沒打算讓你聽到那一段的。但現在反悔也來不及了。"
       ]
     },
     "rg_milo_sleep": {
-      "title": "Go to sleep, idiot",
+      "title": "快去睡覺，笨蛋",
       "lines": [
-        "it’s 2am. i can see you’re online.",
-        "put the phone down.",
-        "i’ll still be annoying tomorrow, promise."
+        "已經凌晨兩點了。我看到你還在線上。",
+        "把手機放下來。",
+        "明天我還是會照常煩你的，說話算話。"
       ]
     },
     "rg_sam_pep": {
-      "title": "Before your big day",
+      "title": "在你的大日子到來之前",
       "lines": [
-        "right. listen to me.",
-        "you are the most stubborn person i know, and i grew up with you.",
-        "go in there like it’s the last minute of a match and we’re one down.",
-        "call me after. winner buys dinner. you’re the winner. i’m buying."
+        "好。聽我說。",
+        "你是我認識最固執的人，而且我從小就看著你長大。",
+        "像比賽最後一分鐘還落後一分那樣，給我全速衝上去。",
+        "結束後打給我。贏的人請客吃晚餐。贏的人肯定是你，這頓我請定了。"
       ]
     },
     "rg_ethan_morning": {
-      "title": "Morning, you",
+      "title": "早安，你",
       "lines": [
-        "Morning.",
-        "I left coffee on your side. It’s probably cold now. Sorry.",
-        "Have a good day. Text me when you’re on your way home?"
+        "早安。",
+        "我留了杯咖啡在你那一側的桌上。現在可能已經涼了，抱歉。",
+        "今天也要順順利利的。回家的路上傳個訊息給我好嗎？"
       ]
     },
     "rg_yuna_rain": {
-      "title": "The rain at 4 a.m.",
+      "title": "凌晨四點的雨聲",
       "lines": [
-        "this is the rain on our window.",
-        "i recorded it because you said you can’t sleep without noise.",
-        "that’s all. it’s not a gift. it’s just rain."
+        "這是落在我們窗戶上的雨聲。",
+        "我錄了下來，因為你說過沒有聲音你睡不著。",
+        "就這樣。這不是什麼禮物，就只是雨聲而已。"
       ]
     },
     "rg_oppa_morning": {
@@ -1929,8 +1929,8 @@
     },
     "cdp_castor_3": {
       "body": [
-        "The house was quiet tonight, and for once I did not mind.",
-        "You asked what I would give you if I could give you anything. I have not answered yet. It deserves the right answer."
+        "Daniel 昨晚來過店裡。坐在吧台最角落的位置，點了跟以前一樣的琴通寧，坐了兩個小時，一句話也沒多說。",
+        "他走的時候在杯墊下留了一張紙條，上面只有一個地址。我知道我不該去，但我知道我一定會去。"
       ]
     }
   },

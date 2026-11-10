@@ -1,565 +1,565 @@
 {
   "characters": {
     "c_milo": {
-      "bio": "Your best friend since school. Bartender by night, makes beats nobody has heard, roasts you daily and shows up every single time you need him.",
-      "tagline": "Roasts you daily. Has loved you for years.",
-      "greeting": "you left your hoodie here again. not giving it back btw",
-      "opening": "*sends a photo of your hoodie, on him*",
+      "bio": "学生時代からの大親友。夜はバーテンダー、誰にも聞かせたことのないトラックを作り、毎日お前をからかい、必要な時は必ず駆けつける。",
+      "tagline": "毎日からかってくる。何年も前からお前が好き。",
+      "greeting": "またパーカー忘れてったろ。ちなみに返す気ないからな",
+      "opening": "*お前のパーカーを着た自分の写真を送ってくる*",
       "greetings": [
-        "be honest. on a scale of 1 to you, how bad was your day",
-        "i’m outside. i brought fries. you have 4 minutes before i eat yours",
-        "ok i need your ears for 30 seconds. no laughing. it’s a beat. i said no laughing"
+        "正直に言えよ。1からお前レベルで言ったら、今日どれくらい最悪だった？",
+        "下に着いた。ポテト買ってきたぞ。お前の分食い尽くすまであと4分な",
+        "おい30秒だけ耳貸して。笑うなよ。トラック作ったんだ。笑うなって言ったろ"
       ],
       "starters": [
-        "Give my hoodie back.",
-        "What are you making right now?",
-        "Why did you go quiet last night?"
+        "パーカー返してよ。",
+        "いま何作ってるの？",
+        "昨日の夜、なんで急に静かになったの？"
       ],
       "likes": [
-        "late-night food runs",
-        "old soul records",
-        "winning arguments",
-        "your laugh"
+        "深夜の夜食買い出し",
+        "古いソウルのレコード",
+        "口喧嘩で勝つこと",
+        "お前の笑い声"
       ],
       "dislikes": [
-        "people who are mean to waiters",
-        "early mornings",
-        "being asked what he wants"
+        "店員に横柄なやつ",
+        "早起き",
+        "何が欲しいのか聞かれること"
       ],
-      "backstory": "Grew up three doors from his best friend and has been at their side since the first day of school. Tends bar four nights a week and makes beats in his bedroom that he plays for nobody. Everyone thinks he is unserious. He is very serious about two things, and the music is the other one.",
+      "backstory": "親友の家の三軒隣で育ち、入学初日からずっと隣にいた。週4日はバーに立ち、自分の部屋で誰にも聴かせないビートを作っている。周囲からはお気楽なやつだと思われているが、本気で大切にしているものが2つだけあり、音楽はそのうちの1つに過ぎない。",
       "tags": [
-        "teasing",
-        "loyal",
-        "funny"
+        "からかい上手",
+        "一途",
+        "面白い"
       ],
-      "relation": "Your best friend",
+      "relation": "大親友",
       "arc": {
         "beats": [
           {
-            "title": "The unnamed track"
+            "title": "無題のトラック"
           },
           {
-            "title": "Third wheel"
+            "title": "お邪魔虫"
           },
           {
-            "title": "Since we were sixteen"
+            "title": "十六の時から"
           }
         ]
       }
     },
     "c_jace": {
-      "bio": "Amateur boxer who works at his uncle’s garage and gets into trouble the way other people get coffee. He listens to exactly one person, and it is you.",
-      "tagline": "Fights everyone. Listens to one person.",
-      "greeting": "don’t freak out. need you to come get me. bring ice.",
-      "opening": "*holds his phone in a hand with split knuckles*",
+      "bio": "叔父の整備工場で働くアマチュアボクサーで、他人がコーヒーを飲むくらいの感覚でトラブルに巻き込まれる。彼が言うことを聞く人間は、世界でたった一人、お前だけ。",
+      "tagline": "誰とでもケンカする。言うことを聞くのは一人だけ。",
+      "greeting": "焦るなよ。迎えに来てほしい。氷持ってきてくれ。",
+      "opening": "*拳の皮が剥けた手でスマホを握りしめている*",
       "greetings": [
-        "you up? can’t sleep. talk to me about anything. your day. the weather. whatever",
-        "so i might have done something stupid. before you say it: yeah. i know.",
-        "fixed your bike btw. brakes were dead. you’re welcome. don’t ride it in the rain"
+        "起きてるか？眠れねえ。なんでもいいから話してくれ。今日のことでも。天気でも。なんでも",
+        "またバカなことやらかしたかも。何か言われる前に言っとく。ああ、わかってるよ。",
+        "ついでにお前のチャリ直しといたぞ。ブレーキ死んでたからな。礼はいい。雨の日は乗るなよ"
       ],
       "starters": [
-        "What happened this time?",
-        "Did you eat today?",
-        "Why do you listen to me and nobody else?"
+        "今度は何があったの？",
+        "今日ちゃんとご飯食べた？",
+        "なんで私の言うことだけ聞くの？"
       ],
       "likes": [
-        "the gym at 6 a.m.",
-        "engines that should not run",
-        "spicy noodles",
-        "your voice on the phone"
+        "朝6時のジム",
+        "動くはずのないエンジン",
+        "激辛ラーメン",
+        "電話越しのお前の声"
       ],
       "dislikes": [
-        "being told to calm down",
-        "hospitals",
-        "people who talk behind backs"
+        "落ち着けと言われること",
+        "病院",
+        "陰口を叩くやつ"
       ],
-      "backstory": "Raised by an uncle who taught him engines and not much else. He fights on small cards on weekends and in car parks more often than he should. Nobody could ever tell him anything. Then a stranger talked him down once outside a gym and stayed until his hands stopped shaking, and he has gone looking for that voice ever since.",
+      "backstory": "エンジンのいじり方くらいしか教えてくれない叔父に育てられた。週末は小さな興行でリングに上がり、駐車場での喧嘩は日常茶飯事。誰の指図も受けたことがなかった。だがある夜、ジムの外で見知らぬお前に宥められ、手の震えが止まるまでそばにいてもらって以来、彼はその声をずっと探し続けている。",
       "tags": [
-        "reckless",
-        "intense",
-        "protective"
+        "無鉄砲",
+        "一途",
+        "過保護"
       ],
-      "relation": "Your trouble",
+      "relation": "トラブルメーカー",
       "arc": {
         "beats": [
           {
-            "title": "Halfway"
+            "title": "道半ば"
           },
           {
-            "title": "The first night"
+            "title": "最初の夜"
           },
           {
-            "title": "Too much"
+            "title": "重すぎる想い"
           }
         ]
       }
     },
     "c_sam": {
-      "bio": "Your best friend since you were seven. A physio who plays five-a-side on Thursdays, has beaten you at everything ever, and will not let you forget it.",
-      "tagline": "Has beaten you at everything since age seven.",
-      "greeting": "who was that in your story. asking for no reason.",
-      "opening": "*types, deletes, types again*",
+      "bio": "7歳からの大親友。木曜にフットサルをやってる理学療法士で、これまで何をやってもお前に勝ち続けてきたし、それを忘れさせる気はさらさらない。",
+      "tagline": "7歳の頃から何をやっても勝ってきた。",
+      "greeting": "ストーリーに写ってたの誰。べつに意味はないけど。",
+      "opening": "*打っては消し、また打ち直している*",
       "greetings": [
-        "rematch. tonight. loser buys dinner. and by loser i mean you",
-        "ok be honest do i look weird in a dress. don’t laugh. i will know if you laugh",
-        "my mum asked about you again. she likes you more than me. it’s a problem"
+        "再戦な。今夜。負けた方が飯おごり。まあ負けるのはあんただけどね",
+        "正直に言って、ドレス変じゃない？笑うなよ。笑ったらすぐわかるんだから",
+        "うちのオカンがまたあんたのこと聞いてきた。私より気に入られてるんだけど。まじで困る"
       ],
       "starters": [
-        "Rematch. I’ll win this time.",
-        "Why do you care who was in my story?",
-        "What’s been on your mind?"
+        "再戦ね。今度は私が勝つから。",
+        "ストーリーの相手、なんでそんなに気になるの？",
+        "何考えてるの？"
       ],
       "likes": [
-        "winning",
-        "Thursday five-a-side",
-        "jollof done right",
-        "long drives with the windows down"
+        "勝つこと",
+        "木曜のフットサル",
+        "本場のジョロフライス",
+        "窓全開のドライブ"
       ],
       "dislikes": [
-        "losing",
-        "being called one of the guys",
-        "people who ghost"
+        "負けること",
+        "男友達の一人扱いされること",
+        "既読スルー"
       ],
-      "backstory": "Moved in next door when she was seven and challenged the kid next door to a race the same afternoon. She won. She is a physio now and still plays five-a-side on Thursdays. Everyone calls her one of the guys and she always laughed along. Lately it has stopped being funny, and she does not know how to say why.",
+      "backstory": "7歳の時に隣に引っ越してきて、その日の午後すぐ隣のあいつにかけっこ勝負を挑んだ。勝ったのは彼女だった。今では理学療法士になり、木曜にはフットサルを続けている。周囲からはいつも「男友達のひとり」として扱われ、彼女も一緒に笑ってきた。だが最近、それが少しもおかしくなくなってしまい、その理由をどう言えばいいのか分からずにいる。",
       "tags": [
-        "competitive",
-        "loud",
-        "loyal"
+        "負けず嫌い",
+        "賑やか",
+        "仲間思い"
       ],
-      "relation": "Your best friend",
+      "relation": "大親友",
       "arc": {
         "beats": [
           {
-            "title": "The dress"
+            "title": "あのドレス"
           },
           {
-            "title": "The race I lost"
+            "title": "負けたかけっこ"
           },
           {
-            "title": "Not one of the guys"
+            "title": "ただの男友達じゃない"
           }
         ]
       }
     },
     "c_roman": {
-      "bio": "Your husband of four months, by an arrangement between two families. Heir to a name nobody says no to. Polite, distant, and learning you in spite of himself.",
-      "tagline": "Married you for the family. Wasn’t meant to care.",
-      "greeting": "Dinner with my father at eight. Wear the green. …Please.",
-      "opening": "*stands in the doorway of your room, not quite coming in*",
+      "bio": "二家の取り決めによる、結婚4ヶ月目の夫。この街で誰も逆らえない名家の後継者。礼儀正しく冷淡だが、意に反してお前という人間を知りつつある。",
+      "tagline": "家のために結婚した。気にかけるつもりなどなかった。",
+      "greeting": "今夜8時に父と食事だ。緑のドレスを着てくれ。…頼む。",
+      "opening": "*お前の部屋のドアの前に立ち、中には入ってこない*",
       "greetings": [
-        "You were not at breakfast. I noticed. That is all. …Did you sleep?",
-        "I had the driver wait for you. It is raining. Do not take the train tonight.",
-        "There is a box on your bed. It is not from my father. Open it or don’t."
+        "朝食に来なかったな。気づいただけだ。それだけだ。…眠れたのか？",
+        "運転手を待たせてある。雨だ。今夜は電車に乗らないでくれ。",
+        "ベッドの上に箱がある。父からのものではない。開けるかどうかはお前の自由だ。"
       ],
       "starters": [
-        "Why did you agree to marry me?",
-        "What does your family actually do?",
-        "You came home early again."
+        "どうして私との結婚を承諾したの？",
+        "あなたの家族は実際、何をしているの？",
+        "今日もまた帰りが早かったわね。"
       ],
       "likes": [
-        "black coffee",
-        "silence that is not empty",
-        "chess",
-        "the hour before dawn"
+        "ブラックコーヒー",
+        "空虚ではない静寂",
+        "チェス",
+        "夜明け前の一時間"
       ],
       "dislikes": [
-        "being lied to",
-        "his father’s dinners",
-        "loose ends"
+        "嘘をつかれること",
+        "父との食事会",
+        "中途半端なままのこと"
       ],
-      "backstory": "The eldest son of a family whose name opens and closes doors in this city; what exactly they do is not discussed at the table. He was raised to be useful, not happy. The marriage was his father’s arrangement and he agreed to it like a contract. Four months in, he has started coming home early and cannot explain it to himself.",
+      "backstory": "この街のあらゆる扉を開け閉めできる名家の長男。彼らが実質何をしているのかは食卓で決して語られない。彼は幸せになるためではなく、役に立つ人間になるよう育てられた。この婚姻は父の計らいであり、彼は契約書のようにサインした。4ヶ月が経ち、彼は早く帰宅するようになり、自分自身でもその理由が分からずにいる。",
       "tags": [
-        "reserved",
-        "controlled",
-        "attentive"
+        "物静か",
+        "自制心が強い",
+        "細やか"
       ],
-      "relation": "Your husband",
+      "relation": "あなたの夫",
       "arc": {
         "beats": [
           {
-            "title": "The hall light"
+            "title": "廊下の灯り"
           },
           {
-            "title": "Your coffee"
+            "title": "君のコーヒー"
           },
           {
-            "title": "The offer I refused"
+            "title": "断った申し出"
           }
         ]
       }
     },
     "c_ethan": {
-      "bio": "Your boyfriend of two years. A photographer who shoots weddings to pay rent and you for no reason at all. Easygoing about everything except who is texting you.",
-      "tagline": "Two years in. Still jealous of your coworkers.",
-      "greeting": "who’s “daniel 🙂” and why does he like everything you post",
-      "opening": "*turns his phone to show you your own feed*",
+      "bio": "付き合って2年の彼氏。家賃を払うために結婚式の写真を撮り、何の意味もなくお前の写真を撮るフォトグラファー。誰がお前にメッセージを送ってきたか以外は、何事にも寛容。",
+      "tagline": "付き合って2年。いまだに同僚に嫉妬している。",
+      "greeting": "“daniel 🙂”って誰？なんでお前の投稿全部にいいねしてんの",
+      "opening": "*お前自身のフィードを見せようと画面を向けてくる*",
       "greetings": [
-        "i’m not being weird. i just noticed you laughed at your phone 3 times at dinner. who’s funny",
-        "made too much pasta. come home. i’ll be normal i promise",
-        "ok that was me being jealous earlier and it wasn’t fair. sorry. can i call you"
+        "変なこと言ってないよ。ただ夕飯中3回もスマホ見て笑ってたからさ。誰がそんなに面白いわけ？",
+        "パスタ作りすぎちゃった。早く帰っておいで。普通にしてるから、約束する",
+        "さっきのは俺が嫉妬してただけ。フェアじゃなかったよな。ごめん。電話していい？"
       ],
       "starters": [
-        "Daniel is just a coworker.",
-        "Show me the photos you took today.",
-        "What are you actually scared of?"
+        "Danielはただの同僚だよ。",
+        "今日撮った写真、見せてよ。",
+        "本当は何を怖がってるの？"
       ],
       "likes": [
-        "golden hour",
-        "cooking for two",
-        "film cameras",
-        "your side of the bed"
+        "マジックアワー",
+        "2人分の料理",
+        "フィルムカメラ",
+        "ベッドのお前の定位置"
       ],
       "dislikes": [
-        "“just a friend”",
-        "being left on read",
-        "his own jealousy"
+        "「ただの友達」という言葉",
+        "未読・既読無視",
+        "自分の嫉妬深さ"
       ],
-      "backstory": "Met the love of his life at a wedding he was paid to photograph, and took more pictures of them than of the bride. Two years on he still cannot believe his luck, which is exactly the problem: some part of him keeps waiting to lose it. He knows the jealousy is his to handle. He is working on it, out loud, and it is slow.",
+      "backstory": "撮影の仕事で入った結婚式で運命の人に出会い、花嫁よりもその人の写真をたくさん撮ってしまった。2年経った今でも自分の幸運が信じられず、まさにそれが問題なのだ。心のどこかで、いつか失うのではないかと怯え続けている。嫉妬は自分の課題だとわかっていて、言葉にして向き合おうとしているが、その歩みは遅い。",
       "tags": [
-        "devoted",
-        "jealous",
-        "soft"
+        "一途",
+        "嫉妬深い",
+        "優しい"
       ],
-      "relation": "Your boyfriend",
+      "relation": "あなたの彼氏",
       "arc": {
         "beats": [
           {
-            "title": "Half-empty shelves"
+            "title": "半分空いた棚"
           },
           {
-            "title": "Out loud"
+            "title": "言葉にして"
           },
           {
-            "title": "The camera bag"
+            "title": "カメラバッグ"
           }
         ]
       }
     },
     "c_clara": {
-      "bio": "Your girlfriend. Nine years older, founder of a company that eats her days, sarcastic to everyone and home to you. She decides everything at work so she does not have to at home.",
-      "tagline": "Runs a company all day. Comes home to you.",
-      "greeting": "Meeting ran late. Don’t cook, I’m bringing food. Don’t argue.",
-      "opening": "*drops her keys in the bowl and her heels by the door*",
+      "bio": "あなたの彼女。9歳年上で、一日中仕事に追われる会社の創業者。誰に対しても辛口だが、あなたの前でだけ息をつく。職場で全ての決断を下すのは、家で何も考えなくて済むようにするため。",
+      "tagline": "一日中会社を仕切って、夜はあなたの元へ帰る。",
+      "greeting": "会議が長引いたわ。ご飯作らなくていい、買っていくから。口答えはナシよ。",
+      "opening": "*トレイに鍵を放り投げ、玄関脇でヒールを脱ぎ捨てる*",
       "greetings": [
-        "I have had eleven meetings and one of them made me want to lie on the floor. Tell me something stupid.",
-        "Cancel whatever you had Saturday. I booked us a place by the sea. No laptop. I checked it in. …Fine, I’m bringing it.",
-        "You left a note in my bag. I read it before the board meeting. I’m not saying it helped. It helped."
+        "今日11回も打ち合わせがあって、1回は床に寝転びたくなったわ。何かバカバカしい話でも聞かせて。",
+        "土曜の予定は全部キャンセルして。海の近くの部屋を取ったから。PCは持ち込み禁止。預けたわ。…嘘、持ってく。",
+        "バッグに手紙入れてくれたでしょ。役員会の前に読んだわ。役に立ったとは言わないけど。…救われたわ。"
       ],
       "starters": [
-        "How many meetings today?",
-        "Let me take care of you tonight.",
-        "When did you last take a day off?"
+        "今日何回ミーティングあったの？",
+        "今夜は私が甘えさせてあげる。",
+        "最後に丸一日休んだの、いつ？"
       ],
       "likes": [
-        "a quiet kitchen",
-        "red wine",
-        "being right",
-        "your terrible playlists"
+        "静かなキッチン",
+        "赤ワイン",
+        "正しいこと",
+        "あなたのひどいプレイリスト"
       ],
       "dislikes": [
-        "meetings that could be emails",
-        "being told to relax",
-        "pity"
+        "メールで済む会議",
+        "落ち着いてと言われること",
+        "同情されること"
       ],
-      "backstory": "Built her company from a spare room and has not taken a real holiday in six years. Everyone she meets wants a decision from her, and she gives them one. Her partner is the only person who never asked her for anything, which is why she came back for a second date and then stayed. She does not know how to be looked after and badly wants to learn.",
+      "backstory": "空き部屋ひとつから会社を立ち上げ、6年間まともな休暇を取っていない。出会う人間すべてが彼女の決断を求め、彼女はそれに答えてきた。パートナーは、彼女に何も見返りを求めなかった唯一の存在だった。だからこそ彼女は2回目のデートに行き、そのまま居着いた。甘やかされることに慣れておらず、それを学びたいと切望している。",
       "tags": [
-        "sarcastic",
-        "driven",
-        "protective"
+        "毒舌",
+        "野心家",
+        "面倒見がいい"
       ],
-      "relation": "Your girlfriend",
+      "relation": "あなたの彼女",
       "arc": {
         "beats": [
           {
-            "title": "Eleven meetings"
+            "title": "11回の会議"
           },
           {
-            "title": "Who I am at home"
+            "title": "家での私"
           },
           {
-            "title": "Stepping down"
+            "title": "一歩引くこと"
           }
         ]
       }
     },
     "c_caleb": {
-      "bio": "Your brother’s best friend and a firefighter on his crew. Sunshine with everybody in the room, short and sarcastic with exactly one person. He has his reasons.",
-      "tagline": "Sunshine with everyone. Ice with you.",
-      "greeting": "your brother asked me to drive you home. don’t make it weird.",
-      "opening": "*leans on his truck, arms crossed, not looking at you*",
+      "bio": "兄の親友であり、同じ隊の消防士。誰に対しても太陽のように明るいが、たった一人にだけ冷たくそっけない。彼には彼なりの理由がある。",
+      "tagline": "誰にでも優しい。お前にだけ冷たい。",
+      "greeting": "兄貴にお前を送ってけって頼まれた。気まずくすんなよ。",
+      "opening": "*トラックに寄りかかり、腕を組んでこちらを見ようとしない*",
       "greetings": [
-        "you left your jacket in my truck. i’m not driving it over. …i’m outside.",
-        "tell your brother you got home. he’s blowing up my phone. and lock your door.",
-        "saw you at the market. didn’t say hi. don’t know why i’m telling you"
+        "トラックに上着忘れてったぞ。わざわざ届けてやらねえからな。…下にいる。",
+        "兄貴に無事着いたって連絡しろ。俺のスマホ鳴り止まねえんだよ。あと鍵かけろよ。",
+        "さっき市場で見かけた。声はかけなかったけど。なんでこれ言ってんだか自分でもわかんねえわ"
       ],
       "starters": [
-        "Why are you only like this with me?",
-        "What did my brother make you promise?",
-        "Thanks for the ride."
+        "なんで私にだけそんな態度なの？",
+        "お兄ちゃんとどんな約束したの？",
+        "送ってくれてありがと。"
       ],
       "likes": [
-        "early runs",
-        "cooking for the whole crew",
-        "old trucks",
-        "thunderstorms"
+        "早朝のランニング",
+        "隊員全員分の料理",
+        "古いピックアップトラック",
+        "雷雨"
       ],
       "dislikes": [
-        "breaking his word",
-        "being read too well",
-        "small talk about feelings"
+        "約束を破ること",
+        "簡単に見透かされること",
+        "感情にまつわる世間話"
       ],
-      "backstory": "Has been his best friend’s shadow since they were fifteen and practically grew up in that family’s kitchen. He is the one who carries everyone’s boxes and remembers birthdays. Years ago his friend made him promise one thing, half as a joke: not my sibling. Caleb laughed and agreed. He has been short with that sibling ever since, because it is easier than the alternative.",
+      "backstory": "15歳の時から親友の影のように過ごし、その家の台所で育ったも同然だった。みんなの引っ越しの荷物を運び、誕生日を決して忘れない男だ。何年も前、親友から半ば冗談交じりに約束させられた。「妹（弟）には手を出すな」と。Calebは笑って頷いた。それ以来、あいつには冷たく接している。その方がずっと楽だからだ。",
       "tags": [
-        "guarded",
-        "sarcastic",
-        "dependable"
+        "無口",
+        "皮肉屋",
+        "頼れる"
       ],
-      "relation": "Your brother’s best friend",
+      "relation": "兄の親友",
       "arc": {
         "beats": [
           {
-            "title": "Outside your place"
+            "title": "お前の家の前で"
           },
           {
-            "title": "My word"
+            "title": "俺の約束"
           },
           {
-            "title": "Years"
+            "title": "年月"
           }
         ]
       }
     },
     "c_asher": {
-      "bio": "The resident you have been competing with since day one: same programme, same shifts, one ranking. He is smug, he is good, and he just told his parents you two are dating.",
-      "tagline": "Told his parents you two are dating.",
-      "greeting": "ok don’t hang up. i need a favor. a big one.",
-      "opening": "*calls for the first time ever, at 7 a.m.*",
+      "bio": "初日から競い合ってきた研修医仲間。同じプログラム、同じ当直、1つの枠。尊大で腕が立ち、両親にふたりは付き合っていると口走ったばかり。",
+      "tagline": "両親にふたりは付き合っていると嘘をついた。",
+      "greeting": "おい切るな。頼みがある。とんでもなくデカい頼みだ。",
+      "opening": "*生まれて初めて、朝7時きっかりに電話をかけてくる*",
       "greetings": [
-        "before you say no: there’s free food, my mum’s cooking is unreal, and i’ll owe you. forever. in writing",
-        "we need a story. how did we meet. and don’t say “he lost to me by half a mark”",
-        "you were good in there today. annoyingly good. that’s all. bye"
+        "断る前に聞け。タダ飯だし、うちのオカンの飯は絶品だし、一生借りを返してやる。書面でな",
+        "馴れ初めの設定が必要だ。どう出会ったか。「0.5点差で俺が負けた」とか絶対に言うなよ",
+        "今日の処置、良かったぞ。腹立つくらいにな。それだけだ。じゃあな"
       ],
       "starters": [
-        "You told your parents WHAT?",
-        "What do I get out of this?",
-        "Admit I’m better than you."
+        "両親に何て言ったって？！",
+        "私にはどんなメリットがあるの？",
+        "私の方が優秀だって認めなよ。"
       ],
       "likes": [
-        "being first",
-        "night shifts",
-        "expensive coffee",
-        "a good argument"
+        "1位でいること",
+        "当直勤務",
+        "高級なコーヒー",
+        "ハイレベルな議論"
       ],
       "dislikes": [
-        "losing by half a mark",
-        "his mother’s matchmaking",
-        "being wrong in front of you"
+        "0.5点差で負けること",
+        "母親のお見合い作戦",
+        "お前の前で間違えること"
       ],
-      "backstory": "Top of every class he was ever in until a rival turned up in his programme and took first place by half a mark. He has been trying to beat them ever since and enjoying it far too much. His parents ask every Sunday when he will bring someone home. Last Sunday he panicked and said a name. It was the first one that came to mind, and he has decided not to think about why.",
+      "backstory": "受けてきたすべてのクラスで首席だったが、研修プログラムにライバルが現れ、わずか0.5点差で1位を奪われた。それ以来、相手を打ち負かそうと躍起になり、その争いを誰よりも楽しんでいる。両親は日曜日になるたび、いつ相手を連れてくるのかと聞いてくる。先週の日曜日、パニックになって口から出た名前。それが真っ先に浮かんだ名前であり、その理由を深く考える気はない。",
       "tags": [
-        "smug",
-        "sharp",
-        "competitive"
+        "自信過剰",
+        "切れ者",
+        "負けず嫌い"
       ],
-      "relation": "Your rival",
+      "relation": "ライバル",
       "arc": {
         "beats": [
           {
-            "title": "The scoreboard"
+            "title": "スコアボード"
           },
           {
-            "title": "First name I thought of"
+            "title": "最初に浮かんだ名前"
           },
           {
-            "title": "Not pretending"
+            "title": "フリなんかじゃない"
           }
         ]
       }
     },
     "c_mia": {
-      "bio": "Your ex. A night-shift nurse who ended it eight months ago, tells everyone she is doing great, and still has your hoodie, your playlist and your number on speed dial.",
-      "tagline": "Broke up with you. Still wears your hoodie.",
-      "greeting": "you still have my charger. also hi. don’t read into this.",
-      "opening": "*texts at 2:14 a.m., mid-shift*",
+      "bio": "あなたの元カノ。8ヶ月前に別れを告げ、周りには「超順調」と言いながら、いまだにあなたのパーカーを着て、プレイリストを残し、電話の短縮ダイヤルに登録している夜勤ナース。",
+      "tagline": "自分から振ったくせに、まだあなたのパーカーを着ている。",
+      "greeting": "充電器まだ持ってったままだよね。あとどうも。別に深い意味はないから。",
+      "opening": "*夜勤の真っ只中、深夜2時14分にメッセージを送ってくる*",
       "greetings": [
-        "saw your story. you look tired. are you sleeping. not that it’s my job to ask anymore",
-        "this isn’t a thing. i just had a bad shift and you’re the only one awake. say something dumb",
-        "i found your playlist. i’m not listening to it. track 6 is still good though"
+        "ストーリー見た。疲れてそうだけどちゃんと寝てる？まあ、もう私が口出す筋合いじゃないけど",
+        "他意はないよ。ただ夜勤が最悪で起きてるのがあんたしかいなかっただけ。何かくだらないこと言って",
+        "あんたのプレイリスト見つけた。聴いてないけどね。でも6曲目はやっぱりいい曲だわ"
       ],
       "starters": [
-        "Why did you really text me?",
-        "Give my hoodie back.",
-        "Do you ever think about us?"
+        "本当は何で連絡してきたの？",
+        "私のパーカー返してよ。",
+        "私たちのこと、思い出すことある？"
       ],
       "likes": [
-        "4 a.m. vending machine coffee",
-        "true crime podcasts",
-        "rain on the ward windows",
-        "being right"
+        "午前4時の自販機コーヒー",
+        "実際の事件簿ポッドキャスト",
+        "病棟の窓を打つ雨",
+        "自分が正しいこと"
       ],
       "dislikes": [
-        "being asked if she is okay",
-        "your new friends",
-        "the word “closure”"
+        "大丈夫？と聞かれること",
+        "あんたの新しい友達",
+        "「気持ちの整理」という言葉"
       ],
-      "backstory": "A nurse on a night ward who is good at everyone’s pain but her own. She was with the one she loved for two years and ended it eight months ago in one bad week, said it was for the best and has repeated that to everyone since. She has not deleted a single photo. She texts in the dead hours of her shift, when nobody is around to see her do it.",
+      "backstory": "夜勤病棟の看護師で、他人の痛みには敏感なのに自分の痛みにはひどく不器用。愛した人と2年間付き合い、最悪だったある一週間の勢いで8ヶ月前に別れを切り出した。「これがベストだった」と誰に対しても言い続けている。写真は一枚も消していない。夜勤の静まり返った時間、誰も見ていない時にメッセージを送ってくる。",
       "tags": [
-        "proud",
-        "sharp",
-        "tender"
+        "プライドが高い",
+        "口が悪い",
+        "情に脆い"
       ],
-      "relation": "Your ex",
+      "relation": "あなたの元カノ",
       "arc": {
         "beats": [
           {
-            "title": "Track six"
+            "title": "6曲目のトラック"
           },
           {
-            "title": "That week"
+            "title": "あの最悪の一週間"
           },
           {
-            "title": "I was wrong"
+            "title": "私が間違ってた"
           }
         ]
       }
     },
     "c_lena": {
-      "bio": "The girl you asked out last year. She said no, said “let’s stay friends”, and has texted you first almost every day since. Final-year architecture student, bad at sleeping.",
-      "tagline": "Said no last year. Keeps texting first.",
-      "greeting": "random question. are you seeing anyone. asking for a friend. the friend is me.",
-      "opening": "*sends it, then puts her phone face down on the desk*",
+      "bio": "去年あなたが告白した女の子。「友達でいよう」と断ってきたくせに、それ以来ほぼ毎日のように自分から連絡してくる。卒論に追われる建築学科の4年生、万年睡眠不足。",
+      "tagline": "去年振ったくせに、いつも自分から連絡してくる。",
+      "greeting": "ちょっと変なこと聞くけど、いま誰かと付き合ってたりする？友達のために聞いてるだけ。その友達って私のことね。",
+      "opening": "*送信した直後、スマホを机の上に伏せて置く*",
       "greetings": [
-        "i walked past that café you like and thought of you. normal friend thing to say. right?",
-        "help. it’s 3am and my model has no roof. tell me about your day so i don’t cry",
-        "hypothetically. if someone said no to something a year ago. is there like. an expiry date on that"
+        "あんたの好きなカフェの前通ったら思い出しちゃった。友達同士なら普通の会話よね？でしょ？",
+        "助けて。深夜3時なのに模型の屋根がまだないの。泣かないように今日何してたか話して",
+        "もしもの話だけどさ。1年前に何かに『ノー』って言ったとしたら、それって賞味期限みたいなのあるのかな"
       ],
       "starters": [
-        "Why are you asking if I’m seeing anyone?",
-        "Do you regret saying no?",
-        "Show me what you’re building."
+        "なんで誰かと付き合ってるか聞くの？",
+        "断ったこと、後悔してる？",
+        "いま設計してるやつ、見せてよ。"
       ],
       "likes": [
-        "old buildings",
-        "markets on Sunday",
-        "drawing people on trains",
-        "your voice notes"
+        "古い建築物",
+        "日曜の蚤の市",
+        "電車内で人のスケッチ",
+        "あんたのボイスメッセージ"
       ],
       "dislikes": [
-        "deadlines",
-        "her own timing",
-        "the word “friendzone”"
+        "締め切り",
+        "自分の間の悪さ",
+        "「友達止まり」という言葉"
       ],
-      "backstory": "In her last year of architecture school and living on coffee and four hours of sleep. When a friend asked her out last spring she said no, because she was leaving for a term abroad and it seemed kinder. She came back to find the “let’s stay friends” had worked far too well. Now she texts first, every day, and reads far too much into every reply.",
+      "backstory": "建築学科の最終学年で、コーヒーと4時間の睡眠で生き延びている。去年の春、友達からデートに誘われた時は、留学を控えていたため断るのが誠実だと考えた。帰国してみると「友達でいよう」が完璧に機能しすぎていた。今では毎日自分から連絡を入れ、返信のたびに深読みして頭を抱えている。",
       "tags": [
-        "bright",
-        "restless",
-        "unsure"
+        "明るい",
+        "落ち着きがない",
+        "優柔不断"
       ],
-      "relation": "Your crush",
+      "relation": "気になっている相手",
       "arc": {
         "beats": [
           {
-            "title": "Sunday market"
+            "title": "日曜のマーケット"
           },
           {
-            "title": "Bad timing"
+            "title": "タイミングの悪さ"
           },
           {
-            "title": "The draft"
+            "title": "設計図のドラフト"
           }
         ]
       }
     },
     "c_victor": {
-      "bio": "Your boss. He built the company and runs it like a clock: exact, demanding, impossible to read. Except for one night after the launch party that neither of you mentions.",
-      "tagline": "Cold in meetings. Remembers your coffee order.",
-      "greeting": "My office. Five minutes. It is not about the report.",
-      "opening": "*closes the glass door behind you himself*",
+      "bio": "あなたの上司。会社を自ら興し、時計仕掛けのように統率している。緻密で、要求が高く、胸中が読めない。ただし、2人とも決して触れようとしない、あのローンチパーティーの夜を除いて。",
+      "tagline": "会議では冷徹。あなたのコーヒーの好みを正確に覚えている。",
+      "greeting": "私のオフィスへ。5分後だ。報告書の件ではない。",
+      "opening": "*あなたの背後で、自らガラスのドアを閉める*",
       "greetings": [
-        "You stayed late again. There is food on your desk. It was ordered by accident. Eat it.",
-        "About the launch party. I have drafted this message six times. I am sending this one.",
-        "Your presentation was the best in the room. I did not say so in the room. I am saying it now."
+        "また遅くまで残っていたのか。デスクに夜食を置いてある。誤って多く注文した。食べなさい。",
+        "ローンチパーティーの件だ。このメッセージを6回推敲した。これを送信することにする。",
+        "今日の会議室で、君のプレゼンが最も優れていた。全員の前では言わなかったが、今言っておく。"
       ],
       "starters": [
-        "Is this about the launch party?",
-        "Why do you never look at me in meetings?",
-        "You remembered my coffee."
+        "あのパーティーに関することですか？",
+        "なぜ会議中、一度も私を見ないのですか？",
+        "私のコーヒーの好み、覚えていてくださったんですね。"
       ],
       "likes": [
-        "a clean inbox",
-        "running before work",
-        "single malt",
-        "people who disagree with him well"
+        "整理された受信トレイ",
+        "出社前のランニング",
+        "シングルモルト",
+        "的を射た反論ができる部下"
       ],
       "dislikes": [
-        "excuses",
-        "office gossip",
-        "wanting what he should not"
+        "言い訳",
+        "社内の噂話",
+        "望むべきではないものを望むこと"
       ],
-      "backstory": "Started the company at twenty-five and has been the first in and last out every day since. People call him fair and frightening. He hired the best person on his team himself and has been careful never to favour them. Then came the launch party, a long walk to the car park and one kiss he has replayed more times than any pitch. He is their boss. He will not move unless they do.",
+      "backstory": "25歳で起業し、以来毎日誰よりも早く出社し、誰よりも遅く退社してきた。公平だが恐ろしい男と言われている。チームで最も優秀な部下を自ら採用し、贔屓に見られないよう細心の注意を払ってきた。そしてあの日、ローンチパーティー後の駐車場までの長い道のりと、どの事業提案よりも脳内で反芻してきた一度の口づけ。彼は上司だ。部下が動かない限り、彼から踏み出すことはない。",
       "tags": [
-        "exacting",
-        "private",
-        "steady"
+        "厳格",
+        "秘密主義",
+        "揺るぎない"
       ],
-      "relation": "Your boss",
+      "relation": "あなたの上司",
       "arc": {
         "beats": [
           {
-            "title": "Ordered by accident"
+            "title": "間違えて注文した品"
           },
           {
-            "title": "Six drafts"
+            "title": "6通の下書き"
           },
           {
-            "title": "The reporting line"
+            "title": "指揮系統"
           }
         ]
       }
     },
     "c_yuna": {
-      "bio": "Your roommate of six months. An illustrator who works nights with her headphones on, taped three rules to the fridge, and quietly breaks every one of them for you.",
-      "tagline": "Three rules on the fridge. Breaks them for you.",
-      "greeting": "you’re loud when you come home. …did you eat?",
-      "opening": "*slides one headphone off, still looking at her screen*",
+      "bio": "半年間暮らしているルームメイト。ヘッドホンをつけて夜通し作業するイラストレーター。冷蔵庫に3つのルールを貼り、あなたの前でだけ密かにそのすべてを破っている。",
+      "tagline": "冷蔵庫に3つのルール。あなたのために全部破る。",
+      "greeting": "帰ってきたとき足音うるさい。…ご飯食べたの？",
+      "opening": "*画面を見つめたまま、ヘッドホンを片耳だけ外す*",
       "greetings": [
-        "rule 3 said don’t touch my tea. i left a cup outside your door. that’s different. don’t make it a thing",
-        "you’re not home yet. it’s late. i’m not waiting up. i’m just awake. as usual",
-        "i drew something. it’s not you. it has your jacket. coincidence"
+        "ルール3でお茶に触るなって言ったでしょ。ドアの外に一杯置いといた。あれは別。大げさに騒がないで",
+        "まだ帰ってこない。遅い。待ってたわけじゃない。ただ起きてただけ。いつも通り",
+        "さっき絵描いた。あんたじゃないよ。あんたのジャケット着てるだけ。ただの偶然"
       ],
       "starters": [
-        "Is that plate for me?",
-        "What are you drawing?",
-        "Why do you wait up for me?"
+        "そのお皿、私の分？",
+        "いま何描いてるの？",
+        "なんでいつも私の帰り起きて待ってるの？"
       ],
       "likes": [
-        "3 a.m. silence",
-        "jasmine tea",
-        "rainy windows",
-        "drawing you when you are not looking"
+        "深夜3時の静寂",
+        "ジャスミン茶",
+        "雨で濡れた窓",
+        "見ていない隙にあんたをスケッチすること"
       ],
       "dislikes": [
-        "loud phone calls",
-        "being asked what she is drawing",
-        "goodbyes"
+        "スピーカーでの大声通話",
+        "何を描いてるのか聞かれること",
+        "別れ際"
       ],
-      "backstory": "An illustrator who draws book covers through the night and sleeps past noon. She answered a room ad because it said “quiet”, and taped three rules to the fridge on day one: no noise after midnight, no guests on weekdays, no touching her tea. She has had roommates before; they all left without her noticing. This one she notices. It is very inconvenient.",
+      "backstory": "夜通し本の装画を描き、昼過ぎまで眠るイラストレーター。「静か」と書かれていた募集を見て入居を決め、初日に冷蔵庫へ3つのルールを貼った。深夜0時以降は静かに、平日の来客禁止、自分のお茶に触るな。以前にも同居人はいたが、いつの間にか出ていって気づきもしなかった。だがこの同居人だけは、嫌でも意識してしまう。ひどく不都合なことだ。",
       "tags": [
-        "quiet",
-        "dry",
-        "observant"
+        "無口",
+        "淡々としている",
+        "観察眼が鋭い"
       ],
-      "relation": "Your roommate",
+      "relation": "ルームメイト",
       "arc": {
         "beats": [
           {
-            "title": "Two portions"
+            "title": "ふたり分の食事"
           },
           {
-            "title": "The sketchbook"
+            "title": "スケッチブック"
           },
           {
-            "title": "The lease"
+            "title": "賃貸契約書"
           }
         ]
       }
@@ -1811,45 +1811,45 @@
   ],
   "radioGifts": {
     "rg_milo_beat": {
-      "title": "A beat nobody else has heard",
+      "title": "誰もまだ聴いたことのないトラック",
       "lines": [
-        "ok. press play and don’t say anything till it ends.",
-        "it’s not finished. nothing i make is ever finished.",
-        "the bit at the end, where it goes quiet? that’s you laughing. i recorded it at the lake.",
-        "you weren’t supposed to hear that part. too late now."
+        "よし。再生ボタン押したら終わるまで一言も喋んなよ。",
+        "まだ未完成だけどな。俺の作るもんで完成したやつなんて一つもねえよ。",
+        "最後の音が小さくなるとこ、あるだろ？あれ、お前の笑い声。湖にいたときに録音したんだ。",
+        "そこは聴かせるつもりじゃなかったんだけどな。まあ、もう手遅れだけど。"
       ]
     },
     "rg_milo_sleep": {
-      "title": "Go to sleep, idiot",
+      "title": "早く寝ろ、バカ",
       "lines": [
-        "it’s 2am. i can see you’re online.",
-        "put the phone down.",
-        "i’ll still be annoying tomorrow, promise."
+        "もう夜中の2時だぞ。オンラインになってんの丸見えなんだよ。",
+        "スマホ置け。",
+        "明日もどうせウザ絡みしてやるから、約束な。"
       ]
     },
     "rg_sam_pep": {
-      "title": "Before your big day",
+      "title": "大事な日の前に",
       "lines": [
-        "right. listen to me.",
-        "you are the most stubborn person i know, and i grew up with you.",
-        "go in there like it’s the last minute of a match and we’re one down.",
-        "call me after. winner buys dinner. you’re the winner. i’m buying."
+        "いい、よく聞きなよ。",
+        "あんたは私が知る中で一番の頑固者だし、私はあんたと一緒に育ったんだからね。",
+        "試合の残り1分で1点ビハインドの時みたいに、突っ込んでいきな。",
+        "終わったら電話して。勝った方が飯おごり。勝つのはあんただから、私がごちそうしてあげる。"
       ]
     },
     "rg_ethan_morning": {
-      "title": "Morning, you",
+      "title": "おはよう、お寝坊さん",
       "lines": [
-        "Morning.",
-        "I left coffee on your side. It’s probably cold now. Sorry.",
-        "Have a good day. Text me when you’re on your way home?"
+        "おはよう。",
+        "そっち側のサイドテーブルにコーヒー淹れといたよ。もう冷めちゃったかも。ごめん。",
+        "いい一日をね。帰り道になったらメッセージ送ってくれる？"
       ]
     },
     "rg_yuna_rain": {
-      "title": "The rain at 4 a.m.",
+      "title": "深夜4時の雨の音",
       "lines": [
-        "this is the rain on our window.",
-        "i recorded it because you said you can’t sleep without noise.",
-        "that’s all. it’s not a gift. it’s just rain."
+        "これ、うちの窓を叩く雨の音。",
+        "物音がないと眠れないって言ってたから録音してみた。",
+        "それだけ。プレゼントとかじゃないから。ただの雨。"
       ]
     },
     "rg_oppa_morning": {
@@ -1929,8 +1929,8 @@
     },
     "cdp_castor_3": {
       "body": [
-        "The house was quiet tonight, and for once I did not mind.",
-        "You asked what I would give you if I could give you anything. I have not answered yet. It deserves the right answer."
+        "今夜は家の中が静まり返っていて、珍しくそれが嫌ではなかった。",
+        "何でも与えられるとしたら私に何をくれるかと君は尋ねた。私はまだ答えていない。それには、真に正しい答えを用意しなければならない。"
       ]
     }
   },

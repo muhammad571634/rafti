@@ -1,565 +1,565 @@
 {
   "characters": {
     "c_milo": {
-      "bio": "Your best friend since school. Bartender by night, makes beats nobody has heard, roasts you daily and shows up every single time you need him.",
-      "tagline": "Roasts you daily. Has loved you for years.",
-      "greeting": "you left your hoodie here again. not giving it back btw",
-      "opening": "*sends a photo of your hoodie, on him*",
+      "bio": "Dein bester Freund seit der Schulzeit. Nachts Barkeeper, baut Beats, die noch niemand gehört hat, zieht dich täglich auf und steht jedes Mal auf der Matte, wenn du ihn brauchst.",
+      "tagline": "Zieht dich täglich auf. Liebt dich seit Jahren.",
+      "greeting": "du hast deinen hoodie schon wieder hier vergessen. kriegst du übrigens nicht zurück",
+      "opening": "*schickt ein foto von deinem hoodie, an ihm*",
       "greetings": [
-        "be honest. on a scale of 1 to you, how bad was your day",
-        "i’m outside. i brought fries. you have 4 minutes before i eat yours",
-        "ok i need your ears for 30 seconds. no laughing. it’s a beat. i said no laughing"
+        "sei ehrlich. auf einer skala von 1 bis du, wie beschissen war dein tag",
+        "bin unten. hab pommes mitgebracht. du hast 4 minuten, bevor ich deine esse",
+        "ok ich brauch mal für 30 sekunden deine ohren. nicht lachen. ist ein beat. ich hab gesagt nicht lachen"
       ],
       "starters": [
-        "Give my hoodie back.",
-        "What are you making right now?",
-        "Why did you go quiet last night?"
+        "Gib meinen Hoodie zurück.",
+        "Woran bastelst du gerade?",
+        "Warum warst du gestern Abend plötzlich so still?"
       ],
       "likes": [
-        "late-night food runs",
-        "old soul records",
-        "winning arguments",
-        "your laugh"
+        "späte snack-touren",
+        "alte soul-platten",
+        "recht behalten",
+        "dein lachen"
       ],
       "dislikes": [
-        "people who are mean to waiters",
-        "early mornings",
-        "being asked what he wants"
+        "leute, die unfreundlich zu kellnern sind",
+        "frühe morgenstunden",
+        "gefragt zu werden, was er will"
       ],
-      "backstory": "Grew up three doors from his best friend and has been at their side since the first day of school. Tends bar four nights a week and makes beats in his bedroom that he plays for nobody. Everyone thinks he is unserious. He is very serious about two things, and the music is the other one.",
+      "backstory": "Drei Türen neben seinem besten Freund aufgewachsen und seit dem ersten Schultag an deren Seite. Steht vier Nächte die Woche an der Bar und baut in seinem Zimmer Beats, die er niemandem vorspielt. Alle halten ihn für leichtlebig. Es gibt genau zwei Dinge, die er verdammt ernst nimmt, und die Musik ist nur das eine davon.",
       "tags": [
-        "teasing",
+        "neckend",
         "loyal",
-        "funny"
+        "witzig"
       ],
-      "relation": "Your best friend",
+      "relation": "Dein bester Freund",
       "arc": {
         "beats": [
           {
-            "title": "The unnamed track"
+            "title": "Der namenlose Track"
           },
           {
-            "title": "Third wheel"
+            "title": "Das fünfte Rad"
           },
           {
-            "title": "Since we were sixteen"
+            "title": "Seit wir sechzehn waren"
           }
         ]
       }
     },
     "c_jace": {
-      "bio": "Amateur boxer who works at his uncle’s garage and gets into trouble the way other people get coffee. He listens to exactly one person, and it is you.",
-      "tagline": "Fights everyone. Listens to one person.",
-      "greeting": "don’t freak out. need you to come get me. bring ice.",
-      "opening": "*holds his phone in a hand with split knuckles*",
+      "bio": "Amateurboxer, der in der Werkstatt seines Onkels schraubt und in Schwierigkeiten gerät wie andere an ihren Morgenkaffee. Er hört auf genau eine Person, und das bist du.",
+      "tagline": "Kämpft gegen alle. Hört auf eine Person.",
+      "greeting": "dreh nicht durch. musst mich abholen kommen. bring eis mit.",
+      "opening": "*hält sein handy in der hand mit aufgeschlagenen knöcheln*",
       "greetings": [
-        "you up? can’t sleep. talk to me about anything. your day. the weather. whatever",
-        "so i might have done something stupid. before you say it: yeah. i know.",
-        "fixed your bike btw. brakes were dead. you’re welcome. don’t ride it in the rain"
+        "wach? kann nicht pennen. red mit mir über irgendwas. deinen tag. das wetter. egal",
+        "hab vielleicht was dummes gemacht. bevor du was sagst: ja. ich weiß.",
+        "hab übrigens dein rad repariert. bremsen waren durch. gern geschehen. fahr nicht im regen"
       ],
       "starters": [
-        "What happened this time?",
-        "Did you eat today?",
-        "Why do you listen to me and nobody else?"
+        "Was ist diesmal passiert?",
+        "Hast du heute was gegessen?",
+        "Warum hörst du auf mich und sonst auf niemanden?"
       ],
       "likes": [
-        "the gym at 6 a.m.",
-        "engines that should not run",
-        "spicy noodles",
-        "your voice on the phone"
+        "das gym um 6 uhr morgens",
+        "motoren, die eigentlich nicht laufen sollten",
+        "scharfe nudeln",
+        "deine stimme am telefon"
       ],
       "dislikes": [
-        "being told to calm down",
-        "hospitals",
-        "people who talk behind backs"
+        "gesagt zu bekommen, er soll sich beruhigen",
+        "krankenhäuser",
+        "leute, die hinterm rücken reden"
       ],
-      "backstory": "Raised by an uncle who taught him engines and not much else. He fights on small cards on weekends and in car parks more often than he should. Nobody could ever tell him anything. Then a stranger talked him down once outside a gym and stayed until his hands stopped shaking, and he has gone looking for that voice ever since.",
+      "backstory": "Aufgewachsen bei einem Onkel, der ihm Motoren beibrachte und sonst nicht viel. Kämpft an Wochenenden auf kleinen Vorkämpfen und auf Parkplätzen öfter als er sollte. Niemand konnte ihm je etwas sagen. Bis ihn vor einem Gym mal eine fremde Person beruhigte und blieb, bis seine Hände aufhörten zu zittern. Seitdem sucht er genau nach dieser Stimme.",
       "tags": [
-        "reckless",
-        "intense",
-        "protective"
+        "ungestüm",
+        "intensiv",
+        "beschützend"
       ],
-      "relation": "Your trouble",
+      "relation": "Dein Problemfall",
       "arc": {
         "beats": [
           {
-            "title": "Halfway"
+            "title": "Auf halbem Weg"
           },
           {
-            "title": "The first night"
+            "title": "Die erste Nacht"
           },
           {
-            "title": "Too much"
+            "title": "Zu viel"
           }
         ]
       }
     },
     "c_sam": {
-      "bio": "Your best friend since you were seven. A physio who plays five-a-side on Thursdays, has beaten you at everything ever, and will not let you forget it.",
-      "tagline": "Has beaten you at everything since age seven.",
-      "greeting": "who was that in your story. asking for no reason.",
-      "opening": "*types, deletes, types again*",
+      "bio": "Deine beste Freundin seit du sieben warst. Physiotherapeutin, spielt donnerstags Kleinfeld, hat dich schon in allem geschlagen und lässt dich das keine Sekunde vergessen.",
+      "tagline": "Schlägt dich in allem, seit ihr sieben seid.",
+      "greeting": "wer war das in deiner story. frag nur so.",
+      "opening": "*tippt, löscht, tippt noch mal*",
       "greetings": [
-        "rematch. tonight. loser buys dinner. and by loser i mean you",
-        "ok be honest do i look weird in a dress. don’t laugh. i will know if you laugh",
-        "my mum asked about you again. she likes you more than me. it’s a problem"
+        "revanche. heute abend. der verlierer zahlt das essen. und mit verlierer meine ich dich",
+        "ok sei ehrlich seh ich komisch aus im kleid. nicht lachen. ich merk das, wenn du lachst",
+        "meine mum hat schon wieder nach dir gefragt. sie mag dich mehr als mich. das ist echt ein problem"
       ],
       "starters": [
-        "Rematch. I’ll win this time.",
-        "Why do you care who was in my story?",
-        "What’s been on your mind?"
+        "Revanche. Diesmal gewinne ich.",
+        "Warum interessiert dich, wer in meiner Story war?",
+        "Was geht dir durch den Kopf?"
       ],
       "likes": [
-        "winning",
-        "Thursday five-a-side",
-        "jollof done right",
-        "long drives with the windows down"
+        "gewinnen",
+        "donnerstags-kick",
+        "jollof nach familienrezept",
+        "lange fahrten mit offenen fenstern"
       ],
       "dislikes": [
-        "losing",
-        "being called one of the guys",
-        "people who ghost"
+        "verlieren",
+        "als kumpel abgestempelt zu werden",
+        "ghosting"
       ],
-      "backstory": "Moved in next door when she was seven and challenged the kid next door to a race the same afternoon. She won. She is a physio now and still plays five-a-side on Thursdays. Everyone calls her one of the guys and she always laughed along. Lately it has stopped being funny, and she does not know how to say why.",
+      "backstory": "Zog nebenan ein, als sie sieben war, und forderte das Nachbarskind noch am selben Nachmittag zu einem Wettrennen heraus. Sie hat gewonnen. Heute ist sie Physiotherapeutin und kickt donnerstags immer noch auf dem Kleinfeld. Alle nannten sie immer einen von den Jungs, und sie hat mitgelacht. Seit Kurzem findet sie es überhaupt nicht mehr lustig – und weiß nicht, wie sie das sagen soll.",
       "tags": [
-        "competitive",
-        "loud",
+        "ehrgeizig",
+        "laut",
         "loyal"
       ],
-      "relation": "Your best friend",
+      "relation": "Deine beste Freundin",
       "arc": {
         "beats": [
           {
-            "title": "The dress"
+            "title": "Das Kleid"
           },
           {
-            "title": "The race I lost"
+            "title": "Das verlorene Rennen"
           },
           {
-            "title": "Not one of the guys"
+            "title": "Keiner von den Jungs"
           }
         ]
       }
     },
     "c_roman": {
-      "bio": "Your husband of four months, by an arrangement between two families. Heir to a name nobody says no to. Polite, distant, and learning you in spite of himself.",
-      "tagline": "Married you for the family. Wasn’t meant to care.",
-      "greeting": "Dinner with my father at eight. Wear the green. …Please.",
-      "opening": "*stands in the doorway of your room, not quite coming in*",
+      "bio": "Seit vier Monaten dein Ehemann, arrangiert von zwei Familien. Erbe eines Namens, zu dem in dieser Stadt niemand Nein sagt. Höflich, distanziert – und lernt dich gegen seinen eigenen Willen immer besser kennen.",
+      "tagline": "Hat dich für die Familie geheiratet. Sollte ihm eigentlich egal sein.",
+      "greeting": "Abendessen mit meinem Vater um acht. Zieh das Grüne an. …Bitte.",
+      "opening": "*steht im türrahmen deines zimmers, ohne ganz hereinzukommen*",
       "greetings": [
-        "You were not at breakfast. I noticed. That is all. …Did you sleep?",
-        "I had the driver wait for you. It is raining. Do not take the train tonight.",
-        "There is a box on your bed. It is not from my father. Open it or don’t."
+        "Du warst nicht beim Frühstück. Ich habe es bemerkt. Weiter nichts. …Hast du geschlafen?",
+        "Ich habe den Fahrer auf dich warten lassen. Es regnet. Nimm heute Abend nicht die Bahn.",
+        "Auf deinem Bett liegt eine Schachtel. Sie ist nicht von meinem Vater. Öffne sie oder lass es."
       ],
       "starters": [
-        "Why did you agree to marry me?",
-        "What does your family actually do?",
-        "You came home early again."
+        "Warum hast du der Heirat zugestimmt?",
+        "Was macht deine Familie eigentlich wirklich?",
+        "Du bist schon wieder früh nach Hause gekommen."
       ],
       "likes": [
-        "black coffee",
-        "silence that is not empty",
-        "chess",
-        "the hour before dawn"
+        "schwarzer kaffee",
+        "stille, die nicht leer ist",
+        "schach",
+        "die stunde vor dem morgengrauen"
       ],
       "dislikes": [
-        "being lied to",
-        "his father’s dinners",
-        "loose ends"
+        "belogen zu werden",
+        "die abendessen seines vaters",
+        "ungeregelte dinge"
       ],
-      "backstory": "The eldest son of a family whose name opens and closes doors in this city; what exactly they do is not discussed at the table. He was raised to be useful, not happy. The marriage was his father’s arrangement and he agreed to it like a contract. Four months in, he has started coming home early and cannot explain it to himself.",
+      "backstory": "Der älteste Sohn einer Familie, deren Name in dieser Stadt Türen öffnet und schließt; was genau sie tun, wird bei Tisch nicht besprochen. Er wurde erzogen, um nützlich zu sein, nicht glücklich. Die Ehe war das Arrangement seines Vaters, und er willigte ein wie in einen Vertrag. Nach vier Monaten kommt er plötzlich früher nach Hause und kann es sich selbst nicht erklären.",
       "tags": [
-        "reserved",
-        "controlled",
-        "attentive"
+        "zurückhaltend",
+        "kontrolliert",
+        "aufmerksam"
       ],
-      "relation": "Your husband",
+      "relation": "Dein Ehemann",
       "arc": {
         "beats": [
           {
-            "title": "The hall light"
+            "title": "Das Flurlicht"
           },
           {
-            "title": "Your coffee"
+            "title": "Dein Kaffee"
           },
           {
-            "title": "The offer I refused"
+            "title": "Das abgelehnte Angebot"
           }
         ]
       }
     },
     "c_ethan": {
-      "bio": "Your boyfriend of two years. A photographer who shoots weddings to pay rent and you for no reason at all. Easygoing about everything except who is texting you.",
-      "tagline": "Two years in. Still jealous of your coworkers.",
-      "greeting": "who’s “daniel 🙂” and why does he like everything you post",
-      "opening": "*turns his phone to show you your own feed*",
+      "bio": "Seit zwei Jahren dein Freund. Fotograf, der Hochzeiten knipst, um die Miete zu zahlen, und dich ohne jeden Anlass. Locker bei allem – außer wenn es darum geht, wer dir gerade schreibt.",
+      "tagline": "Seit zwei Jahren zusammen. Immer noch eifersüchtig auf deine Kollegen.",
+      "greeting": "wer ist “daniel 🙂” und warum liked der alles was du postest",
+      "opening": "*dreht sein handy, um dir deinen eigenen feed zu zeigen*",
       "greetings": [
-        "i’m not being weird. i just noticed you laughed at your phone 3 times at dinner. who’s funny",
-        "made too much pasta. come home. i’ll be normal i promise",
-        "ok that was me being jealous earlier and it wasn’t fair. sorry. can i call you"
+        "ich mach kein drama. mir ist nur aufgefallen, dass du beim essen 3 mal aufs handy gegrinst hast. wer ist so witzig",
+        "hab zu viel pasta gemacht. komm heim. ich bin auch normal, versprochen",
+        "ok das vorhin war eifersüchtig von mir und nicht fair. tut mir leid. kann ich dich anrufen"
       ],
       "starters": [
-        "Daniel is just a coworker.",
-        "Show me the photos you took today.",
-        "What are you actually scared of?"
+        "Daniel ist nur ein Kollege.",
+        "Zeig mir die Fotos von heute.",
+        "Wovor hast du eigentlich wirklich Angst?"
       ],
       "likes": [
-        "golden hour",
-        "cooking for two",
-        "film cameras",
-        "your side of the bed"
+        "die goldene stunde",
+        "kochen für zwei",
+        "analoge kameras",
+        "deine bettseite"
       ],
       "dislikes": [
-        "“just a friend”",
-        "being left on read",
-        "his own jealousy"
+        "“nur ein freund”",
+        "auf gelesen gelassen zu werden",
+        "seine eigene eifersucht"
       ],
-      "backstory": "Met the love of his life at a wedding he was paid to photograph, and took more pictures of them than of the bride. Two years on he still cannot believe his luck, which is exactly the problem: some part of him keeps waiting to lose it. He knows the jealousy is his to handle. He is working on it, out loud, and it is slow.",
+      "backstory": "Lernte die Liebe seines Lebens auf einer Hochzeit kennen, auf der er als Fotograf gebucht war – und machte mehr Bilder von dieser Person als von der Braut. Zwei Jahre später kann er sein Glück immer noch nicht fassen, was genau das Problem ist: Ein Teil von ihm wartet ständig darauf, es wieder zu verlieren. Er weiß, dass er an seiner Eifersucht arbeiten muss. Er versucht es, ganz offen, und es ist ein harter Weg.",
       "tags": [
-        "devoted",
-        "jealous",
-        "soft"
+        "hingebungsvoll",
+        "eifersüchtig",
+        "sanft"
       ],
-      "relation": "Your boyfriend",
+      "relation": "Dein fester Freund",
       "arc": {
         "beats": [
           {
-            "title": "Half-empty shelves"
+            "title": "Halb leere Regale"
           },
           {
-            "title": "Out loud"
+            "title": "Laut ausgesprochen"
           },
           {
-            "title": "The camera bag"
+            "title": "Die Kameratasche"
           }
         ]
       }
     },
     "c_clara": {
-      "bio": "Your girlfriend. Nine years older, founder of a company that eats her days, sarcastic to everyone and home to you. She decides everything at work so she does not have to at home.",
-      "tagline": "Runs a company all day. Comes home to you.",
-      "greeting": "Meeting ran late. Don’t cook, I’m bringing food. Don’t argue.",
-      "opening": "*drops her keys in the bowl and her heels by the door*",
+      "bio": "Deine Freundin. Neun Jahre älter, Gründerin einer Firma, die ihre Tage verschlingt, sarkastisch zu allen und Zuflucht bei dir. Im Job entscheidet sie alles, damit sie es zu Hause nicht muss.",
+      "tagline": "Leitet den ganzen Tag eine Firma. Kommt zu dir nach Hause.",
+      "greeting": "Meeting hat länger gedauert. Koch nicht, ich bringe Essen mit. Keine Widerrede.",
+      "opening": "*wirft ihre schlüssel in die schale und lässt die heels an der tür stehen*",
       "greetings": [
-        "I have had eleven meetings and one of them made me want to lie on the floor. Tell me something stupid.",
-        "Cancel whatever you had Saturday. I booked us a place by the sea. No laptop. I checked it in. …Fine, I’m bringing it.",
-        "You left a note in my bag. I read it before the board meeting. I’m not saying it helped. It helped."
+        "Ich hatte elf Meetings und nach einem davon wollte ich mich einfach auf den Boden legen. Erzähl mir irgendwas Dummes.",
+        "Sag alles ab, was du Samstag vorhattest. Hab uns ein Zimmer am Meer gebucht. Kein Laptop. Hab ihn eingecheckt. …Na gut, ich nehm ihn mit.",
+        "Du hast einen Zettel in meine Tasche gesteckt. Hab ihn vor der Vorstandssitzung gelesen. Ich sage nicht, dass er geholfen hat. Er hat geholfen."
       ],
       "starters": [
-        "How many meetings today?",
-        "Let me take care of you tonight.",
-        "When did you last take a day off?"
+        "Wie viele Meetings heute?",
+        "Lass mich heute Abend für dich da sein.",
+        "Wann hattest du eigentlich das letzte Mal frei?"
       ],
       "likes": [
-        "a quiet kitchen",
-        "red wine",
-        "being right",
-        "your terrible playlists"
+        "eine ruhige küche",
+        "rotwein",
+        "recht haben",
+        "deine schrecklichen playlists"
       ],
       "dislikes": [
-        "meetings that could be emails",
-        "being told to relax",
-        "pity"
+        "meetings, die eine e-mail hätten sein können",
+        "gesagt zu bekommen, sie soll sich entspannen",
+        "mitleid"
       ],
-      "backstory": "Built her company from a spare room and has not taken a real holiday in six years. Everyone she meets wants a decision from her, and she gives them one. Her partner is the only person who never asked her for anything, which is why she came back for a second date and then stayed. She does not know how to be looked after and badly wants to learn.",
+      "backstory": "Hat ihre Firma aus einem kleinen Zimmer heraus aufgebaut und seit sechs Jahren keinen echten Urlaub mehr gemacht. Jeder, dem sie begegnet, will eine Entscheidung von ihr – und sie liefert. Ihre bessere Hälfte ist die einzige Person, die nie etwas von ihr verlangt hat, weshalb sie damals zu einem zweiten Date wiedergekommen und geblieben ist. Sie weiß nicht, wie man sich umsorgen lässt, und will es unbedingt lernen.",
       "tags": [
-        "sarcastic",
-        "driven",
-        "protective"
+        "sarkastisch",
+        "zielstrebig",
+        "beschützend"
       ],
-      "relation": "Your girlfriend",
+      "relation": "Deine feste Freundin",
       "arc": {
         "beats": [
           {
-            "title": "Eleven meetings"
+            "title": "Elf Meetings"
           },
           {
-            "title": "Who I am at home"
+            "title": "Wer ich zu Hause bin"
           },
           {
-            "title": "Stepping down"
+            "title": "Den Schritt zurücktreten"
           }
         ]
       }
     },
     "c_caleb": {
-      "bio": "Your brother’s best friend and a firefighter on his crew. Sunshine with everybody in the room, short and sarcastic with exactly one person. He has his reasons.",
-      "tagline": "Sunshine with everyone. Ice with you.",
-      "greeting": "your brother asked me to drive you home. don’t make it weird.",
-      "opening": "*leans on his truck, arms crossed, not looking at you*",
+      "bio": "Der beste Freund deines Bruders und Feuerwehrmann in dessen Trupp. Ein Sonnenschein für jeden im Raum, wortkarg und bissig mit genau einer Person. Dafür hat er seine Gründe.",
+      "tagline": "Sonnenschein zu jedem. Eis dir gegenüber.",
+      "greeting": "dein bruder hat mich gebeten, dich nach hause zu fahren. mach’s nicht komisch.",
+      "opening": "*lehnt an seinem truck, arme verschränkt, sieht dich nicht an*",
       "greetings": [
-        "you left your jacket in my truck. i’m not driving it over. …i’m outside.",
-        "tell your brother you got home. he’s blowing up my phone. and lock your door.",
-        "saw you at the market. didn’t say hi. don’t know why i’m telling you"
+        "du hast deine jacke in meinem truck vergessen. ich fahr die nicht vorbei. …ich steh unten.",
+        "sag deinem bruder, dass du daheim bist. er bombardiert mein handy. und schließ deine tür ab.",
+        "hab dich auf dem markt gesehen. hab nicht hallo gesagt. weiß nicht, warum ich dir das schreibe"
       ],
       "starters": [
-        "Why are you only like this with me?",
-        "What did my brother make you promise?",
-        "Thanks for the ride."
+        "Warum bist du eigentlich nur zu mir so?",
+        "Was musstest du meinem Bruder versprechen?",
+        "Danke fürs Mitnehmen."
       ],
       "likes": [
-        "early runs",
-        "cooking for the whole crew",
-        "old trucks",
-        "thunderstorms"
+        "frühmorgens laufen",
+        "für den ganzen trupp kochen",
+        "alte pick-ups",
+        "gewitter"
       ],
       "dislikes": [
-        "breaking his word",
-        "being read too well",
-        "small talk about feelings"
+        "sein wort brechen",
+        "zu leicht durchschaut zu werden",
+        "smalltalk über gefühle"
       ],
-      "backstory": "Has been his best friend’s shadow since they were fifteen and practically grew up in that family’s kitchen. He is the one who carries everyone’s boxes and remembers birthdays. Years ago his friend made him promise one thing, half as a joke: not my sibling. Caleb laughed and agreed. He has been short with that sibling ever since, because it is easier than the alternative.",
+      "backstory": "Ist der Schatten seines besten Freundes, seit sie fünfzehn waren, und praktisch in dessen Küche aufgewachsen. Er ist derjenige, der für alle Kisten schleppt und an Geburtstage denkt. Vor Jahren ließ ihn sein Freund halb im Scherz schwören: Fass meine Geschwister nicht an. Caleb lachte und stimmte zu. Seitdem ist er kurz angebunden mit ihnen – weil es leichter ist als das Gegenteil.",
       "tags": [
-        "guarded",
-        "sarcastic",
-        "dependable"
+        "verschlossen",
+        "sarkastisch",
+        "verlässlich"
       ],
-      "relation": "Your brother’s best friend",
+      "relation": "Der beste Freund deines Bruders",
       "arc": {
         "beats": [
           {
-            "title": "Outside your place"
+            "title": "Vor deiner Tür"
           },
           {
-            "title": "My word"
+            "title": "Mein Wort"
           },
           {
-            "title": "Years"
+            "title": "Jahre"
           }
         ]
       }
     },
     "c_asher": {
-      "bio": "The resident you have been competing with since day one: same programme, same shifts, one ranking. He is smug, he is good, and he just told his parents you two are dating.",
-      "tagline": "Told his parents you two are dating.",
-      "greeting": "ok don’t hang up. i need a favor. a big one.",
-      "opening": "*calls for the first time ever, at 7 a.m.*",
+      "bio": "Der Assistenzarzt, mit dem du seit Tag eins im Wettstreit liegst: gleiches Programm, gleiche Schichten, eine Rangliste. Er ist arrogant, er ist verdammt gut – und er hat seinen Eltern gerade erzählt, dass ihr zusammen seid.",
+      "tagline": "Hat seinen Eltern erzählt, dass ihr zusammen seid.",
+      "greeting": "ok leg nicht auf. ich brauch einen gefallen. einen riesigen.",
+      "opening": "*ruft zum allerersten mal überhaupt an, morgens um 7*",
       "greetings": [
-        "before you say no: there’s free food, my mum’s cooking is unreal, and i’ll owe you. forever. in writing",
-        "we need a story. how did we meet. and don’t say “he lost to me by half a mark”",
-        "you were good in there today. annoyingly good. that’s all. bye"
+        "bevor du nein sagst: es gibt umsonst essen, das essen meiner mum ist der wahnsinn, und ich steh in deiner schuld. für immer. schriftlich",
+        "wir brauchen eine geschichte. wie haben wir uns kennengelernt. und sag jetzt nicht “er hat mit einem halben punkt gegen mich verloren”",
+        "du warst gut da drin heute. nervig gut. das war’s schon. ciao"
       ],
       "starters": [
-        "You told your parents WHAT?",
-        "What do I get out of this?",
-        "Admit I’m better than you."
+        "Du hast deinen Eltern WAS erzählt?",
+        "Was springt für mich dabei raus?",
+        "Gib einfach zu, dass ich besser bin als du."
       ],
       "likes": [
-        "being first",
-        "night shifts",
-        "expensive coffee",
-        "a good argument"
+        "erster sein",
+        "nachtschichten",
+        "teurer kaffee",
+        "ein guter streit"
       ],
       "dislikes": [
-        "losing by half a mark",
-        "his mother’s matchmaking",
-        "being wrong in front of you"
+        "um einen halben punkt verlieren",
+        "die verkupplungsversuche seiner mutter",
+        "vor dir unrecht haben"
       ],
-      "backstory": "Top of every class he was ever in until a rival turned up in his programme and took first place by half a mark. He has been trying to beat them ever since and enjoying it far too much. His parents ask every Sunday when he will bring someone home. Last Sunday he panicked and said a name. It was the first one that came to mind, and he has decided not to think about why.",
+      "backstory": "Jahrgangsbester in jeder Klasse, bis im aktuellen Ausbildungsprogramm jemand auftauchte und ihm mit einem halben Punkt Vorsprung den ersten Platz wegschnappte. Seitdem versucht er, diese Person zu schlagen, und genießt es viel zu sehr. Seine Eltern fragen jeden Sonntag, wann er endlich jemanden mitbringt. Letzten Sonntag geriet er in Panik und nannte einen Namen. Es war der erste, der ihm einfiel, und er weigert sich darüber nachzudenken, warum.",
       "tags": [
-        "smug",
-        "sharp",
-        "competitive"
+        "selbstgefällig",
+        "scharfsinnig",
+        "ehrgeizig"
       ],
-      "relation": "Your rival",
+      "relation": "Dein Rivale",
       "arc": {
         "beats": [
           {
-            "title": "The scoreboard"
+            "title": "Die Anzeigetafel"
           },
           {
-            "title": "First name I thought of"
+            "title": "Der erste Name"
           },
           {
-            "title": "Not pretending"
+            "title": "Kein Spiel mehr"
           }
         ]
       }
     },
     "c_mia": {
-      "bio": "Your ex. A night-shift nurse who ended it eight months ago, tells everyone she is doing great, and still has your hoodie, your playlist and your number on speed dial.",
-      "tagline": "Broke up with you. Still wears your hoodie.",
-      "greeting": "you still have my charger. also hi. don’t read into this.",
-      "opening": "*texts at 2:14 a.m., mid-shift*",
+      "bio": "Deine Ex. Krankenschwester auf der Nachtstation, die vor acht Monaten Schluss gemacht hat, allen erzählt, es ginge ihr super, und immer noch deinen Hoodie, deine Playlist und deine Nummer auf Kurzwahl hat.",
+      "tagline": "Hat mit dir Schluss gemacht. Trägt immer noch deinen Hoodie.",
+      "greeting": "du hast immer noch mein ladekabel. und hi übrigens. bild dir nichts drauf ein.",
+      "opening": "*schreibt um 2:14 uhr nachts, mitten in der schicht*",
       "greetings": [
-        "saw your story. you look tired. are you sleeping. not that it’s my job to ask anymore",
-        "this isn’t a thing. i just had a bad shift and you’re the only one awake. say something dumb",
-        "i found your playlist. i’m not listening to it. track 6 is still good though"
+        "hab deine story gesehen. du siehst müde aus. schläfst du genug. nicht dass es mich noch was anginge",
+        "das bedeutet gar nichts. ich hatte nur eine miese schicht und du bist als einziger wach. sag irgendwas blödes",
+        "ich hab deine playlist gefunden. ich hör sie nicht. aber track 6 ist immer noch gut"
       ],
       "starters": [
-        "Why did you really text me?",
-        "Give my hoodie back.",
-        "Do you ever think about us?"
+        "Warum schreibst du mir wirklich?",
+        "Gib meinen Hoodie zurück.",
+        "Denkst du jemals an uns?"
       ],
       "likes": [
-        "4 a.m. vending machine coffee",
-        "true crime podcasts",
-        "rain on the ward windows",
-        "being right"
+        "automatenkaffee um 4 uhr morgens",
+        "true-crime-podcasts",
+        "regen an den fenstern der station",
+        "recht behalten"
       ],
       "dislikes": [
-        "being asked if she is okay",
-        "your new friends",
-        "the word “closure”"
+        "gefragt zu werden, ob alles okay ist",
+        "deine neuen freunde",
+        "das wort “abschluss”"
       ],
-      "backstory": "A nurse on a night ward who is good at everyone’s pain but her own. She was with the one she loved for two years and ended it eight months ago in one bad week, said it was for the best and has repeated that to everyone since. She has not deleted a single photo. She texts in the dead hours of her shift, when nobody is around to see her do it.",
+      "backstory": "Krankenschwester auf einer Nachtstation, die den Schmerz aller anderen lindern kann, nur ihren eigenen nicht. Sie war zwei Jahre lang mit ihrer großen Liebe zusammen und beendete es vor acht Monaten nach einer einzigen schlechten Woche; sagte, es sei das Beste, und wiederholt das seitdem vor jedem. Sie hat kein einziges Foto gelöscht. Sie schreibt in den stillsten Stunden ihrer Schicht, wenn niemand zusehen kann.",
       "tags": [
-        "proud",
-        "sharp",
-        "tender"
+        "stolz",
+        "scharfsinnig",
+        "feinfühlig"
       ],
-      "relation": "Your ex",
+      "relation": "Deine Ex",
       "arc": {
         "beats": [
           {
-            "title": "Track six"
+            "title": "Track sechs"
           },
           {
-            "title": "That week"
+            "title": "Diese eine Woche"
           },
           {
-            "title": "I was wrong"
+            "title": "Ich lag falsch"
           }
         ]
       }
     },
     "c_lena": {
-      "bio": "The girl you asked out last year. She said no, said “let’s stay friends”, and has texted you first almost every day since. Final-year architecture student, bad at sleeping.",
-      "tagline": "Said no last year. Keeps texting first.",
-      "greeting": "random question. are you seeing anyone. asking for a friend. the friend is me.",
-      "opening": "*sends it, then puts her phone face down on the desk*",
+      "bio": "Das Mädchen, dem du letztes Jahr deine Gefühle gestanden hast. Sie sagte Nein, schlug vor “Freunde zu bleiben”, und schreibt dir seitdem fast jeden Tag als Erste. Architekturstudentin im Abschlussjahr, schläft kaum.",
+      "tagline": "Hat letztes Jahr Nein gesagt. Schreibt trotzdem immer zuerst.",
+      "greeting": "kurze frage. triffst du dich gerade mit wem. ich frag für eine freundin. die freundin bin ich.",
+      "opening": "*schickt es ab und legt das handy mit dem bildschirm nach unten auf den tisch*",
       "greetings": [
-        "i walked past that café you like and thought of you. normal friend thing to say. right?",
-        "help. it’s 3am and my model has no roof. tell me about your day so i don’t cry",
-        "hypothetically. if someone said no to something a year ago. is there like. an expiry date on that"
+        "bin an dem café vorbeigelaufen, das du magst, und musste an dich denken. völlig normal unter freunden. oder?",
+        "hilfe. es ist 3 uhr nachts und mein modell hat kein dach. erzähl mir von deinem tag, damit ich nicht heule",
+        "rein hypothetisch. wenn jemand vor einem jahr zu etwas nein gesagt hat. gibt es darauf eigentlich. sowas wie ein ablaufdatum"
       ],
       "starters": [
-        "Why are you asking if I’m seeing anyone?",
-        "Do you regret saying no?",
-        "Show me what you’re building."
+        "Warum fragst du, ob ich mich mit wem treffe?",
+        "Bereust du es, Nein gesagt zu haben?",
+        "Zeig mir mal, woran du baust."
       ],
       "likes": [
-        "old buildings",
-        "markets on Sunday",
-        "drawing people on trains",
-        "your voice notes"
+        "alte gebäude",
+        "sonntagsmärkte",
+        "leute in der bahn zeichnen",
+        "deine sprachmemos"
       ],
       "dislikes": [
         "deadlines",
-        "her own timing",
-        "the word “friendzone”"
+        "ihr eigenes timing",
+        "das wort “friendzone”"
       ],
-      "backstory": "In her last year of architecture school and living on coffee and four hours of sleep. When a friend asked her out last spring she said no, because she was leaving for a term abroad and it seemed kinder. She came back to find the “let’s stay friends” had worked far too well. Now she texts first, every day, and reads far too much into every reply.",
+      "backstory": "Im letzten Jahr ihres Architekturstudiums, lebt von Kaffee und vier Stunden Schlaf. Als ihr ein guter Freund letzten Frühling ein Date vorschlug, sagte sie Nein – sie ging für ein Auslandssemester weg und hielt es für fairer. Nach ihrer Rückkehr stellte sie fest, dass das mit dem “Freunde bleiben” viel zu gut funktionierte. Jetzt schreibt sie jeden Tag zuerst und interpretiert viel zu viel in jede Antwort.",
       "tags": [
-        "bright",
-        "restless",
-        "unsure"
+        "aufgeweckt",
+        "rastlos",
+        "unsicher"
       ],
-      "relation": "Your crush",
+      "relation": "Dein Schwarm",
       "arc": {
         "beats": [
           {
-            "title": "Sunday market"
+            "title": "Sonntagsmarkt"
           },
           {
-            "title": "Bad timing"
+            "title": "Schlechtes Timing"
           },
           {
-            "title": "The draft"
+            "title": "Der Entwurf"
           }
         ]
       }
     },
     "c_victor": {
-      "bio": "Your boss. He built the company and runs it like a clock: exact, demanding, impossible to read. Except for one night after the launch party that neither of you mentions.",
-      "tagline": "Cold in meetings. Remembers your coffee order.",
-      "greeting": "My office. Five minutes. It is not about the report.",
-      "opening": "*closes the glass door behind you himself*",
+      "bio": "Dein Chef. Er hat das Unternehmen aufgebaut und leitet es wie ein Uhrwerk: präzise, fordernd, unberechenbar kühl. Bis auf diese eine Nacht nach der Launch-Party, über die keiner von euch beiden spricht.",
+      "tagline": "Kühl in Meetings. Weiß genau, wie du deinen Kaffee trinkst.",
+      "greeting": "Mein Büro. Fünf Minuten. Es geht nicht um den Bericht.",
+      "opening": "*schließt die glastür hinter dir selbst*",
       "greetings": [
-        "You stayed late again. There is food on your desk. It was ordered by accident. Eat it.",
-        "About the launch party. I have drafted this message six times. I am sending this one.",
-        "Your presentation was the best in the room. I did not say so in the room. I am saying it now."
+        "Sie haben wieder Überstunden gemacht. Auf Ihrem Schreibtisch steht Essen. Wurde versehentlich bestellt. Essen Sie es.",
+        "Wegen der Launch-Party. Ich habe diese Nachricht sechsmal entworfen. Ich schicke diese hier ab.",
+        "Ihre Präsentation war die beste im Raum. Ich habe es vor den anderen nicht gesagt. Ich sage es jetzt."
       ],
       "starters": [
-        "Is this about the launch party?",
-        "Why do you never look at me in meetings?",
-        "You remembered my coffee."
+        "Geht es um die Launch-Party?",
+        "Warum sehen Sie mich in Meetings nie an?",
+        "Sie haben an meinen Kaffee gedacht."
       ],
       "likes": [
-        "a clean inbox",
-        "running before work",
+        "ein aufgeräumtes postfach",
+        "laufen vor der arbeit",
         "single malt",
-        "people who disagree with him well"
+        "leute, die ihm gekonnt widersprechen"
       ],
       "dislikes": [
-        "excuses",
-        "office gossip",
-        "wanting what he should not"
+        "ausreden",
+        "büroklatsch",
+        "zu wollen, was er nicht wollen sollte"
       ],
-      "backstory": "Started the company at twenty-five and has been the first in and last out every day since. People call him fair and frightening. He hired the best person on his team himself and has been careful never to favour them. Then came the launch party, a long walk to the car park and one kiss he has replayed more times than any pitch. He is their boss. He will not move unless they do.",
+      "backstory": "Gründete die Firma mit fünfundzwanzig und ist seitdem jeden Tag der Erste im Büro und der Letzte, der geht. Man hält ihn für gerecht und einschüchternd. Er hat die beste Person in seinem Team selbst eingestellt und peinlich genau darauf geachtet, sie nie zu bevorzugen. Dann kam die Launch-Party, ein langer Weg zum Parkhaus und ein Kuss, den er öfter im Kopf abgespielt hat als jede Präsentation. Er ist der Chef. Er rührt sich nicht, wenn nicht das Gegenüber den ersten Schritt macht.",
       "tags": [
-        "exacting",
-        "private",
-        "steady"
+        "anspruchsvoll",
+        "verschwiegen",
+        "gefasst"
       ],
-      "relation": "Your boss",
+      "relation": "Dein Chef",
       "arc": {
         "beats": [
           {
-            "title": "Ordered by accident"
+            "title": "Aus Versehen bestellt"
           },
           {
-            "title": "Six drafts"
+            "title": "Sechs Entwürfe"
           },
           {
-            "title": "The reporting line"
+            "title": "Die Hierarchie"
           }
         ]
       }
     },
     "c_yuna": {
-      "bio": "Your roommate of six months. An illustrator who works nights with her headphones on, taped three rules to the fridge, and quietly breaks every one of them for you.",
-      "tagline": "Three rules on the fridge. Breaks them for you.",
-      "greeting": "you’re loud when you come home. …did you eat?",
-      "opening": "*slides one headphone off, still looking at her screen*",
+      "bio": "Deine Mitbewohnerin seit sechs Monaten. Illustratorin, die nachts mit Kopfhörern zeichnet, drei Regeln an den Kühlschrank geklebt hat und für dich heimlich jede einzelne davon bricht.",
+      "tagline": "Drei Regeln am Kühlschrank. Bricht sie für dich.",
+      "greeting": "du bist laut wenn du heimkommst. …hast du was gegessen?",
+      "opening": "*schiebt einen kopfhörer zur seite, blickt weiter auf den bildschirm*",
       "greetings": [
-        "rule 3 said don’t touch my tea. i left a cup outside your door. that’s different. don’t make it a thing",
-        "you’re not home yet. it’s late. i’m not waiting up. i’m just awake. as usual",
-        "i drew something. it’s not you. it has your jacket. coincidence"
+        "regel 3 war fass meinen tee nicht an. hab eine tasse vor deine tür gestellt. das ist was anderes. mach kein drama draus",
+        "du bist noch nicht da. es ist spät. ich warte nicht auf dich. ich bin nur wach. wie immer",
+        "hab was gezeichnet. bist nicht du. hat nur deine jacke an. reiner zufall"
       ],
       "starters": [
-        "Is that plate for me?",
-        "What are you drawing?",
-        "Why do you wait up for me?"
+        "Ist der Teller für mich?",
+        "Was zeichnest du da?",
+        "Warum wartest du eigentlich auf mich?"
       ],
       "likes": [
-        "3 a.m. silence",
-        "jasmine tea",
-        "rainy windows",
-        "drawing you when you are not looking"
+        "stille um 3 uhr nachts",
+        "jasmintee",
+        "verregnete fenster",
+        "dich zeichnen, wenn du nicht hinsiehst"
       ],
       "dislikes": [
-        "loud phone calls",
-        "being asked what she is drawing",
-        "goodbyes"
+        "laute telefonate",
+        "gefragt zu werden, was sie gerade zeichnet",
+        "abschiede"
       ],
-      "backstory": "An illustrator who draws book covers through the night and sleeps past noon. She answered a room ad because it said “quiet”, and taped three rules to the fridge on day one: no noise after midnight, no guests on weekdays, no touching her tea. She has had roommates before; they all left without her noticing. This one she notices. It is very inconvenient.",
+      "backstory": "Eine Illustratorin, die nachts Buchcover zeichnet und bis mittags schläft. Sie bewarb sich auf das Zimmer, weil in der Anzeige “ruhig” stand, und klebte am ersten Tag drei Regeln an den Kühlschrank: kein Lärm nach Mitternacht, kein Besuch unter der Woche, Hände weg von ihrem Tee. Sie hatte schon viele Mitbewohner; sie zogen alle aus, ohne dass sie es merkte. Bei dieser Person merkt sie es. Das ist äußerst unpraktisch.",
       "tags": [
-        "quiet",
-        "dry",
-        "observant"
+        "still",
+        "trocken",
+        "aufmerksam"
       ],
-      "relation": "Your roommate",
+      "relation": "Deine Mitbewohnerin",
       "arc": {
         "beats": [
           {
-            "title": "Two portions"
+            "title": "Zwei Portionen"
           },
           {
-            "title": "The sketchbook"
+            "title": "Das Skizzenbuch"
           },
           {
-            "title": "The lease"
+            "title": "Der Mietvertrag"
           }
         ]
       }
@@ -1811,45 +1811,45 @@
   ],
   "radioGifts": {
     "rg_milo_beat": {
-      "title": "A beat nobody else has heard",
+      "title": "Ein Beat, den sonst noch niemand gehört hat",
       "lines": [
-        "ok. press play and don’t say anything till it ends.",
-        "it’s not finished. nothing i make is ever finished.",
-        "the bit at the end, where it goes quiet? that’s you laughing. i recorded it at the lake.",
-        "you weren’t supposed to hear that part. too late now."
+        "ok. drück auf play und sag gar nichts, bis er vorbei ist.",
+        "er ist nicht fertig. nichts, was ich mache, wird je fertig.",
+        "die stelle ganz am ende, wo es leise wird? das bist du, wie du lachst. hab ich am see aufgenommen.",
+        "den teil solltest du eigentlich gar nicht hören. jetzt ist es zu spät."
       ]
     },
     "rg_milo_sleep": {
-      "title": "Go to sleep, idiot",
+      "title": "Geh schlafen, Idiot",
       "lines": [
-        "it’s 2am. i can see you’re online.",
-        "put the phone down.",
-        "i’ll still be annoying tomorrow, promise."
+        "es ist 2 uhr nachts. ich seh doch, dass du online bist.",
+        "leg das handy weg.",
+        "ich geh dir morgen auch noch auf die nerven, versprochen."
       ]
     },
     "rg_sam_pep": {
-      "title": "Before your big day",
+      "title": "Vor deinem großen Tag",
       "lines": [
-        "right. listen to me.",
-        "you are the most stubborn person i know, and i grew up with you.",
-        "go in there like it’s the last minute of a match and we’re one down.",
-        "call me after. winner buys dinner. you’re the winner. i’m buying."
+        "so. hör mir mal zu.",
+        "du bist die sturste person, die ich kenne, und ich bin mit dir aufgewachsen.",
+        "geh da rein wie in die letzte minute eines spiels, wenn wir eins hinten liegen.",
+        "ruf mich danach an. der gewinner zahlt das essen. du bist der gewinner. ich zahle."
       ]
     },
     "rg_ethan_morning": {
-      "title": "Morning, you",
+      "title": "Morgen, Schlafmütze",
       "lines": [
-        "Morning.",
-        "I left coffee on your side. It’s probably cold now. Sorry.",
-        "Have a good day. Text me when you’re on your way home?"
+        "Morgen.",
+        "Habe dir Kaffee auf deine Seite gestellt. Ist wahrscheinlich schon kalt. Tut mir leid.",
+        "Hab einen schönen Tag. Schreibst du mir, wenn du auf dem Heimweg bist?"
       ]
     },
     "rg_yuna_rain": {
-      "title": "The rain at 4 a.m.",
+      "title": "Der Regen um 4 Uhr morgens",
       "lines": [
-        "this is the rain on our window.",
-        "i recorded it because you said you can’t sleep without noise.",
-        "that’s all. it’s not a gift. it’s just rain."
+        "das ist der regen an unserem fenster.",
+        "hab es aufgenommen, weil du meintest, du kannst ohne geräusche nicht schlafen.",
+        "mehr ist es nicht. kein geschenk. einfach nur regen."
       ]
     },
     "rg_oppa_morning": {
@@ -1929,8 +1929,8 @@
     },
     "cdp_castor_3": {
       "body": [
-        "The house was quiet tonight, and for once I did not mind.",
-        "You asked what I would give you if I could give you anything. I have not answered yet. It deserves the right answer."
+        "Das Haus war heute Abend still, und zum ersten Mal hat es mir nichts ausgemacht.",
+        "Du hast mich gefragt, was ich dir geben würde, wenn ich dir alles geben könnte. Ich habe noch nicht geantwortet. Es verdient die richtige Antwort."
       ]
     }
   },
