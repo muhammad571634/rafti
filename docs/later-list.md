@@ -44,5 +44,5 @@ Tick items off here as they land; add new postponed items under the right headin
 
 ## 5. Waits for art (Cast 2.0 replaced the 55 old characters, 2026-11-10)
 
-1. The owner draws the twelve of Cast 2.0 (`docs/nano-banana-cast-2.md`, Milo first as the test), the agent wires
-   them and deletes the old cast's art from the bundle.
+1. Done 2026-11-10 (`0a6f23b`): the twelve of Cast 2.0 drawn and wired (scene + avatar each); the old cast's art
+   left the bundle earlier (`bd29e8a`, `03a111b`).
