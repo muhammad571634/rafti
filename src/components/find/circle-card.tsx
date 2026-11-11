@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   newText: { fontFamily: fonts.playful, fontSize: 13, lineHeight: 17, color: '#1F1A17' },
   // The leading side: the name and the relation stop short of the face and the button.
-  words: { position: 'absolute', left: space.lg, right: '42%', bottom: 16 },
+  words: { position: 'absolute', left: space.lg, right: '50%', bottom: 16 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   name: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 22, lineHeight: 27, color: colors.onMedia },
   role: { marginTop: 2, fontSize: 14, lineHeight: 18, fontStyle: 'italic', fontWeight: '600', color: colors.onMediaSoft },
