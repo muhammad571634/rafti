@@ -337,7 +337,16 @@ export function QuickAction({
           </View>
         ) : null}
       </View>
-      <Txt style={styles.quickLabel} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
+      {/* Words wrap to a second line ("Секретная записка"); one long word ("Воспоминания",
+          "Erinnerungen") keeps one line and gives up a little size in its wider slot, so the row's
+          labels read as one size (owner, A51 2026-11-11: it shrank to half the others in 76 pt). */}
+      <Txt
+        style={styles.quickLabel}
+        center
+        lines={label.includes(' ') ? 2 : 1}
+        adjustsFontSizeToFit={!label.includes(' ')}
+        minimumFontScale={0.8}
+        maxFontSizeMultiplier={1.2}>
         {label}
       </Txt>
     </PressableScale>
@@ -736,11 +745,12 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     glassOnHue: { backgroundColor: 'rgba(255,255,255,0.55)', borderColor: 'transparent' },
     glassText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.onMedia },
     glassTextOnHue: { color: '#1F1A17' },
-    quickRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18, paddingHorizontal: SIDE + space.sm },
+    quickRow: { flexDirection: 'row', justifyContent: 'space-between', gap: space.xs, marginTop: 18, paddingHorizontal: SIDE },
     quickCenter: { justifyContent: 'center', gap: 36 },
-    quick: { width: 76, alignItems: 'center', gap: 7 },
+    // Each takes its share of the row (a quarter of it with four), never wider than a pair needs.
+    quick: { flex: 1, maxWidth: 112, alignItems: 'center', gap: 7 },
     quickRound: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
-    quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
+    quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, lineHeight: 16, color: systemGround.label },
     badge: {
       position: 'absolute',
       top: -2,

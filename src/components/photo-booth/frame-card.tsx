@@ -2,8 +2,7 @@ import { useId } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle, Defs, Path, Pattern, Rect } from 'react-native-svg';
 
-import type { ClayIconName } from '@/assets/brand/registry';
-import { ClayIcon } from '@/components/ui';
+import { FrameSticker } from '@/components/photo-booth/frame-sticker';
 import type { PhotoFrame } from '@/types';
 
 /**
@@ -93,7 +92,7 @@ export function FrameStickers({ look, width }: { look: PhotoFrame; width: number
     <>
       {look.stickers.slice(0, 2).map((name, i) => (
         <View key={`${name}${i}`} pointerEvents="none" style={[styles.sticker, spots[i]]}>
-          <ClayIcon name={name as ClayIconName} size={size} tile={false} />
+          <FrameSticker name={name} size={size} />
         </View>
       ))}
     </>

@@ -29,6 +29,7 @@ import {
   SFIcon,
   Sheet,
   ShellIcon,
+  SymbolTile,
   Txt,
 } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
@@ -134,7 +135,8 @@ export default function StoreScreen() {
           <Anim name="confetti" size={200} loop={false} style={styles.confetti} />
           {success?.kind === 'plan' ? (
             <>
-              <Icon3D name="crown" size={84} />
+              {/* Apple-style, not the retired clay crown (owner 2026-11-08 / 11-11): the plan's violet. */}
+              <SymbolTile fill={systemColors.purple} ios="crown.fill" icon="diamond" size={84} />
               <Txt variant="h3" center>
                 {success.trial
                   ? t('plans.trialStarted', { plan: t(`plans.name.${success.plan}`), count: TRIAL.days })
@@ -224,9 +226,15 @@ function ShellsTab({
 
         <HeroCard look={signature.shells} style={styles.balance}>
           <ShellIcon size={44} />
+          {/* The figure over its word, both kept clear of the Free pill: side by side, "11 655
+              ракушек" ran under it (A51, 2026-11-11). */}
           <View style={styles.balanceAmount}>
-            <Txt style={styles.balanceValue}>{count(wallet.shells)}</Txt>
-            <Txt style={styles.balanceUnit}>{t('store.shellsUnit')}</Txt>
+            <Txt style={styles.balanceValue} lines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+              {count(wallet.shells)}
+            </Txt>
+            <Txt style={styles.balanceUnit} lines={1}>
+              {t('store.shellsUnit')}
+            </Txt>
           </View>
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => router.push('/gifts')} style={styles.freePill}>
             <Ionicons name="gift-outline" size={16} color={signature.shells.heroInk} />
@@ -398,9 +406,9 @@ const styles = StyleSheet.create({
     marginTop: 22,
     padding: space.lg,
   },
-  balanceAmount: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  balanceAmount: { flex: 1, minWidth: 0 },
   balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: signature.shells.heroInk, fontVariant: ['tabular-nums'] },
-  balanceUnit: { fontSize: 15, fontWeight: '600', color: signature.shells.heroInk },
+  balanceUnit: { marginTop: -2, fontSize: 15, fontWeight: '600', color: signature.shells.heroInk },
   freePill: {
     height: 36,
     paddingLeft: 12,

@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { ClayIconName } from '@/assets/brand/registry';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
 import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
 import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
-import { ClayIcon, LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
+import { StickerGlyph } from '@/components/photo-booth/frame-sticker';
+import { LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
 import {
   FRAME_CAPTION_MAX,
   FRAME_COLORS,
@@ -156,7 +156,7 @@ export default function FrameEditScreen() {
                   accessibilityLabel={t(`frames.stickerNames.${s}`)}
                   accessibilityState={{ selected: on }}
                   style={[styles.sticker, { width: stickerSize, height: stickerSize }, on && styles.stickerOn]}>
-                  <ClayIcon name={s as ClayIconName} size={Math.round(stickerSize * 0.56)} tile={false} />
+                  <StickerGlyph name={s} size={Math.round(stickerSize * 0.5)} />
                 </PressableScale>
               );
             })}
