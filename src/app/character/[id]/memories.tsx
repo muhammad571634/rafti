@@ -15,8 +15,11 @@ import { count, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, fonts, friendAccent, isDark, palette, radius, space, systemGround, type } from '@/theme';
+import { bottomRoom, fonts, night, palette, radius, space, type } from '@/theme';
 import type { MemoryAbout, MemoryItem } from '@/types';
+
+// Always dark (appearance B, owner 2026-11-11): what they keep of you is part of their space.
+const { colors, ground: systemGround, friendAccent } = night;
 
 /** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
 const LOCKED_LINES: [number, number][] = [
@@ -26,9 +29,7 @@ const LOCKED_LINES: [number, number][] = [
 ];
 
 /** Each tab's colour in the bar and its legend: three shades of the one peach, deepest first (0z153). */
-const TAB_COLORS: Record<MemoryAbout, string> = isDark
-  ? { story: palette.apricot300, them: palette.apricot500, you: palette.apricot700 }
-  : { story: palette.apricot800, them: palette.apricot500, you: palette.apricot300 };
+const TAB_COLORS: Record<MemoryAbout, string> = { story: palette.apricot300, them: palette.apricot500, you: palette.apricot700 };
 
 export default function MemoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -106,11 +107,11 @@ export default function MemoriesScreen() {
         : { symbol: { ios: 'bookmark.fill', icon: 'bookmark' }, title: t('memories.empty'), hint: t('memories.emptyHint') };
 
   return (
-    // The four tabs' look (0z153): Apple's white ground, a heavy title by round buttons, the meter as a white
+    // The four tabs' look (0z153) on the night ground (appearance B), a heavy title by round buttons, the meter as a white
     // card, a soft switch of the three tabs, then the chosen tab's memories in white cards; their space,
     // so their accent marks what is pinned.
     <FriendAccent value={characterId ? friendAccent(characterId) : null}>
-      <Screen background={systemGround.ground}>
+      <Screen night background={systemGround.ground}>
         <TitleTop
           title={t('memories.title')}
           onBack={() => router.back()}

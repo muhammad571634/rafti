@@ -364,8 +364,7 @@ export const moduleColors: Record<string, readonly [string, string]> = {
  * mode, plus the tertiary fill and a switch thumb. Every Settings-style tile, status colour and
  * call control takes its hue from here, never from a new hex, so dark mode gets Apple's tones.
  */
-export const systemColors = isDark
-  ? {
+const systemColorsNight = {
       red: '#FF453A',
       orange: '#FF9F0A',
       yellow: '#FFD60A',
@@ -382,8 +381,9 @@ export const systemColors = isDark
       gray2: '#636366',
       fill: 'rgba(118,118,128,0.24)',
       thumb: '#636366',
-    }
-  : {
+};
+
+const systemColorsDay = {
       red: '#FF3B30',
       orange: '#FF9500',
       yellow: '#FFCC00',
@@ -400,7 +400,9 @@ export const systemColors = isDark
       gray2: '#AEAEB2',
       fill: 'rgba(118,118,128,0.12)',
       thumb: '#FFFFFF',
-    };
+};
+
+export const systemColors = isDark ? systemColorsNight : systemColorsDay;
 
 /**
  * The same hues as flat iOS system colours, with their dark-mode variants, for Settings-style row
@@ -517,14 +519,14 @@ const darkSystemGround = {
       card: '#16161E',
       label: '#FFFFFF',
       secondaryLabel: 'rgba(235,235,245,0.6)',
-      fill: systemColors.fill,
+      fill: systemColorsNight.fill,
       /** A dashed outline: an empty slot waiting to be filled. */
       dash: 'rgba(235,235,245,0.3)',
       /** Inside an empty slot. */
       well: 'rgba(118,118,128,0.12)',
-      groundFade: ['rgba(9,9,13,0)', 'rgba(9,9,13,0.94)'] as const,
+      groundFade: ['rgba(9,9,13,0)', 'rgba(9,9,13,0.94)'] as readonly [string, string],
       /** The scroll edge under the status bar once content runs beneath it (Today's `TopEdge`). */
-      topEdge: ['rgba(9,9,13,0.96)', 'rgba(9,9,13,0.8)', 'rgba(9,9,13,0)'] as const,
+      topEdge: ['rgba(9,9,13,0.96)', 'rgba(9,9,13,0.8)', 'rgba(9,9,13,0)'] as readonly [string, string, string],
       /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), solid on Android (no blur, so rows would ghost through). */
       bar: 'rgba(9,9,13,0.72)',
       barSolid: '#09090D',
@@ -549,8 +551,8 @@ export const systemGround = isDark
       fill: systemColors.fill,
       dash: 'rgba(60,60,67,0.29)',
       well: 'rgba(118,118,128,0.06)',
-      groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as const,
-      topEdge: ['rgba(255,255,255,0.96)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0)'] as const,
+      groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as readonly [string, string],
+      topEdge: ['rgba(255,255,255,0.96)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0)'] as readonly [string, string, string],
       bar: 'rgba(255,255,255,0.78)',
       barSolid: '#FFFFFF',
       fillSolid: '#E5E5EA',
@@ -595,8 +597,7 @@ export const signature = {
 /** The playful layer's warm near-black, whatever the phone is set to (appearance B, the chats' cream at night). */
 export const playfulNightGround = '#1A1613';
 
-export const playful = isDark
-  ? {
+const playfulNight = {
       ground: playfulNightGround,
       ink: '#FFFFFF',
       /** A pill or chip that is off. */
@@ -633,9 +634,10 @@ export const playful = isDark
       /** The bar's rim: a light edge at night, as a lit glass edge. */
       barRim: 'rgba(255,255,255,0.12)',
       tabOff: 'rgba(235,235,245,0.6)',
-      groundFade: ['rgba(26,22,19,0)', 'rgba(26,22,19,0.94)'] as const,
-    }
-  : {
+      groundFade: ['rgba(26,22,19,0)', 'rgba(26,22,19,0.94)'] as readonly [string, string],
+};
+
+const playfulDay = {
       ground: '#FBF6EE',
       ink: '#1F1A17',
       chip: '#F3EEE6',
@@ -659,8 +661,10 @@ export const playful = isDark
       /** By day a faint dark hairline: a white rim vanishes on the white ground. */
       barRim: 'rgba(60,60,67,0.12)',
       tabOff: 'rgba(60,60,67,0.6)',
-      groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
-    };
+      groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as readonly [string, string],
+};
+
+export const playful = isDark ? playfulNight : playfulDay;
 
 /** A fill and the text that reads on it (WCAG 4.5 or more, docs/main-tabs-inventory.md). */
 export interface Hue {
@@ -673,8 +677,7 @@ const INK = '#1F1A17';
  * The eight friend hues: a friend's bubble in Chats, their ring on pinned faces and on Us. Light
  * ones carry ink (the blue carries white); the dark-mode set is deeper, all with white.
  */
-export const friendHues: readonly Hue[] = isDark
-  ? [
+const friendHuesNight: readonly Hue[] = [
       { fill: '#9E3B32', ink: '#FFFFFF' },
       { fill: '#8A6400', ink: '#FFFFFF' },
       { fill: '#9A4F12', ink: '#FFFFFF' },
@@ -683,8 +686,9 @@ export const friendHues: readonly Hue[] = isDark
       { fill: '#1D7356', ink: '#FFFFFF' },
       { fill: '#9A3E62', ink: '#FFFFFF' },
       { fill: '#16707F', ink: '#FFFFFF' },
-    ]
-  : [
+];
+
+const friendHuesDay: readonly Hue[] = [
       { fill: '#FF6B5B', ink: INK },
       { fill: '#FFC93C', ink: INK },
       { fill: '#FF9A3C', ink: INK },
@@ -693,7 +697,9 @@ export const friendHues: readonly Hue[] = isDark
       { fill: '#8FE0C0', ink: INK },
       { fill: '#FFB0C8', ink: INK },
       { fill: '#FFE07A', ink: INK },
-    ];
+];
+
+export const friendHues: readonly Hue[] = isDark ? friendHuesNight : friendHuesDay;
 
 /** A character's own hue, the same on every screen (`friendHueIndex`). */
 export const friendColor = (characterId: string): Hue => friendHues[friendHueIndex(characterId, friendHues.length)];
@@ -708,11 +714,9 @@ export interface Accent {
  * The eight friend hues as accents, in `friendHues`' order: deep enough for a white glyph and for a
  * glyph on the ground by day, light enough on black at night (WCAG 3:1 for glyphs and tracks).
  */
-const friendAccents: readonly Accent[] = (
-  isDark
-    ? ['#FF7A6B', '#E8B53A', '#FF9F4A', '#6E9BFF', '#A893F0', '#4FD1A0', '#E8749C', '#5FC3D3']
-    : ['#D93A2B', '#A67400', '#C9620A', '#2563EB', '#7B5CD6', '#1E8C63', '#D6457A', '#A07A00']
-).map((strong) => ({ strong, soft: `${strong}${isDark ? '33' : '1F'}` }));
+const friendAccentsNight: readonly Accent[] = ['#FF7A6B', '#E8B53A', '#FF9F4A', '#6E9BFF', '#A893F0', '#4FD1A0', '#E8749C', '#5FC3D3'].map((strong) => ({ strong, soft: `${strong}33` }));
+const friendAccentsDay: readonly Accent[] = ['#D93A2B', '#A67400', '#C9620A', '#2563EB', '#7B5CD6', '#1E8C63', '#D6457A', '#A07A00'].map((strong) => ({ strong, soft: `${strong}1F` }));
+const friendAccents = isDark ? friendAccentsNight : friendAccentsDay;
 
 /** A character's accent, from the same hue as `friendColor`, on every screen of their own space. */
 export const friendAccent = (characterId: string): Accent => friendAccents[friendHueIndex(characterId, friendAccents.length)];
@@ -832,3 +836,20 @@ export const avatarGradients = [
 ] as const;
 
 export type ColorToken = keyof typeof lightColors;
+
+/**
+ * Every token a screen reads, at night, whatever the phone is set to (appearance B, owner 2026-11-11):
+ * the screens where you are with a character wrap themselves in `NightScope` (`src/theme/scheme.ts`)
+ * and the kit reads this set there. By night the phone's own set is this one.
+ */
+export const night = {
+  colors: nightColors,
+  ground: darkSystemGround,
+  playful: playfulNight,
+  systemColors: systemColorsNight,
+  friendColor: (characterId: string): Hue => friendHuesNight[friendHueIndex(characterId, friendHuesNight.length)],
+  friendAccent: (characterId: string): Accent => friendAccentsNight[friendHueIndex(characterId, friendAccentsNight.length)],
+};
+
+/** The phone's own set (light by day, `night` at night). */
+export const day: typeof night = { colors, ground: systemGround, playful, systemColors, friendColor, friendAccent };

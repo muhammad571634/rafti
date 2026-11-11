@@ -11,7 +11,10 @@ import type { Picture } from '@/components/chat/chat-ground';
 import { SoftSegmented, TitleTop } from '@/components/character/kit';
 import { glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
-import { colors, fonts, gradients, gradientStops, playful, space } from '@/theme';
+import { fonts, gradients, gradientStops, night, space } from '@/theme';
+
+// Always dark (appearance B, owner 2026-11-11): it dresses a chat, and every chat is dark.
+const { colors, playful } = night;
 
 type BackgroundCollection = 'classic' | 'art';
 type BackgroundOption = (typeof chatBackgrounds)[number] | (typeof chatArtBackgrounds)[number];
@@ -63,7 +66,7 @@ export function BackgroundPicker({
   ];
 
   return (
-    <Screen background={playful.ground}>
+    <Screen night background={playful.ground}>
       <TitleTop title={t('background.title')} onBack={() => router.back()} />
       <FlatList
         key={collection}

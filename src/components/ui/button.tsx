@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, gradients, radius, space } from '@/theme';
+import { gradients, radius, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -41,6 +41,7 @@ export function Button({
   right,
   style,
 }: ButtonProps) {
+  const styles = useThemed(sheet);
   const fg = foreground(variant);
 
   return (
@@ -84,6 +85,7 @@ export function Button({
 }
 
 function background(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
       return colors.primaryFill;
@@ -101,6 +103,7 @@ function background(variant: ButtonVariant) {
 }
 
 function foreground(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
       return colors.textOnPrimary;
@@ -119,20 +122,22 @@ function foreground(variant: ButtonVariant) {
 
 const bordered = (variant: ButtonVariant) => variant === 'secondary' || variant === 'ghost';
 
-const styles = StyleSheet.create({
-  base: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  border: {
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  full: { alignSelf: 'stretch' },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    base: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    border: {
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    full: { alignSelf: 'stretch' },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: space.sm,
+    },
+  }),
+);

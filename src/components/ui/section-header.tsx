@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, space } from '@/theme';
+import { space, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -15,6 +15,7 @@ export interface SectionHeaderProps {
 }
 
 export function SectionHeader({ title, onPress, right, style }: SectionHeaderProps) {
+  const { colors } = useTokens();
   const body = (
     <View style={[styles.base, style]}>
       <Txt variant="h3" lines={1} style={styles.title}>

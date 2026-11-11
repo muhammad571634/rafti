@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleShee
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
-import { colors, radius, shadows, space } from '@/theme';
+import { radius, shadows, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -51,6 +51,8 @@ export function Sheet({
   onDone,
   doneDisabled,
 }: SheetProps) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   const insets = useSafeAreaInsets();
   const scrolls = avoidKeyboard || scroll;
   // iOS tucks the card into the home-indicator room; Android's nav bar is solid, so the card stands
@@ -154,58 +156,60 @@ export function Sheet({
   );
 }
 
-const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  scrim: { backgroundColor: colors.scrim },
-  bottomWrap: { justifyContent: 'flex-end', paddingHorizontal: EDGE },
-  centerWrap: { alignItems: 'center', justifyContent: 'center', padding: space.xxl },
-  // A floating card, inset from every edge; a darker hairline edge as iOS 27 draws its glass.
-  bottomCard: {
-    backgroundColor: colors.surface,
-    borderRadius: CORNER,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.glassLine,
-    paddingHorizontal: space.lg,
-    paddingTop: space.sm,
-    paddingBottom: space.xxl,
-  },
-  centerCard: {
-    width: '100%',
-    maxWidth: 340,
-    backgroundColor: colors.surface,
-    borderRadius: radius.xxl,
-    padding: space.xl,
-  },
-  /** Never taller than the room left above the keyboard. */
-  capped: { maxHeight: '100%' },
-  scroll: { flexGrow: 1 },
-  grabber: {
-    alignSelf: 'center',
-    width: 36,
-    height: 5,
-    borderRadius: radius.pill,
-    backgroundColor: colors.borderStrong,
-    marginBottom: space.xs + 2,
-  },
-  header: { flexDirection: 'row', alignItems: 'center', height: 44, marginBottom: space.md },
-  side: { width: 36 },
-  close: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  done: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primaryFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  doneOff: { opacity: 0.4 },
-  centerTitle: { marginBottom: space.md },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    fill: { flex: 1 },
+    scrim: { backgroundColor: colors.scrim },
+    bottomWrap: { justifyContent: 'flex-end', paddingHorizontal: EDGE },
+    centerWrap: { alignItems: 'center', justifyContent: 'center', padding: space.xxl },
+    // A floating card, inset from every edge; a darker hairline edge as iOS 27 draws its glass.
+    bottomCard: {
+      backgroundColor: colors.surface,
+      borderRadius: CORNER,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.glassLine,
+      paddingHorizontal: space.lg,
+      paddingTop: space.sm,
+      paddingBottom: space.xxl,
+    },
+    centerCard: {
+      width: '100%',
+      maxWidth: 340,
+      backgroundColor: colors.surface,
+      borderRadius: radius.xxl,
+      padding: space.xl,
+    },
+    /** Never taller than the room left above the keyboard. */
+    capped: { maxHeight: '100%' },
+    scroll: { flexGrow: 1 },
+    grabber: {
+      alignSelf: 'center',
+      width: 36,
+      height: 5,
+      borderRadius: radius.pill,
+      backgroundColor: colors.borderStrong,
+      marginBottom: space.xs + 2,
+    },
+    header: { flexDirection: 'row', alignItems: 'center', height: 44, marginBottom: space.md },
+    side: { width: 36 },
+    close: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surfaceAlt,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+    done: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.primaryFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    doneOff: { opacity: 0.4 },
+    centerTitle: { marginBottom: space.md },
+  }),
+);

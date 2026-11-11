@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, space } from '@/theme';
+import { space, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -49,6 +49,7 @@ export function ListRow({
   size = 'default',
   style,
 }: ListRowProps) {
+  const { colors } = useTokens();
   const large = size === 'large';
   const titleVariant = large ? 'title' : 'bodyStrong';
   const body = (

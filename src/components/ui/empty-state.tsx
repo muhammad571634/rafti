@@ -2,7 +2,7 @@ import type { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { colors, space } from '@/theme';
+import { space, useTokens } from '@/theme';
 
 import { Button } from './button';
 import { BrandArt } from './mascot';
@@ -30,6 +30,7 @@ export function EmptyState({
   compact,
   symbol,
 }: EmptyStateProps) {
+  const { colors } = useTokens();
   return (
     <View style={[styles.root, compact ? styles.compact : styles.fill]}>
       {symbol ? (

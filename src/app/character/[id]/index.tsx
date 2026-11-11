@@ -12,12 +12,12 @@ import {
   Group,
   LinkRow,
   PeachButton,
-  profileStyles,
   ProfileTop,
   QuickAction,
   useFriendAccent,
   QuickRow,
   TopButton,
+  profileSheet,
 } from '@/components/character/kit';
 import { Header, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
@@ -31,13 +31,18 @@ import { heightLabel } from '@/lib/character-facts';
 import { daysBetween, shortName } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendAccent, space, systemGround } from '@/theme';
+import { fonts, night, space } from '@/theme';
 import type { Character, Relationship } from '@/types';
+
+// Always dark (appearance B, owner 2026-11-11): a friend's page is a moment with them.
+const { colors, ground: systemGround, friendAccent } = night;
+const profileStyles = profileSheet.night;
 
 /**
  * Discovery -> profile -> "Add friend" is the reference app's way in: adding a character opens a
- * chat that starts with their greeting. In the four tabs' look (0z152): Apple's white ground, their
- * picture as Find's photo card with the name on it, one peach action, and white cards below.
+ * chat that starts with their greeting. In the four tabs' look (0z152) on the night ground in both
+ * themes (appearance B): their picture as Find's photo card with the name on it, one peach action,
+ * and cards below.
  */
 export default function CharacterProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -63,7 +68,7 @@ export default function CharacterProfileScreen() {
 
   if (!character) {
     return (
-      <Screen background={colors.bgPlain}>
+      <Screen night background={colors.bgPlain}>
         <Header title={t('errors.notFound')} />
       </Screen>
     );
@@ -85,7 +90,7 @@ export default function CharacterProfileScreen() {
   };
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen night background={systemGround.ground}>
       <ProfileTop
         title={name}
         showTitle={scrolled}

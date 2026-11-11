@@ -10,7 +10,7 @@ import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground'
 import { GroupAvatar } from '@/components/group-avatar';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors, fonts, friendColor, gradients, gradientStops, hitSlop, playful, space, systemColors, systemGround, type Accent } from '@/theme';
+import { fonts, gradients, gradientStops, hitSlop, space, themed, type Accent, useThemed, useTokens } from '@/theme';
 import type { Character } from '@/types';
 
 /**
@@ -35,6 +35,8 @@ const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.72)'] as const;
 
 /** The top row: a round back button, the name once the face card has scrolled away, and a right button. */
 export function ProfileTop({ title, showTitle, onBack, right }: { title: string; showTitle: boolean; onBack: () => void; right?: ReactNode }) {
+  const styles = useThemed(sheet);
+  const { ground: systemGround } = useTokens();
   const { t } = useTranslation();
   return (
     <View style={styles.top}>
@@ -56,6 +58,8 @@ export function ProfileTop({ title, showTitle, onBack, right }: { title: string;
 
 /** A tool screen's top (Memories, Background): a round back button, a heavy title and a right button. */
 export function TitleTop({ title, onBack, right }: { title: string; onBack: () => void; right?: ReactNode }) {
+  const styles = useThemed(sheet);
+  const { ground: systemGround } = useTokens();
   const { t } = useTranslation();
   return (
     <View style={styles.top}>
@@ -83,6 +87,7 @@ export function SoftSegmented<T extends string>({
   onChange: (v: T) => void;
   accessibilityLabel?: string;
 }) {
+  const styles = useThemed(sheet);
   return (
     <View style={styles.segments} accessibilityRole="tablist" accessibilityLabel={accessibilityLabel}>
       {options.map((option) => {
@@ -127,6 +132,8 @@ export function TopButton({
   disabled?: boolean;
   onPress: () => void;
 }) {
+  const styles = useThemed(sheet);
+  const { colors, ground: systemGround } = useTokens();
   const on = peach && !disabled;
   const ink = disabled ? colors.textFaint : on ? colors.textOnPrimary : systemGround.label;
   return (
@@ -154,6 +161,8 @@ export function TopButton({
  * stacked faces in the middle, the name and a line under it in the mint's ink.
  */
 export function GroupFace({ members, name, line }: { members: Character[]; name: string; line?: string }) {
+  const styles = useThemed(sheet);
+  const { playful } = useTokens();
   return (
     <View style={[styles.face, styles.groupFace, { backgroundColor: playful.group.fill }]}>
       <GroupAvatar members={members} size={112} ringColor={playful.group.fill} />
@@ -200,6 +209,8 @@ export function FaceCard({
   /** The profile's tall card; settings take a lower one. */
   tall?: boolean;
 }) {
+  const styles = useThemed(sheet);
+  const { colors, friendColor } = useTokens();
   const { width: screen } = useWindowDimensions();
   const width = screen - SIDE * 2;
   const height = Math.round(Math.min(width * (tall ? 1.12 : 0.74), tall ? 470 : 300));
@@ -265,6 +276,7 @@ export function FaceCard({
 
 /** A clear glass pill on the face card (the "AI" mark, "Voice ready"): the picture shows through. */
 export function GlassPill({ icon, label, accessibilityLabel }: { icon?: ReactNode; label: string; accessibilityLabel?: string }) {
+  const styles = useThemed(sheet);
   const onPicture = useContext(OnPicture);
   return (
     <View style={[styles.glass, !onPicture && styles.glassOnHue]} accessibilityLabel={accessibilityLabel}>
@@ -293,6 +305,8 @@ export function QuickAction({
   accessibilityLabel?: string;
   onPress: () => void;
 }) {
+  const styles = useThemed(sheet);
+  const { ground: systemGround } = useTokens();
   const accent = useContext(AccentContext);
   return (
     <PressableScale
@@ -323,11 +337,14 @@ export function QuickAction({
 
 /** A row of quick actions, spread evenly (or a pair kept together in the middle). */
 export function QuickRow({ center, children }: { center?: boolean; children: ReactNode }) {
+  const styles = useThemed(sheet);
   return <View style={[styles.quickRow, center && styles.quickCenter]}>{children}</View>;
 }
 
 /** The screen's one peach button. */
 export function PeachButton({ label, icon, onPress }: { label: string; icon: keyof typeof Ionicons.glyphMap; onPress: () => void }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <PressableScale onPress={onPress} scaleTo={0.97} accessibilityRole="button" accessibilityLabel={label} style={styles.peach}>
       <Ionicons name={icon} size={20} color={colors.textOnPrimary} />
@@ -340,6 +357,7 @@ export function PeachButton({ label, icon, onPress }: { label: string; icon: key
 
 /** A white radius-24 card; rows run edge to edge with hairlines, a heavy title on top when given. */
 export function Group({ title, right, children }: { title?: string; right?: ReactNode; children: ReactNode }) {
+  const styles = useThemed(sheet);
   return (
     <View style={styles.group}>
       {title || right ? (
@@ -364,6 +382,8 @@ export function Group({ title, right, children }: { title?: string; right?: Reac
  * rounded square in its own colour with a white glyph.
  */
 function RowIcon({ icon, fill }: { icon: keyof typeof Ionicons.glyphMap; fill?: string }) {
+  const styles = useThemed(sheet);
+  const { colors, systemColors } = useTokens();
   const accent = useContext(AccentContext);
   return (
     <View style={[styles.rowIcon, { backgroundColor: fill ?? accent?.strong ?? systemColors.gray }]}>
@@ -397,6 +417,8 @@ export function LinkRow({
   last?: boolean;
   onPress?: () => void;
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -427,6 +449,8 @@ export function LinkRow({
 
 /** How full something is (your profile): a heavy title and the percent, a peach track, a hint under it. */
 export function ProgressCard({ title, percent, hint, onPress }: { title: string; percent: number; hint?: string; onPress?: () => void }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   const body = (
     <>
       <View style={styles.progressHead}>
@@ -487,6 +511,8 @@ export function FaceRow({
   accessibilityRole?: 'button' | 'checkbox';
   accessibilityState?: { checked?: boolean; disabled?: boolean };
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -513,6 +539,8 @@ export function FaceRow({
 
 /** A soft round glyph in a face's place (the peach + of "Add a friend"). */
 export function FaceGlyph({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <View style={styles.faceGlyph}>
       <Ionicons name={icon} size={22} color={colors.brandText} />
@@ -522,6 +550,8 @@ export function FaceGlyph({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
 
 /** The pick circle at a row's end: an empty ring, or a peach disc with a tick. */
 export function PickMark({ on }: { on: boolean }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return on ? (
     <View style={[styles.pick, styles.pickOn]}>
       <Ionicons name="checkmark" size={16} color={colors.textOnPrimary} />
@@ -549,6 +579,7 @@ export function SwitchRow({
   last?: boolean;
   onChange: (v: boolean) => void;
 }) {
+  const styles = useThemed(sheet);
   return (
     <View style={[styles.row, !last && styles.rowLine, disabled && styles.off]}>
       {icon ? <RowIcon icon={icon} fill={fill} /> : null}
@@ -560,6 +591,8 @@ export function SwitchRow({
 
 /** A red row in the last card (clear, reset, block). */
 export function DangerRow({ label, last, onPress }: { label: string; last?: boolean; onPress: () => void }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && styles.rowPressed]}>
       <Txt style={styles.rowText} color={colors.danger}>
@@ -583,6 +616,7 @@ export function ChoiceRow<T extends string>({
   last?: boolean;
   onChange: (v: T) => void;
 }) {
+  const styles = useThemed(sheet);
   return (
     <View style={[styles.choice, !last && styles.rowLine]}>
       <Txt style={styles.rowText}>{label}</Txt>
@@ -593,6 +627,8 @@ export function ChoiceRow<T extends string>({
 
 /** The level card's top: a soft heart, the title and a line under it, and an optional end. */
 export function BondHead({ title, line, heart, end }: { title: string; line: string; heart?: ReactNode; end?: ReactNode }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   const accent = useContext(AccentContext);
   return (
     <View style={styles.bondHead}>
@@ -612,6 +648,7 @@ export function BondHead({ title, line, heart, end }: { title: string; line: str
 
 /** The progress track to the next level, in the friend's accent (peach without one). */
 export function BondTrack({ progress }: { progress: number }) {
+  const styles = useThemed(sheet);
   const accent = useContext(AccentContext);
   return (
     <View style={styles.track}>
@@ -622,6 +659,8 @@ export function BondTrack({ progress }: { progress: number }) {
 
 /** A small round soft button inside a card (the level's ⓘ). */
 export function CardRound({ icon, accessibilityLabel, onPress }: { icon: keyof typeof Ionicons.glyphMap; accessibilityLabel: string; onPress: () => void }) {
+  const styles = useThemed(sheet);
+  const { ground: systemGround } = useTokens();
   return (
     <Pressable onPress={onPress} hitSlop={8} accessibilityRole="button" accessibilityLabel={accessibilityLabel} style={({ pressed }) => [styles.cardRound, pressed && styles.rowPressed]}>
       <Ionicons name={icon} size={19} color={systemGround.label} />
@@ -629,119 +668,126 @@ export function CardRound({ icon, accessibilityLabel, onPress }: { icon: keyof t
   );
 }
 
-export const profileStyles = StyleSheet.create({
-  /** Room between the screen's parts. */
-  gap: { height: 14 },
-  /** A caption under a card or the face, centred. */
-  caption: { marginTop: space.sm, marginHorizontal: SIDE + space.sm, textAlign: 'center', fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  /** A footer under a card, iOS style. */
-  footer: { marginTop: space.sm, marginHorizontal: SIDE + space.lg, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-});
+/** Captions and footers under a friend's cards, for where the screen sits (`useProfileStyles`). */
+export const useProfileStyles = () => useThemed(profileSheet);
 
-const styles = StyleSheet.create({
-  grow: { flex: 1, minWidth: 0 },
-  top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: SIDE, paddingTop: space.xs, paddingBottom: space.sm },
-  round: { minWidth: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  roundSpace: { width: ROUND },
-  pill: { paddingHorizontal: 16 },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
-  pillPeach: { backgroundColor: colors.primaryFill },
-  backGlyph: { marginLeft: -2 },
-  bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: systemGround.label },
-  topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: systemGround.label },
-  hidden: { opacity: 0 },
-  face: { marginHorizontal: SIDE, borderRadius: 30, overflow: 'hidden' },
-  groupFace: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 26, paddingBottom: 22 },
-  groupName: { marginTop: 14, textAlign: 'center' },
-  groupLine: { marginTop: 4, textAlign: 'center' },
-  scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '58%' },
-  faceAvatar: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingBottom: 70 },
-  topLeft: { position: 'absolute', top: 14, left: 14 },
-  faceFoot: { position: 'absolute', left: 20, right: 20, bottom: 18, gap: 2 },
-  // On a picture the words keep to the leading side, clear of the friend.
-  faceFootLeading: { right: '30%' },
-  stretched: { position: 'absolute', top: 0, bottom: 0 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  faceName: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 32, lineHeight: 38 },
-  faceLine: { fontSize: 14, lineHeight: 19, fontWeight: '600' },
-  shadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 5 },
-  // Clear glass on a photo (HIG: the clear variant is for components over rich media).
-  glass: {
-    height: 28,
-    paddingHorizontal: 11,
-    borderRadius: 14,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    backgroundColor: colors.onMediaGlass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-  },
-  glassOnHue: { backgroundColor: 'rgba(255,255,255,0.55)', borderColor: 'transparent' },
-  glassText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.onMedia },
-  glassTextOnHue: { color: '#1F1A17' },
-  quickRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18, paddingHorizontal: SIDE + space.sm },
-  quickCenter: { justifyContent: 'center', gap: 36 },
-  quick: { width: 76, alignItems: 'center', gap: 7 },
-  quickRound: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
-  quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
-  badge: {
-    position: 'absolute',
-    top: -2,
-    right: -4,
-    minWidth: 22,
-    height: 22,
-    paddingHorizontal: 6,
-    borderRadius: 11,
-    backgroundColor: colors.primaryFill,
-    borderWidth: 2,
-    borderColor: systemGround.ground,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeText: { fontSize: 11, fontWeight: '800', color: colors.textOnPrimary },
-  badgeTextOnAccent: { color: colors.white },
-  off: { opacity: 0.42 },
-  peach: { height: 56, marginHorizontal: SIDE, borderRadius: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.primaryFill },
-  // System bold: the button's words come in every script.
-  peachText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
-  group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: 24, backgroundColor: systemGround.card, overflow: 'hidden' },
-  groupHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 4 },
-  groupTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
-  row: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18 },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  rowPressed: { backgroundColor: systemGround.fill },
-  // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
-  meta: { flexShrink: 1, maxWidth: '50%', color: colors.textSecondary },
-  rowIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  rowPill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: colors.primarySofter },
-  rowPillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.brandText },
-  progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
-  progressFigure: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  trackTight: { marginBottom: 0 },
-  progressHint: { marginHorizontal: 18, marginTop: 10, marginBottom: 16, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },
-  faceRowMeta: { marginTop: 1, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  faceGlyph: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
-  pick: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: colors.borderStrong },
-  pickOn: { borderWidth: 0, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
-  choice: { gap: 10, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
-  segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: systemGround.fill },
-  segment: { flex: 1, minHeight: 36, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
-  segmentOn: {
-    // Apple's segmented thumb: white by day (on the fill), #636366 at night.
-    backgroundColor: systemColors.thumb,
-    ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
-  },
-  segmentText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  segmentTextOn: { color: systemGround.label },
-  bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
-  heart: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
-  bondTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
-  bondLine: { fontSize: 13, lineHeight: 18, fontWeight: '600', color: colors.textSecondary },
-  track: { height: 8, marginHorizontal: 18, marginTop: 14, marginBottom: 16, borderRadius: 4, backgroundColor: systemGround.fill, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 4, backgroundColor: colors.primaryFill },
-  cardRound: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-});
+export const profileSheet = themed(({ colors }) =>
+  StyleSheet.create({
+    /** Room between the screen's parts. */
+    gap: { height: 14 },
+    /** A caption under a card or the face, centred. */
+    caption: { marginTop: space.sm, marginHorizontal: SIDE + space.sm, textAlign: 'center', fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+    /** A footer under a card, iOS style. */
+    footer: { marginTop: space.sm, marginHorizontal: SIDE + space.lg, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  }),
+);
+
+const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
+  StyleSheet.create({
+    grow: { flex: 1, minWidth: 0 },
+    top: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: SIDE, paddingTop: space.xs, paddingBottom: space.sm },
+    round: { minWidth: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+    roundSpace: { width: ROUND },
+    pill: { paddingHorizontal: 16 },
+    pillText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
+    pillPeach: { backgroundColor: colors.primaryFill },
+    backGlyph: { marginLeft: -2 },
+    bigTitle: { flex: 1, minWidth: 0, fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: systemGround.label },
+    topTitle: { flex: 1, textAlign: 'center', fontFamily: fonts.playful, fontSize: 18, lineHeight: 24, color: systemGround.label },
+    hidden: { opacity: 0 },
+    face: { marginHorizontal: SIDE, borderRadius: 30, overflow: 'hidden' },
+    groupFace: { alignItems: 'center', paddingHorizontal: 20, paddingTop: 26, paddingBottom: 22 },
+    groupName: { marginTop: 14, textAlign: 'center' },
+    groupLine: { marginTop: 4, textAlign: 'center' },
+    scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '58%' },
+    faceAvatar: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingBottom: 70 },
+    topLeft: { position: 'absolute', top: 14, left: 14 },
+    faceFoot: { position: 'absolute', left: 20, right: 20, bottom: 18, gap: 2 },
+    // On a picture the words keep to the leading side, clear of the friend.
+    faceFootLeading: { right: '30%' },
+    stretched: { position: 'absolute', top: 0, bottom: 0 },
+    nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+    faceName: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 32, lineHeight: 38 },
+    faceLine: { fontSize: 14, lineHeight: 19, fontWeight: '600' },
+    shadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 5 },
+    // Clear glass on a photo (HIG: the clear variant is for components over rich media).
+    glass: {
+      height: 28,
+      paddingHorizontal: 11,
+      borderRadius: 14,
+      overflow: 'hidden',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      backgroundColor: colors.onMediaGlass,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.onMediaHairline,
+    },
+    glassOnHue: { backgroundColor: 'rgba(255,255,255,0.55)', borderColor: 'transparent' },
+    glassText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.onMedia },
+    glassTextOnHue: { color: '#1F1A17' },
+    quickRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18, paddingHorizontal: SIDE + space.sm },
+    quickCenter: { justifyContent: 'center', gap: 36 },
+    quick: { width: 76, alignItems: 'center', gap: 7 },
+    quickRound: { width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
+    quickLabel: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
+    badge: {
+      position: 'absolute',
+      top: -2,
+      right: -4,
+      minWidth: 22,
+      height: 22,
+      paddingHorizontal: 6,
+      borderRadius: 11,
+      backgroundColor: colors.primaryFill,
+      borderWidth: 2,
+      borderColor: systemGround.ground,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    badgeText: { fontSize: 11, fontWeight: '800', color: colors.textOnPrimary },
+    badgeTextOnAccent: { color: colors.white },
+    off: { opacity: 0.42 },
+    peach: { height: 56, marginHorizontal: SIDE, borderRadius: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.primaryFill },
+    // System bold: the button's words come in every script.
+    peachText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
+    group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: 24, backgroundColor: systemGround.card, overflow: 'hidden' },
+    groupHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 4 },
+    groupTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
+    row: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18 },
+    rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+    rowPressed: { backgroundColor: systemGround.fill },
+    // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.
+    rowText: { fontSize: 17, letterSpacing: -0.4 },
+    meta: { flexShrink: 1, maxWidth: '50%', color: colors.textSecondary },
+    rowIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+    rowPill: { height: 26, paddingHorizontal: 10, borderRadius: 13, justifyContent: 'center', backgroundColor: colors.primarySofter },
+    rowPillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.brandText },
+    progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
+    progressFigure: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label, fontVariant: ['tabular-nums'] },
+    trackTight: { marginBottom: 0 },
+    progressHint: { marginHorizontal: 18, marginTop: 10, marginBottom: 16, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+    faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },
+    faceRowMeta: { marginTop: 1, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+    faceGlyph: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
+    pick: { width: 26, height: 26, borderRadius: 13, borderWidth: 1.5, borderColor: colors.borderStrong },
+    pickOn: { borderWidth: 0, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
+    choice: { gap: 10, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
+    segments: { flexDirection: 'row', padding: 3, borderRadius: 20, backgroundColor: systemGround.fill },
+    segment: { flex: 1, minHeight: 36, borderRadius: 17, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
+    segmentOn: {
+      // Apple's segmented thumb: white by day (on the fill), #636366 at night.
+      backgroundColor: systemColors.thumb,
+      ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
+    },
+    segmentText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
+    segmentTextOn: { color: systemGround.label },
+    bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
+    heart: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
+    bondTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
+    bondLine: { fontSize: 13, lineHeight: 18, fontWeight: '600', color: colors.textSecondary },
+    track: { height: 8, marginHorizontal: 18, marginTop: 14, marginBottom: 16, borderRadius: 4, backgroundColor: systemGround.fill, overflow: 'hidden' },
+    fill: { height: '100%', borderRadius: 4, backgroundColor: colors.primaryFill },
+    cardRound: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  }),
+);

@@ -17,7 +17,7 @@ import {
   FriendAccent,
   Group,
   LinkRow,
-  profileStyles,
+  useProfileStyles,
   ProfileTop,
   QuickAction,
   QuickRow,
@@ -63,6 +63,7 @@ type ActionKey =
   | 'block';
 
 export default function CharacterSettingsScreen() {
+  const profileStyles = useProfileStyles();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;

@@ -6,7 +6,7 @@ import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'r
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
-import { Group, profileStyles, TitleTop, TopButton } from '@/components/character/kit';
+import { Group, TitleTop, TopButton, useProfileStyles } from '@/components/character/kit';
 import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
@@ -21,6 +21,7 @@ const NAME_MAX = 40;
  * optional name, then one primary button. The first member says hello in the new chat.
  */
 export default function NewGroupScreen() {
+  const profileStyles = useProfileStyles();
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();

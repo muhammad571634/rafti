@@ -1,7 +1,7 @@
 import { Platform, Switch } from 'react-native';
 
 import { haptic } from '@/lib/haptics';
-import { colors, systemColors } from '@/theme';
+import { useTokens } from '@/theme';
 
 /**
  * The app's one switch, as iOS draws UISwitch: a green track and a white thumb in light and dark,
@@ -9,14 +9,14 @@ import { colors, systemColors } from '@/theme';
  * `activeThumbColor` prop, which the native typings don't know about.
  */
 /** The UISwitch thumb is white in both modes. */
-const THUMB = colors.white;
+const THUMB = '#FFFFFF';
 
 export function Toggle({
   value,
   onChange,
   disabled,
   accessibilityLabel,
-  onColor = systemColors.green,
+  onColor,
 }: {
   value: boolean;
   onChange: (v: boolean) => void;
@@ -25,6 +25,7 @@ export function Toggle({
   /** The "on" track; the iOS green by default. */
   onColor?: string;
 }) {
+  const { colors, systemColors } = useTokens();
   const webProps = Platform.OS === 'web' ? ({ activeThumbColor: THUMB } as object) : {};
 
   return (
@@ -36,7 +37,7 @@ export function Toggle({
         onChange(v);
       }}
       accessibilityLabel={accessibilityLabel}
-      trackColor={{ true: onColor, false: colors.borderStrong }}
+      trackColor={{ true: onColor ?? systemColors.green, false: colors.borderStrong }}
       thumbColor={THUMB}
       ios_backgroundColor={colors.borderStrong}
       {...webProps}

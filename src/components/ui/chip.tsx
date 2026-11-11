@@ -1,6 +1,6 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space } from '@/theme';
+import { radius, space, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -19,6 +19,7 @@ export interface ChipProps {
  * their tints). Without `onPress` it is a plain label, not a disabled button.
  */
 export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipProps) {
+  const { colors } = useTokens();
   const activeBg = tone === 'accent' ? colors.accentSoft : tone === 'neutral' ? colors.surfaceAlt : colors.text;
   const activeFg =
     tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnInk;
