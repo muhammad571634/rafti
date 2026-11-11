@@ -5,7 +5,11 @@ Reference: How We Feel (iOS), 66 screenshots, 23 motion clips and a 16-minute wa
 `assets/heroes/app screen/` (untracked; third-party pictures, never commit or bundle them). We take
 the structure and the manner, never their shapes, characters, words or pictures.
 
-Prototype (nine screens, motion live): https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT
+**Canvas, every screen (52 artboards in 9 rows, full height, our own art): https://claude.ai/artifact/A3giYifq4CjLwTEqDPKMdp**
+This is the layout reference for tasks 1-5: each artboard's title names the screen, each row has a
+note saying what came from the reference and what we drew ourselves. Its shared stylesheet
+(`project/ink.css` on the canvas) holds the exact sizes, radii and hues to copy into the tokens.
+Motion prototype (nine screens, motion live): https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT
 (source: the lead's scratchpad; rebuild from this file's tables if it is lost).
 
 Status: PLAN. Nothing below is built. The owner approves the prototype first (project rule), then
