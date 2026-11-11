@@ -16,7 +16,6 @@ import {
   QuickAction,
   useFriendAccent,
   QuickRow,
-  TopButton,
   profileSheet,
 } from '@/components/character/kit';
 import { Header, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
@@ -94,16 +93,9 @@ export default function CharacterProfileScreen() {
       <ProfileTop
         title={name}
         showTitle={scrolled}
+        // Back only (owner, 2026-11-11): a ⋯ to the chat's settings did what back does from there,
+        // and the chat's header opens the settings anywhere else.
         onBack={() => router.back()}
-        right={
-          isFriend ? (
-            <TopButton
-              icon="ellipsis-horizontal"
-              accessibilityLabel={t('characterProfile.settings')}
-              onPress={() => router.dismissTo(`/character/${character.id}/settings`)}
-            />
-          ) : undefined
-        }
       />
 
       {/* Their own space: quick actions, the level and the row tiles in their colour. */}
