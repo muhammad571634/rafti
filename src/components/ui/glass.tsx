@@ -13,16 +13,16 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { colors, shadows, space } from '@/theme';
+import { colors as dayColors, shadows, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
-/** The iOS-look glass surface: a frosted fill, a hairline and a soft shadow. */
+/** The iOS-look glass surface: a frosted fill, a hairline and a soft shadow (the phone's set; `glass` in a styles pair). */
 export const glassStyle: ViewStyle = {
-  backgroundColor: colors.glass,
+  backgroundColor: dayColors.glass,
   borderWidth: StyleSheet.hairlineWidth,
-  borderColor: colors.glassLine,
+  borderColor: dayColors.glassLine,
   ...shadows.glassButton,
 };
 
@@ -40,13 +40,15 @@ export function GlassButton({
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <PressableScale
       scaleTo={0.9}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
-      style={[glassStyle, label ? styles.pill : styles.round, style]}>
+      style={[styles.glass, label ? styles.pill : styles.round, style]}>
       {icon ? (
         <Ionicons name={icon} size={icon === 'chevron-back' ? 24 : 22} color={colors.text} style={icon === 'chevron-back' && styles.back} />
       ) : (
@@ -62,8 +64,10 @@ export function GlassIcons({
 }: {
   items: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void }[];
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
-    <View style={[glassStyle, styles.capsule]}>
+    <View style={[styles.glass, styles.capsule]}>
       {items.map((item) => (
         <PressableScale
           key={item.label}
@@ -108,6 +112,7 @@ export function useScrolledPast(threshold: number) {
  * and a hairline marks the edge, as iOS 26/27 bars do.
  */
 export function GlassBar({ right, title, scrolled }: { right?: React.ReactNode; title?: string; scrolled?: boolean }) {
+  const styles = useThemed(sheet);
   return (
     <View style={[styles.bar, scrolled && styles.barScrolled]}>
       <BackButton />
@@ -125,6 +130,7 @@ export function GlassBar({ right, title, scrolled }: { right?: React.ReactNode; 
 
 /** iOS inset grouped list: a white card 16pt in, with hairlines between its rows. */
 export function InsetGroup({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+  const styles = useThemed(sheet);
   return <View style={[styles.group, style]}>{children}</View>;
 }
 
@@ -144,6 +150,8 @@ export function InsetRow({
   last?: boolean;
   onPress?: () => void;
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -185,6 +193,8 @@ export function IconRow({
   disabled?: boolean;
   onPress?: () => void;
 }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -219,6 +229,8 @@ export function IconRow({
  * grey lock and the plan line instead. `count` ("1/3") sits at the end.
  */
 export function AddRow({ label, count, locked, onPress }: { label: string; count?: string; locked?: boolean; onPress: () => void }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -236,6 +248,7 @@ export function AddRow({ label, count, locked, onPress }: { label: string; count
 
 /** Large left-aligned title under the glass bar (34pt, iOS large title). */
 export function LargeTitle({ children }: { children: string }) {
+  const styles = useThemed(sheet);
   return (
     <Txt style={styles.largeTitle} accessibilityRole="header">
       {children}
@@ -243,50 +256,53 @@ export function LargeTitle({ children }: { children: string }) {
   );
 }
 
-const styles = StyleSheet.create({
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
-  capsuleItem: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
-  pill: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
-  back: { marginLeft: -2 },
-  label: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: space.lg,
-    paddingTop: space.xs,
-    paddingBottom: space.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'transparent',
-  },
-  barScrolled: { borderBottomColor: colors.borderStrong },
-  // Centred on the screen, between the side buttons (they keep 44pt each side).
-  barTitleWrap: { position: 'absolute', left: 72, right: 72, top: space.xs, bottom: space.sm, justifyContent: 'center' },
-  barTitle: { textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  barSpacer: { width: 44 },
-  group: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
-  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  rowPressed: { backgroundColor: colors.surfaceAlt },
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
-  meta: { color: colors.textSecondary },
-  flex: { flex: 1 },
-  iconRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
-  iconTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  iconBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 6 },
-  iconMeta: { maxWidth: '50%' },
-  hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
-  resting: { opacity: 0.4 },
-  addRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
-  addCount: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  largeTitle: {
-    marginTop: 10,
-    marginHorizontal: space.lg,
-    fontSize: 34,
-    lineHeight: 41,
-    fontWeight: '700',
-    letterSpacing: 0.4,
-    color: colors.text,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    glass: { backgroundColor: colors.glass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.glassLine, ...shadows.glassButton },
+    round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+    capsule: { height: 44, borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 4 },
+    capsuleItem: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
+    pill: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
+    back: { marginLeft: -2 },
+    label: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },
+    bar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: space.lg,
+      paddingTop: space.xs,
+      paddingBottom: space.sm,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: 'transparent',
+    },
+    barScrolled: { borderBottomColor: colors.borderStrong },
+    // Centred on the screen, between the side buttons (they keep 44pt each side).
+    barTitleWrap: { position: 'absolute', left: 72, right: 72, top: space.xs, bottom: space.sm, justifyContent: 'center' },
+    barTitle: { textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+    barSpacer: { width: 44 },
+    group: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
+    row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
+    rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+    rowPressed: { backgroundColor: colors.surfaceAlt },
+    rowText: { fontSize: 17, letterSpacing: -0.4 },
+    meta: { color: colors.textSecondary },
+    flex: { flex: 1 },
+    iconRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
+    iconTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+    iconBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 6 },
+    iconMeta: { maxWidth: '50%' },
+    hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
+    resting: { opacity: 0.4 },
+    addRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
+    addCount: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+    largeTitle: {
+      marginTop: 10,
+      marginHorizontal: space.lg,
+      fontSize: 34,
+      lineHeight: 41,
+      fontWeight: '700',
+      letterSpacing: 0.4,
+      color: colors.text,
+    },
+  }),
+);

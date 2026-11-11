@@ -5,7 +5,7 @@ import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { InsetGroup, Txt } from '@/components/ui';
 import { SUPPORTED_LOCALES, phoneLanguage, phoneLanguageName, setLocale } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { space, themed, useThemed, useTokens } from '@/theme';
 
 /**
  * Sets the screen language (null = the phone's) and the language the characters write in before
@@ -34,6 +34,7 @@ export function LanguageList({
   onPick: (code: string | null) => void;
   groupStyle?: StyleProp<ViewStyle>;
 }) {
+  const styles = useThemed(sheet);
   const { t } = useTranslation();
   return (
     <>
@@ -62,6 +63,8 @@ export function LanguageList({
 }
 
 function Row({ title, hint, on, last, onPress }: { title: string; hint?: string; on: boolean; last?: boolean; onPress: () => void }) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
   return (
     <Pressable
       onPress={onPress}
@@ -86,13 +89,15 @@ function Row({ title, hint, on, last, onPress }: { title: string; hint?: string;
   );
 }
 
-const styles = StyleSheet.create({
-  gap: { marginTop: space.xl },
-  row: { paddingLeft: space.lg },
-  pressed: { backgroundColor: colors.surfaceAlt },
-  body: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg, paddingVertical: 8 },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  flex: { flex: 1 },
-  title: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    gap: { marginTop: space.xl },
+    row: { paddingLeft: space.lg },
+    pressed: { backgroundColor: colors.surfaceAlt },
+    body: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: space.lg, paddingVertical: 8 },
+    line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
+    flex: { flex: 1 },
+    title: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+    hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
+  }),
+);

@@ -846,10 +846,11 @@ export const night = {
   colors: nightColors,
   ground: darkSystemGround,
   playful: playfulNight,
+  aurora: auroraDark,
   systemColors: systemColorsNight,
   friendColor: (characterId: string): Hue => friendHuesNight[friendHueIndex(characterId, friendHuesNight.length)],
   friendAccent: (characterId: string): Accent => friendAccentsNight[friendHueIndex(characterId, friendAccentsNight.length)],
 };
 
 /** The phone's own set (light by day, `night` at night). */
-export const day: typeof night = { colors, ground: systemGround, playful, systemColors, friendColor, friendAccent };
+export const day: typeof night = { colors, ground: systemGround, playful, aurora, systemColors, friendColor, friendAccent };

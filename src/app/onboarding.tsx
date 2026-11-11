@@ -14,6 +14,7 @@ import {
   TextInput,
   useWindowDimensions,
   View,
+  type ViewStyle,
 } from 'react-native';
 import Animated, {
   Easing,
@@ -44,7 +45,6 @@ import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
 import { LockPreview } from '@/components/notifications/lock-preview';
 import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
-import { CARD_SHADOW, STORE } from '@/components/plans/store-look';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
@@ -56,7 +56,7 @@ import { haptic } from '@/lib/haptics';
 import { morningGreetings } from '@/mock';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
-import { bottomRoom, aurora, colors, isDark, space, systemColors } from '@/theme';
+import { bottomRoom, night, NightScope, palette, space } from '@/theme';
 import type { Character, Pronouns } from '@/types';
 
 /** The four people most talk to (docs/cast-2.md §5): two for her, two for him, so the first choice is about taste, not scrolling. */
@@ -67,9 +67,19 @@ const YEAR_ROW = 44;
 const YEAR_VISIBLE = 5;
 const DEFAULT_YEAR = 2000;
 const STAR = 'M.5 0L.62 .38L1 .5L.62 .62L.5 1L.38 .62L0 .5L.38 .38Z';
-const VIOLET = isDark ? '#B9AEFF' : '#9C8CFF';
-const NOTE_BG = isDark ? 'rgba(28,28,30,0.8)' : 'rgba(255,255,255,0.72)';
-const NOTE_BLOCKED = isDark ? 'rgba(255,69,58,0.18)' : 'rgba(255,59,48,0.10)';
+// Always dark (appearance B, owner 2026-11-11): onboarding is where you meet your friend, and its
+// first screen was dark already, so the flow never flips from night to day between steps.
+const { colors, aurora, systemColors } = night;
+const VIOLET = '#B9AEFF';
+const NOTE_BG = 'rgba(28,28,30,0.8)';
+const NOTE_BLOCKED = 'rgba(255,69,58,0.18)';
+/** The Store's peach button and the gift's figure, as the Store draws them at night. */
+const STORE = { cta: palette.apricot400, ctaInk: '#3A1A06', peachInk: '#FFB27A' };
+/** The Store's soft card drop at night (`CARD_SHADOW`). */
+const CARD_SHADOW = Platform.select<ViewStyle>({
+  android: { boxShadow: `0px 6px 10px ${aurora.shadow}59` },
+  default: { shadowColor: aurora.shadow, shadowOpacity: 0.35, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
+})!;
 const SMOOTH = Easing.inOut(Easing.ease);
 
 type Step = 'intro' | 'age' | 'name' | 'gender' | 'meet' | 'notify' | 'gift';
@@ -212,7 +222,7 @@ function OnboardingScreen() {
     // HIG Onboarding: the first screen says what the app is and ends on the one thing to do next.
     // Native Cook's Glass Icon Orbit, ported with our icons and the mascot (owner, 2026-11-08).
     return (
-      <>
+      <NightScope.Provider value>
         <GlassIconOrbit
           onStart={next}
           top={
@@ -227,7 +237,7 @@ function OnboardingScreen() {
           }
         />
         {languageSheet}
-      </>
+      </NightScope.Provider>
     );
   }
 
@@ -268,7 +278,7 @@ function OnboardingScreen() {
   })();
 
   return (
-    <Screen background="aurora">
+    <Screen night background="aurora">
       <View style={styles.top}>
         {/* HIG Privacy: a pre-alert screen offers no way out but the system prompt. */}
         {index > 1 && step !== 'notify' ? (

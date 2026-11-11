@@ -12,10 +12,12 @@ import { shortName } from '@/lib/format';
 import { localized } from '@/i18n/content';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space } from '@/theme';
+import { night, space } from '@/theme';
 import type { DateRecord } from '@/types';
 
-const PINK = isDark ? '#FF6B8A' : '#D70F4C';
+// Always dark (appearance B, owner 2026-11-11): the dates you had together, on the night ground.
+const { colors } = night;
+const PINK = '#FF6B8A';
 
 /**
  * "Our dates" (2026-10-22, coded straight from the Date screens' look at the owner's word): every
@@ -82,7 +84,7 @@ export default function DateAlbumScreen() {
 
   if (dates.length === 0) {
     return (
-      <Screen background={colors.bg}>
+      <Screen night background={colors.bg}>
         <GlassBar />
         <LargeTitle>{t('date.albumTitle')}</LargeTitle>
         <EmptyState title={t('date.albumEmpty')} actionLabel={t('common.planDate')} onAction={() => router.back()} />
@@ -91,7 +93,7 @@ export default function DateAlbumScreen() {
   }
 
   return (
-    <Screen background={colors.bg}>
+    <Screen night background={colors.bg}>
       <GlassBar title={t('date.albumTitle')} scrolled={scrolled} />
       <ScrollView
         onScroll={onScroll}

@@ -2,15 +2,14 @@ import { GlassView, isGlassEffectAPIAvailable, isLiquidGlassAvailable } from 'ex
 import { Image } from 'expo-image';
 import { Platform, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 
-import { aurora, colors, isDark } from '@/theme';
+import { night, themed, useNight, useThemed, useTokens } from '@/theme';
 
 /**
  * The approved canvas's four soft colour fields (peach, lavender, mint, pink; or the northern
  * lights in dark mode), rendered once by scripts/build-aurora.py from the palette in colors.ts.
  */
-const GROUND = isDark
-  ? require('../../../assets/images/aurora-dark.png')
-  : require('../../../assets/images/aurora-light.png');
+const GROUND_DARK = require('../../../assets/images/aurora-dark.png');
+const GROUND_LIGHT = require('../../../assets/images/aurora-light.png');
 
 /**
  * The aurora ground behind the content, as one still picture. HIG Materials keeps the app's
@@ -20,9 +19,12 @@ const GROUND = isDark
  * picture is decoded once and shared by every screen.
  */
 export function AuroraBackground() {
+  const styles = useThemed(sheet);
+  // Inside an always-dark screen (`NightScope`) the northern lights whatever the phone is set to.
+  const ground = useNight() ? GROUND_DARK : GROUND_LIGHT;
   return (
     <View style={[StyleSheet.absoluteFill, styles.base]} pointerEvents="none">
-      <Image source={GROUND} style={StyleSheet.absoluteFill} contentFit="cover" transition={0} />
+      <Image source={ground} style={StyleSheet.absoluteFill} contentFit="cover" transition={0} />
     </View>
   );
 }
@@ -48,6 +50,8 @@ export function AuroraGlass({
   on?: boolean;
   prominent?: boolean;
 }) {
+  const styles = useThemed(sheet);
+  const { colors, aurora } = useTokens();
   if (nativeGlass) {
     const tint = prominent ? colors.primaryFill : on ? aurora.glassOn : undefined;
     return (
@@ -59,18 +63,20 @@ export function AuroraGlass({
   return <View style={[styles.glass, on && styles.glassOn, prominent && styles.prominent, style]}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
-  base: { backgroundColor: aurora.base, overflow: 'hidden' },
-  glass: {
-    backgroundColor: aurora.glass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: aurora.glassEdge,
-    borderTopColor: aurora.glassRim,
-    shadowColor: aurora.shadow,
-    shadowOpacity: isDark ? 0.4 : 0.12,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  glassOn: { backgroundColor: aurora.glassOn },
-  prominent: { backgroundColor: colors.primaryFill, borderTopColor: aurora.glassEdge },
-});
+const sheet = themed(({ colors, aurora }) =>
+  StyleSheet.create({
+    base: { backgroundColor: aurora.base, overflow: 'hidden' },
+    glass: {
+      backgroundColor: aurora.glass,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: aurora.glassEdge,
+      borderTopColor: aurora.glassRim,
+      shadowColor: aurora.shadow,
+      shadowOpacity: aurora === night.aurora ? 0.4 : 0.12,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 6 },
+    },
+    glassOn: { backgroundColor: aurora.glassOn },
+    prominent: { backgroundColor: colors.primaryFill, borderTopColor: aurora.glassEdge },
+  }),
+);

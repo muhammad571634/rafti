@@ -5,6 +5,7 @@ import { FlatList, Pressable, StyleSheet, View, type ListRenderItemInfo, type Na
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MessageBubble, TypingRow } from '@/components/chat';
+import { ChatGroundProvider } from '@/components/chat/chat-ground';
 import { useFollowNewest } from '@/components/chat/follow-newest';
 import { runOf } from '@/components/chat/runs';
 import { GroupAvatar } from '@/components/group-avatar';
@@ -19,8 +20,11 @@ import { haptic } from '@/lib/haptics';
 import { isPaused, isPlaying, lineMessage, nextTarget } from '@/lib/streams';
 import { todayKey } from '@/mock/time';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { night, space } from '@/theme';
 import type { Character, Message } from '@/types';
+
+// Always dark (appearance B, owner 2026-11-11): a live stream is a moment with them.
+const { colors } = night;
 
 /**
  * Watching a stream: the two talk in bubbles as in a group chat, the one writing shows as typing,
@@ -103,7 +107,7 @@ export default function StreamScreen() {
 
   if (!stream || pair.length < 2) {
     return (
-      <Screen background={colors.bgPlain}>
+      <Screen night background={colors.bgPlain}>
         <Header title={t('errors.notFound')} />
       </Screen>
     );
@@ -156,7 +160,9 @@ export default function StreamScreen() {
   );
 
   return (
-    <Screen background={colors.bgPlain}>
+    <Screen night background={colors.bgPlain}>
+      {/* Dark glass bubbles and white notes, as a chat on a picture (`chat-ground.tsx`). */}
+      <ChatGroundProvider value>
       <GlassBar
         title={names}
         scrolled={scrolled}
@@ -196,6 +202,7 @@ export default function StreamScreen() {
         }
       />
       {bar}
+      </ChatGroundProvider>
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
     </Screen>
   );
