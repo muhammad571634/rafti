@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z193. "Ink": the whole frontend moves to a modern-minimal look, logic untouched; plan, six Opus task files and a prototype (2026-11-11, Claude Fable, lead). NEXT: the owner's yes or edits on the prototype, then the lead writes the motion kit and Opus starts task 0
+
+- **Owner's ask**: study every screenshot and the 16-minute video in `assets/heroes/app screen/` (How We Feel, iOS: 66 screens, 23 motion clips), take inspiration, move our app to that modern minimalism; "the frontend becomes this simple and modern, the logic we have stays". Fable plans the screens, architecture and motion and writes the animations; Opus 5.5 writes the screen code from exact tasks.
+- **Done**: every screenshot, ~320 frames of the full video (one every 3 s) and nine frames of each clip were looked at. `docs/design-ink.md`: what the reference does (12 points), the Ink tokens, kit and motion kit, a screen-by-screen table for all our routes, the five standing rules it would replace, the order of work. Task files: `docs/agent-tasks/ink-rules.md` (shared: look changes, logic does not; off-limits folders; worktree and git rules) and `ink-0-foundation.md` … `ink-5-features-moments.md` with disjoint file lists. Prototype: https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT (Today, Chats, Find, onboarding with the bubble picker, a friend's page, Us, profile, the writing wait, level-up).
+- **Not done**: no app code. The prototype was not looked at in a browser before publishing (the pane cannot drive a local file). The folder `assets/heroes/app screen/` (83 MB, another app's pictures) is untracked: it must never be committed or required from code; better moved out of `assets/`.
+- Also this session (earlier): portraits framed on each face (`6942256`, OTA `01a1c8e2`), quick create told not to guess the user's gender (server prompt: needs the owner's deploy).
+
+Still to do:
+1. Owner: look at the prototype; say yes or what to change; pick "always dark" or "follow the phone" (the plan's §4 lists the five rules that change).
+2. Lead: after the yes, write `src/components/ink/motion/` (PulseRing, DotField, CountIn, GrowInto, BubbleField, DiscStat, LineIn), start Opus on task 0, then tasks 1-5 in their own worktrees; read every diff; drive each chain on the A51.
+3. Owner: the server deploy for the quick-create gender line (both command forms were given in chat).
+4. Ask the owner: should the create form show "You two" fields in the user's voice (today they read as written to the character).
+5. Not driven yet on the A51: creating a character by hand (secret only), a fresh install.
+
 ### 0z192. Cast 2.0: twelve present-day people replace the 55 in 7 worlds; one relation block for every character (2026-11-10, Claude, cast session). NEXT: the owner applies migration b10 (cloud rows), Gemini translates (brief below), then the create flow asks the three questions (phase C)
 
 - **Owner's ask**: 55 characters in 7 themed worlds are too many and feel invented. A small cast of present-day people, the circle a real person has around them, so the user never feels alone; chosen by what people actually like (Character.AI, trends); all new; everything behind the characters stays, and a user-made character runs on the same logic. Approved the twelve in `docs/cast-2.md` ("Ma'qul, boshlang"). Plan (phases A-E): `C:\Users\joray\.claude\plans\hozir-men-qarab-nima-replicated-fountain.md`.
