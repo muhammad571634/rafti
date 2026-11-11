@@ -408,8 +408,7 @@ const styles = StyleSheet.create({
     right: '15%',
     height: '45%',
     borderRadius: 999,
-    backgroundColor: 'rgba(251,191,36,0.10)',
-    boxShadow: '0px 0px 60px 30px rgba(251,191,36,0.2)',
+    experimental_backgroundImage: 'radial-gradient(circle, rgba(251,191,36,0.34) 0%, rgba(251,191,36,0.12) 45%, rgba(251,191,36,0) 72%)',
   },
   datePill: {
     alignSelf: 'center',

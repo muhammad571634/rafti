@@ -8,11 +8,18 @@ import { useDayKey } from '@/hooks/use-day-key';
 import { shortName } from '@/lib/format';
 import { monthStart, talkShares, type TalkShare } from '@/lib/talk-shares';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { friendColor, isDark, space, systemGround } from '@/theme';
+import { isDark, space, systemGround } from '@/theme';
 
 const HEIGHT = 168;
+const SHINE = ['rgba(255,255,255,0.3)', 'rgba(255,255,255,0)'] as const;
 /** An orb's diameter from its share: never so small its glow vanishes, never wider than the card's middle. */
 const orbSize = (percent: number) => Math.round(76 + percent * 1.3);
+/**
+ * One luminous hue per place, not the friend's own: friend hues are muted and two friends can share
+ * one (Mia and Milo both drew violet on the A51), and the legend must tell them apart.
+ */
+const ORB_HUES = ['#7C6CF6', '#F472B6', '#2DD4BF'] as const;
+
 /** Where each orb sits, as offsets from the card's centre: the biggest left, the others overlapping it. */
 const SPOTS = [
   { x: -46, y: 6 },
@@ -22,8 +29,8 @@ const SPOTS = [
 
 /**
  * "Who you talked with · November" (owner's brief, 2026-11-11, from the dark prototype): up to three
- * overlapping glowing glass orbs, one per friend, sized by their share of this month's lines, in
- * the friend's own hue, blending where they overlap (screen at night, multiply by day), with a
+ * overlapping glowing glass orbs, one per friend, sized by their share of this month's lines, one
+ * luminous hue per place (`ORB_HUES`), blending where they overlap (screen at night, multiply by day), with a
  * legend of names and whole percents in tabular figures. Hidden until two friends have talked
  * this month. Read only from the store; worked out again when the chats or the day change.
  */
@@ -63,7 +70,7 @@ export const TalkedWith = memo(function TalkedWith() {
           .reverse()
           .map(({ s, i }) => {
             const size = orbSize(s.percent);
-            const hue = friendColor(s.characterId).fill;
+            const hue = ORB_HUES[i];
             return (
               <View
                 key={s.characterId}
@@ -79,16 +86,16 @@ export const TalkedWith = memo(function TalkedWith() {
                   },
                 ]}>
                 <LinearGradient colors={[`${hue}F2`, `${hue}99`]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: size / 2 }]} />
-                {/* A specular highlight on the glass, top left. */}
-                <View style={[styles.shine, { width: size * 0.42, height: size * 0.24, borderRadius: size }]} />
+                {/* Light falling on the glass from the top left, fading out before the middle. */}
+                <LinearGradient colors={SHINE} start={{ x: 0.15, y: 0.05 }} end={{ x: 0.55, y: 0.6 }} style={StyleSheet.absoluteFill} />
               </View>
             );
           })}
       </View>
       <View style={styles.legend}>
-        {shares.map((s) => (
+        {shares.map((s, i) => (
           <View key={s.characterId} style={styles.legendItem}>
-            <View style={[styles.dot, { backgroundColor: friendColor(s.characterId).fill }]} />
+            <View style={[styles.dot, { backgroundColor: ORB_HUES[i] }]} />
             <Txt style={styles.legendName} lines={1} maxFontSizeMultiplier={1.3}>
               {nameOf(s)}
             </Txt>
@@ -121,7 +128,6 @@ const styles = StyleSheet.create({
     mixBlendMode: isDark ? 'screen' : 'multiply',
     opacity: isDark ? 0.92 : 0.85,
   },
-  shine: { position: 'absolute', top: '14%', left: '18%', backgroundColor: 'rgba(255,255,255,0.28)' },
   legend: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', columnGap: space.lg, rowGap: space.xs, marginHorizontal: space.lg },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6, maxWidth: 160 },
   dot: { width: 10, height: 10, borderRadius: 5 },

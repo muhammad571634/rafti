@@ -412,7 +412,7 @@ function WayRow({
 
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
-const GLOW = 120;
+const GLOW = 200;
 const PEEK_ROOM = 40;
 /** On the red card: a day still to come, and the surprise day's chip. */
 const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
@@ -420,14 +420,13 @@ const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
 const styles = StyleSheet.create({
   mascotGlow: {
     position: 'absolute',
-    top: -GLOW * 0.62,
+    top: -GLOW * 0.7,
     left: '50%',
     marginLeft: -GLOW / 2,
     width: GLOW,
     height: GLOW,
     borderRadius: GLOW / 2,
-    backgroundColor: 'rgba(251,191,36,0.12)',
-    boxShadow: '0px 0px 48px 24px rgba(251,191,36,0.22)',
+    experimental_backgroundImage: 'radial-gradient(circle, rgba(251,191,36,0.34) 0%, rgba(251,191,36,0.12) 45%, rgba(251,191,36,0) 72%)',
   },
   bar: {
     height: 44,
