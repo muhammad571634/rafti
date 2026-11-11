@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z195. The owner's HIG brief on the CURRENT screens (not Ink): 4 defects, a night for late use, always-dark players, 3 elements of the dark prototype (2026-11-11, Claude Opus 5.5). NEXT: drive dark mode on the A51, then the owner's word on the in-app appearance switch
+
+- **Owner's ask** (a pasted brief + 16 A51 screenshots, `OneDrive\Pictures\menga.zip`): keep the current UI (2x2 widgets, Wallet passes, folder pockets, mascots, wheel, polaroids); fix 4 defects; a 3-tier dark mode; take the LED dot field, the talk orbs and tabular figures from the dark prototype. Read as: Ink's full black redesign is not wanted now; its pieces are folded into today's screens. Owner then: "the buttons stay, go on".
+- **Defects fixed** (`4480cc3`, `4a07ea8`, OTA `01a1caee`): Today's content no longer runs under the status bar (`TopEdge` in `(tabs)/index.tsx`: a dark veil over the picture, the ground after it); the Android tab bar has a 1 pt rim and a wide soft shadow (it was already clear of content: every tab pads `TAB_BAR_HEIGHT + inset + 32`; no blur on Android, measured too slow on the A51); Chats' swipe actions are rounded pills with two-line labels (92 pt slots so "Выключить звук" breaks between words); Today's "Message" field is 44 pt frosted glass. Checked on the A51 (APK).
+- **Night and tiers** (`affab3c`): dark ground `#09090D`, cards `#16161E` (`nightColors`, `systemGround`); Today widgets at night are stained glass (`moduleGlass`); always dark: radio player (`immersive` tokens, `RoundButton dark`), date round (`nightColors` as `ink`), calls (`gradients.call` obsidian), bedtime and alarms (`sleepColors` obsidian, was navy); Photo Booth / board on `paperRoom`, polaroids on `warmPaper`; Wallet passes get a lit top edge and deeper shadow; amber glow behind the mascot on Gifts and the diary's own cover at night (the diary otherwise untouched).
+- **Dark prototype pieces**: `DotMatrix` (`src/components/ui/dot-matrix.tsx`, one Skia runtime shader, clock only while focused, still under Reduce Motion) behind the radio cover and the bedtime ring; `TalkedWith` orbs on Us between the bond card and the calendar (`src/lib/talk-shares.ts`, 5 tests; new key `us.talkedWith` in 14 locales); tabular figures on Today's big number and the Gifts count (most counters already had them).
+- **Not done, on purpose**: (1) the in-app Auto / Dark / Light switch: HIG Dark Mode says "avoid offering an app-specific appearance setting", and the theme is read once at launch, so a switch needs a restart; ask the owner. (2) The chat room's dark bubbles from the brief: the chat is the owner's "leave it" screen; ask. (3) The typing dots as a dot field: typing dots stay by standing rule. (4) Card rims / specular highlights on every grouped card: only the new orbs card has one.
+- Checks: tsc 0, npm test 921/921, check:locales PASS. Dark mode not yet looked at on the phone when this was written.
+
+Still to do:
+1. Drive dark mode on the A51 (Today widgets, Us orbs, radio, bedtime, date round, booth, board, dating) and fix what is weak.
+2. Owner: the in-app appearance switch (HIG advises against) and dark chat bubbles (chat is a "leave it" screen).
+
 ### 0z194. Ink: the Apple HIG pass over the 52-screen canvas; owner approved the direction (2026-11-11, Claude Opus 5.5). NEXT: the owner looks at the polished canvas, then the lead's motion kit and Opus task 0 start from `docs/design-ink-polish.md`
 
 - **Owner's ask**: "I saw the 52 screens, the direction is good; now polish them deeper, everything from Apple's own design foundations (developer.apple.com/design), with a prototype."
