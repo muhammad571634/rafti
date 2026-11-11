@@ -12,6 +12,8 @@ note saying what came from the reference and what we drew ourselves. Its shared 
 Motion prototype (nine screens, motion live): https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT
 (source: the lead's scratchpad; rebuild from this file's tables if it is lost).
 
+**Apple HIG pass (2026-11-11, owner approved the direction): `docs/design-ink-polish.md` amends this plan (type scale, label colours, segmented controls, the floating glass tab bar, settings tiles, motion and haptics rules, follow the phone for dark / light). Where the two differ, the polish file wins.**
+
 Status: PLAN. Nothing below is built. The owner approves the prototype first (project rule), then
 task 0 lands, then the screen tasks. Until then `docs/design-style.md` is still the law.
 

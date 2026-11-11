@@ -7,9 +7,9 @@ No screen changes in this task. When it is done the app looks exactly as before.
 
 1. **Tokens** (`src/theme/colors.ts`, `src/theme/typography.ts`, `src/theme/layout.ts`, exported
    from `src/theme/index.ts`):
-   - `ink` with the dark and light values from the plan's table, chosen by the same `isDark` the
-     file already uses. If the lead's prototype note at the top of `docs/design-ink.md` says
-     "always dark", export the dark set for both.
+   - `ink` with the dark and light values from `docs/design-ink-polish.md` §2 (Apple's system
+     backgrounds, fills, separators and label colours; they replace the plan's table), chosen by the same
+     `isDark` the file already uses. The app follows the phone (polish §3).
    - `friendGlow(characterId): { from: string; to: string; word: string }` on the same index as
      `friendHues` / `friendAccent` (`friendHueIndex`): `from` the hue at full strength, `to` a
      neighbour 30° round the wheel, `word` the hue lifted to at least 4.5:1 on `ink.ground`.
@@ -43,6 +43,13 @@ No screen changes in this task. When it is done the app looks exactly as before.
    - `InkSheet`: the existing `Sheet` (`src/components/ui/sheet.tsx`) restyled by props, never a
      second sheet implementation; height capped to the screen.
    - `BigNumeral`: serif numeral, tabular.
+   - From the HIG pass (`docs/design-ink-polish.md` §4, §5, §8): `InkSegment` (2-5 equal segments, the
+     filter rows), `SettingsTile` (30 pt rounded square, system colour, white glyph; used as `InkRow`
+     `leading`), a shared `usePress` hook (scale 0.97, opacity 0.8, spring damping 18 / stiffness 320) that
+     every pressable kit part uses, a `badge` on the tab bar item, and the light set from day one (theme
+     follows `useColorScheme`; `forceDark` prop on `InkScreen` for the moments that stay dark).
+   - Type variants follow the iOS Large steps in the polish file §1 (34/41, 28/34, 22/28, 20/25 serif;
+     17/22, 15/20, 13/18, 12/16 system), not the sizes in the plan table.
 3. **Gallery**: `src/app/ink-gallery.tsx`, reachable only behind the existing `SHOW_DEV` switch
    in Profile: every kit part in every state, in both themes, with a 40-character Russian label.
    This is what the lead checks on the A51.

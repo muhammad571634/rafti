@@ -1,7 +1,8 @@
 # Ink tasks: rules every task follows
 
 Read first: `AGENTS.md`, `.agents/rules/project-memory.md`, `docs/design-ink.md` (the plan and the
-token / kit names), then your own task file. The lead on this work is Fable; questions about look
+token / kit names), `docs/design-ink-polish.md` (the Apple HIG pass: it overrides the plan where they
+differ), then your own task file. Values come from the canvas stylesheet `project/ink.css` (v14+). The lead on this work is Fable; questions about look
 or structure go into your report, not into a guess.
 
 ## The one rule

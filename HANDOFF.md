@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z194. Ink: the Apple HIG pass over the 52-screen canvas; owner approved the direction (2026-11-11, Claude Opus 5.5). NEXT: the owner looks at the polished canvas, then the lead's motion kit and Opus task 0 start from `docs/design-ink-polish.md`
+
+- **Owner's ask**: "I saw the 52 screens, the direction is good; now polish them deeper, everything from Apple's own design foundations (developer.apple.com/design), with a prototype."
+- **Done**: 19 HIG pages read through the JSON endpoint (typography, color, dark mode, layout, buttons, tab bars, lists, accessibility, sheets, motion, haptics, loading, progress, segmented controls, toggles, text fields, materials, onboarding, charts). `docs/design-ink-polish.md` turns them into rules, each citing its page; it amends `docs/design-ink.md`, and `ink-rules.md` / `ink-0-foundation.md` now point at it.
+- **Canvas** (same link, v18): https://claude.ai/artifact/A3giYifq4CjLwTEqDPKMdp. Shared `ink.css` rewritten (iOS Large type steps, Apple label / fill / separator colours, segmented control, floating glass tab bar with a badge, inset separators, settings tiles, press state, light set, one-time motion that stops under Reduce Motion). Boards rewritten: Today, Chats, Find, Us, Friend, Profile, Store, Calls, Contacts, Onboarding 4, Writing, Level up; new row 10: Today, Chats, Profile in light. A blue sticky at the top left lists the pass in Uzbek. Looked at in the browser pane: Today, Chats, Us, Find, Profile, Onboarding 4, Writing, Today light.
+- **Bugs found in the first canvas and fixed**: (1) one class `on` meant both "words on a picture" (absolute) and "chosen", so chosen chips, radios and switches fell to the bottom of their screens; (2) the button reset out-ranked every class, so tiles, glow cards, chips, round buttons and picture buttons had no fill (onboarding's friend cards showed no picture); (3) blocks squeezed to fit a fixed frame (Find's featured card was cut); (4) a key word took the page's hue, not its card's friend.
+- **Decision proposed to the owner (HIG Dark Mode)**: follow the phone's light / dark setting, no switch in the app; call, alarm, bedtime, level-up and the writing wait stay dark.
+- No app code changed.
+
+Still to do:
+1. Owner: look at the polished canvas; yes or edits; confirm "follow the phone".
+2. Lead: motion kit with the polish file's changes (LineIn once per session, PulseRing breathes only when something waits, GrowInto interruptible, CountIn skippable), then Opus task 0.
+3. Boards not rewritten in this pass changed only through the stylesheet; check each when its Opus task starts (filters there still use chips: Inbox, Memories, Ledger become segments per polish §4).
+
 ### 0z193. "Ink": the whole frontend moves to a modern-minimal look, logic untouched; plan, six Opus task files and a prototype (2026-11-11, Claude Fable, lead). NEXT: the owner's yes or edits on the prototype, then the lead writes the motion kit and Opus starts task 0
 
 - **Owner's ask**: study every screenshot and the 16-minute video in `assets/heroes/app screen/` (How We Feel, iOS: 66 screens, 23 motion clips), take inspiration, move our app to that modern minimalism; "the frontend becomes this simple and modern, the logic we have stays". Fable plans the screens, architecture and motion and writes the animations; Opus 5.5 writes the screen code from exact tasks.
