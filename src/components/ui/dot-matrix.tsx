@@ -1,7 +1,7 @@
 import { Canvas, Fill, Shader, Skia } from '@shopify/react-native-skia';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect } from 'react';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useDerivedValue, useFrameCallback, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 
 /**
@@ -12,7 +12,7 @@ import { useDerivedValue, useFrameCallback, useReducedMotion, useSharedValue, wi
  * jumps. The clock runs only while the screen is focused and `active`; under Reduce Motion the
  * field holds one still frame.
  */
-const SOURCE = Skia.RuntimeEffect.Make(`
+const SHADER = `
 uniform float2 res;
 uniform float t;
 uniform float3 col;
@@ -37,7 +37,24 @@ half4 main(float2 p) {
   float lit = 0.35 + 0.65 * wave;
   return half4(col * lit * a, a);
 }
-`);
+`;
+
+/**
+ * Compiled on first use, never at import: the web export renders every route under Node, where
+ * Skia is not loaded and `RuntimeEffect.Make` at module scope threw (the 2026-11-11 OTA failed on it).
+ */
+let effect: ReturnType<typeof Skia.RuntimeEffect.Make> | undefined;
+function dotEffect() {
+  if (Platform.OS === 'web') return null;
+  if (effect === undefined) {
+    try {
+      effect = Skia.RuntimeEffect.Make(SHADER);
+    } catch {
+      effect = null;
+    }
+  }
+  return effect;
+}
 
 /** "#RRGGBB" to 0..1 channels for the shader. */
 function rgb(hex: string): [number, number, number] {
@@ -83,12 +100,13 @@ export function DotMatrix({
   const col = rgb(color);
   const uniforms = useDerivedValue(() => ({ res: [size, size], t: clock.value, col, energy: level.value, cells }), [size, cells, col[0], col[1], col[2]]);
 
-  if (!SOURCE) return <View style={[{ width: size, height: size }, style]} />;
+  const source = dotEffect();
+  if (!source) return <View style={[{ width: size, height: size }, style]} />;
   return (
     <View style={[{ width: size, height: size }, style]} pointerEvents="none" accessible={false}>
       <Canvas style={StyleSheet.absoluteFill}>
         <Fill>
-          <Shader source={SOURCE} uniforms={uniforms} />
+          <Shader source={source} uniforms={uniforms} />
         </Fill>
       </Canvas>
     </View>
