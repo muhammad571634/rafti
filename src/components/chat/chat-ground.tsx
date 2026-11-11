@@ -5,6 +5,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
+import { coverFocus, PORTRAIT_ASPECT, portraitFace, portraitStretch, stretchLeft } from '@/lib/portrait-focus';
 import { colors, gradients, gradientStops } from '@/theme';
 import type { Character } from '@/types';
 
@@ -27,6 +28,8 @@ export interface Picture {
    * none for a picture that fills the frame as it is (a wide scene slides instead).
    */
   stretch?: number;
+  /** Where their face sits across the picture (0..1), for `stretchLeft`; the middle when not given. */
+  faceX?: number;
 }
 
 /** Where a friend's face sits on a card with words on it: the trailing side (owner, 2026-11-08, every character). */
@@ -41,15 +44,30 @@ export const FACE_AT = 0.68;
 export function portraitOf(character: Character, aspect: number, at = 0.5): Picture | undefined {
   const stretch = 2 * Math.max(at, 1 - at);
   const tall = PORTRAITS[character.id];
-  if (tall != null) return { source: tall, position: { top: 0, left: '50%' }, stretch };
+  if (tall != null) {
+    // Each painting has its face somewhere else: draw it only as wide as its face needs, then slide.
+    const face = portraitFace(character.id);
+    const wide = portraitStretch(face, aspect, at, stretch);
+    return { source: tall, position: asPosition(coverFocus(face, PORTRAIT_ASPECT, aspect * wide, at)), stretch: wide, faceX: face.x };
+  }
   const scene = HEROES[character.id];
   if (scene != null) return { source: scene, position: sceneFocus(character.id, aspect, at), stretch: 1 };
   if (character.avatarUri) return { source: { uri: character.avatarUri }, position: 'center', stretch };
   return undefined;
 }
 
-/** Where a picture drawn `stretch` frames wide starts, so its middle lands at `at` of a `width` frame. */
-export const stretchLeft = (width: number, stretch: number, at: number) => Math.min(0, Math.max(width - width * stretch, at * width - (width * stretch) / 2));
+/**
+ * Where a tall portrait sits in a cover-fit frame `aspect` (width / height) wide so their face lands
+ * at `at` across and in the upper third; undefined for any other picture (the caller keeps its own).
+ */
+export function portraitPosition(characterId: string, aspect: number, at = 0.5): ImageContentPosition | undefined {
+  if (PORTRAITS[characterId] == null || !(aspect > 0)) return undefined;
+  return asPosition(coverFocus(portraitFace(characterId), PORTRAIT_ASPECT, aspect, at));
+}
+
+const asPosition = (p: { left: number; top: number }): ImageContentPosition => ({ left: `${Math.round(p.left * 100)}%`, top: `${Math.round(p.top * 100)}%` });
+
+export { stretchLeft };
 
 /**
  * Where a wide scene sits in a frame `aspect` (width / height) wide, so their face lands at `at` of

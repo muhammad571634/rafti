@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
+import { portraitPosition } from '@/components/chat/chat-ground';
 import { FamilyRow, familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -415,7 +416,13 @@ function Feature({
         accessibilityLabel={character.name}
         onPress={onOpen}
         style={StyleSheet.absoluteFill}>
-        <Image source={heroOf(character)} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
+        <Image
+          source={heroOf(character)}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          contentPosition={HEROES[character.id] ? undefined : portraitPosition(character.id, width / height)}
+          transition={150}
+        />
         <LinearGradient colors={SCRIM} style={styles.featureScrim} />
         {isNew ? (
           <View style={styles.newSticker}>

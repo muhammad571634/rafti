@@ -160,6 +160,8 @@ const CREATION_RULES = [
   '- Every character is an original adult, 18 or older.',
   '- Never a real person (celebrity, idol, public figure), never a character another company owns, never someone the idea places at school or as a minor.',
   '- Romance and drama are welcome; nothing sexually explicit.',
+  // A51, 2026-11-11: a quick-created neighbour greeted a user with "ты искала" (feminine) unasked.
+  "- The user may be any gender and you are not told theirs: in every line about or to them, wherever the language marks gender, never put a gendered verb, adjective or participle on the user; use the present tense, a noun or a neutral phrasing.",
   '- If the idea asks for any of these, write nothing else and answer {"refused":"realPerson"}, {"refused":"owned"}, {"refused":"minor"} or {"refused":"explicit"}.',
 ].join('\n');
 

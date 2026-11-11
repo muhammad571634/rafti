@@ -9,7 +9,7 @@ import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { FACE_AT, sceneFocus } from '@/components/chat/chat-ground';
+import { FACE_AT, portraitOf, sceneFocus, stretchLeft } from '@/components/chat/chat-ground';
 import { Anim, characterImage, PressableScale, Txt } from '@/components/ui';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
@@ -173,7 +173,11 @@ export function TodayHero({
   const lines = lineCap(height - topInset - BAR);
   // A wide scene slides its face to FACE_AT; a tall or square one is drawn wider, centred there.
   const scene = framing === 'scene';
-  const position = scene ? sceneFocus(character.id, width / height, FACE_AT) : FOCUS[framing];
+  // A tall painting is framed on its own face (each one puts it elsewhere), drawn only as wide as that needs.
+  const tall = framing === 'tall' ? portraitOf(character, width / height, FACE_AT) : undefined;
+  const position = scene ? sceneFocus(character.id, width / height, FACE_AT) : (tall?.position ?? FOCUS[framing]);
+  const stretch = scene ? 1 : (tall?.stretch ?? WIDE);
+  const left = stretchLeft(width, stretch, FACE_AT, tall?.faceX);
 
   const still = useReducedMotion();
   const [hour, setHour] = useState(() => new Date().getHours());
@@ -207,7 +211,7 @@ export function TodayHero({
       onPress={onPress}>
       <Image
         source={typeof image === 'string' ? { uri: image } : image}
-        style={scene ? StyleSheet.absoluteFill : [styles.wide, { width: width * WIDE }]}
+        style={stretch > 1 ? [styles.wide, { width: width * stretch, left }] : StyleSheet.absoluteFill}
         contentFit="cover"
         contentPosition={position}
       />

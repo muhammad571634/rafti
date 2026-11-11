@@ -220,7 +220,7 @@ export function FaceCard({
               contentPosition={picture.position}
               contentFit="cover"
               transition={150}
-              style={stretch > 1 ? [styles.stretched, { width: width * stretch, left: stretchLeft(width, stretch, FACE_AT) }] : StyleSheet.absoluteFill}
+              style={stretch > 1 ? [styles.stretched, { width: width * stretch, left: stretchLeft(width, stretch, FACE_AT, picture.faceX) }] : StyleSheet.absoluteFill}
               accessible={false}
             />
             <LinearGradient colors={SCRIM} style={styles.scrim} pointerEvents="none" />
