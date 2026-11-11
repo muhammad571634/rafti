@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { createContext, type ReactNode, useContext } from 'react';
+import { createContext, type ReactNode, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
@@ -218,6 +218,11 @@ export function FaceCard({
   const picture = portraitOf(character, width / height, FACE_AT);
   const stretch = picture?.stretch ?? 1;
   const hue = friendColor(character.id);
+  // A name that wraps takes the whole width and the badge drops under it (a two-line "Victor Hale"
+  // left the badge floating beside the lines, A51 2026-11-11). Kept once set for this name, so the
+  // name never flips back and forth as the room changes.
+  const [wrappedName, setWrappedName] = useState<string | null>(null);
+  const wrapped = !!nameBadge && wrappedName === name;
   const ink = picture ? colors.onMedia : hue.ink;
   const shown = lines.filter((line): line is string => !!line);
 
@@ -258,11 +263,15 @@ export function FaceCard({
               adjustsFontSizeToFit
               minimumFontScale={0.7}
               maxFontSizeMultiplier={1.2}
+              onTextLayout={(e) => {
+                if (nameBadge && !wrapped && e.nativeEvent.lines.length > 1) setWrappedName(name);
+              }}
               accessibilityRole="header">
               {name}
             </Txt>
-            {nameBadge}
+            {wrapped ? null : nameBadge}
           </View>
+          {wrapped ? <View style={styles.badgeUnder}>{nameBadge}</View> : null}
           {shown.map((line, i) => (
             <Txt key={i} style={[styles.faceLine, picture && styles.shadow, { color: picture ? colors.onMediaSoft : hue.ink }]} lines={1} maxFontSizeMultiplier={1.3}>
               {line}
@@ -707,6 +716,7 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     faceFootLeading: { right: '30%' },
     stretched: { position: 'absolute', top: 0, bottom: 0 },
     nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+    badgeUnder: { flexDirection: 'row', marginTop: 2, marginBottom: 4 },
     faceName: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 32, lineHeight: 38 },
     faceLine: { fontSize: 14, lineHeight: 19, fontWeight: '600' },
     shadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 5 },
