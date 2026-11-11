@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z196. The owner picked appearance option B, "Apple's split": every screen where you are WITH a character is always dark, the tools follow the phone; talk hours measured on the server (2026-11-11, Claude Opus 5.5). NEXT: build B (list below), then the owner's server deploy
+
+- **Owner's ask**: companion apps in the App Store are mostly dark and used 9 PM to 1-2 AM; decide like Apple which screens are dark. Research and both options: `docs/appearance-plan.md` (Character.AI and Replika stay dark with the A51 in Light mode; HIG: moments and media dark, tools follow the phone). Owner chose **B** ("B: Apple's split"), and "apply" the hour measurement.
+- **Already always dark** (`affab3c` and earlier): calls (`gradients.call`), bedtime and alarms (`sleepColors`), the radio player (`immersive`), a date round (`nightColors` as `ink`), level-up, the launch. The alarm RING keeps its sunrise on purpose (waking is morning light).
+- **To build for B** (nothing started; theme tokens are module-level from `isDark`, so a forced-dark screen reads `nightColors` / `immersive` / a dark `systemGround` copy instead of `colors` / `systemGround`, as `src/app/date/[placeId].tsx` and `src/app/radio/[id].tsx` do; add an exported `darkGround` = the dark branch of `systemGround` in `src/theme/colors.ts` first):
+  1. **The chat** `src/app/chat/[id].tsx` (owner's B is the yes for touching it; keep every control and animation): default ground = the character's picture (already the dark `onPicture` path, line ~495); when a light wallpaper (cream / plain / mint / sky) is chosen, draw it under a dark veil or offer only dark wallpapers. Its header, bubbles and composer must read the dark tokens; `statusBarStyle` light always. Drive it on the A51 with the phone in Light mode.
+  2. **A character's page** `src/app/character/[id]/index.tsx`, plus `memories.tsx`, `background.tsx`, `search.tsx`, `settings.tsx` (the friend's space).
+  3. **Streams live** `src/app/streams/[id].tsx`; **date album** `src/app/date/album.tsx`; **onboarding's meeting steps** in `src/app/onboarding.tsx` (the character picks).
+  4. Sheets opened from these screens use the themed kit `Sheet`; leave them themed (system-like) unless they look wrong on the dark screen.
+  5. Check each on the A51 with `adb shell cmd uimode night no` (light) and `yes` (dark); set it back to `no` after (the owner's phone).
+- **Talk hours** (code done, needs the owner's deploy): `server/src/hours.ts` counts every chat reply in the user's local hour (`clock.utcOffsetMin`, which the app already sends via `src/lib/together.ts`) and the number of different accounts; `server/src/index.ts` prints `[hours] 21:340/52 22:410/61 … noclock=3` once an hour. Read with `flyctl logs -a sigmazam-api | grep "\[hours\]"` after a few days. Tests: `server/src/hours.test.ts` (2), server 110/110, server tsc 0.
+- Owner's deploy commands (Claude chat box / PowerShell terminal):
+  `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+  `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+
+Still to do:
+1. Build B (items 1-5 above), OTA, drive on the A51 in Light and Dark.
+2. Owner: the server deploy (talk hours; also the quick-create gender line from 0z193).
+3. Owner: a new preview APK for the heart-mascot icons and the fixed notification icon (0z195).
+4. Owner, from 0z195: an in-app appearance switch is NOT planned (HIG against; B covers the night); dark chat bubbles are part of B item 1.
+
 ### 0z195. The owner's HIG brief on the CURRENT screens (not Ink): 4 defects, a night for late use, always-dark players, 3 elements of the dark prototype (2026-11-11, Claude Opus 5.5). NEXT: drive dark mode on the A51, then the owner's word on the in-app appearance switch
 
 - **Owner's ask** (a pasted brief + 16 A51 screenshots, `OneDrive\Pictures\menga.zip`): keep the current UI (2x2 widgets, Wallet passes, folder pockets, mascots, wheel, polaroids); fix 4 defects; a 3-tier dark mode; take the LED dot field, the talk orbs and tabular figures from the dark prototype. Read as: Ink's full black redesign is not wanted now; its pieces are folded into today's screens. Owner then: "the buttons stay, go on".

@@ -1,3 +1,4 @@
+import type { TalkHours } from './hours.ts';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 
@@ -376,6 +377,8 @@ export function createApp(
     limits?: Partial<ModelLimits>;
     /** Counted into as answers go out (`Served`); the caller owns it and logs it. */
     served?: Served;
+    /** Counts each chat reply in the user's local hour (`[hours]` in the log). */
+    hours?: TalkHours;
     /**
      * `ENFORCE_WALLET`: a reply past the account's allowance (`mayReply`) is refused with 402. Off,
      * the allowance is only counted and a crossing logged, so it can be checked on real traffic first.
@@ -1068,6 +1071,7 @@ export function createApp(
     try {
       const { reply, result, calls, repeat, crisis, blocked } = await withPhotos(images, () => chatReply(provider, input, opts.timeoutMs));
       const ms = Date.now() - started;
+      opts.hours?.count(Date.now(), input.clock?.utcOffsetMin, await userId);
       let cost: number | null = 0;
       for (const call of calls) {
         const callCost = costUsd(call.result.model, call.result.usage);

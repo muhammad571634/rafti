@@ -1,3 +1,4 @@
+import { TalkHours } from './hours.ts';
 import type { Server } from 'node:http';
 
 import { serve } from '@hono/node-server';
@@ -36,6 +37,7 @@ const speech = config.elevenlabs.apiKey
   : null;
 const key = signKey(config.lineSignKey);
 const served: Served = { ok: 0, busy: 0, failed: 0 };
+const hours = new TalkHours();
 const app = createApp(provider, {
   timeoutMs: config.timeoutMs,
   voiceProvider,
@@ -46,6 +48,7 @@ const app = createApp(provider, {
   devGrants: config.devGrants,
   testSubscribers: config.testSubscribers,
   served,
+  hours,
   enforceWallet: config.enforceWallet,
 });
 
@@ -67,6 +70,12 @@ setInterval(() => {
   const rss = Math.round(process.memoryUsage().rss / 1_048_576);
   console.log(`[stats] inflight=${s.inFlight} queued=${s.queued} calls=${s.calls} away=${s.turnedAway} spent=$${s.spentUsd.toFixed(2)} ok=${served.ok} busy=${served.busy} failed=${served.failed} rss=${rss}MB`);
 }, 5 * 60_000).unref();
+
+// When people talk, by their own clock: one line an hour, the counts since the last (`hours.ts`).
+setInterval(() => {
+  const line = hours.flush();
+  if (line) console.log(line);
+}, 60 * 60_000).unref();
 
 // A deploy or a restart sends SIGTERM: no new requests, the replies being written go out, then the
 // process ends (the host waits `kill_timeout`, server/fly.toml). Before this a deploy cut them off.
