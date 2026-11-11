@@ -1,16 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HEROES } from '@/assets/heroes/registry';
+import { FeatureBar, RoundButton } from '@/components/feature/feature-kit';
+import { CircleCard } from '@/components/find/circle-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { Button, CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, Segmented, SFIcon, Txt, useScrolledPast } from '@/components/ui';
-import { characterImage } from '@/components/ui/avatar';
+import { Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, SearchBar, Segmented, SFIcon, Txt } from '@/components/ui';
 import { isReleased } from '@/economy/early-access';
 import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
@@ -18,29 +16,22 @@ import { localCharacter, localized } from '@/i18n/content';
 import { chapterAt, chapterState, isEventOn, worldJoinedAt } from '@/lib/world-story';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, isDark, space, systemColors, systemGround } from '@/theme';
+import { colors, space, systemColors, systemGround } from '@/theme';
 import type { Character, CharacterGender, WorldEvent, WorldStory } from '@/types';
 
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
-const HERO_HEIGHT = 330;
-/** The buttons' row under the status bar: 44 pt buttons and their top gap. */
-const BAR_ROOM = 44 + space.xs * 2;
-const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.65)'] as const;
 
 /**
- * A whole world from Find, like an artist page in Apple Music: its first face's scene
- * full-bleed with the world's name, how many live there and "Surprise me", then who you are here
- * and this week's chapter (docs/worlds-plan.md §3.3), Everyone / Him / Her and everyone in it as one
- * list on Apple's white ground in grey cards (design-style §10), then its events and how its people stand with each other. A row opens
- * the profile; the trailing "+" adds the friend, a mint tick shows one already made. The search
- * button opens a field that filters this list only (HIG Search fields: an inline field when search
- * applies to one view). The story sits in rows of short text (HIG Lists and tables: "prefer
- * displaying text in a list or table"), and the season folds away (HIG Disclosure controls).
+ * A circle from Find (Friends, Partners, It's complicated, Around you), as the canvas board "Find:
+ * doira ichi" draws it (owner, 2026-11-11): a large title with how many live here and "Surprise
+ * me", Everyone / Him / Her, then each person as a wide photo card (`CircleCard`) with their face
+ * on the trailing side and one glass button: Say hi, or Message once they are a friend. The card
+ * opens the profile. The search button opens a field that filters this circle only (HIG Search
+ * fields). A world with a story keeps its role, season, events and ties around the cards.
  */
 export default function WorldScreen() {
   const insets = useSafeAreaInsets();
-  const { scrolled: edge, onScroll } = useScrolledPast(HERO_HEIGHT - BAR_ROOM);
   const { t } = useTranslation();
   const router = useRouter();
   const { series } = useLocalSearchParams<{ series: string }>();
@@ -76,7 +67,6 @@ export default function WorldScreen() {
     [people, who, q],
   );
 
-  const lead = people[0];
   // The whole cast, as the chat and the pushes count it: blocking a friend does not rewind the season.
   const joinedAt = world ? worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships) : undefined;
   const friendsHere = people.filter((c) => friendIds.has(c.id));
@@ -99,47 +89,45 @@ export default function WorldScreen() {
     if (shown.length > 0) open(shown[Math.floor(Math.random() * shown.length)]);
   };
 
+  const act = (c: Character) => {
+    const chat = conversations.find((v) => v.characterId === c.id)?.id;
+    if (chat) router.push(`/chat/${chat}`);
+    else early.add(c);
+  };
+
   return (
-    <Screen background={systemGround.ground} edgeToEdge statusBarStyle={edge && !isDark ? 'dark' : 'light'}>
+    <Screen background={systemGround.ground}>
+      <FeatureBar
+        backLabel={t('a11y.back')}
+        onBack={() => router.back()}
+        right={
+          <RoundButton
+            icon={searchOpen ? 'close' : 'search'}
+            accessibilityLabel={t('find.searchWorld', { world: phrase(series) })}
+            onPress={() => {
+              if (searchOpen) setQuery('');
+              setSearchOpen((v) => !v);
+            }}
+          />
+        }
+      />
       <ScrollView
-        onScroll={onScroll}
-        scrollEventThrottle={32}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <View style={[styles.hero, { height: HERO_HEIGHT + insets.top }, world && { backgroundColor: world.accent }]}>
-          {lead && (HEROES[lead.id] ?? characterImage(lead)) ? (
-            <Image
-              source={HEROES[lead.id] ?? characterImage(lead)}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-              transition={150}
-            />
-          ) : null}
-          <LinearGradient colors={SCRIM} style={styles.heroScrim} />
-          <View style={styles.heroFoot}>
-            {/* The whole width: beside the button, a long name in any language broke mid-word. */}
-            <Txt style={styles.title} accessibilityRole="header" lines={2}>
-              {phrase(series)}
-            </Txt>
-            <View style={styles.heroMeta}>
-              <View style={styles.count}>
-                <Ionicons name="person" size={14} color={colors.onMediaSoft} />
-                <Txt variant="smallStrong" color={colors.onMediaSoft}>
-                  {people.length}
-                </Txt>
-              </View>
-              {shown.length > 0 ? (
-                <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={surprise} style={styles.surprise}>
-                  <Ionicons name="sparkles" size={16} color={colors.black} />
-                  <Txt variant="smallStrong" color={colors.black}>
-                    {t('find.surprise')}
-                  </Txt>
-                </PressableScale>
-              ) : null}
-            </View>
+        <LargeTitle>{phrase(series)}</LargeTitle>
+        <View style={styles.meta}>
+          <View style={styles.count} accessible accessibilityLabel={`${people.length}`}>
+            <Ionicons name="person" size={14} color={colors.textSecondary} />
+            <Txt style={styles.countText}>{people.length}</Txt>
           </View>
+          {shown.length > 0 ? (
+            <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={surprise} style={styles.surprise}>
+              <Ionicons name="sparkles" size={15} color={colors.text} />
+              <Txt style={styles.surpriseText}>{t('find.surprise')}</Txt>
+            </PressableScale>
+          ) : null}
         </View>
 
         {world ? (
@@ -172,16 +160,15 @@ export default function WorldScreen() {
         {shown.length === 0 ? (
           <EmptyState title={t('find.noResults')} />
         ) : (
-          <View style={styles.list}>
-            {shown.map((c, i) => (
-              <Row
+          <View style={styles.cards}>
+            {shown.map((c) => (
+              <CircleCard
                 key={c.id}
                 character={c}
-                last={i === shown.length - 1}
                 friend={friendIds.has(c.id)}
                 fresh={!!early.fresh(c)}
                 onOpen={() => open(c)}
-                onAdd={() => early.add(c)}
+                onAct={() => act(c)}
               />
             ))}
           </View>
@@ -189,103 +176,8 @@ export default function WorldScreen() {
 
         {world ? <WorldFoot world={world} people={people} canGroup={friendsHere.length >= 2} onGroup={openGroup} /> : null}
       </ScrollView>
-
-      {/* Past the scene the list would run under the status bar and the buttons: a scroll edge. */}
-      {edge ? <View pointerEvents="none" style={[styles.edge, { height: insets.top + BAR_ROOM }]} /> : null}
-      {/* Clear glass over the scene (HIG Materials: the clear variant is for rich media). */}
-      <View style={[styles.bar, { top: insets.top + space.xs }]} pointerEvents="box-none">
-        <PressableScale
-          scaleTo={0.9}
-          accessibilityRole="button"
-          accessibilityLabel={t('a11y.back')}
-          onPress={() => router.back()}
-          style={[styles.mediaButton, edge && styles.edgeButton]}>
-          <Ionicons name="chevron-back" size={24} color={edge ? colors.text : colors.onMedia} style={styles.backIcon} />
-        </PressableScale>
-        <PressableScale
-          scaleTo={0.9}
-          accessibilityRole="button"
-          accessibilityLabel={t('find.searchWorld', { world: phrase(series) })}
-          onPress={() => {
-            if (searchOpen) setQuery('');
-            setSearchOpen((v) => !v);
-          }}
-          style={[styles.mediaButton, edge && styles.edgeButton]}>
-          <Ionicons name={searchOpen ? 'close' : 'search'} size={20} color={edge ? colors.text : colors.onMedia} />
-        </PressableScale>
-      </View>
       {early.sheet}
     </Screen>
-  );
-}
-
-/** One character: face, name, "New" and a phone when they can call, then add or a friend tick. */
-function Row({
-  character,
-  last,
-  friend,
-  fresh,
-  onOpen,
-  onAdd,
-}: {
-  character: Character;
-  last: boolean;
-  friend: boolean;
-  fresh: boolean;
-  onOpen: () => void;
-  onAdd: () => void;
-}) {
-  const { t } = useTranslation();
-  const shown = localCharacter(character);
-  const role = shown.relation ?? shown.worldRole;
-  return (
-    <View style={styles.row}>
-      <PressableScale
-        scaleTo={0.99}
-        accessibilityRole="button"
-        accessibilityLabel={character.name}
-        onPress={onOpen}
-        style={styles.rowOpen}>
-        <CharacterAvatar character={character} size={54} />
-        <View style={[styles.rowBody, !last && styles.rowLine]}>
-          <View style={styles.rowTop}>
-            <Txt style={styles.name} lines={1}>
-              {character.name}
-            </Txt>
-            {fresh ? (
-              <View style={styles.newPill}>
-                <Txt style={styles.newText}>{t('find.newBadge').toUpperCase()}</Txt>
-              </View>
-            ) : null}
-            {character.voiceReady ? (
-              <Ionicons name="call" size={15} color={colors.bondText} accessibilityLabel={t('find.canCall')} />
-            ) : null}
-          </View>
-          {role ? (
-            <Txt style={styles.rowRole} lines={1}>
-              {role}
-            </Txt>
-          ) : null}
-        </View>
-      </PressableScale>
-      <View style={[styles.trail, !last && styles.rowLine]}>
-        {friend ? (
-          <View style={styles.tick} accessible accessibilityLabel={t('find.isFriend', { name: character.name })}>
-            <Ionicons name="checkmark" size={18} color={colors.white} />
-          </View>
-        ) : (
-          <PressableScale
-            scaleTo={0.88}
-            hitSlop={6}
-            accessibilityRole="button"
-            accessibilityLabel={t('find.addFriend', { name: character.name })}
-            onPress={onAdd}
-            style={styles.add}>
-            <Ionicons name="add" size={20} color={colors.text} />
-          </PressableScale>
-        )}
-      </View>
-    </View>
   );
 }
 
@@ -499,8 +391,6 @@ const styles = StyleSheet.create({
   tieNames: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
   tieKind: { fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   tieNote: { marginTop: 4, fontSize: 15, lineHeight: 20, color: colors.text },
-  hero: { backgroundColor: colors.surfaceAlt, overflow: 'hidden' },
-  heroScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 180 },
   heroFoot: {
     position: 'absolute',
     left: space.lg,
@@ -508,19 +398,13 @@ const styles = StyleSheet.create({
     bottom: 18,
     gap: space.sm,
   },
-  heroMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md },
   // iOS large title: 34pt bold.
-  title: { fontSize: 34, lineHeight: 40, fontWeight: '700', letterSpacing: 0.4, color: colors.onMedia },
+  meta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md, marginHorizontal: space.lg, marginTop: 2 },
   count: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  surprise: {
-    height: 44,
-    paddingHorizontal: 18,
-    borderRadius: 22,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: colors.onMediaButton,
-  },
+  countText: { fontSize: 15, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  surpriseText: { fontSize: 15, fontWeight: '600', color: colors.text },
+  cards: { marginHorizontal: space.lg, marginTop: space.lg, gap: space.md },
+  surprise: { height: 40, paddingHorizontal: 16, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: systemGround.fill },
   edge: {
     position: 'absolute',
     top: 0,
@@ -530,7 +414,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderStrong,
   },
-  edgeButton: { backgroundColor: systemGround.fill, borderColor: 'transparent' },
   bar: {
     position: 'absolute',
     left: space.lg,
@@ -548,7 +431,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  backIcon: { marginLeft: -2 },
   search: { marginHorizontal: space.lg, marginTop: space.lg },
   who: { marginHorizontal: space.lg, marginTop: space.lg },
   list: {
@@ -558,16 +440,8 @@ const styles = StyleSheet.create({
     backgroundColor: systemGround.card,
     overflow: 'hidden',
   },
-  row: { flexDirection: 'row', alignItems: 'center' },
-  rowOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 14, paddingLeft: space.lg },
-  rowBody: { flex: 1, minHeight: 74, justifyContent: 'center', gap: 2 },
   rowTop: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  rowRole: { fontSize: 13, lineHeight: 18, color: colors.textSecondary },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  name: { flexShrink: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  newPill: { borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, backgroundColor: colors.primaryFill },
-  newText: { fontSize: 11, fontWeight: '700', color: colors.textOnPrimary },
-  trail: { minHeight: 74, justifyContent: 'center', paddingRight: space.lg, paddingLeft: space.sm },
   add: {
     width: 32,
     height: 32,
