@@ -438,7 +438,7 @@ export default function HomeScreen() {
         )}
       </ScrollView>
 
-      {onPhoto ? <TopEdge mode={pastHero ? 'ground' : scrolled ? 'photo' : 'none'} height={insets.top + space.md} /> : null}
+      {onPhoto ? <TopEdge mode={pastHero ? 'ground' : scrolled ? 'photo' : 'none'} height={insets.top + space.xl} /> : null}
 
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')}>
         <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
@@ -499,8 +499,10 @@ function TopEdge({ mode, height }: { mode: 'none' | 'photo' | 'ground'; height: 
     </Animated.View>
   );
 }
-const TOP_EDGE_PHOTO = ['rgba(10,12,20,0.72)', 'rgba(10,12,20,0.5)', 'rgba(10,12,20,0)'] as const;
-const TOP_EDGE_STOPS = [0, 0.6, 1] as const;
+// Nearly opaque under the glyphs, then a short fade: at 0.7 the line's white words still showed
+// through behind the clock on the A51.
+const TOP_EDGE_PHOTO = ['rgba(10,12,20,0.96)', 'rgba(10,12,20,0.88)', 'rgba(10,12,20,0)'] as const;
+const TOP_EDGE_STOPS = [0, 0.62, 1] as const;
 
 /** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
 function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {

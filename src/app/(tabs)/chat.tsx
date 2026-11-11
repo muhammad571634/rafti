@@ -46,7 +46,7 @@ const DOT_COLUMN = 18;
  * One swipe action's slot: a rounded pill inside it, as in iOS 18 Messages (owner's screenshots,
  * 2026-11-11: the flush rectangles clipped "Выключить звук" at their edges).
  */
-const ACTION = 80;
+const ACTION = 92;
 const ACTION_GAP = 4;
 /** The width under a row for this many actions. */
 const actionsWidth = (count: number) => count * ACTION;
