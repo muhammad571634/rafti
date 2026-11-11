@@ -39,7 +39,7 @@ import {
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, hitSlop, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
+import { colors, fonts, hitSlop, isDark, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -176,6 +176,8 @@ export default function GiftsScreen() {
 
         {/* The day's check-in: the screen's one card in the Gifts tile's red, the mascot over its edge. */}
         <HeroCard look={signature.gifts} style={styles.checkIn}>
+          {/* At night a warm amber glow behind the mascot, so its warm art sits in the dark (owner's brief, 2026-11-11). */}
+          {isDark ? <View pointerEvents="none" style={styles.mascotGlow} /> : null}
           <PeekingMascot width={PEEK_WIDTH} />
           <View style={styles.checkInHead}>
             <Txt style={styles.checkInTitle} lines={1}>
@@ -410,11 +412,23 @@ function WayRow({
 
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
+const GLOW = 120;
 const PEEK_ROOM = 40;
 /** On the red card: a day still to come, and the surprise day's chip. */
 const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
 
 const styles = StyleSheet.create({
+  mascotGlow: {
+    position: 'absolute',
+    top: -GLOW * 0.62,
+    left: '50%',
+    marginLeft: -GLOW / 2,
+    width: GLOW,
+    height: GLOW,
+    borderRadius: GLOW / 2,
+    backgroundColor: 'rgba(251,191,36,0.12)',
+    boxShadow: '0px 0px 48px 24px rgba(251,191,36,0.22)',
+  },
   bar: {
     height: 44,
     paddingHorizontal: space.lg,

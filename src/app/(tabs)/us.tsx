@@ -14,6 +14,7 @@ import { OurMoments } from '@/components/us/moments';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
+import { TalkedWith } from '@/components/us/talked-with';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
@@ -329,6 +330,8 @@ export default function UsScreen() {
             ) : null}
           </PressableScale>
         </Gradient>
+
+        <TalkedWith />
 
         <View onLayout={(e) => (calendarY.current = e.nativeEvent.layout.y)}>
           <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />

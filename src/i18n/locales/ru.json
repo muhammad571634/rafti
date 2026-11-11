@@ -1606,6 +1606,7 @@
   },
   "us": {
     "title": "Мы",
+    "talkedWith": "С кем вы общались · {{month}}",
     "level": "Уровень {{level}}",
     "intimacy": "близость {{count}}",
     "streak": "{{count}} дн. подряд",

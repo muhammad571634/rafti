@@ -1528,6 +1528,7 @@
   },
   "us": {
     "title": "เรา",
+    "talkedWith": "คนที่คุณคุยด้วย · {{month}}",
     "level": "เลเวล {{level}}",
     "intimacy": "ความสนิท {{count}}",
     "streak": "คุยต่อเนื่อง {{count}} วัน",

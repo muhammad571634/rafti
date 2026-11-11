@@ -20,7 +20,7 @@ import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, space } from '@/theme';
+import { colors, fonts, paperRoom, space } from '@/theme';
 import type { BoardStyleId } from '@/types';
 
 const MAX_LENGTH = 300;
@@ -79,7 +79,7 @@ export default function BoardWriteScreen() {
   return (
     // iOS Mail's New Message (approved prototype `UsBoard.dc.html`): × / title / Post in the bar,
     // a "To:" row, the paper, and the papers to choose from.
-    <Screen background={colors.bg}>
+    <Screen background={paperRoom}>
       <View style={styles.bar}>
         <GlassButton icon="close" accessibilityLabel={t('common.close')} onPress={() => router.back()} />
         <Txt style={styles.barTitle} accessibilityRole="header">

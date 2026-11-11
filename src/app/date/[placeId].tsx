@@ -17,13 +17,16 @@ import { localized } from '@/i18n/content';
 import { fill as fillLine } from '@/i18n/voice';
 import { DATE_PLACES, maxHearts, type DateRound } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, hitSlop, isDark, moduleFills, shadows, space, systemColors } from '@/theme';
+import { bottomRoom, colors, hitSlop, immersive, moduleFills, nightColors, shadows, space, systemColors } from '@/theme';
 import type { DateRecord } from '@/types';
 
 /** Hearts on the photo and in the reply pill (iOS systemPink, lighter on the photo). */
 const HEART_ON_PHOTO = '#FF6B8A';
-const PINK = isDark ? '#FF6B8A' : '#D70F4C';
-const PINK_SOFT = isDark ? '#3A1520' : '#FFE3EA';
+// The round is always dark (`immersive`), so its pinks are the night ones.
+const PINK = '#FF6B8A';
+const PINK_SOFT = '#3A1520';
+/** The round's words and cards: dark mode's tokens whatever the phone's setting. */
+const ink = nightColors;
 
 /**
  * One date, already paid for on the map (canvas "DateRound", 2026-10-22): the place's photo with
@@ -179,12 +182,12 @@ export default function DateScreen() {
   const photoH = Math.round(height * 0.4);
 
   return (
-    <Screen background={colors.bg} edgeToEdge>
+    <Screen background={immersive.ground} edgeToEdge statusBarStyle="light">
       <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
         <View style={{ height: photoH }}>
           <Image source={sceneImage(character)} style={StyleSheet.absoluteFill} contentFit="cover" />
           <LinearGradient
-            colors={['rgba(0,0,0,0.32)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', colors.bg]}
+            colors={['rgba(0,0,0,0.32)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', immersive.ground]}
             locations={[0, 0.3, 0.62, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -244,7 +247,7 @@ export default function DateScreen() {
                 <Txt style={styles.choiceText}>{fill(c.text)}</Txt>
                 {chosen ? (
                   <View style={[styles.check, { backgroundColor: look.ink }]}>
-                    <Ionicons name="checkmark" size={15} color={colors.white} />
+                    <Ionicons name="checkmark" size={15} color={ink.white} />
                   </View>
                 ) : null}
               </Pressable>
@@ -260,7 +263,7 @@ export default function DateScreen() {
           scaleTo={0.9}
           accessibilityLabel={t('date.leave')}
           onPress={() => setLeaving(true)}>
-          <Ionicons name="close" size={20} color={colors.white} />
+          <Ionicons name="close" size={20} color={ink.white} />
         </PressableScale>
         <View
           style={styles.progress}
@@ -347,11 +350,13 @@ const styles = StyleSheet.create({
     marginTop: -40,
     padding: 18,
     borderRadius: 22,
-    backgroundColor: colors.surface,
+    backgroundColor: ink.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: immersive.rim,
   },
-  sceneText: { fontSize: 20, lineHeight: 27, fontWeight: '500', letterSpacing: -0.3, color: colors.text },
+  sceneText: { fontSize: 20, lineHeight: 27, fontWeight: '500', letterSpacing: -0.3, color: ink.text },
   waiting: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  waitingText: { flex: 1, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.textSecondary },
+  waitingText: { flex: 1, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: ink.textSecondary },
   replyRow: { marginTop: 14, flexDirection: 'row', alignItems: 'flex-end', gap: 8 },
   bubble: {
     flexShrink: 1,
@@ -360,9 +365,9 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     borderRadius: 19,
     borderBottomLeftRadius: 6,
-    backgroundColor: colors.bubbleOther,
+    backgroundColor: ink.bubbleOther,
   },
-  bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.bubbleOtherText },
+  bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: ink.bubbleOtherText },
   gain: {
     marginLeft: 'auto',
     height: 26,
@@ -382,13 +387,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 2,
     borderColor: 'transparent',
-    backgroundColor: colors.surface,
+    backgroundColor: ink.surface,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
   choiceOff: { opacity: 0.45 },
-  choiceText: { flex: 1, fontSize: 17, lineHeight: 22, fontWeight: '500', letterSpacing: -0.4, color: colors.text },
+  choiceText: { flex: 1, fontSize: 17, lineHeight: 22, fontWeight: '500', letterSpacing: -0.4, color: ink.text },
   check: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   top: {
     position: 'absolute',
@@ -420,7 +425,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: 12,
     paddingHorizontal: space.lg,
-    backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(242,242,247,0.86)',
+    backgroundColor: 'rgba(7,7,11,0.86)',
   },
   bigButton: {
     alignSelf: 'stretch',

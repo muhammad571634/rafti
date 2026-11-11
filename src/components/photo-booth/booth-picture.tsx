@@ -9,7 +9,7 @@ import { HEROES } from '@/assets/heroes/registry';
 import { CharacterAvatar, characterImage, SFIcon, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { useSelfieUri } from '@/lib/booth-selfies';
-import { colors, fonts, palette, shadows } from '@/theme';
+import { colors, fonts, palette, shadows, warmPaper } from '@/theme';
 import type { BoothPhoto, BoothStyle, Character } from '@/types';
 
 import { FrameBackdrop, FrameStickers } from './frame-card';
@@ -299,10 +299,11 @@ const styles = StyleSheet.create({
   duo: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row' },
   pane: { overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   youEmpty: { backgroundColor: palette.gray100, alignItems: 'center', justifyContent: 'center' },
-  polaroid: { backgroundColor: colors.surface, borderRadius: 4 },
+  // Real paper in both themes: white by day, a warm off-white at night (`warmPaper`).
+  polaroid: { backgroundColor: warmPaper, borderRadius: 4 },
   polaroidFoot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
   hand: { fontFamily: fonts.hand, color: palette.gray800, flexShrink: 1 },
-  handDate: { color: colors.textMuted, flexShrink: 0 },
+  handDate: { color: palette.gray500, flexShrink: 0 },
   strip: { backgroundColor: '#1D1A18', borderRadius: 3 },
   stripLabel: { color: '#F2E6D4', fontWeight: '800', letterSpacing: 2 },
   warm: { backgroundColor: '#D08A4A', opacity: 0.35 },

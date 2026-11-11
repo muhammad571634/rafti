@@ -18,20 +18,23 @@ import { RoundButton } from '@/components/feature/feature-kit';
 import { CARD_SHADOW } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
-import { CharacterAvatar, characterImage, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, characterImage, DotMatrix, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, friendAccent, isDark, space, systemColors, systemGround } from '@/theme';
+import { bottomRoom, colors, friendAccent, immersive, space, systemColors, systemGround } from '@/theme';
 import { confirmAlert as confirm } from '@/lib/alert';
 
-const COVER = 240;
+const COVER = 220;
+/** The LED field behind the cover: wider than it, so its glow rings the picture. */
+const FIELD = 340;
 
 /**
  * Clip player (F27), as Music's Now Playing: the friend's picture as the cover, the title, the
  * words in a card with the line being said in ink, then the progress and the controls. A thing
- * from a friend, so it wears their accent (design-style §10, a friend's space) on Apple's white
- * ground. The user's own clips can go to the chat with that friend, or be deleted.
+ * from a friend, so it wears their accent (design-style §10, a friend's space). Always dark, as an
+ * immersive player (`immersive`, owner's brief 2026-11-11), with the LED dot field glowing behind the
+ * cover in the friend's colour, swelling while the clip plays. The user's own clips can go to the chat with that friend, or be deleted.
  */
 export default function ClipPlayerScreen() {
   const { t } = useTranslation();
@@ -81,12 +84,15 @@ export default function ClipPlayerScreen() {
   }, [playing, reduced, breath]);
   const coverStyle = useAnimatedStyle(() => ({ transform: [{ scale: breath.value }] }));
 
-  const back = <RoundButton icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
+  const back = <RoundButton dark icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
 
   if (!clip || clip.locked) {
     return (
+      // The empty state's words are themed, so it stays on the phone's own ground.
       <Screen background={systemGround.ground}>
-        <View style={styles.bar}>{back}</View>
+        <View style={styles.bar}>
+          <RoundButton icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />
+        </View>
         <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('common.backToRadio')} onAction={() => router.back()} />
       </Screen>
     );
@@ -119,12 +125,13 @@ export default function ClipPlayerScreen() {
     );
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={immersive.ground} statusBarStyle="light">
       <View style={styles.bar}>
         {back}
         <View style={styles.barRight}>
           {/* The clip as a wake-up voice: a new alarm with this friend and this clip. */}
           <RoundButton
+            dark
             icon="alarm"
             accessibilityLabel={t('radio.wakeWith')}
             onPress={() => router.push({ pathname: '/alarms/edit', params: { characterId: clip.character.id, clipId: clip.id } })}
@@ -139,6 +146,7 @@ export default function ClipPlayerScreen() {
 
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <View style={styles.head}>
+          <DotMatrix size={FIELD} color={accent.strong} energy={playing ? 1 : 0.3} active={playing} style={styles.field} />
           <Animated.View style={[styles.cover, coverStyle]}>
             {image ? (
               <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" accessible={false} />
@@ -181,7 +189,7 @@ export default function ClipPlayerScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('radio.replay')}
             style={[styles.side, styles.sideFill]}>
-            <Ionicons name="refresh" size={24} color={systemGround.label} />
+            <Ionicons name="refresh" size={24} color={immersive.label} />
           </PressableScale>
           <PressableScale
             onPress={() => player.toggle('clip', clip.id, clip.durationSec)}
@@ -193,7 +201,7 @@ export default function ClipPlayerScreen() {
           </PressableScale>
           {clip.mine && hasChat ? (
             <PressableScale onPress={send} scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.send')} style={[styles.side, styles.sideFill]}>
-              <Ionicons name="paper-plane" size={22} color={systemGround.label} />
+              <Ionicons name="paper-plane" size={22} color={immersive.label} />
             </PressableScale>
           ) : (
             <View style={styles.side} />
@@ -220,38 +228,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: immersive.fill },
   barRight: { flexDirection: 'row', gap: space.sm },
   body: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: 22 },
-  head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg },
+  head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg, paddingTop: (FIELD - COVER) / 2 - space.md },
+  field: { position: 'absolute', top: -space.md, alignSelf: 'center' },
   cover: {
     width: COVER,
     height: COVER,
     borderRadius: 24,
     overflow: 'hidden',
     marginBottom: 18,
-    backgroundColor: systemGround.card,
+    backgroundColor: immersive.card,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: isDark ? 0.5 : 0.22,
+    shadowOpacity: 0.5,
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },
   },
-  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label },
+  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: immersive.label },
   by: { fontSize: 17, fontWeight: '600' },
-  words: { gap: 10, padding: 18, borderRadius: 22, backgroundColor: systemGround.card },
-  line: { fontSize: 17, lineHeight: 23, color: systemGround.secondaryLabel },
-  lineNow: { fontSize: 20, lineHeight: 26, fontWeight: '700', color: systemGround.label },
+  words: { gap: 10, padding: 18, borderRadius: 22, backgroundColor: immersive.card },
+  line: { fontSize: 17, lineHeight: 23, color: immersive.secondaryLabel },
+  lineNow: { fontSize: 20, lineHeight: 26, fontWeight: '700', color: immersive.label },
   controls: { gap: 18, paddingHorizontal: space.xl, paddingTop: space.md },
   meter: { gap: 6 },
-  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: systemGround.fill },
+  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: immersive.fill },
   fill: { height: '100%', borderRadius: 3 },
   times: { flexDirection: 'row', justifyContent: 'space-between' },
-  clock: { fontSize: 12, fontWeight: '600', color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  clock: { fontSize: 12, fontWeight: '600', color: immersive.secondaryLabel, fontVariant: ['tabular-nums'] },
   buttons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   side: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
-  sideFill: { backgroundColor: systemGround.fill },
+  sideFill: { backgroundColor: immersive.fill },
   main: {
     width: 76,
     height: 76,
@@ -271,8 +280,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 18,
     borderRadius: 22,
-    backgroundColor: systemGround.card,
+    backgroundColor: immersive.card,
     ...CARD_SHADOW,
   },
-  toastText: { fontSize: 15, fontWeight: '600', color: systemGround.label },
+  toastText: { fontSize: 15, fontWeight: '600', color: immersive.label },
 });

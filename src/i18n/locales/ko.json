@@ -1528,6 +1528,7 @@
   },
   "us": {
     "title": "우리",
+    "talkedWith": "대화한 사람 · {{month}}",
     "level": "레벨 {{level}}",
     "intimacy": "친밀도 {{count}}",
     "streak": "{{count}}일 연속",

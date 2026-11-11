@@ -256,6 +256,8 @@ export default function DatingScreen() {
               <View key={ticket.id} style={[styles.slot, { height: open || last ? FULL + 10 : PEEK }]}>
                 <View style={styles.ticket}>
                   {ticket.node}
+                  {/* A lit top edge, as a pass catching the light (owner's brief, 2026-11-11). */}
+                  <View style={styles.sheen} pointerEvents="none" />
                   {/* The header strip opens and closes the ticket; its buttons stay their own. */}
                   <Pressable
                     onPress={() => toggle(ticket.id)}
@@ -384,10 +386,21 @@ const styles = StyleSheet.create({
     top: 0,
     borderRadius: 16,
     shadowColor: colors.black,
-    shadowOpacity: 0.14,
-    shadowRadius: 7,
-    shadowOffset: { width: 0, height: -4 },
-    elevation: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: -6 },
+    elevation: 6,
+  },
+  sheen: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 24,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderTopWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
   },
   headTap: { position: 'absolute', left: 0, right: 0, top: 0, height: PEEK },
   footerRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },

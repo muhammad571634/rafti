@@ -5,7 +5,7 @@ import { ActivityIndicator, type StyleProp, StyleSheet, View, type ViewStyle } f
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
-import { hitSlop, space, systemGround, type Look } from '@/theme';
+import { hitSlop, immersive, space, systemGround, type Look } from '@/theme';
 
 /**
  * The parts every feature screen shares (design-style §10, family 2: Gifts, Store, Radio, Board,
@@ -21,15 +21,19 @@ export function RoundButton({
   ios,
   accessibilityLabel,
   onPress,
+  dark,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   ios?: SFSymbol;
   accessibilityLabel: string;
   onPress: () => void;
+  /** On an always-dark screen (`immersive`): smoky glass with a lit rim and a white glyph. */
+  dark?: boolean;
 }) {
+  const tint = dark ? immersive.label : systemGround.label;
   return (
-    <PressableScale scaleTo={0.9} hitSlop={hitSlop} accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={styles.round}>
-      {ios ? <SFIcon ios={ios} icon={icon} size={20} color={systemGround.label} /> : <Ionicons name={icon} size={22} color={systemGround.label} style={icon === 'chevron-back' && styles.backNudge} />}
+    <PressableScale scaleTo={0.9} hitSlop={hitSlop} accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={[styles.round, dark && styles.roundDark]}>
+      {ios ? <SFIcon ios={ios} icon={icon} size={20} color={tint} /> : <Ionicons name={icon} size={22} color={tint} style={icon === 'chevron-back' && styles.backNudge} />}
     </PressableScale>
   );
 }
@@ -87,6 +91,7 @@ export const featureStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   round: { width: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  roundDark: { backgroundColor: immersive.glass, borderWidth: StyleSheet.hairlineWidth, borderColor: immersive.rim },
   backNudge: { marginLeft: -2 },
   bar: { height: ROUND, paddingHorizontal: space.lg, marginTop: space.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   // No clip: a card may have something peeking over its edge (the check-in's mascot).

@@ -23,7 +23,7 @@ import { Button, GlassBar, GlassIcons, glassStyle, LargeTitle, PressableScale, S
 import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, avatarGradients, colors, radius, shadows, space } from '@/theme';
+import { bottomRoom, avatarGradients, colors, isDark, radius, shadows, space } from '@/theme';
 import type { Character, CharacterDiaryPage } from '@/types';
 
 const GAP = space.md;
@@ -343,6 +343,8 @@ function CoverCard({
 
   return (
     <Animated.View style={[{ width, height }, focus]}>
+      {/* At night a warm amber glow behind the mascot's own diary (owner's brief, 2026-11-11). */}
+      {isDark && card.kind === 'mine' ? <View pointerEvents="none" style={styles.mascotGlow} /> : null}
       <PressableScale style={[styles.card, shadows.raised]} scaleTo={0.97} accessibilityLabel={name} onPress={onPress}>
         <View style={styles.cover}>
           {source != null ? (
@@ -399,6 +401,16 @@ function CoverCard({
 const ARROW = 40;
 
 const styles = StyleSheet.create({
+  mascotGlow: {
+    position: 'absolute',
+    top: '18%',
+    left: '15%',
+    right: '15%',
+    height: '45%',
+    borderRadius: 999,
+    backgroundColor: 'rgba(251,191,36,0.10)',
+    boxShadow: '0px 0px 60px 30px rgba(251,191,36,0.2)',
+  },
   datePill: {
     alignSelf: 'center',
     flexDirection: 'row',

@@ -12,7 +12,7 @@ import { confirmAction } from '@/lib/confirm';
 import { relativeStamp, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { hitSlop, signature, space, systemGround } from '@/theme';
+import { hitSlop, paperRoom, signature, space, systemGround } from '@/theme';
 
 const GAP = space.md;
 
@@ -50,7 +50,7 @@ export default function BoardScreen() {
   const write = () => router.push('/board/write');
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={paperRoom}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} right={<RoundButton icon="add" accessibilityLabel={t('board.write')} onPress={write} />} />
         <LargeTitle>{t('board.title')}</LargeTitle>

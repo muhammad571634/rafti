@@ -178,10 +178,12 @@ const lightColors = {
  */
 export const nightColors: Record<keyof typeof lightColors, string> = {
   ...lightColors,
-  bg: '#000000',
-  bgPlain: '#000000',
-  surface: '#1C1C1E',
-  surfaceAlt: '#2C2C2E',
+  // A rich obsidian, not pure black, and cards a step above it (owner's brief, 2026-11-11: the app
+  // is used most from 9 PM to 2 AM; #000 under white text tires the eye).
+  bg: '#09090D',
+  bgPlain: '#09090D',
+  surface: '#16161E',
+  surfaceAlt: '#24242E',
   overlay: 'rgba(0,0,0,0.6)',
   scrim: 'rgba(0,0,0,0.4)',
   veil: 'rgba(0,0,0,0.62)',
@@ -218,30 +220,30 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
 };
 
 /**
- * Bedtime's own palette: the dark navy of the iOS Sleep look (owner's pick, 2026-10-14). It was
- * dark mode's palette until dark mode moved to iOS black; Bedtime keeps it in both themes.
+ * Bedtime's own palette, the same in both themes: obsidian with smoky glass since the owner's brief
+ * of 2026-11-11 (it was the dark navy of the iOS Sleep look from 2026-10-14). Alarms share it.
  */
 export const sleepColors: Record<keyof typeof lightColors, string> = {
   ...lightColors,
-  glass: 'rgba(28,33,72,0.94)',
-  glassLine: 'rgba(255,255,255,0.10)',
+  glass: 'rgba(26,26,34,0.75)',
+  glassLine: 'rgba(255,255,255,0.18)',
   glassActive: 'rgba(255,255,255,0.12)',
-  bg: '#0E1230',
-  bgPlain: '#0E1230',
-  surface: '#1C2148',
-  surfaceAlt: '#252B57',
+  bg: '#07070B',
+  bgPlain: '#07070B',
+  surface: '#1A1A22',
+  surfaceAlt: '#262630',
   overlay: 'rgba(0,0,0,0.55)',
   scrim: 'rgba(0,0,0,0.35)',
-  veil: 'rgba(14,18,48,0.7)',
-  border: '#2B3160',
+  veil: 'rgba(7,7,11,0.7)',
+  border: '#2A2A34',
   well: 'rgba(255,255,255,0.08)',
-  track: '#2B3160',
-  borderStrong: '#3A4178',
-  divider: '#232857',
-  text: '#F4F2FF',
-  textSecondary: '#A3A8C8',
-  textMuted: '#8389AE',
-  textFaint: '#5E6490',
+  track: '#2A2A34',
+  borderStrong: '#3A3A46',
+  divider: '#1E1E28',
+  text: '#F4F4F8',
+  textSecondary: '#A8A8B8',
+  textMuted: '#8A8A9C',
+  textFaint: '#606072',
   primary: palette.apricot300,
   primarySoft: '#3B2A26',
   primarySofter: '#2E2422',
@@ -251,13 +253,13 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   bondSoft: '#163F3A',
   bubbleSelf: '#56392F',
   bubbleSelfText: '#FFFFFF',
-  bubbleOther: '#1C2148',
+  bubbleOther: '#1A1A22',
   bubbleOtherRim: 'rgba(255,255,255,0.06)',
-  bubbleOtherText: '#F4F2FF',
-  bubbleTranscript: 'rgba(28,33,72,0.92)',
-  bubbleTranscriptText: '#A3A8C8',
-  tabActive: '#F4F2FF',
-  textOnInk: '#0E1230',
+  bubbleOtherText: '#F4F4F8',
+  bubbleTranscript: 'rgba(26,26,34,0.92)',
+  bubbleTranscriptText: '#A8A8B8',
+  tabActive: '#F4F4F8',
+  textOnInk: '#07070B',
   successText: '#30D158',
   dangerSoft: '#4A1F24',
 };
@@ -466,7 +468,11 @@ export const storeColors = isDark
 export const gradients = {
   /** The primary button: peach, lighter at the top. */
   primary: [palette.apricot200, palette.apricot300] as const,
-  call: ['#A9D3F5', '#8FB0C8', '#7E8E9A'] as const,
+  /**
+   * A call's ground under the friend's blurred picture: cinematic obsidian, the same in both themes
+   * (owner's brief, 2026-11-11: calls are always dark). It was a pale sky.
+   */
+  call: ['#1B1B26', '#0E0E15', '#07070B'] as const,
   /** The wake-up alarm's ringing screen: sunrise. */
   wake: ['#F6C89F', '#E9A27E', '#B9739A'] as const,
   /**
@@ -508,8 +514,8 @@ export const gradientStops = {
  */
 export const systemGround = isDark
   ? {
-      ground: '#000000',
-      card: '#1C1C1E',
+      ground: '#09090D',
+      card: '#16161E',
       label: '#FFFFFF',
       secondaryLabel: 'rgba(235,235,245,0.6)',
       fill: systemColors.fill,
@@ -517,12 +523,12 @@ export const systemGround = isDark
       dash: 'rgba(235,235,245,0.3)',
       /** Inside an empty slot. */
       well: 'rgba(118,118,128,0.12)',
-      groundFade: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.94)'] as const,
+      groundFade: ['rgba(9,9,13,0)', 'rgba(9,9,13,0.94)'] as const,
       /** The scroll edge under the status bar once content runs beneath it (Today's `TopEdge`). */
-      topEdge: ['rgba(0,0,0,0.96)', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,0)'] as const,
+      topEdge: ['rgba(9,9,13,0.96)', 'rgba(9,9,13,0.8)', 'rgba(9,9,13,0)'] as const,
       /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), solid on Android (no blur, so rows would ghost through). */
-      bar: 'rgba(0,0,0,0.72)',
-      barSolid: '#000000',
+      bar: 'rgba(9,9,13,0.72)',
+      barSolid: '#09090D',
       /** `fill` made opaque (systemGray5) for a control on a see-through bar: a disabled button. */
       fillSolid: '#2C2C2E',
     }
@@ -540,6 +546,15 @@ export const systemGround = isDark
       barSolid: '#FFFFFF',
       fillSolid: '#E5E5EA',
     };
+
+/**
+ * The tactile screens at night (Photo Booth, the board; owner's brief 2026-11-11, HIG Dark Mode:
+ * "soften the color of white backgrounds"): a slightly warmer, softer room than the obsidian, and
+ * photo paper that reads as real paper under a warm lamp instead of glaring white. By day: the ground
+ * and white paper as before.
+ */
+export const paperRoom = isDark ? '#0E0E14' : systemGround.ground;
+export const warmPaper = isDark ? '#F4F1EA' : '#FFFFFF';
 
 /** A feature's signature look: its fill and glyph colour, a tint, its words on the ground, its hero card's gradient. */
 export interface Look {
@@ -724,6 +739,49 @@ export const moduleTints: Record<string, string> = isDark
       bond: '#CBF2E9',
       note: '#FFF0B8',
     };
+
+/**
+ * Today's widgets at night as stained glass over the obsidian ground (owner's brief, 2026-11-11):
+ * the module's hue at 22% fading to a deeper one at 10-12%, a 1 pt rim of the hue at 28%, white
+ * words. By day the widgets keep their pastel `moduleTints`; null then.
+ */
+export interface StainedGlass {
+  from: string;
+  to: string;
+  rim: string;
+}
+const stained = (a: string, b: string, rim: string): StainedGlass => ({ from: `rgba(${a},0.22)`, to: `rgba(${b},0.11)`, rim: `rgba(${rim},0.28)` });
+export const moduleGlass: Record<string, StainedGlass> | null = isDark
+  ? {
+      calls: stained('34,197,139', '20,83,61', '52,211,153'),
+      bond: stained('20,184,166', '17,94,89', '45,212,191'),
+      sleep: stained('139,92,246', '67,56,202', '167,139,250'),
+      store: stained('245,158,11', '180,83,9', '251,191,36'),
+      radio: stained('236,72,153', '157,23,77', '244,114,182'),
+      diary: stained('217,119,6', '120,53,15', '251,191,36'),
+      date: stained('244,63,94', '136,19,55', '251,113,133'),
+      photo: stained('59,130,246', '30,64,175', '96,165,250'),
+      contacts: stained('148,163,184', '51,65,85', '203,213,225'),
+      gifts: stained('239,68,68', '153,27,27', '248,113,113'),
+      board: stained('6,182,212', '21,94,117', '34,211,238'),
+      note: stained('234,179,8', '133,77,14', '250,204,21'),
+    }
+  : null;
+
+/**
+ * Always-dark screens (owner's brief, 2026-11-11; HIG Dark Mode: "a permanently dark appearance
+ * that lets the UI recede" for immersive media): the radio player and a date round, whatever the
+ * phone's setting. Obsidian ground, smoky glass controls with a lit top rim, white words.
+ */
+export const immersive = {
+  ground: '#07070B',
+  glass: 'rgba(26,26,34,0.75)',
+  rim: 'rgba(255,255,255,0.18)',
+  card: 'rgba(26,26,34,0.75)',
+  fill: 'rgba(118,118,128,0.28)',
+  label: '#FFFFFF',
+  secondaryLabel: 'rgba(235,235,245,0.62)',
+} as const;
 
 /** A world's folder on Find: the front and its text, and the back panel with the tab (a shade deeper). */
 export interface WorldHue extends Hue {

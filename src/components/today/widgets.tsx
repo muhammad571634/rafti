@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
-import { colors, fonts, isDark, moduleColors, moduleTints, systemColors } from '@/theme';
+import { colors, fonts, isDark, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -145,6 +145,8 @@ export function WidgetView({
   const ink = onPhoto ? colors.white : colors.text;
   const sub = onPhoto ? SUB : colors.text;
   const tint = moduleTints[key] ?? moduleTints.bond;
+  // At night: stained glass instead of the flat deep tint (`moduleGlass`).
+  const glass = !onPhoto && moduleGlass ? (moduleGlass[key] ?? moduleGlass.bond) : null;
   // The board widget is a note pinned up: a little tilt and a strip of tape.
   const pinned = model.kind === 'board' && !onPhoto;
   const buttons = model.buttons ?? [];
@@ -274,7 +276,17 @@ export function WidgetView({
   );
 
   return (
-    <View style={[styles.card, !onPhoto && { backgroundColor: tint }, pinned && styles.pinned, { height }]}>
+    <View
+      style={[
+        styles.card,
+        !onPhoto && { backgroundColor: glass ? 'transparent' : tint },
+        glass && { borderWidth: 1, borderColor: glass.rim },
+        pinned && styles.pinned,
+        { height },
+      ]}>
+      {glass ? (
+        <LinearGradient colors={[glass.from, glass.to]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      ) : null}
       {pinned ? <View style={styles.tape} pointerEvents="none" /> : null}
       {onPhoto ? (
         <>
@@ -409,7 +421,7 @@ const styles = StyleSheet.create({
   // in the gallery's narrow card, Russian, A51 2026-11-05).
   figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
   // The number is the widget's headline (a clock's time, a balance): large, tight, heavy.
-  figure: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 36, lineHeight: 42, letterSpacing: -0.5 },
+  figure: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 36, lineHeight: 42, letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
   unit: { flexShrink: 1, fontSize: 15, fontWeight: '600' },
   title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22 },
   // Under a number: what it is for (a plan's name), up to two lines.

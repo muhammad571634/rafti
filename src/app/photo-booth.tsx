@@ -33,7 +33,7 @@ import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, signature, space, systemGround } from '@/theme';
+import { colors, paperRoom, signature, space, systemGround } from '@/theme';
 import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
@@ -192,7 +192,7 @@ export default function PhotoBoothScreen() {
   }, [locked]);
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={paperRoom}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom + (quota ? METER_SPACE : 0) }}>

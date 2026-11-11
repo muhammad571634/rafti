@@ -9,7 +9,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { NightFace, NightRound, untilText } from '@/components/alarms/night-kit';
 import { SleepingMascot } from '@/components/bedtime/sleeping-mascot';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
-import { Anim, Button, CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, Button, CharacterAvatar, DotMatrix, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
@@ -123,9 +123,13 @@ export default function BedtimeScreen() {
             {paused ? null : <Anim name="voiceWave" size={22} tint={night.primary} />}
           </View>
 
-          <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
-            <SleepingMascot size={Math.round(ringSize * 0.6)} whispering={!paused} />
-          </TimerRing>
+          {/* The LED dot field glows behind the ring while the friend whispers (owner's brief, 2026-11-11). */}
+          <View style={styles.ringWrap}>
+            <DotMatrix size={Math.round(ringSize * 1.4)} color={WHISPER_GLOW} energy={paused ? 0.25 : 0.75} active={!paused} style={styles.ringField} />
+            <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
+              <SleepingMascot size={Math.round(ringSize * 0.6)} whispering={!paused} />
+            </TimerRing>
+          </View>
 
           <Txt style={styles.countdown} accessibilityLabel={t('bedtime.remaining', { time: callClock(left ?? 0) })}>
             {callClock(left ?? 0)}
@@ -302,6 +306,9 @@ function useNextWake(alarms: Alarm[], characters: Character[]) {
   }, [alarms, characters, t]);
 }
 
+/** The dot field's colour behind the ring: a soft lavender, the night's own hue beside the warm ring. */
+const WHISPER_GLOW = '#A78BFA';
+
 /** The iOS Timer ring: it empties as the time runs out, the rocking moon inside. */
 function TimerRing({ size, share, children }: { size: number; share: number; children: React.ReactNode }) {
   const r = (size - STROKE) / 2;
@@ -331,6 +338,8 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  ringWrap: { alignItems: 'center', justifyContent: 'center' },
+  ringField: { position: 'absolute' },
   scroll: { gap: space.lg, paddingBottom: space.xl },
   title: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 34, lineHeight: 42, color: night.text },
   proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: 15, backgroundColor: night.primarySofter },

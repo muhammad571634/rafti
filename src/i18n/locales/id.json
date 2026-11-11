@@ -1528,6 +1528,7 @@
   },
   "us": {
     "title": "Kita",
+    "talkedWith": "Dengan siapa kamu mengobrol · {{month}}",
     "level": "Level {{level}}",
     "intimacy": "keintiman {{count}}",
     "streak": "streak {{count}} hari",

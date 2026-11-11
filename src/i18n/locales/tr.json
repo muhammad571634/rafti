@@ -1554,6 +1554,7 @@
   },
   "us": {
     "title": "Biz",
+    "talkedWith": "Kiminle konuştun · {{month}}",
     "level": "Seviye {{level}}",
     "intimacy": "{{count}} samimiyet",
     "streak": "{{count}} günlük seri",

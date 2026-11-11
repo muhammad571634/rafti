@@ -1554,6 +1554,7 @@
   },
   "us": {
     "title": "Wir",
+    "talkedWith": "Mit wem du gesprochen hast · {{month}}",
     "level": "Stufe {{level}}",
     "intimacy": "{{count}} Nähe",
     "streak": "{{count}} Tage Serie",
