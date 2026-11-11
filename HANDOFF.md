@@ -9,6 +9,7 @@
 - **Known, needs a new APK**: Android's 3-button bar stays light on night screens when the phone is in Light (it follows the system; setting it per screen needs `expo-navigation-bar`, a native module). Pre-existing on calls and bedtime too.
 - Board notes in a chat stay light paper on purpose (paper stays paper).
 - Checks: tsc 0, npm test 922/922.
+- **Then (owner's screenshots, same day)**: a friend's page keeps only back (the ⋯ to settings did what back does from there; `5f…`/`index.tsx`); a wrapped name on the face card puts the AI badge under it (Victor Hale); quick-action labels share the row and keep one size ("Воспоминания", "Erinnerungen", "Секретная записка" wraps); the store's shells figure sits over its word, clear of the Free pill; frame stickers are SF Symbols in iOS colours on a white die-cut disc (`src/components/photo-booth/frame-sticker.tsx`), the clay crown in the plan success is an SF Symbol tile. Only the 3D shell (the currency picture) remains of the clay set. All seen on the A51 (`3fdf00a`, `5456e6c`, OTA `01a1cb7c`). The phone's network to u.expo.dev reset once; a retry downloaded. The A51 was left in Night mode (it switched itself back, likely the phone's own schedule).
 
 Still to do:
 1. Owner: the server deploy (talk hours from 0z196; the quick-create gender line from 0z193).
