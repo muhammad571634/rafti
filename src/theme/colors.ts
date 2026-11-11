@@ -128,6 +128,9 @@ const lightColors = {
   onMediaBubble: 'rgba(22,22,28,0.62)',
   /** A field drawn on a picture (the Today card's "Message", the composer on an Art wallpaper). */
   onMediaField: 'rgba(28,28,34,0.58)',
+  /** Frosted glass on a picture's dark foot (Today's "Message" field) and its rim. */
+  onMediaFrost: 'rgba(255,255,255,0.14)',
+  onMediaRim: 'rgba(255,255,255,0.22)',
   /** Under white words that sit straight on a picture (times, notes), so a bright patch never swallows them. */
   onMediaShadow: 'rgba(0,0,0,0.6)',
   /** The Today card's light over their picture, following the user's hour (Replika's room light); none by day. */
@@ -515,6 +518,8 @@ export const systemGround = isDark
       /** Inside an empty slot. */
       well: 'rgba(118,118,128,0.12)',
       groundFade: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.94)'] as const,
+      /** The scroll edge under the status bar once content runs beneath it (Today's `TopEdge`). */
+      topEdge: ['rgba(0,0,0,0.96)', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,0)'] as const,
       /** A bar pinned over the ground (a buy button): see-through on iOS (blurred), solid on Android (no blur, so rows would ghost through). */
       bar: 'rgba(0,0,0,0.72)',
       barSolid: '#000000',
@@ -530,6 +535,7 @@ export const systemGround = isDark
       dash: 'rgba(60,60,67,0.29)',
       well: 'rgba(118,118,128,0.06)',
       groundFade: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.94)'] as const,
+      topEdge: ['rgba(255,255,255,0.96)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0)'] as const,
       bar: 'rgba(255,255,255,0.78)',
       barSolid: '#FFFFFF',
       fillSolid: '#E5E5EA',
@@ -597,6 +603,8 @@ export const playful = isDark
       tabOnText: '#FFFFFF',
       /** The floating tab bar's fill, a tab that is off, and the fade under the bar. */
       bar: 'rgba(28,28,30,0.94)',
+      /** The bar's rim: a light edge at night, as a lit glass edge. */
+      barRim: 'rgba(255,255,255,0.12)',
       tabOff: 'rgba(235,235,245,0.6)',
       groundFade: ['rgba(26,22,19,0)', 'rgba(26,22,19,0.94)'] as const,
     }
@@ -621,6 +629,8 @@ export const playful = isDark
       tabOn: '#E5E5EA',
       tabOnText: '#000000',
       bar: 'rgba(255,255,255,0.94)',
+      /** By day a faint dark hairline: a white rim vanishes on the white ground. */
+      barRim: 'rgba(60,60,67,0.12)',
       tabOff: 'rgba(60,60,67,0.6)',
       groundFade: ['rgba(251,246,238,0)', 'rgba(251,246,238,0.94)'] as const,
     };

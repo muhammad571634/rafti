@@ -42,8 +42,12 @@ const PINNED_RING = 3;
 const PINNED_GAP = 2;
 /** The unread dot's column before the face, as in Messages. */
 const DOT_COLUMN = 18;
-/** One swipe action: a full-height coloured column with its glyph and label, flush with the row. */
-const ACTION = 74;
+/**
+ * One swipe action's slot: a rounded pill inside it, as in iOS 18 Messages (owner's screenshots,
+ * 2026-11-11: the flush rectangles clipped "Выключить звук" at their edges).
+ */
+const ACTION = 80;
+const ACTION_GAP = 4;
 /** The width under a row for this many actions. */
 const actionsWidth = (count: number) => count * ACTION;
 const MENU_AVATAR = 36;
@@ -673,7 +677,7 @@ interface SwipeActionSpec {
 }
 
 /**
- * The actions under a bubble: full-height coloured columns in one strip with the bubble's corners.
+ * The actions under a row: rounded coloured pills side by side, each with a little ground around it.
  * The strip fades in as the bubble starts to slide, so a closed bubble's round corners show only
  * ground; the glyphs grow with the slide (`progress`), so the reveal follows the finger.
  */
@@ -710,8 +714,8 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
       accessibilityLabel={action.label}
       style={[styles.action, { backgroundColor: action.fill }]}>
       <Animated.View style={[styles.actionInner, grow]}>
-        <Ionicons name={action.icon} size={21} color={WHITE} />
-        <Txt style={styles.actionText} lines={1} maxFontSizeMultiplier={1.2} adjustsFontSizeToFit minimumFontScale={0.75}>
+        <Ionicons name={action.icon} size={22} color={WHITE} />
+        <Txt style={styles.actionText} lines={2} maxFontSizeMultiplier={1.2}>
           {action.label}
         </Txt>
       </Animated.View>
@@ -1112,9 +1116,18 @@ const styles = StyleSheet.create({
   actions: { flex: 1, flexDirection: 'row', overflow: 'hidden' },
   actionsLeft: {},
   actionsRight: {},
-  action: { width: ACTION, alignItems: 'center', justifyContent: 'center' },
-  actionInner: { alignItems: 'center', gap: 4 },
-  actionText: { maxWidth: ACTION - 6, fontSize: 11, fontWeight: '700', color: WHITE },
+  action: {
+    width: ACTION - ACTION_GAP * 2,
+    marginHorizontal: ACTION_GAP,
+    marginVertical: ACTION_GAP + 2,
+    paddingHorizontal: space.xs,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionInner: { alignItems: 'center', gap: 3 },
+  actionText: { fontSize: 12, lineHeight: 14, fontWeight: '600', color: WHITE, textAlign: 'center' },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
   caughtUp: {
     height: 120,

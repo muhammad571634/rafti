@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
 import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -115,6 +116,8 @@ export default function HomeScreen() {
   const [galleryWidth, setGalleryWidth] = useState(0);
   /** The picture has scrolled away from under the status bar. */
   const [pastHero, setPastHero] = useState(false);
+  /** Anything has scrolled under the status bar: its edge then gets a scrim (`TopEdge`). */
+  const [scrolled, setScrolled] = useState(false);
   const galleryHalf = galleryWidth ? Math.floor((galleryWidth - space.md) / 2) : undefined;
 
   const user = useAppStore((s) => s.user);
@@ -279,7 +282,15 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         onTouchStart={hideWelcome}
         scrollEventThrottle={32}
-        onScroll={onPhoto ? (e) => setPastHero(e.nativeEvent.contentOffset.y > heroBottom - insets.top - space.md) : undefined}
+        onScroll={
+          onPhoto
+            ? (e) => {
+                const y = e.nativeEvent.contentOffset.y;
+                setScrolled(y > space.xs);
+                setPastHero(y > heroBottom - insets.top - space.md);
+              }
+            : undefined
+        }
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         {hero ? (
           <TodayHero
@@ -427,6 +438,8 @@ export default function HomeScreen() {
         )}
       </ScrollView>
 
+      {onPhoto ? <TopEdge mode={pastHero ? 'ground' : scrolled ? 'photo' : 'none'} height={insets.top + space.md} /> : null}
+
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')}>
         <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
           <View style={styles.galleryGrid} onLayout={(e) => setGalleryWidth(e.nativeEvent.layout.width)}>
@@ -463,6 +476,31 @@ export default function HomeScreen() {
     </Screen>
   );
 }
+
+/**
+ * The scroll edge under the status bar (iOS 26 scroll edge effect, as a gradient: a live blur on
+ * Android redraws the whole screen each frame on a Galaxy A51). Without it the hero's line, its
+ * "Message" field and then the widgets ran straight under the clock and battery glyphs (owner's
+ * screenshots, 2026-11-11). Over the picture it is a dark veil that keeps the light glyphs legible;
+ * once the picture is gone it is the ground, under the dark glyphs. Not drawn at rest.
+ */
+function TopEdge({ mode, height }: { mode: 'none' | 'photo' | 'ground'; height: number }) {
+  const still = useReducedMotion();
+  const shown = useSharedValue(0);
+  useEffect(() => {
+    const to = mode === 'none' ? 0 : 1;
+    shown.value = still ? to : withTiming(to, { duration: 160 });
+  }, [mode, still, shown]);
+  const fade = useAnimatedStyle(() => ({ opacity: shown.value }));
+  const veil = mode === 'ground' ? systemGround.topEdge : TOP_EDGE_PHOTO;
+  return (
+    <Animated.View pointerEvents="none" style={[styles.topEdge, { height }, fade]}>
+      <LinearGradient colors={veil} locations={TOP_EDGE_STOPS} style={StyleSheet.absoluteFill} />
+    </Animated.View>
+  );
+}
+const TOP_EDGE_PHOTO = ['rgba(10,12,20,0.72)', 'rgba(10,12,20,0.5)', 'rgba(10,12,20,0)'] as const;
+const TOP_EDGE_STOPS = [0, 0.6, 1] as const;
 
 /** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
 function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
@@ -584,6 +622,7 @@ const Slot = memo(function Slot({
 });
 
 const styles = StyleSheet.create({
+  topEdge: { position: 'absolute', top: 0, left: 0, right: 0 },
   flex: { flex: 1, minWidth: 0 },
   // The top row under the Dynamic Island: wordmark on the leading edge, your capsule on the trailing one,
   // 44pt tall like an iOS bar. The top padding is the room the mascot's hair rises into.

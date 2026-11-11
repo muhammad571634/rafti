@@ -185,15 +185,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm + 2,
   },
-  // The prototype's soft shadow: iOS draws it; Android uses a low elevation (the bar sits above all).
+  // A wide, soft ambient shadow and a 1 pt rim, so the bar reads as a lifted glass edge over any
+  // content (HIG Tab bars, Materials). The fill stays nearly opaque: Android has no blur here, and a
+  // see-through fill shows its own elevation shadow through it.
   floating: {
     borderRadius: BAR / 2,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    borderColor: playful.barRim,
     backgroundColor: playful.bar,
-    shadowColor: '#281E14',
-    shadowOpacity: 0.18,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
+    shadowColor: '#000000',
+    shadowOpacity: 0.12,
+    shadowRadius: 30,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 8,
   },
   pill: {
     flex: 1,
