@@ -1,5 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z197. Appearance B built: every screen with a character is always dark, the tools follow the phone (2026-11-11, Claude 1, Opus 5.5). NEXT: the owner's server deploy (0z196), then a new preview APK (icons, and the Android button bar below)
+
+- **Done** (`556f2c3`, `d0ba4d3`, `8bdec9b` + picker fix; OTAs `175737c4`, `01a1cb52`): chats and groups always dark (every Classic wallpaper is its night shade in both themes, the chat takes the on-picture look on any ground, light status bar; the + panel and the noted chip read night tokens); a friend's page, memories, the background picker (one-to-one and group), streams live, the date album, and the whole onboarding (its first screen was dark already, so the flow never flips; agent's call beyond "the meeting steps"). Settings, search, the streams list and every tool follow the phone.
+- **Mechanism** (for any later screen): `night` / `day` token sets in `src/theme/colors.ts` (colors, ground, playful, aurora, systemColors, friendColor, friendAccent); `Screen night` opens `NightScope` (`src/theme/scheme.ts`); kit pieces read `useTokens()` / `useThemed(pair)` with styles built once per set by `themed()` (Txt, Header, Sheet, Button, Card, Chip, Divider, IconButton, Segmented, Toggle, glass, aurora, the character kit, the language list). A night screen file reads its own tokens at module level (`const { colors } = night`). Sheets opened inside a night screen are night (iOS: a presented sheet inherits the trait). A component that renders `Screen night` itself is outside its own scope: read `night` / `profileSheet.night` directly there.
+- **Driven on the A51** (phone in Light, then Dark, set back to Light): Milo's page and its cards, the chat on cream, the + panel, settings (light by day, dark by night), memories, the background picker, the date album. Fixed on the way: the picker's preview of your bubble now matches the chat (the phone's tone).
+- **Not driven**: a live stream (none exists; a new one costs shells), onboarding (needs a fresh install).
+- **Known, needs a new APK**: Android's 3-button bar stays light on night screens when the phone is in Light (it follows the system; setting it per screen needs `expo-navigation-bar`, a native module). Pre-existing on calls and bedtime too.
+- Board notes in a chat stay light paper on purpose (paper stays paper).
+- Checks: tsc 0, npm test 922/922.
+
+Still to do:
+1. Owner: the server deploy (talk hours from 0z196; the quick-create gender line from 0z193).
+2. Owner: a new preview APK (heart-mascot icons, notification icon; add `expo-navigation-bar` first so night screens get a dark button bar).
+3. Drive a live stream and a fresh onboarding in Light mode when one is at hand.
+
 ### 0z196. The owner picked appearance option B, "Apple's split": every screen where you are WITH a character is always dark, the tools follow the phone; talk hours measured on the server (2026-11-11, Claude Opus 5.5). NEXT: build B (list below), then the owner's server deploy
 
 - **Owner's ask**: companion apps in the App Store are mostly dark and used 9 PM to 1-2 AM; decide like Apple which screens are dark. Research and both options: `docs/appearance-plan.md` (Character.AI and Replika stay dark with the A51 in Light mode; HIG: moments and media dark, tools follow the phone). Owner chose **B** ("B: Apple's split"), and "apply" the hour measurement.

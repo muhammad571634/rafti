@@ -11,7 +11,7 @@ import type { Picture } from '@/components/chat/chat-ground';
 import { SoftSegmented, TitleTop } from '@/components/character/kit';
 import { glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
-import { fonts, gradients, gradientStops, night, space } from '@/theme';
+import { colors as phoneColors, fonts, gradients, gradientStops, night, space } from '@/theme';
 
 // Always dark (appearance B, owner 2026-11-11): it dresses a chat, and every chat is dark.
 const { colors, playful } = night;
@@ -185,7 +185,8 @@ const styles = StyleSheet.create({
   // The chat's own bubble colours and tails, so the preview reads like the chat.
   previewBubble: { position: 'absolute', height: 34, borderRadius: 17 },
   previewTheirs: { left: space.md, top: 22, width: '58%', backgroundColor: colors.bubbleOther, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.bubbleOtherRim, borderBottomLeftRadius: 5 },
-  previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: colors.bubbleSelf, borderBottomRightRadius: 5 },
+  // The user's bubble keeps the phone's tone in the chat (`MessageBubble`), so the preview does too.
+  previewMine: { right: space.md, top: 64, width: '46%', backgroundColor: phoneColors.bubbleSelf, borderBottomRightRadius: 5 },
   previewField: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, height: 32, borderRadius: 16 },
   previewTheirsOnPicture: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   previewFieldOnPicture: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaHairline },
