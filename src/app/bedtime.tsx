@@ -7,7 +7,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
 import { NightFace, NightRound, untilText } from '@/components/alarms/night-kit';
-import { SleepingMascot } from '@/components/bedtime/sleeping-mascot';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, Button, CharacterAvatar, DotMatrix, Header, PressableScale, Screen, Txt } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
@@ -41,7 +40,7 @@ export default function BedtimeScreen() {
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   // The moon fits any phone: the setup scrolls, the whispering screen never does.
-  const artSize = Math.round(Math.min(196, Math.max(132, height * 0.22)));
+  const artSize = Math.round(Math.min(230, Math.max(150, height * 0.26)));
   const ringSize = Math.round(Math.min(290, Math.max(200, height * 0.34)));
 
   const characters = useAppStore((s) => s.characters);
@@ -123,13 +122,11 @@ export default function BedtimeScreen() {
             {paused ? null : <Anim name="voiceWave" size={22} tint={night.primary} />}
           </View>
 
-          {/* The LED dot field glows behind the ring while the friend whispers (owner's brief, 2026-11-11). */}
-          <View style={styles.ringWrap}>
-            <DotMatrix size={Math.round(ringSize * 1.4)} color={WHISPER_GLOW} energy={paused ? 0.25 : 0.75} active={!paused} style={styles.ringField} />
-            <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
-              <SleepingMascot size={Math.round(ringSize * 0.6)} whispering={!paused} />
-            </TimerRing>
-          </View>
+          {/* The LED dot field breathes inside the timer ring while the friend whispers, in place of the
+              sleeping mascot (owner, 2026-11-11: "the dark prototype's animation, more alive, wavy"). */}
+          <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
+            <DotMatrix size={Math.round(ringSize * 0.8)} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={paused ? 0.2 : 0.9} active={!paused} />
+          </TimerRing>
 
           <Txt style={styles.countdown} accessibilityLabel={t('bedtime.remaining', { time: callClock(left ?? 0) })}>
             {callClock(left ?? 0)}
@@ -174,7 +171,8 @@ export default function BedtimeScreen() {
 
             <View style={styles.hero}>
               <View style={{ width: artSize, height: artSize }}>
-                <SleepingMascot size={artSize} whispering={false} />
+                {/* The dot field at rest, slower and softer than while whispering. */}
+                <DotMatrix size={artSize} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={0.45} />
                 {reader ? (
                   <View style={styles.badge}>
                     <CharacterAvatar character={reader} size={58} />
@@ -306,8 +304,9 @@ function useNextWake(alarms: Alarm[], characters: Character[]) {
   }, [alarms, characters, t]);
 }
 
-/** The dot field's colour behind the ring: a soft lavender, the night's own hue beside the warm ring. */
-const WHISPER_GLOW = '#A78BFA';
+/** The dot field: lavender in the middle drifting to the warm peach of the ring at its edge. */
+const NIGHT_DOTS = '#A78BFA';
+const NIGHT_DOTS_EDGE = '#FFB88A';
 
 /** The iOS Timer ring: it empties as the time runs out, the rocking moon inside. */
 function TimerRing({ size, share, children }: { size: number; share: number; children: React.ReactNode }) {
@@ -338,8 +337,6 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  ringWrap: { alignItems: 'center', justifyContent: 'center' },
-  ringField: { position: 'absolute' },
   scroll: { gap: space.lg, paddingBottom: space.xl },
   title: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 34, lineHeight: 42, color: night.text },
   proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: 15, backgroundColor: night.primarySofter },

@@ -16,6 +16,7 @@ const SHADER = `
 uniform float2 res;
 uniform float t;
 uniform float3 col;
+uniform float3 col2;
 uniform float energy;
 uniform float cells;
 
@@ -26,16 +27,24 @@ half4 main(float2 p) {
   float2 uv = (c / res) * 2.0 - 1.0;
   float d = length(uv);
   if (d > 1.04) { return half4(0.0); }
-  float wave = 0.5 + 0.5 * sin(d * 7.0 - t * 2.1);
-  float amp = mix(0.3, 1.0, energy);
-  float r = cell * 0.5 * (0.26 + 0.6 * wave * amp) * (1.0 - 0.5 * d);
+  float ang = atan(uv.y, uv.x);
+  // A slow breath (about 8 s), a ripple running out from the middle, and a soft swirl turning
+  // through it: three waves mixed, so the field never repeats the same frame twice in a row.
+  float breath = 0.5 + 0.5 * sin(t * 0.75);
+  float ripple = 0.5 + 0.5 * sin(d * 8.0 - t * 2.0);
+  float swirl = 0.5 + 0.5 * sin(ang * 3.0 + d * 5.0 - t * 0.9);
+  float wave = mix(ripple, swirl, 0.35);
+  float amp = mix(0.3, 1.0, energy) * (0.72 + 0.28 * breath);
+  float r = cell * 0.5 * (0.22 + 0.68 * wave * amp) * (1.0 - 0.45 * d);
   float dist = length(p - c);
   float core = smoothstep(r, r - 1.2, dist);
-  float bloom = exp(-pow(dist / (r * 2.0 + 0.001), 2.0)) * 0.4 * wave * amp;
+  float bloom = exp(-pow(dist / (r * 2.0 + 0.001), 2.0)) * 0.42 * wave * amp;
   float edge = 1.0 - smoothstep(0.82, 1.04, d);
   float a = clamp(core + bloom, 0.0, 1.0) * edge;
-  float lit = 0.35 + 0.65 * wave;
-  return half4(col * lit * a, a);
+  // The colour drifts from the first to the second outwards, the boundary turning slowly.
+  float3 tint = mix(col, col2, clamp(d * 0.9 + 0.25 * sin(t * 0.4 + ang), 0.0, 1.0));
+  float lit = 0.3 + 0.7 * wave;
+  return half4(tint * lit * a, a);
 }
 `;
 
@@ -65,6 +74,7 @@ function rgb(hex: string): [number, number, number] {
 export function DotMatrix({
   size,
   color,
+  color2,
   energy = 0.3,
   active = true,
   cells = 15,
@@ -73,6 +83,8 @@ export function DotMatrix({
   size: number;
   /** One hex colour: the friend's or the feature's. */
   color: string;
+  /** The colour the field drifts to towards its edge; the same as `color` when left out. */
+  color2?: string;
   energy?: number;
   /** False holds the wave where it is (a paused clip). */
   active?: boolean;
@@ -98,7 +110,11 @@ export function DotMatrix({
   );
 
   const col = rgb(color);
-  const uniforms = useDerivedValue(() => ({ res: [size, size], t: clock.value, col, energy: level.value, cells }), [size, cells, col[0], col[1], col[2]]);
+  const col2 = rgb(color2 ?? color);
+  const uniforms = useDerivedValue(
+    () => ({ res: [size, size], t: clock.value, col, col2, energy: level.value, cells }),
+    [size, cells, col[0], col[1], col[2], col2[0], col2[1], col2[2]],
+  );
 
   const source = dotEffect();
   if (!source) return <View style={[{ width: size, height: size }, style]} />;
