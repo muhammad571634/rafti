@@ -83,8 +83,9 @@ export function sceneFocus(characterId: string, aspect: number, at = 0.5): Image
 const OnPhoto = createContext(false);
 
 /**
- * Wraps a chat whose ground is a picture (their portrait, the default, or an Art wallpaper): its
- * bubbles, notes, header and composer take their on-picture look. Classic wallpapers keep the light chat.
+ * Wraps a chat whose ground is a picture (their portrait, the default, or an Art wallpaper) or a
+ * dark wallpaper: its bubbles, notes, header and composer take their on-picture look. Every chat
+ * since appearance B (owner 2026-11-11: always dark), so the light branches are for other screens.
  */
 export const ChatGroundProvider = OnPhoto.Provider;
 

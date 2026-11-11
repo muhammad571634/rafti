@@ -92,9 +92,10 @@ export function BackgroundPicker({
               ) : (
                 <LinearGradient colors={selectedClassic.colors} style={StyleSheet.absoluteFill} />
               )}
-              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs, (onPortrait || selectedArt) && styles.previewTheirsOnPicture]} />
+              {/* Every chat is dark now (appearance B): the bubbles and field on any ground take the picture look. */}
+              <View pointerEvents="none" style={[styles.previewBubble, styles.previewTheirs, styles.previewTheirsOnPicture]} />
               <View pointerEvents="none" style={[styles.previewBubble, styles.previewMine]} />
-              <View pointerEvents="none" style={[glassStyle, styles.previewField, (onPortrait || selectedArt) && styles.previewFieldOnPicture]} />
+              <View pointerEvents="none" style={[glassStyle, styles.previewField, styles.previewFieldOnPicture]} />
             </View>
 
             {portrait ? (

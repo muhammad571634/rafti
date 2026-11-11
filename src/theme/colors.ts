@@ -512,8 +512,7 @@ export const gradientStops = {
  * on it), the owner's pick for the main tabs (2026-11-08, option B): a white view with
  * secondary-grey cards, black with #1C1C1E at night. Today first; Chats, Us and Find follow.
  */
-export const systemGround = isDark
-  ? {
+const darkSystemGround = {
       ground: '#09090D',
       card: '#16161E',
       label: '#FFFFFF',
@@ -531,7 +530,17 @@ export const systemGround = isDark
       barSolid: '#09090D',
       /** `fill` made opaque (systemGray5) for a control on a see-through bar: a disabled button. */
       fillSolid: '#2C2C2E',
-    }
+    };
+
+/**
+ * The night grounds whatever the phone is set to (appearance B, owner 2026-11-11: every screen where
+ * you are with a character is always dark, docs/appearance-plan.md): those screens read this, not
+ * `systemGround`.
+ */
+export const darkGround = darkSystemGround;
+
+export const systemGround = isDark
+  ? darkSystemGround
   : {
       ground: '#FFFFFF',
       card: '#F2F2F7',
@@ -583,9 +592,12 @@ export const signature = {
  * The playful layer's ground and controls (design-style §10, owner 2026-11-07): warm cream instead
  * of the aurora on the four main tabs (warm near-black in dark mode), ink pills, soft chips.
  */
+/** The playful layer's warm near-black, whatever the phone is set to (appearance B, the chats' cream at night). */
+export const playfulNightGround = '#1A1613';
+
 export const playful = isDark
   ? {
-      ground: '#1A1613',
+      ground: playfulNightGround,
       ink: '#FFFFFF',
       /** A pill or chip that is off. */
       chip: 'rgba(255,255,255,0.10)',

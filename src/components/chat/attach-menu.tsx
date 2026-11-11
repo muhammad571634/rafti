@@ -5,7 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
-import { bottomRoom, colors, moduleFills, space, systemColors } from '@/theme';
+// Only chats open it, and a chat is always dark (appearance B): the night tokens in both themes.
+import { bottomRoom, nightColors as colors, moduleFills, space, systemColors } from '@/theme';
 
 export type AttachKey = 'scene' | 'timeSkip' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
 
@@ -30,7 +31,7 @@ const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: strin
 const COLUMNS = 3;
 
 /**
- * The chat's "+" panel (owner, 2026-11-08, canvas v1): a white card in the keyboard's place, under
+ * The chat's "+" panel (owner, 2026-11-08, canvas v1): a dark card in the keyboard's place, under
  * the composer, so the chat stays in view above it and the "+" turns into ×. Typing in the field,
  * ×, Android's back or a pick closes it.
  */

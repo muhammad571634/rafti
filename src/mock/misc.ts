@@ -1,5 +1,5 @@
 import type { ClayIconName } from '@/assets/brand/registry';
-import { colors, isDark, playful } from '@/theme';
+import { nightColors, playfulNightGround } from '@/theme';
 import { CREAM_BG } from './user';
 import type {
   ShellPack,
@@ -130,16 +130,17 @@ export const chatBackgrounds: {
   colors: readonly [string, string];
   dark?: boolean;
 }[] = [
-  // The chats' default ground (owner, 2026-11-08): the four tabs' warm cream, warm near-black in dark mode.
-  { id: CREAM_BG, nameKey: 'cream', colors: [playful.ground, playful.ground] as const, dark: isDark },
-  // In dark mode each wallpaper turns into a deep shade of its own hue.
-  { id: 'bg_blossom', nameKey: 'blossom', colors: isDark ? ['#2A1F2A', '#3A2630'] : ['#FFF4E8', '#FFE4CC'], dark: isDark },
-  { id: 'bg_dusk', nameKey: 'dusk', colors: isDark ? ['#14283A', '#1B2448'] : ['#E6F6F3', '#DDEBFA'], dark: isDark },
-  { id: 'bg_room', nameKey: 'room', colors: isDark ? ['#2A2420', '#352C26'] : ['#F6EFE6', '#EADFD2'], dark: isDark },
+  // A chat is always dark (appearance B, owner 2026-11-11): every wallpaper is the deep shade of its
+  // own hue in both themes, and the chat draws on them as on a picture (`ChatGroundProvider`).
+  // The chats' default ground (owner, 2026-11-08): the four tabs' cream, its warm near-black.
+  { id: CREAM_BG, nameKey: 'cream', colors: [playfulNightGround, playfulNightGround] as const, dark: true },
+  { id: 'bg_blossom', nameKey: 'blossom', colors: ['#2A1F2A', '#3A2630'] as const, dark: true },
+  { id: 'bg_dusk', nameKey: 'dusk', colors: ['#14283A', '#1B2448'] as const, dark: true },
+  { id: 'bg_room', nameKey: 'room', colors: ['#2A2420', '#352C26'] as const, dark: true },
   { id: 'bg_night', nameKey: 'night', colors: ['#1E2A55', '#2E3B6B'] as const, dark: true },
-  { id: 'bg_tea', nameKey: 'tea', colors: isDark ? ['#1E2A22', '#26342A'] : ['#F2F5E8', '#E2EBD6'], dark: isDark },
-  // iOS Messages ground, the default since the iOS look (2026-10-16).
-  { id: 'bg_plain', nameKey: 'plain', colors: [colors.bgPlain, colors.bgPlain] as const, dark: isDark },
+  { id: 'bg_tea', nameKey: 'tea', colors: ['#1E2A22', '#26342A'] as const, dark: true },
+  // iOS Messages ground at night, the default since the iOS look (2026-10-16).
+  { id: 'bg_plain', nameKey: 'plain', colors: [nightColors.bgPlain, nightColors.bgPlain] as const, dark: true },
 ];
 
 export const backgroundsById = Object.fromEntries(

@@ -8,7 +8,7 @@ import { FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, t
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChatInput, ChatWallpaper, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { useFollowNewest } from '@/components/chat/follow-newest';
 import type { VoiceNote } from '@/components/chat/use-voice-note';
 import { dropNote } from '@/lib/voice-files';
@@ -37,7 +37,7 @@ import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, playful, space } from '@/theme';
+import { colors, nightColors, playfulNightGround, space } from '@/theme';
 import type { Character, Message, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -331,15 +331,15 @@ export default function GroupChatScreen() {
   return (
     <Screen
       background={(onPicture ? [colors.black, colors.black] : wallpaper.colors) as readonly [string, string]}
-      statusBarStyle={onPicture || wallpaper.dark ? 'light' : 'dark'}
+      statusBarStyle="light"
       edgeToEdge>
-      <ChatGroundProvider value={onPicture}>
+      {/* Always dark (appearance B, owner 2026-11-11): every ground takes the on-picture look. */}
+      <ChatGroundProvider value>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         {artWallpaper ? <PictureGround picture={{ source: artWallpaper.image }} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
-            {!artWallpaper ? <ChatWallpaper hidden={!!wallpaper.dark || backgroundId === 'bg_plain' || backgroundId === CREAM_BG} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
@@ -391,7 +391,7 @@ export default function GroupChatScreen() {
         </KeyboardAvoidingView>
 
         <ChatHeader
-          avatar={<GroupAvatar members={members} size={46} ringColor={playful.ground} />}
+          avatar={<GroupAvatar members={members} size={46} ringColor={playfulNightGround} />}
           title={title}
           identityLabel={`${t('group.rowLabel', { name: title })}, ${t('group.members', { count: members.length })}, ${t('group.info')}`}
           onIdentity={openInfo}
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   // As the one-to-one chat's art veil: the picture stays, the bubbles stay easy to read.
   missing: { padding: space.xl },
-  flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
+  flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: nightColors.primarySoft },
   list: { paddingTop: space.sm },
   ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
   way: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.lg },

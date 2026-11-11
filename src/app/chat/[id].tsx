@@ -9,7 +9,7 @@ import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { apiBase } from '@/ai/server';
-import { ChatInput, ChatWallpaper, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { LevelUpTakeover } from '@/components/level-up';
@@ -54,7 +54,8 @@ import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
-import { colors, shadows, space } from '@/theme';
+// Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
+import { nightColors as colors, shadows, space } from '@/theme';
 import type { Message, MessageTone, ReplyIdea, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -492,21 +493,20 @@ export default function ChatRoomScreen() {
   };
   // How they feel right now, under their name (canvas v3: alive); it fades back to their usual self.
   const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
-  const dark = onPicture || !!wallpaper.dark;
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen background={(onPicture ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle={dark ? 'light' : 'dark'} edgeToEdge>
-      <ChatGroundProvider value={onPicture}>
+    <Screen background={(onPicture ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle="light" edgeToEdge>
+      {/* Every ground is dark now, a picture or a wallpaper: the whole chat takes its on-picture look. */}
+      <ChatGroundProvider value>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         {/* Outside the keyboard's room, so the picture stays put while the keyboard is up. */}
         {picture ? <PictureGround picture={picture} /> : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
-            {!onPicture ? <ChatWallpaper hidden={dark || wallpaper.id === 'bg_plain' || wallpaper.id === CREAM_BG} /> : null}
             <FlatList
               ref={listRef}
               data={rows}
