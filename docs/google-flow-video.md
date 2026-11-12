@@ -5,7 +5,16 @@ the Google AI Pro subscription (Gemini app + Google Flow). Claude writes the pro
 result (frames by eye, sound with earshot) and edits the films. This replaces the Higgsfield/Seedance run of
 `docs/video-plan-trial.md`; the story, the shots and the on-screen lines there stay the same.
 
-## 0. Result of the A/B test (2026-11-12): **Veo 3.1 Lite** wins, Omni 1.2 Flash is the fallback
+## 0a. Final pick (owner, 2026-11-12, after P02/P03): **Omni 1.2 Flash** for every clip
+
+The owner tried Veo 3.1 Lite on P02/P03 and it broke them; Omni 1.2 Flash came out well. Checked: P02 Roman and
+P03 Caleb hold the v2 photo's face closely (Roman's face, hair and wedding ring, the green dress on a hanger as a
+bonus; Caleb's blond hair and jacket), both say their line word for word (Whisper), no clipping, no music
+(crickets / house quiet). Known Omni habit: about 1-1.8 s before the first word (P02 1.8 s, P03 1.0 s) and long
+pauses between lines; the edit trims the lead-in, so it costs nothing. Watch props in each take (P01's potato).
+Settings: Omni 1.2 Flash, 720p, 8 s, x1, 9:16, the `art-new/v2/c_<id>.png` photo as the one Ingredient.
+
+## 0. Result of the A/B test on P01 (2026-11-12, superseded by 0a): Veo 3.1 Lite won that one take
 
 P01 (Milo) with the same prompt and photo, checked frame by frame and with earshot + Whisper:
 
@@ -51,7 +60,7 @@ it only on clips Claude marks "final".
 
 ## 2. Flow settings (every clip)
 
-- Model **Veo 3.1 Lite** (§0), **720p**, **8 s**, **x1**, **vertical (9:16)**. Every spoken prompt: add "He/She
+- Model **Omni 1.2 Flash** (§0a), **720p**, **8 s**, **x1**, **vertical (9:16)**. Every spoken prompt: add "He/She
   starts speaking within the first second." at the start of the action.
 - Character clips (marked **ref**): **Ingredients** → upload `art-new/v2/c_<id>.png`. No start frame needed.
 - Clips with hands and a phone (marked **frame**): first make the start frame in Gemini (§3), send it to Claude,
