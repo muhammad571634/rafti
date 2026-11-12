@@ -92,7 +92,9 @@ version is possible by adding 08:00, 12:00 and 17:00 beats; make it only if the 
 
 ## 6. Clips to make (Google Flow, Omni 1.2 Flash, 8 s, x1, 720p)
 
-Eleven clips, 264 credits, plus two face photos in the Gemini app (free). Panels are **16:9** (cropped to 9:8 in the
+Ten clips, 240 credits, plus two face photos in the Gemini app (free). **Ready folders** (owner's step list in
+Uzbek, final prompts, settings, save names): `videos/flow-kit-film3/` (not in git), built by
+`sigmazam-edit/tools/film3_kit.py`; the prompts there are the source of truth, the table below is the summary. Panels are **16:9** (cropped to 9:8 in the
 edit, so keep the action in the middle); the two full-frame clips are **9:16**. Each clip is two shots with a hard
 cut at 4 s, as in film 2.
 
