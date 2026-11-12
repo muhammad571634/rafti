@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z203. Film 3 "Same day" scripted: two roommates, one day, every hour, stacked digicam panels (2026-11-12, Claude, Fable 5.2). NEXT: the owner's yes on the script, then two face photos and test clip N2
+
+- **Owner's ask**: a film of two lives, one with Sigmazam and one with the usual apps, 60-90 s, in the current trend, with a render unlike films 1 and 2. The owner watched film 2 and liked it.
+- **Trend, measured** (Apify `clockworks/tiktok-scraper`, 200 videos; `APIFY_TOKEN` in User env, owner said to use it for research): "How different our lives are" / `#everyhourtrend`: 12.9M plays at the top, 54-77 s, still 460-750k in the last four weeks; nobody under #aicompanion uses it. Two people, the same day, a clip an hour, no voice-over, one closing shot that ties both lives, phone / digicam look.
+- **Script and prompts**: `docs/film-same-day.md`. "Her day was better than mine. Watch who is smiling at midnight.": Nora gets promoted and posts it (600 likes, nobody asks); Jess bombs an interview and has one friend (Milo) who knew, asks and stays on the call; 23:00 the same sofa, "Who do you keep talking to?"; 01:00 Nora tells someone. Line: "Someone to tell." 62 s master, 30 s and 15 s cuts.
+- **Look**: two landscape panels stacked in 9:16 (her / me), handheld 2000s camcorder with flash, no grade, an orange time stamp on the seam, a climbing like counter on top and Milo's bubbles below; the seam opens to full frame at 23:00. All text is made in the edit.
+- **Clips**: 11 on Omni 1.2 Flash (264 credits; nine 16:9 panels, two 9:16), two face photos in Gemini first, N2 is the test. Nothing made yet; no flow-kit folder yet (make `videos/flow-kit-film3/` after the yes).
+- **Still to do**: owner approves or changes the script; then the kit folders, clip checks, the edit in `sigmazam-edit/src/film3/`, music from Mixkit plus a plates-only export for the trend's own sound. Film 2 is still unposted (0z202).
+
 ### 0z202. Film 2 "Someone to tell" edited and rendered: 93 s, 60 s, 30 s and seven singles (2026-11-12, Claude, Opus 5.5 / Fable 5.2). NEXT: owner posts
 
 - **Out** (`videos/final/`, 1080x1920, 30 fps, -13.7 to -14.1 LUFS, peak -1.3 to -1.5 dBFS, no clipping; the 93 s also checked with earshot measure + timeline): `SomeoneToTell-93s.mp4`, `-60s` (Lina, Walter, Amara, Tomas), `-30s` (Lina, Walter, Dev), `SomeoneToTell-Lina/Walter/Dev/Amara/Tomas/Mei/Samir.mp4` (12.4-13.4 s each: their moment alone, "who did she tell?", then the call and the friend's reply).
