@@ -141,7 +141,7 @@ The person is the one in the reference image: keep exactly the same face, hair, 
 The person is the one in the reference image: keep exactly the same face, hair, age, build and clothes. The same airport car park, the sunrise now full gold. Shot 1 (0-4s), from behind him over his shoulder toward the sun: he stands by the car holding his phone up to the sky as if showing it the view. He starts speaking within the first second, warm and low, natural English with a light accent: "Look at that. Just look at that." Hard cut. Shot 2 (4-8s), close-up from the front, the sun on his face: he listens, chuckles, shakes his head smiling and says: "Every morning. I promise." Sound: wind, a distant plane, his voice close. No other speech. Photorealistic vertical 9:16 cinematic video, present day, shot like a feature film: natural skin texture, real light, shallow depth of field, gentle film grain, slow deliberate camera. Exactly two shots with one hard cut at the 4-second mark; the same person, the same clothes and the same place in both shots. Any phone is held with its screen toward the person, never toward the camera. All people are adults. No text, captions, readable screens, signs, logos or watermark. No music.
 ```
 
-## 7. Edit plan worked out (2026-11-12, paused before code)
+## 7. Edit plan (2026-11-12; built and rendered, see HANDOFF 0z202 — act 3 trims below are from the first takes, the code in `cuts2.ts` has the final ones)
 
 State when paused: all 15 clips were in `videos/raw/` and reviewed. **B2-B7 show different people from their A
 clips** (only B1 Lina matches): the face photo was not used. Owner is remaking B2-B7 with the right faces; re-run
