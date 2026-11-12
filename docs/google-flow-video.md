@@ -253,3 +253,47 @@ about 130. Total about 700 of the month's 1,000, plus the free 50 a day. Gemini 
 2. P02-P12, one a day or in batches; Claude checks each.
 3. H frames in Gemini → Claude checks → H video clips.
 4. Claude edits: 12 POV videos, hero film (75 / 30 / 15 s), sound checked with earshot.
+
+## 8. Block H on Omni 1.2 Flash, one step (2026-11-12, replaces the frame-first H prompts in §5)
+
+H01 and H02 are kept from the Higgsfield/Seedance run (`videos/raw/H01.mp4`, `H02.mp4`: phone held right, screen to the eyes; no audio, room tone is added in the edit). H08-H13 are cut from the P clips. So only eight clips are made, each in one step on Omni 1.2 Flash (720p, 8 s, x1, 9:16): Omni drew bodies and hands well in P02-P12, so the Gemini start frame is skipped; it comes back only for a clip whose hands break. The bedroom clips take one Ingredient, a frame of H01 (`videos/flow-kit/H06 .../1-photo-you.jpg`), so "you" and the room stay the same. Ready folders: `videos/flow-kit/H03 Kitchen` … `H16 City`. Credits: 8 × 24 = 192.
+
+**H03 Kitchen** (prompt only)
+```
+A small kitchen at night, wide shot from behind: one young adult sits on a stool at a counter, both elbows on the counter, eating instant noodles from a bowl with chopsticks in the right hand. An empty stool beside them. A single cold overhead light, the rest of the flat dark. A phone lies face down next to the bowl. They lift the chopsticks once, slowly, and stop; the camera stays still. Sound: fridge hum, one quiet slurp, a clock ticking. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H04 Street** (prompt only)
+```
+A crowded city street at night in light rain, slow motion: people walk past with umbrellas, every one of them looking down at their phone; one young adult stands still in the middle with headphones on, seen from behind, while the crowd flows around them. Neon colour reflections on wet asphalt, no readable signs. Sound: rain and city muffled, as if heard through headphones. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H05 Bus window** (prompt only)
+```
+Inside a night bus, close shot of a rain-streaked window: city lights slide past blurred, and in the glass we see the faint reflection of a young adult resting their head against the window, eyes half closed. Slow and melancholic. Sound: low bus engine hum, rain tapping on the glass. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H06 Phone lights up** (Ingredient: `1-photo-you.jpg`, a frame of H01)
+```
+The person and the bedroom are the ones in the reference image: keep the same young adult (same face, dark hair, skin tone), the same dark bedroom, bed, pillow and grey blanket. Close shot of the pillow in the dark bedroom: a phone lies screen up on the pillow beside the person's shoulder; only the shoulder and one arm on the blanket are in frame. After two seconds the phone screen lights up with a soft warm glow and buzzes once; the person's own hand, from the arm already in frame, slides over and picks the phone up. Sound: silent room, one short phone vibration, blanket rustle. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H07 The smile** (Ingredient: `1-photo-you.jpg`, a frame of H01)
+```
+The person and the bedroom are the ones in the reference image: keep the same young adult (same face, dark hair, skin tone), the same dark bedroom, bed, pillow and grey blanket. Close-up in profile: the person lies on their back in the dark bedroom holding a phone above their face with both hands, screen facing their eyes; we see the back of the phone and a warm glow on the cheek and lips. Only the lower half of the face is in frame. Slowly the corner of the mouth turns into a real, surprised smile; nothing else moves. Sound: a quiet breath out through the nose, almost a laugh. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H14 Goodnight** (Ingredient: `1-photo-you.jpg`, a frame of H01)
+```
+The person and the bedroom are the ones in the reference image: keep the same young adult (same face, dark hair, skin tone), the same dark bedroom, bed, pillow and grey blanket. The same bedroom, now a warm bedside lamp is on. The person lies on their side facing away from the camera, curled under the grey blanket, head on the pillow. A phone lies face up on the pillow in front of them, its screen dimly glowing. Slow calm breathing under the blanket; the camera pulls back very slowly. Sound: a quiet warm room, soft breathing. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H15 Good morning** (Ingredient: `1-photo-you.jpg`, a frame of H01)
+```
+The person and the bedroom are the ones in the reference image: keep the same young adult (same face, dark hair, skin tone), the same dark bedroom, bed, pillow and grey blanket. The same bed in the morning, sunlight through the curtains. Close shot of the pillow with a phone lying on it, screen up; the edge of the grey blanket and a relaxed hand near it. The phone screen lights up; the hand slides over from the blanket and rests on the phone without hurry. Sound: birds outside, soft blanket rustle, one gentle phone chime. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
+
+**H16 City** (prompt only)
+```
+A slow drone-like rise over a big city at golden hour, thousands of warm lit windows in apartment blocks, calm and hopeful, as if every window has someone in it. Sound: soft distant city ambience and wind. Photorealistic vertical 9:16 video, present day, looks like a real intimate phone video: natural skin texture, real light, subtle handheld movement, shallow depth of field, light film grain. One continuous shot, no cuts. All people are adults. No speech. No text, captions, readable screens, signs, logos or watermark. No music.
+```
