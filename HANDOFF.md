@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z204. Film 3 "Same day" edited and rendered: 43 s, 30 s, 15 s (2026-11-13, Claude, Opus 5.5). NEXT: owner watches and posts
+
+- **Out** (`videos/final/`, 1080×1920, 30 fps): `SameDay-43s.mp4` (42.8 s, -14.2 LUFS, peak -1.1 dBTP), `SameDay-30s.mp4` (30.3 s, -14.1, -1.3), `SameDay-15s.mp4` (14.7 s, -14.1, -1.1). Peaks are 0.4 dB over the usual -1.5 target (still under -1.0). The sofa line is clear over the music drop-out (Whisper on the master: "Who do you keep talking to?").
+- **Why 43 s, not 62**: ten 8 s clips, two halves each, shown two at a time = about 40 s of picture. A 60 s cut needs three more hour pairs (08:00, 12:00, 17:00: six clips, 144 credits); ask the owner first.
+- **Edit** (`C:/Users/joray/sigmazam-edit`, outside the repo): `tools/film3_prep.sh` cuts every piece from `videos/raw` into `public/f3/` (9:8 panel crops, blur boxes over J1's face-up home screen and J2's "11 AM", N2 shot 2 letterbox crop, N1 shot 1 black frame crop, N4 = 0-1.8 s + the thumb close-up, S1 loses its bottom 130 px (a book title), home-video grade + colour noise, loudnorm -24 / -20 for the line). `src/film3/Film3.tsx` (stacked panels with hand-held sway, "her" / "me" labels, an orange VT323 camcorder stamp with a blinking dot on the seam, hook, mail card, like counter 0 → 611 with comment pills, Milo's bubbles, Jess's blue bubble, a green call pill with a running clock, the seam opening at 23:00, word-lit line, 1 AM typing + Mia's reply + ding, end card "someone to tell." in VT323; tape noise, scan lines, vignette) and `src/film3/cuts3.ts` (SD, SD30, SD15). Render + master: `bash out/finish3.sh <Id> <OutName>`.
+- **Music**: "Ahead of Time", Michael Ramir C., Mixkit 842 (Stock Music Free License; earshot rank: best of eight for warm retro soul-pop, z 5.2), ~94 BPM; one hour = 115 frames = 6 beats; track 2.68 s on frame 0, dropped out across the seam opening, back on the loud bar at 38.48 s with the 1 AM reply. File `public/music/ahead-of-time.mp3`; candidates in `audio/cand3/`.
+- **Checked**: contact sheet of the 43 s at 1 fps, nine stills, section loudness, the line. **Not checked**: nobody has watched the three cuts at speed; the 30 s and 15 s got loudness only.
+- **Still to do**: owner watches and posts (TikTok / Reels; the films carry their own music; for the trend sound, mute the music in the app's editor). Film 2 still unposted (0z202).
+
 ### 0z203. Film 3 "Same day" scripted: two roommates, one day, every hour, stacked digicam panels (2026-11-12, Claude, Fable 5.2). NEXT: the owner's yes on the script, then two face photos and test clip N2
 
 - **Owner's ask**: a film of two lives, one with Sigmazam and one with the usual apps, 60-90 s, in the current trend, with a render unlike films 1 and 2. The owner watched film 2 and liked it.
