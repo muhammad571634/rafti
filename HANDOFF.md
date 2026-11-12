@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z198. Ethan's new portrait in the app; trial video stock under way (2026-11-12, Claude, Opus 5.5). NEXT: edit the trial clips
+
+- **Portrait**: only Ethan's tall scene changed (`assets/portraits/c_ethan.jpg` from `art-new/v2/c_ethan.png`, GPT Image 2.6 in Cowork from `docs/image-prompts-cast-2.md`, resized to 1086×1448, JPEG q92). Owner: "only Ethan"; his avatar stays. The other eleven new shots stay in `art-new/v2/` unused, until the owner says otherwise. (An agent first swapped all twelve by mistake; reverted before push.)
+- **Video stock** (`docs/video-plan-trial.md`): the Higgsfield trial's unlimited works only in Cowork / Claude Chat, not Claude Code, and caps Seedance 2.5 at 720p; plan asks for `bitrate_mode: "high"` and Claude upscales in the edit. H01 is in `videos/raw/` (720×1280, reviewed: usable; grade the white phone screen, add a slow push-in). Owner runs H02–H16, then P01–P12; Claude edits the 75/30/15 s film, 12 POV clips, 6 texting stories, sound checked with earshot.
+- **Still to do**: before 2026-11-15 07:00 UTC remind the owner to say "cancel auto-renewal" or keep the plan. A new Apify token is in User env `APIFY_TOKEN` (old one in `APIFY_TOKEN_OLD`); the owner pasted it in chat, so rotating it later is advised.
+
 ### 0z197. Appearance B built: every screen with a character is always dark, the tools follow the phone (2026-11-11, Claude 1, Opus 5.5). NEXT: the owner's server deploy (0z196), then a new preview APK (icons, and the Android button bar below)
 
 - **Done** (`556f2c3`, `d0ba4d3`, `8bdec9b` + picker fix; OTAs `175737c4`, `01a1cb52`): chats and groups always dark (every Classic wallpaper is its night shade in both themes, the chat takes the on-picture look on any ground, light status bar; the + panel and the noted chip read night tokens); a friend's page, memories, the background picker (one-to-one and group), streams live, the date album, and the whole onboarding (its first screen was dark already, so the flow never flips; agent's call beyond "the meeting steps"). Settings, search, the streams list and every tool follow the phone.
