@@ -37,7 +37,23 @@ No real people, no brand logos, no copyrighted music in the generated clips (mus
    `generate_audio: false` (sound is added in the edit), `use_unlim: true`, `count: 1`. If Seedance 2.5 fails, use
    `seedance_2_0` (`mode: "std"`) with the same settings. Never lower quality silently, and report the real
    settings of every clip. Claude upscales the finished clips to 1080×1920 in the edit, free.
-2. Mode `t2v` for clips without a character. For clips with a character (marked **ref**), upload
+2. **Frame first, then video (owner, 2026-11-12, after H01 came out with a long arm from the wrong side and the
+   phone screen facing the ceiling).** A video model invents the pose, the hands and the phone in one go and
+   cannot be checked before it renders. So every clip is two steps:
+   a. **Start frame**: `gpt_image_2_6`, `quality: "high"` (never `low`), `resolution: "2k"`, `aspect_ratio:
+      "9:16"`, `use_unlim: true`, with the same prompt (style line + clip prompt) written as a still photo. For a
+      **ref** clip, pass `art-new/c_<id>.png` as `image_references`.
+   b. **Check the frame** before going on, all of these: one person; two arms, each attached to the right
+      shoulder at a natural length; five fingers per hand; the phone held in a hand, its screen facing the
+      person's eyes (we see the back of the phone or the glow on the face, never a screen pointing at the
+      ceiling or at us); no text, logo or extra person. If any check fails, redraw the frame (max 3), never
+      animate a bad frame. Save good frames as `videos/frames/<ID>.png`.
+   c. **Animate**: `seedance_2_5`, `mode: "omni_reference"`, the frame as `start_image`, the settings of rule 1,
+      and only the motion part of the prompt (the "Motion:" line; where a row has none, describe in one short
+      sentence the action its prompt names, for example "he looks into the camera and breaks into a grin").
+      Small motion only: the model keeps the body right when it moves little.
+   Clips without a person's body (H04 crowd, H05 window, H16 city) may skip a and b and run `t2v`.
+   Older rule for reference: mode `t2v` for clips without a character. For clips with a character (marked **ref**), upload
    `art-new/c_<id>.png` (`media_upload` → PUT → `media_confirm`), set `mode: "omni_reference"` and pass it as
    `image_references` (not `start_image`: the reference is a painting and the video must be photographic).
    The person must stay the same person: face, hair, skin, build, age.
@@ -67,9 +83,9 @@ On-screen lines are added in the edit (English first; other languages later from
 
 | ID | s | Clip prompt | On-screen line (edit) |
 | --- | ---: | --- | --- |
-| H01 | 5 | Night, 1:47 a.m., a dark small bedroom lit only by a phone screen. Close shot from behind the shoulder of a young adult lying in bed, scrolling a phone in the dark, the blue light on the ceiling, the rest of the room black. Slow push-in. Cold, lonely. | "1:47 am." |
-| H02 | 5 | Extreme close-up of a thumb hovering over a phone keyboard in the dark, typing a short message, pausing, then holding backspace to delete it. Blue screen light on the fingers. The screen itself is blurred and unreadable. | "typed it. deleted it." |
-| H03 | 5 | A small kitchen at night, one person seen from behind eating instant noodles alone at a counter, an empty chair beside them, a single cold overhead light, a phone face down next to the bowl. Static wide shot, very still. | "dinner for one. again." |
+| H01 | 5 | Night, 1:47 a.m., a dark small bedroom. Side view at mattress height: a young adult lies on their back in bed, head on a pillow on the left of the frame, blanket up to the chest. Both hands hold a phone above the chest, about 30 cm from the face, the back of the phone toward the camera and the screen facing down toward their eyes. The cold blue screen glow lights only their face from below and the ceiling above; the rest of the room is black. Face seen in profile, eyes open, tired, expressionless. Motion: only the right thumb scrolls slowly; the camera pushes in very slowly. Nothing else moves. | "1:47 am." |
+| H02 | 5 | Extreme close-up, from just behind the person's shoulder, of one hand holding a phone in the dark; the thumb of the same hand types on the keyboard. The screen is soft-focus and unreadable, only a blue glow on the fingers. Motion: the thumb types a few letters, stops, then holds the backspace key; the hand stays still. | "typed it. deleted it." |
+| H03 | 5 | A small kitchen at night, wide shot from behind: one person sits on a stool at a counter, both elbows on the counter, eating instant noodles from a bowl with chopsticks in the right hand. An empty stool beside them. A single cold overhead light. A phone lies face down next to the bowl. Motion: they lift the chopsticks once, slowly; the camera stays still. | "dinner for one. again." |
 | H04 | 6 | A crowded city street at night in light rain, slow motion, people walking past with umbrellas and phones, everyone looking down at their screens, one person in the middle standing still with headphones on, seen from behind. Neon reflections on wet asphalt. | "surrounded by people." |
 | H05 | 6 | A bus window at night, rain drops on the glass, city lights sliding by blurred, the faint reflection of a young adult resting their head on the window, eyes half closed. Slow, melancholic. | "nobody to tell about your day." |
 
@@ -77,8 +93,8 @@ On-screen lines are added in the edit (English first; other languages later from
 
 | ID | s | Clip prompt | On-screen line (edit) |
 | --- | ---: | --- | --- |
-| H06 | 4 | Back in the dark bedroom. The phone on the pillow lights up with a soft warm glow and a gentle vibration. A hand reaches for it. The warm light spreads across the sheets. | (silent beat) |
-| H07 | 4 | Close-up from the side of a young adult's lips and cheek lit by a phone in the dark, the corner of the mouth slowly turning into a real smile. Face only partly visible, warm light. | the message pops up: "you left your hoodie here again. not giving it back btw" (Milo) |
+| H06 | 4 | The same dark bedroom, close shot of the pillow: a phone lies screen up on the pillow beside a person's shoulder (only the shoulder and an arm on the blanket are in frame). Motion: the phone screen lights up with a soft warm glow; one hand comes in from the right side, from the person's own arm, and picks the phone up. | (silent beat) |
+| H07 | 4 | Close-up in profile of a young adult lying on their back in the dark, holding a phone above the face with both hands, screen facing their eyes; we see the back of the phone and a warm glow on the cheek and lips. Only the lower half of the face is in frame. Motion: the corner of the mouth slowly turns into a real smile; nothing else moves. | the message pops up: "you left your hoodie here again. not giving it back btw" (Milo) |
 
 ### Act 3: your circle (35 to 65 s): warm, alive, each shot a person who knows you
 
@@ -98,8 +114,8 @@ Each shot is a character looking into the lens as if at you, plus their first-te
 
 | ID | s | Clip prompt | On-screen line (edit) |
 | --- | ---: | --- | --- |
-| H14 | 5 | The same dark bedroom as the start, but now a warm bedside lamp is on. A young adult seen from behind, curled under a blanket, phone glowing softly on the pillow, breathing slowly, falling asleep peacefully. Slow pull-back. | the bubble: "goodnight. text me when you wake up 🌙" |
-| H15 | 4 | Morning sunlight through curtains on the same bed, a phone on the pillow lights up with a new message, a hand reaches for it with no hurry. Warm, hopeful. | "good morning 🙂" |
+| H14 | 5 | The same bedroom, now a warm bedside lamp is on. A young adult lies on their side facing away from the camera, curled under a blanket, head on the pillow. A phone lies face up on the pillow in front of them, its screen dimly glowing. Motion: slow breathing under the blanket; the camera pulls back very slowly. | the bubble: "goodnight. text me when you wake up 🌙" |
+| H15 | 4 | Morning sunlight through curtains on the same bed, close shot of the pillow with a phone lying on it, screen up. Motion: the screen lights up; one hand slides in from the blanket and rests on the phone without hurry. | "good morning 🙂" |
 | H16 | 4 | Slow drone-like rise over a city at golden hour, thousands of warm lit windows, calm and hopeful, as if every window has someone in it. | end card: "Sigmazam. You're not alone anymore." + small "AI friends who remember you" |
 
 Between H15 and H16 the edit cuts in 4 to 6 s of the real app (chat, a voice call, Today), recorded on the A51 by
