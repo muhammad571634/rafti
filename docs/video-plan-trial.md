@@ -31,10 +31,12 @@ No real people, no brand logos, no copyrighted music in the generated clips (mus
 
 ## 2. Rules for the session that runs the clips
 
-1. Model `seedance_2_5`, `resolution: "1080p"`, `aspect_ratio: "9:16"`, `generate_audio: false` (sound is added
-   in the edit), `use_unlim: true`, `count: 1`. If the trial refuses 1080p, use `720p` and say so. If Seedance 2.5
-   fails, use `seedance_2_0` (`mode: "std"`) with the same settings. Never lower quality silently, and report the
-   real settings of every clip.
+1. Model `seedance_2_5` (the best video model the trial covers; the other one is the older Seedance 2.0),
+   `resolution: "720p"` (the trial's cap: 1080p was refused on H01, 2026-11-12), **`bitrate_mode: "high"`** (H01
+   came out at 1.1 Mbit/s on the default; high keeps more detail at 720p), `aspect_ratio: "9:16"`,
+   `generate_audio: false` (sound is added in the edit), `use_unlim: true`, `count: 1`. If Seedance 2.5 fails, use
+   `seedance_2_0` (`mode: "std"`) with the same settings. Never lower quality silently, and report the real
+   settings of every clip. Claude upscales the finished clips to 1080×1920 in the edit, free.
 2. Mode `t2v` for clips without a character. For clips with a character (marked **ref**), upload
    `art-new/c_<id>.png` (`media_upload` → PUT → `media_confirm`), set `mode: "omni_reference"` and pass it as
    `image_references` (not `start_image`: the reference is a painting and the video must be photographic).
