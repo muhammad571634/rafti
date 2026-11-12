@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z199. Videos move from the Higgsfield MCP to Google AI Pro by hand: Flow, Omni 1.2 Flash (2026-11-12, Claude, Opus 5.5). NEXT: the owner's A/B test P01
+
+- **Why**: owner, "the Higgsfield MCP is slow and gives nothing good"; the owner has Google AI Pro (Gemini app + Flow) and makes clips by hand, Claude writes prompts, picks the model and checks every result.
+- **Decision** (`docs/google-flow-video.md`): Flow, **Omni 1.2 Flash**, 720p, 8 s, x1, 9:16 (8 s = 24 credits; AI Pro = 1,000 credits a month + 50 a day). Veo 3.1 Fast/Quality and Omni 1.1 leave Flow on 2026-12-05; Omni 1.2 holds faces from up to 3 photos per character and speaks. Character clips use `art-new/v2/c_<id>.png` as Ingredients; hand-and-phone clips get a Gemini (Nano Banana) start frame first, checked by Claude. The P clips now speak the character's first text aloud; music is never generated.
+- **Still to do**: owner runs §4 (P01 with Omni 1.2 and with Veo 3.1 Lite) → Claude compares (frames + earshot) and fixes the model → P02-P12 → H frames → H clips → Claude's edit. The 0z198 trial reminder (cancel auto-renewal before 2026-11-15 07:00 UTC) still stands.
+
 ### 0z198. Ethan's new portrait in the app; trial video stock under way (2026-11-12, Claude, Opus 5.5). NEXT: edit the trial clips
 
 - **Portrait**: only Ethan's tall scene changed (`assets/portraits/c_ethan.jpg` from `art-new/v2/c_ethan.png`, GPT Image 2.6 in Cowork from `docs/image-prompts-cast-2.md`, resized to 1086×1448, JPEG q92). Owner: "only Ethan"; his avatar stays. The other eleven new shots stay in `art-new/v2/` unused, until the owner says otherwise. (An agent first swapped all twelve by mistake; reverted before push.)

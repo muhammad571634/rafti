@@ -1,5 +1,8 @@
 # Video stock from the Higgsfield trial (2026-11-12 to 2026-11-15)
 
+> **2026-11-12, later: generation moved to Google Flow (Omni 1.2 Flash) by hand, see `docs/google-flow-video.md`.**
+> The story, shots and on-screen lines below still hold; §0, §2 and §7 (Higgsfield / Cowork) do not.
+
 Owner, 2026-11-12: use the three-day Higgsfield trial to stock videos the owner will post on social media.
 The first film shows the problem (loneliness) and then how Sigmazam's characters make a circle around you, so
 the viewer feels they are not alone. Claude writes the scripts, scenes and prompts. A Cowork (or Claude Chat)
