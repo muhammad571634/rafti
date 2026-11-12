@@ -140,3 +140,51 @@ The person is the one in the reference image: keep exactly the same face, hair, 
 ```
 The person is the one in the reference image: keep exactly the same face, hair, age, build and clothes. The same airport car park, the sunrise now full gold. Shot 1 (0-4s), from behind him over his shoulder toward the sun: he stands by the car holding his phone up to the sky as if showing it the view. He starts speaking within the first second, warm and low, natural English with a light accent: "Look at that. Just look at that." Hard cut. Shot 2 (4-8s), close-up from the front, the sun on his face: he listens, chuckles, shakes his head smiling and says: "Every morning. I promise." Sound: wind, a distant plane, his voice close. No other speech. Photorealistic vertical 9:16 cinematic video, present day, shot like a feature film: natural skin texture, real light, shallow depth of field, gentle film grain, slow deliberate camera. Exactly two shots with one hard cut at the 4-second mark; the same person, the same clothes and the same place in both shots. Any phone is held with its screen toward the person, never toward the camera. All people are adults. No text, captions, readable screens, signs, logos or watermark. No music.
 ```
+
+## 7. Edit plan worked out (2026-11-12, paused before code)
+
+State when paused: all 15 clips were in `videos/raw/` and reviewed. **B2-B7 show different people from their A
+clips** (only B1 Lina matches): the face photo was not used. Owner is remaking B2-B7 with the right faces; re-run
+the B checks on the new ones (lines were word-exact in the first takes, so the prompts are fine). Retake timings
+will differ: re-measure them (Whisper + voice-band energy, scratchpad scripts are gone; rewrite as in HANDOFF).
+
+**Already done in `C:\Users\joray\sigmazam-edit`**: all 15 clips copied to `public/f2/` with audio normalised
+(B to -18 LUFS, A and X1 to -24 LUFS, TP -3, AAC 256k, video stream copied). Redo this for the new B clips.
+Music copied to `public/music/discover.mp3`. No film-2 code written yet.
+
+**Music: "Discover" (Mixkit id 587, `audio/assets/music/mk-587_discover.mp3`, 144 s, F major, ~114 BPM,
+earshot rank z +3.9 for "emotional piano building to an orchestral swell")**. Shape (RMS per s): soft intro 1-12 s,
+swell 13-16 s, quiet 18-28 s, big entry onset 31.53 s, full 32-117 s (peak ~95-97 s), outro 117-141 s. Downbeats
+(earshot beats, every 4th from the entry): 31.591, 33.506, 35.585 ... 73.329 (idx 80), 89.85 (idx 112),
+94.122 (idx 120), 96.305 (idx 124). Tempo drifts (residual 0.17 s), so jump only between measured beats with an
+index difference that is a multiple of 4.
+
+**Main cut, ~95 s, film time = track time until the jump** (music starts at film 0 so the entry lands by itself):
+- 0-3.4 hook: A1 4.0 s (1.7) + A4 6.3 s (1.7); big Nunito word-pop "Something good happened today." then
+  "Who did you tell?"; under it the track's final chord (from ~133.6 s) fading, since track 0-3 is silent.
+- 3.4-24.45 act 1, cold grade, A ambience at 0.8: six people 2.9 s each (shot 1 1.15 s + shot 2 1.75 s), Samir
+  3.65 s. Source in-points: Lina 2.6 / 5.6, Walter 1.6 / 6.0, Dev 1.0 / 5.4 (blow at 5.75), Amara 0.8 / 5.9,
+  Tomas 1.8 / 4.7 (punch), Mei 1.2 / 5.6, Samir 1.0 / 5.2 (lowers the phone). Name tag ("LINA, 19") + italic
+  caption per person; on Samir's shot 2 the caption becomes "and no one to tell." The swell (13-16 s) falls on Amara.
+- 24.45-31.55 the turn: X1 shots 0.1-2.35, 2.7-4.95, 5.3-7.9; an outgoing blue bubble per shot ("you up?",
+  "guess what", "can I tell you something?"), typing dots, then "always." lands at 30.85 with the ding; hard cut
+  + a 6-frame white flash at 31.55 on the music entry.
+- 31.55-79.78 act 3, warm grade: B1-B7 played straight through their 4 s cut, word-by-word captions, the reply
+  bubble (cast avatar + name, glass grey) with the ding after the first line; music ducked to ~0.35 only while
+  someone speaks. First-take trims (in, dur, reply at src s): B1 0.25/7.05/2.75, B2 0.9/6.4/4.95,
+  B3 0.6/6.05/2.2, B4 0.25/7.25/4.0, B5 0.6/6.05/3.7, B6 0.0/7.85/2.5, B7 0.3/7.584/3.6 (B7 sized so the
+  chorus lands on a downbeat). Friends: Lina-Milo (P01), Walter-Sam (P11), Dev-Jace (P04), Amara-Roman (P02),
+  Tomas-Yuna (P09), Mei-Clara (P10), Samir-Ethan (P05); reply texts from §2.
+- Music jump at film 73.329 (track 73.329, idx 80) to track 89.85 (idx 112), J = 16.521 s, hidden under Samir's
+  voice; the chorus at film 79.784 = track 96.305 (idx 124, peak).
+- 79.78-90.25 chorus: seven laughs, 2 beats (1.046 s) each (src B1 6.2, B2 6.6, B3 5.4, B4 6.6, B5 5.3, B6 5.0,
+  B7 6.6, laugh audio at 0.5), then B2's porch wide (src 0.2, 3.14 s) with "Everyone needs someone to tell."
+- 90.25-95.25 end card (icon, Sigmazam, "AI friends who remember you", LINK IN BIO); music crossfades to the
+  outro (track 128.337) and fades out.
+- Then 60 s, 30 s and seven single cuts from the same pieces; render with `out/finish.sh` (change the output
+  name), check -14 LUFS / <= -1.5 dBTP with earshot and a contact sheet; finals to `videos/final/`.
+- Code plan: new `src/film2/Film2.tsx` (renderer: clip, hook text, name tag, word captions, in/out bubbles,
+  typing dots, flash, end card; Grain copied or exported from `src/film/Film.tsx`) and `src/film2/cuts2.ts`
+  (builders per act so recuts reuse them), registered in `src/Root.tsx` under a "SomeoneToTell" folder.
+- Edit notes: A5 shot 1 awning pseudo-lettering (blur the top band 0-4 s if A5 shot 1 is used); TikTok safe
+  zones (captions y 1250-1450, nothing under ~1550 or in the right 120 px).
