@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z202. Film 2 "Someone to tell" edited and rendered: 93 s, 60 s, 30 s and seven singles (2026-11-12, Claude, Opus 5.5 / Fable 5.2). NEXT: owner posts
+
+- **Out** (`videos/final/`, 1080x1920, 30 fps, -13.7 to -14.1 LUFS, peak -1.3 to -1.5 dBFS, no clipping; the 93 s also checked with earshot measure + timeline): `SomeoneToTell-93s.mp4`, `-60s` (Lina, Walter, Amara, Tomas), `-30s` (Lina, Walter, Dev), `SomeoneToTell-Lina/Walter/Dev/Amara/Tomas/Mei/Samir.mp4` (12.4-13.4 s each: their moment alone, "who did she tell?", then the call and the friend's reply).
+- **Clips**: the owner remade B1-B7 with the face photos ("B? yangi.mp4"), now `videos/raw/B?.mp4`; the first takes with the wrong faces are in `videos/raw/old-b/`. All seven match their A clips; lines word-exact (Mei says only "First, the sea." in shot 2, the caption follows).
+- **Edit** (`C:/Users/joray/sigmazam-edit`, outside the repo): `src/film2/Film2.tsx` (renderer: kinetic hook words, name tags, italic captions, word-lit speech captions, glass reply bubbles with cast avatars, blue outgoing bubbles, typing dots, warm flash, end card), `src/film2/cuts2.ts` (a Builder per act; all cuts built from `PEOPLE`), compositions `STT`, `STT60`, `STT30`, `STT-<name>`; render + master with `bash out/finish2.sh <Id> <OutName>`. Clips in `public/f2/` with normalised audio; two earshot whooshes (`sfx-into-act1.wav`, `sfx-into-act3.wav`).
+- **Music**: "Discover" (Mixkit 587, Stock Music Free License): film time = track time so its big entry (31.53 s) lands on the cut to act 3 with the flash; a beat-matched jump (73.329 -> 89.85 s) puts the peak on the chorus of laughs; the hook opens on the track's last chord. Plan and numbers: `docs/film-someone-to-tell.md` §7.
+- **Fixes made in the edit**: the near-silent start (hook chord held longer), one clipped run at 69 s (Mei's clip at 0.75), the flash toned down, A5's pseudo-lettering blurred, music ducked only under spoken lines.
+- **Not checked**: only contact sheets and meters were reviewed, nobody has watched the films at speed; the 60 s, 30 s and singles got a loudness check and one contact sheet (30 s, Mei, part of the 60 s), no timeline pass.
+- **Still to do**: owner watches and posts (93 s on YouTube / Instagram, 60 / 30 s and the singles on TikTok / Reels; the films carry their own music). Older open items in 0z201 / 0z200 still stand.
+
 ### 0z201. Hero film "Not alone" finished (75 / 30 / 15 s); film 2 "Someone to tell" scripted with ready Flow prompts (2026-11-12, Claude, Fable 5.2 / Opus 5.5). NEXT: check each new film-2 clip the owner drops, cut face frames, then edit
 
 **Pick up here (for the next agent, film 2 "Someone to tell")**
