@@ -1180,6 +1180,7 @@
       "limit": "{{max}} von {{max}} heute genutzt · morgen wieder neue",
       "manual": "Manuell ausfüllen",
       "writing": "Wird erstellt…",
+      "drawing": "Das Bild entsteht…",
       "steps": {
         "who": "Wer sie ist",
         "talk": "Wie sie spricht",

@@ -1180,6 +1180,7 @@
       "limit": "{{max}} sur {{max}} utilisés aujourd'hui · nouveaux disponibles demain",
       "manual": "Remplir manuellement",
       "writing": "Création en cours…",
+      "drawing": "On dessine son portrait…",
       "steps": {
         "who": "Qui ils sont",
         "talk": "Leur façon de parler",

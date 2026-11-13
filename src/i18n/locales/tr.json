@@ -1180,6 +1180,7 @@
       "limit": "Bugün {{max}} haktan {{max}} tanesi kullanıldı · yenileri yarın",
       "manual": "Kendim doldurayım",
       "writing": "Karakter yazılıyor…",
+      "drawing": "Portresi çiziliyor…",
       "steps": {
         "who": "Kim oldukları",
         "talk": "Nasıl konuştukları",

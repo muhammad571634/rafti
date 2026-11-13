@@ -1180,6 +1180,7 @@
       "limit": "{{max}} de {{max}} usados hoje · novos disponíveis amanhã",
       "manual": "Preencher manualmente",
       "writing": "Criando personagem…",
+      "drawing": "Desenhando o retrato…",
       "steps": {
         "who": "Quem são",
         "talk": "Como falam",

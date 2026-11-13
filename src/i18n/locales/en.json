@@ -1180,6 +1180,7 @@
       "limit": "{{max}} of {{max}} used today · new ones tomorrow",
       "manual": "Fill in myself",
       "writing": "Writing them…",
+      "drawing": "Drawing their picture…",
       "steps": {
         "who": "Who they are",
         "talk": "How they talk",

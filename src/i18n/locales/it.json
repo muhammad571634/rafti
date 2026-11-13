@@ -1180,6 +1180,7 @@
       "limit": "{{max}} di {{max}} usati oggi · nuovi domani",
       "manual": "Compila da solo",
       "writing": "Creazione in corso…",
+      "drawing": "Disegno il ritratto…",
       "steps": {
         "who": "Chi sono",
         "talk": "Come parlano",

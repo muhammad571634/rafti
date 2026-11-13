@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z208. Ink: the AI's writing wait as a dot grid, World books as tiles (2026-11-13, Claude, Opus 5.5). NEXT: the three canvas screens the owner sent (date places, secret note, streams)
+
+- **Writing wait** (  / ): a rounded square of breathing green dots ( got , a superellipse in the shader), serif italic "Writing them…", the four steps ticking (green tick, green dot now, empty ring later), as the canvas frame "8 · Model writing" asks for every wait. Also on the picture drawing when a new friend is made (, 14 locales; portraits are off until the image server runs, ). Chat typing dots stay as they are (owner rule).
+- **World books** (): serif title, ⓘ and + in the bar; the books as gradient tiles (2 a row, picked one ringed), the picked book's line (, Edit for yours), a chip per kind it holds, its entries as lines (name; kind · other words or the text), New entry / plan upsell. Fixed: an empty "Worlds" section showed since Cast 2.0 left no world books; with no books the screen now explains one and offers the first.  stays for a world's own (read-only) book.
+- **Checked**: World books' empty state on the A51 (light) via OTA; tsc 0, npm test 922/922, check:locales. **Not seen on the phone**: the writing wait and the tiles with a book (the owner was using the phone at the same time).
+
+
 ### 0z207. Us: "Our moments" as Ink glow cards (2026-11-13, Claude, Opus 5.5). NEXT: owner looks at it on the phone
 
 - **Owner's ask**: the canvas "Our moments" frame for Us' moments; the logic stays.

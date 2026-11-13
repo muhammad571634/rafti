@@ -1156,6 +1156,7 @@
       "limit": "{{max}} dari {{max}} telah digunakan hari ini · kuota baru besok",
       "manual": "Isi sendiri",
       "writing": "Sedang menuliskan mereka…",
+      "drawing": "Menggambar potretnya…",
       "steps": {
         "who": "Siapa mereka",
         "talk": "Cara bicara",

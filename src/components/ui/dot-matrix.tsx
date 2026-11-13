@@ -19,13 +19,15 @@ uniform float3 col;
 uniform float3 col2;
 uniform float energy;
 uniform float cells;
+uniform float square;
 
 half4 main(float2 p) {
   float cell = res.x / cells;
   float2 g = floor(p / cell);
   float2 c = (g + 0.5) * cell;
   float2 uv = (c / res) * 2.0 - 1.0;
-  float d = length(uv);
+  // Round, or a rounded square (a superellipse) like the Ink canvas's writing wait.
+  float d = square > 0.5 ? pow(pow(abs(uv.x), 4.0) + pow(abs(uv.y), 4.0), 0.25) : length(uv);
   if (d > 1.04) { return half4(0.0); }
   float ang = atan(uv.y, uv.x);
   // A slow breath (about 8 s), a ripple running out from the middle, and a soft swirl turning
@@ -78,6 +80,7 @@ export function DotMatrix({
   energy = 0.3,
   active = true,
   cells = 15,
+  shape = 'round',
   style,
 }: {
   size: number;
@@ -90,6 +93,8 @@ export function DotMatrix({
   active?: boolean;
   /** Dots across. */
   cells?: number;
+  /** The field's outline. */
+  shape?: 'round' | 'square';
   style?: StyleProp<ViewStyle>;
 }) {
   const still = useReducedMotion();
@@ -112,8 +117,8 @@ export function DotMatrix({
   const col = rgb(color);
   const col2 = rgb(color2 ?? color);
   const uniforms = useDerivedValue(
-    () => ({ res: [size, size], t: clock.value, col, col2, energy: level.value, cells }),
-    [size, cells, col[0], col[1], col[2], col2[0], col2[1], col2[2]],
+    () => ({ res: [size, size], t: clock.value, col, col2, energy: level.value, cells, square: shape === 'square' ? 1 : 0 }),
+    [size, cells, shape, col[0], col[1], col[2], col2[0], col2[1], col2[2]],
   );
 
   const source = dotEffect();

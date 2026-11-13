@@ -1156,6 +1156,7 @@
       "limit": "Đã dùng {{max}} / {{max}} hôm nay · lượt mới vào ngày mai",
       "manual": "Tự điền thông tin",
       "writing": "Đang phác thảo nhân vật…",
+      "drawing": "Đang vẽ chân dung…",
       "steps": {
         "who": "Họ là ai",
         "talk": "Cách họ nói",

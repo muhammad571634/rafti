@@ -12,7 +12,7 @@ import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftF
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
 import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, Rewrite, SmallRound } from '@/components/create/kit';
-import { ContinueCard, QuickIdea, WritingSteps } from '@/components/create/quick-create';
+import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { PressableScale, Screen, Toggle, Txt } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
@@ -266,6 +266,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const [ownWorld, setOwnWorld] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  /** Their picture is being drawn (a few seconds): the dot wait instead of a spinner in the button. */
+  const [drawing, setDrawing] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [made, setMade] = useState<{ characterId: string; conversationId: string } | null>(null);
 
@@ -567,8 +569,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
     // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
     let avatarUri = form.imageUri;
     if (drawsPortrait) {
+      setDrawing(true);
       const drawn = await requestPortrait(form.look);
       if (!alive.current) return;
+      setDrawing(false);
       if (drawn && payForPortrait()) avatarUri = drawn;
     }
     const ids = addCharacter({
@@ -605,6 +609,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {phase === 'writing' ? (
           <WritingSteps />
+        ) : drawing ? (
+          <DotWait title={t('createCharacter.quick.drawing')} />
         ) : phase === 'idea' ? (
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
             {kept ? (

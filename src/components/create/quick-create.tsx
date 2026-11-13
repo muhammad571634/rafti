@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
-import Animated, { Easing, FadeIn, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { IDEA_MAX, SPARKS, SPARKS_MAX, type Spark } from '@/ai/character-draft';
 import { DRAFT_MS } from '@/ai/character-studio';
-import { PressableScale, Txt } from '@/components/ui';
+import { DotMatrix, PressableScale, Txt } from '@/components/ui';
 import { ROLES } from '@/lib/create-character';
-import { colors, fonts, space, systemColors, systemGround } from '@/theme';
+import { colors, fonts, space, systemGround } from '@/theme';
 import type { CharacterRole } from '@/types';
 
 import { Card, Chip, ChipGroup, SmallRound } from './kit';
@@ -123,63 +123,76 @@ export function ContinueCard({ name, onContinue, onDrop }: { name: string; onCon
 
 const STEPS = ['who', 'talk', 'picture', 'last'] as const;
 
-/** While the draft is written: an empty portrait breathes, its ring turning, and four steps tick off over `DRAFT_MS`. */
-export function WritingSteps() {
-  const { t } = useTranslation();
-  const still = useReducedMotion();
+/** The waits' dots: a calm green field, the canvas's writing colour, deeper towards the edge. */
+const WAIT_DOTS = '#42D98B';
+const WAIT_DOTS_EDGE = '#1E7A50';
+const FIELD = 220;
+
+/**
+ * A model at work, the Ink way (owner, 2026-11-13, from the canvas frame "8 · Model writing", which
+ * asks for it at every wait): a rounded square of dots breathing in waves (`DotMatrix`, one shader
+ * draw a frame), the title in serif italic, and steps ticking off over `ms` (HIG Progress
+ * indicators: say what is happening; the steps are paced, the real answer ends the wait). Reduce
+ * Motion holds the field still and the steps still tick.
+ */
+export function DotWait({ title, steps, ms = DRAFT_MS }: { title: string; steps?: readonly string[]; ms?: number }) {
   const [step, setStep] = useState(0);
   useEffect(() => {
-    const timers = STEPS.slice(1).map((_, i) => setTimeout(() => setStep(i + 1), ((i + 1) * DRAFT_MS) / STEPS.length));
+    if (!steps?.length) return;
+    const timers = steps.slice(1).map((_, i) => setTimeout(() => setStep(i + 1), ((i + 1) * ms) / steps.length));
     return () => timers.forEach(clearTimeout);
-  }, []);
-
-  const breath = useSharedValue(0);
-  const turn = useSharedValue(0);
-  useEffect(() => {
-    if (still) return;
-    breath.value = withRepeat(withTiming(1, { duration: 1100 }), -1, true);
-    turn.value = withRepeat(withTiming(1, { duration: 2400, easing: Easing.linear }), -1, false);
-  }, [breath, turn, still]);
-  const faceStyle = useAnimatedStyle(() => ({ transform: [{ scale: 0.96 + breath.value * 0.04 }] }));
-  const ringStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.value * 360}deg` }] }));
+  }, [steps, ms]);
 
   return (
-    <View style={styles.writing}>
-      <View style={styles.portraitBox}>
-        <Animated.View style={[styles.portraitRing, ringStyle]} />
-        <Animated.View style={[styles.portrait, faceStyle]}>
-          <Ionicons name="sparkles" size={44} color={colors.brandText} />
-        </Animated.View>
-      </View>
-      <Txt style={styles.writingTitle} maxFontSizeMultiplier={1.3}>
-        {t('createCharacter.quick.writing')}
+    <View style={styles.wait} accessible accessibilityLiveRegion="polite" accessibilityLabel={[title, steps?.[step]].filter(Boolean).join(', ')}>
+      <DotMatrix size={FIELD} color={WAIT_DOTS} color2={WAIT_DOTS_EDGE} cells={15} shape="square" energy={0.75} />
+      <Txt style={styles.waitTitle} maxFontSizeMultiplier={1.3}>
+        {title}
       </Txt>
-      <Card>
-        {STEPS.map((key, i) => (
-          <View key={key} style={styles.step}>
-            <StepMark state={i < step ? 'done' : i === step ? 'now' : 'later'} />
-            <Txt style={[styles.stepText, i > step && styles.stepLater]}>{t(`createCharacter.quick.steps.${key}`)}</Txt>
-          </View>
-        ))}
-      </Card>
+      {steps?.length ? (
+        <View style={styles.steps}>
+          {steps.map((label, i) => {
+            const state = i < step ? 'done' : i === step ? 'now' : 'later';
+            return (
+              <Animated.View key={label} entering={FadeIn.duration(200)} style={styles.step}>
+                <StepMark state={state} />
+                <Txt style={[styles.stepText, state === 'now' && styles.stepNow]} lines={1}>
+                  {label}
+                </Txt>
+              </Animated.View>
+            );
+          })}
+        </View>
+      ) : null}
     </View>
   );
 }
 
+/** While the draft is written: the dots and four steps (who, how they talk, their picture, the last touches). */
+export function WritingSteps() {
+  const { t } = useTranslation();
+  const steps = useMemo(() => STEPS.map((key) => t(`createCharacter.quick.steps.${key}`)), [t]);
+  return <DotWait title={t('createCharacter.quick.writing')} steps={steps} />;
+}
+
+/** A step's mark: a green tick once done (it pops in), a green dot now, an empty ring still to come. */
 function StepMark({ state }: { state: 'done' | 'now' | 'later' }) {
   const pop = useSharedValue(state === 'done' ? 1 : 0.6);
   useEffect(() => {
     if (state === 'done') pop.value = withSpring(1, { damping: 9, stiffness: 260 });
   }, [pop, state]);
   const style = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }] }));
-  if (state === 'done') {
-    return (
-      <Animated.View style={[styles.mark, styles.markDone, style]}>
-        <Ionicons name="checkmark" size={16} color={colors.white} />
-      </Animated.View>
-    );
-  }
-  return <View style={[styles.mark, state === 'now' ? styles.markNow : styles.markLater]} />;
+  return (
+    <View style={styles.mark}>
+      {state === 'done' ? (
+        <Animated.View style={style}>
+          <Ionicons name="checkmark" size={22} color={WAIT_DOTS} />
+        </Animated.View>
+      ) : (
+        <View style={state === 'now' ? styles.markNow : styles.markLater} />
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -196,17 +209,14 @@ const styles = StyleSheet.create({
   smallOn: { backgroundColor: systemGround.label },
   smallText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
   smallTextOn: { color: systemGround.ground },
-  writing: { alignItems: 'stretch', paddingTop: space.xxl },
-  portraitBox: { alignSelf: 'center', width: 140, height: 140, alignItems: 'center', justifyContent: 'center' },
-  // A ring with one bright arc, turning: the iOS activity feel, at portrait size.
-  portraitRing: { position: 'absolute', width: 140, height: 140, borderRadius: 70, borderWidth: 4, borderColor: colors.primarySofter, borderTopColor: colors.primary },
-  portrait: { width: 120, height: 120, borderRadius: 60, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.card },
-  writingTitle: { alignSelf: 'center', marginTop: space.xl, marginBottom: space.xs, fontFamily: fonts.playful, fontSize: 24, lineHeight: 30, color: systemGround.label },
-  step: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 46 },
-  stepText: { flex: 1, fontSize: 17, letterSpacing: -0.3, color: colors.text },
-  stepLater: { color: colors.textSecondary },
-  mark: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  markDone: { backgroundColor: systemColors.green },
-  markNow: { borderWidth: 3, borderColor: colors.primary },
-  markLater: { borderWidth: 2, borderColor: colors.track },
+  // The writing wait, centred in the page.
+  wait: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: space.huge },
+  waitTitle: { marginTop: space.xl, fontFamily: fonts.serifItalic, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, color: WAIT_DOTS, textAlign: 'center' },
+  steps: { marginTop: space.lg, gap: 4 },
+  step: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 40 },
+  stepText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.3, color: systemGround.secondaryLabel },
+  stepNow: { fontWeight: '600', color: systemGround.label },
+  mark: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
+  markNow: { width: 14, height: 14, borderRadius: 7, backgroundColor: WAIT_DOTS },
+  markLater: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: systemGround.secondaryLabel },
 });
