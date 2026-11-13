@@ -1519,6 +1519,7 @@
     "replyTo": "Rispondi a {{name}}",
     "snoozeFor": "Posponi · {{count}} min",
     "holdToStop": "Tieni premuto per 3 s per spegnere",
+    "imUp": "Mi alzo",
     "stop": "Ferma",
     "ringBar": "Sveglia attiva · rispondi per spegnere",
     "planSaved": "Piano salvato · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

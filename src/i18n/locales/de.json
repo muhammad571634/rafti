@@ -1519,6 +1519,7 @@
     "replyTo": "Antworten an {{name}}",
     "snoozeFor": "Schlummern · {{count}} Min.",
     "holdToStop": "3 Sek. halten zum Beenden",
+    "imUp": "Bin wach",
     "stop": "Stopp",
     "ringBar": "Wecker aktiv · antworte zum Beenden",
     "planSaved": "Plan gespeichert · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

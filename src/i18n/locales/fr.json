@@ -1519,6 +1519,7 @@
     "replyTo": "Répondre à {{name}}",
     "snoozeFor": "Répéter · {{count}} min",
     "holdToStop": "Maintenir 3 s pour couper",
+    "imUp": "Je suis debout",
     "stop": "Arrêter",
     "ringBar": "Alarme en cours · répondez pour couper",
     "planSaved": "Projet enregistré · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

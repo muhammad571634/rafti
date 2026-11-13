@@ -1519,6 +1519,7 @@
     "replyTo": "Responder a {{name}}",
     "snoozeFor": "Soneca · {{count}} min",
     "holdToStop": "Segure 3 s para desligar",
+    "imUp": "Acordei",
     "stop": "Parar",
     "ringBar": "Alarme tocando · responda para desligar",
     "planSaved": "Plano salvo · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

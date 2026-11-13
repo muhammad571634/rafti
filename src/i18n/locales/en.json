@@ -1519,6 +1519,7 @@
     "replyTo": "Reply to {{name}}",
     "snoozeFor": "Snooze · {{count}} min",
     "holdToStop": "Hold 3 s to turn off",
+    "imUp": "I'm up",
     "stop": "Stop",
     "ringBar": "Alarm on · reply to turn it off",
     "planSaved": "Plan saved · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

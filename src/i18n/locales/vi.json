@@ -1493,6 +1493,7 @@
     "replyTo": "Trả lời {{name}}",
     "snoozeFor": "Báo lại · {{count}} phút",
     "holdToStop": "Giữ 3 giây để tắt",
+    "imUp": "Dậy rồi",
     "stop": "Dừng",
     "ringBar": "Báo thức đang bật · trả lời để tắt",
     "planSaved": "Đã lưu kế hoạch · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

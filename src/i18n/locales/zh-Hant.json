@@ -1493,6 +1493,7 @@
     "replyTo": "回覆{{name}}",
     "snoozeFor": "稍後提醒 · {{count}}分鐘",
     "holdToStop": "長按3秒關閉",
+    "imUp": "我起來了",
     "stop": "關閉",
     "ringBar": "鬧鐘響起中 · 回覆訊息以關閉",
     "planSaved": "計畫已儲存 · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

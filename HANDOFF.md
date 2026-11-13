@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z210. The alarm rings over the friend's own picture (2026-11-13, Claude, Opus 5.5). NEXT: owner tries a real morning alarm
+
+- **Owner's ask** (canvas frame): the ringing screen with each friend's own picture, Apple-like text, the chain working A to Z.
+- **Built** (`src/app/alarms/ring.tsx`): the friend's scene (`portraitOf`) full-bleed under a scrim (light at the time, deep at the buttons), the alarm's label or the date over a 104 pt serif time, their wake-up words (or the Radio clip's current line + wave) in dark glass with their name, then with the wake-up task a "Reply to wake up" field right on this screen: three real words (`countsAsWakeReply`) and "I'm up" (`alarms.imUp`, 14 locales; ru "Встаю", it "Mi alzo", gender-free) unlock the phone, send the words to their chat (`sendText`, free in the wake window), which turns the alarm off and starts the morning chain, and open that chat. "I'm up" is paler until the words count; fewer gives an error tap. Snooze (glass) and "Hold 3 s to turn off" kept; no task: "I'm up" stops it. No friend or no picture: the dawn gradient with a shade.
+- **Dev**: Profile → Development → "Ring a wake-up alarm" rings an alarm with a friend now (as its time would: it posts their wake-up line in the chat; a second ring of the same alarm within 30 min is the same session, by design).
+- **Checked**: the ring screen on the A51 (Sam's picture, English); tsc 0, npm test 922/922, check:locales. **Not checked**: the reply → chat step end to end (the first ring was ended on the phone before the reply went; the 30-min same-session rule blocked a retest), the lock-screen case, a Radio-clip alarm.
+
 ### 0z209. Ink: date places as soft tiles, Secret note, Streams list (2026-11-13, Claude, Opus 5.5). NEXT: owner looks at them on the phone
 
 - **Owner's ask** (three canvas screenshots): close to the canvas but Apple-like; the dates' Wallet tickets become the canvas tiles in very soft, easy colours (like Today's widgets, never loud), only that part of Dates changes; Secret note and Streams like the canvas.

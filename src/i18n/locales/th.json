@@ -1493,6 +1493,7 @@
     "replyTo": "ตอบกลับ {{name}}",
     "snoozeFor": "เลื่อนไปอีก · {{count}} นาที",
     "holdToStop": "กดค้าง 3 วินาทีเพื่อปิด",
+    "imUp": "ตื่นแล้ว",
     "stop": "หยุด",
     "ringBar": "นาฬิกาปลุกดังอยู่ · ตอบกลับเพื่อปิด",
     "planSaved": "บันทึกแผนแล้ว · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

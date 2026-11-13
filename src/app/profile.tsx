@@ -120,6 +120,12 @@ export default function ProfileScreen() {
     useAppStore.setState({ levelUp: { characterId: convo.characterId, level: Math.max(1, rel.level), levelTitle: rel.levelTitle } });
     router.push(`/chat/${convo.id}`);
   };
+  // Rings a wake-up alarm now, as its time would: one with a friend (their picture, the reply task).
+  const ringWake = () => {
+    const s = useAppStore.getState();
+    const alarm = s.alarms.find((a) => a.characterId) ?? s.alarms[0];
+    if (alarm && s.ringAlarm(alarm.id)) router.push('/alarms/ring');
+  };
   const showCheckIn = () => {
     const s = useAppStore.getState();
     useAppStore.setState({ dailyReward: { amount: s.daily.checkInAmount ?? 10, day: Math.max(1, s.daily.checkInDay) } });
@@ -384,6 +390,7 @@ export default function ProfileScreen() {
             {/* The first launch's hello, without clearing the app's data. */}
             <LinkRow icon="moon" label={t('profile.helloTest')} onPress={() => setHello(true)} />
             <LinkRow icon="heart" label={t('profile.levelUpTest')} onPress={playLevelUp} />
+            <LinkRow icon="alarm" label={t('profile.alarmTest')} onPress={ringWake} />
             <LinkRow icon="gift" label={t('profile.checkInTest')} onPress={showCheckIn} />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <LinkRow icon="cloud" label={t('profile.serverAccount')} meta={accountStatus} onPress={() => void checkAccount()} />

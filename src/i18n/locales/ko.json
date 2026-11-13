@@ -1493,6 +1493,7 @@
     "replyTo": "{{name}}에게 답장하기",
     "snoozeFor": "다시 울림 · {{count}}분",
     "holdToStop": "3초간 눌러 끄기",
+    "imUp": "일어났어",
     "stop": "끄기",
     "ringBar": "알람 울리는 중 · 답장하여 끄기",
     "planSaved": "약속 저장됨 · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

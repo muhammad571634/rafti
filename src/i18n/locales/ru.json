@@ -1571,6 +1571,7 @@
     "replyTo": "Ответить {{name}}",
     "snoozeFor": "Отложить на · {{count}} мин",
     "holdToStop": "Удерживайте 3 сек, чтобы выключить",
+    "imUp": "Встаю",
     "stop": "Стоп",
     "ringBar": "Будильник звонит · ответьте, чтобы выключить",
     "planSaved": "План сохранён · {{title}} · {{time}}",
@@ -1753,6 +1754,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

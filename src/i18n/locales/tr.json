@@ -1519,6 +1519,7 @@
     "replyTo": "{{name}} yanıtla",
     "snoozeFor": "Ertele · {{count}} dk",
     "holdToStop": "Kapatmak için 3 sn basılı tut",
+    "imUp": "Uyandım",
     "stop": "Durdur",
     "ringBar": "Alarm çalıyor · kapatmak için yanıtla",
     "planSaved": "Plan kaydedildi · {{title}} · {{time}}",
@@ -1695,6 +1696,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

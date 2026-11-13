@@ -1493,6 +1493,7 @@
     "replyTo": "Balas ke {{name}}",
     "snoozeFor": "Tunda · {{count}} mnt",
     "holdToStop": "Tahan 3 dtk untuk mematikan",
+    "imUp": "Aku bangun",
     "stop": "Berhenti",
     "ringBar": "Alarm menyala · balas untuk mematikan",
     "planSaved": "Rencana disimpan · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {

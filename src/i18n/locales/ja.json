@@ -1493,6 +1493,7 @@
     "replyTo": "{{name}}に返信する",
     "snoozeFor": "スヌーズ · {{count}}分",
     "holdToStop": "3秒長押しで停止",
+    "imUp": "起きた",
     "stop": "停止",
     "ringBar": "アラーム作動中 · 返信して停止",
     "planSaved": "予定を保存しました · {{title}} · {{time}}",
@@ -1666,6 +1667,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },
   "errors": {
