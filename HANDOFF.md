@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z211. Us: the bond as Apple Health rings, the week calendar as capsules (2026-11-13, Claude, Opus 5.5). NEXT: owner looks at it on the phone
+
+- **Owner's ask** (two iOS screenshots): the calendar as a week of tall day capsules with dots, the month only when the month is tapped; the bond card with rings like Apple Health's score, soft colours for day and night, the figures beside, a smaller Share.
+- **Calendar** (`src/components/us/plan-calendar.tsx`): a card with "November 2026 ⌄" and round ‹ › (a week at a time; a month while open), narrow weekday letters (`weekdayNames(locale, 'narrow')` in `src/lib/calendar.ts`, first letter where the engine has no narrow names), each day a grey capsule with its dots on top (filled: talked, friend's colour; ring: plan or wake-up, grey once past) and its number below, the picked number in a peach circle, today's peach. The week shows first; the month name opens the month (a layout move). Fixed after the owner's screenshot: Sunday wrapped to a second row (7 × 1/7 rounding), now 14.28 %, and the capsules are shorter.
+- **Bond card** (`src/app/(tabs)/us.tsx`, `BondRings`, `Legend`): a plain card on the ground; two rings (outer: closeness to the next level in a soft indigo; inner: the streak over a week in a soft pink; tracks of themselves, brighter at night; a heart and a flame on caps at twelve) with the level inside; beside them days, the level's name and three figures with their ring's dot (intimacy, streak, first met); under them the two faces, "N to level M" and a small grey Share capsule with today's reward. The mint gradient card and the full-width Share are gone; tapping the card still opens the chat.
+- **Checked** on the A51 via OTA: the rings card (dark), the calendar week and month (dark); tsc 0, npm test 922/922. **Not checked**: the rings card in light mode, a long level title.
+
 ### 0z210. The alarm rings over the friend's own picture (2026-11-13, Claude, Opus 5.5). NEXT: owner tries a real morning alarm
 
 - **Owner's ask** (canvas frame): the ringing screen with each friend's own picture, Apple-like text, the chain working A to Z.

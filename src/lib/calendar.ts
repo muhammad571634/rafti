@@ -19,9 +19,15 @@ export function monthCells(month: Date): { key: string; inMonth: boolean }[] {
   });
 }
 
-/** Short weekday names, Monday first (2024-01-01 was a Monday). */
-export function weekdayNames(locale: string) {
-  return Array.from({ length: WEEK }, (_, i) => new Date(2024, 0, 1 + i).toLocaleDateString(locale, { weekday: 'short' }));
+/** Weekday names, Monday first (2024-01-01 was a Monday): short ("Mon") or narrow ("M", as Apple's Calendar). */
+export function weekdayNames(locale: string, width: 'short' | 'narrow' = 'short') {
+  return Array.from({ length: WEEK }, (_, i) => {
+    const day = new Date(2024, 0, 1 + i);
+    const name = day.toLocaleDateString(locale, { weekday: width });
+    // An engine without narrow names gives back the short one or a whole date: keep its first letter.
+    if (width === 'narrow' && (!name || name.length > 3)) return Array.from(day.toLocaleDateString(locale, { weekday: 'short' }))[0] ?? '';
+    return name;
+  });
 }
 
 /** The Monday-first week that holds `date`. */

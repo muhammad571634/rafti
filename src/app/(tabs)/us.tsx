@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient as Gradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,40 +28,28 @@ import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColo
 const STORY = 56;
 const STORY_RING = 3;
 const STORY_GAP = 2;
-/** The level ring on the bond card: its size, stroke and circumference. */
-const RING = 92;
-const RING_STROKE = 10;
-const RING_R = (RING - RING_STROKE) / 2 - 1;
-const RING_C = 2 * Math.PI * RING_R;
-const PAIR = 32;
+/** The bond's rings (Apple Health's score rings): size, stroke, the gap between them. */
+const RINGS = 124;
+const RING_W = 12;
+const RING_GAP = 3;
+const PAIR = 26;
+/** A streak counts towards a full inner ring over a week. */
+const STREAK_WEEK = 7;
 const WHITE = '#FFFFFF';
 
 /**
- * The bond card's mint (the bond's own colour, design-style §10): a soft gradient with ink on it,
- * deep in dark mode with white. The ring and the figures' tiles are drawn to read on it.
+ * The rings' colours (owner, 2026-11-13: soft, never loud, for day and night): a quiet indigo for
+ * closeness to the next level and a quiet pink for the streak, each on a faint track of itself,
+ * brighter at night as Apple's rings are on black.
  */
-const BOND = isDark
-  ? {
-      fill: ['#1D5A47', '#163F3A'] as const,
-      ink: WHITE,
-      track: 'rgba(255,255,255,0.16)',
-      arc: '#5FE0C4',
-      tile: 'rgba(255,255,255,0.10)',
-      flame: systemColors.orange,
-    }
-  : {
-      fill: ['#C9F3E1', '#A8E9CF'] as const,
-      ink: '#1F1A17',
-      track: 'rgba(255,255,255,0.6)',
-      arc: '#1E9E78',
-      tile: 'rgba(255,255,255,0.7)',
-      flame: '#E8730C',
-    };
+const RING_HUES = isDark
+  ? { outer: '#9C93FF', outerTrack: 'rgba(156,147,255,0.22)', inner: '#FF8CC0', innerTrack: 'rgba(255,140,192,0.22)' }
+  : { outer: '#7A6FF0', outerTrack: 'rgba(122,111,240,0.16)', inner: '#EF6FA9', innerTrack: 'rgba(239,111,169,0.16)' };
 
 /**
  * [Us]: one bond at a time — how long, how close, what's next and what you've shared. The playful
  * skin (design-style §10, the approved four-tab prototype): Apple's white ground, friends ringed in their
- * own hue, the bond as a mint card with its level ring, the week as chips, moments on a thread.
+ * own hue, the bond as a card with Apple Health-style rings, the week as capsules, moments as cards.
  */
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
@@ -276,72 +263,72 @@ export default function UsScreen() {
           })}
         </ScrollView>
 
-        {/* The bond at a glance: the level ring, days and title, then three figures; it opens the chat. */}
-        <Gradient colors={BOND.fill} start={{ x: 0, y: 0 }} end={{ x: 0.7, y: 1 }} style={styles.bond}>
+        {/* The bond at a glance, as Apple Health shows a score: two rings (closeness to the next
+            level, the week's streak) with the level inside, the figures beside them; it opens the chat. */}
+        <View style={styles.bond}>
           <PressableScale
             scaleTo={0.99}
             disabled={!conversation}
             accessibilityRole="button"
             accessibilityLabel={`${displayName(character, relationship)}, ${t('us.level', { level: relationship.level })}, ${days} ${t('us.daysLabel', { count: days })}`}
-            onPress={() => conversation && router.push(`/chat/${conversation.id}`)}>
-            <View style={styles.together}>
-              <LevelRing progress={progress} level={relationship.level} label={t('us.ringLevel')} />
-              <View style={styles.grow}>
-                <View style={styles.daysLine}>
-                  <Txt style={styles.days} maxFontSizeMultiplier={1.2}>
-                    {days}
-                  </Txt>
-                  <Txt style={styles.daysLabel} maxFontSizeMultiplier={1.3}>
-                    {t('us.daysShort', { count: days })}
-                  </Txt>
-                </View>
-                <Txt style={styles.levelText} lines={2} maxFontSizeMultiplier={1.3}>
-                  {phrase(relationship.levelTitle)}
+            onPress={() => conversation && router.push(`/chat/${conversation.id}`)}
+            style={styles.bondMain}>
+            <BondRings closeness={progress} streak={Math.min(relationship.streakDays, STREAK_WEEK) / STREAK_WEEK} level={relationship.level} label={t('us.ringLevel')} />
+            <View style={styles.grow}>
+              <View style={styles.daysLine}>
+                <Txt style={styles.days} maxFontSizeMultiplier={1.2}>
+                  {days}
                 </Txt>
-                <Txt style={styles.levelMeta} lines={1} maxFontSizeMultiplier={1.3}>
-                  {t('us.toLevel', {
-                    count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
-                    level: relationship.level + 1,
-                  })}
+                <Txt style={styles.daysLabel} maxFontSizeMultiplier={1.3}>
+                  {t('us.daysShort', { count: days })}
                 </Txt>
               </View>
+              <Txt style={styles.levelText} lines={1} maxFontSizeMultiplier={1.3}>
+                {phrase(relationship.levelTitle)}
+              </Txt>
+              <View style={styles.legend}>
+                <Legend color={RING_HUES.outer} value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
+                <Legend color={RING_HUES.inner} value={String(relationship.streakDays)} label={t('us.statStreak')} />
+                <Legend
+                  value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
+                  label={t('us.statMet')}
+                />
+              </View>
             </View>
+          </PressableScale>
+
+          <View style={styles.bondFoot}>
             <View style={styles.pair} pointerEvents="none">
               <UserAvatar user={user} size={PAIR} style={styles.pairFace} />
               <CharacterAvatar character={character} size={PAIR} style={[styles.pairFace, styles.overlap]} />
             </View>
-
-            <View style={styles.stats}>
-              <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-              <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} flame />
-              <Stat
-                value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
-                label={t('us.statMet')}
-              />
-            </View>
-          </PressableScale>
-
-          {/* Share opens the bond's card (HIG Activity views): a sibling of the chat button above so
-              VoiceOver reaches it on its own; what a share pays today rides on it. */}
-          <PressableScale
-            style={styles.share}
-            scaleTo={0.97}
-            haptic
-            accessibilityRole="button"
-            accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
-            onPress={() => setSharing(true)}>
-            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={18} color={systemGround.ground} />
-            <Txt style={styles.shareText} maxFontSizeMultiplier={1.3}>
-              {t('common.share')}
+            <Txt style={[styles.levelMeta, styles.grow]} lines={1} maxFontSizeMultiplier={1.3}>
+              {t('us.toLevel', {
+                count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
+                level: relationship.level + 1,
+              })}
             </Txt>
-            {reward ? (
-              <View style={styles.reward}>
-                <Txt style={styles.rewardText} maxFontSizeMultiplier={1.2}>{`+${reward}`}</Txt>
-                <ShellIcon size={14} />
-              </View>
-            ) : null}
-          </PressableScale>
-        </Gradient>
+            {/* Share opens the bond's card (HIG Activity views): small, beside the figures, today's reward on it. */}
+            <PressableScale
+              style={styles.share}
+              scaleTo={0.95}
+              haptic
+              accessibilityRole="button"
+              accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
+              onPress={() => setSharing(true)}>
+              <SFIcon ios="square.and.arrow.up" icon="share-outline" size={15} color={systemGround.label} />
+              <Txt style={styles.shareText} maxFontSizeMultiplier={1.3}>
+                {t('common.share')}
+              </Txt>
+              {reward ? (
+                <View style={styles.reward}>
+                  <Txt style={styles.rewardText} maxFontSizeMultiplier={1.2}>{`+${reward}`}</Txt>
+                  <ShellIcon size={12} />
+                </View>
+              ) : null}
+            </PressableScale>
+          </View>
+        </View>
 
         <TalkedWith />
 
@@ -467,49 +454,56 @@ function TimeTile({ time }: { time?: string }) {
   );
 }
 
-/** Closeness as a ring: the bond's deep mint over a light track, the level big in the middle. */
-function LevelRing({ progress, level, label }: { progress: number; level: number; label: string }) {
-  const shown = Math.max(0, Math.min(1, progress));
+/**
+ * Two rings, as Apple Health draws a score: the outer fills with closeness to the next level, the
+ * inner with the streak over a week, each starting at twelve with its glyph on a cap of its colour;
+ * the level inside.
+ */
+function BondRings({ closeness, streak, level, label }: { closeness: number; streak: number; level: number; label: string }) {
+  const outerR = (RINGS - RING_W) / 2;
+  const innerR = outerR - RING_W - RING_GAP;
+  const arc = (r: number, share: number, color: string) => {
+    const c = 2 * Math.PI * r;
+    const shown = Math.max(0, Math.min(1, share));
+    return shown > 0 ? (
+      <Circle cx={RINGS / 2} cy={RINGS / 2} r={r} fill="none" stroke={color} strokeWidth={RING_W} strokeLinecap="round" strokeDasharray={`${c * shown} ${c}`} />
+    ) : null;
+  };
   return (
-    <View style={styles.levelRing}>
-      <Svg width={RING} height={RING} style={styles.ringSvg}>
-        <Circle cx={RING / 2} cy={RING / 2} r={RING_R} fill="none" stroke={BOND.track} strokeWidth={RING_STROKE} />
-        {shown > 0 ? (
-          <Circle
-            cx={RING / 2}
-            cy={RING / 2}
-            r={RING_R}
-            fill="none"
-            stroke={BOND.arc}
-            strokeWidth={RING_STROKE}
-            strokeLinecap="round"
-            strokeDasharray={`${RING_C * shown} ${RING_C}`}
-          />
-        ) : null}
+    <View style={styles.rings}>
+      <Svg width={RINGS} height={RINGS} style={styles.ringSvg}>
+        <Circle cx={RINGS / 2} cy={RINGS / 2} r={outerR} fill="none" stroke={RING_HUES.outerTrack} strokeWidth={RING_W} />
+        <Circle cx={RINGS / 2} cy={RINGS / 2} r={innerR} fill="none" stroke={RING_HUES.innerTrack} strokeWidth={RING_W} />
+        {arc(outerR, closeness, RING_HUES.outer)}
+        {arc(innerR, streak, RING_HUES.inner)}
       </Svg>
+      <View style={[styles.cap, { top: 0, backgroundColor: RING_HUES.outer }]}>
+        <Ionicons name="heart" size={8} color={WHITE} />
+      </View>
+      <View style={[styles.cap, { top: RING_W + RING_GAP, backgroundColor: RING_HUES.inner }]}>
+        <Ionicons name="flame" size={8} color={WHITE} />
+      </View>
       <View style={styles.ringLabel}>
-        <Txt style={styles.ringCaption} lines={1} maxFontSizeMultiplier={1.2}>
-          {label}
-        </Txt>
         <Txt style={styles.ringLevel} maxFontSizeMultiplier={1.2}>
           {level}
+        </Txt>
+        <Txt style={styles.ringCaption} lines={1} maxFontSizeMultiplier={1.2}>
+          {label}
         </Txt>
       </View>
     </View>
   );
 }
 
-/** One figure on the bond card, in its own light tile; the streak carries a flame. */
-function Stat({ value, label, flame }: { value: string; label: string; flame?: boolean }) {
+/** One figure beside the rings: its ring's colour (none for the date), the number, what it counts. */
+function Legend({ color, value, label }: { color?: string; value: string; label: string }) {
   return (
-    <View style={styles.stat}>
-      <View style={styles.statLine}>
-        {flame ? <Ionicons name="flame" size={15} color={BOND.flame} /> : null}
-        <Txt style={styles.statValue} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
-          {value}
-        </Txt>
-      </View>
-      <Txt style={styles.statLabel} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.2}>
+    <View style={styles.legendRow}>
+      {color ? <View style={[styles.legendDot, { backgroundColor: color }]} /> : <Ionicons name="calendar-outline" size={12} color={systemGround.secondaryLabel} />}
+      <Txt style={styles.legendValue} lines={1} maxFontSizeMultiplier={1.2}>
+        {value}
+      </Txt>
+      <Txt style={styles.legendLabel} lines={1} maxFontSizeMultiplier={1.2}>
         {label}
       </Txt>
     </View>
@@ -558,50 +552,53 @@ const styles = StyleSheet.create({
   },
   pickName: { fontFamily: fonts.playfulBold, fontSize: 12, color: colors.textSecondary },
   pickActive: { fontFamily: fonts.playful, color: systemGround.label },
-  // No elevation: the bond card is flat colour, like the folders and bubbles.
-  bond: { marginHorizontal: 14, marginTop: 14, padding: space.lg, borderRadius: 30 },
-  together: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: PAIR * 2 - 10 },
-  levelRing: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
-  // The arc starts at twelve o'clock.
+  // The bond as a plain card on the grouped ground, the rings and figures on it (Apple Health).
+  bond: {
+    marginHorizontal: 14,
+    marginTop: 14,
+    paddingTop: 16,
+    paddingBottom: 12,
+    paddingHorizontal: 16,
+    borderRadius: 28,
+    borderCurve: 'continuous',
+    backgroundColor: systemGround.card,
+    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' } : null),
+  },
+  bondMain: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  rings: { width: RINGS, height: RINGS, alignItems: 'center', justifyContent: 'center' },
+  // The arcs start at twelve o'clock.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
-  ringLabel: { alignItems: 'center', maxWidth: RING - RING_STROKE * 2 - 4 },
-  ringCaption: { fontFamily: fonts.playfulBold, fontSize: 11, lineHeight: 14, color: BOND.ink },
-  ringLevel: { fontFamily: fonts.playful, fontSize: 34, lineHeight: 38, color: BOND.ink, fontVariant: ['tabular-nums'] },
-  pair: { position: 'absolute', top: 0, right: 0, flexDirection: 'row' },
-  pairFace: { borderWidth: 2.5, borderColor: WHITE, borderRadius: PAIR / 2 + 2.5 },
-  overlap: { marginLeft: -10 },
+  cap: { position: 'absolute', left: RINGS / 2 - RING_W / 2, width: RING_W, height: RING_W, borderRadius: RING_W / 2, alignItems: 'center', justifyContent: 'center' },
+  ringLabel: { alignItems: 'center', maxWidth: RINGS - (RING_W * 2 + RING_GAP) * 2 },
+  ringLevel: { fontSize: 32, lineHeight: 36, fontWeight: '600', letterSpacing: -0.5, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  ringCaption: { fontSize: 11, lineHeight: 14, color: systemGround.secondaryLabel },
   daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
-  days: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: BOND.ink, fontVariant: ['tabular-nums'] },
-  daysLabel: { fontFamily: fonts.playfulBold, fontSize: 15, color: BOND.ink },
-  levelText: { marginTop: 2, fontFamily: fonts.playful, fontSize: 16, lineHeight: 20, color: BOND.ink },
-  levelMeta: { marginTop: 2, fontSize: 12.5, color: BOND.ink, fontVariant: ['tabular-nums'] },
-  stats: { flexDirection: 'row', gap: 8, marginTop: 14 },
-  stat: { flex: 1, alignItems: 'center', gap: 1, paddingVertical: 10, paddingHorizontal: 6, borderRadius: 18, backgroundColor: BOND.tile },
-  statLine: { flexDirection: 'row', alignItems: 'center', gap: 3, maxWidth: '100%' },
-  statValue: { fontFamily: fonts.playful, fontSize: 19, lineHeight: 24, color: BOND.ink, fontVariant: ['tabular-nums'] },
-  statLabel: { fontSize: 11, lineHeight: 14, color: BOND.ink },
-  // The share action: an ink pill the card's width, today's reward on a light chip.
+  days: { fontSize: 28, lineHeight: 33, fontWeight: '700', letterSpacing: -0.5, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  daysLabel: { fontSize: 15, fontWeight: '600', color: systemGround.label },
+  levelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: systemGround.secondaryLabel },
+  legend: { marginTop: 8, gap: 4 },
+  legendRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  legendDot: { width: 8, height: 8, borderRadius: 4, marginHorizontal: 2 },
+  legendValue: { fontSize: 15, fontWeight: '700', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  legendLabel: { flexShrink: 1, fontSize: 13, color: systemGround.secondaryLabel },
+  bondFoot: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
+  pair: { flexDirection: 'row' },
+  pairFace: { borderWidth: 2, borderColor: systemGround.card, borderRadius: PAIR / 2 + 2 },
+  overlap: { marginLeft: -8 },
+  levelMeta: { fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  // Share: a small grey capsule (it was the card's width), today's reward riding on it.
   share: {
-    marginTop: 12,
-    minHeight: 46,
-    borderRadius: 23,
+    height: 34,
+    paddingHorizontal: 12,
+    borderRadius: 17,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: systemGround.label,
+    gap: 5,
+    backgroundColor: systemGround.fill,
   },
-  shareText: { fontFamily: fonts.playful, fontSize: 15.5, color: systemGround.ground },
-  reward: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    height: 24,
-    paddingHorizontal: 8,
-    borderRadius: 12,
-    backgroundColor: isDark ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.18)',
-  },
-  rewardText: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: systemGround.ground },
+  shareText: { fontSize: 14, fontWeight: '600', color: systemGround.label },
+  reward: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: 2 },
+  rewardText: { fontSize: 12.5, fontWeight: '700', color: colors.brandText },
   section: {
     marginTop: 20,
     marginBottom: 8,
