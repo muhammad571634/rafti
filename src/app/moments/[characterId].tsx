@@ -1,22 +1,23 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeatureBar } from '@/components/feature/feature-kit';
-import { CharacterAvatar, EmptyState, LargeTitle, Screen, SystemSegmented } from '@/components/ui';
-import { MomentLineView, useMomentContent, useMomentTimeline, useOpenMoment } from '@/components/us/moments';
+import { CharacterAvatar, EmptyState, Screen, SystemSegmented } from '@/components/ui';
+import { characterImage } from '@/components/ui/avatar';
+import { MomentCard, useMomentContent, useMomentTimeline, useOpenMoment } from '@/components/us/moments';
 import { useDayKey } from '@/hooks/use-day-key';
-import { filtersWith, groupByDay, inFilter, type MomentFilter, type MomentLine, momentLines } from '@/lib/moment-groups';
+import { filtersWith, inFilter, type MomentFilter, type TimelineItem } from '@/lib/moment-groups';
 import { useAppStore } from '@/store/use-app-store';
-import { space, systemGround } from '@/theme';
+import { fonts, space, systemGround } from '@/theme';
 
 /**
- * The whole story with one friend (owner, 2026-11-09: "See all" from Us' moments, which show only
- * the last week): every day since you met, newest first, the four filters on top. Drawn a screenful
- * at a time (a list of day headers, big moments and rows), so years of moments scroll as lightly as
- * a week. A plan takes you back to Us with its day open in the calendar.
+ * The whole story with one friend ("Show N more" under Us' three newest moments): every moment
+ * since you met, newest first, the four filters on top, each as the same Ink card Us draws (owner,
+ * 2026-11-13); the date rides on each card. Drawn a screenful at a time, so years of moments scroll
+ * as lightly as a week. A plan takes you back to Us with its day open in the calendar.
  */
 export default function MomentsScreen() {
   const { t } = useTranslation();
@@ -30,8 +31,9 @@ export default function MomentsScreen() {
   const [picked, setPicked] = useState<MomentFilter>('all');
   const filters = filtersWith(everything);
   const filter: MomentFilter = picked !== 'all' && filters.includes(picked) ? picked : 'all';
-  const lines = useMemo(() => momentLines(groupByDay(everything.filter((item) => inFilter(item.kind, filter)))), [everything, filter]);
+  const items = useMemo(() => everything.filter((item) => inFilter(item.kind, filter)), [everything, filter]);
   const content = useMomentContent(character, relationship);
+  const face = character ? characterImage(character) : undefined;
   const openDay = useCallback(
     (day: string) => router.navigate({ pathname: '/(tabs)/us', params: { friend: characterId, day, at: String(Date.now()) } }),
     [router, characterId],
@@ -39,18 +41,22 @@ export default function MomentsScreen() {
   const open = useOpenMoment(openDay);
 
   const renderItem = useCallback(
-    ({ item }: { item: MomentLine }) => <MomentLineView line={item} today={today} content={content} open={open} />,
-    [today, content, open],
+    ({ item }: { item: TimelineItem }) => (
+      <View style={styles.cell}>
+        <MomentCard item={item} today={today} content={content(item)} face={face} onPress={open(item)} />
+      </View>
+    ),
+    [today, content, face, open],
   );
 
   return (
     <Screen background={systemGround.ground}>
       <FlatList
-        data={lines}
-        keyExtractor={(line) => line.key}
+        data={items}
+        keyExtractor={(item) => item.key}
         renderItem={renderItem}
-        initialNumToRender={18}
-        maxToRenderPerBatch={18}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
         windowSize={9}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
@@ -62,7 +68,9 @@ export default function MomentsScreen() {
               // Whose story this is, without words.
               right={character ? <CharacterAvatar character={character} size={36} /> : undefined}
             />
-            <LargeTitle>{t('us.moments')}</LargeTitle>
+            <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+              {t('us.moments')}
+            </Text>
             {filters.length > 1 ? (
               <SystemSegmented
                 style={styles.segments}
@@ -80,5 +88,7 @@ export default function MomentsScreen() {
 }
 
 const styles = StyleSheet.create({
-  segments: { marginHorizontal: 14, marginBottom: 4 },
+  title: { marginTop: 4, marginHorizontal: 20, marginBottom: 12, fontFamily: fonts.serif, fontSize: 34, lineHeight: 40, letterSpacing: -0.4, color: systemGround.label },
+  segments: { marginHorizontal: 14, marginBottom: 14 },
+  cell: { marginHorizontal: 14, marginBottom: 12 },
 });
