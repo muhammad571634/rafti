@@ -504,7 +504,10 @@
     "title": "Ta-da! Hai raggiunto un nuovo livello.",
     "subtitle": "{{name}} si sente un po' più vicino a te.",
     "levelLabel": "{{title}} · Liv {{level}}",
-    "unlocked": "Nuovi livelli di relazione sbloccati nelle impostazioni."
+    "unlocked": "Nuovi livelli di relazione sbloccati nelle impostazioni.",
+    "closer": "Più vicini, tu e {{name}}",
+    "newPage": "Si è aperta una nuova pagina della vostra storia",
+    "readIt": "Leggi"
   },
   "call": {
     "connecting": "connessione in corso...",

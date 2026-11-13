@@ -504,7 +504,10 @@
     "title": "Oba! Você alcançou uma nova fase.",
     "subtitle": "{{name}} se sente um pouco mais perto de você.",
     "levelLabel": "{{title}} · Nív {{level}}",
-    "unlocked": "Novos tipos de relacionamento desbloqueados nos ajustes."
+    "unlocked": "Novos tipos de relacionamento desbloqueados nos ajustes.",
+    "closer": "Mais perto de {{name}}",
+    "newPage": "Uma nova página da sua história se abriu",
+    "readIt": "Ler"
   },
   "call": {
     "connecting": "conectando...",

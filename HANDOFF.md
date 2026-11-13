@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z205. "Closer" level-up moment rebuilt in the Ink look (2026-11-13, Claude, Fable 5.2 / Opus 5.5). NEXT: owner looks at it on the phone
+
+- **Owner's ask**: the canvas frame "9 · Level up" of the Ink prototype (https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT) replaces the old moment (confetti, sunburst, blurred photo, peach gradient button), made better. Improved prototype approved: `docs/prototypes/closer-ink.html` (https://claude.ai/artifact/GPM4DJAZp1ydAffuMuqsLA).
+- **Built** (`src/components/level-up/level-up-takeover.tsx`, `confetti.tsx` removed): black ground; serif "Closer to {name}" (`levelUp.closer`) with the big level (116 pt serif) rolling over beside it; a story level adds "A new page of your story is open" (`levelUp.newPage`) and the pill says "Read it" (`levelUp.readIt`, closes back to the chat, where the friend tells the chapter), other levels say Continue. The ring draws in the brand's peach (`apricot500` → `apricot300`) with a spark at its tip, their face fades in inside (no picture or a failed load: their initial in white on a dark disc), then an echo, the chime and one success haptic on the same instant (HIG Motion / Feedback / Playing haptics); the stage name (white serif italic), the chapter or unlocked-names note, the white pill on a spring; the ring breathes afterwards. Reduced motion: fades.
+- **Owner's corrections on the phone**: no "{name} feels a little closer" under the title on plain levels (it repeats the title), no rule under the title and number, the ring in the brand colour only (the disc inside and the words stay neutral), the number bigger.
+- **Font**: Source Serif 4 (OFL, `@expo-google-fonts/source-serif-4`, JS-only), only 600 and 600 italic imported per-weight in `src/app/_layout.tsx`; `fonts.serif` / `fonts.serifItalic` in `src/theme/typography.ts`. CJK and Thai titles fall back to the system face.
+- **Checked**: on the A51 in Expo Go (Oppa without a picture, Yuna with one; Russian), Continue closes it; tsc 0, npm test 922/922, check:locales. **Not seen**: a story level on the phone (no chat with an arc character at a chapter level on the device), and no OTA published yet.
+
 ### 0z204. Film 3 "Same day" edited and rendered: 43 s, 30 s, 15 s (2026-11-13, Claude, Opus 5.5). NEXT: owner watches and posts
 
 - **Out** (`videos/final/`, 1080×1920, 30 fps): `SameDay-43s.mp4` (42.8 s, -14.2 LUFS, peak -1.1 dBTP), `SameDay-30s.mp4` (30.3 s, -14.1, -1.3), `SameDay-15s.mp4` (14.7 s, -14.1, -1.1). Peaks are 0.4 dB over the usual -1.5 target (still under -1.0). The sofa line is clear over the music drop-out (Whisper on the master: "Who do you keep talking to?").

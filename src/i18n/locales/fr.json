@@ -504,7 +504,10 @@
     "title": "Tada ! Vous avez franchi une nouvelle étape.",
     "subtitle": "{{name}} se sent un peu plus proche de vous.",
     "levelLabel": "{{title}} · Niv {{level}}",
-    "unlocked": "Nouvelles relations débloquées dans ses paramètres."
+    "unlocked": "Nouvelles relations débloquées dans ses paramètres.",
+    "closer": "Plus proche de {{name}}",
+    "newPage": "Une nouvelle page de votre histoire s’ouvre",
+    "readIt": "Lire"
   },
   "call": {
     "connecting": "connexion...",

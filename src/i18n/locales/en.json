@@ -504,7 +504,10 @@
     "title": "Ta-da! You've reached a new stage.",
     "subtitle": "{{name}} feels a little closer to you.",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "New relationships unlocked in their settings."
+    "unlocked": "New relationships unlocked in their settings.",
+    "closer": "Closer to {{name}}",
+    "newPage": "A new page of your story is open",
+    "readIt": "Read it"
   },
   "call": {
     "connecting": "connecting...",

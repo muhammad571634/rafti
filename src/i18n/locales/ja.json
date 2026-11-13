@@ -491,7 +491,10 @@
     "title": "おめでとうございます！新しい段階に到達しました。",
     "subtitle": "{{name}}との距離が少し縮まりました。",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "設定で新しい関係性がアンロックされました。"
+    "unlocked": "設定で新しい関係性がアンロックされました。",
+    "closer": "{{name}}ともっと近くに",
+    "newPage": "ふたりの物語に新しいページ",
+    "readIt": "読む"
   },
   "call": {
     "connecting": "接続中...",

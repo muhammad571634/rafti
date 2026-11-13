@@ -491,7 +491,10 @@
     "title": "太棒了！你們的關係邁入了新階段。",
     "subtitle": "{{name}}感覺與你更親近了。",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "角色設定中已解鎖新的關係選項。"
+    "unlocked": "角色設定中已解鎖新的關係選項。",
+    "closer": "與 {{name}} 更近了",
+    "newPage": "你們的故事翻開了新的一頁",
+    "readIt": "閱讀"
   },
   "call": {
     "connecting": "正在連線...",

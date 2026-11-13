@@ -504,7 +504,10 @@
     "title": "¡Tachán! Has alcanzado una nueva etapa.",
     "subtitle": "{{name}} se siente un poco más cerca de ti.",
     "levelLabel": "{{title}} · Nv {{level}}",
-    "unlocked": "Nuevas relaciones desbloqueadas en sus ajustes."
+    "unlocked": "Nuevas relaciones desbloqueadas en sus ajustes.",
+    "closer": "Más cerca de {{name}}",
+    "newPage": "Se abrió una nueva página de tu historia",
+    "readIt": "Leer"
   },
   "call": {
     "connecting": "conectando...",

@@ -491,7 +491,10 @@
     "title": "축하합니다! 새로운 단계에 도달했습니다.",
     "subtitle": "{{name}}와(과) 조금 더 가까워졌습니다.",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "설정에서 새로운 관계 설정을 이용할 수 있습니다."
+    "unlocked": "설정에서 새로운 관계 설정을 이용할 수 있습니다.",
+    "closer": "{{name}}, 한 걸음 더 가까이",
+    "newPage": "이야기의 새 페이지가 열렸어요",
+    "readIt": "읽기"
   },
   "call": {
     "connecting": "연결 중...",

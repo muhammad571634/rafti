@@ -504,7 +504,10 @@
     "title": "Tada! Ihr habt eine neue Stufe erreicht.",
     "subtitle": "{{name}} fühlt sich dir noch näher.",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "Neue Beziehungsarten in den Einstellungen freigeschaltet."
+    "unlocked": "Neue Beziehungsarten in den Einstellungen freigeschaltet.",
+    "closer": "Näher bei {{name}}",
+    "newPage": "Eine neue Seite eurer Geschichte ist offen",
+    "readIt": "Lesen"
   },
   "call": {
     "connecting": "verbindet...",

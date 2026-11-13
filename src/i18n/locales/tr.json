@@ -504,7 +504,10 @@
     "title": "Tebrikler! Yeni bir aşamaya ulaştın.",
     "subtitle": "{{name}} sana biraz daha yakın hissediyor.",
     "levelLabel": "{{title}} · Seviye {{level}}",
-    "unlocked": "Karakter ayarlarında yeni ilişki türleri açıldı."
+    "unlocked": "Karakter ayarlarında yeni ilişki türleri açıldı.",
+    "closer": "{{name}} ile daha yakın",
+    "newPage": "Hikâyenizde yeni bir sayfa açıldı",
+    "readIt": "Oku"
   },
   "call": {
     "connecting": "bağlanıyor...",

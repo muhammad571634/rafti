@@ -491,7 +491,10 @@
     "title": "Ta-da! Kamu telah mencapai tahap baru.",
     "subtitle": "{{name}} merasa sedikit lebih dekat denganmu.",
     "levelLabel": "{{title}} · Lv {{level}}",
-    "unlocked": "Hubungan baru telah terbuka di pengaturan mereka."
+    "unlocked": "Hubungan baru telah terbuka di pengaturan mereka.",
+    "closer": "Lebih dekat dengan {{name}}",
+    "newPage": "Halaman baru kisah kalian terbuka",
+    "readIt": "Baca"
   },
   "call": {
     "connecting": "menghubungkan...",

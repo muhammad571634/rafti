@@ -491,7 +491,10 @@
     "title": "Tuyệt vời! Bạn đã đạt đến một giai đoạn mới.",
     "subtitle": "{{name}} cảm thấy gần gũi với bạn hơn một chút.",
     "levelLabel": "{{title}} · Cấp {{level}}",
-    "unlocked": "Mối quan hệ mới đã được mở khóa trong phần cài đặt của họ."
+    "unlocked": "Mối quan hệ mới đã được mở khóa trong phần cài đặt của họ.",
+    "closer": "Gần {{name}} hơn",
+    "newPage": "Một trang mới trong câu chuyện của bạn đã mở",
+    "readIt": "Đọc"
   },
   "call": {
     "connecting": "đang kết nối...",

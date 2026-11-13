@@ -16,6 +16,9 @@ export const fonts = {
   playfulBold: 'Nunito_800ExtraBold',
   /** Caveat (OFL): the handwriting on diary pages and diary covers. */
   hand: 'Caveat_600SemiBold',
+  /** Source Serif 4 (OFL): the Ink look's titles and big numbers (the level-up moment first). */
+  serif: 'SourceSerif4_600SemiBold',
+  serifItalic: 'SourceSerif4_600SemiBold_Italic',
 } as const;
 
 export const weight = {
