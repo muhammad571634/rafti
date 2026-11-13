@@ -19,6 +19,7 @@ import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { useThemeReload, useThemeRestore } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
 import { startAwayClock } from '@/lib/away-clock';
+import { noDuplicatePush } from '@/lib/no-duplicate-push';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 
@@ -66,6 +67,8 @@ function AppRoot() {
   return (
     <SafeAreaProvider>
       <Stack
+        // A double tap on a row or icon opens its screen once, not twice (every push in the app).
+        UNSTABLE_router={noDuplicatePush}
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: colors.bg },

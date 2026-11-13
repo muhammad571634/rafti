@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z212. A double tap opens a screen once (2026-11-13, Claude, Opus 5.5). NEXT: owner double-taps a chat row, a story icon, any button on the phone after the next OTA
+
+- **Owner's ask** (video): a quick double tap on a chat (Sam Okafor) or any icon / story / button opened the screen twice, so Back showed it again.
+- **Fixed in one place** (`src/lib/no-duplicate-push.ts`, wired as `UNSTABLE_router={noDuplicatePush}` on the root `<Stack>` in `src/app/_layout.tsx`): the root stack router wraps Expo Router's own stack router and answers a PUSH / NAVIGATE that would put the focused screen on top of itself (same route name, same params, Expo's `__internal` params ignored) as handled with the state unchanged. No timers, no per-screen locks; all 220 `router.push` sites and every `<Link>` are covered. Not blocked: another screen, the same screen with other params, replace, back, dismiss-to (`pop`), actions aimed at another navigator, moves inside (tabs) (`payload.state`). Checked against expo-router 58 source: `useNavigationBuilder` merges the override over the stack router; resolution and dispatch reduce through it, a handled same-state result neither pushes nor bubbles.
+- **Checked**: tsc 0, npm test 927/927 (5 new in `no-duplicate-push.test.ts`). **Not checked on the A51** (owner: phone away; not in an OTA yet). If a double tap ever still opens two, the second push differs in params (log the action in `isRepeatOfFocused`).
+
 ### 0z211. Us: the bond as Apple Health rings, the week calendar as capsules (2026-11-13, Claude, Opus 5.5). NEXT: owner looks at it on the phone
 
 - **Owner's ask** (two iOS screenshots): the calendar as a week of tall day capsules with dots, the month only when the month is tapped; the bond card with rings like Apple Health's score, soft colours for day and night, the figures beside, a smaller Share.
