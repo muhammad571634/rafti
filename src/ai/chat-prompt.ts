@@ -1,0 +1,247 @@
+import type { LorePrompt } from '@/lib/lorebook';
+import type { PersonaView } from '@/lib/personas';
+import type { ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
+import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relationship, Thread, TimeSkip, User } from '@/types';
+
+import { steerCue } from '../lib/chat-steer';
+import { redoCue } from '../lib/chat-turns';
+import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
+import { messageText } from '../lib/story-continuity';
+import { callTurnLines } from './call-prompt';
+
+import { modePart, type PromptMode } from './modes';
+import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
+import { isToneLine, whispered, withoutTone } from './tone';
+import { layoutPrompt, part } from './prompt-layout';
+import { followsUser, followUserLanguage, languageCue, userLines } from './reply-language';
+import { openerLines, repeatCue } from './repetition';
+import { seeingLines, type ChatImage } from './photo-prompt';
+import { humanTurnLines } from './human-turn';
+import { ownDayParts, type OwnDay } from './own-day';
+import { reactParts } from './react';
+import { ideasCue, REPLY_SHAPE } from './reply-style';
+import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
+import { characterParts, theyLines } from './rules';
+import { threadParts } from './thread-prompt';
+import { offerLines, SETUP_RULES_LINES } from './setup-prompt';
+import { clockLines, togetherLines, type ChatClock, type Together } from './together-prompt';
+
+/**
+ * The prompt for one reply in a one-to-one chat (teardown item 7), laid out for the provider's
+ * prompt cache (src/ai/prompt-layout.ts): rules, persona and world, then the chat's own settings
+ * and pinned memories, then the history cut in steps, then what this reply alone needs: the bond,
+ * the scene, the memories and lore this message brought up, a continue or skip cue, the turn's
+ * hints and the answer's shape. Between replies of a warm chat only the new turns and this tail
+ * cost full price.
+ */
+
+/** The most pinned memories the prompt carries: the newest, so a new pin never reorders the rest. */
+export const PINNED_MAX = 20;
+
+/** A memory as the prompt needs it: what, whose, and a chat line kept word for word. */
+type MemoryNote = Pick<MemoryItem, 'text' | 'about' | 'quote'>;
+
+/** Whose memory, as the character reads it: the user is "them", the character "you". */
+const WHOSE: Record<MemoryAbout, string> = { story: 'Your story', them: 'About you', you: 'About them' };
+
+const memoryLine = (memory: MemoryNote) =>
+  memory.quote
+    ? `- ${memory.quote.author === 'me' ? 'They said' : 'You said'}: "${memory.text}"`
+    : `- ${WHOSE[memory.about ?? 'you']}: ${memory.text}`;
+
+const compare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+const byTime = (a: MemoryItem, b: MemoryItem) => compare(a.createdAt, b.createdAt) || compare(a.id, b.id);
+
+/**
+ * What they pinned, always in the prompt: the active ones, oldest first, the newest `PINNED_MAX`.
+ * The order never depends on the message, so this part stays the same reply after reply and the
+ * cached prefix holds until they pin or unpin something.
+ */
+export function pinnedLines(pinned: readonly MemoryItem[]) {
+  const kept = pinned
+    .filter((m) => (m.status ?? 'active') === 'active' && !m.supersededBy)
+    .sort(byTime)
+    .slice(-PINNED_MAX);
+  if (!kept.length) return [];
+  return ['ALWAYS REMEMBER (they pinned these; true in your story):', ...kept.map(memoryLine)];
+}
+
+/** The most facts the prompt carries besides the pins, and their text budget (about 4 characters a token). */
+export const FACTS_MAX = 60;
+const FACTS_CHARS = 4800;
+
+/**
+ * What they know about each other from earlier chats (B2): every open fact that is not pinned, the
+ * most important first, then the newest, up to `FACTS_MAX` and a text budget. In the chat tier, so
+ * it is cached until a fact changes (the memory pass, a few times a day), and the model sees all of
+ * it: no retrieval to miss a fact while there are this few. `importance` is 0.5 when missing.
+ */
+export function factLines(facts: readonly MemoryItem[]) {
+  const kept = facts
+    .filter((m) => !m.pinned && (m.status ?? 'active') === 'active' && !m.supersededBy)
+    .sort((a, b) => (b.importance ?? 0.5) - (a.importance ?? 0.5) || compare(b.createdAt, a.createdAt))
+    .slice(0, FACTS_MAX);
+  let chars = 0;
+  const lines = kept.map(memoryLine).filter((line) => (chars += line.length) <= FACTS_CHARS);
+  return lines.length ? ['WHAT YOU KNOW (from your chats; true in your story; use it when it fits, never as a list):', ...lines] : [];
+}
+
+/** What this message brings to mind besides the pins, for this reply only. */
+export function recallLines(memories: readonly (MemoryNote & { pinned?: boolean })[]) {
+  const loose = memories.filter((m) => !m.pinned);
+  if (!loose.length) return [];
+  return ['THIS BRINGS TO MIND (from your past chats; bring up only what fits):', ...loose.map(memoryLine)];
+}
+
+/**
+ * A one-to-one chat as the model reads it: the lines it may see (`messageText`), one turn per run
+ * of one side. A time skip is the user's turn, as they moved the story on; a continue is not shown,
+ * so their lines on both sides of it read as one turn. A call on the model gives its lines, each
+ * under its own speaker, so the model never reads the user's words as its own.
+ */
+export function chatTurns(messages: readonly Message[]): HistoryTurn[] {
+  const turns: HistoryTurn[] = [];
+  const add = (role: HistoryTurn['role'], text: string) => {
+    const last = turns[turns.length - 1];
+    if (last?.role === role) last.text = `${last.text}\n${text}`;
+    else turns.push({ role, text });
+  };
+  for (const message of messages) {
+    if (message.kind === 'call' && !message.missed && message.callLines?.length) {
+      for (const line of callTurnLines(message.callLines)) add(line.author === 'me' ? 'user' : 'assistant', line.text);
+      continue;
+    }
+    const text = messageText(message);
+    if (text === null) continue;
+    add(message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant', text);
+  }
+  return turns;
+}
+
+/** The modes a one-to-one chat reply can take: texting, a voice call, or bedtime (src/ai/modes.ts). */
+export type ChatMode = Extract<PromptMode, 'chat' | 'call' | 'bedtime'>;
+export const CHAT_MODES: readonly ChatMode[] = ['chat', 'call', 'bedtime'];
+
+export interface ChatPromptInput {
+  /** The reply's form; texting when missing. */
+  mode?: ChatMode;
+  character: Character;
+  user: User;
+  relationship?: Relationship;
+  replyLanguage?: string;
+  persona?: PersonaView;
+  scene?: ActiveScene;
+  lore?: LorePrompt;
+  prefs?: ReplyPrefs;
+  /** This character's pinned memories (`pinnedLines`). */
+  pinned?: readonly MemoryItem[];
+  /** Their other open memories (`factLines`). */
+  facts?: readonly MemoryItem[];
+  /** The summary of earlier chats (backend-plan §7), the last thing before the history. */
+  summary?: string;
+  /** The chat, oldest first, from its start (or from `HistoryWindow.offset`). */
+  messages: readonly Message[];
+  /** Memories this message brings up (`buildStoryContinuityContext`); pinned ones are already in. */
+  memories?: readonly (MemoryNote & { pinned?: boolean })[];
+  /** A continue or a time skip in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
+  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** What this turn is for, when it is not simply answering the user (a game's turn). */
+  cue?: readonly string[];
+  /** ↻: what earlier versions of this reply said; the new one takes another angle (`redoCue`). */
+  redo?: readonly string[];
+  /** ↻ after 👎 on the version before: what was off (`offCue`). */
+  redoOff?: OffReason;
+  /** The repetition guard's second try (server only): the earlier line the first draft echoed (`repeatCue`). */
+  repeated?: string;
+  /** The crisis check (server only): the user may be in danger, so the reply follows `CRISIS_CUE`. */
+  crisis?: boolean;
+  /** The output check's second try (server only): the filter stopped the first draft (`SAFE_RETRY_CUE`). */
+  safe?: boolean;
+  /** Photos the user just sent (`src/ai/photo-prompt.ts`). */
+  images?: readonly ChatImage[];
+  /** The stand-in planner's plan (`planReply`); the model reads only whether this turn follows a silence (`nudge`). */
+  plan?: TurnPlan;
+  /** This friend's threads (`src/lib/threads.ts`): the model follows, moves or settles them. */
+  threads?: readonly Thread[];
+  /** The user's clock, so the friend knows the hour and the day (`clockLines`). */
+  clock?: ChatClock;
+  /** Plans and wake-ups the two of them set up in the app (`togetherLines`). */
+  together?: Together;
+  /** What the friend already said of their own day, today and the day before (`src/ai/own-day.ts`). */
+  ownDay?: OwnDay;
+}
+
+/** The parts of one reply's prompt, every tier; the history comes from `chatTurns`. */
+export function chatParts(input: ChatPromptInput): PromptPart[] {
+  const { character, user, relationship, replyLanguage, persona, scene, lore, prefs } = input;
+  const summary = input.summary?.trim();
+  // Once they have written, the cached REPLY LANGUAGE names no language, as in a group (0z145): its
+  // "else English (their phone's language)" was what a light model named for a Turkish line (0z187).
+  // The turn's LANGUAGE cue quotes their words; before they write, it names the phone's language.
+  const language = followsUser(replyLanguage) && userLines(input.messages).length ? followUserLanguage(user.locale, { named: false }) : replyLanguage;
+  return [
+    ...characterParts(character, user, relationship, language, persona, scene, lore, prefs, { due: relationship?.arcDue }),
+    modePart(input.mode ?? 'chat'),
+    part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
+    part('facts', 'chat', factLines(input.facts ?? [])),
+    part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
+    part('recall', 'turn', recallLines(input.memories ?? [])),
+    // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill
+    // the cached history if this sat in the prefix, so it rides in the turn tier.
+    part('taste', 'turn', tasteLines(input.messages)),
+    part('cue', 'turn', input.steer ? steerCue(input.steer.kind, input.steer.skip, input.steer.to) : input.crisis ? withoutTone(input.cue ?? []) : (input.cue ?? [])),
+    // Its own part, so a continue or a skip (which replace the cue) keeps it.
+    part('safe', 'turn', input.safe ? [SAFE_RETRY_CUE] : []),
+    part('they', 'turn', theyLines(input.user, input.persona)),
+    part('photos', 'turn', input.images?.length ? seeingLines(input.images.length) : []),
+    part('redo', 'turn', input.redo?.length ? [...redoCue(input.redo), ...(input.redoOff ? [offCue(input.redoOff)] : [])] : []),
+    // The repetition guard (src/ai/repetition.ts): how recent replies opened, and on a second try the echoed line.
+    part('openers', 'turn', openerLines(input.messages)),
+    part('repeat', 'turn', input.repeated ? repeatCue(input.repeated) : []),
+    // What one reply cannot see (0z141): the feeling it was left with, the chat's rhythm, a silence.
+    // The model reads the message itself, in any language. Bedtime asks nothing (its mode block);
+    // in a crisis everything gives way to `CRISIS_CUE`.
+    part(
+      'hints',
+      'turn',
+      input.crisis
+        ? []
+        : humanTurnLines({
+            turns: chatTurns(input.messages),
+            mood: input.relationship?.mood,
+            now: input.clock?.now,
+            silence: input.plan?.moves.includes('nudge'),
+            noQuestions: input.mode === 'bedtime',
+            // A call is spoken: its mode block sets the size there.
+            prefs: input.mode === 'call' ? undefined : input.prefs,
+            call: input.mode === 'call',
+            steered: !!input.steer,
+            // Only when the tone cue is in this turn, as the app adds it (not under a game's own cue).
+            whisper: input.mode !== 'call' && whispered(input.messages) && (input.cue ?? []).some(isToneLine),
+          }),
+    ),
+    // The hour and what they set up together: in the turn tier, as they change by the minute.
+    part('clock', 'turn', clockLines(input.clock)),
+    part('together', 'turn', togetherLines(input.together, input.clock)),
+    ...threadParts(input.threads ?? [], input.clock?.utcOffsetMin),
+    // The friend's own day (0z144): what they already said they did today stays true reply after reply.
+    ...ownDayParts(input.ownDay, input.clock),
+    // "Wake me at 7": the friend offers a real alarm or plan, a card under the reply makes it. Not
+    // on a call: the reply is spoken there, with no card to tap.
+    part('setupRules', 'global', input.mode === 'call' ? [] : SETUP_RULES_LINES),
+    // A sticker on their latest message now and then (owner, 2026-11-08: alive); none on a call.
+    ...reactParts(input.mode === 'call'),
+    part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
+    // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
+    part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
+    // One-tap replies: texting only, and never under a crisis (the helpline card leads).
+    part('ideas', 'turn', !input.crisis && (!input.mode || input.mode === 'chat') ? ideasCue(input.messages) : []),
+    part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
+    part('shape', 'turn', [REPLY_SHAPE]),
+  ];
+}
+
+/** One reply's prompt, laid out for the cache (`PromptLayout`). */
+export function layoutChatPrompt(input: ChatPromptInput, window?: Partial<HistoryWindow>) {
+  return { ...layoutPrompt(chatParts(input), chatTurns(input.messages), window), images: input.images };
+}

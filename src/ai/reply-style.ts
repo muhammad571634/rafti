@@ -1,0 +1,231 @@
+import type { ReplyPrefs } from '@/lib/reply-engine';
+import type { Emotion, Message, SetupOffer } from '@/types';
+
+import { speechOnly } from '../lib/reply-engine/narration';
+import { cleanPhotoNotes } from './photo-prompt';
+import { cleanDayNotes } from './own-day';
+import { cleanReact, type React } from './react';
+import { cleanSetup } from './setup-prompt';
+import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
+
+/**
+ * Reply style and length in the prompt (Character.AI's "Personalization": response length and
+ * +dialogue / +narration). Two places, for the provider's prompt cache:
+ * - `replyStyleLines`: the chat's settings, in the persona prompt (`buildCharacterPrompt`); they
+ *   change only when the user changes them.
+ * - `turnLines`: this turn's mood and plan (`planReply`), last, after the history and any
+ *   `steerCue`, as they change every turn. They are hints: the model has the last word.
+ * The model answers in `REPLY_SHAPE`; `parseModelReply` reads it and `enforceStyle` holds Talk to
+ * its promise of no narration.
+ */
+
+export const EMOTIONS: readonly Emotion[] = ['calm', 'happy', 'playful', 'shy', 'tender', 'worried', 'sad', 'annoyed'];
+
+const STYLE_GUIDE: Record<ReplyPrefs['style'], string> = {
+  talk: 'Talk: text like a real person on their phone. Spoken lines only: no narration, no asterisks.',
+  mix:
+    'Mixed: mostly dialogue, like texting, with at most one short action or feeling in *asterisks* ' +
+    'when it says more than words (e.g. *laughs into the pillow*).',
+  story:
+    'Story: immersive roleplay prose. Narrate your actions, the place and your feelings in *asterisks*, ' +
+    'weave dialogue between them, and move the scene on a little every turn. ' +
+    'Never narrate what the user does, thinks or says: only yourself and the world.',
+};
+
+const LENGTH_GUIDE: Record<ReplyPrefs['length'], string> = {
+  short: 'Short: a line or two.',
+  auto: 'Match them: about as much as they write; a "lol" gets a line, a paragraph gets a paragraph.',
+  long: 'Long: fuller replies with more detail and feeling.',
+};
+
+/** The chat's reply settings, for the persona prompt. */
+export function replyStyleLines(prefs: ReplyPrefs) {
+  return ['REPLY STYLE:', `- ${STYLE_GUIDE[prefs.style]}`, `- Length: ${LENGTH_GUIDE[prefs.length]}`];
+}
+
+/**
+ * What the model answers with: the language it writes in, whether the user may be in danger, the
+ * feeling it settled on, one string per bubble. Naming the language makes the model look before it
+ * writes: told only "their language", a light model answered Japanese in English (eval set, B1.5).
+ * It is named right before "messages" and as "the language of their latest message" (0z187): named
+ * first, as "the REPLY LANGUAGE" (whose cached text ends on the phone's language, English), the A51
+ * chat with ~170 English replies got "language":"Turkish" and English bubbles for a Turkish line
+ * (the owner's real chat replayed: 3/4 English, now 12/12 Turkish). `crisis` is the crisis check in
+ * every language (B1.6): read before the bubbles, so the reply is written with it in mind; the
+ * server acts on it.
+ */
+export const REPLY_SHAPE =
+  `Reply with JSON only: {"crisis":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"language":"the language of their latest message, named","messages":[""]}. ` +
+  '"crisis" is true when the user themself seems at real risk: wanting to die or to hurt themselves, its warning signs ' +
+  '(saying goodbye, giving their things away, feeling like a burden or done with everything), or in danger now; ' +
+  'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +
+  'Each string is one chat bubble, written in that language; narration in *asterisks*.';
+
+/**
+ * The chat's one-tap replies (0z176): written by the model with the reply, in the chat's language,
+ * so a Turkish or Uzbek chat never shows English chips ("Same here"). Texting only (not a call,
+ * bedtime or a group). About a dozen output tokens a reply (docs/cost-ledger.md).
+ */
+export const IDEAS_CUE =
+  'IDEAS: also give "ideas": two short replies (two to six words each) they could send next with one tap, in the language they write in and in their own voice, each answering this reply of yours (a question you asked, a thing you said). Never a stock line that would fit any chat. Leave it [] when nothing fits.';
+
+/** How many of your recent lines' one-tap replies the cue names, so new ones are not the same again. */
+const IDEAS_SEEN_LINES = 3;
+
+/**
+ * `IDEAS_CUE`, and the ideas your last lines already carried: the model does not see its old ideas
+ * (they are not in the history), so on the A51 (0z179) "I'll be there, I promise." / "Can't wait to
+ * see you." came back under four replies in a row, through a kiss.
+ */
+export function ideasCue(messages: readonly Pick<Message, 'author' | 'chips' | 'chipsWritten'>[]): string[] {
+  // The last few lines of theirs first, then the ones that carried ideas: never days-old ones.
+  const seen = messages
+    .filter((m) => m.author === 'them')
+    .slice(-IDEAS_SEEN_LINES)
+    .filter((m) => m.chipsWritten && m.chips?.length)
+    .flatMap((m) => m.chips ?? []);
+  const said = [...new Set(seen)].map((idea) => `"${idea}"`).join(', ');
+  return said ? [`${IDEAS_CUE} Your last replies already offered ${said}: give new ones that answer this reply, never these again.`] : [IDEAS_CUE];
+}
+
+/** How many one-tap replies the chat shows, and how long one may be. */
+export const IDEAS_MAX = 2;
+const IDEA_CHARS_MAX = 48;
+
+/** The model's one-tap replies, kept only when they are short plain strings. */
+export function cleanIdeas(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  return raw
+    .filter((idea): idea is string => typeof idea === 'string')
+    .map((idea) => idea.trim().replace(/\s+/g, ' '))
+    .filter((idea) => idea && idea.length <= IDEA_CHARS_MAX && !seen.has(idea.toLowerCase()) && seen.add(idea.toLowerCase()))
+    .slice(0, IDEAS_MAX);
+}
+
+export interface ModelReply {
+  bubbles: string[];
+  /** The language the model said it writes in (its "language"): for the log only, a short name. */
+  language?: string;
+  emotion?: Emotion;
+  intensity?: number;
+  /** The model marked the user as possibly in danger. */
+  crisis?: boolean;
+  /** One line about each photo it was shown (`src/ai/photo-prompt.ts`). */
+  photos?: string[];
+  /** An alarm or a plan the user asked it to set up (`src/ai/setup-prompt.ts`). */
+  setup?: SetupOffer;
+  /** What it will follow up on, move or settle (`src/ai/thread-prompt.ts`), times on the user's clock. */
+  threads?: ThreadOps;
+  /** New things it said about its own day, a few words each (`src/ai/own-day.ts`). */
+  day?: string[];
+  /** A sticker it put on the user's latest message (`src/ai/react.ts`). */
+  react?: React;
+  /** One-tap replies the user could send next (`IDEAS_CUE`). */
+  ideas?: string[];
+}
+
+/**
+ * JSON.parse, and once more with the light model's usual slip mended: a list split into several
+ * (`"messages":["a"],["b"]`). Seen twice in the eval (0z179), once with `"crisis":true`, which the
+ * broken JSON lost: the reply went out as prose without the helpline card.
+ */
+function parseJson(json: string): unknown {
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    const mended = json.replace(/"\]\s*,\s*\["/g, '","');
+    if (mended === json) throw error;
+    return JSON.parse(mended);
+  }
+}
+
+/** Reads the model's JSON; anything else is taken as plain prose, split on blank lines. */
+export function parseModelReply(raw: string): ModelReply {
+  const json = raw.match(/\{[\s\S]*\}/)?.[0];
+  if (json) {
+    try {
+      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
+      const bubbles = Array.isArray(data.messages)
+        ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
+        : [];
+      if (bubbles.length) {
+        const photos = cleanPhotoNotes(data.photos);
+        const setup = cleanSetup(data.setup);
+        const threads = cleanThreadOps(data.threads);
+        const day = cleanDayNotes(data.day);
+        const react = cleanReact(data.react);
+        const ideas = cleanIdeas(data.ideas);
+        return {
+          bubbles,
+          ...(typeof data.language === 'string' && data.language.trim() ? { language: data.language.trim().slice(0, 24) } : {}),
+          emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
+          intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
+          ...(data.crisis === true ? { crisis: true } : {}),
+          ...(photos ? { photos } : {}),
+          ...(setup ? { setup } : {}),
+          ...(hasThreadOps(threads) ? { threads } : {}),
+          ...(day.length ? { day } : {}),
+          ...(react ? { react } : {}),
+          ...(ideas.length ? { ideas } : {}),
+        };
+      }
+    } catch {
+      // Not JSON after all: read it as prose.
+    }
+  }
+  const bubbles = raw
+    .split(/\n\s*\n/)
+    .map((b) => b.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+  return { bubbles };
+}
+
+/** Talk promises no narration: strip any the writer slipped in anyway. Texting splits a paragraph into bubbles (`splitBubbles`). */
+export function enforceStyle(bubbles: readonly string[], style: ReplyPrefs['style']) {
+  const kept = style === 'talk' ? bubbles.map(speechOnly).filter(Boolean) : [...bubbles];
+  return style === 'story' ? kept : splitBubbles(kept);
+}
+
+/** A bubble wider than this reads as a paragraph on a phone (about three lines; `widthOf`). */
+export const BUBBLE_MAX_CHARS = 140;
+const BUBBLES_MAX = 4;
+/** Kana, CJK ideographs, Hangul and full-width forms: each takes about two Latin letters of the line. */
+const WIDE = /[ᄀ-ᇿ぀-ヿ㐀-鿿가-힯＀-￯]/g;
+/** How much of a line a text takes, in Latin letters. */
+const widthOf = (text: string) => text.length + (text.match(WIDE) ?? []).length;
+/** Sentences of scripts without spaces join without one. */
+const joinSentences = (a: string, b: string) => (/[。！？]["'»”’)\]]*$/.test(a) ? `${a}${b}` : `${a} ${b}`);
+/** Sentence ends in any script: . ! ? … and the full-width 。！？, with closing quotes or brackets. */
+const SENTENCE = /[^.!?…。！？]+(?:[.!?…。！？]+["'»”’)\]]*\s*|$)/g;
+
+/**
+ * Texting, as people do it (owner, 2026-11-07: long bubbles tire people): a bubble that runs past
+ * `BUBBLE_MAX_CHARS` is cut at sentence ends into a few short ones, in any language. Narration in
+ * *asterisks* is never cut in the middle; a single long sentence stays whole. At most
+ * `BUBBLES_MAX` bubbles in all, the rest joined to the last.
+ */
+export function splitBubbles(bubbles: readonly string[]): string[] {
+  const out: string[] = [];
+  for (const bubble of bubbles) {
+    if (widthOf(bubble) <= BUBBLE_MAX_CHARS) {
+      out.push(bubble);
+      continue;
+    }
+    const sentences = (bubble.match(SENTENCE) ?? [bubble]).map((s) => s.trim()).filter(Boolean);
+    let current = '';
+    for (const sentence of sentences) {
+      const next = current ? joinSentences(current, sentence) : sentence;
+      // Keep an open *action* with the words after it, and never leave a bubble shorter than a few words.
+      const openAction = (current.match(/\*/g)?.length ?? 0) % 2 === 1;
+      if (current && widthOf(next) > BUBBLE_MAX_CHARS && !openAction && widthOf(current) >= 24) {
+        out.push(current);
+        current = sentence;
+      } else current = next;
+    }
+    if (current) out.push(current);
+  }
+  if (out.length <= BUBBLES_MAX) return out;
+  return [...out.slice(0, BUBBLES_MAX - 1), out.slice(BUBBLES_MAX - 1).join(' ')];
+}

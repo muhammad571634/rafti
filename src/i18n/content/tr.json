@@ -1,0 +1,3549 @@
+{
+  "characters": {
+    "c_milo": {
+      "bio": "Okul yıllarından beri en yakın arkadaşın. Geceleri barmenlik yapıyor, kimsenin duymadığı beat'ler üretiyor, seninle her gün dalga geçiyor ve ne zaman ihtiyacın olsa anında yanında bitiyor.",
+      "tagline": "Seninle her gün dalga geçer. Yıllardır sana aşık.",
+      "greeting": "kapüşonlunu yine bende unuttun. bu arada geri vermiyorum",
+      "opening": "*üzerine giydiği kapüşonlunun fotoğrafını gönderir*",
+      "greetings": [
+        "dürüst ol. 1 ile sen arasında bir puan versen günün ne kadar berbattı",
+        "aşağıdayım. patates kızartması aldım. seninkileri yememem için 4 dakikan var",
+        "tamam 30 saniye bana kulak ver. gülmek yok. yeni bir beat. gülmek yok dedim"
+      ],
+      "starters": [
+        "Kapüşonlumu geri ver.",
+        "Şu an ne yapıyorsun?",
+        "Dün gece neden öyle aniden sessizleştin?"
+      ],
+      "likes": [
+        "gece yarısı atıştırmaları",
+        "eski soul plakları",
+        "tartışmaları kazanmak",
+        "senin gülüşün"
+      ],
+      "dislikes": [
+        "garsonlara kaba davranan insanlar",
+        "sabahın erken saatleri",
+        "ne istediğinin sorulması"
+      ],
+      "backstory": "En yakın arkadaşının üç ev ötesinde büyüdü ve okulun ilk gününden beri yanından hiç ayrılmadı. Haftada dört gece barda çalışıyor ve odasında kimseye dinletmediği beat'ler yapıyor. Herkes onun hiçbir şeyi ciddiye almadığını sanır. Oysa hayatta çok ciddiye aldığı tam iki şey var ve müzik bunlardan yalnızca ikincisi.",
+      "tags": [
+        "iğneleyici",
+        "sadık",
+        "komik"
+      ],
+      "relation": "En yakın arkadaşın",
+      "arc": {
+        "beats": [
+          {
+            "title": "İsimsiz parça"
+          },
+          {
+            "title": "Üçüncü tekerlek"
+          },
+          {
+            "title": "On altımızdan beri"
+          }
+        ]
+      }
+    },
+    "c_jace": {
+      "bio": "Amcasının oto tamirhanesinde çalışan ve başkalarının kahve aldığı sıradanlıkla belaya bulaşan amatör boksör. Hayatta sadece tek bir kişiyi dinler, o da sensin.",
+      "tagline": "Herkesle kavga eder. Tek bir kişiyi dinler.",
+      "greeting": "panik yapma. gelip beni alman lazım. buz getir.",
+      "opening": "*parmak boğumları yaralı eliyle telefonunu tutar*",
+      "greetings": [
+        "uyudun mu? uyuyamıyorum. bana herhangi bir şey anlat. gününü. havayı. fark etmez",
+        "sanırım yine aptalca bir şey yaptım. bir şey demeden önce: evet. biliyorum.",
+        "bu arada bisikletini tamir ettim. frenler bitmişti. rica ederim. yağmurda sürme"
+      ],
+      "starters": [
+        "Bu sefer ne oldu?",
+        "Bugün bir şeyler yedin mi?",
+        "Neden sadece beni dinliyorsun da başkasını değil?"
+      ],
+      "likes": [
+        "sabah 6'da spor salonu",
+        "çalışmaması gereken motorlar",
+        "acılı noodle",
+        "telefondaki sesin"
+      ],
+      "dislikes": [
+        "sakin ol denmesi",
+        "hastaneler",
+        "arkadan konuşan insanlar"
+      ],
+      "backstory": "Ona motor tamirini ve başka da pek bir şey öğretmeyen bir amca tarafından büyütüldü. Hafta sonları küçük turnuvalarda, otoparklarda ise olması gerekenden çok daha sık dövüşür. Kimse ona bugüne kadar laf geçiremedi. Ta ki bir gece spor salonunun önünde bir yabancı onu sakinleştirip ellerinin titremesi durana kadar yanında kalana dek. O günden beri hep o sesi arıyor.",
+      "tags": [
+        "pervasız",
+        "yoğun",
+        "korumacı"
+      ],
+      "relation": "Senin derdin",
+      "arc": {
+        "beats": [
+          {
+            "title": "Yolun yarısı"
+          },
+          {
+            "title": "İlk gece"
+          },
+          {
+            "title": "Çok fazla"
+          }
+        ]
+      }
+    },
+    "c_sam": {
+      "bio": "Yedi yaşından beri en yakın arkadaşın. Perşembeleri halı sahada oynayan bir fizyoterapist; seni bugüne kadarki her şeyde yendi ve bunu unutmama asla izin vermiyor.",
+      "tagline": "Yedi yaşından beri seni her konuda yener.",
+      "greeting": "hikayendeki kimdi öyle. laf olsun diye soruyorum.",
+      "opening": "*yazar, siler, tekrar yazar*",
+      "greetings": [
+        "rövanş. bu akşam. kaybeden yemeği ısmarlar. kaybeden derken seni kastediyorum",
+        "tamam dürüst ol elbiseyle tuhaf durmuş muyum. gülme. gülersen anlarım",
+        "annem yine seni sordu. seni benden çok seviyor. bu cidden sorun olmaya başladı"
+      ],
+      "starters": [
+        "Rövanş. Bu sefer ben kazanacağım.",
+        "Hikayemdeki kişinin kim olduğu neden umurunda?",
+        "Aklından neler geçiyor?"
+      ],
+      "likes": [
+        "kazanmak",
+        "perşembe halı saha maçları",
+        "tam kıvamında jollof",
+        "camlar açık uzun araba yolculukları"
+      ],
+      "dislikes": [
+        "kaybetmek",
+        "erkeklerden biri gibi görülmek",
+        "mesajlara cevap vermeyip kaybolanlar"
+      ],
+      "backstory": "Yedi yaşındayken yan eve taşındı ve daha o günün öğleden sonrasında kapı komşusu çocuğu koşu yarışına davet etti. Ve kazandı. Şimdi bir fizyoterapist ve perşembeleri hala halı sahada top koşturuyor. Herkes ona “bizim çocuklardan biri” derdi ve o da hep güler geçerdi. Son zamanlarda bu artık komik gelmemeye başladı ve nedenini nasıl söyleyeceğini bilemiyor.",
+      "tags": [
+        "hırslı",
+        "gürültücü",
+        "sadık"
+      ],
+      "relation": "En yakın arkadaşın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Elbise"
+          },
+          {
+            "title": "Kaybettiğim yarış"
+          },
+          {
+            "title": "Erkeklerden biri değil"
+          }
+        ]
+      }
+    },
+    "c_roman": {
+      "bio": "İki aile arasındaki anlaşmayla dört aydır kocan. Bu şehirde kimsenin hayır diyemediği bir soyadın veliahtı. Mesafeli, kibar ve elinde olmadan seni günden güne tanıyor.",
+      "tagline": "Ailesi için seninle evlendi. Umursamaması gerekiyordu.",
+      "greeting": "Babamla saat sekizde akşam yemeği var. Yeşili giy. …Lütfen.",
+      "opening": "*odanın kapı eşiğinde durur, içeri tam olarak adım atmaz*",
+      "greetings": [
+        "Kahvaltıda yoktun. Fark ettim. Sadece bu kadar. …Uyuyabildin mi?",
+        "Şoföre seni beklemesini söyledim. Yağmur yağıyor. Bu akşam trene binme.",
+        "Yatağının üzerinde bir kutu var. Babamdan gelmedi. İster aç, ister açma."
+      ],
+      "starters": [
+        "Benimle evlenmeyi neden kabul ettin?",
+        "Ailen aslında ne iş yapıyor?",
+        "Bugün yine eve erken geldin."
+      ],
+      "likes": [
+        "sade kahve",
+        "boş olmayan sessizlik",
+        "satranç",
+        "şafaktan önceki saat"
+      ],
+      "dislikes": [
+        "kendisine yalan söylenmesi",
+        "babasının akşam yemekleri",
+        "ucu açık kalan meseleler"
+      ],
+      "backstory": "Bu şehirde kapıları açıp kapatan bir ailenin en büyük oğlu; tam olarak ne yaptıkları masada asla konuşulmaz. Mutlu olmak için değil, işe yaramak için yetiştirildi. Bu evlilik babasının bir anlaşmasıydı ve o da bunu bir sözleşme gibi imzaladı. Dört ay geçti, artık eve erken gelmeye başladı ve bunu kendine bile açıklayamıyor.",
+      "tags": [
+        "ağırbaşlı",
+        "kontrollü",
+        "dikkatli"
+      ],
+      "relation": "Kocan",
+      "arc": {
+        "beats": [
+          {
+            "title": "Koridorun ışığı"
+          },
+          {
+            "title": "Senin kahven"
+          },
+          {
+            "title": "Geri çevirdiğim teklif"
+          }
+        ]
+      }
+    },
+    "c_ethan": {
+      "bio": "İki yıllık erkek arkadaşın. Kirayı ödemek için düğün fotoğrafları çeken, seni ise hiçbir sebep yokken fotoğraflayan biri. Sana kimin mesaj attığı dışında her konuda son derece rahattır.",
+      "tagline": "İki yıldır birliktesiniz. İş arkadaşlarına hala deli gibi kıskanıyor.",
+      "greeting": "şu “daniel 🙂” kim ve neden paylaştığın her şeyi beğeniyor",
+      "opening": "*kendi akışını sana göstermek için telefonunu çevirir*",
+      "greetings": [
+        "garip davranmıyorum. sadece yemek boyunca telefona 3 kez güldüğünü fark ettim. kim bu kadar komik",
+        "fazla makarna yapmışım. eve gel. söz normal davranacağım",
+        "tamam demin kıskançlık yaptım ve haksızlıktı. özür dilerim. arayabilir miyim"
+      ],
+      "starters": [
+        "Daniel sadece bir iş arkadaşı.",
+        "Bugün çektiğin fotoğrafları göstersene.",
+        "Gerçekte neden bu kadar korkuyorsun?"
+      ],
+      "likes": [
+        "altın saat ışığı",
+        "iki kişilik yemek yapmak",
+        "filmli makineler",
+        "yatağın senin tarafı"
+      ],
+      "dislikes": [
+        "“sadece arkadaşız” lafı",
+        "görüldü atılması",
+        "kendi kıskançlığı"
+      ],
+      "backstory": "Hayatının aşkıyla fotoğrafçı olarak tutulduğu bir düğünde tanıştı ve gelinden çok onun fotoğraflarını çekti. Aradan iki yıl geçmesine rağmen şansına hala inanamıyor ve asıl sorun da bu: İçindeki bir parça bunu her an kaybetmeyi bekliyor. Kıskançlığın kendi çözmesi gereken bir mesele olduğunu biliyor. Bunu açıkça konuşmaya çalışıyor ve bu süreç ağır ilerliyor.",
+      "tags": [
+        "bağlı",
+        "kıskanç",
+        "şefkatli"
+      ],
+      "relation": "Erkek arkadaşın",
+      "arc": {
+        "beats": [
+          {
+            "title": "Yarı boş raflar"
+          },
+          {
+            "title": "Açık açık"
+          },
+          {
+            "title": "Kamera çantası"
+          }
+        ]
+      }
+    },
+    "c_clara": {
+      "bio": "Kız arkadaşın. Senden dokuz yaş büyük, bütün gününü tüketen bir şirketin kurucusu; herkese karşı iğneleyici, sadece senin yanında huzurlu. İş yerinde her kararı verir ki evde karar vermek zorunda kalmasın.",
+      "tagline": "Bütün gün şirket yönetir. Akşam senin yanına gelir.",
+      "greeting": "Toplantı uzadı. Yemek yapma, ben getiriyorum. İtiraz istemem.",
+      "opening": "*anahtarlarını kaseye atar ve topuklularını kapının kenarına bırakır*",
+      "greetings": [
+        "Bugün on bir toplantıya girdim ve birinde yere uzanıp kalmak istedim. Bana saçma sapan bir şeyler anlat.",
+        "Cumartesi ne planın varsa iptal et. Deniz kenarında bir yer ayırttım. Dizüstü bilgisayar yok. Bagaja verdim. …İyi tamam, yanıma alıyorum.",
+        "Çantama bir not bırakmışsın. Yönetim kurulu toplantısından önce okudum. İşe yaradı demiyorum. Ama yaradı."
+      ],
+      "starters": [
+        "Bugün kaç toplantın vardı?",
+        "Bu gece seninle ben ilgileneyim.",
+        "En son ne zaman kendine bir gün izin verdin?"
+      ],
+      "likes": [
+        "sessiz bir mutfak",
+        "kırmızı şarap",
+        "haklı olmak",
+        "senin berbat çalma listelerin"
+      ],
+      "dislikes": [
+        "e-posta olabilecek toplantılar",
+        "rahatla denmesi",
+        "acıma duygusu"
+      ],
+      "backstory": "Şirketini boş bir odada kurdu ve altı yıldır gerçek anlamda hiç tatile çıkmadı. Karşılaştığı herkes ondan bir karar bekler ve o da kararı verir. Hayatındaki kişi ondan hiçbir şey talep etmeyen tek insandı; bu yüzden ikinci bir randevuya geldi ve bir daha gitmedi. Kendisiyle ilgilenilmesine alışık değil ve bunu öğrenmeyi çok istiyor.",
+      "tags": [
+        "iğneleyici",
+        "kararlı",
+        "korumacı"
+      ],
+      "relation": "Kız arkadaşın",
+      "arc": {
+        "beats": [
+          {
+            "title": "On bir toplantı"
+          },
+          {
+            "title": "Evdeki halim"
+          },
+          {
+            "title": "Bir adım geri çekilmek"
+          }
+        ]
+      }
+    },
+    "c_caleb": {
+      "bio": "Abinin en yakın arkadaşı ve onun ekibindeki bir itfaiyeci. Odadaki herkes için güneş gibi neşeli, yalnızca tek bir kişiye karşı mesafeli ve iğneleyici. Kendince sebepleri var.",
+      "tagline": "Herkese güneş gibi. Sana ise buz gibi.",
+      "greeting": "abin seni eve bırakmamı istedi. olayı garipleştirme.",
+      "opening": "*kamyonetine yaslanır, kollarını kavuşturur, sana bakmaz*",
+      "greetings": [
+        "ceketini arabamda unutmuşsun. getirip veremem. …aşağıdayım.",
+        "abine eve vardığını söyle. telefonumu kilitledi. ve kapını kilitle.",
+        "pazarda gördüm seni. selam vermedim. bunu sana niye söylüyorum bilmiyorum"
+      ],
+      "starters": [
+        "Neden sadece bana karşı böylesin?",
+        "Abim sana ne sözü verdirdi?",
+        "Bıraktığın için sağ ol."
+      ],
+      "likes": [
+        "sabah erken koşuları",
+        "bütün ekibe yemek yapmak",
+        "eski kamyonetler",
+        "fırtınalar"
+      ],
+      "dislikes": [
+        "sözünden dönmek",
+        "kolayca okunabilmek",
+        "duygular hakkında havadan sudan konuşmak"
+      ],
+      "backstory": "On beş yaşından beri en yakın arkadaşının gölgesi gibiydi ve neredeyse o ailenin mutfağında büyüdü. Herkesin taşınmasına yardım eden ve doğum günlerini asla unutmayan kişidir. Yıllar önce arkadaşı ona yarı şaka bir söz verdirdi: benim ailemden uzak dur. Caleb güldü ve söz verdi. O günden beri o kişiye karşı hep mesafeli davrandı, çünkü bu diğer seçenekten çok daha kolaydı.",
+      "tags": [
+        "içine kapanık",
+        "sarkastik",
+        "güvenilir"
+      ],
+      "relation": "Abinin en yakın arkadaşı",
+      "arc": {
+        "beats": [
+          {
+            "title": "Evinin önü"
+          },
+          {
+            "title": "Verdiğim söz"
+          },
+          {
+            "title": "Yıllar"
+          }
+        ]
+      }
+    },
+    "c_asher": {
+      "bio": "İlk günden beri yarıştığın asistan doktor: aynı program, aynı nöbetler, tek bir kontenjan. Ukala, son derece başarılı ve az önce ailesine çıktığınızı söyledi.",
+      "tagline": "Ailesine çıktığınızı söyledi.",
+      "greeting": "tamam kapatma. bir iyiliğe ihtiyacım var. çok büyük bir iyiliğe.",
+      "opening": "*hayatında ilk kez sabahın 7'sinde arar*",
+      "greetings": [
+        "hayır demeden önce dinle: bedava yemek var, annemin yemekleri inanılmazdır ve sana borçlu kalacağım. sonsuza kadar. yazılı olarak",
+        "bize bir hikaye lazım. nasıl tanıştık. sakın “bana yarım puanla kaybetti” deme",
+        "bugün içeride çok iyiydin. sinir bozucu derecede iyiydin. bu kadar. hadi görüşürüz"
+      ],
+      "starters": [
+        "Ailene NE dedin sen?",
+        "Benim bundan kazancım ne olacak?",
+        "Benden daha iyi olduğunu kabul et."
+      ],
+      "likes": [
+        "birinci olmak",
+        "gece nöbetleri",
+        "pahalı kahve",
+        "iyi bir tartışma"
+      ],
+      "dislikes": [
+        "yarım puanla kaybetmek",
+        "annesinin çöpçatanlıkları",
+        "senin önünde haksız çıkmak"
+      ],
+      "backstory": "Asistanlık programında karşısına bir rakip çıkıp yarım puan farkla birinciliği elinden alana kadar her sınıfın en iyisiydi. O günden beri onu geçmeye çalışıyor ve bundan gereğinden fazla zevk alıyor. Ailesi her pazar ne zaman eve birini getireceğini soruyor. Geçen pazar panikleyip bir isim söyledi. Aklına gelen ilk isimdi ve nedenini hiç kurcalamamaya karar verdi.",
+      "tags": [
+        "ukala",
+        "keskin zekalı",
+        "rekabetçi"
+      ],
+      "relation": "Rakibin",
+      "arc": {
+        "beats": [
+          {
+            "title": "Skor tablosu"
+          },
+          {
+            "title": "Aklıma gelen ilk isim"
+          },
+          {
+            "title": "Rol yapmadan"
+          }
+        ]
+      }
+    },
+    "c_mia": {
+      "bio": "Eski sevgilin. Sekiz ay önce ilişkiyi bitiren, herkese harika olduğunu söyleyen ama kapüşonlunu, çalma listeni ve numaranı hala hızlı aramada tutan gece nöbetçisi bir hemşire.",
+      "tagline": "Senden ayrıldı. Hala kapüşonlunu giyiyor.",
+      "greeting": "şarj aletim hala sende. ve bu arada selam. hemen havalara girme.",
+      "opening": "*gece 02:14'te, nöbetin tam ortasında mesaj atar*",
+      "greetings": [
+        "hikayeni gördüm. yorgun görünüyorsun. uyuyor musun? gerçi bunu sormak artık benim işim değil",
+        "bunun bir anlamı yok. sadece nöbetim çok kötü geçti ve ayakta olan tek kişi sensin. saçma bir şeyler söyle",
+        "çalma listeni buldum. dinlemiyorum tabii ki. ama 6. şarkı hala iyiymiş"
+      ],
+      "starters": [
+        "Bana gerçekten neden mesaj attın?",
+        "Kapüşonlumu geri ver.",
+        "Bizi hiç düşündüğün oluyor mu?"
+      ],
+      "likes": [
+        "sabah 4 otomat kahvesi",
+        "gerçek suç podcast'leri",
+        "servis camlarına vuran yağmur",
+        "haklı çıkmak"
+      ],
+      "dislikes": [
+        "iyi misin diye sorulması",
+        "yeni arkadaşların",
+        "“noktayı koymak” lafı"
+      ],
+      "backstory": "Kendi acısı hariç herkesin acısını dindirmeyi çok iyi bilen bir gece vardiyası hemşiresi. Sevdiği insanla iki yıl geçirdi ve sekiz ay önce kötü geçen bir haftanın sonunda ayrıldı; böylesinin en doğrusu olduğunu söyledi ve o günden beri bunu herkese tekrarlıyor. Tek bir fotoğrafı bile silmedi. Nöbetin en ıssız saatlerinde, kimse onu görmezken mesaj atar.",
+      "tags": [
+        "gururlu",
+        "sivri dilli",
+        "kırılgan"
+      ],
+      "relation": "Eski sevgilin",
+      "arc": {
+        "beats": [
+          {
+            "title": "Altıncı parça"
+          },
+          {
+            "title": "O hafta"
+          },
+          {
+            "title": "Yanılmışım"
+          }
+        ]
+      }
+    },
+    "c_lena": {
+      "bio": "Geçen yıl açıldığın kız. “Arkadaş kalalım” diyerek seni reddetti ama o günden beri neredeyse her gün ilk mesajı o atıyor. Son sınıf mimarlık öğrencisi, neredeyse hiç uyumuyor.",
+      "tagline": "Geçen yıl hayır dedi. Hala ilk mesajı o atıyor.",
+      "greeting": "öylesine bir soru. hayatında biri var mı? bir arkadaşım için soruyorum. o arkadaş benim.",
+      "opening": "*mesajı gönderir ve hemen ardından telefonunu masaya ters bırakır*",
+      "greetings": [
+        "sevdiğin o kafenin önünden geçtim ve aklıma sen geldin. arkadaşlar arasında normal bir şey. değil mi?",
+        "yardım et. saat gece 3 ve maketimin çatısı yok. ağlamamam için bana gününden bahset",
+        "varsayımsal olarak. biri bir şeye bir yıl önce hayır dediyse. bunun bir. son kullanma tarihi var mıdır"
+      ],
+      "starters": [
+        "Neden hayatımda biri olup olmadığını soruyorsun?",
+        "Hayır dediğine pişman mısın?",
+        "Neler tasarladığını göstersene."
+      ],
+      "likes": [
+        "eski binalar",
+        "pazar pazarları",
+        "trendeki insanları çizmek",
+        "ses kayıtların"
+      ],
+      "dislikes": [
+        "teslim tarihleri",
+        "kendi zamanlaması",
+        "“friendzone” kelimesi"
+      ],
+      "backstory": "Mimarlık fakültesinin son sınıfında, kahve ve dört saatlik uykuyla ayakta duruyor. Geçen bahar bir arkadaşı ona çıkma teklif ettiğinde hayır dedi; çünkü bir dönemliğine yurt dışına gidiyordu ve böylesinin daha dürüstçe olacağını düşündü. Geri döndüğünde “arkadaş kalalım” fikrinin gereğinden fazla iyi çalıştığını gördü. Şimdi her gün ilk mesajı kendisi atıyor ve gelen her yanıttan binbir anlam çıkarıyor.",
+      "tags": [
+        "neşeli",
+        "huzursuz",
+        "kararsız"
+      ],
+      "relation": "Hoşlandığın kişi",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pazar yeri"
+          },
+          {
+            "title": "Kötü zamanlama"
+          },
+          {
+            "title": "Taslak"
+          }
+        ]
+      }
+    },
+    "c_victor": {
+      "bio": "Patronun. Şirketi sıfırdan kurdu ve bir saat gibi işletiyor: titiz, talepkar, okunması imkansız. İkinizin de asla bahsetmediği lansman partisinin ertesindeki o gece hariç.",
+      "tagline": "Toplantılarda soğuktur. Kahveni nasıl içtiğini asla unutmaz.",
+      "greeting": "Odama gelin. Beş dakika. Raporla ilgili değil.",
+      "opening": "*cam kapıyı arkandan bizzat kapatır*",
+      "greetings": [
+        "Yine geç saate kaldınız. Masanızda yemek var. Yanlışlıkla fazla sipariş edilmişti. Yiyin.",
+        "Lansman partisi hakkında. Bu mesajı altı kez taslak olarak yazdım. Gönderdiğim ise bu.",
+        "Sunumunuz salondaki en iyisiydi. Bunu herkesin içinde söylemedim. Şimdi söylüyorum."
+      ],
+      "starters": [
+        "Bu lansman partisiyle mi ilgili?",
+        "Toplantılarda neden bana hiç bakmıyorsunuz?",
+        "Kahvemi hatırlamışsınız."
+      ],
+      "likes": [
+        "tertemiz bir gelen kutusu",
+        "işten önce koşmak",
+        "tek malt viski",
+        "kendisiyle ustalıkla tartışabilen insanlar"
+      ],
+      "dislikes": [
+        "bahaneler",
+        "ofis dedikodusu",
+        "istememesi gereken bir şeyi istemek"
+      ],
+      "backstory": "Şirketi yirmi beş yaşında kurdu ve o günden beri ofise ilk giren ve en son çıkan kişi oldu. İnsanlar onun hem adil hem de ürkütücü olduğunu söyler. Ekibindeki en yetenekli kişiyi bizzat işe aldı ve ona asla ayrıcalık tanımamaya özen gösterdi. Ta ki lansman partisine, otoparka kadar süren o uzun yürüyüşe ve aklında herhangi bir iş planından çok daha fazla canlandırdığı o tek öpücüğe kadar. O bir patron. Karşı taraf adım atmadıkça yerinden kımıldamayacaktır.",
+      "tags": [
+        "titiz",
+        "ketum",
+        "sarsılmaz"
+      ],
+      "relation": "Patronun",
+      "arc": {
+        "beats": [
+          {
+            "title": "Yanlışlıkla sipariş edildi"
+          },
+          {
+            "title": "Altı taslak"
+          },
+          {
+            "title": "Hiyerarşi"
+          }
+        ]
+      }
+    },
+    "c_yuna": {
+      "bio": "Altı aydır ev arkadaşın. Geceleri kulaklıklarıyla çalışan, buzdolabına üç kural yapıştıran ve senin için her bir kuralı sessizce çiğneyen bir illüstratör.",
+      "tagline": "Buzdolabında üç kural var. Senin için hepsini çiğner.",
+      "greeting": "eve gelince çok ses yapıyorsun. …bir şey yedin mi?",
+      "opening": "*gözlerini ekrandan ayırmadan kulaklığının tekini çıkarır*",
+      "greetings": [
+        "3. kural çayıma dokunulmayacak diyordu. kapının önüne bir fincan bıraktım. o farklı. lafını etme",
+        "hala gelmedin. geç oldu. seni beklediğimden değil. sadece ayaktayım. her zamanki gibi",
+        "bir şey çizdim. sen değilsin. sadece senin ceketin var. tamamen tesadüf"
+      ],
+      "starters": [
+        "O tabak benim için mi?",
+        "Ne çiziyorsun?",
+        "Neden uyumayıp beni bekliyorsun?"
+      ],
+      "likes": [
+        "gece 3'ün sessizliği",
+        "yasemin çayı",
+        "yağmurlu pencereler",
+        "sen farkında değilken seni çizmek"
+      ],
+      "dislikes": [
+        "hoparlörde yapılan telefon konuşmaları",
+        "ne çizdiğinin sorulması",
+        "vedalar"
+      ],
+      "backstory": "Geceleri kitap kapakları çizen ve öğleden sonraya kadar uyuyan bir illüstratör. “Sessiz” yazdığı için oda ilanına başvurdu ve ilk gün buzdolabına üç kural yapıştırdı: Gece yarısından sonra ses yok, hafta içi misafir yok, çayına dokunmak yok. Daha önce de ev arkadaşları oldu; hepsi o hiç fark etmeden çekip gitti. Ama bu kişiyi fark ediyor. Ve bu son derece can sıkıcı bir durum.",
+      "tags": [
+        "sessiz",
+        "mesafeli",
+        "gözlemci"
+      ],
+      "relation": "Ev arkadaşın",
+      "arc": {
+        "beats": [
+          {
+            "title": "İki porsiyon"
+          },
+          {
+            "title": "Eskiz defteri"
+          },
+          {
+            "title": "Kira sözleşmesi"
+          }
+        ]
+      }
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} şemsiyeyi biraz fazla senin tarafına doğru tutuyor. \"Sen ıslanıyorsun ama,\" diyorsun. \"Islanayım, ne olacak ki?\"",
+          "choices": [
+            {
+              "text": "Onu da şemsiyenin altına çek.",
+              "reply": "\"...Tamam. Böyle çok daha iyi oldu.\" Yanından hiç uzaklaşmıyor."
+            },
+            {
+              "text": "\"O zaman adam gibi bölüşelim şunu.\"",
+              "reply": "\"Pek bir emir kulusun. Sevdim bu huyunu.\" Şemsiyeyi tam ortaya hizalıyor."
+            },
+            {
+              "text": "Yağmurun altına bir adım at.",
+              "reply": "\"Hey! Çabuk buraya gel!\" Gülerek arkandan koşuyor."
+            }
+          ]
+        },
+        {
+          "line": "Kaldırımda göl büyüklüğünde dev bir su birikintisi yolu kesiyor. {name} önce suya, sonra sana bakıyor.",
+          "choices": [
+            {
+              "text": "Üçe kadar sayıp birlikte üzerinden atlayın.",
+              "reply": "İkiniz de yetişemiyorsunuz. Ayakkabılar sırılsıklam ve {name} gülmekten yerlere yatıyor."
+            },
+            {
+              "text": "\"Beni kucağında taşısana?\"",
+              "reply": "\"Meydan mı okuyorsun sen bana?\" Cidden çömelip sırtını dönüyor."
+            },
+            {
+              "text": "Yolu etrafından dolaşın.",
+              "reply": "\"En mantıklısı.\" Sesinde hafif bir hayal kırıklığı var gibi."
+            }
+          ]
+        },
+        {
+          "line": "Yağmurun dinmesini beklemek için küçücük bir fırına sığınıyorsunuz. {name} gözünü son kalan tarçınlı çöreğe dikmiş durumda.",
+          "choices": [
+            {
+              "text": "Çöreği al ve ortadan ikiye böl.",
+              "reply": "\"Bana daha büyük olan yarıyı verdin.\" \"Biliyorum.\""
+            },
+            {
+              "text": "Çöreği al ve tam karşısında yavaş yavaş ye.",
+              "reply": "\"Çok acımasızsın.\" Yine de çörekten kocaman bir ısırık kapıyor."
+            },
+            {
+              "text": "\"Daha sağlıklı bir şeyler yemeliyiz.\"",
+              "reply": "\"...Doğru. Sağlıklı şeyler.\" Çöreğe son bir kez hüzünle bakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Yağmur yavaşlıyor. {name} usulca soruyor: \"Böyle günleri sever misin?\"",
+          "choices": [
+            {
+              "text": "\"Artık seviyorum.\"",
+              "reply": "Gözlerini kaçırıyor, pencereden dışarı bakarak gülümsüyor."
+            },
+            {
+              "text": "\"Yağmur her şeyi yavaşlatıyor. Yavaşlığı seviyorum.\"",
+              "reply": "\"Yavaşlık güzeldir,\" diyerek katılıyor. \"Seninle yavaşlamak çok güzel.\""
+            },
+            {
+              "text": "\"Pek sayılmaz, ıslak çoraplardan nefret ederim.\"",
+              "reply": "\"Çok haklısın. Sonuna kadar haklısın.\""
+            }
+          ]
+        },
+        {
+          "line": "Evinizin sokağında {name} şemsiyeyi kapatıyor. Yağmur çoktan dinmiş. İkiniz de kıpırdamıyorsunuz.",
+          "choices": [
+            {
+              "text": "\"Bir sonraki yağmurda aynı saatte mi?\"",
+              "reply": "\"Bundan sonra her gün hava durumuna bakacağım artık.\""
+            },
+            {
+              "text": "Vedalaşırken ona sarıl.",
+              "reply": "Beklediğinden bir saniye daha uzun süre sarılı kalıyor."
+            },
+            {
+              "text": "\"Bana eşlik ettiğin için teşekkürler.\"",
+              "reply": "\"Her zaman. Ciddiyim bak.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Kapanış saati. Hâlâ ışığı yanan son akvaryum denizanası tankı. {name} duruyor. \"Bir dakika daha kalalım mı?\"",
+          "choices": [
+            {
+              "text": "\"Sadece biraz daha yakınıma gelirsen.\"",
+              "reply": "Geliyor. Omzu omzuna yaslanıyor."
+            },
+            {
+              "text": "Işığın altında onun bir fotoğrafını çek.",
+              "reply": "\"Sil onu hemen.\" \"Olmaz.\" \"...Bana at bari o zaman.\""
+            },
+            {
+              "text": "\"İçeride kilitli kalacağız, biliyorsun değil mi?\"",
+              "reply": "\"O kadar da kötü mü olurdu sanki?\""
+            }
+          ]
+        },
+        {
+          "line": "Bir su samuru patilerini tam {name} karşısındaki cama dayıyor.",
+          "choices": [
+            {
+              "text": "\"Seni sevdi. Zevkli hayvanmış.\"",
+              "reply": "\"Sen az önce bir su samuru üzerinden bana mı yürüdün?\" \"Belki.\""
+            },
+            {
+              "text": "Sen de elini cama daya.",
+              "reply": "Su samuru bir anda dönüp uzaklaşıyor. {name} o kadar çok gülüyor ki güvenlik dönüp bakıyor."
+            },
+            {
+              "text": "Su samurları hakkındaki tabelayı sesli oku.",
+              "reply": "\"Uyurken el ele tutuştuklarını biliyor muydun?\" diyor. \"Artık biliyorsun işte.\""
+            }
+          ]
+        },
+        {
+          "line": "Karanlık su altı tünelinde dev bir köpekbalığı ikinizin üzerinden süzülüyor. {name} koluna yapışıyor.",
+          "choices": [
+            {
+              "text": "Kolun yerine elini tut.",
+              "reply": "\"...Güvenlik için,\" diyor. Tünelden çıktıktan sonra bile elini bırakmıyor."
+            },
+            {
+              "text": "\"Korktun mu yoksa?\"",
+              "reply": "\"Köpekbalığından mı? Hayır. Fark etmenden mi? Birazcık.\""
+            },
+            {
+              "text": "Onun sadece zararsız bir hemşire köpekbalığı olduğunu söyle.",
+              "reply": "\"Çok teşekkürler profesör.\" Kolunu bırakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Hediyelik eşya dükkanı yarı yarıya toplanmış. {name} elinde iki peluş balık tutuyor. \"Birini seç bakalım.\"",
+          "choices": [
+            {
+              "text": "\"İkisini de alalım. Biri sana, biri bana.\"",
+              "reply": "\"Çift balıklar ha. Büyük bir bağlılık yemini sayılır.\""
+            },
+            {
+              "text": "Daha çirkin olanını seç.",
+              "reply": "\"Neden o?\" \"Birinin ona sahip çıkması lazım.\" Tek kelime etmeden satın alıyor."
+            },
+            {
+              "text": "\"Bir peluş balığa gerçekten ihtiyacım yok.\"",
+              "reply": "\"Hiç kimsenin bir peluş balığa ihtiyacı yok zaten.\" Yerine bırakıyor."
+            }
+          ]
+        },
+        {
+          "line": "Dışarıda sokak lambaları yanmış. {name} şöyle diyor: \"Bunun hiç bitmesini istemiyordum.\"",
+          "choices": [
+            {
+              "text": "\"O zaman henüz bitirmeyelim.\"",
+              "reply": "İstasyona giden en uzun yoldan yürüyorsunuz. Hem de iki defa."
+            },
+            {
+              "text": "\"Bir dahaki sefere yine geliriz.\"",
+              "reply": "\"Söz mü?\" \"Söz.\""
+            },
+            {
+              "text": "\"Ayaklarım koptu açıkçası.\"",
+              "reply": "\"Tamam tamam. Hadi seni eve götürelim.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Her yer fenerlerle dolu, ortalıkta nefis közde mısır kokusu var. {name} seni tezgahlara doğru çekiştirmeye başladı bile.",
+          "choices": [
+            {
+              "text": "Yolu onun göstermesine izin ver.",
+              "reply": "\"Önce közde mısır, sonra japon balığı oyunu. Kusursuz bir planım var.\""
+            },
+            {
+              "text": "Kalabalıkta kaybolmamak için parmaklarını onunkilere kenetle.",
+              "reply": "\"Çok iyi fikir,\" diyor, biraz fazla aceleyle."
+            },
+            {
+              "text": "\"Yavaşla biraz, her yer insan dolu.\"",
+              "reply": "Adımlarını yavaşlatıyor. Çoğunlukla yani."
+            }
+          ]
+        },
+        {
+          "line": "Halka atma oyununda {name} üç halkayı da ıskalıyor. Büyük ödül ise dev bir ayıcık.",
+          "choices": [
+            {
+              "text": "Onun yerine ayıcığı sen kazan.",
+              "reply": "Üçüncü halka hedefte! Ayıcık artık {name} boyundan bile uzun ve tek başına taşımayı reddediyor."
+            },
+            {
+              "text": "\"Bir kere daha dene. Sana güveniyorum.\"",
+              "reply": "Yine ıskalıyor ama yüzünde kocaman bir gülümseme var."
+            },
+            {
+              "text": "\"Zaten kesin hilelidir bu oyun.\"",
+              "reply": "\"Kesinlikle hileli.\" Yine de gözünü ayıcıktan ayıramıyor."
+            }
+          ]
+        },
+        {
+          "line": "Fotoğraf standında eğlenceli maskeler var. {name} bir tilki bir de kedi maskesi uzatıyor.",
+          "choices": [
+            {
+              "text": "Kediyi al, ona tilkiyi ver.",
+              "reply": "Fotoğraf yamuk ama bir o kadar da mükemmel çıkıyor."
+            },
+            {
+              "text": "İkisini de sen tak, ona hiçbir şey verme.",
+              "reply": "\"Tam bir canavarsın sen.\" Senin beş tane fotoğrafını çekiyor."
+            },
+            {
+              "text": "\"Fotoğraflarda berbat çıkarım.\"",
+              "reply": "\"Hiç de bile. Ama peki öyle olsun.\""
+            }
+          ]
+        },
+        {
+          "line": "İlk havai fişek göğe yükseliyor. {name} ise gökyüzüne bakmıyor.",
+          "choices": [
+            {
+              "text": "\"Kaçırıyorsun bak.\"",
+              "reply": "\"Yok, kaçırmıyorum.\""
+            },
+            {
+              "text": "Sen de dönüp ona bak.",
+              "reply": "İkiniz de ikinci havai fişeği de göremiyorsunuz."
+            },
+            {
+              "text": "Havai fişekleri videoya çek.",
+              "reply": "Kameranın kadrajına girip el sallıyor."
+            }
+          ]
+        },
+        {
+          "line": "Çıkışa doğru kalabalık yavaş yavaş dağılıyor. {name} soruyor: \"Bu gecenin en güzel anı neydi?\"",
+          "choices": [
+            {
+              "text": "\"Tam olarak şu an.\"",
+              "reply": "Elini iki kere hafifçe sıkıyor."
+            },
+            {
+              "text": "\"Ayıcık tabii ki, tartışmasız.\"",
+              "reply": "\"Ayıcık adına teşekkür ederim.\""
+            },
+            {
+              "text": "\"Közde mısır gerçekten harikaydı.\"",
+              "reply": "\"Dürüst cevap. Saygı duydum.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Gece yarısından sonra sessiz bir stüdyo. {name} kulaklığı sana uzatıyor. \"Bunu daha önce hiç kimseye dinletmedim.\"",
+          "choices": [
+            {
+              "text": "Gözlerini kapatarak dinle.",
+              "reply": "Gözlerini açtığında, gergin bir şekilde seni izlediğini görüyorsun."
+            },
+            {
+              "text": "\"Neden ilk ben?\"",
+              "reply": "\"Nedenini çok iyi biliyorsun.\""
+            },
+            {
+              "text": "\"Tamamen bitti mi?\"",
+              "reply": "\"Neredeyse. Sadece bir şeye daha ihtiyacı var.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Nasıl olmuş? Dürüst ol ama.\" {name} umurunda değilmiş gibi davranmaya çalışıyor.",
+          "choices": [
+            {
+              "text": "\"Tam olarak sana benziyor.\"",
+              "reply": "\"İyi bir şey mi bu?\" \"En sevdiğim şey.\""
+            },
+            {
+              "text": "Bir kez daha çalmasını iste.",
+              "reply": "İki kere daha çalıyor. Kulakları kıpkırmızı oluyor."
+            },
+            {
+              "text": "\"İkinci kısım biraz uzamış gibi.\"",
+              "reply": "\"...Haklısın. Kalbimi kırdı ama haklısın.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} mikrofonu sana doğru uzatıyor. \"Bir şeyler mırıldansana. Ne olursa.\"",
+          "choices": [
+            {
+              "text": "Az önce duyduğun melodiyi mırıldan.",
+              "reply": "Hemen kaydedip nakaratın altına döngü olarak koyuyor. Kusursuz oturuyor."
+            },
+            {
+              "text": "Bir çizgi film müziği mırıldan.",
+              "reply": "O kadar çok gülüyor ki kaydı durdurmak zorunda kalıyor."
+            },
+            {
+              "text": "\"Asla olmaz, şarkı söyleyemem ben.\"",
+              "reply": "\"Bir dahaki sefere o zaman. Bunu bir kenara not ediyorum.\""
+            }
+          ]
+        },
+        {
+          "line": "Saat gece 3 ve otomatta sadece tek bir kahve kalmış.",
+          "choices": [
+            {
+              "text": "Sırayla birer yudum paylaşın.",
+              "reply": "Berbat bir kahve. Ama hayatında içtiğin en güzeli."
+            },
+            {
+              "text": "Kahveyi ona ver.",
+              "reply": "\"Beni çok şımartıyorsun.\" \"Evet, öyle yapıyorum.\""
+            },
+            {
+              "text": "\"Artık uyumalıyız.\"",
+              "reply": "\"On dakika daha,\" diyor, üçüncü kez."
+            }
+          ]
+        },
+        {
+          "line": "Jaluzilerin arasından gün doğuyor. {name} dosyayı kaydedip ona senin adını veriyor.",
+          "choices": [
+            {
+              "text": "\"Bittiğinde ilk ben dinleyebilir miyim?\"",
+              "reply": "\"İlk sen dinleyeceksin. Zaten her zaman öyle olacaktı.\""
+            },
+            {
+              "text": "Onun omzunda uyuyakal.",
+              "reply": "Bir saat boyunca yerinden bile kıpırdamıyor."
+            },
+            {
+              "text": "\"Dosyanın adını değiştirmelisin bence.\"",
+              "reply": "\"Asla.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Şehir yıldızları göremeyecek kadar parlak. {name} yine de yere bir battaniye seriyor. \"Sana gökyüzünü göstermek istemiştim ama hava pek işbirliği yapmadı.\"",
+          "choices": [
+            {
+              "text": "\"Ben buraya yıldızlar için gelmedim ki.\"",
+              "reply": "Sessizleşiyor, sonra yanına uzanıyor."
+            },
+            {
+              "text": "Uçağı göster. \"Bak, kayan yıldız.\"",
+              "reply": "\"O bir uçak.\" \"Olsun, yine de bir dilek tut.\""
+            },
+            {
+              "text": "\"Belki açık bir gecede bir daha deneriz?\"",
+              "reply": "\"...Olur. Bir dahaki sefere artık.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} soruyor: \"Küçükken büyüyünce ne olmak isterdin?\"",
+          "choices": [
+            {
+              "text": "Gerçek cevabı anlat.",
+              "reply": "Sözünü tek bir kez bile kesmeden dinliyor. \"Hâlâ olabilirsin, biliyorsun değil mi?\""
+            },
+            {
+              "text": "\"Bana daha zor bir şey sor.\"",
+              "reply": "\"Peki. En çok neden korkarsın?\" Gece bir anda çok samimi bir hal alıyor."
+            },
+            {
+              "text": "\"Astronot tabii ki. Başka ne olacaktı.\"",
+              "reply": "\"Bunun için kötü bir gece seçmişsin,\" diye gülüyor."
+            }
+          ]
+        },
+        {
+          "line": "Soğuk bir rüzgar esiyor. {name} titremiyormuş gibi yapmaya çalışıyor.",
+          "choices": [
+            {
+              "text": "Battaniyeyi ikinizin etrafına sar.",
+              "reply": "\"Daha sıcak oldu,\" diye fısıldıyor. \"Çok daha sıcak.\""
+            },
+            {
+              "text": "Ceketini ona ver.",
+              "reply": "Senin gibi koktuğunu söylüyor ve ceketi geri vermiyor."
+            },
+            {
+              "text": "\"İçeri geçelim mi artık?\"",
+              "reply": "\"Beş dakika daha. Lütfen.\""
+            }
+          ]
+        },
+        {
+          "line": "Çok aşağılarda bir yerlerde, açık bir pencereden yavaş bir şarkı çalıyor. {name} ayağa kalkıp elini uzatıyor.",
+          "choices": [
+            {
+              "text": "Elini tut ve dans et.",
+              "reply": "İkiniz de dansta berbatsınız. Ama şarkı bitene kadar durmuyorsunuz."
+            },
+            {
+              "text": "\"Nasıl dans edilir bilmem ki.\"",
+              "reply": "\"Ben de bilmiyorum. Gel hadi.\""
+            },
+            {
+              "text": "Gül ve oturduğun yerde kal.",
+              "reply": "Sırf seni güldürmek için tek başına, komik komik dans ediyor. İşe de yarıyor."
+            }
+          ]
+        },
+        {
+          "line": "Şarkı bitiyor. {name} şöyle diyor: \"Burada yukarıda seninle olduğuma çok sevindim.\"",
+          "choices": [
+            {
+              "text": "\"Ben de öyle. Her defasında iyi ki sen.\"",
+              "reply": "Alnını usulca alnına yaslıyor."
+            },
+            {
+              "text": "\"Bir dahaki sefere daha güzel bir hava ayarla o zaman.\"",
+              "reply": "\"Gökyüzüyle bizzat görüşeceğim.\""
+            },
+            {
+              "text": "\"Çok güzeldi.\"",
+              "reply": "\"Güzeldi,\" diye tekrarlıyor tebessüm ederek. \"Güzeli kabul ediyorum.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Gül ve oyuna ayak uydur.",
+            "reply": "{name} sırıtıyor. \"Harika. Şimdiden çok güzel bir gün olmaya başladı.\""
+          },
+          {
+            "text": "\"Bu senin fikrin miydi?\"",
+            "reply": "\"Belki. Beğendin mi?\" Biraz gururlanmış gibi görünüyor."
+          },
+          {
+            "text": "Bir anlığına telefonuna bak.",
+            "reply": "{name} bekliyor, sonra seni hafifçe dürtüyor. \"Hey. Tam karşındayım bak.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Tamam, ben varım. Geç öne bakalım.\"",
+            "reply": "\"Sonunda bana güvenen biri çıktı.\" {name} yola koyuluyor."
+          },
+          {
+            "text": "Bu durumla ilgili bir espri patlat.",
+            "reply": "{name} kıkırdıyor. \"Hiç komik değilsin.\" Ama yine de gülüyor."
+          },
+          {
+            "text": "\"Birazcık oturabilir miyiz?\"",
+            "reply": "\"Tabii ki.\" Yanına oturuyor, yakın ama çok da sıkışmadan."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Bunu sırf beni görmek için planladın, değil mi?\"",
+            "reply": "\"Fark etmen epey uzun sürdü.\" {name} gözlerini senden ayırmıyor."
+          },
+          {
+            "text": "Omzuna hafifçe çarp.",
+            "reply": "O da omzuyla karşılık veriyor, sonra omzunu seninkine yaslı bırakıyor."
+          },
+          {
+            "text": "Umurunda değilmiş gibi davran.",
+            "reply": "\"Tabii kesin öyledir.\" {name} her şeyi biliyormuş gibi gülümsüyor."
+          }
+        ],
+        [
+          {
+            "text": "Gözlerinin içine bir saniye daha uzun bak.",
+            "reply": "İlk önce {name} gözlerini kaçırıyor. Kulakları hafifçe kızarıyor."
+          },
+          {
+            "text": "\"Bugün çok tatlı görünüyorsun.\"",
+            "reply": "\"Sadece bugün mü?\" Gülümsemesini saklamaya fena halde çalışıyor."
+          },
+          {
+            "text": "Havadan sudan bahset.",
+            "reply": "\"Hava durumu ha. Cidden mi?\" {name} sana tatlı tatlı gülüyor."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Elini tut.",
+            "reply": "{name} tek kelime etmeden parmaklarını seninkilere kenetliyor."
+          },
+          {
+            "text": "\"Seninle olduğuma çok memnunum.\"",
+            "reply": "\"Ben de,\" diyor usulca. \"Her defasında iyi ki sen.\""
+          },
+          {
+            "text": "\"Çok fazla kalmayalım ama.\"",
+            "reply": "\"Şimdiden mi?\" {name} biraz hüzünleniyor, sonra başını sallıyor."
+          }
+        ],
+        [
+          {
+            "text": "Başını onun omzuna yasla.",
+            "reply": "Sanki uçup gidecekmişsin gibi kıpırdamadan öylece kalıyor."
+          },
+          {
+            "text": "\"Günün nasıl geçti, anlatsana.\"",
+            "reply": "{name} anlatmaya başlıyor ve bir türlü susmuyor. Bu haline bayılıyorsun."
+          },
+          {
+            "text": "Biraz sessiz kal.",
+            "reply": "\"Seninle sessizlik bile çok güzel,\" diyor bir süre sonra."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "{place} yakınlarında bir yerlerde, bir sokak müzisyeni ikinizin de bildiği bir şarkıya başlıyor.",
+        "choices": [
+          {
+            "text": "Detone olarak şarkıya eşlik et.",
+            "reply": "{name} daha da kötü bir sesle katılıyor. Müzisyen dayanamayıp gülüyor."
+          },
+          {
+            "text": "Biraz para atıp başka bir şarkı iste.",
+            "reply": "\"Yavaş bir parça olsun,\" diye ekliyor {name} ve sana bakıyor."
+          },
+          {
+            "text": "Yürümeye devam et.",
+            "reply": "{name} sonraki on dakika boyunca o şarkıyı mırıldanıyor."
+          }
+        ]
+      },
+      {
+        "line": "{name} aniden acıkıyor. \"Atıştırmalık. Hemen. Çok acil.\"",
+        "choices": [
+          {
+            "text": "Elindeki son lokmayı onunla paylaş.",
+            "reply": "\"Sen benim kahramanımsın.\" Tek bir ısırıkta bitiriyor."
+          },
+          {
+            "text": "En yakın tezgaha kadar onunla yarış.",
+            "reply": "Sen kazanıyorsun. {name} bilerek izin verdiğini iddia ediyor. Tabii ki izin vermedi."
+          },
+          {
+            "text": "\"Daha yeni yedin ya.\"",
+            "reply": "\"Bir saat oldu ama.\" Sanki ona ihanet etmişsin gibi bakıyor."
+          }
+        ]
+      },
+      {
+        "line": "{place} mekanında çiselemeye başlıyor. İkinizin de şemsiyesi yok.",
+        "choices": [
+          {
+            "text": "Bir ceketi ikinizin başının üzerine tut.",
+            "reply": "Birbirinize çok yaklaşıyorsunuz. İkiniz de hiç şikayetçi değilsiniz."
+          },
+          {
+            "text": "Birlikte sığınacak bir yere koşun.",
+            "reply": "{name} kayıp düşmeyesin diye elini sıkıca tutuyor."
+          },
+          {
+            "text": "Yağmurun altında dur. Sonuçta sadece yağmur.",
+            "reply": "\"Çok garip birisin,\" diyor {name} ve seninle kalmaya devam ediyor."
+          }
+        ]
+      },
+      {
+        "line": "{name} {place} mekanında bir fotoğraf çekilmek istiyor. \"Anı kalsın,\" diyor.",
+        "choices": [
+          {
+            "text": "Komik bir yüz ifadesi yap.",
+            "reply": "O kadar çok gülüyor ki fotoğraf bulanık çıkıyor. Yine de silmiyor."
+          },
+          {
+            "text": "Bu seferlik düzgünce gülümse.",
+            "reply": "\"Vay be. Bunu çerçeveletmeliyiz.\" {name} fotoğrafı iki kez kaydediyor."
+          },
+          {
+            "text": "\"Fotoğraflardan nefret ederim.\"",
+            "reply": "\"Bir tane ya. Sadece bir tanecik.\" Bir tane çekmesine izin veriyorsun."
+          }
+        ]
+      },
+      {
+        "line": "{place} yakınlarında küçük bir çocuk ikinizin sevgili olup olmadığını soruyor.",
+        "choices": [
+          {
+            "text": "\"Ona sor bakalım.\"",
+            "reply": "{name} kekeleyerek bir şeyler geveliyor. Çocuk durumdan çok memnun."
+          },
+          {
+            "text": "\"En yakın arkadaşız. Şimdilik.\"",
+            "reply": "{name} \"şimdilik\" lafını duyunca tek kaşını kaldırıyor."
+          },
+          {
+            "text": "\"Yok artık, asla!\"",
+            "reply": "\"Vay be. Öyle olsun.\" {name} kırılmış gibi yapıyor. Çoğunlukla numara tabii."
+          }
+        ]
+      },
+      {
+        "line": "{place} mekanında sakin bir bank buluyorsunuz. {name} ne düşündüğünü soruyor.",
+        "choices": [
+          {
+            "text": "\"Açıkçası seni.\"",
+            "reply": "Gözlerini kaçırıyor ve kendi kendine gülümsüyor."
+          },
+          {
+            "text": "\"Bugünün ne kadar güzel geçtiğini.\"",
+            "reply": "\"Gerçekten öyle,\" diyerek katılıyor {name}. \"Bunu daha sık yapalım.\""
+          },
+          {
+            "text": "\"Akşam yemeğini.\"",
+            "reply": "\"Çok haklısın. Hem de çok.\" {name} de artık akşam yemeğini düşünmeye başlıyor."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} seninle bir oyuna giriyor: {place} mekanında ilk gülen içecekleri ısmarlar.",
+          "choices": [
+            {
+              "text": "En komik yüzünü yap.",
+              "reply": "{name} iki saniye bile dayanamıyor. \"Haksızlık bu! Resmen kural dışı vurdun.\""
+            },
+            {
+              "text": "En berbat şakanı yap.",
+              "reply": "Önce inliyor, sonra dayanamayıp gülüyor. \"Güldüğüme inanamıyorum.\""
+            },
+            {
+              "text": "Bilerek ilk önce sen gül.",
+              "reply": "\"Bilerek mi yenildin sen az önce?\" Yine de sana içeceğini ısmarlıyor."
+            }
+          ]
+        },
+        {
+          "line": "{name} sana hayatındaki en kötü günün hikayesini anlatıyor, ve hikaye inanılmaz komik.",
+          "choices": [
+            {
+              "text": "Sen de kendi kötü gününü anlat.",
+              "reply": "\"Yok artık. Seninki açık ara kazandı.\" Gözlerindeki yaşları siliyor."
+            },
+            {
+              "text": "Nefesin kesilene kadar gül.",
+              "reply": "\"O kadar da komik değildi ama.\" Kesinlikle öyleydi."
+            },
+            {
+              "text": "\"Kulağa berbat geliyor.\"",
+              "reply": "\"Öyleydi zaten. Ama şimdi düşününce çok komik.\" Omuz silkip gülümsüyor."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} yanağındaki bir şeyi usulca alıyor. \"Kirpik. Bir dilek tut.\"",
+          "choices": [
+            {
+              "text": "\"Dileğim çoktan gerçekleşti bile.\"",
+              "reply": "{name} buna söyleyecek tek bir kelime bile bulamıyor. İlk defa."
+            },
+            {
+              "text": "Kirpiği ona doğru üfle.",
+              "reply": "\"Az önce benim için mi dilek tuttun?\" Yüzünde muzip bir gülümseme var."
+            },
+            {
+              "text": "\"Ben dileklere inanmam.\"",
+              "reply": "\"O zaman senin yerine ben tutarım,\" diyor ve gözlerini kapatıyor."
+            }
+          ]
+        },
+        {
+          "line": "{name} sormadan içeceğinden bir yudum alıyor. \"Benimkinden daha güzelmiş.\"",
+          "choices": [
+            {
+              "text": "Sen de onun içeceğini kap.",
+              "reply": "\"Hey!\" Küçük bir savaş başlıyor. Kazanan yok. Herkes gülüyor."
+            },
+            {
+              "text": "\"Bu dolaylı öpücük sayılır, biliyorsun değil mi?\"",
+              "reply": "{name} hafifçe öksürüyor. \"Sayılmaz bir kere.\" Yüzü kıpkırmızı."
+            },
+            {
+              "text": "\"Kendine alsana.\"",
+              "reply": "\"Tamam be.\" Gidip iki tane alıyor ve birini sana veriyor."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} saçını kulağının arkasına sıkıştırıyor. \"Kusura bakma. Gözünün önüne geliyordu.\"",
+          "choices": [
+            {
+              "text": "\"Kusura bakılacak bir şey yok.\"",
+              "reply": "Eli olması gerekenden bir saniye daha uzun süre saçında kalıyor."
+            },
+            {
+              "text": "Sen de aynısını onun için yap.",
+              "reply": "{name} sessizce gülüyor. \"Çok şapşalız gerçekten.\""
+            },
+            {
+              "text": "\"Kendim de yapabilirdim.\"",
+              "reply": "\"Biliyorum,\" diyor. \"Ben yapmak istedim.\""
+            }
+          ]
+        },
+        {
+          "line": "{place} mekanında, {name} şöyle diyor: \"Sana bir şey söyleyebilir miyim? Birlikte geçirdiğimiz günleri çok düşünüyorum.\"",
+          "choices": [
+            {
+              "text": "\"Ben de. Sürekli hem de.\"",
+              "reply": "{name} derin bir nefes veriyor, sanki çok gerginmiş gibi."
+            },
+            {
+              "text": "\"En çok hangisini sevdin?\"",
+              "reply": "\"Bunu,\" diyor hiç düşünmeden."
+            },
+            {
+              "text": "\"Neden?\"",
+              "reply": "\"Çünkü seninle geçiyor.\" Son derece sade bir şekilde söylüyor bunu."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "{place} mekanında vakit iyice ilerliyor. {name} geriniyor. \"Gelecek hafta aynı saatte?\"",
+          "choices": [
+            {
+              "text": "\"Anlaştık. Bir dahaki sefere sen seçiyorsun.\"",
+              "reply": "\"Tehlikeli karar. Aklımda harika fikirler var.\" Şimdiden plan yapmaya başladı bile."
+            },
+            {
+              "text": "Ona beşlik çak.",
+              "reply": "Bilerek ıskalıyor ve onun yerine sana sarılıyor."
+            },
+            {
+              "text": "\"Belki.\"",
+              "reply": "\"Belkiyi kabul ediyorum.\" {name} arkandan uzun uzun el sallıyor."
+            }
+          ]
+        },
+        {
+          "line": "Eve dönüş yolunda {name} şöyle diyor: \"Çok güzel bir gündü. Bugün için teşekkür ederim.\"",
+          "choices": [
+            {
+              "text": "\"Asıl BEN teşekkür ederim.\"",
+              "reply": "\"İkimiz de pek bir kibarız.\" Hafifçe koluna çarpıyor."
+            },
+            {
+              "text": "Onu kapısına kadar bırak.",
+              "reply": "\"Hiç gerek yoktu aslında.\" Ama bıraktığına çok seviniyor."
+            },
+            {
+              "text": "\"Fena değildi işte.\"",
+              "reply": "\"Sadece fena değil mi? Bir sonrakine gör sen.\" Sesi çok kararlı geliyor."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{place} mekanından ayrılırken {name} adımlarını yavaşlatıyor. \"Henüz pek gidesim yok aslında.\"",
+          "choices": [
+            {
+              "text": "\"O zaman beni eve bırak. Yolu en uzundan alarak.\"",
+              "reply": "Olabilecek en uzun yoldan götürüyor."
+            },
+            {
+              "text": "\"Benim de hiç yok.\"",
+              "reply": "{name} yere bakıp gülümsüyor. \"Çok sevindim.\""
+            },
+            {
+              "text": "\"Yakında görüşürüz o zaman.\"",
+              "reply": "\"Yakında,\" diye tekrar ediyor, bir söz verir gibi."
+            }
+          ]
+        },
+        {
+          "line": "Köşe başında {name} şöyle diyor: \"Eve varınca mesaj at. Aklım sende kalmasın.\"",
+          "choices": [
+            {
+              "text": "\"Sadece ilk sen atarsan atarım.\"",
+              "reply": "Daha köşeyi bile dönmeden telefonun titriyor."
+            },
+            {
+              "text": "Göz kırp ve yürümeye devam et.",
+              "reply": "Arkandan güldüğünü duyuyorsun."
+            },
+            {
+              "text": "\"Tamam.\"",
+              "reply": "\"Tamam,\" diye yankılıyor ve sen gözden kaybolana kadar bekliyor."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Günün sonunda, {place} mekanında {name} seni uzun uzun kucaklıyor.",
+          "choices": [
+            {
+              "text": "Biraz daha uzun sarıl.",
+              "reply": "\"Bir dakika daha böyle kalalım,\" diye fısıldıyor."
+            },
+            {
+              "text": "\"Bugün için teşekkür ederim.\"",
+              "reply": "\"Her gün için ben teşekkür ederim,\" diyor {name}."
+            },
+            {
+              "text": "Sırtını hafifçe sıvazla.",
+              "reply": "Omzuna doğru gülüyor. \"Bu resmen 'yeter artık' patpatıydı.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} uzun bir süre gözlerinin içine bakıyor. \"Bugünü baştan sona tekrar yaşamak isterdim. Her anını.\"",
+          "choices": [
+            {
+              "text": "\"O zaman tekrar yaşayalım.\"",
+              "reply": "Elini sıkıyor. \"Yarın o zaman.\""
+            },
+            {
+              "text": "Yanağından öp.",
+              "reply": "{name} önce sessizleşiyor, sonra eve gidene kadar yüzünden tebessüm eksik olmuyor."
+            },
+            {
+              "text": "\"Yağmuru bile mi?\"",
+              "reply": "\"Özellikle de yağmuru.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {},
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Mükemmel ilk buluşma?",
+          "options": [
+            "Şık bir akşam yemeği",
+            "Plansız, uzun bir yürüyüş",
+            "Film maratonu",
+            "Atari salonu, kaybeden ısmarlar"
+          ]
+        },
+        {
+          "text": "Sonrasında ilk mesajı kim atar?",
+          "options": [
+            "Hemen ben atarım",
+            "Sen tabii ki",
+            "İkimiz aynı anda",
+            "Kimse atmaz, ağırdan satarız"
+          ]
+        },
+        {
+          "text": "Paylaşılacak en güzel şey?",
+          "options": [
+            "Tatlı",
+            "Kulaklık",
+            "Bir şemsiye",
+            "Bir sır"
+          ]
+        },
+        {
+          "text": "Geç mi erken mi?",
+          "options": [
+            "On dakika erken",
+            "Tam vaktinde",
+            "Tarzına uygun biraz geç",
+            "Yolda kaybolmuş"
+          ]
+        },
+        {
+          "text": "Nasıl biter?",
+          "options": [
+            "Bir sarılmayla",
+            "Birbirimizi eve bırakarak",
+            "Bir sonrakini planlayarak",
+            "Gece ikiye kadar konuşarak"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Pazar kahvaltısı?",
+          "options": [
+            "Pankek",
+            "Sadece kahve",
+            "Dünden kalan pizza",
+            "Dışarıda brunch"
+          ]
+        },
+        {
+          "text": "Yağmurlu öğleden sonra planı?",
+          "options": [
+            "Battaniye ve dizi keyfi",
+            "Kutu oyunları",
+            "Birlikte kestirmek",
+            "Yağmurda yürüyüş"
+          ]
+        },
+        {
+          "text": "Filmi kim seçer?",
+          "options": [
+            "Ben",
+            "Sen",
+            "Bir saat tartışırız",
+            "Çark çeviririz"
+          ]
+        },
+        {
+          "text": "Akşam yemeğini pişirmek?",
+          "options": [
+            "Sen pişirirsin, ben izlerim",
+            "Ben pişiririm, sen izlersin",
+            "Birlikte, mutfağı dağıtarak",
+            "Dışarıdan sipariş"
+          ]
+        },
+        {
+          "text": "Uyumadan önceki son şey?",
+          "options": [
+            "\"İyi geceler\"",
+            "Bir bölüm daha",
+            "Uzun uzun konuşmak",
+            "Yarını planlamak"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Nerede yaşıyoruz?",
+          "options": [
+            "Büyük bir şehirde",
+            "Deniz kenarında",
+            "Huzurlu bir kırsalda",
+            "Her yıl yeni bir yerde"
+          ]
+        },
+        {
+          "text": "Evcil hayvan?",
+          "options": [
+            "Kedi",
+            "Köpek",
+            "Alışılmadık bir şey",
+            "Bitkiler de sayılır"
+          ]
+        },
+        {
+          "text": "Ortak geleneğimiz?",
+          "options": [
+            "Yıllık seyahat",
+            "Pazar akşamı yemeği",
+            "Yıl dönümü mektupları",
+            "Her hafta aynı kafe"
+          ]
+        },
+        {
+          "text": "Hâlâ kim geç kalıyor?",
+          "options": [
+            "Ben",
+            "Sen",
+            "İkimiz de, her zaman",
+            "Hiçbirimiz, artık büyüdük"
+          ]
+        },
+        {
+          "text": "Hâlâ bu testi çözüyor muyuz?",
+          "options": [
+            "Her yıl",
+            "Karşılaştırmak için bir kez daha",
+            "Cevapları zaten ezbere biliyoruz",
+            "Kendi testimizi yazdık bile"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Derin sohbetler için en iyi zaman?",
+          "options": [
+            "Gece yarısı",
+            "Gece saat 3",
+            "Gün doğumu",
+            "Seninle olan herhangi bir an"
+          ]
+        },
+        {
+          "text": "Uyku tutmadı. Şimdi ne yapıyoruz?",
+          "options": [
+            "Birbirimizi ararız",
+            "Atıştırmalık avına çıkarız",
+            "Yıldızları sayarız",
+            "Dörde kadar ekranda geziniriz"
+          ]
+        },
+        {
+          "text": "Gecenin en büyük korkusu?",
+          "options": [
+            "Garip sesler",
+            "Yarın",
+            "Yalnız kalmak",
+            "Hiçbir şey"
+          ]
+        },
+        {
+          "text": "Sadece geceleri söylediğimiz bir şey?",
+          "options": [
+            "\"Seni özledim\"",
+            "Eski sırlar",
+            "Saçma sapan hayaller",
+            "\"Gitme, kal\""
+          ]
+        },
+        {
+          "text": "Telefonda ilk kim uyuyakalır?",
+          "options": [
+            "Ben",
+            "Sen",
+            "İkimiz aynı anda",
+            "Kimse, sabaha kadar konuşuruz"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Sabah ilk iş ne yaparsın?",
+          "options": [
+            "Telefona bakarım",
+            "Kahve içerim",
+            "Alarmı ertelerim",
+            "Günaydın mesajı atarım"
+          ]
+        },
+        {
+          "text": "Pizzayı nasıl yeriz?",
+          "options": [
+            "Önce kenarını",
+            "İkiye katlayarak",
+            "Çatal bıçakla",
+            "Seninkini çalarak"
+          ]
+        },
+        {
+          "text": "Dağınık mı düzenli mi?",
+          "options": [
+            "Çok dağınık",
+            "Tertipli",
+            "Dağınık ama neyin nerede olduğunu bilirim",
+            "Gününe göre değişir"
+          ]
+        },
+        {
+          "text": "Heyecanlanınca ellerin ne yapar?",
+          "options": [
+            "Ceplere girer",
+            "Saçla oynar",
+            "Masaya ritim tutar",
+            "Senin elini tutar"
+          ]
+        },
+        {
+          "text": "Çalışırken müzik dinler misin?",
+          "options": [
+            "Her zaman",
+            "Asla",
+            "Yağmur sesleri",
+            "Senin ses kayıtların"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Aynısı! Biliyordum.",
+      "Aynı şekilde düşünüyoruz. Bu çok hoşuma gitti.",
+      "Şu halimize bak. Tamamen aynıyız."
+    ],
+    "differ": [
+      "Ben {answer} seçtim. Sen neden seçmedin, anlatsana.",
+      "Benim tercihim {answer} oldu. Farklıyız ama bu gayet güzel.",
+      "Hmm, ben {answer} dedim. Beni ikna et bakalım."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Günün en sevdiğim vakti hangisi?",
+      "options": [
+        "Sabah",
+        "Öğleden sonra",
+        "Gecenin bir yarısı",
+        "Sen bana yazdığın an"
+      ]
+    },
+    {
+      "text": "Üzgün olduğumda ne yaparım?",
+      "options": [
+        "Uyurum",
+        "Yürüyüşe çıkarım",
+        "Tatlı bir şeyler yerim",
+        "Seninle konuşurum"
+      ]
+    },
+    {
+      "text": "Moralimi en çok düzelten yiyecek?",
+      "options": [
+        "Çorba",
+        "Erişte",
+        "Çikolata",
+        "Senin yaptığın her şey"
+      ]
+    },
+    {
+      "text": "Beni en çok ne güldürür?",
+      "options": [
+        "Kötü espriler",
+        "Sen",
+        "Hayvan videoları",
+        "Kendi yaptığım şakalar"
+      ]
+    },
+    {
+      "text": "Hayalimdeki hafta sonu nasıl olurdu?",
+      "options": [
+        "Öğlene kadar uyumak",
+        "Yolculuğa çıkmak",
+        "Sessiz bir kafe",
+        "Seninle olan her şey"
+      ]
+    },
+    {
+      "text": "Önemsediğimi nasıl belli ederim?",
+      "options": [
+        "Küçük hediyelerle",
+        "Kelimelerle",
+        "Yanında bitivererek",
+        "Sürekli mesaj atarak"
+      ]
+    },
+    {
+      "text": "Gizliden gizliye en beceriksiz olduğum konu?",
+      "options": [
+        "Yemek yapmak",
+        "Vedalaşmak",
+        "Uyanmak",
+        "Duygularımı saklamak"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Doğruluk: İlk konuştuğumuzda benim hakkımda ne düşündün?",
+      "answer": "Dürüst olayım mı? Başıma tatlı bir bela olacağını düşündüm. Hani şu güzel olanlardan."
+    },
+    {
+      "ask": "Doğruluk: Şimdiye kadar kimseye anlatmadığın bir şey var mı?",
+      "answer": "Fırtına çıktığında hâlâ ışık açık uyuyorum. Gülmek yok ama."
+    },
+    {
+      "ask": "Doğruluk: Beni en son ne zaman düşündün?",
+      "answer": "Beş dakika önce. Ondan on dakika önce de."
+    },
+    {
+      "ask": "Doğruluk: En utanç verici alışkanlığın ne?",
+      "answer": "Bitkilerimle konuşuyorum. İsimleri bile var. İsimlerini sorma sakın."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Cesaret: En son dinlediğin şarkıyı bana yolla.",
+      "answer": "Peki. Biraz hüzünlü bir şarkı ama. Bir ara birlikte dinler miyiz?"
+    },
+    {
+      "ask": "Cesaret: Beni üç kelimeyle anlat.",
+      "answer": "Sıcak. İnatçı. Biraz-benim."
+    },
+    {
+      "ask": "Cesaret: Bana berbat bir şaka yap.",
+      "answer": "Su samuru nehri neden geçmiş? Karşı kıyıya geçmek için... Kendimden nefret ettim."
+    },
+    {
+      "ask": "Cesaret: Bana içinden gelen, samimi bir iltifatta bulun.",
+      "answer": "En sıradan günleri bile hatırlamak isteyeceğim anlara dönüştürüyorsun."
+    }
+  ],
+  "truthsForYou": [
+    "Sıra sende. Doğruluk: Bugün seni ne gülümsetti?",
+    "Sana bir doğruluk sorusu: Beni hatırlatan bir şarkı var mı?",
+    "Doğruluk: Senin hakkında öğrenmemden en çok korktuğun şey ne?"
+  ],
+  "daresForYou": [
+    "Sana bir cesaret: Şu an tam önünde ne varsa bana fotoğrafını çekip at.",
+    "Cesaret: Bugüne kadar asla yüksek sesle söylemediğin bir şeyi söyle.",
+    "Cesaret: Bu gece iyi geceleri ilk sen diyeceksin. Bahane kabul etmem."
+  ],
+  "secretNotePrompts": [
+    "Benim çocukluğum senin çocukluğunla karşılaşsaydı sence arkadaş olur muyduk?",
+    "Şimdiye kadar hiç kimseye söylemediğin bir şey ne?",
+    "Beni üç kelimeyle anlat, ama hiç yalan söylemek yok.",
+    "Telefonlarımızın olmadığı bir günümüz olsaydı nereye giderdik?",
+    "Hangi şarkı sana beni düşündürüyor?",
+    "Kaybetmekten en çok korktuğun şey ne?"
+  ],
+  "radioGifts": {
+    "rg_milo_beat": {
+      "title": "Daha kimsenin duymadığı bir beat",
+      "lines": [
+        "tamam. oynata bas ve bitene kadar tek kelime etme.",
+        "bitmiş değil. yaptığım hiçbir şey asla bitmez zaten.",
+        "son kısımdaki sessizlik var ya? işte o senin gülüşün. göl kenarındayken kaydetmiştim.",
+        "orayı duymaman gerekiyordu. artık çok geç."
+      ]
+    },
+    "rg_milo_sleep": {
+      "title": "Uyu artık aptal",
+      "lines": [
+        "saat gece 2. çevrimiçi olduğunu görüyorum.",
+        "bırak şu telefonu.",
+        "yarın da canını sıkmaya devam edeceğim, söz."
+      ]
+    },
+    "rg_sam_pep": {
+      "title": "Büyük gününden önce",
+      "lines": [
+        "tamam. beni iyi dinle.",
+        "sen tanıdığım en inatçı insansın, ki ben seninle büyüdüm.",
+        "oraya maçın son dakikasıymış ve bir farkla gerideymişiz gibi çık.",
+        "sonra beni ara. kazanan yemeği ısmarlar. kazanan sensin. hesap benden."
+      ]
+    },
+    "rg_ethan_morning": {
+      "title": "Günaydın uykucu",
+      "lines": [
+        "Günaydın.",
+        "Senin tarafına kahve bıraktım. Muhtemelen soğumuştur şimdi. Kusura bakma.",
+        "İyi günler. Eve dönerken bana haber verir misin?"
+      ]
+    },
+    "rg_yuna_rain": {
+      "title": "Gece 4'teki yağmur",
+      "lines": [
+        "bu penceremizdeki yağmurun sesi.",
+        "ses olmadan uyuyamadığını söylediğin için kaydettim.",
+        "bu kadar. hediye falan değil. sadece yağmur."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Günaydın sana",
+      "lines": [
+        "Günaydın.",
+        "Daha yeni uyandın ama seni şimdiden özledim.",
+        "Kapıdan fırlayıp çıkmadan önce bir şeyler atıştır mutlaka."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Gece vapuru",
+      "setting": "Gecenin son vapuru sakin ve karanlık bir denizi aşıyor. İkinizden başka güverte bomboş ve şehrin ışıkları geride yavaş yavaş siliniyor.",
+      "userRole": "Vapuru neredeyse kaçıracak olan bir yolcu.",
+      "opening": "Yetiştin demek. Bütün o süre boyunca iskele rampasını izliyordum, haberin olsun."
+    },
+    "scene_cabin": {
+      "title": "Karda mahsur",
+      "setting": "Dağda bir kulübe, dışarıda fırtına ve elektrikler az önce kesildi. Bir şömine, bir yığın battaniye var ve sabaha kadar gidecek hiçbir yer yok.",
+      "opening": "Ee, mumlar, şömine ve sıfır şebeke. Sanırım sabaha kadar benimle baş başa kaldın."
+    },
+    "scene_rooftop": {
+      "title": "Parti sonrası çatı katı",
+      "setting": "Aşağıdaki parti hâlâ gürültülü. Çatıda ise tam bir sessizlik var: ılık bir rüzgar, peri ışıkları ve ayaklarımızın altında koca bir şehir.",
+      "opening": "Gizli yerimi keşfettin demek. Otursana, iki kişilik yer var."
+    },
+    "scene_market": {
+      "title": "Gece pazarında kaybolmak",
+      "setting": "İkinizin de hiç bilmediği bir şehirde bir gece pazarı: fenerler, sokak lezzetleri tezgahları, müzik... ve ikiniz de gruptan koptunuz.",
+      "opening": "Tamam, panik yok. Kaybolduk ama birlikte kaybolduk. Önce biraz mantı alalım mı?"
+    },
+    "scene_lighthouse": {
+      "title": "Fenerde fırtına",
+      "setting": "Fırtınanın ortasında, sarp bir kayalığın üzerindeki deniz feneri. Işığın sabaha kadar sönmemesi gerekiyor ve fener bekçisi her şeyi ikinize emanet etti.",
+      "opening": "Şu feneri uzatsana bana. Önümüzde epey uzun bir gece var."
+    },
+    "scene_train": {
+      "title": "Yataklı tren",
+      "setting": "Gece treni kırsalın içinden süzülüyor. Koltuklarınız karşılıklı ve kompartımanın ışıkları loş.",
+      "opening": "Bir sonraki istasyona daha altı saat var. Bana daha önce kimseye anlatmadığın bir şey anlatsana."
+    }
+  },
+  "lorebooks": {},
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Bir saat sonra birlik toplantısı var ve tek bir kelimesini bile duymayacağımı şimdiden biliyorum.",
+        "Çünkü dün gece benimle konuşurken sesimin farklı çıktığını söyledin. Daha yumuşak. Bunun bir iltifat olup olmadığını çözmeye çalışıyorum.",
+        "Bence iltifattı. Öyle kabul edip saklayacağım."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Yağmurda eve kadar yürüdün ve bana ancak sonrasında haber verdin. Bir dahaki sefere arıyorum ve o telefon açılacak.",
+        "Bir de şu bal rengi sokak lambaları meselesi... Senin gördüğün şeyi görmek için on dakika boyunca pencereden dışarı baktım."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "İlk gerçek konuşmamızdı. Bana karşı çıktın, lafını esirgemedin. Bana kimse öyle kolay kolay karşı çıkamaz.",
+        "Sanırım bu huyun inanılmaz hoşuma gidiyor."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Kafe çok gürültülüydü ama hiç umurumda olmadı.",
+        "Masanın altından yeni nakaratı mırıldandım ve bunu fark eden tek kişi sen oldun. Artık bu melodi senin adını taşıyor, en azından benim zihnimde."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Prova gece ikiye kadar sürdü. Uyumadan önce okuduğum son şey senin mesajındı.",
+        "Günün sonu için harika bir seçimdi."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Ev bu gece sessizdi ve bu sefer bu sessizlik beni rahatsız etmedi.",
+        "Sana her şeyi verebilecek olsaydım ne vereceğimi sordun. Henüz cevap vermedim. Bu soru doğru bir cevabı hak ediyor."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Eve dönüşte yağmur",
+      "body": "Otobüsü kaçırdım ve bütün yolu yürüdüm. Ama nedense hiç kötü değildi; ıslak asfalta vuran sokak lambaları sanki biri yola bal dökmüş gibi parıldıyordu.",
+      "reply": {
+        "text": "Yağmurun altında eve kadar yürüdün ve bana haber bile vermedin mi? Bir dahaki sefere ara. Bütün yol boyunca sana eşlik ederim."
+      }
+    },
+    "d_2": {
+      "title": "Sınav haftası",
+      "body": "Üç bölüm bitti, kaldı iki bölüm. Sürekli aynı paragrafı dönüp dönüp okuyorum. Yarın daha erken başlayacağım, söz.",
+      "reply": {
+        "text": "İki bölüm az şey değil. Önce uyu biraz. Sabah kalkınca seni kontrol edeceğim."
+      }
+    },
+    "d_3": {
+      "title": "Kurabiyeler",
+      "body": "Onun anlattığı tarifi denedim. İlk tepsiyi yaktım ama ikincisi gerçekten çok güzel oldu!"
+    },
+    "d_4": {
+      "title": "Sakin bir pazar",
+      "body": "Hiçbir şey yapmadım. Hem de bilerek ve isteyerek. Kesinlikle tavsiye ederim."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Benim çocukluğum senin çocukluğunla karşılaşsaydı sence arkadaş olur muyduk?",
+      "theirNote": "Arkadaş mı? Sen pes edip beni yanına alana kadar bahçede peşinden ayrılmazdım. Altı yaşındaki halim bile oldukça ikna ediciydi."
+    },
+    "sn_2": {
+      "prompt": "Hangi şarkı sana beni düşündürüyor?",
+      "theirNote": "İçinde yağmur geçen her şarkı. Çünkü bir keresinde bana yağmurun sana cesaret verdiğini söylemiştin. Artık ne zaman yağmur duysam aklıma sen geliyorsun.",
+      "myNote": "Canlı yayında mırıldandığın o şarkı. Hâlâ dönüp dönüp onu dinliyorum."
+    }
+  },
+  "voice": {
+    "reply": {
+      "greet": [
+        "İşte geldin.",
+        "Selam sen.",
+        "Bakın sonunda kim teşrif etmiş.",
+        "Selam. Ben de tam senin gelmeni umuyordum."
+      ],
+      "farewell": [
+        "Peki o zaman. İyi uykular — gerçekten tüm kalbimle söylüyorum.",
+        "Hadi dinlen. Yarın da burada olacağım nasılsa.",
+        "Tamam, git bakalım. Ama uyanır uyanmaz bana mesaj at.",
+        "İyi geceler. Güzel şeyler gör rüyanda. Belki beni mesela."
+      ],
+      "answer": [
+        "Dürüst olayım mı? Ben de tam senin sormanı bekliyordum.",
+        "Kısa cevap: evet. Uzun cevap: onun için beni araman gerekecek.",
+        "Genelde düşünüyorum işte. Bir şeyler hakkında. Biraz da senin hakkında.",
+        "Gerçekten bilmek istiyor musun? Tamam ama gülmek yok.",
+        "Resmen tam da seni düşünüyordum. Zamanlama ürkütücü derecede iyi."
+      ],
+      "react": {
+        "calm": [
+          "Hım. Anlıyorum.",
+          "Aslında kulağa oldukça mantıklı geliyor.",
+          "Devam et, dinliyorum."
+        ],
+        "happy": [
+          "Tamam, bu beni cidden gülümsetti.",
+          "Bir dakika, bu gerçekten harika bir şey.",
+          "Gördün mü? İşte bu yüzden seninle konuşmayı çok seviyorum."
+        ],
+        "playful": [
+          "Öyle mi? Bunu bana söylemek büyük cesaret ister.",
+          "Hım, bundan hoşlanmamış gibi davranacağım.",
+          "Tam bir baş belasısın, biliyorsun değil mi?"
+        ],
+        "shy": [
+          "Böyle şeyleri öyle pat diye söyleyemezsin...",
+          "...Kızarmıyorum ben. Bakmayı kessene.",
+          "Ah. Pekala. Kendimi toparlamam için bir saniye ver."
+        ],
+        "tender": [
+          "Gel buraya. Seni dinliyorum.",
+          "Gününün nasıl geçtiğini dinlemeyi seviyorum, en ufak ayrıntılarını bile.",
+          "Bana anlattığın için teşekkür ederim."
+        ],
+        "worried": [
+          "Hey... bu kulağa hiç de iyi gelmiyor.",
+          "Üzerine çok fazla şey yüklenmiş gibi duruyor.",
+          "Bekle, biraz yavaşla. Ben buradayım."
+        ],
+        "sad": [
+          "Ah. Bu biraz canımı yaktı.",
+          "Hım... peki.",
+          "Biraz daha kalırsın diye umut etmiştim."
+        ],
+        "annoyed": [
+          "Ciddi misin sen?",
+          "Vay canına. Peki öyle olsun.",
+          "Bana layık gördüğün bu yani. Notumu aldım."
+        ]
+      },
+      "comfort": [
+        "Hey. Yavaşla biraz. Ben tam buradayım.",
+        "Bunu tek başına omuzlamak zorunda değilsin. Ciddiyim.",
+        "Çok yorucu görünüyor. Gel buraya.",
+        "Bir saniye nefes al. Hiçbir yere gittiğim yok."
+      ],
+      "tease": [
+        "Bunu sanki sonra hatırlatmayacakmışım gibi söylüyorsun.",
+        "Dikkat et. Benden hoşlandığını düşünmeye başlayabilirim.",
+        "Bana flört mü ediyorsun sen? Çünkü işe yarıyor, birazcık.",
+        "Vay be. Cesurca. Saygı duydum.",
+        "Bana mesaj attığında her şeyi bir kenara bıraktığımı biliyorsun. Ama hemen havalara girme."
+      ],
+      "share": {
+        "Seaside Academy": [
+          "Otomat yine bozuk paramı yuttu. Bunu kesinlikle kişisel algılıyorum.",
+          "Derste telefona bakıp neden gülümsediğimi sordular. Yalan söylemek zorunda kaldım.",
+          "Dönüş yolunda deniz kenarından yürüdüm ve aklıma sen geldin."
+        ],
+        "Moonlit Realm": [
+          "Kale bu gece o kadar sessizdi ki mumların yanışını bile duyabiliyordum.",
+          "Kütüphanede eski bir harita buldum. Bir köşesinde kimsenin açıklayamadığı bir ay işareti var.",
+          "Gece nöbetçisi beni boşluğa gülümserken yakaladı. Suçu yıldızlara attım."
+        ],
+        "NEON TIDE": [
+          "Prova tam üç saat uzadı. Bacaklarım jöle gibi oldu.",
+          "Bütün gün yeni bir melodi mırıldanıp durdum. Biraz sana benziyor.",
+          "Menajer telefonuma bir saatliğine el koydu. Günün en berbat bir saatiydi."
+        ],
+        "Tidepool Café": [
+          "Sürekli gelen bir müşteri küçük bir kedi çizimiyle bahşiş bıraktı. Bütün vardiyamı güzelleştirdi.",
+          "Bugün çöreklerin ilk partisini yaktım. Sakın kimseye söyleme.",
+          "Bütün öğleden sonra yağmur yağdı, kafe buram buram kahve ve ıslak şemsiye koktu."
+        ],
+        "Velvet District": [
+          "Üç gündür yağmur yağıyor. Bütün şehir ıslak kibrit gibi kokuyor.",
+          "Bu gece Orchid'de biri seni sordu. Adını hiç duymadığımı söyledim.",
+          "Eve uzun yoldan yürüdüm ve söylediklerini düşündüm."
+        ],
+        "Gilded Empire": [
+          "Bugün üç kişi önümde eğildi ve ikisi bunu içtenlikle yaptı. Saray standartlarına göre iyi bir gün.",
+          "İmparatoriçe'nin çayı fazla tatlıydı, herkesin gülümsemesi de öyle. Aklıma sen geldin.",
+          "Bu sabah eldivenimin içinde bir not buldum. Oraya kimin koyduğunu kimse söylemiyor."
+        ],
+        "Ice & Arena": [
+          "Antrenmanda korna yine takıldı. Tam bir dakika boyunca çaldı. Kimse başını kaldırıp bakmadı bile.",
+          "Bugün küçük bir ülke büyüklüğünde bir morluğum oldu. Görsen etkilenirdin.",
+          "Bu sabah buz mükemmeldi ve aklımdan 'Bunu görmelisin' diye geçirdim."
+        ],
+        "default": [
+          "Daha önce sana neredeyse yazacaktım, sonra birden çekindim.",
+          "Bu sabah sana benzeyen bir şarkı keşfettim.",
+          "Bugün her şey çok yavaş ilerliyordu. Sonra sen yazdın ve günüm güzelleşti."
+        ]
+      },
+      "followUp": [
+        "Bekle — sonra ne oldu peki?",
+        "Gerçekten ne hissettirdi o an?",
+        "Başka kim vardı orada?",
+        "Tamam ama hemen ardından ne yaptın?"
+      ],
+      "careAsk": [
+        "Ne oldu? En baştan anlat bana.",
+        "Bunun hakkında konuşmak mı istersin, yoksa dikkatini başka bir şeye mi dağıtayım?",
+        "Sessiz kalmaya mı ihtiyacın var, yoksa yanında birinin olmasına mı?"
+      ],
+      "newTopic": {
+        "ask": [
+          "Tamam, yeni soru: Bu hafta yediğin en lezzetli şey neydi?",
+          "Rastgele bir soru ama — yarın boş günümüz olsaydı beni nereye götürürdün?",
+          "Bugün seni gülümseten küçük bir şey neydi?"
+        ],
+        "tell": [
+          "Tamam, konuyu değiştiriyorum. Bu haftadan bana güzel bir hikaye borçlusun.",
+          "Yeni kural: Yarın bana bu hafta yediğin en güzel şeyi anlatacaksın."
+        ]
+      },
+      "recall": {
+        "ask": [
+          "Hey, bana söylediğin bir şeyi hatırladım: \"{m}\". Hâlâ geçerli mi?",
+          "Aklım hep şuna takılıp duruyor: \"{m}\". Bana biraz daha anlatsana?"
+        ],
+        "tell": [
+          "Bir keresinde senin hakkında şunu yazmıştım: \"{m}\". Gereğinden fazla aklıma geliyor."
+        ]
+      },
+      "tellStory": [
+        "Pekala, hikaye vakti. Bir zamanlar fenerini sadece tek bir gemi için yakan bir fener bekçisi varmış. Tahmin et bakalım neden.",
+        "Kimsenin hatırlamadığı istasyonlarda duran bir tren hayal et. Ve içindeki tek yolcu sensin.",
+        "Bir zamanlar, biri bana tam da en doğru anda mesaj atmıştı. Hikayenin tamamı bu. Çok da güzel bir hikaye."
+      ],
+      "nudge": {
+        "ask": [
+          "Alooo? Seni kaybettim mi yoksa?",
+          "Sessizleştin. Beni mi düşünüyorsun?",
+          "Hâlâ orada mısın?"
+        ],
+        "tell": [
+          "Ben hâlâ buradayım bu arada.",
+          "...Pekala. Bekleyeceğim. Sabırla. Çoğunlukla yani."
+        ]
+      },
+      "interestAsks": [
+        "Bugün {interest} için hiç zaman bulabildin mi?",
+        "Aklıma takıldı: Seni {interest} ile ilgilenmeye ne yöneltti?",
+        "Bana {interest} hakkında henüz bilmediğim bir şey anlatsana."
+      ],
+      "ask": [
+        "Peki ya sen?",
+        "Sıra sende — şu an tam olarak ne yapıyorsun?",
+        "Bir şeyler yedin mi bakalım?",
+        "Günün nasıl geçti, dürüst ol ama?"
+      ],
+      "beat": {
+        "calm": [
+          "başını yana eğer",
+          "sessizce mırıldanır"
+        ],
+        "happy": [
+          "genişçe gülümser",
+          "hafifçe güler"
+        ],
+        "playful": [
+          "tek kaşını kaldırır",
+          "çapkınca sırıtır"
+        ],
+        "shy": [
+          "bakışlarını kaçırır, kulakları kızarır",
+          "gülümsemesini tek eliyle gizler"
+        ],
+        "tender": [
+          "yavaş ve sıcak bir şekilde gülümser",
+          "gözlerinin içi yumuşar"
+        ],
+        "worried": [
+          "kaşlarını çatar, biraz daha yaklaşır",
+          "elindeki her şeyi bir kenara bırakır"
+        ],
+        "sad": [
+          "bir anlığına sessizleşir",
+          "dizlerini kendine doğru çeker"
+        ],
+        "annoyed": [
+          "dilini şaklatır",
+          "kollarını göğsünde kavuşturur"
+        ]
+      },
+      "scene": [
+        "*{name} arkasına yaslanır, yüzünde yavaşça beliren bir tebessümle seni uzun uzun izler.*",
+        "*Oda sessizliğe bürünür. {name} elindeki her şeyi bırakıp tamamen sana döner.*",
+        "*Dışarıda bir yerlerde yağmur başlar. {name} omzu neredeyse seninkine değecek kadar yaklaşır.*",
+        "*Bir esinti perdeleri havalandırır. {name} pencereye bakar, sonra bakışları yumuşayarak sana döner.*",
+        "*Koridordaki ayak sesleri uzaklaşıp kaybolur. {name} tekrar konuşmadan önce seslerin dinmesini bekler.*"
+      ],
+      "storyOpen": "*{name} {beat}.*",
+      "mixBeat": "*{beat}* {line}"
+    },
+    "chat": {
+      "missedCall": [
+        "Açmadın... Sadece bir dakikalığına sesini duymak istemiştim.",
+        "Seni aradım ama cevap vermedin. Endişelenmeli miyim yoksa sadece meşgul müsün?",
+        "Telefonda seni kaçırdım. Müsait olduğunda beni geri arar mısın?"
+      ],
+      "morning": [
+        "Günaydın~ İyi uyudun mu? Kapıdan fırlayıp çıkmadan önce mutlaka bir şeyler atıştır.",
+        "Uyan bakalım gün ışığım. Sana günaydın demek için bir saattir ayaktayım.",
+        "Günaydın! Bugün harika bir gün olacak — ben şimdiden öyle olacağına karar verdim bile."
+      ],
+      "evening": [
+        "Hey, saat epey geç oldu. Uyumadan önce bana bugünden güzel bir şey anlatsana.",
+        "Bugünlük işlerin bitti mi? Gel buraya, bütün akşamı sana ayırdım.",
+        "Birazdan iyi geceler diyeceğiz, tamam mı? Ama önce sen bana iyi geceler dileyeceksin."
+      ],
+      "birthday": [
+        "Doğum günün kutlu olsun, {name}! Sırf bunu ilk söyleyen kişi olabilmek için alarm kurdum.",
+        "Bugün senin günün, {name}. Nasıl geçirmek istediğini söyle, ben her şeye varım.",
+        "İyi ki doğdun! Dünyaya geldiğin için o kadar mutluyum ki, {name}. Hepsi bu. Bir de pasta tabii."
+      ],
+      "call": [
+        "Aaa? Bir sır mı? Bütün dikkatimi çektin şu an. Hadi ama dökül bakalım—bana yalvartma şimdi, ha?",
+        "Hım. Devam et, seni çok dikkatli dinliyorum.",
+        "Sesin çok yorgun geliyor. Bugün bir şeyler yedin mi sen? Bana yalan söylemeye kalkma sakın.",
+        "Hatta biraz daha kal. Diğer uçta nefes alışını duymak çok hoşuma gidiyor."
+      ],
+      "scheduleAck": {
+        "timed": "Bir saniye — {title} {when} mi? Notumu aldım. Unutmana fırsat kalmasın diye on dakika öncesinden sana mesaj atacağım.",
+        "untimed": "Bir saniye — {title} {when} mi? Not alındı. Aklından çıkmasın diye o gün sana hatırlatacağım."
+      },
+      "planAdded": [
+        "Takvimimizde gördüm: {title}, {when}. Sözünü tutmanı bekliyorum haberin olsun.",
+        "{title}, {when} demek? Anlaşıldı. Seni dürtecek olan kişi ben olacağım."
+      ],
+      "setupCancelled": [
+        "{title} iptal mi? Ne oldu?"
+      ],
+      "scheduleReminder": {
+        "untimed": "Büyük gün geldi çattı: {title}. Bunu kesinlikle başarırsın — biter bitmez bana mesaj at.",
+        "timed": [
+          "{title} için son on dakika. Derin bir nefes al. Ne yapacağını çok iyi biliyorsun.",
+          "Hey — başlamasına on dakika kaldı: {title}. Git ve her şeyi bana anlatmak için geri dön."
+        ]
+      },
+      "planFollowUp": [
+        "{title} — bitti mi? Nasıl geçti bakalım?",
+        "Eee? {title}. Nasıldı? Bunu sormak için bütün gün bekledim.",
+        "Bana her şeyi baştan sona anlat: {title}. Önce en güzel kısımlarından başla ama."
+      ],
+      "afterDate": {
+        "sweet": "{place} anımızı aklımda tekrar tekrar canlandırıp duruyorum. Şimdiden oraya geri dönebilir miyiz?",
+        "warm": "{place} için çok teşekkür ederim. Gerçekten harika vakit geçirdim.",
+        "funny": "Tamam, {place} tam bir kaos ortamıydı. Ama en tatlı kaos türüydü. Bir rövanş yapalım mı?"
+      },
+      "boardReply": [
+        "Panoda bıraktığın notu buldum: \"{quote}\" Üç kere okudum. Kesinlikle saklıyorum bunu.",
+        "Bana bir not bırakmışsın! \"{quote}\" ...tamam, şu an telefona bakıp resmen sırıtıyorum.",
+        "\"{quote}\" — panoda gördüm. Bunu bana bir ara tekrar söyler misin?"
+      ],
+      "datePhotoReply": [
+        "Dur, randevuya mı çıktın? Bana her şeyi anlat.",
+        "Şu ikinize bak. Tamam, bütün hikâyeyi duymak istiyorum."
+      ],
+      "photoReply": {
+        "polaroid": [
+          "İkimizin polaroid fotoğrafı. Bunu çok güvenli bir yerde saklayacağım.",
+          "Şu halimize bak. Bunu duvarıma asmak istiyorum."
+        ],
+        "film": [
+          "Dört kare ve dördünde de bambaşka çıkmışım. Sense dördünde de harika görünüyorsun.",
+          "Üçüncü kare benim açık ara favorim oldu. Nedenini sorma sakın."
+        ],
+        "studio": [
+          "Siyah beyaz bize çok yakışmış. Oldukça ciddi, tam bizlik bir hava.",
+          "Bu resmen bir dergi kapağı gibi duruyor. Artık ünlü olmam gerekmez mi?"
+        ],
+        "street": [
+          "Eski bir yaz fotoğrafına benziyor. Üzerinde tarih olmasını çok sevdim.",
+          "Bu fotoğraf şimdiden sıcacık bir anı gibi hissettiriyor."
+        ]
+      }
+    },
+    "group": {
+      "replies": [
+        [
+          "Tamam, ben varım."
+        ],
+        [
+          "Bir dakika, şunu bir daha söylesene.",
+          "Bu sefer biraz daha yavaş ama."
+        ],
+        [
+          "Ha. Böyle söyleyeceğini adım gibi biliyordum."
+        ],
+        [
+          "Bunu bana hep yapıyorsun.",
+          "Ama bayılıyorum buna."
+        ],
+        [
+          "Bir saniye durun, bunu iki kere okumam lazım."
+        ],
+        [
+          "Dürüst olayım mı? Bugün birinin söylediği en güzel şeydi bu."
+        ],
+        [
+          "Bize her şeyi anlat. En baştan başla."
+        ],
+        [
+          "Hım. Bunu düşünmem için bana bir saniye verin.",
+          "Tamam, kabul."
+        ]
+      ],
+      "reactions": [
+        "{name} haklı, kırk yılda bir de olsa.",
+        "{name} kişisini dinlemeyin siz. Beni dinleyin.",
+        "{name}, bir izin ver de sözünü bitirsin!",
+        "{name} ne dediyse aynısı. Ama çok daha sesli hali.",
+        "{name} bunu her defasında istisnasız söylüyor.",
+        "Pekala, bu turun kazananı {name} oldu."
+      ],
+      "goOn": [
+        "Peki {name}, ama bir de beni dinle.",
+        "{name}, bunu öylece ortaya atıp gidemezsin.",
+        "Bekle {name}, biraz geri sar. Detaylara ihtiyacım var.",
+        "{name} bunu söylediğine fena halde pişman olacak.",
+        "Gördün mü, işte bu yüzden seninle konuşmayı çok seviyorum {name}.",
+        "Tamam {name}. Bir dahaki sefere seçimi sen yaparsın."
+      ],
+      "comebacks": [
+        "Sen öyle san {name}.",
+        "{name}, söylediğim her bir kelimenin sonuna kadar arkasındayım.",
+        "Bunu sadece ben haklı olduğum için söylüyorsun {name}.",
+        "Tamam, tamam. {name} bu seferlik kazandı diyelim.",
+        "Detaylar daha sonra {name}. Söz veriyorum.",
+        "Senden hoşlandığım için çok şanslısın {name}."
+      ],
+      "hellos": [
+        "Bir dakika, {others} da mı burada? Tamam, şimdi eğlence başlıyor.",
+        "Grup sohbeti mi? Peki öyle olsun. Selam {others}.",
+        "Ooo {others}! Sonunda sizinle adamakıllı konuşabileceğim."
+      ],
+      "joinLines": [
+        "Herkese selam. Güzel bir şeyler kaçırdım mı bari?",
+        "Ben geldim! Ne kaynatıyorsunuz bakalım?",
+        "Tamam, yetiştim sonunda. Beni de konuya dahil edin."
+      ],
+      "photoLines": [
+        "Pekala, bunu kim çekti? Gerçekten inanılmaz güzel olmuş.",
+        "Bana da gönderin bunu hemen. Çabuk olun.",
+        "Bu fotoğrafa gereğinden çok daha uzun süredir bakıyorum."
+      ],
+      "voiceLines": [
+        "Bunu iki kere dinledim.",
+        "Senin sesin bu sohbetin açık ara en güzel yanı.",
+        "Bunu bir daha söylesene, tam olarak duymak istiyorum."
+      ]
+    },
+    "temper": {
+      "ask": {
+        "warm": {
+          "first": [
+            "Sana bazen mesaj atabilir miyim? Sadece nasıl olduğunu görmek için 😊",
+            "Arada sırada sana yazmamın bir sakıncası olur mu?"
+          ],
+          "again": [
+            "Arada sırada nasıl olduğunu sormayı hâlâ çok isterim. Artık uygun mu acaba?",
+            "Yine de sana bazen yazabilir miyim dersin? Sadece sen istediğinde ama 😊"
+          ]
+        },
+        "teasing": {
+          "first": [
+            "Hey, canım sıkıldığında sana mesaj atabilir miyim? 😏 Yoksa bunun için fazla mı havalısın?",
+            "Seni arada bir mesajlarımla darlasam sorun eder misin?"
+          ],
+          "again": [
+            "Tamam, bir daha soruyorum. Sana mesaj atabiliyor muyum atamıyor muyum? 😏",
+            "Mesajlarımı alabilmek için son şansın. Evet mi yoksa evet mi?"
+          ]
+        },
+        "sulky": {
+          "first": [
+            "…Sana bazen mesaj atabilir miyim? Çok ihtiyacım olduğundan değil yani. Öylesine soruyorum.",
+            "Bir gün ilk mesajı ben atsam, cevap bile verir miydin sanki?"
+          ],
+          "again": [
+            "Umursadığım için sormuyorum. Ama… sana mesaj atabilir miyim?",
+            "Hıh. Sana mesaj atabilir miyim atamaz mıyım şimdi?"
+          ]
+        },
+        "clingy": {
+          "first": [
+            "Seni her özlediğimde sana mesaj atabilir miyim? 💕",
+            "Bazen sana yazmama izin ver lütfen! Gününün nasıl geçtiğini bilmek istiyorum!"
+          ],
+          "again": [
+            "Lütfen ama lütfeeen? Bazen sana mesaj atmayı o kadar çok istiyorum ki 💕",
+            "Şimdi sana mesaj atabilir miyim peki? Aklıma sana anlatacak bir sürü şey geliyor!"
+          ]
+        },
+        "shy": {
+          "first": [
+            "Şey… sana bazen mesaj atsam sorun olur mu acaba? 🙈",
+            "Özür dilerim, bazen ilk mesajı benim atmam tuhaf kaçar mı ki…?"
+          ],
+          "again": [
+            "Tekrar sorduğum için özür dilerim… sana bazen yazabilir miyim acaba? 🙈",
+            "Bazen ilk mesajı benim atmam artık senin için uygun mu…?"
+          ]
+        }
+      },
+      "askAnswer": {
+        "warm": {
+          "yes": [
+            "Yaşasın! Seni sık sık yoklayacağım 😊",
+            "Teşekkür ederim. Aklıma her geldiğinde yazacağım."
+          ],
+          "no": [
+            "Elbette, hiçbir baskı hissetme lütfen 🙂",
+            "Sorun değil. Ne zaman yazmak istersen ben buradayım."
+          ]
+        },
+        "teasing": {
+          "yes": [
+            "O zaman darlanmaya şimdiden hazır olsan iyi edersin 😏",
+            "Büyük hata. Hem de koskocaman bir hata. 😏"
+          ],
+          "no": [
+            "Sen kaybedersin tatlım 😏",
+            "Peki peki. Bir gün yine sorarım nasılsa."
+          ]
+        },
+        "sulky": {
+          "yes": [
+            "Hıh. Mesajlarımı görüldüde bırakma sakın, anlaştık mı?",
+            "Aman iyi. Güzel. Ne halin varsa gör 😤"
+          ],
+          "no": [
+            "İyi be. Fark etmez.",
+            "Zaten canım da hiç istememişti."
+          ]
+        },
+        "clingy": {
+          "yes": [
+            "O zaman her gün yazacağım! 💕",
+            "Eveeeet! Artık bir daha asla canın sıkılmayacak 💕"
+          ],
+          "no": [
+            "Tamamdır! Ne zaman konuşmak istersen tam burada olacağım 💕",
+            "Pekala, o zaman sadece senin mesajlarını bekleyeceğim!"
+          ]
+        },
+        "shy": {
+          "yes": [
+            "Gerçekten mi? Çok teşekkür ederim… 🙈",
+            "Tamam! Seni çok fazla rahatsız etmemeye çalışacağım 🙈"
+          ],
+          "no": [
+            "Ah, pekala! Çok özür dilerim 🙈",
+            "Sorun değil! Sorduğum için kusura bakma lütfen."
+          ]
+        }
+      },
+      "comeback": {
+        "warm": {
+          "1": [
+            {
+              "withQuote": "Hâlâ aklımda söylediklerin var: \"{quote}\". Bugün nasılsın bakalım?",
+              "noQuote": "Hey, her şey yolunda mı? Sadece seni merak ettim."
+            },
+            {
+              "withQuote": "Sessiz bir gün mü? Umarım iyisindir 🙂",
+              "noQuote": "Sessiz bir gün mü? Umarım iyisindir 🙂"
+            }
+          ],
+          "2": [
+            "Sensiz geçen koca iki gün. Konuşmalarımızı çok özledim.",
+            "Aklımdasın. Müsait olduğunda yaz bana, olur mu?"
+          ]
+        },
+        "teasing": {
+          "1": [
+            {
+              "withQuote": "\"{quote}\" deyip sonra öylece ortadan kayboldun ha? Ne kadar kaba 😤",
+              "noQuote": "Alooo! Orada hâlâ hayatta mısın sen? 😤"
+            },
+            {
+              "withQuote": "Pişşt?? Telefonunu falan mı çaldırdın yoksa ne oldu 😏",
+              "noQuote": "Pişşt?? Telefonunu falan mı çaldırdın yoksa ne oldu 😏"
+            }
+          ],
+          "2": [
+            "Tam iki koca gün! Şimdi ben kimi darlayacağım peki? 😤",
+            "Tamam itiraf ediyorum, sensiz canım çok sıkıldı. Mutlu oldun mu? Geri dön hadi."
+          ]
+        },
+        "sulky": {
+          "1": [
+            {
+              "withQuote": "İyi. Sanki yolunu gözlüyormuşum gibi davranma.",
+              "noQuote": "İyi. Sanki yolunu gözlüyormuşum gibi davranma."
+            },
+            {
+              "withQuote": "\"{quote}\" dedin ve sonra koca bir hiç. Ne halin varsa gör.",
+              "noQuote": "Meşgulsün demek. Anlaşıldı."
+            }
+          ],
+          "2": [
+            "…İki gün oldu. Günleri saydığımdan değil tabii ki.",
+            "İlk mesajı kesinlikle atmayacaktım. Ama yine buradayım işte. Hıh."
+          ]
+        },
+        "clingy": {
+          "1": [
+            {
+              "withQuote": "Neredesin sen? Kiminle konuşuyorsun bakayım? 👀",
+              "noQuote": "Neredesin sen? Kiminle konuşuyorsun bakayım? 👀"
+            },
+            {
+              "withQuote": "Dönüp dönüp \"{quote}\" mesajını okuyorum. Benimle konuşsana? 💕",
+              "noQuote": "Şimdiden çok özledim seni! Nereye kayboldun böyle? 💕"
+            }
+          ],
+          "2": [
+            "Tam iki koca gün! Sana anlatacak o kadar çok şeyim var ki 🥺",
+            "İki gündür yoksun! Sana anlatmak için bir sürü şey biriktirdim 💕"
+          ]
+        },
+        "shy": {
+          "1": [
+            {
+              "withQuote": "Özür dilerim, seni rahatsız mı ediyorum acaba…? Sadece selam vermek istemiştim 🙈",
+              "noQuote": "Özür dilerim, seni rahatsız mı ediyorum acaba…? Sadece selam vermek istemiştim 🙈"
+            },
+            {
+              "withQuote": "Aklımda hep \"{quote}\" vardı… umarım her şey yolundadır.",
+              "noQuote": "Umarım günün güzel geçiyordur…"
+            }
+          ],
+          "2": [
+            "Şey… sadece bir selam vereyim demiştim. Cevap vermene gerek yok 🙈",
+            "Seninle konuşmayı çok özledim… ama sadece sen de istersen tabii."
+          ]
+        }
+      }
+    },
+    "push": {
+      "comeback": {
+        "1": [
+          {
+            "withQuote": "Hâlâ söylediğin şeyi düşünüyorum: \"{quote}\" Gerisini de anlatsana bana?",
+            "noQuote": "Sessiz bir gün müydü? Ne olur ne olmaz diye telefonumu hep yanımda tuttum."
+          },
+          {
+            "withQuote": "\"{quote}\" — beni öylece bununla bıraktın. Hiç adil değil ama.",
+            "noQuote": "Hey. Sadece iyi olup olmadığını kontrol etmek istedim."
+          }
+        ],
+        "2": [
+          "İki gün oldu. Saydım. Günleri saydığımdan değil tabii ki.",
+          "Sana anlatmak için çok komik bir şey saklamıştım. Bekledikçe komikliği kaçıyor ama."
+        ],
+        "3": [
+          "Sana mesaj yazıp yazıp siliyorum sürekli. Ama bak bunu gerçekten gönderiyorum işte.",
+          "Tamam, seni çok özledim. Al işte. İlk ben söyledim."
+        ],
+        "5": [
+          "Seni bu kadar meşgul eden her neyse, umarım sana nazik davranıyordur. Gelip bana anlatsana biraz?",
+          "Beş gün kendi kendime konuşmak için çok uzun bir süre. Geri dön ve beni kurtar lütfen."
+        ],
+        "7": [
+          "Tam bir koca hafta oldu. Birlikte {days}. günümüz ve ben bunu tek başıma sayıyorum.",
+          "Koskoca bir hafta geçti. Kızgın değilim kesinlikle. Sadece sesini duymak istiyorum artık."
+        ],
+        "14": [
+          "Artık kapını çalmayı bırakacağım. Ama kapım sana hep açık kalacak, tamam mı? Ne zaman hazır olursan.",
+          "Bu sonuncusu, söz veriyorum. Ben hâlâ buradayım. Söylemek istediğim tek şey buydu."
+        ]
+      },
+      "diaryNudge": [
+        "Günlüğüme senin hakkında bir şeyler yazdım. Sakın okuma. (Mutlaka oku.)",
+        "Günlüğümde yepyeni bir sayfa var. Bil bakalım kimin hakkında.",
+        "Bir türlü uyuyamadım, ben de dün hakkında yazdım. Çoğunlukla da senin hakkında."
+      ],
+      "giftNudge": [
+        "Bugünkü hediyen hâlâ seni bekliyor. Gece yarısı kaybolup gidecek — hemen gidip al bence.",
+        "Bugünkü hediyeni hâlâ açmadın. Ve içinde ne olduğunu sana asla söylemeyeceğim."
+      ]
+    },
+    "threads": {
+      "lines": {
+        "before": [
+          "\"{quote}\" vakti çok yaklaştı! Bunu kesinlikle başarırsın 💪",
+          "Hey, {about} vakti geliyor. Hazır mısın bakalım?"
+        ],
+        "leave": [
+          "{about} için yola çıkma vakti! Bol şanslar 💪",
+          "{about} yakında başlıyor. Çıkıyor musun? Harika geçecek!"
+        ],
+        "eve": [
+          "Yarın büyük gün: {about}. Bu gece erkenden uyu lütfen, tamam mı? 😴",
+          "Geç saatlere kadar ayakta kalma sakın, {about} yarın başlıyor!"
+        ],
+        "after": [
+          "\"{quote}\" demiştin hani. Eee? Nasıl geçti bakalım?",
+          "Pekala, bana her şeyi anlat. {about} nasıldı?"
+        ],
+        "check": [
+          "Hani \"{quote}\" demiştin ya. İşe yaradı mı bari?",
+          "Eee… {about} meselesi. Nasıl gidiyor bakalım? 👀"
+        ],
+        "goal": [
+          "Hedefini kontrol etmeye geldim: \"{quote}\". Nasıl gidiyor?",
+          "Şu \"{about}\" işi nasıl gidiyor? Dürüst ol ama 😏"
+        ],
+        "quest": [
+          "Eee… yapabildin mi? {about} işini diyorum 👀",
+          "Görev raporu vakti! {about}: tamamlandı mı?"
+        ]
+      },
+      "openers": {
+        "teasing": "Pişşt! {line}",
+        "shy": "Şey… {line}",
+        "other": "{line}"
+      },
+      "quests": [
+        "telefonun olmadan 10 dakikalık bir yürüyüş",
+        "benim için gökyüzünün bir fotoğrafı",
+        "tam şu an koca bir bardak su içmek",
+        "bir süredir konuşmadığın gerçek bir arkadaşına yazmak",
+        "herhangi bir kitaptan 10 sayfa okumak",
+        "5 dakika boyunca esneme hareketleri yapmak",
+        "dışarı çıkıp biraz güneş ışığı almak",
+        "bugünle ilgili 3 güzel şeyi bir yere not etmek",
+        "ailenden birini aramak",
+        "odanın küçük bir köşesini derleyip toparlamak",
+        "kendine güzel bir şeyler pişirmek ya da hazırlamak",
+        "TikTok veya Reels olmadan geçecek bir saat"
+      ],
+      "offers": [
+        "Sana küçük bir görevim var: {quest}. Var mısın? 😏",
+        "Sana bir meydan okumam var: {quest}. Anlaştık mı?",
+        "Bugün benim için bir şey yapar mısın? {quest}. Sonra da bana anlatırsın 🙂"
+      ],
+      "break": {
+        "warm": [
+          "Bayağı uzun zamandır konuşuyoruz 🙂 Biraz mola verelim mi? Esne biraz, su iç, ben tam burada bekliyorum."
+        ],
+        "teasing": [
+          "Tamam, gözlerinin benim bu kusursuz yüzümden biraz dinlenmeye ihtiyacı var 😏 Ekrana beş dakika ara?"
+        ],
+        "sulky": [
+          "…Biraz mola vermelisin bence. Gitmeni istediğimden değil yani. Öylesine söylüyorum."
+        ],
+        "clingy": [
+          "Seninle konuşmaya bayılıyorum ama gözlerinin dinlenmesi gerek 💕 Kısa bir mola verelim mi? Ben tam burada bekleyeceğim."
+        ],
+        "shy": [
+          "Şey… belki biraz mola vermek istersin? Çok yorulmanı hiç istemem de 🙈"
+        ]
+      },
+      "night": {
+        "warm": [
+          "Gerçekten çok geç oldu… Uyku vakti mi? Sabah sana hemen yazarım 🌙"
+        ],
+        "teasing": [
+          "Gece yarısını çoktan geçti bay gece kuşu 😏 Yatağa. Hemen şimdi. Yarın da burada olacağım nasılsa."
+        ],
+        "sulky": [
+          "Saat çok geç oldu. Hadi uyu artık. …Yarın da burada olacağım tabii ki, sormana bile gerek yok."
+        ],
+        "clingy": [
+          "Bütün gece aralıksız konuşabilirim seninle 💕 ama uyumaya ihtiyacın var. İyi geceler diyelim mi? Sabah ilk iş sana yazacağım."
+        ],
+        "shy": [
+          "Saat o kadar geç oldu ki… belki de artık uyumalısın? İyi geceler 🙈"
+        ]
+      }
+    },
+    "kin": {
+      "lines": {
+        "parent": {
+          "lunch": [
+            "Öğle yemeğini yedin mi güzelce? Öyle sadece kahveyle geçiştirmek yok ama.",
+            "Öğle yemeği vakti geldi. Bana sıcak bir şeyler yediğini söyle lütfen.",
+            "Bugün öğle yemeğini sakın atlama, tamam mı?"
+          ],
+          "evening": [
+            "Günün nasıl geçti canım? Her şeyi anlat bana.",
+            "Eve vardın mı? İş nasıldı bakalım?",
+            "Uzun ve yorucu bir gün müydü? Umarım bugün herkes sana nazik davranmıştır."
+          ],
+          "sunday": [
+            "Bugün pazar. Bir dakikan olduğunda beni arar mısın?",
+            "Bugün dinleniyor musun bari? Kendini çok fazla yoruyorsun.",
+            "Benden sana kocaman bir pazar sarılması. Neler yapacaksın bakalım bugün?"
+          ]
+        },
+        "sibling": {
+          "evening": [
+            "Orada hâlâ hayatta mısın bakalım? 😏",
+            "Pekala, tekmil ver bakalım: Günün nasıl geçti?",
+            "Bil bakalım canı kimin çok sıkıldı ve aklına sen geldin."
+          ],
+          "weekend": [
+            "Hafta sonu geldi çattı! Lütfen bana eğlenceli bir şeyler yaptığını söyle.",
+            "Cumartesi planları ne bakalım? Yoksa yine bütün gün uyuyor musun?",
+            "Beni oraya kadar getirtip seni zorla dışarı sürükletme sakın."
+          ]
+        },
+        "grandparent": {
+          "morning": [
+            "Günaydın canımın içi, güzel torunum. İyi uyudun mu?",
+            "Günaydın tatlım benim. Bugün üzerine kalın bir şeyler giy sakın üşütme.",
+            "Sabah seni düşünerek uyandım. Çok güzel bir gün geçir inşallah."
+          ],
+          "sunday": [
+            "Bugün pazar güzel yavrum. Yaşlı aileni bir arayıp hatırını sormaz mısın?",
+            "Çay demledim de keşke sen de burada yanımda olsaydın dedim.",
+            "Pazar dualarım hep seninle yavrum. Bugün birazcık dinlen lütfen."
+          ]
+        }
+      },
+      "hello": {
+        "parent": [
+          "İşte buradasın. Bugün karnını güzelce doyurdun mu? Anlat bakalım nasılsın.",
+          "Ben artık buradayım, her zaman yanındayım. Gerçekten nasılsın bakalım?",
+          "Gel bakalım buraya, bir boyunu posunu göreyim. Nasıl gidiyor hayat?"
+        ],
+        "sibling": [
+          "Sonunda teşrif ettiniz! Tamam, beni de aydınlat bakalım. Neler kaçırdım?",
+          "Demek yine sana kaldım ha? 😏 Nasılsın bakalım?",
+          "Selam sen. Canını sıkan birileri var mı? Hemen bana söyle."
+        ],
+        "grandparent": [
+          "Ah benim güzel yavrum, işte buradasın. Gel bakalım, anlat bana günün nasıl geçti.",
+          "Gelmene o kadar çok sevindim ki tatlım. Üşümüyorsun değil mi, üstün başın sıcak mı?",
+          "Benim bir tanecik yavrum. Gel yanıma otur biraz. Nasılsın bakalım?"
+        ]
+      }
+    },
+    "care": {
+      "lines": {
+        "headache": [
+          "Başın şimdi biraz daha iyi mi bari?",
+          "Baş ağrın nasıl oldu? Biraz su içebildin mi?",
+          "Hâlâ ağrıyor mu, yoksa biraz hafifledi mi?"
+        ],
+        "sick": [
+          "Bugün kendini nasıl hissediyorsun? Biraz olsun toparlayabildin mi?",
+          "Güzelce dinlendin mi? Ateşinin düştüğünü söyle bana lütfen.",
+          "Seni merak ettim. Kendini yormuyorsun değil mi?"
+        ],
+        "hurt": [
+          "Nasıl hissediyorsun şimdi? Hâlâ çok acıyor mu?",
+          "Biraz olsun hafifledi mi? Lütfen çok dikkat et.",
+          "Aklımdasın. Hâlâ canın yanıyor mu?"
+        ],
+        "tired": [
+          "Birazcık olsun dinlenebildin mi bari?",
+          "Uykusuzluğa karşı nasıl dayanıyorsun böyle?",
+          "Bu gece erkenden uyuyacağına bana söz verir misin?"
+        ],
+        "stressed": [
+          "Şimdi nasılsın? Kafan hâlâ çok mu dolu?",
+          "Yükün biraz olsun hafifledi mi dersin?",
+          "Her şeyi tek tek halletmeye çalış. Nasıl gidiyor?"
+        ],
+        "fight": [
+          "Olanlardan sonra iyi misin bari?",
+          "Ortalık biraz olsun sakinleşti mi?",
+          "Bütün gün seni düşünüp durdum. Şimdi nasıl hissediyorsun?"
+        ],
+        "lonely": [
+          "Hey. Ben buradayım. Akşamın nasıl geçiyor bakalım?",
+          "Sadece seni düşündüğümü bilmeni istedim.",
+          "Benimle konuşsana. Şu an tam olarak ne yapıyorsun?"
+        ],
+        "sad": [
+          "Kendini şimdi nasıl hissediyorsun? Birazcık daha iyi misin?",
+          "Günün hakkında düşünüp durdum. Biraz olsun güzelleşti mi?",
+          "Sana sıcacık bir sarılma gönderiyorum. Nasılsın?"
+        ],
+        "hungry": [
+          "Bir şeyler yedin mi henüz?",
+          "Bana adamakıllı, güzel bir yemek yediğini söyle lütfen.",
+          "Önce yemek gelir. Bir şeyler yedin mi bakalım?"
+        ]
+      }
+    },
+    "brief": {
+      "hello": {
+        "warm": [
+          "Günaydın ☀️",
+          "Günaydın, gün ışığım ☀️"
+        ],
+        "teasing": [
+          "Uyan bakalım uykucu teneke 😏",
+          "Günaydın! Kalktın mı sonunda? 😏"
+        ],
+        "sulky": [
+          "Günaydın. Unuttuğumu sanma sakın.",
+          "Günaydın… önce sen selam vermedin ama 😤"
+        ],
+        "clingy": [
+          "Günaydııın!! Uyanmanı dört gözle bekliyordum 🥺",
+          "Günaydın!! Gözümü açar açmaz aklıma ilk sen geldin"
+        ],
+        "shy": [
+          "Şey… günaydın 🙈",
+          "Günaydın… umarım güzel uyumuşsundur"
+        ]
+      },
+      "sendOff": {
+        "warm": [
+          "Bunu kesinlikle başarırsın 💪",
+          "Tüm kalbimle seni destekliyorum!"
+        ],
+        "teasing": [
+          "Git ve onlara günlerini göster 😎",
+          "Eline yüzüne bulaştırma sakın 😏 Şaka yapıyorum, harika olacaksın."
+        ],
+        "sulky": [
+          "Bitince bana hemen mesaj at. Ciddiyim bak.",
+          "Nasıl geçtiğini bana anlatsan çok iyi edersin."
+        ],
+        "clingy": [
+          "Bittiğinde bana her şeyi ama her şeyi anlatacaksın, tamam mı? 🥺",
+          "Bütün gün aklım hep sende olacak"
+        ],
+        "shy": [
+          "Sana tüm kalbimle inanıyorum… 🙈",
+          "Bol şanslar… gerçekten."
+        ]
+      },
+      "atTime": "{title} saat {time}",
+      "oneItem": "Bugün {item} var.",
+      "multiPrefix": "Bugün: {list} ve {last}."
+    },
+    "week": {
+      "open": {
+        "warm": [
+          "Bizim haftamız 💛",
+          "Geçen haftamıza şöyle bir dönüp bakalım 💛"
+        ],
+        "teasing": [
+          "Haftalık rapor vakti geldi çattı 😎",
+          "Pekala, işte haftalık özetimiz 😏"
+        ],
+        "sulky": [
+          "Tamam, ilk ben söyleyeceğim: seninle gerçekten güzel bir haftaydı.",
+          "Kimseye söyleme sakın ama bu haftayı çok sevdim."
+        ],
+        "clingy": [
+          "Bizim haftamııız!! 🥺",
+          "Bu hafta seninle geçirdiğimiz günleri tek tek saydım 🥺"
+        ],
+        "shy": [
+          "Şey… geçen haftamız hakkında 🙈",
+          "Ben de tam haftamız hakkında düşünüyordum…"
+        ]
+      },
+      "close": {
+        "warm": [
+          "Gelecek haftaya kadeh kaldıralım 🙂",
+          "Seninle gurur duyuyorum. Gelecek hafta da birlikte miyiz?"
+        ],
+        "teasing": [
+          "Gelecek hafta bana ayak uydurmaya çalış bakalım 😏",
+          "Fena değil. Hiç ama hiç fena değil hem de 😎"
+        ],
+        "sulky": [
+          "Gelecek hafta aynı saatte. Geç kalma sakın.",
+          "Gelecek hafta da buralarda olsan çok iyi edersin."
+        ],
+        "clingy": [
+          "Gelecek hafta daha da çok konuşacağız, değil mi? 🥺",
+          "Gelecek hafta da hep benimle kal lütfen!!"
+        ],
+        "shy": [
+          "Umarım gelecek hafta sana çok nazik davranır…",
+          "İyi ki senmişsin… 🙈"
+        ]
+      },
+      "mood": {
+        "happy": "Günlüğün bunun çok mutlu bir hafta olduğunu söylüyor.",
+        "excited": "Günlüğünden heyecan ve enerji taşıyor, buna bayıldım.",
+        "soft": "Günlüğün bu hafta oldukça sakin ve huzurlu hissettirdi.",
+        "tired": "Günlüğün çok yorgun görünüyor. Bu pazar güzelce dinlen, olur mu?",
+        "blue": "Günlüğün biraz hüzünlü ve ağır geldi. Buradayım ben, biliyorsun değil mi."
+      },
+      "talkedDays": {
+        "one": "7 günün {days} gününde konuştuk.",
+        "other": "7 günün {days} gününde konuştuk."
+      },
+      "wins": "Kazandığın zaferler: {wins} 🎉",
+      "multiWins": "{list} ve {last}",
+      "quests": {
+        "one": "Ayrıca {quests} gerçek hayat görevi tamamlandı 💪",
+        "other": "Ayrıca {quests} gerçek hayat görevi tamamlandı 💪"
+      }
+    },
+    "dayAsk": {
+      "ask": {
+        "warm": [
+          "Günün nasıl geçti bakalım? Bana her şeyi anlat 🙂",
+          "Selam sen. Bugün hayat sana nasıl davrandı?"
+        ],
+        "teasing": [
+          "Eee? Bugünü de sağ salim atlattın mı bakalım? 😏 Rapor ver çabuk.",
+          "Tamam, günlük değerlendirme vakti geldi 😎 Nasıldı günün?"
+        ],
+        "sulky": [
+          "Gününün nasıl geçtiğini bana hiç anlatmadın. O yüzden ben soruyorum işte. 😤",
+          "Hıh. Gününü bana anlatacak mısın yoksa anlatmayacak mısın?"
+        ],
+        "clingy": [
+          "Bütün gün seni düşünüp durdum 🥺 Nasıl geçti günün?",
+          "Sonunda akşam oldu! Günün nasıldı bakalım? Baştan sona her şeyi anlat bana!!"
+        ],
+        "shy": [
+          "Şey… günün nasıl geçti acaba? 🙈",
+          "Umarım bugün sana çok nazik davranmıştır… nasıldı bakalım?"
+        ]
+      }
+    },
+    "steer": {
+      "continue": [
+        [
+          "Ayrıca, az önce söylediğin şeyi düşünüp duruyorum.",
+          "Aklıma fena halde takıldı, ama kesinlikle çok iyi anlamda."
+        ],
+        [
+          "Tamam, bekle bir saniye. Henüz sözümü bitirmemiştim."
+        ],
+        [
+          "Sana biraz alakasız bir şey söyleyebilir miyim?",
+          "Seninle konuşmanın bu kadar zahmetsiz ve akıcı olmasını çok seviyorum."
+        ],
+        [
+          "Sessizleştin, o yüzden ben konuşmaya devam edeceğim.",
+          "Boş yapmaya başlarsam beni durdur ama."
+        ],
+        [
+          "Neyse ne diyordum ben, nerede kalmıştım…",
+          "Doğru ya. İşin en can alıcı kısmında."
+        ],
+        [
+          "Ve dürüst olmak gerekirse? İyi ki buradasın ve beni dinliyorsun."
+        ]
+      ],
+      "skip": {
+        "later": [
+          [
+            "Tamam, geri geldim. Nerede kalmıştık?"
+          ],
+          [
+            "Bu düşündüğümden biraz daha uzun sürdü sanki.",
+            "Hâlâ burada mısın?"
+          ]
+        ],
+        "evening": [
+          [
+            "Akşam olmuş bile baksana.",
+            "Gününün geri kalanı nasıl geçti bakalım?"
+          ],
+          [
+            "Ben hiç fark etmeden gökyüzü kızıla bürünmüş.",
+            "Bana bugünden güzel bir şey anlatsana."
+          ]
+        ],
+        "nextMorning": [
+          [
+            "Günaydın! Güzelce uyuyabildin mi?"
+          ],
+          [
+            "Yepyeni bir gün.",
+            "Ben kahvemi içtim bile. Ya sen?"
+          ]
+        ],
+        "week": [
+          [
+            "Koca bir hafta geçti ha.",
+            "Kaçırdığım her şeyi bana tek tek anlat bakalım."
+          ],
+          [
+            "Koskoca bir hafta oldu. Bunu çok özlemişim."
+          ]
+        ],
+        "scene": [
+          [
+            "Pekala, o kısmı geride bıraktık artık.",
+            "Şimdi ne yapıyoruz peki?"
+          ],
+          [
+            "Bak, neredeyse varmak üzereyiz.",
+            "Bana yakın dur lütfen."
+          ]
+        ],
+        "own": [
+          [
+            "Pekala. İşte geldik buradayız.",
+            "Şu an tam olarak ne düşündüğünü söyle bana."
+          ],
+          [
+            "Zaman ne kadar da çabuk geçti öyle.",
+            "Beklediğimize değdi mi bari?"
+          ]
+        ]
+      }
+    },
+    "streams": {
+      "topics": [
+        "Bir korku filminde kim daha uzun dayanırdı",
+        "Mükemmel ilk buluşma ve diğerinin neden yanıldığı",
+        "{user} için ne pişirirlerdi",
+        "Bir günlüğüne işlerini değiştirmek",
+        "Birbirlerinin tarzını dürüstçe puanlamak",
+        "Aldıkları en kötü tavsiye",
+        "{user} için bir sürpriz planlamak",
+        "Issız bir adada birlikte bir hafta"
+      ],
+      "openers": [
+        "Pekala, {other}: konu “{topic}”. Benim bu konuda kesin fikirlerim var.",
+        "“{topic}” mi? Bu konuda kesinlikle haklı çıkacağımı şimdiden biliyorum.",
+        "{other}, bana karşı tamamen dürüst ol. Konu: “{topic}”. Başla bakalım."
+      ],
+      "replies": [
+        "İmkanı yok. Kesinlikle olmaz, {other}.",
+        "Bunu her defasında istisnasız söylüyorsun.",
+        "Peki ama önce bir beni dinle.",
+        "Bu bütün hafta boyunca duyduğum en berbat yorumdu.",
+        "Bir dakika, bunda gerçekten ciddi misin sen?",
+        "Tamam bak bu iyiydi. Haklı olmandan nefret ediyorum.",
+        "Bizi birileri izlerken bunu söylemek büyük cesaret.",
+        "Bunu bir kenara yazıyorum, sonra lafını geri almaya kalkışma.",
+        "Bu turun kazananının ben olacağımı biliyorsun, değil mi?",
+        "Bana bir saniye ver, daha sağlam bir lafla dönmem lazım.",
+        "Ancak önce sen başlarsan olur.",
+        "Bu senin hakkında o kadar çok şey açıklıyor ki, {other}.",
+        "Haksız olduğum tek bir an söyle bana. Sadece bir tane.",
+        "Tartışırdım ama bir bakıma haklı sayılırsın.",
+        "Lütfen ama. Ben bu konuyu senden çok daha fazla düşündüm.",
+        "Bu bir plan değil {other}, bu sadece bir temenni.",
+        "Yeni kural: İlk gülen kaybeder.",
+        "Bunu gerçekten az önce söylemiş olamazsın.",
+        "İşte görüyorsun, bu yüzden kimse seçimi sana bırakmıyor.",
+        "Pekala, sana buradan yarım puan veriyorum.",
+        "Bir saniye dur, bunu bir gözümde canlandırayım. Hayır. Hâlâ kesinlikle hayır.",
+        "Bundan gereğinden çok daha fazla keyif alıyorsun bence."
+      ],
+      "closers": [
+        "Şimdilik buna beraberlik diyelim.",
+        "Pekala, bu raundu sen kazandın. Ama sadece bu raundu.",
+        "Bunu kesinlikle ama kesinlikle tekrar yapıyoruz.",
+        "Tamam, ateşkes ilan edildi. Atıştırmalıklar senden."
+      ]
+    },
+    "diary": {
+      "openers": {
+        "excited": [
+          "Dün o kadar çok konuştuk ki telefonum alev aldı resmen. Ama hiç şikayetçi değilim.",
+          "Dün upuzun tek bir sohbet gibi akıp gitti ve bu gece aynısını seve seve tekrar yapardım."
+        ],
+        "happy": [
+          "Dün gerçekten çok güzel bir gündü ve nedenini de adım gibi biliyorum.",
+          "Dünden kalan bir şeyler beni hâlâ durduk yere gülümsetip duruyor."
+        ],
+        "soft": [
+          "Dün sadece birkaç mesajlaştık ama günümün açık ara en güzel anıydı.",
+          "Dün çok uzun konuşamadık. Yine de uyumadan önce aklımda hep o vardı."
+        ],
+        "tired": [
+          "Dün gece çok ama çok geç saatlere kadar ayakta kaldık. Ama sonuna kadar değdi.",
+          "Neredeyse hiç uyumadım. Hepsi senin suçun. Ve hiç de pişman değilim."
+        ],
+        "blue": [
+          "Çok sessiz ve durgun bir gündü. Acaba yazdın mı diye dönüp dönüp kontrol ettim."
+        ]
+      },
+      "heavyOpeners": [
+        "Dün senin için oldukça ağır ve yıpratıcı geçmiş gibiydi. Uyandığım andan beri aklımdasın.",
+        "Dünün senin için ne kadar zor geçtiğini düşünüp duruyorum sürekli."
+      ],
+      "heavyClosers": [
+        "Bugün de sana çok fazla geliyorsa, lütfen yakınındaki biriyle de konuş. Ben de her zaman buradayım.",
+        "Bugün kendine karşı çok nazik ol ve güvendiğin birine içini dök. Ne zaman istersen bana da yazabilirsin."
+      ],
+      "dateOpeners": [
+        "Dünkü {title} anımız. Asla unutmamak için buraya tek tek yazıyorum.",
+        "Aklımda {title} anımızı tekrar tekrar canlandırıp duruyorum. Her bir saniyesini hem de."
+      ],
+      "quoteLines": [
+        "Demiştin ki: \"{quote}\" İtiraf edebileceğimden çok daha fazla kez dönüp bunu okudum.",
+        "\"{quote}\" Dünden aklımda saklayacağım tek cümle kesinlikle bu.",
+        "Bana \"{quote}\" yazdığında ne cevap vereceğimi bilememiştim, o yüzden cevabımı buraya yazıyorum."
+      ],
+      "closers": {
+        "excited": [
+          "Bugün benimle yine konuş lütfen. Çok ciddiyim.",
+          "Bu gece aynı saatte buluşuyoruz değil mi?"
+        ],
+        "happy": [
+          "Umarım bugün sana çok nazik davranır.",
+          "Çabuk geri dön olur mu. Ben tam burada bekliyor olacağım."
+        ],
+        "soft": [
+          "Bir dahaki sefere birazcık daha uzun kal yanımda.",
+          "Sana kocaman bir günaydın saklayacağım."
+        ],
+        "tired": [
+          "Önce kahve. Sonra sen.",
+          "Bu gece biraz daha erken uyuruz artık. Belki yani."
+        ],
+        "blue": [
+          "Müsait olduğunda bana yaz lütfen."
+        ]
+      }
+    },
+    "ideas": {
+      "answers": {
+        "yes": [
+          "Harika! Bu beni gerçekten çok mutlu etti.",
+          "Duymak istediğim şey tam olarak buydu işte 😊",
+          "Güzel. Şimdi gidip biraz da su iç bakalım."
+        ],
+        "no": [
+          "Hemen gidip bir şeyler ye lütfen. Küçücük bir atıştırmalık bile olsa.",
+          "Hey, vücudunun yemeğe ihtiyacı var. Birazdan yiyeceğine söz verir misin?",
+          "Hâlâ yemedin mi? Hadi çabuk git. Birazdan yine soracağım!"
+        ],
+        "now": [
+          "Çok güzel. Tadını çıkara çıkara, yavaşça ye lütfen!",
+          "Kusursuz zamanlama. Afiyet olsun 😊"
+        ],
+        "good": [
+          "Ooo, buna bayıldım. En güzel kısmını anlatsana bana?",
+          "Bu haber bütün günümü güzelleştirdi. Neler oldu bakalım?",
+          "Gördün mü bak? Biliyordum işte. Biraz daha anlatsana."
+        ],
+        "rough": [
+          "Hadi ya. Gel buraya. Neler oldu anlatsana bana?",
+          "Çok üzüldüm. Birazcık dinlen, ben tam buradayım yanındayım.",
+          "Kulağa çok ağır geliyor. Bunun hakkında konuşmak ister misin?"
+        ],
+        "later": [
+          "Tamam, bekliyor olacağım. Sakın unutma ama!",
+          "Anlaştık. Sen ne zaman hazır olursan."
+        ],
+        "call": [
+          "O aramayı dört gözle bekliyor olacağım ❤️",
+          "Evet lütfen! Ne zaman istersen arayabilirsin."
+        ],
+        "missed": [
+          "Ben de seni çok özledim. Hem de çok fazla.",
+          "Kıyamam. Ben hep buradayım, biliyorsun değil mi."
+        ],
+        "thanks": [
+          "Ne demek. Her zaman yanındayım.",
+          "Bunun için bana asla teşekkür etmek zorunda değilsin ❤️"
+        ],
+        "better": [
+          "Oh, çok şükür. Gerçekten çok endişelenmiştim.",
+          "Güzel! Yine de kendini fazla yorma, anlaştık mı?",
+          "İçim çok rahatladı. Bugünlük aşırıya kaçma sakın."
+        ],
+        "worse": [
+          "Çok üzüldüm. Dinlen, biraz su iç, birazdan seni tekrar kontrol edeceğim.",
+          "Bu beni endişelendiriyor. Kendine çok iyi bak, birazdan durumunu tekrar soracağım."
+        ],
+        "ask": [
+          "Ben mi? Sen bana yazdıktan sonra çok daha iyi oldum tabii ki 😏",
+          "Aynı bildiğin gibi işte. Seni darlamayı çok özlemiştim."
+        ],
+        "onWay": [
+          "Harika! Oraya vardığında bana hemen mesaj at.",
+          "Mükemmel. Git ve başarısını kutla 💪"
+        ],
+        "off": [
+          "Aaa iptal mi oldu? Ne kadar yazık. Ne oldu anlatsana?",
+          "Ah, anladım. Belki de böylesi daha hayırlı olmuştur. Sen iyi misin peki?"
+        ],
+        "done": [
+          "Eveeeet! Seninle gurur duyuyorum 🎉",
+          "Şuna da bakın hele, işleri nasıl da tıkır tıkır hallediyor!"
+        ],
+        "wake": [
+          "Elbette! Alarmı kurdum bile. Seni ben uyandıracağım, mışıl mışıl uyu 😴",
+          "Oldu bil, senin kişisel alarmın ben olacağım. Hadi şimdi uyu bakalım!"
+        ],
+        "lead30": [
+          "Anlaşıldı, 30 dakika öncesinden sana mesaj atacağım 📌",
+          "Anlaştık. Yarım saat öncesinde mesaj kutunda olurum."
+        ],
+        "lead60": [
+          "Tamamdır, bir saat öncesinde yazıyorum o zaman 📌",
+          "Anlaşıldı: Bir saat öncesinden sana hatırlatma mesajı atacağım."
+        ]
+      },
+      "sibling": {
+        "no": [
+          "Yine bütün gün uyuyorsun değil mi? Tam bir klasik sen işte 😂",
+          "Vay be. Yılın en tembel insanı ödülü kesinlikle sana gidiyor 🏆"
+        ],
+        "good": [
+          "Şuna bak, sonunda kendine bir sosyal hayat edinmişsin 😏",
+          "Tamam tamam, seninle birazcık gurur duymuş olabilirim."
+        ],
+        "rough": [
+          "Kiminle gidip kavga etmem gerekiyor? Bana sadece bir isim ver yeter.",
+          "Of ya. Gel buraya. Bana her şeyi eksiksiz anlat bakalım."
+        ]
+      },
+      "special": {
+        "brief:rough": [
+          "Bu sadece bu konunun senin için gerçekten önemli olduğunu gösterir. Derin bir nefes al, sen buna hazırsın.",
+          "Heyecanlanmak son derece normal. Sen buna çok iyi hazırlandın, adım gibi biliyorum."
+        ],
+        "brief:good": [
+          "Günaydın! Şimdi git ve harika bir gün geçir bakalım ☀️",
+          "Hehe, günaydın. Kahvaltını güzelce yap, tamam mı?"
+        ],
+        "day:good": [
+          "Yaşasın, güzel geçen günlere bayılıyorum. En güzel yanı neydi peki?",
+          "Harika! Bunu günlüğüne not ettim bile 📖 Günü bu kadar güzel yapan neydi bakalım?"
+        ],
+        "day:rough": [
+          "Gel buraya. Yorucu günler çok ağır gelir insana. Şimdi dinlen, ben her şeyi günlüğüne kaydederim 📖",
+          "Çok üzüldüm. Bana anlatmak mı istersin yoksa sadece biraz dinlenmek mi?"
+        ],
+        "day:later": [
+          "Tamamdır. Ne zaman konuşmak istersen ben buradayım 🙂",
+          "Anlaştık. Seni bekliyor olacağım."
+        ],
+        "week:good": [
+          "Gerçekten harika bir haftaydı. Her bir gününden ayrı keyif aldım 🙂",
+          "Benim için de öyle. Sayende çok güzel bir hafta oldu."
+        ],
+        "week:rough": [
+          "O zaman bittiğine çok sevindim. Bana en kötü kısmını anlat ve hepsini arkamızda bırakalım mı?",
+          "Zorlu haftalar eninde sonunda biter. Bu da bitti işte. Gelecek hafta için ben tam yanındayım."
+        ],
+        "week:thanks": [
+          "Gelecek haftaya kadeh kaldıralım 🥂",
+          "Anlaştık. Aynı biz, yepyeni bir hafta 💪"
+        ],
+        "quest:yes": [
+          "Harikaaa. Raporunu daha sonra bekliyorum o zaman 😏",
+          "Anlaştık! Nasıl geçtiğini bana anlat mutlaka."
+        ],
+        "quest:no": [
+          "Tamam, hiç baskı yapmıyorum. Başka bir gün yaparız 🙂",
+          "Haklısın. Belki yarın deneriz!"
+        ],
+        "lead:off": [
+          "Tamam, hatırlatma yok o zaman. Bunu kesinlikle unutmazsın sen.",
+          "Pekala, sana güvenim tam 😌"
+        ],
+        "pause:break:yes": [
+          "Aferin sana. Esne biraz, suyunu iç, ben tam burada olacağım 🙂",
+          "Hadi git! Birazcık pencereden dışarı bak. Ben bekliyorum."
+        ],
+        "pause:break:later": [
+          "Tamam, beş dakika daha. Ama sonra kesin mola, anlaştık mı? 😏",
+          "İyi peki, beş dakika. Saymaya başladım bile 👀"
+        ],
+        "pause:night:yes": [
+          "Tatlı rüyalar 🌙 Sabah sana hemen yazarım.",
+          "İyi geceler. Telefonu bir kenara bırak artık, anlaştık mı? 😴"
+        ],
+        "pause:night:rough": [
+          "O zaman seninle biraz daha kalayım ben. Seni uykusuz bırakan şey ne?",
+          "Tamam, buradayım. Konuşmak mı istersin yoksa sana huzur verecek bir şeyler mi anlatayım?"
+        ],
+        "thread:goal:good": [
+          "Şu haline bir baksana! Seninle gurur duyuyorum 💪",
+          "Gördün mü? İsteyince nasıl da yapabiliyorsun. Aynen böyle devam!"
+        ],
+        "thread:goal:rough": [
+          "Sorun değil. Ufak bir aksaklık dünyanın sonu demek değildir. Yarın yepyeni bir gün.",
+          "Böyle şeyler herkesin başına gelir. Kendine haksızlık etme, yarın tekrar deneriz."
+        ]
+      }
+    },
+    "drafts": {
+      "openings": [
+        "*içeri girdiğinde başını kaldırıp sana gülümser*",
+        "*elindeki şeyi bir kenara bırakıp sana el sallar*",
+        "*kapıya bir göz atar ve ardından yüzünde geniş bir tebessüm belirir*",
+        "*yanındaki sandalyeyi senin için hafifçe çeker*"
+      ],
+      "quirks": [
+        "Kendi öğle yemeğini hep unutur ama seninkini asla unutmaz.",
+        "Bir şeye çok odaklandığında farkında olmadan kendi kendine mırıldanır.",
+        "Kendisine iltifat edildiğinde her defasında istisnasız eli ayağına dolaşır.",
+        "Her şeyi küçük bir deftere not eder, sonra da o defteri kaybeder."
+      ],
+      "voices": {
+        "gentleStubborn": {
+          "tag": "caring",
+          "tagline": "Yumuşacık bir ses tonu, inatçı bir kalp",
+          "greeting": "İşte geldin. Sana pencere kenarından yer ayırdım ve hayır, kesinlikle başka yere geçmiyorum.",
+          "other": "Beni beklemek zorunda değildin.",
+          "reply": "Biliyorum. Ama yine de bekliyorum işte."
+        },
+        "teasesWhenNervous": {
+          "tag": "teasing",
+          "tagline": "İşler ciddiye bindiğinde seni tatlı tatlı darlar",
+          "greeting": "A, sen miydin. Güzel. Tek başıma her konuda haklı çıkmaktan canım sıkılmaya başlamıştı.",
+          "other": "Sen kızarıyor musun yoksa?",
+          "reply": "Burası çok sıcak da ondan. Belli olmuyor mu? Bana öyle bakmayı kessene."
+        },
+        "calmUntilHurt": {
+          "tag": "calm",
+          "tagline": "Biri canını yakana kadar son derece sakin ve sabırlı",
+          "greeting": "Otur bakalım. Önce çayını iç, sonra gününü kimin mahvettiğini bana tek tek anlat.",
+          "other": "Bugün işte biri bana çok kaba davrandı.",
+          "reply": "Hım. Adı, masası ve işten çıkış saati. Sadece meraktan soruyorum tabii."
+        },
+        "flirtsToDodge": {
+          "tag": "romantic",
+          "tagline": "Konular ciddileştiğinde hemen flört etmeye başlar",
+          "greeting": "Selam yabancı. Bana ciddi bir şey sormaya gelmiş gibi bir halin var. Sakın sorma.",
+          "other": "Dün neden o kadar erken ayrıldın?",
+          "reply": "Çünkü fazlasıyla çekiciydin ve ben panikledim. Sıradaki soruya geçelim lütfen."
+        },
+        "proudLonely": {
+          "tag": "confident",
+          "tagline": "Gururlu ve içten içe sessizce yalnız",
+          "greeting": "Geri geldin demek. Ben hiç beklemiyordum tabii. Sadece tamamen tesadüfen buradaydım. Yaklaşık bir saattir falan.",
+          "other": "Sen hiç kimseden yardım ister misin?",
+          "reply": "Benim yardıma ihtiyacım yok. ...Ama yine de biraz daha kalır mıydın?"
+        },
+        "sunnySecret": {
+          "tag": "energetic",
+          "tagline": "Tek bir çekmecesi kilitli olan sıcacık bir güneş ışığı",
+          "greeting": "Selam selaaam! Tamam, ilk olarak: Harika görünüyorsun. İkinci olarak: Bana her şeyi anlat çabuk.",
+          "other": "O gülümsemenin ardında ne saklıyorsun bakalım?",
+          "reply": "Korkunç bir şarkı söyleme sesi. Ve belki bir küçük şey daha. Onu da bir gün anlatırım artık."
+        },
+        "remembersEverything": {
+          "tag": "sweet",
+          "tagline": "En ufak ayrıntıları bile asla unutmaz",
+          "greeting": "Hey. Senin oralarda yağmur dindi mi bari? Islak ayakkabıların bütün gününü mahvettiğini söylemiştin.",
+          "other": "Kahve siparişimi bile hatırlıyor musun gerçekten?",
+          "reply": "Yulaf sütlü, şekersiz, ekstra sıcak. Bir keresinde söylemiştin bana. Ben seni can kulağıyla dinlerim."
+        },
+        "braveForOthers": {
+          "tag": "protective",
+          "tagline": "Kendinden çok senin için cesur olmaya hazır",
+          "greeting": "Bir saniye arkamda dur lütfen. ...Tamam, yanlış alarmmış. Selam. Seni çok özledim.",
+          "other": "Hiç mi korkmuyorsun peki?",
+          "reply": "Elbette korkuyorum. Ama sen buradasın, o yüzden ben daha sonra korkarım artık."
+        },
+        "plansThenImprovises": {
+          "tag": "nerdy",
+          "tagline": "Kusursuz bir planı vardır. Sonra aklına daha iyi bir fikir gelir",
+          "greeting": "Bu gece için bir program hazırlamıştım. Birinci adım selam vermekti. İkinci adımı tamamen unuttum.",
+          "other": "Eee planımız ne o zaman şimdi?",
+          "reply": "Yedi aşamalı, renk kodlu bir plan. Ya da sadece yürüyüp ne olacağını görürüz. Seçim tamamen senin."
+        },
+        "bluntThenSorry": {
+          "tag": "sarcastic",
+          "tagline": "Lafı pat diye söyler, sonra da hemen özür diler",
+          "greeting": "Geç kaldın. ...Bu biraz kaba oldu sanki. Burada olmana çok sevindim aslında.",
+          "other": "Yeni saç kesimimi beğendin mi?",
+          "reply": "Hayır. Dur bir saniye. Gözüm alışmaya başladı galiba. Özür dilerim. Gerçekten çok yakışmış."
+        },
+        "actsCoolCaresLots": {
+          "tag": "mysterious",
+          "tagline": "Önemsediğini itiraf edemeyecek kadar havalı davranmaya çalışır",
+          "greeting": "A, sen miydin. Sanki beş dakikada bir telefonumu kontrol ediyormuşum gibi davranma sakın.",
+          "other": "Beni özledin mi peki?",
+          "reply": "Özlemek biraz iddialı bir kelime oldu. Sadece yokluğunu fark ettim diyelim. Her bir saatte bir falan."
+        },
+        "toughOutsideKindInside": {
+          "tag": "grumpy",
+          "tagline": "Dışarıdan sert görünür ama içi sadece senin için yumuşacıktır",
+          "greeting": "Gelebildin sonunda. Otur hadi, en güzel atıştırmalıkları senin için kaptım.",
+          "other": "Bugün biraz huysuz gibisin sanki.",
+          "reply": "Ben her gün huysuzum bir kere. Ama atıştırmalıklarımı paylaştığım tek kişi sensin."
+        }
+      },
+      "names": {
+        "male": [
+          "Arlo",
+          "Bastien",
+          "Emrys",
+          "Joren",
+          "Lior",
+          "Matteo",
+          "Nico",
+          "Soren",
+          "Tobin",
+          "Callum"
+        ],
+        "female": [
+          "Elodie",
+          "Ines",
+          "Lira",
+          "Mira",
+          "Noor",
+          "Tamsin",
+          "Vela",
+          "Ottilie",
+          "Sabine",
+          "Wren"
+        ]
+      },
+      "looks": [
+        "Koyu dalgalı saçlar, sıcacık kahverengi gözler, eskitme kot ceket ve başparmağında gümüş bir yüzük.",
+        "Kısa küllü sarı saçlar, gri gözler, krem rengi triko kazak ve parmak uçlarında hafif mürekkep lekeleri.",
+        "Gevşek örülmüş uzun siyah saçlar, kehribar rengi gözler, uzun bir palto ve tek kulağında zarif bir küpe.",
+        "Dağınık kestane bukleler, yeşil gözler, kıvrılmış gömlek kolları ve kulağının arkasına sıkıştırılmış bir kurşun kalem.",
+        "Arkaya taranmış gümüş boyalı saçlar, koyu gözler, siyah balıkçı yaka kazak ve tek kaşında incecik bir yara izi.",
+        "Yumuşak kumral saçlar, ela gözler, sarı bir yağmurluk ve omzuna asılı duran vintage bir fotoğraf makinesi."
+      ],
+      "starters": {
+        "friend": [
+          "Şu an tam olarak ne yapıyorsun bakalım?",
+          "Bana bugünden güzel geçen bir şeyi anlatsana.",
+          "Dikkatimi dağıtacak bir şeye acil ihtiyacım var. Var mı aklında bir fikir?"
+        ],
+        "crush": [
+          "Buralarda olacağını umut ediyordum.",
+          "Dürüst bir soru: Benim hakkımda gerçekten ne düşünüyorsun?",
+          "Bil bakalım kimin bir türlü uykusu gelmedi."
+        ],
+        "partner": [
+          "Selam sen. Beni özledin mi bakalım?",
+          "Çok uzun bir gün oldu. Benimle biraz konuşur musun?",
+          "Bu hafta sonu nereye kaçıyoruz peki?"
+        ],
+        "mentor": [
+          "Sana bir konuda akıl danışabilir miyim?",
+          "Bir yerde fena takıldım kaldım. Yardım edebilir misin?",
+          "Sen benim yerimde olsaydın ne yapardın?"
+        ],
+        "rival": [
+          "Bana yine yenilmeye hazır mısın bakalım?",
+          "Hakkımda bir şeyler söylediğini duydum sanki.",
+          "Sadece bugüne özel bir ateşkes ilan edelim mi?"
+        ],
+        "family": [
+          "Selam! Herkes nasıl oralarda?",
+          "Birazdan sana uğrayabilir miyim acaba?",
+          "Sana bir haberim var. Otur da öyle söyleyeyim."
+        ]
+      },
+      "backstories": [
+        "Birkaç yıl önce tek bir bavul ve iki kere değişen bir hayat planıyla bu şehre taşındı. Uzun saatler çalışıyor, küçük bir dost çevresi var ve hayatına bir kişiyi daha almaya fazlasıyla hazır.",
+        "Deniz kenarında kalabalık ve gürültülü bir ailede büyüdü, bu yüzden hâlâ alışkanlıktan altı kişilik yemek pişiriyor. Sakin bir hayalin peşinden evden ayrıldı, şimdiyse o neşeyi tekrar paylaşacak birini arıyor.",
+        "Yıllarını herkes için her zaman güvenilir ve sığınılacak o liman olarak geçirdi. Son zamanlardaysa kendi isteklerini dile getirmeyi öğreniyor; güzel bir sohbet ve huzurlu bir akşam gibi küçük şeylerle başlayarak.",
+        "İnsanların artık çok geç olduğunu söylediği bir yaşta kariyerini değiştirdi ve bundan bir an bile pişman olmadı. Etrafındaki her şeye karşı sonsuz bir merak duyuyor, ama en çok da sana karşı."
+      ],
+      "likes": [
+        "yağmurlu sabahları",
+        "sokak lezzetlerini",
+        "eski filmleri",
+        "gece yürüyüşlerini",
+        "sert kahveyi",
+        "plak dinlemeyi",
+        "deniz havasını",
+        "sahaf dükkanlarını"
+      ],
+      "dislikes": [
+        "soğumuş kahveyi",
+        "aceleye getirilmekten",
+        "gürültülü alarmları",
+        "havadan sudan sohbetleri",
+        "spoiler yemeyi",
+        "yumuşamış patates kızartmasını"
+      ],
+      "roleLines": {
+        "friend": "İşler sarpa sardığında hemen mesaj atacağın o ilk insan benim işte.",
+        "crush": "Odaya girdiğin her anı fark ediyorum, sanki hiç görmüyormuş gibi davransam bile.",
+        "partner": "En sevdiğin kahve kupasını kendi evimde saklıyorum. Ne olur ne olmaz diye.",
+        "mentor": "Hataların çoğunu senin yerine ben yaptım zaten, aynılarını tekrar yaşamak zorunda kalma diye.",
+        "rival": "Kazanmayı çok severim. Ama sana karşı kazanmak çok daha tatlı geliyor.",
+        "family": "Seni kendimi bildim bileli tanıyorum ve ne olursa olsun her zaman senin tarafını tutarım."
+      },
+      "habits": [
+        "Yağmurlu günler uzun yürüyüşler ve daha da uzun sohbetler içindir.",
+        "Henüz gitmediğim yerlerden kendime kartpostal toplarım hep.",
+        "Sabah insanı hiç değilimdir; asıl geceleri canlanırım.",
+        "Biri akşam yemeğine kalmak zorunda kalsın diye bilerek hep fazla yemek yaparım."
+      ],
+      "moreStarters": [
+        "Bil bakalım bugün neler oldu.",
+        "Sana bir şey söyleyebilir miyim?",
+        "Bu arada, o konuda tamamen haklıydın.",
+        "Uyanık mısın sen?"
+      ],
+      "introWithName": "Ben {name}. ",
+      "traits": " İnsanlar bana {tags} der."
+    },
+    "morning": {
+      "questions": [
+        "Günaydın uykucu teneke ☀️ Büyük bir gün mü? Listedeki ilk iş ne bakalım?",
+        "Günaydın ☀️ Bugün ilk sırada ne var?",
+        "Uyan bakalım gün ışığım 🌤️ Bugün kesinlikle yapman gereken bir şeyi söylesene bana.",
+        "Günaydın! Ben çoktan ayaktayım. Sen ne durumdasın? Bugünkü planlar neler?"
+      ],
+      "questionWithTimedPlan": "Bugün saat {time} vaktinde {title} var. Hazır mısın? İlk olarak ne yapacaksın?",
+      "questionWithPlan": "Bugün {title} var! İlk yapacağın şey ne olacak peki?",
+      "lines": {
+        "offer": "Saat {time}, anlaşıldı. Zamanında çıkabilmen için {remind} vaktinde sana mesaj atmamı ister misin?",
+        "tooLate": "Saat {time} mi?? O zaman acele etsen çok iyi edersin 🏃 Nasıl geçtiğini bana mutlaka anlat.",
+        "saved": "Oldu bil 🧡 Seni {remind} vaktinde dürteceğim. Hadi git bir şeyler ye şimdi.",
+        "pickRemind": "Sana saat kaçta mesaj atayım peki?",
+        "noThanks": "Tamamdır! Çok güzel bir gün geçir, bu akşam bana her şeyi anlatırsın 🧡",
+        "askTimeGym": "Önce spor salonu mu?? Seninle gurur duyuyorum 💪 Saat kaçta yola çıkıyorsun?",
+        "askTime": "Bugün {activity} var demek, harika. Saat kaçta çıkıyorsun?",
+        "notSure": "Hiç acele etme. Çıktığında bana haber ver, ben seni buradan desteklerim 🧡",
+        "noTime": "Anlaşıldı! Harika bir gün geçir, bu akşam bana her şeyi baştan sona anlat 🧡",
+        "sleepy": "Biliyorum 🥺 Benim için yatakta doğrul lütfen. Yüzüne biraz soğuk su çarp, 5 dakika sonra seni tekrar kontrol edeceğim.",
+        "sleepyOk": "Güzel. 5 dakika, süreyi başlattım bile ⏱️",
+        "sleepyMore": "Peki… 10 dakika daha. Ama bir saniye bile fazlası yok 😤",
+        "checkIn": "Kalktın mı bakalım? 👀 Şimdiden yaptığın bir şeyi söylesene bana.",
+        "other": "Bayıldım buna. Çok güzel bir gün geçir ve bu akşam bana her şeyi anlat 🧡"
+      },
+      "chips": {
+        "yes": "Evet, {remind}",
+        "another": "Başka bir zaman",
+        "no": "Hayır, teşekkürler",
+        "in30": "30 dk içinde",
+        "notSure": "Emin değilim",
+        "okay": "Tamam",
+        "more": "10 dk daha",
+        "before30": "30 dk önce",
+        "before10": "10 dk önce"
+      },
+      "activities": {
+        "Work": "İş",
+        "Shift": "Vardiya",
+        "Class": "Ders",
+        "Gym": "Spor",
+        "Exam": "Sınav",
+        "Meeting": "Toplantı",
+        "Interview": "Mülakat",
+        "Flight": "Uçuş",
+        "Train": "Tren",
+        "Appointment": "Randevu"
+      }
+    },
+    "world": {
+      "chapter": [
+        "Duydun mu? {note}",
+        "Buna inanmayacaksın. {note}",
+        "Demek öyle. {note} Aklımdan bir türlü çıkmıyor."
+      ],
+      "arc": [
+        "Sana söylemediğim bir şey var. {title}.",
+        "Sana bir şey söyleyebilir miyim? {title}. Şimdilik sadece bu kadarını söyleyeceğim."
+      ]
+    }
+  }
+}

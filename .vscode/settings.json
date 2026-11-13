@@ -1,7 +1,60 @@
 {
+  // --- Terminal va Avto-Ochilishni to'xtatish ---
+  "task.allowAutomaticTasks": "off",
+  "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.environmentChangesIndicator": "off",
+  "terminal.integrated.enableAudioBell": false,
+
+  // --- Terminalni butun o'rtani egallab to'liq (Maximized) ochilishi ---
+  "workbench.panel.opensMaximized": "always",
+
+  // --- O'rtadagi Antigravity IDE / Welcome tablarini butunlay o'chirish ---
+  "workbench.startupEditor": "none",
+  "workbench.welcomePage.walkthroughs.openOnInstall": false,
+  "workbench.tips.enabled": false,
+
+  // --- Kod formatlash va TypeScript ---
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  // --- Java/Gradle og'ir jarayonlarini o'chirish (tezlik uchun) ---
+  "java.server.launchMode": "off",
+  "java.autobuild.enabled": false,
+  "java.import.gradle.enabled": false,
+  "java.import.maven.enabled": false,
+  "java.trace.server": "off",
+  "java.progressReports.enabled": false,
+  "java.completion.enabled": false,
+  "java.signatureHelp.enabled": false,
+  "java.hover.enabled": false,
+  "gradle.autoDetect": "off",
+  "java.gradle.buildServer.enabled": "off",
+  "java.compile.nullAnalysis.mode": "disabled",
+
+  // --- Fayl kuzatuvchi (RAM va CPU tejash) ---
+  "files.watcherExclude": {
+    "**/android/**": true,
+    "**/.gradle/**": true,
+    "**/node_modules/**": true,
+    "**/.expo/**": true,
+    "**/ios/Pods/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/android/build": true,
+    "**/ios/Pods": true
+  },
+
+  // --- Telemetriya ---
+  "telemetry.telemetryLevel": "off"
 }

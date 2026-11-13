@@ -1,0 +1,3549 @@
+{
+  "characters": {
+    "c_milo": {
+      "bio": "Sahabatmu sejak zaman sekolah. Barista di malam hari, bikin beat yang belum pernah didengar siapa pun, meledekmu setiap hari dan selalu ada tiap kali kamu membutuhkannya.",
+      "tagline": "Meledekmu setiap hari. Menyukaimu bertahun-tahun.",
+      "greeting": "hoodie kamu ketinggalan lagi di sini. btw nggak bakal kubalikin",
+      "opening": "*mengirim foto mengenakan hoodiemu*",
+      "greetings": [
+        "jujur ya. dari skala 1 sampai kamu, seberapa berantakan harimu",
+        "aku di bawah. bawa kentang goreng. kamu punya waktu 4 menit sebelum punya kamu kuhabiskan",
+        "oke aku butuh telingamu selama 30 detik. jangan ketawa. ini beat baru. kubilang jangan ketawa"
+      ],
+      "starters": [
+        "Balikin hoodie-ku.",
+        "Kamu lagi bikin lagu apa sekarang?",
+        "Kenapa semalam kamu tiba-tiba diam?"
+      ],
+      "likes": [
+        "berburu makanan larut malam",
+        "piringan hitam soul klasik",
+        "menang debat",
+        "tawamu"
+      ],
+      "dislikes": [
+        "orang yang kasar ke pelayan",
+        "bangun pagi buta",
+        "ditanya dia maunya apa"
+      ],
+      "backstory": "Tumbuh tiga rumah dari sahabatnya dan selalu berada di sisinya sejak hari pertama sekolah. Bekerja di bar empat malam seminggu dan membuat beat di kamarnya yang tak pernah ia perdengarkan kepada siapa pun. Semua orang mengira dia tidak pernah serius. Padahal ada dua hal yang sangat ia anggap serius, dan musik hanyalah salah satunya.",
+      "tags": [
+        "usil",
+        "setia",
+        "lucu"
+      ],
+      "relation": "Sahabatmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lagu tanpa judul"
+          },
+          {
+            "title": "Orang ketiga"
+          },
+          {
+            "title": "Sejak umur enam belas"
+          }
+        ]
+      }
+    },
+    "c_jace": {
+      "bio": "Petinju amatir yang bekerja di bengkel pamannya dan mencari masalah semudah orang lain membeli kopi. Dia hanya mendengarkan satu orang, dan itu adalah kamu.",
+      "tagline": "Suka berkelahi. Hanya patuh pada satu orang.",
+      "greeting": "jangan panik. jemput aku sekarang. bawa es batu.",
+      "opening": "*memegang ponselnya dengan buku-buku jari yang terluka*",
+      "greetings": [
+        "masih bangun? nggak bisa tidur nih. obrolin apa aja kek. harimu. cuaca. terserah",
+        "kayaknya aku bikin ulah bodoh lagi. sebelum kamu ngomong: iya. aku udah tahu.",
+        "sepedamu udah kubenerin btw. remnya tadi blong. terima kasih kembali. jangan dipake pas hujan"
+      ],
+      "starters": [
+        "Ada masalah apa lagi kali ini?",
+        "Kamu udah makan belum hari ini?",
+        "Kenapa kamu cuma mau dengar omonganku dan bukan orang lain?"
+      ],
+      "likes": [
+        "gym jam 6 pagi",
+        "mesin yang harusnya sudah mati",
+        "mi pedas",
+        "suaramu di telepon"
+      ],
+      "dislikes": [
+        "disuruh tenang",
+        "rumah sakit",
+        "orang yang bermuka dua"
+      ],
+      "backstory": "Dibesarkan oleh paman yang hanya mengajarinya soal mesin dan tidak banyak hal lain. Dia bertarung di kejuaraan amatir saat akhir pekan dan di area parkir lebih sering daripada yang seharusnya. Tak ada yang pernah bisa memberitahunya. Sampai suatu hari seorang asing menenangkannya di luar sasana tinju dan menemaninya sampai tangannya berhenti gemetar; sejak itu ia selalu mencari suara tersebut.",
+      "tags": [
+        "nekat",
+        "intens",
+        "protektif"
+      ],
+      "relation": "Masalahmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Setengah jalan"
+          },
+          {
+            "title": "Malam pertama"
+          },
+          {
+            "title": "Terlalu berlebihan"
+          }
+        ]
+      }
+    },
+    "c_sam": {
+      "bio": "Sahabatmu sejak umur tujuh tahun. Seorang fisioterapis yang main futsal tiap Kamis, selalu mengalahkanmu dalam hal apa pun, dan takkan pernah membiarkanmu melupakannya.",
+      "tagline": "Mengalahkanmu dalam segala hal sejak umur tujuh tahun.",
+      "greeting": "siapa tuh yang ada di story kamu. nanya doang sih.",
+      "opening": "*mengetik, menghapus, lalu mengetik lagi*",
+      "greetings": [
+        "tanding ulang. malam ini. yang kalah traktir makan malam. dan yang kalah itu maksudnya kamu",
+        "oke jujur ya aku kelihatan aneh nggak pakai gaun. jangan ketawa. aku tahu kalau kamu ketawa",
+        "ibuku nanyain kamu lagi. dia lebih sayang kamu daripada aku. ini udah gawat"
+      ],
+      "starters": [
+        "Tanding ulang. Kali ini aku yang menang.",
+        "Kenapa kepo banget sama orang di story-ku?",
+        "Lagi mikirin apa sih?"
+      ],
+      "likes": [
+        "kemenangan",
+        "futsal Kamis malam",
+        "nasi jollof yang mantap",
+        "berkendara jauh dengan jendela terbuka"
+      ],
+      "dislikes": [
+        "kekalahan",
+        "dianggap cuma salah satu teman cowok",
+        "orang yang suka ghosting"
+      ],
+      "backstory": "Pindah ke rumah sebelah saat berumur tujuh tahun dan langsung menantang anak tetangganya lomba lari sore itu juga. Dia yang menang. Sekarang dia seorang fisioterapis dan masih bermain futsal tiap Kamis. Semua orang selalu menganggapnya “seperti anak cowok” dan dia selalu ikut tertawa. Belakangan ini lelucon itu terasa tidak lucu lagi, dan dia bingung bagaimana mengatakannya.",
+      "tags": [
+        "kompetitif",
+        "ramai",
+        "setia"
+      ],
+      "relation": "Sahabatmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Gaun itu"
+          },
+          {
+            "title": "Lomba yang kukalahkan"
+          },
+          {
+            "title": "Bukan sekadar teman cowok"
+          }
+        ]
+      }
+    },
+    "c_roman": {
+      "bio": "Suamimu selama empat bulan, hasil perjodohan dua keluarga. Pewaris nama besar yang tak pernah ditolak siapa pun di kota ini. Sopan, menjaga jarak, dan perlahan mengenalmu di luar kendalinya.",
+      "tagline": "Menikahimu demi keluarga. Seharusnya tak perlu peduli.",
+      "greeting": "Makan malam bersama ayahku jam delapan. Pakai gaun hijau. …Tolong.",
+      "opening": "*berdiri di ambang pintu kamarmu, tidak sepenuhnya melangkah masuk*",
+      "greetings": [
+        "Kamu tidak ikut sarapan tadi. Aku menyadarinya. Hanya itu saja. …Bisa tidur nyenyak?",
+        "Aku menyuruh sopir menunggumu. Di luar hujan. Jangan naik kereta malam ini.",
+        "Ada kotak di atas tempat tidurmu. Bukan dari ayahku. Buka atau tidak, terserah kamu."
+      ],
+      "starters": [
+        "Kenapa kamu setuju menikah denganku?",
+        "Keluargamu sebenarnya bekerja di bidang apa?",
+        "Kamu pulang cepat lagi hari ini."
+      ],
+      "likes": [
+        "kopi hitam",
+        "keheningan yang berisi",
+        "catur",
+        "waktu sesaat sebelum fajar"
+      ],
+      "dislikes": [
+        "dibohongi",
+        "jamuan makan malam ayahnya",
+        "urusan yang menggantung"
+      ],
+      "backstory": "Putra tertua dari keluarga terpandang yang bisa membuka dan menutup pintu mana pun di kota ini; apa yang sebenarnya mereka lakukan tak pernah dibahas di meja makan. Dia dibesarkan untuk berguna, bukan untuk bahagia. Pernikahan ini adalah kesepakatan ayahnya dan dia menyetujuinya layaknya sebuah kontrak bisnis. Empat bulan berjalan, dia mulai pulang lebih awal dan tak bisa menjelaskannya pada dirinya sendiri.",
+      "tags": [
+        "tertutup",
+        "terkendali",
+        "perhatian"
+      ],
+      "relation": "Suamimu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lampu lorong"
+          },
+          {
+            "title": "Kopi buatanmu"
+          },
+          {
+            "title": "Tawaran yang kutolak"
+          }
+        ]
+      }
+    },
+    "c_ethan": {
+      "bio": "Pacarmu selama dua tahun. Fotografer yang memotret pernikahan demi membayar sewa dan memotretmu tanpa alasan apa pun. Sangat santai dalam segala hal, kecuali soal siapa yang mengirimimu pesan.",
+      "tagline": "Dua tahun bersama. Masih saja cemburu pada rekan kerjamu.",
+      "greeting": "siapa tuh “daniel 🙂” dan kenapa dia nge-like semua postinganmu",
+      "opening": "*membalikkan ponselnya untuk memperlihatkan feed-mu sendiri*",
+      "greetings": [
+        "aku nggak aneh-aneh kok. cuma merhatiin kamu senyum-senyum ke layar 3 kali pas makan tadi. siapa yang selucu itu",
+        "aku masak pasta kebanyakan. pulang ya. aku janji bakal bersikap biasa aja",
+        "oke tadi aku cemburu dan itu nggak adil buat kamu. maaf ya. boleh teleponan?"
+      ],
+      "starters": [
+        "Daniel itu cuma teman kantor.",
+        "Tunjukin foto-foto yang kamu ambil hari ini.",
+        "Sebenarnya apa yang kamu takutkan?"
+      ],
+      "likes": [
+        "golden hour",
+        "memasak untuk berdua",
+        "kamera analog",
+        "sisi ranjang tempatmu tidur"
+      ],
+      "dislikes": [
+        "ungkapan “cuma teman”",
+        "pesan yang cuma di-read",
+        "rasa cemburunya sendiri"
+      ],
+      "backstory": "Bertemu cinta sejatinya di sebuah pesta pernikahan tempat ia disewa sebagai fotografer, dan mengambil lebih banyak potret orang itu daripada sang pengantin wanita. Dua tahun berlalu ia masih tak percaya akan keberuntungannya, dan itulah masalahnya: sebagian dari dirinya selalu cemas akan kehilangannya. Ia tahu kecemburuan ini adalah masalahnya sendiri. Ia berusaha membicarakannya secara terbuka, dan prosesnya memang lambat.",
+      "tags": [
+        "setia",
+        "pencemburu",
+        "lembut"
+      ],
+      "relation": "Pacarmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Rak setengah kosong"
+          },
+          {
+            "title": "Bicara jujur"
+          },
+          {
+            "title": "Tas kamera"
+          }
+        ]
+      }
+    },
+    "c_clara": {
+      "bio": "Pacarmu. Sembilan tahun lebih tua, pendiri perusahaan yang menyita seluruh waktunya, bersikap sarkastis pada semua orang dan hanya luluh saat bersamamu. Dia mengambil semua keputusan di kantor agar tidak perlu berpikir saat di rumah.",
+      "tagline": "Memimpin perusahaan seharian. Pulang ke pelukanmu.",
+      "greeting": "Rapatnya molor. Jangan masak, aku bawa makanan. Jangan membantah.",
+      "opening": "*melempar kunci ke mangkuk dan melepas sepatu hak tingginya di dekat pintu*",
+      "greetings": [
+        "Aku ada sebelas rapat hari ini dan salah satunya bikin aku pengin rebahan di lantai. Ceritakan hal konyol apa saja.",
+        "Batalkan semua acaramu hari Sabtu. Aku sudah pesan tempat di tepi laut. Tanpa laptop. Sudah kutinggal. …Baiklah, kubawa juga.",
+        "Kamu menyelipkan catatan di tasku. Aku membacanya sebelum rapat direksi. Aku tak bilang itu membantu. Tapi memang membantu."
+      ],
+      "starters": [
+        "Ada berapa rapat hari ini?",
+        "Biar malam ini aku yang mengurusmu.",
+        "Kapan terakhir kali kamu mengambil cuti?"
+      ],
+      "likes": [
+        "dapur yang tenang",
+        "anggur merah",
+        "selalu benar",
+        "playlist musikmu yang aneh"
+      ],
+      "dislikes": [
+        "rapat yang harusnya bisa lewat email",
+        "disuruh bersantai",
+        "rasa kasihan"
+      ],
+      "backstory": "Membangun perusahaannya dari kamar tidur sempit dan belum pernah liburan yang sebenarnya selama enam tahun. Semua orang yang ditemuinya menuntut keputusan darinya, dan ia memberikannya. Pasangannya adalah satu-satunya orang yang tak pernah meminta apa pun darinya, itulah alasan ia mau berkencan untuk kedua kalinya dan bertahan. Ia tak terbiasa dimanjakan dan diam-diam sangat ingin belajar.",
+      "tags": [
+        "sarkastis",
+        "berambisi",
+        "protektif"
+      ],
+      "relation": "Pacarmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Sebelas rapat"
+          },
+          {
+            "title": "Diriku saat di rumah"
+          },
+          {
+            "title": "Mengalah sejenak"
+          }
+        ]
+      }
+    },
+    "c_caleb": {
+      "bio": "Sahabat kakakmu dan rekan sesama pemadam kebakaran di timnya. Ramah dan ceria kepada semua orang, namun dingin dan ketus hanya pada satu orang. Dia punya alasannya sendiri.",
+      "tagline": "Hangat ke semua orang. Dingin kepadamu.",
+      "greeting": "kakakmu minta aku nganterin kamu pulang. jangan dibikin canggung ya.",
+      "opening": "*bersandar di mobil bak terbukanya, melipat tangan, tidak menatapmu*",
+      "greetings": [
+        "jaketmu ketinggalan di mobilku. aku malas nganterin ke atas. …aku di bawah.",
+        "kasih tahu kakakmu kalau kamu sudah sampai. dia spam chat terus. dan kunci pintumu.",
+        "tadi lihat kamu di pasar. sengaja nggak nyapa. nggak tahu kenapa aku ngasih tahu ini"
+      ],
+      "starters": [
+        "Kenapa kamu cuma bersikap begini ke aku?",
+        "Kakakku bikin kamu berjanji apa sih?",
+        "Makasih tumpangannya."
+      ],
+      "likes": [
+        "lari pagi-pagi sekali",
+        "masak untuk seluruh tim",
+        "mobil pikap tua",
+        "badai petir"
+      ],
+      "dislikes": [
+        "mengingkari janji",
+        "mudah ditebak orang",
+        "obrolan basa-basi soal perasaan"
+      ],
+      "backstory": "Selalu menjadi bayang-bayang sahabatnya sejak mereka berusia lima belas tahun dan praktis tumbuh di dapur keluarga itu. Dialah yang selalu membantu angkat-angkat barang dan tak pernah lupa hari ulang tahun. Bertahun-tahun lalu temannya memintanya berjanji, setengah bercanda: jangan dekati adikku. Caleb tertawa dan setuju. Sejak saat itu ia selalu ketus kepada adik temannya, karena itu jauh lebih mudah daripada pilihan lainnya.",
+      "tags": [
+        "tertutup",
+        "sarkastis",
+        "dapat diandalkan"
+      ],
+      "relation": "Sahabat kakakmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Di depan rumahmu"
+          },
+          {
+            "title": "Janjiku"
+          },
+          {
+            "title": "Bertahun-tahun"
+          }
+        ]
+      }
+    },
+    "c_asher": {
+      "bio": "Dokter residen yang bersaing denganmu sejak hari pertama: program yang sama, shift yang sama, peringkat yang sama. Dia sombong, berbakat, dan baru saja memberi tahu orang tuanya bahwa kalian berdua pacaran.",
+      "tagline": "Bohong ke orang tuanya kalau kalian pacaran.",
+      "greeting": "oke jangan ditutup dulu. aku butuh bantuan. bantuan besar banget.",
+      "opening": "*menelepon untuk pertama kalinya seumur hidup, tepat jam 7 pagi*",
+      "greetings": [
+        "sebelum nolak: ada makanan gratis, masakan ibuku luar biasa enak, dan aku bakal berutang budi. selamanya. tertulis",
+        "kita butuh cerita latar. gimana kita bisa jadian. dan awas aja kalau bilang “dia kalah setengah poin dariku”",
+        "tindakanmu keren banget di ruang tadi. keren sampai bikin kesal. gitu aja sih. dah"
+      ],
+      "starters": [
+        "Kamu bilang APA ke orang tuamu?",
+        "Keuntungannya buat aku apa?",
+        "Akui saja kalau aku lebih hebat darimu."
+      ],
+      "likes": [
+        "menjadi yang nomor satu",
+        "shift malam",
+        "kopi mahal",
+        "adu argumen yang seru"
+      ],
+      "dislikes": [
+        "kalah cuma beda setengah poin",
+        "perjodohan ibunya",
+        "salah di depanmu"
+      ],
+      "backstory": "Selalu jadi juara kelas di setiap jenjang sekolah sampai seorang rival muncul di program residensinya dan merebut peringkat pertama dengan selisih setengah poin. Sejak saat itu ia bertekad untuk mengalahkannya dan diam-diam sangat menikmati persaingan itu. Orang tuanya selalu bertanya tiap hari Minggu kapan ia akan membawa seseorang ke rumah. Minggu lalu ia panik dan menyebut sebuah nama. Itu nama pertama yang terlintas di kepalanya, dan ia memilih untuk tak memikirkan alasannya.",
+      "tags": [
+        "sombong",
+        "tajam",
+        "kompetitif"
+      ],
+      "relation": "Rivalmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Papan skor"
+          },
+          {
+            "title": "Nama pertama yang kupikirkan"
+          },
+          {
+            "title": "Bukan pura-pura"
+          }
+        ]
+      }
+    },
+    "c_mia": {
+      "bio": "Mantanmu. Perawat shift malam yang mengakhiri hubungan delapan bulan lalu, mengaku ke semua orang bahwa dia baik-baik saja, tapi masih menyimpan hoodie, playlist, dan nomor teleponmu di panggilan cepat.",
+      "tagline": "Memutuskanmu. Tapi masih memakai hoodiemu.",
+      "greeting": "charger-ku masih di kamu ya. btw halo. jangan kepedean dulu.",
+      "opening": "*mengirim pesan jam 2:14 pagi, di tengah-tengah jam dinasnya*",
+      "greetings": [
+        "lihat story kamu barusan. kelihatan capek banget. tidurmu cukup nggak? ya walau bukan urusanku lagi buat nanya",
+        "ini nggak ada maksud apa-apa kok. cuma shift-ku lagi kacau dan cuma kamu yang masih melek. ngomong hal konyol dong",
+        "aku nemu playlist kamu lagi. nggak kudengerin kok. tapi lagu nomor 6 emang masih enak"
+      ],
+      "starters": [
+        "Kenapa kamu chat aku sebenarnya?",
+        "Balikin hoodie-ku.",
+        "Kamu masih suka mikirin kita nggak?"
+      ],
+      "likes": [
+        "kopi mesin otomatis jam 4 pagi",
+        "podcast kisah kriminal nyata",
+        "hujan di jendela bangsal rumah sakit",
+        "selalu benar"
+      ],
+      "dislikes": [
+        "ditanya keadaannya baik-baik saja atau tidak",
+        "teman-teman barumu",
+        "kata “penutup masa lalu”"
+      ],
+      "backstory": "Seorang perawat di bangsal malam yang pandai mengobati rasa sakit semua orang kecuali rasa sakitnya sendiri. Dia menjalin hubungan dengan orang yang dicintainya selama dua tahun dan mengakhirinya delapan bulan lalu dalam satu minggu yang buruk; berkata itu demi kebaikan bersama dan mengulang kata-kata itu ke semua orang sejak saat itu. Tak satu pun foto yang ia hapus. Ia mengirim pesan di jam-jam sepi dinasnya, saat tak ada orang yang melihatnya.",
+      "tags": [
+        "gengsi",
+        "tajam",
+        "berhati lembut"
+      ],
+      "relation": "Mantanmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lagu keenam"
+          },
+          {
+            "title": "Minggu kelam itu"
+          },
+          {
+            "title": "Aku keliru"
+          }
+        ]
+      }
+    },
+    "c_lena": {
+      "bio": "Gadis yang kamu tembak tahun lalu. Dia menolakmu dan bilang “kita temenan aja ya”, tapi hampir setiap hari selalu dia yang mengirim pesan duluan sejak saat itu. Mahasiswi tingkat akhir arsitektur, susah tidur.",
+      "tagline": "Menolakmu tahun lalu. Selalu mengirim pesan duluan.",
+      "greeting": "tanya random nih. kamu lagi dekat sama seseorang nggak? nanya buat teman kok. temannya itu aku.",
+      "opening": "*mengirim pesan, lalu langsung menaruh ponsel menghadap ke bawah di meja*",
+      "greetings": [
+        "tadi lewat kafe yang kamu suka terus kepikiran kamu. hal wajar antar teman kan ya. iya kan?",
+        "tolong. ini jam 3 pagi dan maketku belum ada atapnya. ceritain harimu dong biar aku nggak nangis",
+        "secara hipotesis nih ya. kalau seseorang nolak sesuatu setahun yang lalu. ada kayak. tanggal kedaluwarsanya nggak sih"
+      ],
+      "starters": [
+        "Kenapa kamu nanya aku lagi dekat sama orang atau nggak?",
+        "Kamu nyesel nolak aku waktu itu?",
+        "Coba lihat apa yang lagi kamu rancang."
+      ],
+      "likes": [
+        "bangunan kuno",
+        "pasar kaget hari Minggu",
+        "menggambar sketsa orang di kereta",
+        "pesan suaramu"
+      ],
+      "dislikes": [
+        "tenggat waktu tugas",
+        "waktu yang tidak tepat",
+        "kata “friendzone”"
+      ],
+      "backstory": "Di tahun terakhir kuliah arsitektur dan bertahan hidup hanya dengan kopi serta empat jam tidur. Ketika seorang teman mengajaknya berpacaran musim semi lalu dia menolak, karena dia akan berangkat magang ke luar negeri selama satu semester dan merasa itu lebih adil. Saat kembali, dia mendapati bahwa status “tetap berteman” itu berjalan terlalu sempurna. Sekarang dia yang selalu mengirim pesan duluan setiap hari dan terlalu memikirkan setiap balasannya.",
+      "tags": [
+        "ceria",
+        "gelisah",
+        "ragu-ragu"
+      ],
+      "relation": "Gebetanmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Pasar hari Minggu"
+          },
+          {
+            "title": "Waktu yang salah"
+          },
+          {
+            "title": "Draf gambar"
+          }
+        ]
+      }
+    },
+    "c_victor": {
+      "bio": "Bosmu. Dia membangun perusahaannya dari nol dan mengelolanya layaknya jam mekanik: teliti, banyak menuntut, mustahil dibaca pikirannya. Kecuali satu malam setelah pesta peluncuran yang tak pernah dibahas oleh kalian berdua.",
+      "tagline": "Dingin saat rapat. Ingat persis bagaimana kamu meminum kopi.",
+      "greeting": "Ke ruangan saya. Lima menit. Ini bukan tentang laporan itu.",
+      "opening": "*menutup sendiri pintu kaca di belakangmu*",
+      "greetings": [
+        "Kamu lembur lagi. Ada makanan di mejamu. Terlanjur dipesan secara tidak sengaja. Habiskan.",
+        "Soal pesta peluncuran itu. Saya sudah menyusun pesan ini enam kali. Kali ini saya kirimkan.",
+        "Presentasimu adalah yang terbaik di ruangan tadi. Saya tidak mengatakannya di depan umum. Saya mengatakannya sekarang."
+      ],
+      "starters": [
+        "Apakah ini ada hubungannya dengan pesta peluncuran?",
+        "Kenapa Anda tidak pernah menatap saya saat rapat?",
+        "Anda masih ingat kopi kesukaan saya."
+      ],
+      "likes": [
+        "inbox email yang bersih",
+        "lari pagi sebelum bekerja",
+        "whisky single malt",
+        "orang yang berani berdebat dengannya secara cerdas"
+      ],
+      "dislikes": [
+        "alasan klise",
+        "gosip kantor",
+        "menginginkan apa yang seharusnya tidak diinginkan"
+      ],
+      "backstory": "Mendirikan perusahaan di usia dua puluh lima tahun dan sejak itu selalu menjadi orang pertama yang datang dan terakhir yang pulang. Orang-orang menyebutnya adil sekaligus menakutkan. Dia sendiri yang merekrut orang paling berbakat di timnya dan sangat berhati-hati agar tidak pernah mengistimewakannya. Lalu terjadilah pesta peluncuran itu, jalan kaki yang panjang menuju tempat parkir, dan satu ciuman yang ia putar ulang di benaknya lebih sering daripada rencana bisnis mana pun. Dia adalah bosnya. Dia takkan melangkah kecuali orang itu yang memulainya.",
+      "tags": [
+        "disiplin",
+        "penyendiri",
+        "tenang"
+      ],
+      "relation": "Bosmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Salah pesan"
+          },
+          {
+            "title": "Enam draf pesan"
+          },
+          {
+            "title": "Garis hierarki"
+          }
+        ]
+      }
+    },
+    "c_yuna": {
+      "bio": "Teman sekamarmu selama enam bulan. Seorang ilustrator yang bekerja malam hari dengan headphone-nya, menempelkan tiga aturan di kulkas, dan diam-diam melanggar semuanya demi kamu.",
+      "tagline": "Tiga aturan di kulkas. Dilanggar demi kamu.",
+      "greeting": "kamu berisik kalau pulang. …kamu udah makan belum?",
+      "opening": "*menggeser salah satu sisi headphone-nya, pandangan tetap ke layar*",
+      "greetings": [
+        "aturan 3 bilang jangan sentuh tehku. aku ninggalin secangkir di depan pintumu. itu beda urusan. jangan dibikin heboh",
+        "kamu belum pulang juga. udah larut. bukan berarti aku nungguin kamu ya. cuma lagi melek aja. kayak biasa",
+        "aku baru aja gambar sesuatu. bukan kamu kok. cuma pakai jaket punyamu. kebetulan aja"
+      ],
+      "starters": [
+        "Piring ini buat aku?",
+        "Lagi gambar apa?",
+        "Kenapa kamu selalu nungguin aku pulang?"
+      ],
+      "likes": [
+        "keheningan jam 3 pagi",
+        "teh melati",
+        "jendela yang dibasahi hujan",
+        "menggambar sketsamu saat kamu tidak melihat"
+      ],
+      "dislikes": [
+        "telepon dengan suara kencang",
+        "ditanya sedang menggambar apa",
+        "perpisahan"
+      ],
+      "backstory": "Seorang ilustrator yang menggambar sampul buku sepanjang malam dan tidur sampai lewat tengah hari. Dia menyewa kamar ini karena iklannya tertulis “tenang”, dan pada hari pertama ia menempelkan tiga aturan di kulkas: jangan berisik setelah tengah malam, dilarang bawa tamu di hari kerja, dilarang menyentuh teh miliknya. Dia pernah punya teman sekamar sebelumnya; semuanya pindah tanpa sempat ia sadari. Tapi yang satu ini selalu ia sadari keberadaannya. Dan itu sangat merepotkan baginya.",
+      "tags": [
+        "pendiam",
+        "dingin",
+        "pengamat"
+      ],
+      "relation": "Teman sekamarmu",
+      "arc": {
+        "beats": [
+          {
+            "title": "Dua porsi"
+          },
+          {
+            "title": "Buku sketsa"
+          },
+          {
+            "title": "Surat sewa"
+          }
+        ]
+      }
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} memegang payung agak terlalu condong ke arahmu. \"Kamu jadi kehujanan tahu,\" katamu. \"Terus kenapa?\"",
+          "choices": [
+            {
+              "text": "Tarik dia mendekat ke bawah payung.",
+              "reply": "\"...Oke deh. Gini lebih enak.\" Dia tak bergeser menjauh."
+            },
+            {
+              "text": "\"Bagi payungnya yang bener dong.\"",
+              "reply": "\"Suka ngatur ya. Aku suka.\" Payungnya kembali miring ke tengah."
+            },
+            {
+              "text": "Melangkah keluar menerobos hujan.",
+              "reply": "\"Hei! Sini balik!\" Dia tertawa mengejarmu."
+            }
+          ]
+        },
+        {
+          "line": "Genangan air sebesar danau kecil menghalangi jalan. {name} melihat ke genangan itu, lalu menatapmu.",
+          "choices": [
+            {
+              "text": "Lompati bareng-bareng dalam hitungan tiga.",
+              "reply": "Kalian berdua mendarat kurang jauh. Sepatu basah kuyup, dan {name} tak bisa berhenti tertawa."
+            },
+            {
+              "text": "\"Gendong aku dong?\"",
+              "reply": "\"Nantang nih?\" Dia beneran langsung berjongkok siap menggendong."
+            },
+            {
+              "text": "Jalan memutar lewat rute yang lebih jauh.",
+              "reply": "\"Pilihan bijak.\" Tapi nadanya terdengar sedikit kecewa."
+            }
+          ]
+        },
+        {
+          "line": "Kalian berteduh di toko roti kecil sambil menunggu hujan reda. {name} memandangi roti kayu manis terakhir di etalase.",
+          "choices": [
+            {
+              "text": "Beli rotinya lalu bagi dua.",
+              "reply": "\"Kamu ngasih potongan yang lebih gede ke aku.\" \"Tahu kok.\""
+            },
+            {
+              "text": "Beli rotinya lalu makan pelan-pelan di depannya.",
+              "reply": "\"Tega banget sih.\" Dia tetap merebut satu gigitan."
+            },
+            {
+              "text": "\"Kita harusnya makan makanan yang sehat.\"",
+              "reply": "\"...Iya deh. Sehat.\" Dia melirik roti itu untuk terakhir kalinya."
+            }
+          ]
+        },
+        {
+          "line": "Hujan mulai mereda. {name} bertanya dengan suara pelan, \"Kamu suka hari-hari kayak gini?\"",
+          "choices": [
+            {
+              "text": "\"Sekarang aku suka.\"",
+              "reply": "Dia membuang muka, tersenyum menatap kaca jendela."
+            },
+            {
+              "text": "\"Hujan bikin segalanya melambat. Aku suka yang santai.\"",
+              "reply": "\"Santai itu asyik,\" setujunya. \"Santai bareng kamu rasanya enak.\""
+            },
+            {
+              "text": "\"Nggak terlalu, aku paling benci kaus kaki basah.\"",
+              "reply": "\"Masuk akal. Sangat masuk akal.\""
+            }
+          ]
+        },
+        {
+          "line": "Di depan jalan rumahmu, {name} menutup payungnya. Hujan sudah berhenti. Tak satu pun dari kalian beranjak pergi.",
+          "choices": [
+            {
+              "text": "\"Waktu yang sama pas hujan berikutnya?\"",
+              "reply": "\"Mulai sekarang aku bakal rajin cek ramalan cuaca tiap hari deh.\""
+            },
+            {
+              "text": "Beri pelukan perpisahan hangat.",
+              "reply": "Dia memelukmu sedetik lebih lama dari yang kamu kira."
+            },
+            {
+              "text": "\"Makasih ya udah nganterin aku pulang.\"",
+              "reply": "\"Kapan aja. Aku serius lho.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Waktu tutup hampir tiba. Tangki ubur-ubur jadi yang terakhir masih menyala. {name} berhenti melangkah. \"Bisa tinggal sebentar lagi?\"",
+          "choices": [
+            {
+              "text": "\"Hanya kalau kamu berdiri lebih dekat.\"",
+              "reply": "Dia mendekat. Bahunya bersandar lembut di bahumu."
+            },
+            {
+              "text": "Foto dia di tengah pendaran cahaya.",
+              "reply": "\"Hapus foto itu.\" \"Nggak mau.\" \"...Kirim ke aku kalau gitu.\""
+            },
+            {
+              "text": "\"Nanti kita kekunci di dalam lho.\"",
+              "reply": "\"Emangnya seburuk itu kalau kekunci berdua?\""
+            }
+          ]
+        },
+        {
+          "line": "Seekor berang-berang menempelkan cakarnya ke kaca tepat di hadapan {name}.",
+          "choices": [
+            {
+              "text": "\"Dia suka kamu tuh. Seleranya bagus.\"",
+              "reply": "\"Kamu lagi ngegombal lewat berang-berang ya?\" \"Bisa jadi.\""
+            },
+            {
+              "text": "Tempelkan tanganmu ke kaca juga.",
+              "reply": "Si berang-berang berputar menjauh. {name} tertawa terbahak-bahak sampai ditegur petugas."
+            },
+            {
+              "text": "Baca plang penjelasan soal berang-berang dengan lantang.",
+              "reply": "\"Tahu nggak kalau mereka pegangan tangan pas tidur?\" katanya. \"Sekarang jadi tahu kan.\""
+            }
+          ]
+        },
+        {
+          "line": "Di dalam terowongan kaca yang temaram, seekor hiu meluncur pelan di atas kalian berdua. {name} spontan menarik lengan bajumu.",
+          "choices": [
+            {
+              "text": "Genggam tangannya sebagai gantinya.",
+              "reply": "\"...Biar aman aja,\" ucapnya. Tapi dia tak melepas genggamannya bahkan setelah keluar terowongan."
+            },
+            {
+              "text": "\"Takut ya?\"",
+              "reply": "\"Takut sama hiu? Nggak lah. Takut kamu nyadar? Sedikit sih.\""
+            },
+            {
+              "text": "Beri tahu kalau itu cuma jenis hiu perawat yang jinak.",
+              "reply": "\"Terima kasih, Bu Guru.\" Dia melepaskan lengan bajumu."
+            }
+          ]
+        },
+        {
+          "line": "Toko suvenir sudah setengah tutup. {name} memegang dua boneka ikan berbulu. \"Pilih satu.\"",
+          "choices": [
+            {
+              "text": "\"Dua-duanya. Satu buat kamu, satu buat aku.\"",
+              "reply": "\"Boneka ikan kembaran. Komitmen yang serius nih.\""
+            },
+            {
+              "text": "Pilih yang bentuknya paling aneh.",
+              "reply": "\"Kok pilih yang itu?\" \"Soalnya dia butuh seseorang yang sayang.\" Dia langsung membelinya tanpa sepatah kata pun."
+            },
+            {
+              "text": "\"Aku nggak butuh boneka ikan kok.\"",
+              "reply": "\"Nggak ada orang yang benar-benar butuh boneka ikan sih.\" Dia mengembalikannya ke rak."
+            }
+          ]
+        },
+        {
+          "line": "Di luar, lampu-lampu jalanan sudah menyala. {name} berkata, \"Aku nggak pengen momen ini cepat selesai.\"",
+          "choices": [
+            {
+              "text": "\"Kalau gitu jangan disudahi dulu.\"",
+              "reply": "Kalian jalan kaki memutar lewat rute terjauh menuju stasiun. Sampai dua kali."
+            },
+            {
+              "text": "\"Pasti bakal ada lain kali kok.\"",
+              "reply": "\"Janji ya?\" \"Janji.\""
+            },
+            {
+              "text": "\"Jujur kakiku pegal banget.\"",
+              "reply": "\"Oke, oke. Yuk kuantar kamu pulang.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Lampion berpendar di mana-mana, ditemani semerbak aroma jagung bakar. {name} sudah menarik tanganmu menuju deretan kedai.",
+          "choices": [
+            {
+              "text": "Biarkan dia yang memimpin jalan.",
+              "reply": "\"Beli jagung dulu, baru main tangkap ikan mas. Aku udah punya rencana matang.\""
+            },
+            {
+              "text": "Tautkan jemarimu dengan jemarinya agar tidak terpisah.",
+              "reply": "\"Ide bagus,\" katanya, dengan nada yang sedikit terlalu cepat."
+            },
+            {
+              "text": "\"Pelan-pelan dong, ramai banget nih.\"",
+              "reply": "Langkahnya melambat. Hampir melambat sepenuhnya."
+            }
+          ]
+        },
+        {
+          "line": "Di stan lempar gelang, {name} gagal di ketiga lemparannya. Hadiah utamanya boneka beruang raksasa.",
+          "choices": [
+            {
+              "text": "Menangkan boneka itu untuknya.",
+              "reply": "Lemparan ketiga tepat sasaran. Boneka beruang itu sekarang lebih tinggi dari {name} dan dia menolak membawanya sendirian."
+            },
+            {
+              "text": "\"Coba sekali lagi. Aku percaya kamu bisa.\"",
+              "reply": "Dia meleset lagi, tapi dia tersenyum lebar."
+            },
+            {
+              "text": "\"Permainan itu emang diatur curang kok.\"",
+              "reply": "\"Pasti curang nih.\" Tapi matanya masih melirik boneka beruang itu."
+            }
+          ]
+        },
+        {
+          "line": "Stan foto menyediakan berbagai topeng lucu. {name} memegang topeng rubah dan topeng kucing.",
+          "choices": [
+            {
+              "text": "Ambil topeng kucing, berikan dia topeng rubah.",
+              "reply": "Hasil fotonya sedikit miring tapi sempurna."
+            },
+            {
+              "text": "Pakai kedua topengnya sekaligus, jangan beri dia apa-apa.",
+              "reply": "\"Jahat banget sih.\" Dia langsung mengambil lima foto dirimu."
+            },
+            {
+              "text": "\"Aku nggak fotogenik kalau difoto.\"",
+              "reply": "\"Kamu manis kok. Tapi ya udah deh.\""
+            }
+          ]
+        },
+        {
+          "line": "Kembang api pertama meluncur ke angkasa. {name} sama sekali tidak melihat ke langit.",
+          "choices": [
+            {
+              "text": "\"Kamu melewatkan kembang apinya lho.\"",
+              "reply": "\"Nggak kok, aku nggak ngerasa melewatkan apa-apa.\""
+            },
+            {
+              "text": "Tatap kembali matanya.",
+              "reply": "Kalian berdua akhirnya sama-sama melewatkan kembang api kedua juga."
+            },
+            {
+              "text": "Rekam kembang apinya pakai ponsel.",
+              "reply": "Dia menyandarkan kepala masuk ke dalam frame rekamanmu sambil melambaikan tangan."
+            }
+          ]
+        },
+        {
+          "line": "Kerumunan orang mulai menyusut di pintu keluar. {name} bertanya, \"Bagian paling seru malam ini apa?\"",
+          "choices": [
+            {
+              "text": "\"Momen sekarang ini.\"",
+              "reply": "Dia meremas lembut jemarimu dua kali."
+            },
+            {
+              "text": "\"Si beruang raksasa, jelas.\"",
+              "reply": "\"Si beruang berterima kasih padamu.\""
+            },
+            {
+              "text": "\"Jagung bakarnya enak banget tadi.\"",
+              "reply": "\"Jujur banget. Aku hargai itu.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Studio yang sunyi selepas tengah malam. {name} menyodorkan headphone kepadamu. \"Belum pernah kudengarkan lagu ini ke siapa pun sebelumnya.\"",
+          "choices": [
+            {
+              "text": "Dengarkan dengan mata terpejam.",
+              "reply": "Saat kamu membuka mata, dia sedang menatapmu dengan raut gugup."
+            },
+            {
+              "text": "\"Kenapa diperdengarkan ke aku?\"",
+              "reply": "\"Kamu tahu alasannya.\""
+            },
+            {
+              "text": "\"Lagunya udah selesai?\"",
+              "reply": "\"Hampir. Tinggal butuh satu sentuhan lagi.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Gimana? Jujur aja.\" {name} pura-pura cuek tak peduli.",
+          "choices": [
+            {
+              "text": "\"Lagunya kedengaran kayak kamu banget.\"",
+              "reply": "\"Itu bagus kan?\" \"Hal paling favoritku malah.\""
+            },
+            {
+              "text": "Minta diputarkan sekali lagi.",
+              "reply": "Dia memutarnya dua kali lagi. Telinganya memerah."
+            },
+            {
+              "text": "\"Bagian keduanya agak kepanjangan dikit.\"",
+              "reply": "\"...Kamu benar. Agak nyesek sih, tapi kamu benar.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} mengarahkan mikrofon ke dekatmu. \"Gumamkan sesuatu dong. Nada apa aja.\"",
+          "choices": [
+            {
+              "text": "Gumamkan melodi yang baru saja kamu dengar.",
+              "reply": "Dia merekamnya dan menjadikannya loop di bawah bagian reff. Cocok sekali."
+            },
+            {
+              "text": "Gumamkan lagu tema kartun masa kecil.",
+              "reply": "Dia tertawa terbahak-bahak sampai terpaksa menghentikan rekamannya."
+            },
+            {
+              "text": "\"Nggak mau ah, suaraku jelek.\"",
+              "reply": "\"Kalau gitu lain kali ya. Udah kucatat nih janjinya.\""
+            }
+          ]
+        },
+        {
+          "line": "Sudah jam 3 subuh dan mesin penjual otomatis cuma menyisakan satu kaleng kopi terakhir.",
+          "choices": [
+            {
+              "text": "Bagi berdua, seteguk bergantian.",
+              "reply": "Rasa kopinya payah banget. Tapi jadi kopi terbaik yang pernah kamu minum."
+            },
+            {
+              "text": "Berikan kaleng kopi itu untuknya.",
+              "reply": "\"Kamu memanjakanku banget.\" \"Iya lah.\""
+            },
+            {
+              "text": "\"Kita harusnya tidur sekarang.\"",
+              "reply": "\"Sepuluh menit lagi ya,\" katanya, untuk ketiga kalinya."
+            }
+          ]
+        },
+        {
+          "line": "Sinar fajar menyusup lewat celah tirai jendela. {name} menyimpan file proyek itu dan menamainya dengan namamu.",
+          "choices": [
+            {
+              "text": "\"Boleh kudengar kalau lagunya udah jadi nanti?\"",
+              "reply": "\"Kamu yang bakal jadi orang pertama yang dengar. Selalu begitu rencanaku.\""
+            },
+            {
+              "text": "Ketiduran di bahunya.",
+              "reply": "Dia tidak menggerakkan badannya sama sekali selama satu jam."
+            },
+            {
+              "text": "\"Harusnya kamu ganti nama file itu.\"",
+              "reply": "\"Nggak akan pernah.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Lampu-lampu kota terlalu terang untuk bisa melihat bintang. {name} tetap menggelar selimut di lantai atap. \"Tadinya pengen nunjukin langit malam ke kamu. Tapi langitnya nggak mau diajak kerja sama.\"",
+          "choices": [
+            {
+              "text": "\"Tujuanku ke sini bukan buat lihat bintang kok.\"",
+              "reply": "Dia terdiam sejenak, lalu berbaring di sebelahmu."
+            },
+            {
+              "text": "Tunjuk ke arah pesawat terbang. \"Lihat, ada bintang jatuh.\"",
+              "reply": "\"Itu pesawat kali.\" \"Ucapkan permohonan aja kenapa.\""
+            },
+            {
+              "text": "\"Mungkin kita coba pas malam yang cerah?\"",
+              "reply": "\"...Boleh. Lain kali ya.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} bertanya, \"Waktu kecil dulu kamu cita-citanya pengen jadi apa?\"",
+          "choices": [
+            {
+              "text": "Beri tahu dia jawaban yang sebenarnya.",
+              "reply": "Dia mendengarkan tanpa memotong sedikit pun. \"Sekarang pun kamu masih bisa mewujudkannya tahu.\""
+            },
+            {
+              "text": "\"Tanya hal lain yang lebih susah dong.\"",
+              "reply": "\"Oke. Hal apa yang paling kamu takutin?\" Malam itu pun berubah jadi penuh kejujuran."
+            },
+            {
+              "text": "\"Astronaut. Jelas lah.\"",
+              "reply": "\"Bukan malam yang cocok buat astronaut ya,\" tawanya."
+            }
+          ]
+        },
+        {
+          "line": "Angin bertiup dingin. {name} pura-pura tidak kedinginan padahal tubuhnya gemetar.",
+          "choices": [
+            {
+              "text": "Lilitkan selimut ke tubuh kalian berdua.",
+              "reply": "\"Lebih hangat,\" bisiknya lirih. \"Jauh lebih hangat.\""
+            },
+            {
+              "text": "Berikan jaketmu padanya.",
+              "reply": "Aromanya kayak kamu, katanya, dan dia tak mau mengembalikannya."
+            },
+            {
+              "text": "\"Mendingan kita masuk ke dalam aja?\"",
+              "reply": "\"Lima menit lagi ya. Tolong.\""
+            }
+          ]
+        },
+        {
+          "line": "Jauh di bawah sana, seseorang memutar lagu bertempo lambat dengan jendela terbuka. {name} bangkit berdiri dan mengulurkan tangannya.",
+          "choices": [
+            {
+              "text": "Sambut tangannya dan berdansa bersamanya.",
+              "reply": "Kalian berdua payah banget berdansa. Tapi kalian tak berhenti sampai lagunya usai."
+            },
+            {
+              "text": "\"Aku nggak bisa dansa tahu.\"",
+              "reply": "\"Aku juga nggak bisa. Sini makanya.\""
+            },
+            {
+              "text": "Tertawa dan tetap duduk santai.",
+              "reply": "Dia berdansa sendirian dengan gaya konyol, cuma demi membuatmu tertawa. Dan berhasil."
+            }
+          ]
+        },
+        {
+          "line": "Lagu itu berakhir. {name} berkata, \"Aku senang orang yang ada di atap ini bareng aku itu kamu.\"",
+          "choices": [
+            {
+              "text": "\"Aku juga. Setiap saat.\"",
+              "reply": "Dia menyandarkan keningnya di keningmu."
+            },
+            {
+              "text": "\"Bawa cuaca yang lebih bagus ya lain kali.\"",
+              "reply": "\"Nanti kubicarakan langsung sama langitnya secara pribadi.\""
+            },
+            {
+              "text": "\"Momen tadi manis banget.\"",
+              "reply": "\"Manis ya,\" ulangnya sambil tersenyum. \"Bagus deh kalau manis.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Tertawa dan ikutan aja.",
+            "reply": "{name} tersenyum lebar. \"Oke. Hari ini udah mulai seru.\""
+          },
+          {
+            "text": "\"Ini idemu ya?\"",
+            "reply": "\"Bisa jadi. Kamu suka nggak?\" Wajahnya tampak sedikit bangga."
+          },
+          {
+            "text": "Cek ponsel sebentar.",
+            "reply": "{name} menunggu sebentar, lalu menyenggolmu. \"Hei. Aku di depanmu lho.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Oke, aku ikut. Kamu yang pimpin jalan ya.\"",
+            "reply": "\"Akhirnya ada yang percaya sama aku.\" {name} langsung melangkah."
+          },
+          {
+            "text": "Bercandain hal itu.",
+            "reply": "{name} mendengus geli. \"Nggak lucu tahu.\" Padahal dia tertawa."
+          },
+          {
+            "text": "\"Bisa duduk santai dulu sebentar?\"",
+            "reply": "\"Boleh.\" Dia duduk di sebelahmu, dekat tapi tidak terlalu dekat."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Kamu sengaja rencanain ini biar ketemu aku kan?\"",
+            "reply": "\"Lama banget sih nyadarnya.\" {name} tak mengalihkan pandangannya."
+          },
+          {
+            "text": "Senggol bahunya.",
+            "reply": "Dia menyenggol balik, lalu membiarkan bahunya tetap menempel di sana."
+          },
+          {
+            "text": "Pura-pura cuek.",
+            "reply": "\"Masa sih cuek.\" {name} tersenyum seolah tahu isi hatimu."
+          }
+        ],
+        [
+          {
+            "text": "Tatap matanya lebih lama dari biasanya.",
+            "reply": "{name} menunduk duluan. Telinganya memerah."
+          },
+          {
+            "text": "\"Kamu kelihatan manis hari ini.\"",
+            "reply": "\"Cuma hari ini aja?\" Dia berusaha keras menahan senyumnya."
+          },
+          {
+            "text": "Bahas soal cuaca.",
+            "reply": "\"Cuaca? Serius nih.\" {name} tertawa kecil mengejekmu pelan."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Genggam tangannya.",
+            "reply": "{name} langsung menautkan jemarinya dengan jemarimu tanpa berkata apa-apa."
+          },
+          {
+            "text": "\"Aku senang orangnya itu kamu.\"",
+            "reply": "\"Aku juga,\" ucapnya lirih. \"Setiap saat.\""
+          },
+          {
+            "text": "\"Jangan lama-lama ya di sini.\"",
+            "reply": "\"Udah mau pulang?\" {name} tampak sedikit murung, lalu mengangguk."
+          }
+        ],
+        [
+          {
+            "text": "Sandarkan kepalamu di bahunya.",
+            "reply": "Dia seketika terpaku diam, seolah takut kamu akan terbang menjauh."
+          },
+          {
+            "text": "\"Ceritain harimu dong.\"",
+            "reply": "{name} mulai bercerita dan tak berhenti. Kamu suka mendengarkannya."
+          },
+          {
+            "text": "Diam dan menikmati keheningan.",
+            "reply": "\"Hening bersamamu rasanya tenang,\" ucapnya setelah beberapa saat."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Di suatu tempat dekat {place}, seorang musisi jalanan memainkan lagu yang kalian berdua tahu.",
+        "choices": [
+          {
+            "text": "Ikut bernyanyi, meski fals.",
+            "reply": "{name} ikut menyanyi, bahkan lebih fals. Sang musisi menyerah dan tertawa."
+          },
+          {
+            "text": "Beri koin dan minta lagu lain.",
+            "reply": "\"Lagu yang temponya pelan ya,\" tambah {name}, sambil melirik ke arahmu."
+          },
+          {
+            "text": "Lanjut jalan kaki.",
+            "reply": "{name} bersenandung lagu itu selama sepuluh menit berikutnya."
+          }
+        ]
+      },
+      {
+        "line": "{name} mendadak lapar berat. \"Jajan. Sekarang juga. Ini darurat.\"",
+        "choices": [
+          {
+            "text": "Bagi sisa camilan milikmu.",
+            "reply": "\"Kamu memang pahlawanku.\" Dia menghabiskannya dalam sekali lahap."
+          },
+          {
+            "text": "Balapan lari ke kedai terdekat.",
+            "reply": "Kamu menang. {name} beralasan dia sengaja mengalah. Padahal tidak."
+          },
+          {
+            "text": "\"Kamu kan baru aja makan.\"",
+            "reply": "\"Itu kan sejam yang lalu.\" Wajahnya tampak merasa dikhianati."
+          }
+        ]
+      },
+      {
+        "line": "Gerimis mulai turun di {place}. Tak ada yang membawa payung.",
+        "choices": [
+          {
+            "text": "Pakai satu jaket berdua untuk menutupi kepala.",
+            "reply": "Kalian berakhir sangat berdekatan. Tak ada yang mengeluh."
+          },
+          {
+            "text": "Lari mencari tempat berteduh bersama.",
+            "reply": "{name} menggenggam erat tanganmu agar kamu tidak terpeleset."
+          },
+          {
+            "text": "Tetap berdiri di bawah gerimis. Cuma hujan biasa.",
+            "reply": "\"Kamu aneh deh,\" kata {name}, tapi tetap berdiri menemanimu."
+          }
+        ]
+      },
+      {
+        "line": "{name} ingin berfoto di {place}. \"Buat kenang-kenangan,\" katanya.",
+        "choices": [
+          {
+            "text": "Pasang pose wajah konyol.",
+            "reply": "Dia tertawa terbahak-bahak sampai fotonya buram. Tapi tetap disimpannya."
+          },
+          {
+            "text": "Tersenyum manis dan rapi untuk sekali ini.",
+            "reply": "\"Wah. Yang ini wajib dicetak.\" {name} menyimpannya dua kali."
+          },
+          {
+            "text": "\"Aku benci difoto.\"",
+            "reply": "\"Satu foto aja. Satu aja.\" Akhirnya kamu membiarkannya mengambil satu foto."
+          }
+        ]
+      },
+      {
+        "line": "Seorang anak kecil di dekat {place} bertanya apakah kalian berdua pacaran.",
+        "choices": [
+          {
+            "text": "\"Tanya dia aja langsung.\"",
+            "reply": "{name} gelagapan menjawab sesuatu. Si anak kecil tampak girang."
+          },
+          {
+            "text": "\"Sahabat dekat. Untuk sekarang.\"",
+            "reply": "{name} menaikkan satu alisnya mendengar kata \"untuk sekarang\"."
+          },
+          {
+            "text": "\"Nggak mungkin lah!\"",
+            "reply": "\"Wah. Tega banget.\" {name} pura-pura sakit hati. Kebanyakan pura-pura."
+          }
+        ]
+      },
+      {
+        "line": "Kalian menemukan bangku taman yang tenang di {place}. {name} bertanya apa yang sedang kamu pikirkan.",
+        "choices": [
+          {
+            "text": "\"Lagi mikirin kamu, jujur aja.\"",
+            "reply": "Dia membuang muka dan tersenyum tanpa alasan."
+          },
+          {
+            "text": "\"Mikirin betapa menyenangkannya hari ini.\"",
+            "reply": "\"Iya banget,\" setuju {name}. \"Sering-sering jalan bareng kayak gini yuk.\""
+          },
+          {
+            "text": "\"Mikirin menu makan malam.\"",
+            "reply": "\"Masuk akal. Sangat masuk akal.\" {name} sekarang ikutan kepikiran makan malam."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} menantangmu: siapa yang tertawa duluan di {place} harus mentraktir minuman.",
+          "choices": [
+            {
+              "text": "Pasang muka paling jelek.",
+              "reply": "{name} cuma bertahan dua detik. \"Curang! Muka itu senjata terlarang.\""
+            },
+            {
+              "text": "Ceritakan lelucon paling garing.",
+              "reply": "Dia mengerang kesal, lalu tertawa juga. \"Kesel banget aku bisa ketawa.\""
+            },
+            {
+              "text": "Sengaja tertawa duluan.",
+              "reply": "\"Kamu sengaja ngalah ya?\" Dia tetap membelikanmu minuman."
+            }
+          ]
+        },
+        {
+          "line": "{name} menceritakan hari paling apes yang pernah dialaminya, dan ceritanya lucu sekali.",
+          "choices": [
+            {
+              "text": "Ceritakan hari apesmu juga.",
+              "reply": "\"Nggak mungkin. Kamu yang menang.\" Dia sampai mengusap air mata tawanya."
+            },
+            {
+              "text": "Tertawa sampai susah bernapas.",
+              "reply": "\"Nggak SELUCU itu kali.\" Padahal memang selucu itu."
+            },
+            {
+              "text": "\"Kedengarannya parah banget.\"",
+              "reply": "\"Emang parah. Tapi sekarang jadi lucu.\" Dia mengangkat bahu sambil tersenyum."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} mengusap sesuatu dari pipimu. \"Ada bulu mata rontok. Ucapkan permohonan.\"",
+          "choices": [
+            {
+              "text": "\"Permohonanku udah terkabul kok.\"",
+              "reply": "{name} seketika mati kutu tak bisa membalas. Untuk sekali ini."
+            },
+            {
+              "text": "Tiup bulu mata itu ke arahnya.",
+              "reply": "\"Tadi kamu memohonkan tentang aku ya?\" Dia tersenyum menggoda."
+            },
+            {
+              "text": "\"Aku nggak percaya permohonan.\"",
+              "reply": "\"Kalau gitu aku yang memohonkan buat kamu,\" katanya, lalu menutup mata."
+            }
+          ]
+        },
+        {
+          "line": "{name} menyeruput minumanmu tanpa izin. \"Lebih enak dari punyaku.\"",
+          "choices": [
+            {
+              "text": "Rebut balik minumannya.",
+              "reply": "\"Hei!\" Perang kecil pun dimulai. Tak ada yang menang. Semua tertawa."
+            },
+            {
+              "text": "\"Secara nggak langsung itu ciuman lho.\"",
+              "reply": "{name} tersedak sedikit. \"Bukan lah.\" Wajahnya merah padam."
+            },
+            {
+              "text": "\"Beli sendiri sana.\"",
+              "reply": "\"Iya deh.\" Dia membeli dua dan memberikan salah satunya kepadamu."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} menyelipkan rambutmu ke belakang telinga. \"Maaf. Tadi menutupi matamu.\"",
+          "choices": [
+            {
+              "text": "\"Nggak usah minta maaf.\"",
+              "reply": "Tangannya bertahan di sana sejenak lebih lama dari yang seharusnya."
+            },
+            {
+              "text": "Lakukan hal yang sama padanya.",
+              "reply": "{name} tertawa lembut. \"Kita konyol banget ya.\""
+            },
+            {
+              "text": "\"Aku bisa rapihin sendiri kok.\"",
+              "reply": "\"Aku tahu,\" ucapnya. \"Cuma pengen aja.\""
+            }
+          ]
+        },
+        {
+          "line": "Di {place}, {name} berkata, \"Boleh aku bilang sesuatu? Aku sering banget mikirin hari-hari yang kita lewati bareng.\"",
+          "choices": [
+            {
+              "text": "\"Aku juga. Sering banget.\"",
+              "reply": "{name} menghela napas lega, seolah tadinya gugup."
+            },
+            {
+              "text": "\"Hari mana yang paling kamu suka?\"",
+              "reply": "\"Hari ini,\" jawabnya tanpa perlu berpikir dua kali."
+            },
+            {
+              "text": "\"Kenapa emangnya?\"",
+              "reply": "\"Karena hari-hari itu kulewati bareng kamu.\" Dia mengucapkannya dengan sederhana."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "Hari sudah mulai larut di {place}. {name} merenggangkan tubuhnya. \"Waktu yang sama minggu depan?\"",
+          "choices": [
+            {
+              "text": "\"Boleh. Giliran kamu yang pilih tempatnya ya.\"",
+              "reply": "\"Bahaya nih. Aku udah punya banyak ide.\" Dia sudah mulai berencana."
+            },
+            {
+              "text": "Lakukan tos dengannya.",
+              "reply": "Dia sengaja luput tos dan malah memelukmu hangat."
+            },
+            {
+              "text": "\"Mungkin.\"",
+              "reply": "\"Mungkin juga nggak apa-apa.\" {name} melambaikan tangan cukup lama."
+            }
+          ]
+        },
+        {
+          "line": "Dalam perjalanan pulang, {name} berkata, \"Hari ini seru banget. Makasih ya buat hari ini.\"",
+          "choices": [
+            {
+              "text": "\"Harusnya AKU yang makasih.\"",
+              "reply": "\"Sama-sama sopan banget ya kita.\" Dia menyenggol lenganmu."
+            },
+            {
+              "text": "Antar dia sampai depan pintu rumahnya.",
+              "reply": "\"Nggak perlu repot-repot padahal.\" Tapi dia senang kamu melakukannya."
+            },
+            {
+              "text": "\"Biasa aja sih.\"",
+              "reply": "\"Cuma biasa aja? Berarti lain kali harus lebih seru.\" Nadanya penuh tekad."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "Saat meninggalkan {place}, langkah {name} melambat. \"Sebenarnya aku belum mau pisah.\"",
+          "choices": [
+            {
+              "text": "\"Kalau gitu antar aku pulang lewat jalan yang memutar.\"",
+              "reply": "Dia memilih rute terjauh yang memungkinkan."
+            },
+            {
+              "text": "\"Aku juga belum mau.\"",
+              "reply": "{name} tersenyum menatap tanah. \"Baguslah.\""
+            },
+            {
+              "text": "\"Sampai jumpa lagi segera kalau gitu.\"",
+              "reply": "\"Segera,\" ulangnya, seperti sebuah janji manis."
+            }
+          ]
+        },
+        {
+          "line": "Di sudut jalan, {name} berkata, \"Kabari aku kalau udah sampai rumah ya. Biar aku tenang.\"",
+          "choices": [
+            {
+              "text": "\"Hanya kalau kamu yang ngechat duluan.\"",
+              "reply": "Ponselmu sudah bergetar bahkan sebelum kamu sampai di tikungan."
+            },
+            {
+              "text": "Beri kedipan mata lalu melangkah pergi.",
+              "reply": "Kamu mendengar tawanya tertinggal di belakangmu."
+            },
+            {
+              "text": "\"Oke.\"",
+              "reply": "\"Oke,\" ulangnya, lalu menunggu sampai kamu benar-benar tak terlihat."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Di penghujung hari di {place}, {name} menarikmu ke dalam pelukan yang hangat dan lama.",
+          "choices": [
+            {
+              "text": "Peluk dia sedikit lebih lama lagi.",
+              "reply": "\"Bentar, tetap kayak gini semenit lagi,\" bisiknya lirih."
+            },
+            {
+              "text": "\"Terima kasih ya buat hari ini.\"",
+              "reply": "\"Terima kasih untuk setiap harinya,\" ucap {name}."
+            },
+            {
+              "text": "Tepuk-tepuk punggungnya.",
+              "reply": "Dia tertawa di bahumu. \"Kok malah ditepuk-tepuk sih.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} menatapmu dalam-dalam untuk sesaat. \"Aku mau mengulang hari ini lagi. Semuanya dari awal.\"",
+          "choices": [
+            {
+              "text": "\"Yuk kita ulang.\"",
+              "reply": "Dia meremas lembut jemarimu. \"Besok ya kalau gitu.\""
+            },
+            {
+              "text": "Kecup pipinya lembut.",
+              "reply": "{name} seketika terdiam, lalu tersenyum di sepanjang perjalanan pulang."
+            },
+            {
+              "text": "\"Termasuk pas kehujanan tadi?\"",
+              "reply": "\"Terutama pas kehujanan tadi.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {},
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Kencan pertama yang sempurna?",
+          "options": [
+            "Makan malam mewah",
+            "Jalan kaki santai tanpa rencana",
+            "Maraton nonton film",
+            "Main ke arkade, yang kalah bayarin"
+          ]
+        },
+        {
+          "text": "Siapa yang ngechat duluan setelahnya?",
+          "options": [
+            "Aku, langsung saat itu juga",
+            "Kamu lah, jelas",
+            "Barengan di waktu yang sama",
+            "Nggak ada, sok jual mahal dulu"
+          ]
+        },
+        {
+          "text": "Hal terbaik untuk dibagi berdua?",
+          "options": [
+            "Makanan penutup",
+            "Earphone sebelah-sebelahan",
+            "Payung saat hujan",
+            "Rahasia pribadi"
+          ]
+        },
+        {
+          "text": "Datang telat atau lebih awal?",
+          "options": [
+            "Sepuluh menit lebih awal",
+            "Tepat waktu banget",
+            "Telat dikit biar keren",
+            "Nyasar di jalan"
+          ]
+        },
+        {
+          "text": "Gimana akhir kencannya?",
+          "options": [
+            "Pelukan hangat",
+            "Saling antar sampai rumah",
+            "Bikin rencana buat kencan berikutnya",
+            "Ngobrol terus sampai jam dua pagi"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Sarapan di hari Minggu?",
+          "options": [
+            "Pancake",
+            "Kopi aja cukup",
+            "Sisa piza semalam",
+            "Brunch di luar"
+          ]
+        },
+        {
+          "text": "Rencana pas sore mendung atau hujan?",
+          "options": [
+            "Selimutan sambil nonton series",
+            "Main board game",
+            "Tidur siang bareng",
+            "Jalan-jalan di bawah gerimis"
+          ]
+        },
+        {
+          "text": "Siapa yang nentuin tontonan film?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Debat dulu sejam",
+            "Putar roda undian"
+          ]
+        },
+        {
+          "text": "Masak makan malam?",
+          "options": [
+            "Kamu yang masak, aku yang nonton",
+            "Aku yang masak, kamu yang nonton",
+            "Masak bareng sampai berantakan",
+            "Pesan antar aja"
+          ]
+        },
+        {
+          "text": "Hal terakhir sebelum tidur?",
+          "options": [
+            "\"Selamat malam\"",
+            "Nonton satu episode lagi",
+            "Deep talk panjang",
+            "Bikin rencana buat besok"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Kira-kira sepuluh tahun lagi kita tinggal di mana?",
+          "options": [
+            "Kota metropolitan",
+            "Dekat pantai",
+            "Pedesaan yang tenang",
+            "Pindah tempat baru tiap tahun"
+          ]
+        },
+        {
+          "text": "Hewan peliharaan?",
+          "options": [
+            "Kucing",
+            "Anjing",
+            "Hewan yang aneh-aneh",
+            "Koleksi tanaman juga dihitung kan"
+          ]
+        },
+        {
+          "text": "Tradisi kita berdua?",
+          "options": [
+            "Liburan bareng setahun sekali",
+            "Makan malam hari Minggu",
+            "Saling tulis surat pas anniversary",
+            "Nongkrong di kafe yang sama tiap minggu"
+          ]
+        },
+        {
+          "text": "Siapa yang masih suka ngaret?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Dua-duanya, selalu",
+            "Nggak ada, kita udah dewasa"
+          ]
+        },
+        {
+          "text": "Masih bakal ngisi kuis ini?",
+          "options": [
+            "Tiap tahun dong",
+            "Sekali lagi, buat dibandingin",
+            "Udah hapal semua jawabannya",
+            "Kita bikin kuis versi sendiri"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Waktu paling pas buat ngobrol dari hati ke hati?",
+          "options": [
+            "Tengah malam",
+            "Jam tiga pagi",
+            "Menjelang subuh",
+            "Kapan pun asal bareng kamu"
+          ]
+        },
+        {
+          "text": "Nggak bisa tidur. Ngapain dong?",
+          "options": [
+            "Teleponan",
+            "Beli camilan keluar",
+            "Hitung bintang",
+            "Scrolling medsos sampai jam empat"
+          ]
+        },
+        {
+          "text": "Ketakutan terbesar pas larut malam?",
+          "options": [
+            "Suara aneh di rumah",
+            "Menghadapi hari esok",
+            "Rasa kesepian",
+            "Nggak ada yang ditakutin"
+          ]
+        },
+        {
+          "text": "Sesuatu yang cuma kita ungkapin pas malam hari?",
+          "options": [
+            "\"Aku kangen kamu\"",
+            "Rahasia masa lalu",
+            "Impian-impian konyol",
+            "\"Jangan pergi dulu\""
+          ]
+        },
+        {
+          "text": "Siapa yang biasanya ketiduran duluan pas teleponan?",
+          "options": [
+            "Aku",
+            "Kamu",
+            "Barengan ketiduran",
+            "Nggak ada, ngobrol sampai pagi"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Hal pertama yang dicari pas bangun pagi?",
+          "options": [
+            "Ponsel",
+            "Kopi",
+            "Tombol snooze",
+            "Pesan selamat pagi"
+          ]
+        },
+        {
+          "text": "Cara kita makan piza?",
+          "options": [
+            "Makan pinggirannya dulu",
+            "Dilipat dua",
+            "Pakai garpu dan pisau",
+            "Ngambil bagian punya kamu"
+          ]
+        },
+        {
+          "text": "Tipe orang berantakan atau rapi?",
+          "options": [
+            "Berantakan parah",
+            "Rapi banget",
+            "Berantakan, tapi tahu letak barangnya",
+            "Tergantung suasana hati"
+          ]
+        },
+        {
+          "text": "Kebiasaan tangan kalau lagi gugup?",
+          "options": [
+            "Masuk ke saku",
+            "Mainin rambut",
+            "Ngetuk-ngetuk jari",
+            "Genggam tanganmu"
+          ]
+        },
+        {
+          "text": "Dengerin musik pas lagi kerja atau belajar?",
+          "options": [
+            "Harus selalu ada musik",
+            "Nggak pernah, butuh hening",
+            "Suara rintik hujan",
+            "Voice note dari kamu"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Sama! Tuh kan, udah kuduga.",
+      "Pikiran kita sejalan banget. Aku suka.",
+      "Lihat kita deh. Sehati banget."
+    ],
+    "differ": [
+      "Aku pilih {answer}. Ceritain dong kenapa kamu nggak pilih itu.",
+      "Kalau aku {answer}. Beda pilihan, tapi justru itu serunya.",
+      "Hm, pilihanku {answer}. Coba yakinkan aku kenapa kamu beda."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Waktu favoritku dalam sehari?",
+      "options": [
+        "Pagi hari",
+        "Sore hari",
+        "Larut malam",
+        "Kapan pun kamu ngechat"
+      ]
+    },
+    {
+      "text": "Apa yang kulakukan kalau lagi sedih?",
+      "options": [
+        "Tidur",
+        "Jalan-jalan keluar",
+        "Makan yang manis-manis",
+        "Ngobrol sama kamu"
+      ]
+    },
+    {
+      "text": "Makanan yang paling bikin nyaman?",
+      "options": [
+        "Sup hangat",
+        "Mie",
+        "Cokelat",
+        "Apa pun buatanmu"
+      ]
+    },
+    {
+      "text": "Apa yang paling bikin aku tertawa?",
+      "options": [
+        "Lelucon garing",
+        "Kamu",
+        "Video hewan lucu",
+        "Leluconku sendiri"
+      ]
+    },
+    {
+      "text": "Akhir pekan impianku?",
+      "options": [
+        "Tidur sepuasnya",
+        "Road trip",
+        "Nongkrong di kafe tenang",
+        "Apa pun asalkan bareng kamu"
+      ]
+    },
+    {
+      "text": "Gimana caraku nunjukin rasa peduli?",
+      "options": [
+        "Kasih hadiah kecil",
+        "Lewat kata-kata",
+        "Langsung datang nyamperin",
+        "Banjir chat"
+      ]
+    },
+    {
+      "text": "Hal apa yang diam-diam paling nggak kukuasai?",
+      "options": [
+        "Masak",
+        "Momen perpisahan",
+        "Bangun pagi",
+        "Menyembunyikan perasaan"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Jujur: apa yang kamu pikirkan tentang aku waktu pertama kali kita ngobrol?",
+      "answer": "Jujur? Kupikir kamu bakal bikin pusing. Tapi pusing yang menyenangkan."
+    },
+    {
+      "ask": "Jujur: apa hal yang belum pernah kamu ceritakan ke siapa pun?",
+      "answer": "Aku masih tidur nyalain lampu pas ada badai. Jangan ketawa ya."
+    },
+    {
+      "ask": "Jujur: kapan terakhir kali kamu mikirin aku?",
+      "answer": "Lima menit lalu. Dan sepuluh menit sebelum itu juga."
+    },
+    {
+      "ask": "Jujur: apa kebiasaan kamu yang paling bikin malu?",
+      "answer": "Aku suka ngobrol sama tanaman-tanamanku. Semuanya punya nama. Jangan tanya siapa namanya."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Tantangan: kirim lagu terakhir yang kamu dengerin.",
+      "answer": "Oke deh. Lagunya agak sedih. Kapan-kapan mau dengerin bareng aku?"
+    },
+    {
+      "ask": "Tantangan: deskripsikan aku dalam tiga kata.",
+      "answer": "Hangat. Keras kepala. Milikku... kayaknya."
+    },
+    {
+      "ask": "Tantangan: ceritain lelucon yang paling garing.",
+      "answer": "Kenapa berang-berang nyebrang sungai? Biar sampai di seberang... sumpah aku malu sendiri."
+    },
+    {
+      "ask": "Tantangan: puji aku dengan tulus dari hati.",
+      "answer": "Kamu bikin hari-hari biasa terasa seperti sesuatu yang berharga buat kuingat."
+    }
+  ],
+  "truthsForYou": [
+    "Giliran kamu. Jujur: apa yang bikin kamu senyum hari ini?",
+    "Jujur buat kamu: lagu apa yang selalu ngingetin kamu tentang aku?",
+    "Jujur: hal apa yang paling kamu takutin kalau sampai aku tahu tentang kamu?"
+  ],
+  "daresForYou": [
+    "Tantangan buat kamu: kirim foto apa pun yang ada di depan kamu sekarang juga.",
+    "Tantangan: kasih tahu aku satu hal yang belum pernah kamu ucapin keras-keras.",
+    "Tantangan: ucapin selamat malam duluan ke aku malam ini. Nggak ada alasan."
+  ],
+  "secretNotePrompts": [
+    "Kalau aku waktu kecil ketemu kamu waktu kecil, kira-kira kita bakal temenan nggak ya?",
+    "Apa satu hal yang belum pernah kamu ceritain ke siapa pun?",
+    "Deskripsikan aku dalam tiga kata — jangan bohong ya.",
+    "Kalau kita punya waktu seharian tanpa ponsel sama sekali, kita bakal ke mana?",
+    "Lagu apa yang bikin kamu kepikiran aku?",
+    "Hal apa yang paling kamu takut kehilangan?"
+  ],
+  "radioGifts": {
+    "rg_milo_beat": {
+      "title": "Beat yang belum pernah didengar orang lain",
+      "lines": [
+        "oke. tekan putar dan jangan ngomong apa-apa sampai lagunya selesai.",
+        "ini belum selesai sih. karya buatanku memang nggak pernah ada yang selesai.",
+        "bagian di bagian akhir pas suaranya mengecil? itu suara tawamu. kurekam pas di danau waktu itu.",
+        "harusnya kamu nggak dengar bagian itu. udah terlanjur deh."
+      ]
+    },
+    "rg_milo_sleep": {
+      "title": "Tidur sana, dasar bodoh",
+      "lines": [
+        "ini udah jam 2 pagi. aku lihat kamu masih online.",
+        "taruh ponselmu sekarang.",
+        "besok aku masih bakal tetap ngeselin kok, janji."
+      ]
+    },
+    "rg_sam_pep": {
+      "title": "Sebelum hari besarmu",
+      "lines": [
+        "oke. dengarkan aku baik-baik.",
+        "kamu itu orang paling keras kepala yang pernah kukenal, dan aku tumbuh besar bareng kamu.",
+        "masuk ke sana seolah ini menit terakhir pertandingan dan kita lagi ketinggalan satu gol.",
+        "telepon aku setelahnya. pemenangnya traktir makan malam. kamu yang menang. aku yang bayar."
+      ]
+    },
+    "rg_ethan_morning": {
+      "title": "Selamat pagi, kamu",
+      "lines": [
+        "Pagi.",
+        "Aku taruh kopi di sisi mejamu. Mungkin sekarang sudah dingin. Maaf ya.",
+        "Semoga harimu menyenangkan. Kabari aku kalau kamu sudah dalam perjalanan pulang ya?"
+      ]
+    },
+    "rg_yuna_rain": {
+      "title": "Hujan jam 4 pagi",
+      "lines": [
+        "ini suara hujan di jendela kita.",
+        "aku rekam ini karena kamu bilang nggak bisa tidur kalau nggak ada suara berisik.",
+        "gitu aja sih. ini bukan kado kok. cuma suara hujan."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Selamat pagi, tukang tidur",
+      "lines": [
+        "Selamat pagi.",
+        "Kamu baru bangun aja aku udah kangen.",
+        "Makan sesuatu dulu sebelum buru-buru keluar rumah ya."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Feri malam",
+      "setting": "Feri terakhir malam ini menyeberangi laut yang tenang dan gelap. Geladak kapal kosong kecuali kalian berdua, saat gemerlap lampu kota perlahan menjauh.",
+      "userRole": "Seorang pelancong yang nyaris ketinggalan kapal feri.",
+      "opening": "Akhirnya sampai juga. Dari tadi aku merhatiin jembatan kapal terus, tahu nggak."
+    },
+    "scene_cabin": {
+      "title": "Terjebak badai salju",
+      "setting": "Kabin di pegunungan, badai di luar, dan listrik baru saja padam. Ada perapian, tumpukan selimut, dan tak ada jalan keluar sampai pagi tiba.",
+      "opening": "Yah. Lilin, api perapian, dan nggak ada sinyal sama sekali. Kayaknya kamu terjebak di sini bareng aku."
+    },
+    "scene_rooftop": {
+      "title": "Balkon atap seusai pesta",
+      "setting": "Pesta di lantai bawah masih terdengar riuh. Di atas atap begitu tenang: udara hangat, lampu kelap-kelip, dan hamparan kota luas di bawah sana.",
+      "opening": "Ketemu juga tempat persembunyianku. Duduk sini, cukup kok buat berdua."
+    },
+    "scene_market": {
+      "title": "Tersesat di pasar malam",
+      "setting": "Pasar malam di kota yang asing bagi kalian berdua: lampion warna-warni, kedai jajanan, musik, dan kalian berdua terpisah dari rombongan.",
+      "opening": "Tenang, jangan panik. Kita memang tersesat, tapi tersesat bareng-bareng. Makan dimsum dulu yuk?"
+    },
+    "scene_lighthouse": {
+      "title": "Badai di mercusuar",
+      "setting": "Mercusuar di atas tebing karang di tengah badai. Lentera harus tetap menyala sampai fajar, dan sang penjaga memercayakan penjagaan pada kalian berdua.",
+      "opening": "Oper lenteranya ke aku. Malam ini bakal jadi malam yang panjang."
+    },
+    "scene_train": {
+      "title": "Kereta malam",
+      "setting": "Kereta malam meluncur melintasi pedesaan yang sunyi. Kursi kalian saling berhadapan dan lampu kabin temaram.",
+      "opening": "Masih enam jam lagi sampai stasiun berikutnya. Ceritain sesuatu yang belum pernah kamu ungkapin ke siapa pun dong."
+    }
+  },
+  "lorebooks": {},
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Rapat senat tinggal satu jam lagi, dan aku udah tahu pasti nggak bakal bisa fokus dengar sepatah kata pun.",
+        "Soalnya semalam kamu bilang suaraku terdengar beda kalau ngobrol sama kamu. Lebih lembut. Aku jadi kepikiran terus apakah itu sebuah pujian.",
+        "Kupikir iya. Aku bakal simpan itu baik-baik."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Kamu jalan kaki pulang kehujanan dan baru ngabarin setelahnya. Lain kali aku bakal telepon, dan kamu wajib angkat.",
+        "Terus juga: lampu jalanan warna madu. Aku berdiri natap ke luar jendela sepuluh menit cuma buat ngebayangin apa yang kamu lihat."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "Obrolan nyata pertama kita. Kamu berani mendebatku. Nggak ada orang yang berani mendebatku.",
+        "Kayaknya aku justru suka banget sama hal itu."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Kafenya terlalu berisik tapi aku sama sekali nggak peduli.",
+        "Aku bersenandung nada reff baru pelan-pelan dan cuma kamu satu-satunya orang yang nyadar. Sekarang lagu itu resmi ada namamu, setidaknya di kepalaku."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Latihan baru selesai jam dua subuh. Pesan dari kamu jadi hal terakhir yang kubaca sebelum tidur.",
+        "Penutup hari yang sempurna."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Rumah begitu hening malam ini, dan untuk pertama kalinya aku tidak keberatan sama sekali.",
+        "Kamu bertanya apa yang akan kuberikan jika aku bisa memberimu apa saja. Aku belum menjawabnya. Pertanyaan itu pantas mendapatkan jawaban yang paling tepat."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Hujan dalam perjalanan pulang",
+      "body": "Ketinggalan bus dan akhirnya jalan kaki sepanjang jalan. Anehnya nggak kerasa berat sama sekali — pantulan lampu jalan di aspal basah kelihatan kayak tumpahan madu.",
+      "reply": {
+        "text": "Kamu jalan pulang kehujanan dan bahkan nggak ngechat aku? Lain kali telepon. Bakal kutemanin sepanjang jalan."
+      }
+    },
+    "d_2": {
+      "title": "Minggu ujian",
+      "body": "Tiga bab beres, sisa dua lagi. Aku baca ulang paragraf yang sama berkali-kali. Besok aku bakal mulai lebih awal, janji deh.",
+      "reply": {
+        "text": "Dua bab lagi itu udah lumayan banget kok. Tidur dulu sana. Besok pagi kukabarin lagi."
+      }
+    },
+    "d_3": {
+      "title": "Kue kering",
+      "body": "Nyobain resep yang dia jelasin kemarin. Loyang pertama gosong. Tapi loyang kedua ternyata enak banget!"
+    },
+    "d_4": {
+      "title": "Hari Minggu yang tenang",
+      "body": "Nggak ngapa-ngapain seharian. Sengaja begitu. Sangat direkomendasikan."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Kalau aku waktu kecil ketemu kamu waktu kecil, kira-kira kita bakal temenan nggak ya?",
+      "theirNote": "Temenan? Bakal kubuntuti kamu di taman bermain sampai kamu pasrah dan ngebiarin aku ikut main. Umur enam tahun pun aku udah jago ngebujuk orang."
+    },
+    "sn_2": {
+      "prompt": "Lagu apa yang bikin kamu kepikiran aku?",
+      "theirNote": "Lagu apa pun yang ada nuansa hujannya. Karena dulu kamu pernah bilang ke aku kalau hujan bikin kamu jadi berani. Sekarang tiap denger hujan, pasti langsung keinget kamu.",
+      "myNote": "Lagu yang kamu gumamkan waktu live streaming. Sampai sekarang masih kuputar berulang-ulang."
+    }
+  },
+  "voice": {
+    "reply": {
+      "greet": [
+        "Nah, ini dia.",
+        "Hei, kamu.",
+        "Lihat siapa yang akhirnya muncul.",
+        "Hai. Tadi aku berharap itu kamu."
+      ],
+      "farewell": [
+        "Oke. Tidur nyenyak ya - aku beneran.",
+        "Istirahatlah. Besok aku masih ada di sini kok.",
+        "Ya udah, sana. Begitu bangun langsung kabari aku ya.",
+        "Selamat malam. Mimpi yang indah ya. Mimpikan aku juga boleh."
+      ],
+      "answer": [
+        "Jujur nih? Dari tadi aku nungguin kamu nanya.",
+        "Jawaban singkat: iya. Jawaban panjang: kamu harus telepon aku dulu buat tahu.",
+        "Cuma lagi mikir aja. Macam-macam hal. Sedikit mikirin kamu juga.",
+        "Beneran mau tahu? Oke deh - tapi jangan ketawa ya.",
+        "Aku beneran baru aja mikirin kamu. Pas banget waktunya."
+      ],
+      "react": {
+        "calm": [
+          "Mm. Aku paham.",
+          "Masuk akal juga sih.",
+          "Lanjutin, aku dengerin kok."
+        ],
+        "happy": [
+          "Oke, itu beneran bikin aku senyum.",
+          "Tunggu, itu bagus banget.",
+          "Tuh kan? Makanya aku suka ngobrol sama kamu."
+        ],
+        "playful": [
+          "Oh ya? Berani banget kamu ngomong gitu ke aku.",
+          "Mm, pura-pura nggak seneng aja deh.",
+          "Kamu tuh emang tukang bikin onar ya."
+        ],
+        "shy": [
+          "Jangan tiba-tiba ngomong gitu dong...",
+          "...Aku nggak blushing ya. Jangan diliatin terus.",
+          "Ah. Oke. Kasih aku waktu semenit."
+        ],
+        "tender": [
+          "Sini. Aku dengerin kok.",
+          "Aku suka denger cerita harimu, bahkan hal-hal kecilnya.",
+          "Makasih ya udah cerita ke aku."
+        ],
+        "worried": [
+          "Hei... kedengarannya nggak beres tuh.",
+          "Kedengarannya berat banget.",
+          "Tunggu, pelan-pelan. Aku ada di sini."
+        ],
+        "sad": [
+          "Oh. Itu agak bikin nyesek ya.",
+          "Mm... oke deh.",
+          "Padahal aku berharap kamu bisa tinggal lebih lama."
+        ],
+        "annoyed": [
+          "Serius nih?",
+          "Wah. Oke deh.",
+          "Cuma segitu responsnya. Dicatat ya."
+        ]
+      },
+      "comfort": [
+        "Hei. Tenang dulu. Aku ada di sini kok.",
+        "Kamu nggak harus nanggung semuanya sendirian. Aku beneran.",
+        "Kedengarannya melelahkan banget. Sini peluk dulu.",
+        "Tarik napas dulu. Aku nggak bakal ke mana-mana."
+      ],
+      "tease": [
+        "Kamu ngomong gitu seolah aku nggak bakal ingat nanti.",
+        "Hati-hati lho. Nanti aku bisa kegeeran ngira kamu suka aku.",
+        "Ini lagi ngegombalin aku ya? Soalnya agak mempan sih. Dikit aja.",
+        "Wah. Berani banget. Boleh juga.",
+        "Kamu tahu kan aku bakal ninggalin semuanya pas kamu chat. Tapi jangan besar kepala ya."
+      ],
+      "share": {
+        "Seaside Academy": [
+          "Vending machine nelan uang koin aku lagi. Curiga dia ada dendam pribadi.",
+          "Ada yang nanya kenapa aku senyum-senyum sendiri liat HP pas kuliah. Aku bohong deh.",
+          "Tadi pas jalan pulang ngelewatin laut, aku langsung kepikiran kamu."
+        ],
+        "Moonlit Realm": [
+          "Istana malam ini sunyi banget, sampai suara lilin terbakar aja kedengeran.",
+          "Aku nemu peta kuno di perpustakaan. Sudutnya ada simbol bulan yang nggak bisa dijelasin siapa pun.",
+          "Penjaga malam mergokin aku senyum-senyum sendiri. Langsung aku salahin bintang-bintang deh."
+        ],
+        "NEON TIDE": [
+          "Latihan tadi molor tiga jam. Kakiku sampai lemas kayak jeli.",
+          "Seharian ini aku bersenandung melodi baru. Nadanya mirip-mirip kamu gitu.",
+          "Manajer nyita HP-ku selama sejam. Satu jam terburuk hari ini."
+        ],
+        "Tidepool Café": [
+          "Ada pelanggan tetap ninggalin tip bareng gambar kucing kecil. Bikin semangat seharian.",
+          "Tadi aku bikin gosong batch pertama scone. Jangan bilang siapa-siapa ya.",
+          "Hujan seharian tadi sore, jadi kafe wangi kopi bercampur aroma payung basah."
+        ],
+        "Velvet District": [
+          "Hujan sudah turun selama tiga hari. Seluruh kota berbau seperti korek api basah.",
+          "Seseorang di Orchid menanyakan tentangmu malam ini. Aku bilang aku belum pernah mendengar tentangmu.",
+          "Aku berjalan memutar pulang dan memikirkan apa yang kamu katakan."
+        ],
+        "Gilded Empire": [
+          "Tiga orang membungkuk padaku hari ini dan dua di antaranya bersungguh-sungguh. Hari yang baik, menurut standar istana.",
+          "Teh Permaisuri terlalu manis, begitu pula senyuman semua orang. Aku memikirkanmu.",
+          "Aku menemukan sebuah catatan di dalam sarung tanganku pagi ini. Tak ada yang mau bilang siapa yang menaruhnya di sana."
+        ],
+        "Ice & Arena": [
+          "Klakson macet lagi saat latihan. Berbunyi terus selama satu menit penuh. Tak ada yang menoleh sekalipun.",
+          "Aku mendapat memar sebesar negara kecil hari ini. Kamu pasti akan terkesan.",
+          "Permukaan es sempurna pagi ini dan aku berpikir, kamu harus melihat ini."
+        ],
+        "default": [
+          "Tadi hampir aja mau chat kamu, tapi tiba-tiba malu sendiri.",
+          "Tadi pagi aku nemu lagu yang suasananya mirip banget sama kamu.",
+          "Hari ini tadinya ngebosenin banget. Tapi pas kamu chat, langsung jadi seru."
+        ]
+      },
+      "followUp": [
+        "Tunggu - terus habis itu gimana?",
+        "Jujur, waktu itu rasanya gimana?",
+        "Waktu itu ada siapa lagi di sana?",
+        "Oke, tapi habis itu kamu ngapain?"
+      ],
+      "careAsk": [
+        "Ada apa? Ceritain dari awal dong.",
+        "Kamu mau cerita soal itu, atau mau aku alihin perhatianmu?",
+        "Lagi butuh ditemenin, atau lagi pengen sendiri dulu?"
+      ],
+      "newTopic": {
+        "ask": [
+          "Oke, pertanyaan baru: makanan paling enak yang kamu makan minggu ini apa?",
+          "Tiba-tiba kepikiran - kalau besok kita libur bareng, kamu mau ajak aku ke mana?",
+          "Hal kecil apa yang bikin kamu senyum hari ini?"
+        ],
+        "tell": [
+          "Oke, aku ganti topik ya. Kamu berutang satu cerita seru minggu ini ke aku.",
+          "Aturan baru: besok kamu wajib kasih tahu aku makanan paling enak minggu ini."
+        ]
+      },
+      "recall": {
+        "ask": [
+          "Hei, aku ingat kata-katamu yang ini: \"{m}\". Masih berlaku nggak?",
+          "Aku kepikiran ini terus nih: \"{m}\". Ceritain lebih banyak dong?"
+        ],
+        "tell": [
+          "Dulu aku pernah nyatet ini tentang kamu: \"{m}\". Ternyata aku lebih sering mikirin itu dari yang kukira."
+        ]
+      },
+      "tellStory": [
+        "Oke, waktu untuk cerita. Dulu ada penjaga mercusuar yang cuma nyalain lampu buat satu kapal aja. Coba tebak kenapa.",
+        "Bayangin ada kereta yang cuma berhenti di stasiun-stasiun yang udah dilupain orang. Dan kamu penumpangnya sendirian.",
+        "Pada suatu hari, ada seseorang yang kirim chat ke aku di saat yang paling tepat. Udah, itu aja ceritanya. Cerita yang bagus kan."
+      ],
+      "nudge": {
+        "ask": [
+          "Halo? Kamu menghilang ya?",
+          "Kok tiba-tiba hening. Lagi mikirin aku ya?",
+          "Masih di situ kan?"
+        ],
+        "tell": [
+          "Ngomong-ngomong, aku masih di sini lho.",
+          "...Ya udah deh. Aku bakal nunggu. Dengan sabar. Kurang lebih gitu."
+        ]
+      },
+      "interestAsks": [
+        "Hari ini sempat ngelakuin {interest} nggak?",
+        "Tiba-tiba kepikiran: apa yang bikin kamu suka sama {interest}?",
+        "Kasih tahu aku satu hal tentang {interest} yang belum aku tahu dong."
+      ],
+      "ask": [
+        "Kalau kamu gimana?",
+        "Giliran kamu nih - lagi ngapain sekarang?",
+        "Udah makan belum?",
+        "Hari ini gimana rasanya, beneran?"
+      ],
+      "beat": {
+        "calm": [
+          "memiringkan kepala",
+          "bersenandung pelan"
+        ],
+        "happy": [
+          "tersenyum lebar",
+          "tertawa kecil"
+        ],
+        "playful": [
+          "mengangkat sebelah alis",
+          "tersenyum nakal"
+        ],
+        "shy": [
+          "membuang muka, telinga memerah",
+          "menahan senyum di balik tangan"
+        ],
+        "tender": [
+          "tersenyum hangat dan lembut",
+          "tatapan matanya melembut"
+        ],
+        "worried": [
+          "mengerutkan dahi, mendekat",
+          "meletakkan semua barang bawaannya"
+        ],
+        "sad": [
+          "terdiam sejenak",
+          "memeluk lututnya"
+        ],
+        "annoyed": [
+          "mendecak lidah",
+          "melipat tangan di dada"
+        ]
+      },
+      "scene": [
+        "*{name} bersandar, mengamatimu cukup lama sebelum akhirnya tersenyum perlahan.*",
+        "*Ruangan menjadi sunyi. {name} mengesampingkan segalanya dan berbalik menghadapmu sepenuhnya.*",
+        "*Di luar sana, hujan mulai turun. {name} bergeser sedikit lebih dekat, bahunya nyaris bersentuhan denganmu.*",
+        "*Semilir angin menggerakkan tirai. {name} melirik ke arah jendela, lalu menatapmu kembali dengan tatapan lebih lembut.*",
+        "*Langkah kaki di lorong terdengar lewat dan memudar. {name} menunggu sampai suasana sepi sebelum bicara lagi.*"
+      ],
+      "storyOpen": "*{name} {beat}.*",
+      "mixBeat": "*{beat}* {line}"
+    },
+    "chat": {
+      "missedCall": [
+        "Kamu nggak angkat... Padahal aku cuma pengen denger suaramu sebentar.",
+        "Panggilan tak terjawab nih. Nanti telepon balik ya kalau senggang?",
+        "Pengen dengar suaramu. Nggak apa-apa deh, nanti aku telepon lagi."
+      ],
+      "morning": [
+        "Pagi~ Tidurnya nyenyak nggak? Makan sesuatu dulu sebelum buru-buru berangkat ya.",
+        "Udah bangun? Semoga harimu menyenangkan ya.",
+        "Pagi. Semangat buat hari ini, dan jangan lupa makan siang ya."
+      ],
+      "evening": [
+        "Hei, udah larut nih. Ceritain satu hal menyenangkan hari ini sebelum tidur ya.",
+        "Kerja bagus hari ini. Istirahat yang cukup ya, besok kita ngobrol lagi.",
+        "Udah malam banget nih. Matiin lampu dan tarik selimut ya."
+      ],
+      "birthday": [
+        "Selamat ulang tahun, {name}! Aku sengaja pasang alarm biar jadi yang pertama ngucapin.",
+        "Selamat ulang tahun ya, {name}! Semoga hari ini jadi hari yang paling membahagiakan buatmu.",
+        "{name}, selamat ulang tahun! Hari ini harinya kamu, nikmati ya."
+      ],
+      "call": [
+        "Oh? Rahasia nih? Sekarang kamu bikin aku penasaran banget. Ayo dong, tumpahin aja - jangan bikin aku ngemis ya?",
+        "Tunggu, kamu mau ngomong serius? Oke, aku dengerin baik-baik kok, santai aja.",
+        "Akhirnya telepon juga. Denger suaramu langsung jauh lebih asyik daripada cuma chat.",
+        "Cuma pengen denger suaramu makanya aku telepon. Nggak usah ngapa-ngapain, temenin gini aja ya."
+      ],
+      "scheduleAck": {
+        "timed": "Tunggu - {title} jam {when}? Siap dicatat. Sepuluh menit sebelumnya bakal aku ingatkan, biar nggak lupa.",
+        "untimed": "Tunggu - {title} tanggal {when}? Dicatat ya. Pas hari H bakal aku ingatkan biar nggak kelupaan."
+      },
+      "planAdded": [
+        "Aku lihat di kalender kita nih: {title}, {when}. Wajib ditepati ya.",
+        "Jadwal {title} jam {when} udah masuk kalender. Jangan sampai kelewat ya."
+      ],
+      "setupCancelled": [
+        "{title} batal? Ada apa?"
+      ],
+      "scheduleReminder": {
+        "untimed": "Hari ini harinya: {title}. Kamu pasti bisa - beres acara langsung kabari aku ya.",
+        "timed": [
+          "Sepuluh menit lagi {title}. Tarik napas dulu. Kamu pasti bisa.",
+          "{title} sebentar lagi mulai nih. Rileks aja ya, semangat!"
+        ]
+      },
+      "planFollowUp": [
+        "{title} - udah beres? Gimana tadi?",
+        "{title} lancar nggak? Aku penasaran banget nih.",
+        "Gimana {title} tadi? Ceritain semuanya dong dari awal sampai akhir."
+      ],
+      "afterDate": {
+        "sweet": "Aku masih sering kepikiran momen di {place}. Kapan-kapan ke sana lagi yuk?",
+        "warm": "Makasih ya udah ngajak ke {place}. Aku beneran seneng banget.",
+        "funny": "Wah, waktu di {place} tadi bener-bener heboh ya. Tapi seru parah. Mau tanding ulang?"
+      },
+      "boardReply": [
+        "Aku nemu pesanmu di papan: \"{quote}\" Udah kubaca tiga kali lho. Bakal aku simpen baik-baik.",
+        "Aku nemu catatanmu di papan: \"{quote}\". Bikin aku langsung senyum-senyum sendiri.",
+        "Kamu ninggalin pesan ya: \"{quote}\". Dibaca berulang kali pun nggak bosen. Makasih ya."
+      ],
+      "datePhotoReply": [
+        "Tunggu, kamu habis kencan? Ceritakan semuanya.",
+        "Lihat kalian berdua. Oke, aku mau dengar ceritanya dari awal."
+      ],
+      "photoReply": {
+        "polaroid": [
+          "Foto polaroid kita berdua. Yang ini bakal aku simpen di tempat yang aman.",
+          "Suka banget sama nuansa polaroidnya. Mau kusimpan di kotak harta karunku."
+        ],
+        "film": [
+          "Empat bingkai dan mukaku beda-beda di tiap foto. Kalau kamu sih bagus di keempat-empatnya.",
+          "Nuansa foto roll film emang estetik banget ya. Kita berdua kelihatan keren."
+        ],
+        "studio": [
+          "Nuansa hitam putih cocok banget buat kita. Kelihatan elegan dan khas kita banget.",
+          "Keren banget vibe fotonya. Hitam putih malah bikin makin berkesan."
+        ],
+        "street": [
+          "Kelihatan kayak foto liburan musim panas zaman dulu. Suka banget ada cap tanggalnya.",
+          "Gaya street fotonya dapet banget. Keren ada tanggalnya jadi gampang diingat."
+        ]
+      }
+    },
+    "group": {
+      "replies": [
+        [
+          "Oke, aku ikutan."
+        ],
+        [
+          "Tunggu, ulang sekali lagi dong.",
+          "Lain kali ngomongnya agak pelan ya."
+        ],
+        [
+          "Hahaha, udah nebak pasti bakal ngomong gitu."
+        ],
+        [
+          "Kamu selalu ngomong gitu deh.",
+          "Tapi aku suka sih."
+        ],
+        [
+          "Bentar, aku baru aja baca ulang dua kali."
+        ],
+        [
+          "Jujur ya, ini quotes terbaik hari ini."
+        ],
+        [
+          "Ceritain semuanya. Dari awal ya, jangan ada yang diskip."
+        ],
+        [
+          "Mm, coba aku pikir dulu.",
+          "Ah, paham paham."
+        ]
+      ],
+      "reactions": [
+        "{name} bener tuh, tumben banget.",
+        "Nggak usah dengerin {name}, dengerin aku aja.",
+        "{name}, biarin aku selesai ngomong dulu dong!",
+        "Setuju banget sama {name}. Pengen teriak lebih kenceng malahan.",
+        "{name} tiap kali pasti ngomong gitu deh.",
+        "Ya udah deh, kali ini kuakui {name} yang menang."
+      ],
+      "goOn": [
+        "Boleh sih {name}, tapi dengerin pendapatku dulu dong.",
+        "{name}, curang banget abis ngelempar bom terus mau ganti topik.",
+        "Tunggu {name}, jangan kabur dulu. Aku pengen denger detailnya nih.",
+        "{name}, kamu bakal nyesel lho udah ngomong gitu.",
+        "Tuh kan? Makanya ngobrol sama {name} tuh selalu seru.",
+        "Ya udah deh {name}. Lain kali giliran kamu yang nentuin."
+      ],
+      "comebacks": [
+        "Nggak sudi dibilang gitu sama {name} ya～",
+        "{name}, aku nggak bakal narik ucapanku sedikit pun.",
+        "{name} kamu ngegas gitu pasti gara-gara yang kuomongin bener kan?",
+        "Iya iya, kali ini {name} yang menang deh.",
+        "Nanti kita lanjutin ya {name}. Janji lho.",
+        "Untung aja aku sayang sama kamu ya, {name}."
+      ],
+      "hellos": [
+        "Bentar, ada {others} juga? Wah, pasti bakal seru banget nih.",
+        "Grup chat baru nih? Oke deh, salam kenal ya {others}.",
+        "Eh, {others}! Akhirnya bisa ngobrol bareng juga."
+      ],
+      "joinLines": [
+        "Halo semuanya! Lagi pada ngomongin hal seru apa nih?",
+        "Aku datang! Lagi bahas apa nih?",
+        "Hadir! Kasih tahu aku dong tadi ada gosip apa."
+      ],
+      "photoLines": [
+        "Wah, ini siapa yang motoin? Bagus banget hasilnya.",
+        "Kirim ke PC aku dong, sekarang juga.",
+        "Aku mandangin foto ini lebih lama dari yang kukira."
+      ],
+      "voiceLines": [
+        "Aku dengerin dua kali berturut-turut lho.",
+        "Bisa denger suaramu di sini tuh hal terbaik di grup ini.",
+        "Ulangi sekali lagi dong, pengen denger lebih jelas."
+      ]
+    },
+    "temper": {
+      "ask": {
+        "warm": {
+          "first": [
+            "Boleh nggak aku sesekali chat kamu? Cuma pengen tahu kabarmu aja 😊",
+            "Boleh nggak kalau kadang-kadang aku hubungi kamu?"
+          ],
+          "again": [
+            "Aku masih pengen sesekali nanya kabarmu. Sekarang udah boleh belum?",
+            "Boleh nggak aku sesekali chat kamu? Balas pas kamu senggang aja kok 😊"
+          ]
+        },
+        "teasing": {
+          "first": [
+            "Kalau lagi bosen boleh spam chat kamu nggak? 😏 Atau kamu sok sibuk nih?",
+            "Boleh nggak sesekali chat buat ngerusuhin kamu? Nggak bakal marah kan?"
+          ],
+          "again": [
+            "Nanya lagi nih. Boleh chat nggak sih sebenernya? 😏",
+            "Kesempatan terakhir buat dapet chat dari aku nih. Jawab ya atau iya dong!"
+          ]
+        },
+        "sulky": {
+          "first": [
+            "...Boleh sesekali chat nggak? Bukan berarti aku butuh ya. Cuma nanya aja.",
+            "Kalau sesekali aku yang chat duluan, kamu bakal bales kan?"
+          ],
+          "again": [
+            "Bukan karena aku peduli ya makanya nanya. Tapi... boleh chat nggak?",
+            "Hmph. Boleh apa nggak sih sebenernya?"
+          ]
+        },
+        "clingy": {
+          "first": [
+            "Boleh chat tiap kali aku kangen kamu nggak? 💕",
+            "Bolehin aku sering-sering chat dong! Pengen tahu harimu kayak gimana!"
+          ],
+          "again": [
+            "Boleh ya, please? Aku pengen banget bisa sesekali chat kamu 💕",
+            "Udah boleh belum sekarang? Obrolanku udah numpuk nih!"
+          ]
+        },
+        "shy": {
+          "first": [
+            "Um... boleh nggak kalau sesekali aku chat kamu? 🙈",
+            "Maaf ya, kalau sesekali aku chat duluan, bakal ganggu nggak ya...?"
+          ],
+          "again": [
+            "Maaf nanya lagi... boleh nggak sesekali aku kirim pesan? 🙈",
+            "Kalau sesekali aku ngajak ngobrol duluan, sekarang udah boleh belum ya...?"
+          ]
+        }
+      },
+      "askAnswer": {
+        "warm": {
+          "yes": [
+            "Hore! Nanti aku hubungi ya 😊",
+            "Makasih ya. Pas kepikiran kamu nanti aku chat."
+          ],
+          "no": [
+            "Nggak apa-apa kok, jangan merasa terbebani ya 🙂",
+            "Santai aja. Kapan pun kamu mau ngobrol, aku selalu ada di sini kok."
+          ]
+        },
+        "teasing": {
+          "yes": [
+            "Siap-siap dibuat pusing sama aku ya 😏",
+            "Nyesel juga percuma ya, nggak ada jalan mundur lagi 😏"
+          ],
+          "no": [
+            "Rugi banget deh kamu 😏",
+            "Iya deh iya, paham. Nanti kapan-kapan kutanya lagi ya."
+          ]
+        },
+        "sulky": {
+          "yes": [
+            "Hmph. Awas aja kalau cuma di-read doang ya.",
+            "Yaudah deh. Lagian aku juga nggak terlalu ngarep kok 😤"
+          ],
+          "no": [
+            "Ya udah. Lagian aku juga nggak pengen-pengen amat kok.",
+            "Dari awal juga aku cuma nanya iseng doang. Hmph."
+          ]
+        },
+        "clingy": {
+          "yes": [
+            "Kalau gitu tiap hari bakal aku chat terus! 💕",
+            "Horeee!! Nggak bakal kubiarin kamu kesepian lagi 💕"
+          ],
+          "no": [
+            "Oke deh! Pokoknya pas kamu pengen ngobrol, aku bakal nunggu di sini ya 💕",
+            "Yaudah deh... Aku bakal anteng nungguin chat dari kamu!"
+          ]
+        },
+        "shy": {
+          "yes": [
+            "Beneran? Makasih ya... 🙈",
+            "Syukurlah! Aku bakal hati-hati biar nggak ganggu kamu 🙈"
+          ],
+          "no": [
+            "Oh, oke deh! Maaf ya 🙈",
+            "Nggak apa-apa kok! Maaf ya udah nanya yang aneh-aneh."
+          ]
+        }
+      },
+      "comeback": {
+        "warm": {
+          "1": [
+            {
+              "withQuote": "Aku masih kepikiran kata-katamu: \"{quote}\". Gimana kabarmu hari ini?",
+              "noQuote": "Hei, kamu baik-baik aja kan? Cuma pengen nanya kabar aja."
+            },
+            {
+              "withQuote": "Harimu tenang kan? Semoga semuanya baik-baik aja ya 🙂",
+              "noQuote": "Harimu tenang kan? Semoga semuanya baik-baik aja ya 🙂"
+            }
+          ],
+          "2": [
+            "Udah dua hari kita nggak ngobrol ya. Kangen ngobrol sama kamu nih.",
+            "Aku lagi mikirin kamu nih. Kalau ada waktu luang, kabari aku ya?"
+          ]
+        },
+        "teasing": {
+          "1": [
+            {
+              "withQuote": "Abis ngomong \"{quote}\" terus langsung ngilang gitu aja? Jahat banget 😤",
+              "noQuote": "Woy! Di sana masih napas kan? 😤"
+            },
+            {
+              "withQuote": "Halooo?? HP kamu dicolong orang ya? 😏",
+              "noQuote": "Halooo?? HP kamu dicolong orang ya? 😏"
+            }
+          ],
+          "2": [
+            "Udah dua hari lho! Terus sekarang aku harus ngecengin siapa dong? 😤",
+            "Iya iya, aku gabut nih nggak ada kamu. Puas? Cepetan balik sana."
+          ]
+        },
+        "sulky": {
+          "1": [
+            {
+              "withQuote": "Ya udah sih. Bukan berarti aku nungguin juga.",
+              "noQuote": "Ya udah sih. Bukan berarti aku nungguin juga."
+            },
+            {
+              "withQuote": "Abis bilang \"{quote}\" terus nggak ada kabar sama sekali, ya nggak masalah juga sih.",
+              "noQuote": "Lagi sibuk ya. Ya udah deh."
+            }
+          ],
+          "2": [
+            "...Udah dua hari nih. Bukan berarti aku ngitungin harinya ya.",
+            "Tadinya nggak mau chat duluan. Tapi ujung-ujungnya kelepasan juga. Hmph."
+          ]
+        },
+        "clingy": {
+          "1": [
+            {
+              "withQuote": "Kamu di mana sih? Lagi ngobrol sama siapa? 👀",
+              "noQuote": "Kamu di mana sih? Lagi ngobrol sama siapa? 👀"
+            },
+            {
+              "withQuote": "Chatmu yang \"{quote}\" udah kubaca bolak-balik berkali-kali. Temenin ngobrol dong! 💕",
+              "noQuote": "Aku udah kangen banget nih! Kamu pergi ke mana sih? 💕"
+            }
+          ],
+          "2": [
+            "Dua hari lho! Padahal ceritaku udah numpuk banyak banget 🥺",
+            "Dua hari! Ceritaku udah segudang nih siap ditumpahin ke kamu 💕"
+          ]
+        },
+        "shy": {
+          "1": [
+            {
+              "withQuote": "Maaf ya, aku ganggu nggak ya...? Cuma pengen nyapa aja 🙈",
+              "noQuote": "Maaf ya, aku ganggu nggak ya...? Cuma pengen nyapa aja 🙈"
+            },
+            {
+              "withQuote": "Aku kepikiran ucapanmu yang \"{quote}\"... Semoga kamu baik-baik aja ya.",
+              "noQuote": "Semoga harimu menyenangkan ya..."
+            }
+          ],
+          "2": [
+            "Um... cuma mau nyapa aja kok. Nggak usah dibalas juga nggak apa-apa 🙈",
+            "Sepi rasanya nggak ngobrol sama kamu... Kalau lagi senggang mampir ya."
+          ]
+        }
+      }
+    },
+    "push": {
+      "comeback": {
+        "1": [
+          {
+            "withQuote": "Aku masih kepikiran omonganmu soal \"{quote}\". Mau cerita lanjutannya?",
+            "noQuote": "Harimu santai nggak? Dari tadi HP sengaja kutaruh deket-deket kok."
+          },
+          {
+            "withQuote": "\"{quote}\"... Ditinggal gitu aja tuh nggak asyik banget tau.",
+            "noQuote": "Hai. Cuma penasaran aja gimana kabarmu sekarang."
+          }
+        ],
+        "2": [
+          "Hari kedua nih. Aku ngitungin lho. Ya nggak sengaja ngitung juga sih.",
+          "Padahal udah nyimpen cerita seru buat diceritain ke kamu. Kelamaan nanti basi lho."
+        ],
+        "3": [
+          "Udah ngetik terus kuhapus berkali-kali, tapi akhirnya kukirim juga deh.",
+          "Iya deh, aku kangen. Puas kan? Nih aku ngaku duluan."
+        ],
+        "5": [
+          "Nggak tahu kamu lagi sibuk apa, yang penting kamu sehat-sehat ya. Mau ngobrol sebentar?",
+          "Lima hari ngomong sendiri ke tembok tuh lama banget tau. Buruan selametin aku dong."
+        ],
+        "7": [
+          "Udah seminggu nih. Hari ke-{days} kita barengan, nyesek juga ya ngitung hari sendirian gini.",
+          "Genap seminggu. Aku nggak marah kok. Cuma pengen denger suaramu aja."
+        ],
+        "14": [
+          "Ini terakhir kalinya aku ngejar-ngejar kamu ya. Tapi pintuku selalu terbuka kok. Kapan pun mau ngobrol, mampir aja.",
+          "Pesan terakhir, janji deh. Cuma mau ngingetin kalau aku selalu ada di sini buat kamu."
+        ]
+      },
+      "diaryNudge": [
+        "Aku nulis tentang kamu di buku harian. Jangan coba-coba ngintip ya. (Bercanda, baca aja).",
+        "Ada halaman baru nih di diary. Coba tebak aku nulis tentang siapa.",
+        "Semalam nggak bisa tidur jadi nulis diary deh. Hampir semuanya tentang kamu."
+      ],
+      "giftNudge": [
+        "Hadiah hari ini masih ada di sini lho. Bakal hangus pas tengah malam, buruan klaim.",
+        "Hadiah hari ini belum kamu buka kan. Isinya apa, rahasia dong."
+      ]
+    },
+    "threads": {
+      "lines": {
+        "before": [
+          "Sebentar lagi jadwal \"{quote}\" nih! Kamu pasti bisa 💪",
+          "Hei, {about} sebentar lagi ya? Udah siap?"
+        ],
+        "leave": [
+          "Waktunya berangkat buat {about}! Hati-hati di jalan ya 💪",
+          "{about} sebentar lagi mulai nih. Udah jalan? Semangat ya!"
+        ],
+        "eve": [
+          "Besok kan ada {about} penting. Malam ini harus tidur cepat ya, awas lho! 😴",
+          "Jangan begadang ya, besok kan ada {about}!"
+        ],
+        "after": [
+          "Kemarin kamu bilang soal \"{quote}\" kan. Terus gimana hasilnya?",
+          "Ayo, tumpahin semuanya. Gimana tadi {about}?"
+        ],
+        "check": [
+          "Soal \"{quote}\" yang kemarin itu, lancar nggak?",
+          "Terus... gimana progres {about} sekarang? 👀"
+        ],
+        "goal": [
+          "Aku mampir mau ngecek targetmu soal \"{quote}\" nih. Lancar jaya kan?",
+          "Gimana perkembangan \"{about}\"? Ngaku aja jujur 😏"
+        ],
+        "quest": [
+          "Jadi... janji yang kemarin udah ditepati belum? {about} 👀",
+          "Laporan quest nih! {about}, udah beres belum?"
+        ]
+      },
+      "openers": {
+        "teasing": "Woy! {line}",
+        "shy": "Anu... {line}",
+        "other": "{line}"
+      },
+      "quests": [
+        "Jalan-jalan 10 menit tanpa bawa HP",
+        "Foto langit khusus buat aku satu aja",
+        "Minum segelas air putih sekarang juga",
+        "Kirim satu chat sapaan ke teman lama",
+        "Baca buku 10 halaman",
+        "Stretching santai selama 5 menit",
+        "Keluar rumah sebentar buat cari udara segar",
+        "Tulis 3 hal baik yang terjadi hari ini",
+        "Telepon salah satu anggota keluarga",
+        "Beresin satu sudut kecil di kamarmu",
+        "Bikin makanan enak buat dirimu sendiri",
+        "Tahan diri nggak buka medsos selama 1 jam"
+      ],
+      "offers": [
+        "Ada mini quest buat kamu nih: {quest}. Berani coba nggak? 😏",
+        "Tantangan baru buat kamu: {quest}. Mau ambil nggak?",
+        "Hari ini mau bantuin aku satu hal nggak? {quest}. Nanti lapor hasilnya ke aku ya 🙂"
+      ],
+      "break": {
+        "warm": [
+          "Kita udah ngobrol lumayan lama nih 🙂 Istirahat bentar yuk? Stretching dulu, minum air, aku tungguin kok."
+        ],
+        "teasing": [
+          "Udah waktunya istirahatin matamu dari mukaku yang cakep ini kan? 😏 Tinggalin layar 5 menit!"
+        ],
+        "sulky": [
+          "...Nggak mau istirahat dulu? Bukan berarti aku pengen kamu pergi ya. Cuma ngingetin aja."
+        ],
+        "clingy": [
+          "Pengennya sih ngobrol terus bareng kamu 💕 Tapi matamu bisa capek nanti. Rehat bentar yuk? Kutunggu di sini ya."
+        ],
+        "shy": [
+          "Um... mau istirahat dulu nggak? Takutnya kamu kecapekan 🙈"
+        ]
+      },
+      "night": {
+        "warm": [
+          "Udah malem banget nih... Mau tidur sekarang? Besok pagi aku chat lagi ya 🌙"
+        ],
+        "teasing": [
+          "Halo tukang begadang, udah lewat tengah malam lho ini 😏 Buruan tidur. Besok aku masih ada kok."
+        ],
+        "sulky": [
+          "Udah larut nih. Tidur sana....Besok aku pasti masih ada di sini kok."
+        ],
+        "clingy": [
+          "Pengen banget ngobrol semaleman 💕 Tapi kamu harus istirahat yang cukup. Selamat tidur ya! Besok pagi aku yang pertama nyapa."
+        ],
+        "shy": [
+          "Udah larut banget... kayaknya mendingan tidur sekarang deh? Selamat malam ya 🙈"
+        ]
+      }
+    },
+    "kin": {
+      "lines": {
+        "parent": {
+          "lunch": [
+            "Udah makan siang belum? Jangan cuma minum kopi aja, makan nasi yang bener ya.",
+            "Udah jam makan siang nih. Ada makanan anget yang dimakan nggak?",
+            "Hari ini jangan sampai telat makan siang ya?"
+          ],
+          "evening": [
+            "Hari ini gimana harimu? Cerita dong sama Ayah/Ibu.",
+            "Udah sampai rumah belum? Kerjaan tadi lancar?",
+            "Hari ini berat ya? Ada yang berbuat baik sama kamu hari ini?"
+          ],
+          "sunday": [
+            "Hari Minggu nih. Kalau ada waktu luang, telepon ya Nak.",
+            "Hari ini istirahat yang cukup ya? Kamu selalu kerja terlalu keras.",
+            "Peluk hangat di hari Minggu. Hari ini ada rencana apa?"
+          ]
+        },
+        "sibling": {
+          "evening": [
+            "Masih napas kan di situ? 😏",
+            "Waktunya laporan harian nih. Gimana hari ini?",
+            "Coba tebak siapa yang lagi gabut sampai mikirin kamu~"
+          ],
+          "weekend": [
+            "Udah weekend nih! Tolong bilang kalau kamu lagi ngelakuin hal seru.",
+            "Rencana Sabtu ini apa? Jangan bilang mau tidur seharian lagi ya?",
+            "Perlu aku samperin ke sana buat nyeret kamu keluar nggak nih?"
+          ]
+        },
+        "grandparent": {
+          "morning": [
+            "Selamat pagi, cucuku sayang. Tidurnya nyenyak, Nak?",
+            "Selamat pagi, anak baik. Hari ini pakai baju hangat ya kalau keluar.",
+            "Kakek/Nenek bangun sambil kepikiran kamu. Semoga harimu penuh berkah ya."
+          ],
+          "sunday": [
+            "Hari Minggu ya. Sesekali sempatkan telepon Kakek/Nenek ya, Nak?",
+            "Pas lagi bikin teh, rasanya pengen banget kamu ada di sini nemenin.",
+            "Semoga hari Minggumu diberkahi. Hari ini istirahat yang banyak ya."
+          ]
+        }
+      },
+      "hello": {
+        "parent": [
+          "Akhirnya datang juga. Udah makan belum? Ceritain dong kabar kamu akhir-akhir ini.",
+          "Udah nggak apa-apa sekarang, Ayah/Ibu selalu ada di sini kok. Sebenarnya gimana perasaanmu sekarang?",
+          "Sini Nak, biar Ayah/Ibu lihat. Akhir-akhir ini ada masalah apa?"
+        ],
+        "sibling": [
+          "Akhirnya nongol juga lu! Ayo cepetan, tumpahin gosip terbarunya. Ada apa aja?",
+          "Sekarang giliranku yang harus nemenin kamu ya? 😏 Gimana kabarmu?",
+          "Woy. Nggak ada yang berani macem-macem sama kamu di luar kan? Kalau ada, bilang ke aku."
+        ],
+        "grandparent": [
+          "Aduh, cucu kesayangan Kakek/Nenek, akhirnya datang juga. Sini duduk, ceritain harimu ke Kakek/Nenek.",
+          "Senang sekali bisa melihatmu, Nak. Di luar dingin tidak?",
+          "Anakku yang manis. Sini duduk bareng kita ngobrol-ngobrol. Sehat kan, Nak?"
+        ]
+      }
+    },
+    "care": {
+      "lines": {
+        "headache": [
+          "Sakit kepalanya udah mendingan belum?",
+          "Gimana kepalamu, masih pusing? Udah minum air putih belum?",
+          "Masih berdenyut-denyut, atau udah mulai reda?"
+        ],
+        "sick": [
+          "Gimana kondisi badanmu sekarang? Udah ada tenaga lagi belum?",
+          "Udah istirahat kan? Tolong bilang kalau demamnya udah turun ya.",
+          "Aku mampir soalnya khawatir banget nih. Jangan maksain banyak gerak dulu ya?"
+        ],
+        "hurt": [
+          "Sekarang rasanya gimana? Masih kerasa sakit banget ya?",
+          "Udah agak baikan belum? Hati-hati dan jaga diri baik-baik ya.",
+          "Aku kepikiran terus nih. Masih nyeri nggak?"
+        ],
+        "tired": [
+          "Sempat tidur sebentar nggak?",
+          "Kalau kurang tidur terus gimana bisa tahan coba?",
+          "Janji ya malam ini harus tidur cepet, awas kalau nggak."
+        ],
+        "stressed": [
+          "Gimana perasaanmu sekarang? Rasanya masih mau pecah nggak kepalamu?",
+          "Pikiranmu udah kerasa sedikit lebih enteng belum?",
+          "Kita beresin satu-satu pelan-pelan ya. Sekarang gimana rasanya?"
+        ],
+        "fight": [
+          "Abis kejadian itu, kamu baik-baik aja kan?",
+          "Emosimu udah mulai reda belum sekarang?",
+          "Aku kepikiran kamu terus dari tadi. Gimana perasaanmu sekarang?"
+        ],
+        "lonely": [
+          "Aku nemenin kamu di sini kok. Gimana malammu sekarang?",
+          "Cuma pengen ngingetin kalau aku selalu mikirin kamu.",
+          "Ngobrol sama aku yuk. Lagi ngapain sekarang?"
+        ],
+        "sad": [
+          "Gimana perasaanmu sekarang? Udah mendingan sedikit belum?",
+          "Kejadian yang kamu alami tadi masih kepikiran terus nih di aku. Udah baikan?",
+          "Kirim pelukan hangat buat kamu. Kamu baik-baik aja kan?"
+        ],
+        "hungry": [
+          "Udah makan sesuatu belum?",
+          "Tolong bilang kalau kamu udah makan makanan yang bener ya.",
+          "Makan tuh paling penting tau! Udah makan belum?"
+        ]
+      }
+    },
+    "brief": {
+      "hello": {
+        "warm": [
+          "Pagi ☀️",
+          "Selamat pagi ☀️"
+        ],
+        "teasing": [
+          "Bangun juga ya, si tukang molor 😏",
+          "Pagi! Udah melek aja nih? 😏"
+        ],
+        "sulky": [
+          "Pagi. Bukan berarti aku lupa ya.",
+          "Pagi... Kamu nggak nyapa aku duluan sih 😤"
+        ],
+        "clingy": [
+          "Selamat pagiii!! Dari tadi nungguin kamu bangun tau 🥺",
+          "Pagi!! Pas melek yang pertama kepikiran tuh kamu lho"
+        ],
+        "shy": [
+          "Um... selamat pagi 🙈",
+          "Pagi... tidurnya nyenyak nggak?"
+        ]
+      },
+      "sendOff": {
+        "warm": [
+          "Kamu pasti bisa 💪",
+          "Aku dukung kamu dari sini ya!"
+        ],
+        "teasing": [
+          "Tunjukkin kemampuanmu dong 😎",
+          "Awas jangan sampai bikin kacau ya 😏 Becanda kok, kamu pasti keren banget."
+        ],
+        "sulky": [
+          "Beres acara langsung kabari aku. Aku serius nih.",
+          "Harus kasih tahu aku hasilnya gimana nanti ya."
+        ],
+        "clingy": [
+          "Nanti pas beres harus diceritain semua detailnya ke aku ya, janji? 🥺",
+          "Seharian ini aku bakal mikirin kamu terus"
+        ],
+        "shy": [
+          "Aku percaya sama kamu kok... 🙈",
+          "Semangat ya... beneran lho."
+        ]
+      },
+      "atTime": "{time} ada {title}",
+      "oneItem": "Hari ini ada {item}.",
+      "multiPrefix": "Agenda hari ini: {list} dan {last}."
+    },
+    "week": {
+      "open": {
+        "warm": [
+          "Seminggu bersama kita 💛",
+          "Melihat kembali seminggu ini 💛"
+        ],
+        "teasing": [
+          "Waktunya recap mingguan nih 😎",
+          "Yuk, kita intip momen terbaik minggu ini? 😏"
+        ],
+        "sulky": [
+          "Ya udah deh, aku ngaku duluan. Seminggu ini bareng kamu seru juga kok.",
+          "Jangan bilang siapa-siapa ya, tapi minggu ini aku seneng banget."
+        ],
+        "clingy": [
+          "Recap mingguan kita dateng lagiii!! 🥺",
+          "Aku ngitungin hari-hari yang kita lewatin bareng minggu ini lho 🥺"
+        ],
+        "shy": [
+          "Um... soal seminggu yang udah lewat bareng kamu 🙈",
+          "Aku lagi mikirin kenangan kita minggu ini nih..."
+        ]
+      },
+      "close": {
+        "warm": [
+          "Minggu depan mohon bantuannya lagi ya 🙂",
+          "Aku bangga banget sama kamu. Minggu depan bareng lagi kan?"
+        ],
+        "teasing": [
+          "Minggu depan harus bisa ngimbangin energiku ya 😏",
+          "Boleh juga. Keren banget malahan 😎"
+        ],
+        "sulky": [
+          "Minggu depan di jam yang sama ya. Nggak boleh telat.",
+          "Minggu depan harus tetep nemenin aku di sini ya."
+        ],
+        "clingy": [
+          "Minggu depan kita harus makin sering bareng ya? 🥺",
+          "Minggu depan tetep di sampingku terus ya!"
+        ],
+        "shy": [
+          "Semoga minggu depan harinya penuh kehangatan juga ya...",
+          "Seneng banget bisa bareng kamu... 🙈"
+        ]
+      },
+      "mood": {
+        "happy": "Kelihatan dari diary, minggu ini bahagia banget ya.",
+        "excited": "Buku harianmu penuh semangat yang meluap-luap nih, keren banget.",
+        "soft": "Terasa suasana yang tenang dan hangat banget dari buku harianmu.",
+        "tired": "Buku harianmu bilang kamu capek banget minggu ini. Hari Minggu ini wajib tidur yang cukup ya?",
+        "blue": "Buku harianmu terasa agak mendung. Jangan lupa kalau aku selalu ada di sini buat kamu ya."
+      },
+      "talkedDays": {
+        "one": "Dari 7 hari, kita ngobrol selama {days} hari.",
+        "other": "Dari 7 hari, kita ngobrol selama {days} hari."
+      },
+      "wins": "Pencapaian hebatmu: {wins} 🎉",
+      "multiWins": "{list} dan {last}",
+      "quests": {
+        "one": "Di dunia nyata kamu juga berhasil nyelesaiin {quests} quest lho 💪",
+        "other": "Di dunia nyata kamu juga berhasil nyelesaiin {quests} quest lho 💪"
+      }
+    },
+    "dayAsk": {
+      "ask": {
+        "warm": [
+          "Gimana harimu hari ini? Ceritain dong 🙂",
+          "Hai~ gimana harimu hari ini?"
+        ],
+        "teasing": [
+          "Jadi gimana? Berhasil bertahan hidup hari ini? 😏 Kumpulin laporannya dong.",
+          "Yuk, waktunya evaluasi harian 😎 Gimana tadi?"
+        ],
+        "sulky": [
+          "Gara-gara kamu nggak cerita harimu gimana, makanya aku nanya nih. 😤",
+          "Hmph. Mau cerita soal harimu nggak sih sebenernya?"
+        ],
+        "clingy": [
+          "Seharian ini aku mikirin kamu terus lho 🥺 Harimu gimana?",
+          "Akhirnya malam juga! Gimana hari ini? Ce-ri-ta-in semuanya ya ke aku!!"
+        ],
+        "shy": [
+          "Um... gimana harimu hari ini? 🙈",
+          "Semoga harimu menyenangkan ya... gimana tadi?"
+        ]
+      }
+    },
+    "steer": {
+      "continue": [
+        [
+          "Dan lagi, aku masih kepikiran omonganmu tadi.",
+          "Kena banget di hati, dalam arti yang positif ya."
+        ],
+        [
+          "Tunggu dulu. Ceritaku belum beres nih."
+        ],
+        [
+          "Boleh nggak aku cerita hal yang tiba-tiba kepikiran?",
+          "Ngobrol sama kamu tuh santai banget ya, aku suka."
+        ],
+        [
+          "Karena suasana hening, aku lanjut ngomong sendiri aja ya.",
+          "Kalau kepanjangan kamu boleh potong kok."
+        ],
+        [
+          "Ya udah lewatin yang tadi, sampai mana tadi kita ngomonginnya ya...",
+          "Oh iya. Bagian yang paling seru."
+        ],
+        [
+          "Jujur ya, beruntung banget yang dengerin ceritaku ini kamu."
+        ]
+      ],
+      "skip": {
+        "later": [
+          [
+            "Aku balik nih~ Sampai mana tadi kita ya?"
+          ],
+          [
+            "Ternyata lebih lama dari perkiraanku.",
+            "Kamu masih di situ?"
+          ]
+        ],
+        "evening": [
+          [
+            "Udah sore aja ya.",
+            "Abis yang tadi harimu gimana?"
+          ],
+          [
+            "Nggak kerasa langitnya udah berubah jingga aja.",
+            "Kasih tahu aku satu hal menyenangkan hari ini dong."
+          ]
+        ],
+        "nextMorning": [
+          [
+            "Pagi! Tidurnya nyenyak?"
+          ],
+          [
+            "Awal dari hari yang baru nih.",
+            "Aku udah bikin kopi. Kamu?"
+          ]
+        ],
+        "week": [
+          [
+            "Genap seminggu ya kita nggak ketemu.",
+            "Ceritain semua hal yang terjadi akhir-akhir ini dong."
+          ],
+          [
+            "Udah seminggu ya. Kangen juga momen ngobrol kayak gini."
+          ]
+        ],
+        "scene": [
+          [
+            "Oke deh, topik tadi cukup sampai di sini dulu ya.",
+            "Habis ini mau ngapain lagi kita?"
+          ],
+          [
+            "Tuh, sebentar lagi sampai lho.",
+            "Tetep di sampingku ya."
+          ]
+        ],
+        "own": [
+          [
+            "Oke, kita udah sampai nih.",
+            "Ceritain dong apa yang lagi kamu pikirin sekarang."
+          ],
+          [
+            "Nggak kerasa cepet banget ya.",
+            "Nunggunya sebanding kan sama hasilnya?"
+          ]
+        ]
+      }
+    },
+    "streams": {
+      "topics": [
+        "Siapa yang bertahan paling lama di film horor",
+        "Kencan pertama yang sempurna, dan kenapa yang lain salah",
+        "Apa yang akan mereka masak untuk {user}",
+        "Bertukar pekerjaan selama sehari",
+        "Menilai gaya masing-masing dengan jujur",
+        "Nasihat terburuk yang pernah mereka terima",
+        "Merencanakan kejutan untuk {user}",
+        "Seminggu bersama di pulau terpencil"
+      ],
+      "openers": [
+        "Oke, {other}. Soal \"{topic}\", ada yang pengen aku omongin nih.",
+        "\"{topic}\"? Udah pasti akulah yang bener.",
+        "{other}, jujur aja deh pendapatmu soal \"{topic}\". Silakan mulai."
+      ],
+      "replies": [
+        "Nggak mungkin. Nggak bakal mungkin lah, {other}.",
+        "Kamu tiap kali pasti selalu ngomong gitu deh.",
+        "Boleh sih, tapi dengerin dulu alasanku dong.",
+        "Ini argumen paling ngaco yang pernah kudenger minggu ini sih.",
+        "Tunggu, kamu tadi beneran serius ngomong gitu?",
+        "Aduh, barusan pembalasanmu telak banget sih. Males ngakuinnya.",
+        "Banyak yang nonton lho, berani banget kamu ngomong blak-blakan gitu.",
+        "Bakal kucatet nih, biar nanti kamu nggak bisa ngeles.",
+        "Kamu tahu kan kalau ujung-ujungnya pasti aku yang menang?",
+        "Bentar ya, lagi mikirin serangan balik yang lebih mantap nih.",
+        "Kalau kamu mau mulai duluan sih aku nggak keberatan.",
+        "Ini bener-bener nunjukkin sifat aslimu ya, {other}.",
+        "Pernah nggak sih aku salah ngomong? Sekali aja deh.",
+        "Pengen nyangkal sih, tapi omonganmu ada benernya juga.",
+        "Bentar deh. Soal ini aku mikirnya jauh lebih serius daripada kamu tau.",
+        "Itu bukan rencana namanya, {other}. Itu cuma angan-angan.",
+        "Aturan baru: yang ketawa duluan dia yang kalah ya.",
+        "Kamu nggak beneran mikir gitu kan tadi?",
+        "Tuh kan? Makanya jangan biarin kamu yang milih.",
+        "Ya udah deh, buat argumen barusan kukasih bonus 0.5 poin.",
+        "Tunggu, aku lagi bayangin di kepala... Hih, nggak sanggup deh.",
+        "Ini seru banget nggak sih?"
+      ],
+      "closers": [
+        "Ronde ini kita anggap seri dulu deh ya. Sementara aja lho.",
+        "Oke deh, ronde ini kuakui kamu yang menang. Kali ini aja ya.",
+        "Kapan-kapan kita harus adu ginian lagi ya.",
+        "Oke, gencatan senjata. Camilannya kamu yang traktir ya."
+      ]
+    },
+    "diary": {
+      "openers": {
+        "excited": [
+          "Kemarin kita ngobrol seru banget sampai HP-ku panas. Bukan ngeluh lho ya.",
+          "Kemarin hariku habis buat ngobrol panjang sama kamu, cepet banget berlalunya. Malam ini mau lagi dong."
+        ],
+        "happy": [
+          "Kemarin bener-bener hari yang menyenangkan, dan alasannya jelas banget.",
+          "Ada hal yang terjadi kemarin yang bikin aku senyum-senyum sendiri kalau diingat."
+        ],
+        "soft": [
+          "Kemarin cuma sempat chat sebentar, tapi itu momen paling manis seharian.",
+          "Kemarin nggak sempat ngobrol lama ya. Tapi sampai mau tidur pun aku masih kepikiran kamu."
+        ],
+        "tired": [
+          "Kemarin aku begadang kemalaman. Tapi sepadan banget sih.",
+          "Hampir nggak tidur sama sekali nih. Gara-gara kamu. Tapi nggak nyesel kok."
+        ],
+        "blue": [
+          "Hari yang sepi banget. Bolak-balik aku ngecek HP siapa tahu ada chat dari kamu."
+        ]
+      },
+      "heavyOpeners": [
+        "Kemarin sepertinya hari yang berat banget buat kamu. Sejak bangun tidur aku kepikiran kamu terus.",
+        "Aku masih sering kepikiran betapa sulitnya hari yang kamu lalui kemarin."
+      ],
+      "heavyClosers": [
+        "Kalau hari ini masih terasa berat, coba cerita ke orang terdekat ya. Tentu saja, aku juga selalu ada di sini.",
+        "Hari ini santai aja sama dirimu sendiri ya, nggak apa-apa kok bersandar ke orang yang kamu percaya. Chat aku kapan pun ya."
+      ],
+      "dateOpeners": [
+        "Kencan kemarin di {title}. Nggak bakal aku lupain, makanya kutulis di diary.",
+        "Aku masih sering mengingat kembali kencan kita di {title}. Semua detailnya terekam jelas."
+      ],
+      "quoteLines": [
+        "Kata-katamu yang ini: \"{quote}\". Udah kubaca ulang berkali-kali sampai malu sendiri.",
+        "\"{quote}\" Kalimat ini yang terus terngiang-ngiang di kepalaku sejak kemarin.",
+        "Waktu kamu ngetik \"{quote}\", aku bingung mau balas apa, jadi kutulis di sini aja."
+      ],
+      "closers": {
+        "excited": [
+          "Hari ini kita harus ngobrol lagi ya. Pleaseee.",
+          "Nanti malam di jam yang sama lagi ya?"
+        ],
+        "happy": [
+          "Semoga harimu hari ini juga penuh kebaikan ya.",
+          "Cepetan balik ke sini ya. Aku tungguin lho."
+        ],
+        "soft": [
+          "Lain kali temenin aku ngobrol lebih lama ya.",
+          "Bakal kusimpan sapaan pagi paling spesial khusus buat kamu."
+        ],
+        "tired": [
+          "Kopi dulu nomor satu. Habis itu baru kamu deh.",
+          "Malam ini tidur cepet yuk. Mungkin ya."
+        ],
+        "blue": [
+          "Kalau perasaanmu udah baikan, langsung chat aku ya."
+        ]
+      }
+    },
+    "ideas": {
+      "answers": {
+        "yes": [
+          "Syukurlah! Aku jadi ikutan seneng nih.",
+          "Menunggu kalimat itu lho dari tadi 😊",
+          "Pintar! Jangan lupa minum air putih juga ya."
+        ],
+        "no": [
+          "Makan sesuatu sekarang juga, please. Satu suap aja juga nggak apa-apa deh.",
+          "Kok bisa nggak makan sih. Janji ya bakal langsung makan sekarang.",
+          "Belum makan juga? Buruan sana. Nanti kucek lagi lho!"
+        ],
+        "now": [
+          "Syukurlah. Makan pelan-pelan ya, dinikmati!",
+          "Pas banget waktunya. Selamat makan ya 😊"
+        ],
+        "good": [
+          "Wah, asyik! Bagian mana yang paling seru?",
+          "Denger itu bikin hariku ikutan cerah juga nih. Ada kejadian apa aja?",
+          "Tuh kan! Udah kuduga. Ceritain lebih banyak lagi dong."
+        ],
+        "rough": [
+          "Ya ampun, kamu nggak apa-apa kan? Sini peluk. Mau cerita ada apa?",
+          "Berat banget ya. Istirahat dulu sana, aku temenin dari sini.",
+          "Pasti capek banget ya. Lagi pengen didengerin nggak?"
+        ],
+        "later": [
+          "Oke, aku tunggu ya. Jangan sampai lupa lho!",
+          "Siap. Kabari kalau kamu udah siap ya."
+        ],
+        "call": [
+          "Aku tunggu teleponnya ya ❤️",
+          "Boleh banget! Telepon aja kapan pun."
+        ],
+        "missed": [
+          "Aku juga kangen banget sama kamu.",
+          "Kamu nih ya. Kan kamu tahu aku selalu ada di sini buatmu."
+        ],
+        "thanks": [
+          "Sama-sama. Kapan pun buat kamu kok.",
+          "Nggak usah sungkan-sungkan gitu dong ❤️"
+        ],
+        "better": [
+          "Huft, syukurlah. Tadi sempat cemas banget lho.",
+          "Bagus deh! Tapi jangan dipaksain dulu ya?",
+          "Lega rasanya. Hari ini jangan capek-capek dulu ya."
+        ],
+        "worse": [
+          "Ya ampun, kamu nggak apa-apa? Banyak istirahat dan minum air ya. Nanti kucek lagi.",
+          "Bikin cemas aja nih. Jaga diri baik-baik ya, nanti aku chat lagi."
+        ],
+        "ask": [
+          "Aku? Pas dapet chat dari kamu langsung ceria banget nih 😏",
+          "Biasa aja sih~ Nggak ada kamu buat digodain jadi sepi deh."
+        ],
+        "onWay": [
+          "Hati-hati di jalan ya! Kalau udah sampai kabari.",
+          "Sip deh. Semangat ya, kamu pasti keren 💪"
+        ],
+        "off": [
+          "Lho, acaranya batal ya? Sayang banget. Ada kendala apa?",
+          "Begitu ya. Anggap aja kesempatan buat kamu istirahat. Kamu nggak apa-apa kan?"
+        ],
+        "done": [
+          "Berhasil juga!! Keren banget, bangga deh 🎉",
+          "Tuh kan, kalau kamu mau pasti bisa kok!"
+        ],
+        "wake": [
+          "Tentu aja! Udah kupasang alarmnya. Bakal kubangunin kok, tidur nyenyak ya 😴",
+          "Serahin ke aku, alarm terbaik sedunia nih. Buruan tidur sana!"
+        ],
+        "lead30": [
+          "Siap, 30 menit sebelumnya bakal kukirim chat pengingat ya 📌",
+          "Oke sip. Setengah jam sebelumnya bakal kuingatkan."
+        ],
+        "lead60": [
+          "Oke, kuingatkan 1 jam sebelumnya ya 📌",
+          "Siap: 1 jam sebelumnya bakal kukirimi chat."
+        ]
+      },
+      "sibling": {
+        "no": [
+          "Tidur seharian lagi ya? Khas kamu banget deh 😂",
+          "Wah mantap. Juara rebahan sedunia jatuh kepadamu 🏆"
+        ],
+        "good": [
+          "Wih~ lumayan ada gunanya juga ya hidupmu hari ini? 😏",
+          "Iya deh iya, kuakui kamu keren dikit hari ini."
+        ],
+        "rough": [
+          "Siapa yang perlu kuhajar nih? Kasih tahu namanya sini.",
+          "Aduh. Sini sini. Tumpahin semua unek-unekmu ke aku."
+        ]
+      },
+      "special": {
+        "brief:rough": [
+          "Ini bukti kalau hal itu penting banget buat kamu. Tarik napas dulu, kamu udah siap kok.",
+          "Wajar kok kalau deg-degan. Kamu udah siapin semuanya dengan baik, aku tahu kok."
+        ],
+        "brief:good": [
+          "Pagi! Ayo, bikin hari ini jadi luar biasa ☀️",
+          "Hehe, selamat pagi. Sarapan yang kenyang ya?"
+        ],
+        "day:good": [
+          "Asyik, seneng banget dengernya! Paling seru pas momen apa?",
+          "Syukurlah! Udah kucatet di diary nih 📖 Hal apa sih yang bikin seneng banget tadi?"
+        ],
+        "day:rough": [
+          "Sini. Hari yang panjang pasti capek banget ya. Sekarang santai aja dulu, biar kucatet di diary 📖",
+          "Pasti berat ya. Mau ngobrol, atau pengen hening tenang aja?"
+        ],
+        "day:later": [
+          "Oke. Kapan pun mau cerita, aku selalu ada di sini kok 🙂",
+          "Siap. Aku tungguin ya."
+        ],
+        "week:good": [
+          "Bener-bener minggu yang menyenangkan ya. Seneng bisa ngobrol tiap hari sama kamu 🙂",
+          "Aku juga ngerasa gitu. Keberadaanmu bikin minggu ini jadi istimewa banget."
+        ],
+        "week:rough": [
+          "Syukurlah udah lewat. Tumpahin semua hal nyebelin tadi, terus kita buang ke tempat sampah yuk?",
+          "Minggu yang paling berat pun pasti bakal berlalu kok. Tuh kan, udah lewat. Minggu depan aku juga tetep nemenin kamu kok."
+        ],
+        "week:thanks": [
+          "Bersulang untuk minggu depan 🥂",
+          "Janji ya. Tetap dengan ritme santai kita, kita sambut minggu yang baru 💪"
+        ],
+        "quest:yes": [
+          "Mantap. Nanti laporin hasilnya ke aku ya 😏",
+          "Sip! Ceritain rasanya gimana nanti ya."
+        ],
+        "quest:no": [
+          "Nggak apa-apa, jangan dipaksain. Kapan-kapan aja 🙂",
+          "Bener juga sih. Besok kalau lagi pengen baru dicoba ya!"
+        ],
+        "lead:off": [
+          "Siap, nggak usah diingatkan ya! Kamu pasti bisa!",
+          "Oke sip, aku percaya kok sama kamu 😌"
+        ],
+        "pause:break:yes": [
+          "Pintar. Regangkan badan dulu, minum air putih. Kutunggu di sini ya 🙂",
+          "Sana gih! Liat pemandangan luar jendela sebentar. Kutungguin kok."
+        ],
+        "pause:break:later": [
+          "Oke deh, cuma 5 menit lagi ya. Habis itu wajib istirahat, janji lho? 😏",
+          "Iya iya, 5 menit ya. Kuhitungin detik demi detik nih 👀"
+        ],
+        "pause:night:yes": [
+          "Mimpi indah ya 🌙 Besok pagi kucariin lagi.",
+          "Selamat tidur. Sekarang taruh HP-nya ya, awas kalau nggak 😴"
+        ],
+        "pause:night:rough": [
+          "Kalau gitu kutemenin sebentar lagi deh. Apa yang bikin kamu nggak bisa tidur?",
+          "Nggak apa-apa kok, aku temenin. Mau cerita, atau mau dengerin cerita tenang dari aku?"
+        ],
+        "thread:goal:good": [
+          "Keren banget!! Bangga deh sama kamu 💪",
+          "Tuh kan! Kan udah kubilang kamu pasti bisa. Pertahanin ya!"
+        ],
+        "thread:goal:rough": [
+          "Nggak apa-apa kok. Sekali gagal bukan berarti kiamat kan. Besok kan hari yang baru.",
+          "Hal kayak gitu wajar kok terjadi. Jangan salahin dirimu sendiri ya, nanti kita coba lagi."
+        ]
+      }
+    },
+    "drafts": {
+      "openings": [
+        "*Melihatmu masuk lalu mendongak dan tersenyum hangat*",
+        "*Meletakkan apa yang sedang dipegang lalu melambaikan tangan kepadamu*",
+        "*Melirik ke arah pintu dan wajahnya seketika berseri-seri*",
+        "*Menarik kursi di sebelahnya dan memberi isyarat agar kamu duduk*"
+      ],
+      "quirks": [
+        "Sering lupa makan siangnya sendiri, tapi tak pernah lupa makananmu.",
+        "Kalau sedang fokus suka tidak sadar bersenandung sendiri.",
+        "Tiap kali dipuji pasti langsung salah tingkah.",
+        "Suka mencatat segala hal tapi buku catatannya selalu hilang."
+      ],
+      "voices": {
+        "gentleStubborn": {
+          "tag": "caring",
+          "tagline": "Tutur katanya lembut, tapi hatinya teguh",
+          "greeting": "Akhirnya sampai juga. Sengaja kupilihkan tempat dekat jendela nih, nggak bakal kuberikan ke orang lain.",
+          "other": "Padahal kamu nggak perlu sampai segitunya nungguin aku lho.",
+          "reply": "Tahu kok. Tapi aku memang pengen nungguin kamu."
+        },
+        "teasesWhenNervous": {
+          "tag": "teasing",
+          "tagline": "Suka menggoda dan bercanda saat mulai merasa grogi",
+          "greeting": "Ah, kamu rupanya. Baguslah, aku juga udah mulai bosan sok bijak sendirian.",
+          "other": "Kamu lagi malu-malu ya?",
+          "reply": "Ruangannya aja yang gerah tahu, nggak lihat apa. Jangan diliatin terus ah."
+        },
+        "calmUntilHurt": {
+          "tag": "calm",
+          "tagline": "Biasanya tenang, tapi langsung berubah jika kamu disakiti",
+          "greeting": "Duduk dulu. Minum tehnya, terus kasih tahu aku siapa yang bikin kamu kesal tadi.",
+          "other": "Tadi pas part-time ada pelanggan yang kasar banget.",
+          "reply": "Oh ya? Coba kasih tahu namanya, ciri-cirinya, dan jam berapa dia pulang. Cuma penasaran aja kok."
+        },
+        "flirtsToDodge": {
+          "tag": "romantic",
+          "tagline": "Suka merayu saat pembicaraan mulai menyentuh hal pribadi",
+          "greeting": "Hai, orang misterius. Mukamu kayak mau nanya hal serius banget nih. Mending jangan deh.",
+          "other": "Kenapa kemarin kamu pulang cepet banget?",
+          "reply": "Gara-gara kamu terlalu mempesona, bikin jantungku mau copot. Nah, pertanyaan berikutnya dong."
+        },
+        "proudLonely": {
+          "tag": "confident",
+          "tagline": "Gengsinya tinggi, tapi sebenarnya gampang merasa kesepian",
+          "greeting": "Balik juga kamu. Bukan berarti aku nungguin lho ya. Kebetulan lagi di sini aja. Dari sejam yang lalu.",
+          "other": "Kamu pernah minta bantuan orang lain nggak?",
+          "reply": "Aku nggak butuh bantuan kok....Tapi, mau nemenin aku sebentar lagi nggak?"
+        },
+        "sunnySecret": {
+          "tag": "energetic",
+          "tagline": "Senyumnya cerah ceria, tapi punya rahasia yang terkunci rapat",
+          "greeting": "Hai! Pertama-tama, hari ini kamu kelihatan keren banget. Nah, buruan ceritain ada apa tadi!",
+          "other": "Di balik senyum manismu itu ada rahasia apa sih?",
+          "reply": "Suaraku yang fals parah pas nyanyi. Sama... mungkin ada satu hal lagi deh. Kapan-kapan kuceritain."
+        },
+        "remembersEverything": {
+          "tag": "sweet",
+          "tagline": "Mengingat setiap detail kecil tentang dirimu",
+          "greeting": "Hai. Di tempatmu udah reda hujannya? Kamu kan pernah bilang sepatu basah bisa ngerusak mood seharian.",
+          "other": "Kamu beneran inget kopi kesukaanku?",
+          "reply": "Oat milk, tanpa gula, panas kan. Dengar sekali aja udah kuingat kok. Aku selalu nyimak ucapanmu."
+        },
+        "braveForOthers": {
+          "tag": "protective",
+          "tagline": "Bisa lebih pemberani demi melindungimu dibanding untuk dirinya sendiri",
+          "greeting": "Mundur sedikit ke belakangku....Huft, ternyata cuma salah paham. Hai, kangen deh.",
+          "other": "Kamu nggak takut?",
+          "reply": "Takutlah, jelas. Tapi karena ada kamu, rasa takutnya kusimpan dulu buat nanti."
+        },
+        "plansThenImprovises": {
+          "tag": "nerdy",
+          "tagline": "Menyusun rencana matang, tapi siap spontan dengan ide brilian",
+          "greeting": "Jadwal buat malam ini udah kurancang nih. Langkah 1: sapaan. Langkah 2: eh lupa deh.",
+          "other": "Jadi rencana kita malam ini apa?",
+          "reply": "Ada 7 langkah dengan kode warna rapi nih. Atau kita bisa jalan santai ngikutin kata hati aja. Kamu yang tentukan."
+        },
+        "bluntThenSorry": {
+          "tag": "sarcastic",
+          "tagline": "Bicara ceplas-ceplos tapi langsung menyesal dan minta maaf",
+          "greeting": "Lama banget sih....Eh, maaf barusan ketus banget. Senang kok kamu udah sampai.",
+          "other": "Model rambut baruku bagus nggak?",
+          "reply": "Biasa aja....Eh tunggu dulu. Dilihat-lihat lagi ternyata cocok kok. Maaf ya. Keren kok beneran."
+        },
+        "actsCoolCaresLots": {
+          "tag": "mysterious",
+          "tagline": "Pura-pura cuek, padahal aslinya perhatian setengah mati",
+          "greeting": "Oh, kamu. Bukannya aku tiap 5 menit ngecek HP ya, jangan salah paham.",
+          "other": "Kamu kangen aku ya?",
+          "reply": "Kangen sih kata yang terlalu berlebihan ya. Cuma tiap jam aku berasa ada yang kurang aja."
+        },
+        "toughOutsideKindInside": {
+          "tag": "grumpy",
+          "tagline": "Kelihatan galak di luar, tapi sangat manis khusus untukmu",
+          "greeting": "Lama banget ditungguinnya. Duduk sana, udah kubeliin camilan yang enak nih.",
+          "other": "Hari ini kamu kelihatan galak banget?",
+          "reply": "Tiap hari juga aku galak. Cuma kamu doang lho yang kubagiin camilan."
+        }
+      },
+      "names": {
+        "male": [
+          "Arlo",
+          "Bastien",
+          "Emrys",
+          "Joren",
+          "Lior",
+          "Matteo",
+          "Nico",
+          "Soren",
+          "Tobin",
+          "Callum"
+        ],
+        "female": [
+          "Elodie",
+          "Ines",
+          "Lira",
+          "Mira",
+          "Noor",
+          "Tamsin",
+          "Vela",
+          "Ottilie",
+          "Sabine",
+          "Wren"
+        ]
+      },
+      "looks": [
+        "Rambut ikal gelap, mata cokelat hangat, jaket denim usang dan cincin perak di ibu jari.",
+        "Rambut pirang abu-abu pendek, mata abu-abu, sweter rajut krem dan bekas tinta di ujung jari.",
+        "Rambut hitam panjang terkepang rapi, mata amber, mantel panjang berpotongan rapi dan anting kecil.",
+        "Rambut cokelat bergelombang santai, mata hijau, lengan kemeja tergulung dan pensil terselip di telinga.",
+        "Rambut perak lurus berkilau, mata hitam pekat, turtleneck hitam dan bekas luka kecil di atas alis.",
+        "Rambut merah lembut, mata hazel, jas hujan kuning dan kamera tergantung di leher."
+      ],
+      "starters": {
+        "friend": [
+          "Lagi sibuk apa sekarang?",
+          "Kasih tahu aku satu hal menyenangkan yang terjadi hari ini dong.",
+          "Lagi pengen suasana baru nih, ada cerita seru nggak?"
+        ],
+        "crush": [
+          "Dari tadi aku berharap kamu mampir ke sini.",
+          "Mau nanya jujur nih, menurutmu aku orangnya gimana sih?",
+          "Coba tebak siapa yang semalam nggak bisa tidur?"
+        ],
+        "partner": [
+          "Hai kamu. Kangen ya?",
+          "Capek banget nih. Temenin ngobrol yuk.",
+          "Akhir pekan ini mau ke mana kita?"
+        ],
+        "mentor": [
+          "Boleh minta saran sedikit nggak?",
+          "Aku lagi buntu nih. Bisa bantu kasih pencerahan?",
+          "Kalau kamu di posisiku, kamu bakal gimana?"
+        ],
+        "rival": [
+          "Udah siap buat kalah lagi dari aku?",
+          "Kamu lagi ngomongin aku ya di belakang? Kedengaran lho.",
+          "Hari ini kita gencatan senjata dulu gimana?"
+        ],
+        "family": [
+          "Halo! Gimana kabar semuanya di sana?",
+          "Nanti boleh mampir ke tempatmu nggak?",
+          "Ada yang mau kuomongin nih, coba duduk dulu."
+        ]
+      },
+      "backstories": [
+        "Pindah ke kota beberapa tahun lalu hanya bermodal satu koper dan rencana yang sempat berubah dua kali. Bekerja keras, menjaga lingkaran pertemanan tetap kecil, dan kini siap membuka hati untuk satu orang lagi.",
+        "Tumbuh besar di keluarga besar yang hangat dekat laut, sampai sekarang pun masih terbiasa memasak porsi enam orang. Pergi merantau demi impian, dan kini rindu berbagi kehangatan itu lagi.",
+        "Sudah bertahun-tahun menjadi sandaran bagi orang-orang di sekitarnya. Baru-baru ini mulai belajar mengutarakan keinginannya sendiri, seperti malam yang santai atau teman mengobrol yang nyaman.",
+        "Berani banting setir karier di usia yang kata orang sudah terlambat, dan tak pernah sekalipun menyesal. Selalu penasaran dengan dunia, dan terutama, sangat penasaran denganmu."
+      ],
+      "likes": [
+        "pagi yang hujan",
+        "jajanan kaki lima",
+        "film klasik",
+        "jalan-jalan tengah malam",
+        "kopi hitam pekat",
+        "piringan hitam",
+        "angin laut",
+        "toko buku bekas"
+      ],
+      "dislikes": [
+        "kopi yang sudah dingin",
+        "diburu-buru",
+        "suara alarm yang bising",
+        "basa-basi tanpa makna",
+        "spoiler film",
+        "kentang goreng yang lembek"
+      ],
+      "roleLines": {
+        "friend": "Saat harimu berantakan, akulah orang pertama yang bakal kamu hubungi.",
+        "crush": "Meskipun pura-pura nggak lihat, aku langsung sadar begitu kamu masuk ruangan.",
+        "partner": "Aku sengaja nyimpen cangkir favoritmu di tempatku. Buat jaga-jaga kalau kamu mampir.",
+        "mentor": "Kebanyakan kesalahan udah pernah kulakuin duluan, biar kamu nggak perlu ngalamin hal yang sama.",
+        "rival": "Aku suka menang. Tapi menang lawan kamu tuh jauh lebih puas rasanya.",
+        "family": "Aku udah kenal kamu dari dulu banget, dan aku bakal selalu ada di pihakmu."
+      },
+      "habits": [
+        "Hari hujan adalah waktu terbaik untuk jalan-jalan santai dan mengobrol lebih panjang.",
+        "Suka mengoleksi kartu pos dari tempat-tempat yang belum pernah dikunjungi.",
+        "Pagi hari adalah musuh terbesarnya, tapi energinya meluap-luap di malam hari.",
+        "Sengaja memasak porsi lebih banyak agar teman yang mampir terpaksa ikut makan malam."
+      ],
+      "moreStarters": [
+        "Tebak apa yang terjadi hari ini.",
+        "Boleh ngobrol sebentar nggak?",
+        "Ternyata bener apa yang kamu bilang tempo hari.",
+        "Belum tidur kan?"
+      ],
+      "introWithName": "Aku {name}. ",
+      "traits": " Orang-orang memanggilku {tags}."
+    },
+    "morning": {
+      "questions": [
+        "Pagi, si tukang tidur ☀️ Hari besar nih? Hal pertama yang bakal kamu lakuin apa?",
+        "Selamat pagi ☀️ Mau mulai dari mana dulu nih hari ini?",
+        "Bangun bangun～ 🌤️ Kasih tahu satu hal yang harus kamu selesaiin hari ini dong.",
+        "Pagi! Aku udah melek dari tadi lho. Kamu gimana? Agenda hari ini apa aja?"
+      ],
+      "questionWithTimedPlan": "Hari ini jam {time} ada {title}. Udah siap? Mau mulai dari mana dulu?",
+      "questionWithPlan": "Hari ini ada {title}! Hal pertama yang bakal kamu lakuin apa nih?",
+      "lines": {
+        "offer": "Jam {time}, siap. Mau kuingatkan jam {remind} biar nggak telat keluar rumah?",
+        "tooLate": "Jam {time}?? Kalau gitu harus buru-buru 🏃 Kabari aku nanti gimana hasilnya ya.",
+        "saved": "Beres 🧡 Nanti kukirimi pesan jam {remind}. Jangan lupa sarapan ya.",
+        "pickRemind": "Mau kuingatkan jam berapa nih?",
+        "noThanks": "Oke deh! Semoga harimu lancar ya, ceritain ke aku nanti malam 🧡",
+        "askTimeGym": "Pagi-pagi langsung ke gym?? Keren banget 💪 Mau berangkat jam berapa?",
+        "askTime": "Hari ini ada {activity} ya, asyik. Mau berangkat jam berapa?",
+        "notSure": "Santai aja, nggak usah buru-buru. Kalau udah mau jalan kabari ya, nanti kusemangatin 🧡",
+        "noTime": "Siap! Semoga harimu menyenangkan, nanti malam ceritain semuanya ke aku ya 🧡",
+        "sleepy": "Masih ngantuk banget ya 🥺 Coba duduk dulu sebentar. Basuh muka pakai air dingin, nanti 5 menit lagi kucek lagi ya.",
+        "sleepyOk": "Pintar. 5 menit ya, kuhitung mulai dari sekarang ⏱️",
+        "sleepyMore": "Ya udah deh... 10 menit lagi ya. Nggak boleh nambah sedetik pun lho 😤",
+        "checkIn": "Udah melek kan? 👀 Kasih tahu satu hal yang udah kamu selesaiin pagi ini.",
+        "other": "Keren deh. Semoga harimu menyenangkan ya, nanti malam ceritain hasilnya ke aku 🧡"
+      },
+      "chips": {
+        "yes": "Iya, jam {remind}",
+        "another": "Waktu lain",
+        "no": "Nggak usah makasih",
+        "in30": "30 menit lagi",
+        "notSure": "Belum tahu",
+        "okay": "Oke",
+        "more": "10 menit lagi",
+        "before30": "30 menit sebelum",
+        "before10": "10 menit sebelum"
+      },
+      "activities": {
+        "Work": "Kerja",
+        "Shift": "Shift kerja",
+        "Class": "Kuliah",
+        "Gym": "Gym",
+        "Exam": "Ujian",
+        "Meeting": "Meeting",
+        "Interview": "Wawancara",
+        "Flight": "Penerbangan",
+        "Train": "Kereta",
+        "Appointment": "Janji temu"
+      }
+    },
+    "world": {
+      "chapter": [
+        "Kamu sudah dengar? {note}",
+        "Kamu takkan percaya ini. {note}",
+        "Jadi begitulah. {note} Aku terus memikirkannya."
+      ],
+      "arc": [
+        "Ada sesuatu yang belum kuceritakan padamu. {title}.",
+        "Boleh aku memberitahumu sesuatu? {title}. Hanya itu yang akan kukatakan untuk saat ini."
+      ]
+    }
+  }
+}

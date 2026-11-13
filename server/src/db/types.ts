@@ -1,0 +1,124 @@
+import type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
+  MessageSyncRequest,
+  MessagesPage,
+  ReportRequest,
+  ShareResult,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+} from '../../../src/ai/session-types.ts';
+import type { PlanId } from '../../../src/types/index.ts';
+
+export type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
+  MessageSyncRequest,
+  MessagesPage,
+  ReportRequest,
+  ShareResult,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+};
+
+/** A wallet call the database refused: too few shells, no wallet yet (before bootstrap), a bad amount. */
+export class WalletError extends Error {
+  // A plain field: Node runs this file by stripping types, which parameter properties defeat.
+  readonly code: 'noShells' | 'noWallet' | 'badAmount';
+  constructor(code: 'noShells' | 'noWallet' | 'badAmount') {
+    super(code);
+    this.code = code;
+  }
+}
+
+/**
+ * The database behind the API (backend-plan §1.4: every provider sits behind an interface).
+ * Supabase today (`supabase.ts`); tests pass a fake.
+ */
+/** A subscription as the plan rules read it (`src/economy/plans.ts`). */
+export interface LiveSubscription {
+  plan: PlanId;
+  status: 'trial' | 'active';
+  termStart: string;
+  willRenew: boolean;
+}
+
+export interface Db {
+  name: string;
+  /**
+   * The signed-in user behind an access token, or null when the token is not valid. It throws when
+   * the sign-in service could not be asked: that says nothing about the token (`accountOf` in app.ts).
+   */
+  userIdFromToken(token: string): Promise<string | null>;
+  /** How many times the user spent shells since the UTC day began, for the reply allowance (`mayReply` in app.ts). */
+  spendsToday?(userId: string): Promise<number>;
+  /** A cheap read that fails when the database is away, for `/health`. */
+  ping?(): Promise<void>;
+  /** What the model cost since the UTC day began, at list price, for the day's budget (`llm/gate.ts`); null when it cannot be read. */
+  modelSpendToday?(): Promise<number | null>;
+  /** First call creates the profile and wallet and pays the welcome gift; later calls only read. */
+  bootstrap(userId: string, input: BootstrapInput): Promise<BootstrapResult>;
+  /** One row of the cost log (`usage_events`, server only, never shown to users). */
+  logUsage(event: UsageEvent): Promise<void>;
+
+  // The wallet (B1.2, supabase/migrations/*_b1_wallet.sql). Each throws WalletError when refused.
+  walletState(userId: string): Promise<WalletState>;
+  walletSpend(userId: string, request: SpendRequest): Promise<WalletState>;
+  /** Earnings: `free` ones go to today's bucket and burn at midnight, the rest are kept. */
+  walletCredit(userId: string, request: GrantRequest & { free: boolean }): Promise<WalletState>;
+  walletCheckIn(userId: string, rules: { ladder: readonly number[]; top: number }): Promise<CheckInResult>;
+  walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
+  /** A shared card: `amount` free shells for each of the first `perDay` shares of the user's day, then nothing. */
+  walletShare(userId: string, rules: { amount: number; perDay: number }): Promise<ShareResult>;
+
+  // Plans (0z142): the server holds the subscription and pays its monthly shells (`payPlanShells` in app.ts).
+  /** The live subscription (trial, active or grace, before its term ends); null when none. */
+  currentSubscription?(userId: string): Promise<LiveSubscription | null>;
+  /** A plan with no store behind it (allow-listed testers, before billing): the user's earlier test plans end. */
+  startTestSubscription?(userId: string, plan: PlanId, trial: boolean, now: Date): Promise<void>;
+
+  // The chats (B1.3b, supabase/migrations/*_b1_message_sync.sql).
+  /** One sync, all or nothing; answers the user's newest `seq`. */
+  syncMessages(userId: string, request: MessageSyncRequest): Promise<number | null>;
+  /** The user's messages after `after`, in `seq` order. */
+  messagesAfter(userId: string, after: number, limit: number): Promise<MessagesPage>;
+
+  // The memory (B2.3, supabase/migrations/*_b2_memory_sync.sql).
+  /** One sync, all or nothing: each character sent replaces its list, each chat its row. */
+  syncMemories(userId: string, request: MemorySyncRequest): Promise<void>;
+  /** Everything the server keeps of the user's memory. */
+  memoriesOf(userId: string): Promise<MemoriesState>;
+
+  /** Keeps a report for review (supabase/migrations/*_b3_reports.sql); one sent twice is kept once. */
+  saveReport(userId: string, report: ReportRequest): Promise<void>;
+
+  /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
+  deleteUser(userId: string): Promise<void>;
+}
+
+/** What one model or voice call cost (backend-plan §1.5, §9: the unit economics come from these rows). */
+export interface UsageEvent {
+  /** Null when the call came without a signed-in user. */
+  userId: string | null;
+  kind: 'llm' | 'tts' | 'stt' | 'call' | 'image';
+  /** What the call was for: 'chat' now; 'brief', 'quickCreate'… as those move to the server. */
+  mode?: string;
+  model?: string;
+  promptVersion?: string;
+  inputTokens?: number;
+  cachedTokens?: number;
+  outputTokens?: number;
+  seconds?: number;
+  /** At the paid tier's list price; null for a model with no price on file. */
+  costUsd?: number | null;
+}

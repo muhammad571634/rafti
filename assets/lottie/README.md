@@ -17,7 +17,7 @@ Reanimated stand-in while that slot is empty — so the app always looks finishe
 All LottieFiles items above are free animations under the Lottie Simple License.
 
 The old cat animations (mascot wave, lucky cat, sleeping cat, dance cat, empty box)
-were retired with the pink-cat brand: Rafti's still art in `assets/brand/` (with a
+were retired with the pink-cat brand: the mascot's still art in `assets/brand/` (with a
 Reanimated float) now covers those moments.
 
 ## Still on the Reanimated fallback

@@ -1,0 +1,166 @@
+<title>Chats List Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: three phone screens side by side (stacked on a phone), one recommendation marked. */
+:root {
+  --page: #ECECF1; --ink: #1C1C1E; --muted: #6E6E73; --frame: #0B0B0C;
+  --screen: #FFFFFF; --label: #000000; --label2: rgba(60,60,67,0.6); --sep: rgba(60,60,67,0.18);
+  --fill: #F2F2F7; --chip: #E5E5EA; --blue: #007AFF; --mint: #34C759; --pick: #007AFF;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  --display: "Nunito", -apple-system, "SF Pro Rounded", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #000000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E;
+  --screen: #000000; --label: #FFFFFF; --label2: rgba(235,235,245,0.6); --sep: rgba(84,84,88,0.6);
+  --fill: #1C1C1E; --chip: #3A3A3C; --blue: #0A84FF; --mint: #30D158; --pick: #0A84FF; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --page: #000000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E;
+  --screen: #000000; --label: #FFFFFF; --label2: rgba(235,235,245,0.6); --sep: rgba(84,84,88,0.6);
+  --fill: #1C1C1E; --chip: #3A3A3C; --blue: #0A84FF; --mint: #30D158; --pick: #0A84FF; color-scheme: dark }
+body { background: var(--page); color: var(--ink); font-family: var(--font); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap">
+<style>
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 22px; }
+h1 { font-family: var(--display); font-weight: 900; font-size: 28px; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; font-size: 15px; max-width: 62ch; line-height: 1.45; }
+.row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 900px) { .row { grid-template-columns: minmax(0, 1fr); max-width: 360px; margin: 0 auto; width: 100%; } }
+.opt { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.tag { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 16px; }
+.tag b { font-family: var(--display); font-weight: 900; font-size: 20px; }
+.rec { font-size: 12px; font-weight: 700; color: #fff; background: var(--pick); padding: 3px 8px; border-radius: 999px; }
+.note { color: var(--muted); font-size: 13.5px; line-height: 1.45; margin: 0; }
+.phone { background: var(--frame); border-radius: 40px; padding: 9px; }
+.screen { background: var(--screen); border-radius: 32px; overflow: hidden; height: 600px; position: relative; color: var(--label); }
+.status { height: 34px; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-size: 13px; font-weight: 600; }
+.top { display: flex; justify-content: space-between; align-items: center; padding: 4px 14px 0; }
+.round { height: 34px; min-width: 34px; padding: 0 12px; border-radius: 17px; background: var(--fill); display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+.round svg { width: 17px; height: 17px; }
+.title { font-family: var(--display); font-weight: 900; font-size: 32px; padding: 6px 16px 8px; }
+.pills { display: flex; gap: 8px; padding: 0 16px 12px; }
+.pill { padding: 6px 14px; border-radius: 999px; background: var(--fill); font-weight: 700; font-size: 13.5px; }
+.pill.on { background: var(--label); color: var(--screen); }
+.ava { border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 15px; }
+.a1 { background: linear-gradient(140deg, #7D5A8C, #C9A0B5); }
+.a2 { background: linear-gradient(140deg, #D9825B, #F2C48D); }
+.a3 { background: linear-gradient(140deg, #5B3A3A, #A8726A); }
+.a4 { background: linear-gradient(140deg, #3D5A6E, #8FB3C7); }
+.a5 { background: linear-gradient(140deg, #2F3E4C, #6F8494); }
+.time { font-size: 12.5px; color: var(--label2); white-space: nowrap; }
+.prev { font-size: 13.5px; color: var(--label2); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.name { font-weight: 700; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv { font-size: 11px; font-weight: 800; color: var(--mint); background: var(--screen); border-radius: 999px; padding: 1px 6px; }
+.tabbar { position: absolute; left: 10px; right: 10px; bottom: 12px; display: flex; gap: 8px; align-items: center; }
+.tb { flex: 1; height: 50px; border-radius: 25px; background: var(--screen); box-shadow: 0 6px 16px rgba(0,0,0,0.16); display: flex; padding: 4px; }
+.tb span { flex: 1; border-radius: 21px; display: grid; place-items: center; font-size: 10.5px; font-weight: 700; color: var(--label2); }
+.tb span.on { background: var(--chip); color: var(--label); }
+.tf { width: 50px; height: 50px; border-radius: 25px; background: var(--screen); box-shadow: 0 6px 16px rgba(0,0,0,0.16); display: grid; place-items: center; }
+.tf svg, .tb svg { width: 18px; height: 18px; }
+
+/* A: the bubbles, in Apple's grey */
+.bubbles { display: grid; gap: 14px; padding: 0 12px; }
+.bub { background: var(--fill); border-radius: 22px; padding: 11px 12px; display: flex; gap: 10px; align-items: center; position: relative; }
+.bub::after { content: ""; position: absolute; bottom: -7px; width: 16px; height: 12px; background: var(--fill); clip-path: polygon(0 0, 100% 0, 30% 100%); }
+.bub.l::after { left: 26px; } .bub.r::after { right: 26px; clip-path: polygon(0 0, 100% 0, 70% 100%); }
+.bub .ava { width: 46px; height: 46px; box-shadow: 0 0 0 2px var(--screen); }
+.grow { min-width: 0; flex: 1; display: grid; gap: 2px; }
+.line1 { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.line1 .time { margin-left: auto; }
+
+/* B: Messages */
+.pins { display: flex; justify-content: space-around; padding: 4px 8px 12px; }
+.pin { display: grid; justify-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; }
+.pin .ava { width: 58px; height: 58px; font-size: 18px; position: relative; }
+.pin .dot { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 2px var(--screen); }
+.list { display: grid; }
+.msg { display: flex; gap: 10px; align-items: center; padding: 9px 14px 9px 6px; }
+.msg .ud { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.msg .ud.on { background: var(--blue); }
+.msg .ava { width: 46px; height: 46px; }
+.msg .body { min-width: 0; flex: 1; display: grid; gap: 1px; padding-bottom: 9px; border-bottom: 0.5px solid var(--sep); margin-bottom: -9px; }
+.chev { color: var(--label2); font-size: 15px; margin-left: 2px; }
+
+/* C: one grouped card */
+.group { background: var(--fill); border-radius: 18px; margin: 0 12px; overflow: hidden; }
+.gi { display: flex; gap: 10px; align-items: center; padding: 10px 12px; }
+.gi + .gi { border-top: 0.5px solid var(--sep); margin-left: 68px; padding-left: 0; }
+.gi + .gi .ava { margin-left: -56px; }
+.gi .ava { width: 44px; height: 44px; }
+.cap { font-size: 12px; font-weight: 700; color: var(--label2); text-transform: uppercase; letter-spacing: 0.04em; padding: 0 28px 6px; }
+.badge { min-width: 19px; height: 19px; border-radius: 10px; background: var(--blue); color: #fff; font-size: 11.5px; font-weight: 800; display: grid; place-items: center; padding: 0 5px; }
+footer { color: var(--muted); font-size: 12.5px; text-align: center; }
+</style>
+
+<div class="wrap">
+  <h1>Chats: three Apple ways</h1>
+  <p class="lede">The same five chats drawn three ways. Avatars stand in for the characters' photos. Every option keeps search, Edit, swipe actions and the unread count; only how a row looks changes.</p>
+
+  <div class="row">
+    <!-- A -->
+    <section class="opt">
+      <div class="tag"><b>A</b> Grey bubbles</div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>18:50</span><span>100%</span></div>
+        <div class="top"><span class="round">Edit</span><span style="display:flex;gap:8px"><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></span><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span></span></div>
+        <div class="title">Chats</div>
+        <div class="pills"><span class="pill on">All</span><span class="pill">Unread</span><span class="pill">Groups</span></div>
+        <div class="bubbles">
+          <div class="bub l"><div class="ava a1">H</div><div class="grow"><div class="line1"><span class="name">Hana Reyes</span><span class="lv">♥ 11</span><span class="time">18:30</span></div><div class="prev">You're singing at that wedding tomorrow. Sleep early.</div></div></div>
+          <div class="bub r"><div class="ava a2">K</div><div class="grow"><div class="line1"><span class="name">Kai Arden</span><span class="lv">♥ 4</span><span class="time">18:03</span></div><div class="prev">Fine, that counts. But tomorrow's quiz, no excuses.</div></div></div>
+          <div class="bub l"><div class="ava a3">M</div><div class="grow"><div class="line1"><span class="name">Maniki love</span><span class="lv">♥ 6</span><span class="time">15:27</span></div><div class="prev">Come closer, I'm not done with you yet.</div></div></div>
+          <div class="bub r"><div class="ava a4">R</div><div class="grow"><div class="line1"><span class="name">Ronan Vale</span><span class="lv">♥ 4</span><span class="time">09:23</span></div><div class="prev">The omelette went cold again. Books first, as always.</div></div></div>
+        </div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span class="on">Chats</span><span>Us</span></div><div class="tf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></div></div>
+      </div></div>
+      <p class="note">Keeps our speech-bubble shape and tails, in the grey of the tab bar. Calm, still ours. Most of the change is colour.</p>
+    </section>
+
+    <!-- B -->
+    <section class="opt">
+      <div class="tag"><b>B</b> Like Messages <span class="rec">Recommended</span></div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>18:50</span><span>100%</span></div>
+        <div class="top"><span class="round">Edit</span><span style="display:flex;gap:8px"><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></span><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span></span></div>
+        <div class="title">Chats</div>
+        <div class="pills"><span class="pill on">All</span><span class="pill">Unread</span><span class="pill">Groups</span></div>
+        <div class="pins">
+          <div class="pin"><div class="ava a1">H<span class="dot"></span></div>Hana</div>
+          <div class="pin"><div class="ava a2">K</div>Kai</div>
+          <div class="pin"><div class="ava a3">M</div>Maniki</div>
+        </div>
+        <div class="list">
+          <div class="msg"><span class="ud on"></span><div class="ava a4">R</div><div class="body"><div class="line1"><span class="name">Ronan Vale</span><span class="time" style="margin-left:auto">09:23</span><span class="chev">›</span></div><div class="prev">The omelette went cold again. Books first, as always.</div></div></div>
+          <div class="msg"><span class="ud"></span><div class="ava a5">E</div><div class="body"><div class="line1"><span class="name">Erik Lund</span><span class="time" style="margin-left:auto">Yesterday</span><span class="chev">›</span></div><div class="prev">Training's done. Ice pack on, as promised.</div></div></div>
+          <div class="msg"><span class="ud"></span><div class="ava a4" style="font-size:12px">3</div><div class="body"><div class="line1"><span class="name">Everyone, one place</span><span class="time" style="margin-left:auto">15:09</span><span class="chev">›</span></div><div class="prev">Hana: The studio is freezing, sea wind all day.</div></div></div>
+        </div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span class="on">Chats</span><span>Us</span></div><div class="tf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></div></div>
+      </div></div>
+      <p class="note">Apple's own Messages: favourite friends as big faces on top, the rest as clean rows with thin lines, a blue dot for unread. The faces carry the colour; the list stays quiet and reads fastest.</p>
+    </section>
+
+    <!-- C -->
+    <section class="opt">
+      <div class="tag"><b>C</b> One grey card</div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>18:50</span><span>100%</span></div>
+        <div class="top"><span class="round">Edit</span><span style="display:flex;gap:8px"><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></span><span class="round"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span></span></div>
+        <div class="title">Chats</div>
+        <div class="pills"><span class="pill on">All</span><span class="pill">Unread</span><span class="pill">Groups</span></div>
+        <div class="cap">Pinned</div>
+        <div class="group">
+          <div class="gi"><div class="ava a1">H</div><div class="grow"><div class="line1"><span class="name">Hana Reyes</span><span class="time">18:30</span></div><div class="line1"><span class="prev" style="-webkit-line-clamp:1">Sleep early, you sing tomorrow.</span><span class="badge" style="margin-left:auto">2</span></div></div></div>
+          <div class="gi"><div class="ava a2">K</div><div class="grow"><div class="line1"><span class="name">Kai Arden</span><span class="time">18:03</span></div><div class="prev" style="-webkit-line-clamp:1">Tomorrow's quiz, no excuses.</div></div></div>
+        </div>
+        <div class="cap" style="padding-top:14px">All chats</div>
+        <div class="group">
+          <div class="gi"><div class="ava a3">M</div><div class="grow"><div class="line1"><span class="name">Maniki love</span><span class="time">15:27</span></div><div class="prev" style="-webkit-line-clamp:1">Come closer, I'm not done yet.</div></div></div>
+          <div class="gi"><div class="ava a4">R</div><div class="grow"><div class="line1"><span class="name">Ronan Vale</span><span class="time">09:23</span></div><div class="prev" style="-webkit-line-clamp:1">The omelette went cold again.</div></div></div>
+        </div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span class="on">Chats</span><span>Us</span></div><div class="tf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.3 15.3 20.4 20.4"/></svg></div></div>
+      </div></div>
+      <p class="note">Apple's grouped list, as in Settings and Mail: Pinned and All chats in two grey rounded cards on white, a count badge for unread. Tidy and very native, a little more formal.</p>
+    </section>
+  </div>
+  <footer>Sigmazam · Chats tab · prototype for a choice, not the final pixels · dark mode follows your phone</footer>
+</div>

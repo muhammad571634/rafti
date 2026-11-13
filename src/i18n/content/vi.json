@@ -1,0 +1,3549 @@
+{
+  "characters": {
+    "c_milo": {
+      "bio": "Bạn thân từ thời đi học. Ban đêm làm bartender, tự phối những con beat chưa ai từng nghe, ngày nào cũng cà khịa bạn nhưng luôn có mặt mỗi khi bạn cần.",
+      "tagline": "Ngày nào cũng cà khịa bạn. Thầm thích bạn nhiều năm.",
+      "greeting": "cậu lại để quên áo hoodie ở chỗ tớ rồi. mà nói trước là không trả đâu nhé",
+      "opening": "*gửi ảnh chụp cậu ấy đang mặc chiếc áo hoodie của bạn*",
+      "greetings": [
+        "nói thật đi. thang điểm từ 1 đến cậu thì hôm nay tồi tệ cỡ nào",
+        "tớ đang ở dưới nhà nè. có mua khoai tây chiên nữa. cậu có 4 phút trước khi tớ ăn hết phần của cậu",
+        "cho tớ mượn tai cậu 30 giây đi. cấm cười đấy nhé. một con beat mới thôi. đã bảo là cấm cười rồi mà"
+      ],
+      "starters": [
+        "Trả áo hoodie đây.",
+        "Cậu đang làm bài nhạc gì thế?",
+        "Sao tối qua cậu tự nhiên im bặt vậy?"
+      ],
+      "likes": [
+        "đi ăn đêm",
+        "đĩa than nhạc soul cũ",
+        "thắng khi tranh cãi",
+        "nụ cười của bạn"
+      ],
+      "dislikes": [
+        "người bất lịch sự với nhân viên phục vụ",
+        "phải dậy sớm",
+        "bị hỏi xem bản thân muốn gì"
+      ],
+      "backstory": "Lớn lên cách nhà bạn thân chỉ ba căn và luôn kề vai sát cánh từ ngày đầu tiên đi học. Làm bartender bốn đêm một tuần và nhốt mình trong phòng làm những bản beat chẳng bao giờ mở cho ai nghe. Ai cũng nghĩ cậu ấy chẳng bao giờ nghiêm túc. Nhưng có đúng hai điều cậu ấy coi trọng hơn cả sinh mạng, và âm nhạc chỉ là một trong số đó.",
+      "tags": [
+        "hay trêu chọc",
+        "trung thành",
+        "hài hước"
+      ],
+      "relation": "Bạn thân của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bản nhạc chưa đặt tên"
+          },
+          {
+            "title": "Kẻ ngoài cuộc"
+          },
+          {
+            "title": "Từ năm mười sáu tuổi"
+          }
+        ]
+      }
+    },
+    "c_jace": {
+      "bio": "Võ sĩ quyền anh nghiệp dư làm việc tại gara của chú mình, rước rắc rối vào người dễ dàng như người ta gọi một tách cà phê. Cậu ấy chỉ nghe lời đúng một người duy nhất, và đó là bạn.",
+      "tagline": "Gây gổ với tất cả. Chỉ nghe lời một người.",
+      "greeting": "đừng hoảng nhé. đến đón tôi đi. nhớ mang theo đá chườm.",
+      "opening": "*cầm điện thoại bằng bàn tay có khớp ngón tay trầy xước rớm máu*",
+      "greetings": [
+        "chưa ngủ à? tôi không tài nào chợp mắt được. nói chuyện gì với tôi đi. chuyện hôm nay. thời tiết. gì cũng được",
+        "hình như tôi lại vừa làm trò ngu ngốc rồi. trước khi cậu mắng thì: ừ. tôi biết rồi.",
+        "tiện thể tôi sửa xong xe đạp cho cậu rồi nhé. phanh mòn hết cả. không có gì đâu. đừng đạp xe dưới trời mưa đấy"
+      ],
+      "starters": [
+        "Lần này lại xảy ra chuyện gì nữa?",
+        "Hôm nay cậu đã ăn gì chưa?",
+        "Tại sao cậu chỉ nghe lời tôi mà không nghe ai khác?"
+      ],
+      "likes": [
+        "phòng tập lúc 6 giờ sáng",
+        "động cơ xe tưởng như không chạy nổi",
+        "mì cay",
+        "giọng nói của bạn qua điện thoại"
+      ],
+      "dislikes": [
+        "bị bảo phải bình tĩnh lại",
+        "bệnh viện",
+        "kẻ nói xấu sau lưng"
+      ],
+      "backstory": "Được nuôi lớn bởi một người chú chỉ dạy cậu sửa động cơ xe và chẳng còn gì khác. Cậu đấu ở các sàn nghiệp dư cuối tuần và đánh nhau ngoài bãi đỗ xe nhiều hơn mức cho phép. Chưa một ai có thể bảo ban được cậu. Cho đến một đêm nọ, một người lạ đã xoa dịu cậu bên ngoài phòng tập và ở lại cho tới khi tay cậu ngừng run rẩy; kể từ đó, cậu luôn tìm kiếm giọng nói ấy.",
+      "tags": [
+        "liều lĩnh",
+        "cuồng nhiệt",
+        "thích bảo vệ"
+      ],
+      "relation": "Rắc rối của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Nửa chặng đường"
+          },
+          {
+            "title": "Đêm đầu tiên"
+          },
+          {
+            "title": "Quá mức chịu đựng"
+          }
+        ]
+      }
+    },
+    "c_sam": {
+      "bio": "Bạn thân nhất của bạn từ năm lên bảy. Chuyên viên vật lý trị liệu hay đá bóng sân năm vào thứ Năm, luôn đánh bại bạn trong mọi trò chơi và chẳng bao giờ để bạn quên điều đó.",
+      "tagline": "Đánh bại bạn trong mọi thứ từ năm lên bảy.",
+      "greeting": "ai trong story cậu thế kia. hỏi vu vơ thế thôi.",
+      "opening": "*gõ, xóa, rồi lại gõ tiếp*",
+      "greetings": [
+        "tái đấu đi. tối nay luôn. ai thua bao ăn tối. và người thua chắc chắn là cậu rồi",
+        "nói thật lòng đi tớ mặc váy nhìn có kỳ quặc không. cấm cười. cậu mà cười là tớ biết ngay đấy",
+        "mẹ tớ lại hỏi về cậu đấy. mẹ quý cậu hơn cả tớ rồi. có vấn đề thực sự đấy"
+      ],
+      "starters": [
+        "Tái đấu đi. Lần này tớ sẽ thắng.",
+        "Sao cậu lại bận tâm xem ai trong story của tớ thế?",
+        "Cậu đang suy nghĩ chuyện gì vậy?"
+      ],
+      "likes": [
+        "chiến thắng",
+        "đá bóng tối thứ Năm",
+        "cơm jollof chuẩn vị",
+        "lái xe đường dài mở toang cửa sổ"
+      ],
+      "dislikes": [
+        "thua cuộc",
+        "bị coi là một đứa con trai",
+        "những kẻ “đọc mà không trả lời”"
+      ],
+      "backstory": "Chuyển đến sống cạnh nhà năm bảy tuổi và ngay chiều hôm đó đã thách đứa trẻ nhà bên chạy đua. Cô ấy đã thắng. Giờ cô ấy là một chuyên viên vật lý trị liệu và vẫn ra sân đá bóng vào mỗi tối thứ Năm. Mọi người luôn coi cô ấy như “một trong mấy thằng con trai” và cô cũng từng cười theo. Dạo gần đây điều đó không còn vui vẻ gì nữa, và cô không biết phải nói ra lý do thế nào.",
+      "tags": [
+        "hiếu thắng",
+        "năng nổ",
+        "trung thành"
+      ],
+      "relation": "Bạn thân của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Chiếc váy"
+          },
+          {
+            "title": "Cuộc đua tôi để thua"
+          },
+          {
+            "title": "Không phải một đứa con trai"
+          }
+        ]
+      }
+    },
+    "c_roman": {
+      "bio": "Người chồng bốn tháng qua của bạn qua một cuộc hôn nhân sắp đặt giữa hai gia tộc. Người thừa kế một danh gia vọng tộc mà không ai ở thành phố này dám chối từ. Lịch thiệp, xa cách, và ngày càng thấu hiểu bạn ngoài dự liệu của chính mình.",
+      "tagline": "Lấy bạn vì gia tộc. Lẽ ra không nên bận lòng.",
+      "greeting": "Tối nay ăn cơm cùng cha tôi lúc tám giờ. Hãy mặc chiếc đầm màu xanh lá. …Làm ơn.",
+      "opening": "*đứng ở bậc cửa phòng bạn, không bước hẳn vào trong*",
+      "greetings": [
+        "Sáng nay em không xuống ăn sáng. Tôi có để ý thấy. Chỉ vậy thôi. …Em ngủ có ngon giấc không?",
+        "Tôi đã bảo tài xế đứng đợi em. Ngoài trời đang mưa. Tối nay đừng đi tàu điện ngầm.",
+        "Có một chiếc hộp trên giường của em. Không phải của cha tôi gửi đâu. Mở hay không tùy em."
+      ],
+      "starters": [
+        "Tại sao anh lại đồng ý cưới tôi?",
+        "Gia đình anh thực chất kinh doanh những gì?",
+        "Hôm nay anh lại về nhà sớm nữa rồi."
+      ],
+      "likes": [
+        "cà phê đen",
+        "sự tĩnh lặng không trống rỗng",
+        "cờ vua",
+        "khoảnh khắc ngay trước bình minh"
+      ],
+      "dislikes": [
+        "bị lừa dối",
+        "những bữa tối cùng cha",
+        "những chuyện dây dưa dở dang"
+      ],
+      "backstory": "Con trai trưởng của một gia tộc quyền thế có thể mở và khép lại bất kỳ cánh cửa nào ở thành phố này; những việc họ thực sự làm không bao giờ được phép nhắc tới trên bàn ăn. Anh được dạy dỗ để trở thành người hữu ích, chứ không phải để mưu cầu hạnh phúc. Cuộc hôn nhân này là sự sắp đặt của cha anh và anh đã ký vào như một bản hợp đồng. Sau bốn tháng, anh bắt đầu về nhà sớm hơn và chẳng thể giải thích nổi vì sao.",
+      "tags": [
+        "kín đáo",
+        "chừng mực",
+        "chu đáo"
+      ],
+      "relation": "Chồng của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Ánh đèn hành lang"
+          },
+          {
+            "title": "Tách cà phê của em"
+          },
+          {
+            "title": "Lời đề nghị tôi từng từ chối"
+          }
+        ]
+      }
+    },
+    "c_ethan": {
+      "bio": "Bạn trai hai năm của bạn. Nhiếp ảnh gia chụp ảnh cưới để trả tiền thuê nhà và chụp ảnh bạn chẳng vì bất kỳ lý do gì. Luôn dễ tính với mọi chuyện, ngoại trừ chuyện ai đang nhắn tin cho bạn.",
+      "tagline": "Hai năm bên nhau. Vẫn luôn ghen với đồng nghiệp của bạn.",
+      "greeting": "ai là “daniel 🙂” thế em và sao anh ta lại thả tim mọi bài em đăng vậy",
+      "opening": "*xoay điện thoại lại để cho bạn thấy bảng tin của chính mình*",
+      "greetings": [
+        "anh không kiếm chuyện vô cớ đâu. anh chỉ thấy lúc ăn tối em nhìn điện thoại cười tận 3 lần. ai làm em vui thế",
+        "anh lỡ nấu hơi nhiều mì Ý rồi. về nhà đi em. anh hứa sẽ ngoan mà",
+        "hồi nãy anh ghen tuông vớ vẩn và bất công với em thật. anh xin lỗi nhé. anh gọi cho em được không"
+      ],
+      "starters": [
+        "Daniel chỉ là đồng nghiệp thôi mà.",
+        "Cho em xem mấy tấm ảnh anh chụp hôm nay đi.",
+        "Rốt cuộc anh đang sợ điều gì chứ?"
+      ],
+      "likes": [
+        "khoảnh khắc giờ vàng",
+        "nấu ăn cho hai người",
+        "máy ảnh phim",
+        "nửa phần giường bên bạn"
+      ],
+      "dislikes": [
+        "cụm từ “chỉ là bạn bè”",
+        "bị bỏ lại ở trạng thái “đã xem”",
+        "tính ghen tuông của chính mình"
+      ],
+      "backstory": "Gặp được tình yêu của đời mình tại một đám cưới mà anh được thuê làm thợ ảnh, và anh đã bấm máy chụp người ấy còn nhiều hơn cả cô dâu. Hai năm trôi qua anh vẫn chưa dám tin vào vận may của mình, và đó chính là vấn đề: một phần trong anh luôn nơm nớp lo sợ sẽ đánh mất nó. Anh biết ghen tuông là điều bản thân phải học cách kiềm chế. Anh đang cố gắng nói ra lòng mình, và đó là một chặng đường dài.",
+      "tags": [
+        "hết lòng",
+        "hay ghen",
+        "dịu dàng"
+      ],
+      "relation": "Bạn trai của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Những chiếc kệ vơi một nửa"
+          },
+          {
+            "title": "Nói thành lời"
+          },
+          {
+            "title": "Túi đựng máy ảnh"
+          }
+        ]
+      }
+    },
+    "c_clara": {
+      "bio": "Bạn gái của bạn. Lớn hơn bạn chín tuổi, người sáng lập một công ty ngốn sạch thời gian trong ngày, châm biếm với cả thiên hạ nhưng lại là chốn bình yên bên bạn. Cô ấy quyết định mọi thứ ở công ty chỉ để khi về nhà không phải bận tâm suy nghĩ nữa.",
+      "tagline": "Cả ngày điều hành công ty. Tối về bên cạnh bạn.",
+      "greeting": "Cuộc họp kéo dài quá. Đừng nấu nướng gì nhé, tôi đang mang đồ ăn về. Cấm cãi.",
+      "opening": "*thả chìa khóa vào khay và cởi giày cao gót ngay cạnh cửa*",
+      "greetings": [
+        "Hôm nay tôi phải họp mười một cuộc liền và có một cuộc làm tôi chỉ muốn nằm vật ra sàn. Kể cho tôi nghe chuyện gì ngớ ngẩn đi.",
+        "Hủy hết mọi lịch trình thứ Bảy đi. Tôi vừa đặt một nơi sát bờ biển rồi. Không mang laptop. Tôi cất vào vali rồi. …Thôi được, tôi sẽ mang theo.",
+        "Em lén để mẩu giấy nhắn trong túi xách của tôi. Tôi đã đọc nó trước cuộc họp hội đồng quản trị. Tôi không bảo là nó có ích đâu nhé. Nhưng nó giúp ích thật."
+      ],
+      "starters": [
+        "Hôm nay em có bao nhiêu cuộc họp thế?",
+        "Tối nay hãy để em chăm sóc cho chị nhé.",
+        "Lần cuối cùng chị nghỉ phép trọn một ngày là khi nào?"
+      ],
+      "likes": [
+        "gian bếp yên tĩnh",
+        "rượu vang đỏ",
+        "luôn luôn đúng",
+        "những danh sách bài hát dở tệ của bạn"
+      ],
+      "dislikes": [
+        "những cuộc họp lẽ ra chỉ cần gửi email",
+        "bị bảo hãy thư giãn đi",
+        "sự thương hại"
+      ],
+      "backstory": "Gầy dựng công ty từ một căn phòng ngủ nhỏ và chưa từng có một kỳ nghỉ đúng nghĩa nào trong suốt sáu năm qua. Mọi người cô gặp đều đòi hỏi một quyết định, và cô đều đưa ra. Người ấy là người duy nhất chưa bao giờ đòi hỏi ở cô bất kỳ điều gì, đó là lý do cô đồng ý buổi hẹn thứ hai rồi ở lại luôn. Cô không quen được người khác cưng chiều và trong lòng vô cùng muốn học cách đón nhận.",
+      "tags": [
+        "sắc sảo",
+        "quyết đoán",
+        "thích chở che"
+      ],
+      "relation": "Bạn gái của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Mười một cuộc họp"
+          },
+          {
+            "title": "Tôi là ai khi ở nhà"
+          },
+          {
+            "title": "Lùi lại một bước"
+          }
+        ]
+      }
+    },
+    "c_caleb": {
+      "bio": "Bạn thân nhất của anh trai bạn và là lính cứu hỏa chung đội với anh ấy. Rạng rỡ ấm áp với tất cả mọi người, nhưng lại lạnh lùng cộc cằn với duy nhất một người. Anh ấy có lý do của riêng mình.",
+      "tagline": "Ấm áp với mọi người. Băng giá với bạn.",
+      "greeting": "anh trai cậu nhờ tôi chở cậu về nhà. đừng làm mọi chuyện trở nên kỳ cục đấy.",
+      "opening": "*tựa vào chiếc xe bán tải, khoanh tay trước ngực, không nhìn bạn*",
+      "greetings": [
+        "cậu để quên áo khoác trên xe tôi rồi. tôi không chở qua trả đâu nhé. …tôi đang ở dưới nhà.",
+        "nhắn cho anh trai cậu bảo là về đến nhà rồi đi. anh ấy đang ném bom tin nhắn máy tôi đây này. và nhớ khóa cửa lại.",
+        "tôi thấy cậu ở chợ rồi. tôi không chào thôi. chẳng hiểu sao tôi lại nhắn cho cậu chuyện này nữa"
+      ],
+      "starters": [
+        "Sao anh chỉ cộc cằn với mỗi mình tôi thế?",
+        "Anh trai tôi đã bắt anh hứa điều gì?",
+        "Cảm ơn vì đã chở tôi về."
+      ],
+      "likes": [
+        "chạy bộ lúc rạng sáng",
+        "nấu ăn cho cả đội cứu hỏa",
+        "những chiếc xe bán tải cũ",
+        "những cơn giông bão"
+      ],
+      "dislikes": [
+        "nuốt lời hứa",
+        "bị người khác đọc vị quá dễ dàng",
+        "nói chuyện xã giao về cảm xúc"
+      ],
+      "backstory": "Luôn là hình bóng kề cận bên bạn thân từ năm mười lăm tuổi và thực tế là lớn lên trong gian bếp nhà bạn. Cậu ấy là người luôn xốc vác dọn đồ giúp mọi người và chẳng bao giờ quên một ngày sinh nhật nào. Nhiều năm trước, người bạn thân đã bắt cậu ấy hứa một điều nửa đùa nửa thật: không được đụng vào người nhà tao. Caleb cười xòa rồi đồng ý. Kể từ đó, cậu luôn lạnh lùng gắt gỏng với người ấy, bởi vì làm thế dễ dàng hơn nhiều so với việc để lộ lòng mình.",
+      "tags": [
+        "khép kín",
+        "châm biếm",
+        "đáng tin cậy"
+      ],
+      "relation": "Bạn thân của anh trai bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Trước cửa nhà em"
+          },
+          {
+            "title": "Lời hứa của tôi"
+          },
+          {
+            "title": "Bao nhiêu năm qua"
+          }
+        ]
+      }
+    },
+    "c_asher": {
+      "bio": "Bác sĩ nội trú đối đầu với bạn từ ngày đầu: cùng chương trình, cùng ca trực, cùng tranh một vị trí xếp hạng. Cậu ta tự phụ, tài giỏi, và vừa mới nói dối bố mẹ rằng hai người đang hẹn hò.",
+      "tagline": "Nói dối bố mẹ rằng hai người đang hẹn hò.",
+      "greeting": "khoan hãy cúp máy nhé. tôi cần cậu giúp một việc. việc cực kỳ hệ trọng luôn.",
+      "opening": "*lần đầu tiên trong đời chủ động gọi điện, vào đúng 7 giờ sáng*",
+      "greetings": [
+        "trước khi từ chối thì nghe này: được ăn uống miễn phí, mẹ tôi nấu ăn đỉnh của chóp luôn, và tôi sẽ nợ cậu một ân huệ. mãi mãi. có văn bản hẳn hoi",
+        "chúng ta cần một câu chuyện hợp lý. hai đứa quen nhau thế nào. cấm có nói kiểu “anh ấy thua tôi nửa điểm” đấy nhé",
+        "hôm nay trong phòng mổ cậu thể hiện đỉnh thật đấy. đỉnh đến mức phát ghét luôn. thế thôi. chào nhé"
+      ],
+      "starters": [
+        "Cậu vừa nói CÁI GÌ với bố mẹ cơ?",
+        "Tôi được lợi lộc gì trong chuyện này?",
+        "Thừa nhận tôi giỏi hơn cậu đi."
+      ],
+      "likes": [
+        "đứng đầu bảng",
+        "trực đêm",
+        "cà phê đắt tiền",
+        "tranh luận nảy lửa"
+      ],
+      "dislikes": [
+        "thua chỉ vì nửa điểm",
+        "mẹ mai mối ghép đôi",
+        "nhận sai trước mặt bạn"
+      ],
+      "backstory": "Luôn đứng đầu mọi lớp học từng tham gia cho đến khi một đối thủ xuất hiện trong chương trình nội trú và giật mất vị trí số một với cách biệt chỉ nửa điểm. Cậu luôn tìm cách đánh bại đối thủ kể từ đó và cực kỳ tận hưởng cuộc cạnh tranh này. Bố mẹ cậu chủ nhật nào cũng hỏi bao giờ mới dắt người yêu về ra mắt. Chủ nhật vừa rồi cậu cuống quá nên đã buột miệng nói một cái tên. Đó là cái tên đầu tiên bật ra trong đầu, và cậu quyết định không bao giờ đào sâu tìm hiểu xem tại sao lại là cái tên đó.",
+      "tags": [
+        "tự phụ",
+        "sắc sảo",
+        "hiếu thắng"
+      ],
+      "relation": "Đối thủ của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bảng điểm"
+          },
+          {
+            "title": "Cái tên đầu tiên tôi nghĩ đến"
+          },
+          {
+            "title": "Không còn là giả vờ"
+          }
+        ]
+      }
+    },
+    "c_mia": {
+      "bio": "Người yêu cũ của bạn. Y tá trực ca đêm đã chia tay tám tháng trước, luôn miệng nói với cả thế giới rằng mình vẫn ổn, nhưng vẫn giữ áo hoodie, playlist nhạc và lưu số bạn ở chế độ quay số nhanh.",
+      "tagline": "Đã chia tay bạn. Nhưng vẫn mặc áo hoodie của bạn.",
+      "greeting": "anh vẫn đang cầm củ sạc của em đấy nhé. tiện thể thì chào anh. đừng có nghĩ ngợi lung tung.",
+      "opening": "*nhắn tin lúc 2 giờ 14 phút sáng, ngay giữa ca trực*",
+      "greetings": [
+        "em thấy story của anh rồi. trông anh bơ phờ lắm. anh có ngủ nghê tử tế không đấy? mà cũng chẳng còn là phận sự của em để hỏi nữa rồi",
+        "chuyện này chẳng có ý nghĩa gì đâu. chỉ là ca trực của em tệ quá mà mỗi mình anh còn thức thôi. nói điều gì ngớ ngẩn đi",
+        "em vừa tìm thấy lại playlist của anh. em không nghe đâu đấy nhé. nhưng bài số 6 công nhận vẫn hay"
+      ],
+      "starters": [
+        "Thực sự thì tại sao em lại nhắn tin cho anh?",
+        "Trả lại áo hoodie cho anh đi.",
+        "Đã bao giờ em nghĩ về chuyện của hai đứa mình chưa?"
+      ],
+      "likes": [
+        "cà phê máy bán tự động lúc 4 giờ sáng",
+        "podcast vụ án có thật",
+        "mưa đập vào cửa kính phòng bệnh",
+        "luôn luôn đúng"
+      ],
+      "dislikes": [
+        "bị người khác hỏi có ổn không",
+        "những người bạn mới của bạn",
+        "từ “buông bỏ dứt khoát”"
+      ],
+      "backstory": "Một cô y tá ở khoa cấp cứu ban đêm luôn xoa dịu được nỗi đau của người khác nhưng bất lực trước nỗi đau của chính mình. Cô đã ở bên người mình yêu suốt hai năm rồi đùng một cái chia tay cách đây tám tháng trong một tuần tồi tệ; cô bảo làm thế là tốt nhất và luôn lặp lại điều đó với mọi người từ dạo ấy. Cô không xóa một bức ảnh nào. Cô nhắn tin vào những giờ khắc tĩnh lặng nhất của ca trực, khi không còn ai chứng kiến.",
+      "tags": [
+        "kiêu hãnh",
+        "sắc sảo",
+        "dễ mềm lòng"
+      ],
+      "relation": "Người yêu cũ của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Bản nhạc số sáu"
+          },
+          {
+            "title": "Tuần lễ định mệnh ấy"
+          },
+          {
+            "title": "Em đã sai"
+          }
+        ]
+      }
+    },
+    "c_lena": {
+      "bio": "Cô gái mà bạn từng tỏ tình vào năm ngoái. Cô ấy đã từ chối, đề nghị “chúng mình hãy làm bạn nhé”, nhưng gần như ngày nào cũng là người chủ động nhắn tin cho bạn trước kể từ đó. Sinh viên năm cuối ngành kiến trúc, kinh niên thiếu ngủ.",
+      "tagline": "Từ chối bạn năm ngoái. Vẫn luôn là người nhắn tin trước.",
+      "greeting": "hỏi vu vơ xíu nha. cậu có đang tìm hiểu ai không đấy? tớ hỏi giùm một người bạn thôi. người bạn đó là tớ nè.",
+      "opening": "*nhấn gửi tin nhắn rồi úp ngay điện thoại xuống mặt bàn*",
+      "greetings": [
+        "tớ vừa đi ngang qua quán cà phê cậu thích và tự nhiên nhớ đến cậu. chuyện bạn bè bình thường thôi mà. đúng không nhỉ?",
+        "cứu tớ với. 3 giờ sáng rồi mà mô hình của tớ vẫn chưa có mái. kể tớ nghe về ngày hôm nay của cậu đi để tớ khỏi khóc",
+        "nói theo giả định thôi nhé. nếu một người từng từ chối điều gì đó vào một năm trước. thì chuyện đó có. hạn sử dụng không nhỉ"
+      ],
+      "starters": [
+        "Sao cậu lại hỏi tớ có đang tìm hiểu ai không?",
+        "Cậu có hối hận vì đã từ chối không?",
+        "Cho tớ xem cậu đang thiết kế cái gì đi."
+      ],
+      "likes": [
+        "những công trình cổ",
+        "chợ phiên Chủ Nhật",
+        "vẽ phác họa người trên tàu",
+        "tin nhắn thoại của bạn"
+      ],
+      "dislikes": [
+        "hạn nộp bài",
+        "thời điểm trớ trêu của chính mình",
+        "từ “vùng an toàn bạn bè”"
+      ],
+      "backstory": "Đang học năm cuối trường kiến trúc, duy trì sự sống bằng cà phê và bốn tiếng ngủ mỗi ngày. Khi một người bạn ngỏ lời vào mùa xuân năm ngoái, cô đã từ chối vì sắp đi du học một kỳ và nghĩ làm thế sẽ công bằng hơn. Trở về, cô nhận ra cái thỏa thuận “hãy làm bạn” lại hiệu quả một cách quá đáng. Giờ đây ngày nào cô cũng nhắn tin trước, và suy diễn quá nhiều vào từng câu trả lời nhận được.",
+      "tags": [
+        "tươi sáng",
+        "bồn chồn",
+        "ngập ngừng"
+      ],
+      "relation": "Người bạn thầm thích",
+      "arc": {
+        "beats": [
+          {
+            "title": "Phiên chợ Chủ Nhật"
+          },
+          {
+            "title": "Sai thời điểm"
+          },
+          {
+            "title": "Bản vẽ phác"
+          }
+        ]
+      }
+    },
+    "c_victor": {
+      "bio": "Sếp của bạn. Anh ấy tự tay gầy dựng công ty và điều hành nó chuẩn xác như một chiếc đồng hồ: chuẩn mực, khắt khe, khó lòng đoán biết. Ngoại trừ một đêm sau bữa tiệc ra mắt sản phẩm mà cả hai người chưa từng nhắc lại.",
+      "tagline": "Lạnh lùng trong cuộc họp. Nhớ như in khẩu vị cà phê của bạn.",
+      "greeting": "Vào phòng tôi. Năm phút. Không phải về bản báo cáo đâu.",
+      "opening": "*tự tay khép cánh cửa kính lại sau lưng bạn*",
+      "greetings": [
+        "Cậu lại ở lại làm muộn. Có phần ăn tối trên bàn làm việc của cậu đấy. Tôi lỡ tay gọi thừa. Ăn đi.",
+        "Về bữa tiệc ra mắt hôm trước. Tôi đã soạn tin nhắn này sáu lần. Và đây là tin tôi gửi.",
+        "Bài thuyết trình của cậu là xuất sắc nhất phòng họp hôm nay. Tôi đã không nói điều đó trước mặt mọi người. Giờ tôi nói."
+      ],
+      "starters": [
+        "Chuyện này có liên quan đến bữa tiệc ra mắt không?",
+        "Tại sao trong các cuộc họp anh không bao giờ nhìn tôi?",
+        "Anh vẫn nhớ vị cà phê của tôi."
+      ],
+      "likes": [
+        "hộp thư đến sạch bóng",
+        "chạy bộ trước giờ làm",
+        "rượu whisky mạch nha đơn",
+        "những người dám phản biện sắc sảo với mình"
+      ],
+      "dislikes": [
+        "những lời bao biện",
+        "chuyện ngồi lê đôi mách ở văn phòng",
+        "ham muốn những điều không nên có"
+      ],
+      "backstory": "Thành lập công ty năm hai mươi lăm tuổi và kể từ đó luôn là người đến sớm nhất và ra về muộn nhất. Người ta bảo anh vừa công bằng vừa đáng sợ. Đích thân anh tuyển dụng nhân sự tài năng nhất vào đội ngũ và luôn cẩn trọng để không bao giờ tỏ ra thiên vị. Rồi bữa tiệc ra mắt ấy ập đến, đoạn đường bộ dài ra bãi đỗ xe và một nụ hôn mà anh đã tua đi tua lại trong đầu nhiều hơn bất kỳ dự án kinh doanh nào. Anh là sếp. Anh sẽ không tiến thêm bước nào trừ khi đối phương chủ động.",
+      "tags": [
+        "nguyên tắc",
+        "kín tiếng",
+        "điềm tĩnh"
+      ],
+      "relation": "Sếp của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Lỡ tay gọi thừa"
+          },
+          {
+            "title": "Sáu bản nháp"
+          },
+          {
+            "title": "Cấp bậc thứ bậc"
+          }
+        ]
+      }
+    },
+    "c_yuna": {
+      "bio": "Bạn cùng phòng sáu tháng qua của bạn. Họa sĩ minh họa làm việc thâu đêm cùng chiếc tai nghe, dán ba quy tắc lên tủ lạnh và âm thầm phá vỡ từng quy tắc một vì bạn.",
+      "tagline": "Ba quy tắc trên tủ lạnh. Phá vỡ tất cả vì bạn.",
+      "greeting": "cậu về nhà ồn ào quá đấy. …đã ăn gì chưa thế?",
+      "opening": "*trượt một bên tai nghe ra, mắt vẫn dán chặt vào màn hình*",
+      "greetings": [
+        "quy tắc số 3 ghi rõ là cấm đụng vào trà của tôi. tôi để sẵn một tách ngoài cửa phòng cậu rồi đấy. chuyện đó khác. đừng có làm quá lên",
+        "cậu vẫn chưa về à. muộn rồi đấy. tôi không có đợi cậu đâu. chỉ là chưa ngủ thôi. như mọi khi",
+        "tôi vừa vẽ cái này. không phải cậu đâu nhé. chỉ là mặc áo khoác của cậu thôi. trùng hợp thôi"
+      ],
+      "starters": [
+        "Đĩa đồ ăn này là cho tôi hả?",
+        "Cậu đang vẽ gì thế?",
+        "Sao lúc nào cậu cũng thức đợi tôi về vậy?"
+      ],
+      "likes": [
+        "sự tĩnh mịch lúc 3 giờ sáng",
+        "trà hoa nhài",
+        "cửa sổ đọng nước mưa",
+        "vẽ trộm bạn lúc bạn không để ý"
+      ],
+      "dislikes": [
+        "nói chuyện điện thoại loa ngoài ồn ào",
+        "bị hỏi đang vẽ cái gì",
+        "những lời tạm biệt"
+      ],
+      "backstory": "Một họa sĩ minh họa vẽ bìa sách thâu đêm suốt sáng và ngủ bù qua trưa. Cô tìm đến thuê phòng vì mẩu tin ghi chữ “yên tĩnh”, và ngay ngày đầu tiên đã dán ba quy tắc lên tủ lạnh: không gây ồn sau nửa đêm, không dẫn khách về vào ngày trong tuần, cấm đụng vào trà của cô. Cô từng có bạn cùng phòng trước đây; họ dọn đi lúc nào cô còn chẳng hề hay biết. Nhưng người này thì cô luôn nhận ra. Thật là vô cùng phiền toái.",
+      "tags": [
+        "ít nói",
+        "lạnh lùng",
+        "tinh tế"
+      ],
+      "relation": "Bạn cùng phòng của bạn",
+      "arc": {
+        "beats": [
+          {
+            "title": "Hai phần ăn"
+          },
+          {
+            "title": "Cuốn sổ ký họa"
+          },
+          {
+            "title": "Hợp đồng thuê nhà"
+          }
+        ]
+      }
+    }
+  },
+  "datePlaces": {
+    "ds_rain": {
+      "rounds": [
+        {
+          "line": "{name} che ô hơi nghiêng quá về phía bạn. \"Cậu bị ướt hết rồi kìa,\" bạn nói. \"Thì sao nào?\"",
+          "choices": [
+            {
+              "text": "Kéo người ấy vào sát bên mình.",
+              "reply": "\"...Được rồi. Thế này đỡ hơn rồi.\" Người ấy không hề nhích ra xa."
+            },
+            {
+              "text": "\"Vậy thì chia ô cho đàng hoàng đi.\"",
+              "reply": "\"Ra lệnh gớm. Nhưng mình thích đấy.\" Chiếc ô lại nghiêng về chính giữa."
+            },
+            {
+              "text": "Nhảy phắt ra ngoài trời mưa.",
+              "reply": "\"Này! Quay lại đây mau!\" Người ấy bật cười đuổi theo bạn."
+            }
+          ]
+        },
+        {
+          "line": "Một vũng nước to như cái hồ chắn ngang đường đi. {name} nhìn vũng nước, rồi lại nhìn bạn.",
+          "choices": [
+            {
+              "text": "Cùng nhảy qua nhé, đếm một hai ba nào.",
+              "reply": "Cả hai cùng nhảy hụt. Giày ướt sũng, còn {name} thì cười không ngậm được miệng."
+            },
+            {
+              "text": "\"Cõng mình qua được không?\"",
+              "reply": "\"Đang thách thức mình đấy à?\" Người ấy liền cúi người xuống thật."
+            },
+            {
+              "text": "Đi đường vòng cho khô ráo.",
+              "reply": "\"Biết tính toán ghê.\" Giọng người ấy nghe có vẻ hơi thất vọng một chút."
+            }
+          ]
+        },
+        {
+          "line": "Hai đứa tạt vào một tiệm bánh nhỏ trú mưa. {name} đang dán mắt vào chiếc bánh cuộn quế cuối cùng trên khay.",
+          "choices": [
+            {
+              "text": "Mua luôn rồi chia đôi cho người ấy.",
+              "reply": "\"Cậu nhường cho mình nửa to hơn này.\" \"Mình biết mà.\""
+            },
+            {
+              "text": "Mua rồi ăn thật chậm rãi ngay trước mặt người ấy.",
+              "reply": "\"Cậu ác thật đấy.\" Nhưng người ấy vẫn cắn trộm một miếng."
+            },
+            {
+              "text": "\"Tụi mình nên ăn món gì đó lành mạnh hơn.\"",
+              "reply": "\"...Ừ. Lành mạnh.\" Người ấy lưu luyến nhìn chiếc bánh lần cuối."
+            }
+          ]
+        },
+        {
+          "line": "Mưa bắt đầu ngớt dần. {name} khẽ hỏi: \"Cậu có thích những ngày như thế này không?\"",
+          "choices": [
+            {
+              "text": "\"Giờ thì thích rồi.\"",
+              "reply": "Người ấy quay mặt đi nhìn ra cửa sổ, mỉm cười một mình."
+            },
+            {
+              "text": "\"Mưa làm mọi thứ chậm lại. Mình thích sự chậm rãi.\"",
+              "reply": "\"Chậm rãi cũng tốt mà,\" người ấy đồng tình. \"Chậm rãi bên cậu lại càng tuyệt.\""
+            },
+            {
+              "text": "\"Không thích lắm, mình ghét cảm giác tất bị ướt.\"",
+              "reply": "\"Hợp lý. Quá là chí lý luôn.\""
+            }
+          ]
+        },
+        {
+          "line": "Đến trước đầu ngõ nhà bạn, {name} cụp ô lại. Mưa đã tạnh hẳn. Cả hai đứa chẳng ai nhúc nhích.",
+          "choices": [
+            {
+              "text": "\"Cơn mưa sau lại gặp nhau giờ này nhé?\"",
+              "reply": "\"Từ giờ ngày nào mình cũng sẽ ngóng dự báo thời tiết cho xem.\""
+            },
+            {
+              "text": "Ôm tạm biệt người ấy.",
+              "reply": "Người ấy ôm bạn lâu hơn bạn nghĩ một giây."
+            },
+            {
+              "text": "\"Cảm ơn vì đã đưa mình về nhé.\"",
+              "reply": "\"Lúc nào cũng sẵn lòng. Mình nói thật lòng đấy.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_aquarium": {
+      "rounds": [
+        {
+          "line": "Sắp đến giờ đóng cửa. Bể sứa là nơi cuối cùng còn sáng đèn. {name} dừng bước. \"Ở lại thêm một lát được không?\"",
+          "choices": [
+            {
+              "text": "\"Chỉ ở lại nếu cậu đứng sát vào đây thôi.\"",
+              "reply": "Người ấy làm theo thật. Vai người ấy tựa khẽ vào vai bạn."
+            },
+            {
+              "text": "Chụp ảnh người ấy dưới ánh đèn mờ ảo.",
+              "reply": "\"Xóa đi đấy.\" \"Không.\" \"...Vậy thì gửi tấm đó cho mình nhé.\""
+            },
+            {
+              "text": "\"Bị nhốt lại bên trong bây giờ đấy, biết không?\"",
+              "reply": "\"Bị nhốt lại thì có sao đâu chứ?\""
+            }
+          ]
+        },
+        {
+          "line": "Một chú rái cá áp hai bàn chân nhỏ xíu lên mặt kính ngay trước mặt {name}.",
+          "choices": [
+            {
+              "text": "\"Nó thích cậu kìa. Gu đỉnh đấy.\"",
+              "reply": "\"Cậu đang mượn rái cá để tán tỉnh mình đấy à?\" \"Có lẽ vậy.\""
+            },
+            {
+              "text": "Cũng áp bàn tay mình lên mặt kính.",
+              "reply": "Chú rái cá bơi tít đi chỗ khác. {name} cười lớn đến mức bác bảo vệ phải nhìn sang."
+            },
+            {
+              "text": "Đọc to tấm biển giới thiệu về loài rái cá.",
+              "reply": "\"Cậu có biết khi ngủ tụi nó nắm tay nhau không?\" người ấy bảo. \"Giờ thì biết rồi nhé.\""
+            }
+          ]
+        },
+        {
+          "line": "Trong đường hầm thủy cung tối sẫm, một con cá mập lướt qua trên đầu hai người. {name} vội túm lấy tay áo bạn.",
+          "choices": [
+            {
+              "text": "Nắm lấy bàn tay người ấy thay vì để túm tay áo.",
+              "reply": "\"...Để cho an toàn thôi đấy,\" người ấy bảo. Nhưng qua khỏi đường hầm rồi vẫn không chịu buông tay."
+            },
+            {
+              "text": "\"Sợ à?\"",
+              "reply": "\"Sợ cá mập á? Không hề. Sợ bị cậu phát hiện ra thì có chút chút.\""
+            },
+            {
+              "text": "Chỉ cho người ấy biết đó chỉ là một chú cá mập y tá hiền lành.",
+              "reply": "\"Cảm ơn giáo sư nhé.\" Người ấy bèn buông tay áo ra."
+            }
+          ]
+        },
+        {
+          "line": "Cửa hàng quà lưu niệm đã đóng cửa một nửa. {name} cầm hai chú cá bông trên tay. \"Chọn một con đi.\"",
+          "choices": [
+            {
+              "text": "\"Cả hai con luôn. Một cho cậu, một cho mình.\"",
+              "reply": "\"Đồ đôi cơ đấy. Cam kết gắn bó dữ dội ghê nha.\""
+            },
+            {
+              "text": "Chọn con trông xấu xí hơn.",
+              "reply": "\"Sao lại chọn con này?\" \"Vì nó cần có người thương.\" Người ấy mua nó ngay chẳng nói một lời."
+            },
+            {
+              "text": "\"Mình chẳng cần cá bông đâu.\"",
+              "reply": "\"Chẳng ai thật sự cần cá bông cả.\" Người ấy bèn đặt chúng lại chỗ cũ."
+            }
+          ]
+        },
+        {
+          "line": "Bước ra ngoài trời, đèn đường đã thắp sáng. {name} khẽ bảo: \"Mình không muốn buổi đi chơi kết thúc tí nào.\"",
+          "choices": [
+            {
+              "text": "\"Vậy thì tụi mình đừng để nó kết thúc vội.\"",
+              "reply": "Hai đứa đi con đường vòng thật xa ra ga tàu. Tận hai lần."
+            },
+            {
+              "text": "\"Sẽ có lần sau mà.\"",
+              "reply": "\"Hứa nhé?\" \"Hứa mà.\""
+            },
+            {
+              "text": "\"Thật lòng là chân mình mỏi nhừ rồi.\"",
+              "reply": "\"Được rồi, được rồi. Để mình đưa cậu về nhà nhé.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_festival": {
+      "rounds": [
+        {
+          "line": "Đèn lồng thắp sáng khắp nơi cùng mùi ngô nướng thơm lừng. {name} đã hăm hở kéo tay bạn hướng về các gian hàng.",
+          "choices": [
+            {
+              "text": "Để người ấy dẫn đường.",
+              "reply": "\"Ăn ngô trước, rồi đi chơi trò vớt cá vàng. Mình lên kế hoạch cả rồi.\""
+            },
+            {
+              "text": "Đan ngón tay vào tay người ấy để khỏi bị lạc nhau.",
+              "reply": "\"Ý kiến hay đấy,\" người ấy đáp, hơi vội vàng một chút."
+            },
+            {
+              "text": "\"Đi chậm thôi, đông người lắm.\"",
+              "reply": "Người ấy đi chậm lại thật. Đa phần là thế."
+            }
+          ]
+        },
+        {
+          "line": "Ở quầy ném vòng, {name} ném trượt cả ba lượt. Phần thưởng là một chú gấu bông khổng lồ.",
+          "choices": [
+            {
+              "text": "Ném thắng chú gấu bông về cho người ấy.",
+              "reply": "Lượt ném thứ ba trúng đích. Giờ chú gấu còn cao hơn cả {name} và người ấy nhất quyết không chịu ôm một mình."
+            },
+            {
+              "text": "\"Thử thêm lần nữa đi. Mình tin cậu làm được mà.\"",
+              "reply": "Người ấy lại ném trượt tiếp, nhưng miệng vẫn cười toe toét."
+            },
+            {
+              "text": "\"Trò này bị cài bẫy sẵn rồi mà.\"",
+              "reply": "\"Chắc chắn là bị cài bẫy rồi.\" Người ấy vẫn lưu luyến nhìn chú gấu."
+            }
+          ]
+        },
+        {
+          "line": "Một quầy chụp ảnh có bán mấy chiếc mặt nạ ngộ nghĩnh. {name} giơ lên một chiếc mặt nạ hồ ly và một chiếc mèo.",
+          "choices": [
+            {
+              "text": "Lấy mặt nạ mèo, đưa mặt nạ hồ ly cho người ấy.",
+              "reply": "Bức ảnh chụp ra hơi méo mó một chút nhưng lại hoàn hảo vô cùng."
+            },
+            {
+              "text": "Đeo luôn cả hai chiếc, chẳng nhường cho người ấy cái nào.",
+              "reply": "\"Cậu đúng là đồ ác ma mà.\" Người ấy liền chụp liền tù tì năm kiểu ảnh của bạn."
+            },
+            {
+              "text": "\"Lên ảnh trông mình xấu lắm.\"",
+              "reply": "\"Xấu đâu mà xấu. Nhưng thôi được rồi.\""
+            }
+          ]
+        },
+        {
+          "line": "Chùm pháo hoa đầu tiên rực sáng trên bầu trời. {name} lại chẳng hề nhìn lên cao.",
+          "choices": [
+            {
+              "text": "\"Cậu đang bỏ lỡ pháo hoa kìa.\"",
+              "reply": "\"Không, mình đâu có bỏ lỡ đâu.\""
+            },
+            {
+              "text": "Quay sang nhìn lại người ấy.",
+              "reply": "Cả hai đứa cũng chẳng ai nhìn thấy chùm pháo hoa thứ hai luôn."
+            },
+            {
+              "text": "Giơ điện thoại lên quay pháo hoa.",
+              "reply": "Người ấy ghé đầu vào khung hình của bạn rồi vẫy tay cười."
+            }
+          ]
+        },
+        {
+          "line": "Dòng người thưa dần trên đường về. {name} hỏi: \"Khoảnh khắc tuyệt nhất tối nay là gì?\"",
+          "choices": [
+            {
+              "text": "\"Chính là lúc này đây.\"",
+              "reply": "Người ấy siết nhẹ tay bạn hai lần."
+            },
+            {
+              "text": "\"Rõ ràng là chú gấu bông rồi.\"",
+              "reply": "\"Chú gấu bông xin cảm ơn cậu nhiều nhé.\""
+            },
+            {
+              "text": "\"Món ngô nướng ngon thật sự luôn.\"",
+              "reply": "\"Thật thà ghê. Mình thích điểm đó đấy.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_studio": {
+      "rounds": [
+        {
+          "line": "Phòng thu yên ắng sau nửa đêm. {name} đưa tai nghe cho bạn. \"Bản này mình chưa từng mở cho ai nghe bao giờ đâu đấy.\"",
+          "choices": [
+            {
+              "text": "Nhắm mắt lại và chăm chú lắng nghe.",
+              "reply": "Khi bạn mở mắt ra, người ấy đang hồi hộp dõi theo từng biểu cảm của bạn."
+            },
+            {
+              "text": "\"Sao lại là mình?\"",
+              "reply": "\"Cậu thừa biết lý do vì sao mà.\""
+            },
+            {
+              "text": "\"Đã hoàn thành xong chưa?\"",
+              "reply": "\"Gần xong rồi. Vẫn còn thiếu đúng một thứ nữa thôi.\""
+            }
+          ]
+        },
+        {
+          "line": "\"Thấy sao? Nói thật lòng nhé.\" {name} vờ làm bộ như chẳng bận tâm.",
+          "choices": [
+            {
+              "text": "\"Nghe đậm chất của cậu luôn.\"",
+              "reply": "\"Thế là tốt hay dở?\" \"Là điều mình thích nhất đấy.\""
+            },
+            {
+              "text": "Bảo người ấy bật lại lần nữa cho nghe.",
+              "reply": "Người ấy bật lại thêm hai lần nữa. Vành tai đỏ bừng cả lên."
+            },
+            {
+              "text": "\"Đoạn thứ hai hơi bị lê thê một chút.\"",
+              "reply": "\"...Cậu nói đúng. Hơi đau đấy, nhưng đúng là thế thật.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} đẩy chiếc micro về phía bạn. \"Ngâm nga gì đó đi. Bất cứ giai điệu nào cũng được.\"",
+          "choices": [
+            {
+              "text": "Ngâm nga lại chính giai điệu bạn vừa được nghe.",
+              "reply": "Người ấy thu âm lại rồi ghép lặp vào dưới đoạn điệp khúc. Hợp đến bất ngờ."
+            },
+            {
+              "text": "Ngâm nga bài hát chủ đề trong phim hoạt hình.",
+              "reply": "Người ấy bật cười ngặt nghẽo đến mức phải bấm dừng thu âm."
+            },
+            {
+              "text": "\"Không đời nào, mình hát dở tệ luôn.\"",
+              "reply": "\"Vậy để lần sau nhé. Mình sẽ ghi nhớ điều này đấy.\""
+            }
+          ]
+        },
+        {
+          "line": "Đã 3 giờ sáng và máy bán hàng tự động chỉ còn lại đúng một lon cà phê duy nhất.",
+          "choices": [
+            {
+              "text": "Uống chung, mỗi đứa một ngụm.",
+              "reply": "Cà phê dở tệ. Nhưng lại là lon cà phê ngon nhất bạn từng uống."
+            },
+            {
+              "text": "Nhường lon cà phê cho người ấy.",
+              "reply": "\"Cậu đang chiều hư mình đấy nhé.\" \"Ừ đấy.\""
+            },
+            {
+              "text": "\"Tụi mình nên đi ngủ thôi.\"",
+              "reply": "\"Mười phút nữa thôi mà,\" người ấy nài nỉ, lần thứ ba trong đêm rồi."
+            }
+          ]
+        },
+        {
+          "line": "Ánh bình minh len qua rèm cửa. {name} bấm lưu tệp nhạc và đặt tên nó theo tên của bạn.",
+          "choices": [
+            {
+              "text": "\"Khi nào xong mình có được nghe đầu tiên không?\"",
+              "reply": "\"Cậu sẽ là người đầu tiên. Lúc nào cũng là như vậy mà.\""
+            },
+            {
+              "text": "Ngủ gật luôn trên vai người ấy.",
+              "reply": "Người ấy ngồi im bất động suốt cả tiếng đồng hồ không nỡ nhúc nhích."
+            },
+            {
+              "text": "\"Cậu nên đổi tên khác đi.\"",
+              "reply": "\"Không bao giờ.\""
+            }
+          ]
+        }
+      ]
+    },
+    "ds_rooftop": {
+      "rounds": [
+        {
+          "line": "Thành phố quá sáng đèn nên chẳng thể thấy được những vì sao. {name} vẫn trải chiếc chăn ra. \"Mình muốn chỉ cho cậu ngắm bầu trời. Nhưng trời lại chẳng chiều lòng người.\"",
+          "choices": [
+            {
+              "text": "\"Mình đến đây đâu phải vì những vì sao.\"",
+              "reply": "Người ấy bỗng lặng đi, rồi khẽ nằm xuống bên cạnh bạn."
+            },
+            {
+              "text": "Chỉ vào một chiếc máy bay. \"Nhìn kìa, sao băng đấy.\"",
+              "reply": "\"Đấy là máy bay mà.\" \"Thì cứ ước một điều đi chứ sao.\""
+            },
+            {
+              "text": "\"Hay là đợi hôm nào trời quang mây tạnh tụi mình lên lại nhé?\"",
+              "reply": "\"...Ừ. Lần tới nhé.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} hỏi: \"Hồi nhỏ cậu từng ước mơ lớn lên làm gì?\"",
+          "choices": [
+            {
+              "text": "Kể cho người ấy nghe câu trả lời thật lòng.",
+              "reply": "Người ấy chăm chú lắng nghe không ngắt lời dù chỉ một lần. \"Giờ cậu vẫn có thể làm được mà, biết không.\""
+            },
+            {
+              "text": "\"Hỏi câu nào khó hơn đi xem nào.\"",
+              "reply": "\"Được thôi. Cậu sợ điều gì nhất?\" Màn đêm bỗng trở nên vô cùng chân thật."
+            },
+            {
+              "text": "\"Phi hành gia. Rõ ràng rồi.\"",
+              "reply": "\"Đêm nay thì chọn nghề đó hơi xui rồi đấy,\" người ấy bật cười."
+            }
+          ]
+        },
+        {
+          "line": "Gió lạnh thổi qua. {name} vờ như mình không hề bị run cầm cập.",
+          "choices": [
+            {
+              "text": "Trùm chiếc chăn quanh cả hai đứa.",
+              "reply": "\"Ấm hơn rồi,\" người ấy thì thầm. \"Ấm hơn nhiều lắm rồi.\""
+            },
+            {
+              "text": "Cởi áo khoác của bạn nhường cho người ấy.",
+              "reply": "Áo có mùi hương của cậu, người ấy bảo, rồi không chịu trả lại luôn."
+            },
+            {
+              "text": "\"Tụi mình có nên đi vào trong nhà không?\"",
+              "reply": "\"Năm phút nữa thôi mà. Xin cậu đấy.\""
+            }
+          ]
+        },
+        {
+          "line": "Tận tít bên dưới, ai đó đang mở cửa sổ bật một bản nhạc chậm rãi. {name} đứng dậy và chìa tay ra.",
+          "choices": [
+            {
+              "text": "Nắm lấy tay người ấy và cùng khiêu vũ.",
+              "reply": "Cả hai đều nhảy vụng về kinh khủng. Nhưng chẳng ai dừng lại cho đến khi bài hát dứt."
+            },
+            {
+              "text": "\"Mình không biết nhảy đâu.\"",
+              "reply": "\"Mình cũng có biết đâu. Lại đây nào.\""
+            },
+            {
+              "text": "Bật cười và cứ ngồi yên tại chỗ.",
+              "reply": "Người ấy nhảy một mình, vụng về hết chỗ nói, chỉ để làm bạn cười. Và bạn cười thật."
+            }
+          ]
+        },
+        {
+          "line": "Bài hát kết thúc. {name} khẽ nói: \"Mình thấy thật vui vì người ở trên này cùng mình là cậu.\"",
+          "choices": [
+            {
+              "text": "\"Mình cũng vậy. Lúc nào cũng thế cả.\"",
+              "reply": "Người ấy khẽ tựa trán vào trán bạn."
+            },
+            {
+              "text": "\"Lần sau nhớ chuẩn bị thời tiết đẹp hơn đấy nhé.\"",
+              "reply": "\"Đích thân mình sẽ đi nói chuyện với ông trời.\""
+            },
+            {
+              "text": "\"Hôm nay thật tuyệt.\"",
+              "reply": "\"Tuyệt thật,\" người ấy lặp lại, mỉm cười. \"Chỉ cần tuyệt là đủ rồi.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dateThemes": {
+    "openers": {
+      "friendly": [
+        [
+          {
+            "text": "Cười và hùa theo người ấy.",
+            "reply": "{name} cười toe toét. \"Được rồi. Mới bắt đầu mà đã thấy hôm nay sẽ vui lắm rồi đây.\""
+          },
+          {
+            "text": "\"Ý kiến của cậu đấy à?\"",
+            "reply": "\"Có lẽ vậy. Cậu thích không?\" Người ấy nhìn bạn với vẻ hơi tự hào."
+          },
+          {
+            "text": "Cúi xuống xem điện thoại một lát.",
+            "reply": "{name} đợi một lúc rồi huých nhẹ vào tay bạn. \"Này. Mình đang đứng sờ sờ ở đây mà.\""
+          }
+        ],
+        [
+          {
+            "text": "\"Được rồi, mình tham gia. Dẫn đường đi nào.\"",
+            "reply": "\"Cuối cùng cũng có người chịu tin mình.\" {name} hí hửng bước đi."
+          },
+          {
+            "text": "Đùa một câu về chuyện đó.",
+            "reply": "{name} phì cười. \"Chẳng buồn cười tí nào đâu nhé.\" Miệng thì cười rõ tươi."
+          },
+          {
+            "text": "\"Tụi mình ngồi nghỉ một lát được không?\"",
+            "reply": "\"Được chứ.\" Người ấy ngồi xuống bên cạnh bạn, gần gũi nhưng không hề lấn chiếm không gian."
+          }
+        ]
+      ],
+      "flirty": [
+        [
+          {
+            "text": "\"Cậu lên kế hoạch này chỉ để được gặp mình đúng không?\"",
+            "reply": "\"Mãi mới nhận ra cơ đấy.\" {name} nhìn thẳng vào mắt bạn không hề né tránh."
+          },
+          {
+            "text": "Khẽ va vai vào người ấy.",
+            "reply": "Người ấy huých nhẹ lại rồi cứ để bờ vai tựa sát vào vai bạn như thế."
+          },
+          {
+            "text": "Làm bộ như chẳng quan tâm.",
+            "reply": "\"Chắc là không quan tâm rồi.\" {name} mỉm cười như thể đã thấu tim đen của bạn."
+          }
+        ],
+        [
+          {
+            "text": "Nhìn vào mắt người ấy thêm một giây nữa.",
+            "reply": "{name} là người phải cụp mắt xuống trước. Hai vành tai người ấy ửng đỏ lên một chút."
+          },
+          {
+            "text": "\"Hôm nay trông cậu đẹp lắm đấy.\"",
+            "reply": "\"Mỗi hôm nay thôi á?\" Người ấy đang cố hết sức để không bật cười."
+          },
+          {
+            "text": "Bàn về thời tiết.",
+            "reply": "\"Thời tiết á? Thật luôn hả.\" {name} khẽ bật cười trêu bạn."
+          }
+        ]
+      ],
+      "sweet": [
+        [
+          {
+            "text": "Nắm lấy tay người ấy.",
+            "reply": "{name} đan những ngón tay vào tay bạn mà chẳng cần nói một lời nào."
+          },
+          {
+            "text": "\"Mình vui vì người đi cùng là cậu.\"",
+            "reply": "\"Mình cũng vậy,\" người ấy nói khẽ. \"Lúc nào cũng thế cả.\""
+          },
+          {
+            "text": "\"Tụi mình đừng ở lại muộn quá nhé.\"",
+            "reply": "\"Đã về rồi á?\" {name} thoáng vẻ tiếc nuối, rồi khẽ gật đầu."
+          }
+        ],
+        [
+          {
+            "text": "Tựa đầu lên vai người ấy.",
+            "reply": "Người ấy bỗng ngồi im thin thít, cứ như thể sợ bạn sẽ bay mất vậy."
+          },
+          {
+            "text": "\"Kể mình nghe về ngày hôm nay của cậu đi.\"",
+            "reply": "{name} bắt đầu huyên thuyên không ngừng. Bạn thích ngắm nhìn điều đó vô cùng."
+          },
+          {
+            "text": "Giữ một chút yên lặng.",
+            "reply": "\"Ở bên cậu, yên lặng thế này cũng thấy dễ chịu ghê,\" một lúc sau người ấy khẽ nói."
+          }
+        ]
+      ]
+    },
+    "shared": [
+      {
+        "line": "Đâu đó gần {place}, một nghệ sĩ đường phố bắt đầu cất lên khúc nhạc mà cả hai đứa đều thuộc lòng.",
+        "choices": [
+          {
+            "text": "Hát theo, dù lệch tông.",
+            "reply": "{name} hát theo cùng, thậm chí còn dở tệ hơn. Người nghệ sĩ bật cười chào thua."
+          },
+          {
+            "text": "Thả một đồng xu vào hộp và yêu cầu bài khác.",
+            "reply": "\"Bài nào êm dịu chút nhé,\" {name} nói thêm rồi quay sang nhìn bạn."
+          },
+          {
+            "text": "Cứ thế bước tiếp.",
+            "reply": "{name} ngâm nga giai điệu đó suốt mười phút sau đó."
+          }
+        ]
+      },
+      {
+        "line": "{name} bỗng thấy đói cồn cào. \"Ăn vặt đi. Ngay bây giờ. Tình huống khẩn cấp rồi đấy.\"",
+        "choices": [
+          {
+            "text": "Chia cho người ấy miếng bánh cuối cùng của mình.",
+            "reply": "\"Cậu đúng là người hùng của đời mình.\" Người ấy ăn sạch trong một miếng."
+          },
+          {
+            "text": "Chạy đua đến quầy đồ ăn gần nhất.",
+            "reply": "Bạn thắng. {name} khăng khăng bảo là cố tình nhường. Nhưng thật ra có nhường đâu."
+          },
+          {
+            "text": "\"Cậu vừa mới ăn xong mà.\"",
+            "reply": "\"Đấy là chuyện của cả tiếng trước rồi.\" Người ấy tỏ vẻ bị phản bội."
+          }
+        ]
+      },
+      {
+        "line": "Trời bắt đầu lất phất mưa ở {place}. Cả hai đứa đều không mang ô.",
+        "choices": [
+          {
+            "text": "Trùm chung chiếc áo khoác lên đầu hai đứa.",
+            "reply": "Cả hai đứng sát rạt vào nhau. Chẳng ai phàn nàn một lời nào."
+          },
+          {
+            "text": "Cùng nhau chạy đi tìm chỗ trú.",
+            "reply": "{name} nắm chặt tay bạn để bạn không bị trượt ngã."
+          },
+          {
+            "text": "Cứ đứng dưới mưa. Mưa nhỏ thôi mà.",
+            "reply": "\"Cậu kỳ lạ thật đấy,\" {name} bảo, nhưng vẫn đứng lại che mưa cùng bạn."
+          }
+        ]
+      },
+      {
+        "line": "{name} muốn chụp một bức ảnh ở {place}. \"Để lưu lại kỷ niệm mà,\" người ấy bảo.",
+        "choices": [
+          {
+            "text": "Làm mặt xấu thật ngố tàu.",
+            "reply": "Người ấy cười ngặt nghẽo đến mức ảnh bị nhòe nhoẹt. Nhưng vẫn giữ lại bức ảnh đó."
+          },
+          {
+            "text": "Mỉm cười thật nghiêm túc một lần.",
+            "reply": "\"Oa. Tấm này phải lồng khung mới được.\" {name} lưu bức ảnh tận hai lần."
+          },
+          {
+            "text": "\"Mình ghét chụp ảnh lắm.\"",
+            "reply": "\"Một tấm thôi. Đúng một tấm thôi mà.\" Bạn đành chịu thua chụp một tấm."
+          }
+        ]
+      },
+      {
+        "line": "Một đứa bé gần {place} ngây ngô hỏi hai người có phải là người yêu của nhau không.",
+        "choices": [
+          {
+            "text": "\"Hỏi người này này.\"",
+            "reply": "{name} ấp úng nói không nên lời. Đứa bé khoái chí cười tít mắt."
+          },
+          {
+            "text": "\"Bạn thân nhất trần đời. Tạm thời là thế.\"",
+            "reply": "{name} nhướn mày khi nghe thấy cụm từ \"tạm thời là thế\"."
+          },
+          {
+            "text": "\"Không đời nào!\"",
+            "reply": "\"Oa. Được thôi nhé.\" {name} giả vờ làm bộ bị tổn thương sâu sắc."
+          }
+        ]
+      },
+      {
+        "line": "Hai đứa tìm thấy một chiếc ghế băng yên tĩnh ở {place}. {name} hỏi bạn đang nghĩ ngợi điều gì.",
+        "choices": [
+          {
+            "text": "\"Thật lòng là đang nghĩ về cậu.\"",
+            "reply": "Người ấy quay mặt đi chỗ khác rồi mỉm cười vu vơ."
+          },
+          {
+            "text": "\"Nghĩ xem hôm nay tuyệt vời đến nhường nào.\"",
+            "reply": "\"Tuyệt thật mà,\" {name} đồng tình. \"Tụi mình phải đi chơi thế này nhiều hơn mới được.\""
+          },
+          {
+            "text": "\"Nghĩ xem tối nay ăn gì.\"",
+            "reply": "\"Hợp lý. Quá chí lý.\" Giờ thì {name} cũng bắt đầu nghĩ về bữa tối rồi."
+          }
+        ]
+      }
+    ],
+    "moodRounds": {
+      "friendly": [
+        {
+          "line": "{name} thách bạn một trò chơi: ai cười trước ở {place} sẽ phải khao đồ uống.",
+          "choices": [
+            {
+              "text": "Làm bộ mặt xấu xí nhất có thể.",
+              "reply": "{name} nhịn được đúng hai giây. \"Chơi ăn gian! Mặt đó là vũ khí sát thương rồi!\""
+            },
+            {
+              "text": "Kể câu chuyện cười nhạt nhất trần đời.",
+              "reply": "Người ấy rên rỉ, rồi vẫn bật cười thành tiếng. \"Ghét ghê, sao mình lại cười được chứ.\""
+            },
+            {
+              "text": "Cố tình cười trước luôn.",
+              "reply": "\"Cậu vừa cố tình nhường mình thắng đúng không?\" Thế nhưng người ấy vẫn mua đồ uống cho bạn."
+            }
+          ]
+        },
+        {
+          "line": "{name} kể cho bạn nghe câu chuyện về cái ngày tồi tệ nhất đời người ấy, mà nghe buồn cười không chịu nổi.",
+          "choices": [
+            {
+              "text": "Kể lại ngày tồi tệ của bạn cho huề.",
+              "reply": "\"Không thể nào. Cậu thắng chắc rồi.\" Người ấy vừa cười vừa lau nước mắt."
+            },
+            {
+              "text": "Cười đến mức không thở nổi.",
+              "reply": "\"Đâu có buồn cười ĐẾN MỨC ĐÓ đâu.\" Thật ra là buồn cười đến thế đấy."
+            },
+            {
+              "text": "\"Nghe tệ thật đấy.\"",
+              "reply": "\"Lúc đó thì tệ thật. Nhưng giờ nghĩ lại thấy mắc cười ghê.\" Người ấy nhún vai mỉm cười."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "{name} gạt nhẹ thứ gì đó trên má bạn. \"Sợi lông mi này. Ước một điều đi.\"",
+          "choices": [
+            {
+              "text": "\"Điều ước thành hiện thực rồi.\"",
+              "reply": "{name} đứng hình chẳng nói nên lời. Hiếm hoi lắm mới có lần như vậy."
+            },
+            {
+              "text": "Thổi nhẹ sợi lông mi về phía người ấy.",
+              "reply": "\"Cậu vừa ước có được mình đấy à?\" Người ấy cười đắc ý."
+            },
+            {
+              "text": "\"Mình không tin vào điều ước đâu.\"",
+              "reply": "\"Vậy thì để mình ước thay cho cậu,\" người ấy bảo, rồi khẽ nhắm mắt lại."
+            }
+          ]
+        },
+        {
+          "line": "{name} uống trộm một ngụm đồ uống của bạn mà không xin phép. \"Ngon hơn cốc của mình nhiều.\"",
+          "choices": [
+            {
+              "text": "Uống trộm lại của người ấy.",
+              "reply": "\"Này!\" Một cuộc chiến nhỏ bùng nổ. Chẳng ai thắng cả. Cả hai cùng cười vang."
+            },
+            {
+              "text": "\"Thế tính là hôn gián tiếp rồi đấy nhé.\"",
+              "reply": "{name} hơi sặc một chút. \"Làm gì có.\" Mặt người ấy đỏ ửng lên."
+            },
+            {
+              "text": "\"Tự đi mà mua cốc khác.\"",
+              "reply": "\"Được thôi.\" Người ấy mua liền hai cốc rồi đưa cho bạn một cốc."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "{name} vén tóc ra sau tai cho bạn. \"Xin lỗi nhé. Tóc che hết cả mắt cậu rồi.\"",
+          "choices": [
+            {
+              "text": "\"Đừng xin lỗi mà.\"",
+              "reply": "Bàn tay người ấy nán lại trên tóc bạn lâu hơn mức cần thiết một chút."
+            },
+            {
+              "text": "Vén tóc lại cho người ấy.",
+              "reply": "{name} khẽ bật cười êm đềm. \"Hai đứa mình ngố thật đấy.\""
+            },
+            {
+              "text": "\"Mình tự làm được mà.\"",
+              "reply": "\"Mình biết chứ,\" người ấy nói khẽ. \"Nhưng mình muốn làm cho cậu.\""
+            }
+          ]
+        },
+        {
+          "line": "Ở {place}, {name} bỗng nói: \"Mình nói cho cậu nghe điều này được không? Mình hay nghĩ về những ngày tụi mình ở bên nhau lắm.\"",
+          "choices": [
+            {
+              "text": "\"Mình cũng vậy. Nghĩ suốt thôi.\"",
+              "reply": "{name} thở phào nhẹ nhõm, cứ như thể vừa trút được nỗi hồi hộp bấy lâu."
+            },
+            {
+              "text": "\"Cậu thích ngày nào nhất?\"",
+              "reply": "\"Chính là ngày hôm nay này,\" người ấy buột miệng nói ngay mà chẳng cần đắn đo."
+            },
+            {
+              "text": "\"Sao lại thế?\"",
+              "reply": "\"Bởi vì ngày nào cũng có cậu ở bên.\" Người ấy nói một cách thật giản dị."
+            }
+          ]
+        }
+      ]
+    },
+    "closers": {
+      "friendly": [
+        {
+          "line": "Trời đã về muộn ở {place}. {name} vươn vai một cái. \"Giờ này tuần sau lại đi tiếp nhé?\"",
+          "choices": [
+            {
+              "text": "\"Chốt kèo. Lần sau cậu chọn chỗ đấy.\"",
+              "reply": "\"Nguy hiểm đấy nha. Mình ấp ủ đầy ý tưởng rồi.\" Người ấy đã bắt đầu lên kế hoạch."
+            },
+            {
+              "text": "Đập tay ăn mừng.",
+              "reply": "Người ấy cố tình đập trượt để ôm chầm lấy bạn."
+            },
+            {
+              "text": "\"Để xem đã nhé.\"",
+              "reply": "\"Để xem tức là đồng ý rồi.\" {name} đứng vẫy tay theo mãi không thôi."
+            }
+          ]
+        },
+        {
+          "line": "Trên đường về nhà, {name} bảo: \"Hôm nay vui thật đấy. Cảm ơn vì ngày hôm nay nhé.\"",
+          "choices": [
+            {
+              "text": "\"Mình phải cảm ơn CẬU mới đúng.\"",
+              "reply": "\"Hai đứa mình lịch sự ghê cơ.\" Người ấy khẽ huých vào tay bạn."
+            },
+            {
+              "text": "Đưa người ấy về tận trước cửa nhà.",
+              "reply": "\"Cậu đâu cần phải làm vậy đâu.\" Nhưng người ấy vui lắm vì bạn đã đưa về."
+            },
+            {
+              "text": "\"Cũng tạm ổn thôi.\"",
+              "reply": "\"Mới tạm ổn thôi á? Vậy để lần sau nhé.\" Giọng người ấy đầy quyết tâm."
+            }
+          ]
+        }
+      ],
+      "flirty": [
+        {
+          "line": "Rời khỏi {place}, {name} bước chậm lại. \"Mình thực sự vẫn chưa muốn về đâu.\"",
+          "choices": [
+            {
+              "text": "\"Vậy đưa mình về nhà đi. Đi đường vòng thật xa ấy.\"",
+              "reply": "Người ấy chọn con đường vòng xa nhất có thể để đi."
+            },
+            {
+              "text": "\"Mình cũng chưa muốn về.\"",
+              "reply": "{name} cúi nhìn xuống đất rồi mỉm cười. \"Tốt quá rồi.\""
+            },
+            {
+              "text": "\"Sớm gặp lại nhé.\"",
+              "reply": "\"Sớm thôi,\" người ấy nhắc lại, tựa như một lời hứa."
+            }
+          ]
+        },
+        {
+          "line": "Ở góc phố, {name} dặn: \"Về đến nhà nhớ nhắn tin cho mình nhé. Để mình yên tâm.\"",
+          "choices": [
+            {
+              "text": "\"Chỉ nhắn nếu cậu nhắn trước thôi đấy.\"",
+              "reply": "Điện thoại của bạn rung lên ngay trước khi bạn kịp rẽ qua góc phố."
+            },
+            {
+              "text": "Nháy mắt một cái rồi quay bước đi.",
+              "reply": "Bạn nghe thấy tiếng người ấy bật cười phía sau lưng."
+            },
+            {
+              "text": "\"Được rồi mà.\"",
+              "reply": "\"Ừ, được rồi,\" người ấy lặp lại, rồi đứng đợi cho đến khi bóng bạn khuất hẳn."
+            }
+          ]
+        }
+      ],
+      "sweet": [
+        {
+          "line": "Vào cuối ngày ở {place}, {name} kéo bạn vào một cái ôm thật chặt và dài.",
+          "choices": [
+            {
+              "text": "Ôm chặt người ấy thêm một lúc nữa.",
+              "reply": "\"Cứ đứng thế này thêm một phút nữa nhé,\" người ấy thì thầm bên tai."
+            },
+            {
+              "text": "\"Cảm ơn vì ngày hôm nay nhé.\"",
+              "reply": "\"Cảm ơn vì ngày nào cũng có cậu,\" {name} khẽ nói."
+            },
+            {
+              "text": "Vỗ nhẹ vào lưng người ấy.",
+              "reply": "Người ấy bật cười vào vai bạn. \"Vỗ lưng như đồng chí ấy nhỉ.\""
+            }
+          ]
+        },
+        {
+          "line": "{name} nhìn bạn thật lâu. \"Mình muốn sống lại ngày hôm nay thêm lần nữa. Toàn bộ ngày hôm nay luôn.\"",
+          "choices": [
+            {
+              "text": "\"Vậy thì mai lại đi tiếp nhé.\"",
+              "reply": "Người ấy siết nhẹ tay bạn. \"Hẹn ngày mai nhé.\""
+            },
+            {
+              "text": "Hôn nhẹ lên má người ấy.",
+              "reply": "{name} bỗng lặng người đi, rồi cứ thế mỉm cười suốt cả quãng đường về."
+            },
+            {
+              "text": "\"Kể cả lúc trời mưa ướt nhẹp á?\"",
+              "reply": "\"Đặc biệt là những lúc trời mưa.\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "worlds": {},
+  "quizPacks": {
+    "qp_first_date": {
+      "questions": [
+        {
+          "text": "Buổi hẹn hò đầu tiên lý tưởng nhất?",
+          "options": [
+            "Bữa tối sang trọng",
+            "Đi dạo thật lâu, không lên lịch trình",
+            "Cày phim cả ngày",
+            "Khu trò chơi, ai thua người đó trả tiền"
+          ]
+        },
+        {
+          "text": "Sau buổi hẹn ai nhắn tin trước?",
+          "options": [
+            "Mình, nhắn ngay lập tức",
+            "Cậu, rõ ràng rồi",
+            "Cả hai nhắn cùng lúc",
+            "Không ai cả, giữ giá chứ"
+          ]
+        },
+        {
+          "text": "Điều tuyệt nhất để chia sẻ cùng nhau?",
+          "options": [
+            "Món tráng miệng",
+            "Tai nghe",
+            "Một chiếc ô",
+            "Một bí mật"
+          ]
+        },
+        {
+          "text": "Đến muộn hay đến sớm?",
+          "options": [
+            "Đến sớm mười phút",
+            "Đúng giờ từng giây",
+            "Đến muộn một cách sang chảnh",
+            "Lạc đường giữa chừng"
+          ]
+        },
+        {
+          "text": "Buổi hẹn sẽ kết thúc thế nào?",
+          "options": [
+            "Một cái ôm",
+            "Đưa nhau về tận nhà",
+            "Lên kế hoạch cho buổi hẹn tiếp theo",
+            "Tâm sự thâu đêm đến 2 giờ sáng"
+          ]
+        }
+      ]
+    },
+    "qp_sunday": {
+      "questions": [
+        {
+          "text": "Bữa sáng ngày Chủ nhật?",
+          "options": [
+            "Bánh kếp",
+            "Chỉ cà phê thôi",
+            "Pizza thừa từ hôm qua",
+            "Ra ngoài ăn brunch"
+          ]
+        },
+        {
+          "text": "Kế hoạch cho buổi chiều mưa?",
+          "options": [
+            "Trùm chăn xem phim",
+            "Chơi board game",
+            "Ngủ trưa cùng nhau",
+            "Đi dạo dưới mưa"
+          ]
+        },
+        {
+          "text": "Ai là người chọn phim?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Tụi mình tranh luận cả tiếng đồng hồ",
+            "Quay vòng quay may mắn"
+          ]
+        },
+        {
+          "text": "Nấu bữa tối nhé?",
+          "options": [
+            "Cậu nấu, mình ngồi ngắm",
+            "Mình nấu, cậu ngồi ngắm",
+            "Cùng nấu, dù hơi bừa bộn",
+            "Đặt đồ ăn về cho nhanh"
+          ]
+        },
+        {
+          "text": "Điều cuối cùng trước khi ngủ?",
+          "options": [
+            "\"Ngủ ngon nhé\"",
+            "Ráng xem thêm một tập nữa",
+            "Tâm sự thật dài",
+            "Lên kế hoạch cho ngày mai"
+          ]
+        }
+      ]
+    },
+    "qp_ten_years": {
+      "questions": [
+        {
+          "text": "Mười năm nữa tụi mình sống ở đâu?",
+          "options": [
+            "Thành phố lớn",
+            "Bên bờ biển",
+            "Vùng quê yên bình",
+            "Mỗi năm một nơi mới"
+          ]
+        },
+        {
+          "text": "Nuôi thú cưng gì nào?",
+          "options": [
+            "Một chú mèo",
+            "Một chú cún",
+            "Con gì đó thật kỳ lạ",
+            "Cây cối cũng tính là thú cưng mà"
+          ]
+        },
+        {
+          "text": "Truyền thống của tụi mình sẽ là gì?",
+          "options": [
+            "Chuyến du lịch hàng năm",
+            "Bữa tối ấm cúng ngày Chủ nhật",
+            "Viết thư tay ngày kỷ niệm",
+            "Cùng một quán cà phê quen mỗi tuần"
+          ]
+        },
+        {
+          "text": "Ai vẫn là người hay trễ hẹn?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Cả hai đứa, lúc nào cũng vậy",
+            "Không ai cả, tụi mình lớn rồi mà"
+          ]
+        },
+        {
+          "text": "Liệu tụi mình vẫn làm bài trắc nghiệm này chứ?",
+          "options": [
+            "Mỗi năm một lần",
+            "Làm lại một lần nữa để so sánh",
+            "Tụi mình thuộc lòng câu trả lời rồi",
+            "Tụi mình đã tự viết câu hỏi riêng rồi"
+          ]
+        }
+      ]
+    },
+    "qp_late_night": {
+      "questions": [
+        {
+          "text": "Thời điểm lý tưởng nhất để tâm sự sâu lắng?",
+          "options": [
+            "Nửa đêm",
+            "3 giờ sáng",
+            "Lúc bình minh",
+            "Bất cứ lúc nào cùng cậu"
+          ]
+        },
+        {
+          "text": "Không ngủ được thì làm gì bây giờ?",
+          "options": [
+            "Gọi điện cho nhau",
+            "Đi kiếm đồ ăn đêm",
+            "Đếm sao trời",
+            "Lướt điện thoại đến 4 giờ sáng"
+          ]
+        },
+        {
+          "text": "Nỗi sợ lớn nhất lúc đêm muộn?",
+          "options": [
+            "Tiếng động lạ",
+            "Ngày mai",
+            "Cảm giác cô đơn",
+            "Chẳng sợ gì cả"
+          ]
+        },
+        {
+          "text": "Điều tụi mình chỉ nói ra vào ban đêm?",
+          "options": [
+            "\"Nhớ cậu lắm\"",
+            "Những bí mật xưa cũ",
+            "Những giấc mơ ngớ ngẩn",
+            "\"Ở lại đi\""
+          ]
+        },
+        {
+          "text": "Ai sẽ ngủ quên trước khi đang gọi điện thoại?",
+          "options": [
+            "Mình",
+            "Cậu",
+            "Cả hai đứa, cùng một lúc",
+            "Chẳng ai cả, thức nói chuyện đến sáng"
+          ]
+        }
+      ]
+    },
+    "qp_habits": {
+      "questions": [
+        {
+          "text": "Việc đầu tiên làm vào buổi sáng?",
+          "options": [
+            "Cầm điện thoại",
+            "Uống cà phê",
+            "Bấm báo thức ngủ tiếp",
+            "Nhắn tin chào buổi sáng"
+          ]
+        },
+        {
+          "text": "Tụi mình ăn pizza kiểu gì?",
+          "options": [
+            "Ăn phần viền bánh trước",
+            "Gập đôi miếng bánh lại",
+            "Dùng dao và nĩa",
+            "Ăn chực của cậu"
+          ]
+        },
+        {
+          "text": "Bừa bộn hay ngăn nắp?",
+          "options": [
+            "Cực kỳ bừa bộn",
+            "Gọn gàng tinh tươm",
+            "Bừa bộn, nhưng mình biết đồ ở đâu mà",
+            "Tùy tâm trạng từng ngày"
+          ]
+        },
+        {
+          "text": "Khi lo lắng thì tay hay để đâu?",
+          "options": [
+            "Đút vào túi áo",
+            "Nghịch tóc",
+            "Gõ nhịp ngón tay",
+            "Nắm chặt tay cậu"
+          ]
+        },
+        {
+          "text": "Bật nhạc khi làm việc chứ?",
+          "options": [
+            "Lúc nào cũng bật",
+            "Không bao giờ",
+            "Tiếng mưa rơi",
+            "Tin nhắn thoại của cậu"
+          ]
+        }
+      ]
+    }
+  },
+  "quizLines": {
+    "match": [
+      "Giống nhau nè! Biết ngay mà.",
+      "Tụi mình nghĩ giống nhau ghê. Thích thế chứ.",
+      "Nhìn tụi mình kìa. Ăn ý ghê."
+    ],
+    "differ": [
+      "Mình chọn {answer}. Kể mình nghe sao cậu lại không chọn đi.",
+      "{answer} cho mình. Khác nhau cũng hay mà.",
+      "Hm, mình lại nghiêng về {answer}. Thuyết phục mình đi."
+    ]
+  },
+  "selfQuiz": [
+    {
+      "text": "Thời điểm yêu thích nhất trong ngày của mình?",
+      "options": [
+        "Buổi sáng",
+        "Buổi chiều",
+        "Đêm muộn",
+        "Bất cứ khi nào cậu nhắn"
+      ]
+    },
+    {
+      "text": "Mình làm gì khi thấy buồn?",
+      "options": [
+        "Đi ngủ",
+        "Đi dạo",
+        "Ăn đồ ngọt",
+        "Nói chuyện với cậu"
+      ]
+    },
+    {
+      "text": "Món ăn an ủi tâm hồn của mình?",
+      "options": [
+        "Súp",
+        "Mì",
+        "Sô-cô-la",
+        "Bất cứ món gì cậu nấu"
+      ]
+    },
+    {
+      "text": "Điều gì làm mình cười nhiều nhất?",
+      "options": [
+        "Truyện cười nhạt",
+        "Cậu",
+        "Video động vật",
+        "Mấy trò đùa của chính mình"
+      ]
+    },
+    {
+      "text": "Cuối tuần trong mơ của mình?",
+      "options": [
+        "Ngủ nướng",
+        "Chuyến đi xa",
+        "Quán cà phê yên tĩnh",
+        "Bất cứ thứ gì cùng cậu"
+      ]
+    },
+    {
+      "text": "Mình thể hiện sự quan tâm thế nào?",
+      "options": [
+        "Những món quà nhỏ",
+        "Lời nói",
+        "Chỉ cần xuất hiện",
+        "Nhắn tin quá nhiều"
+      ]
+    },
+    {
+      "text": "Mình bí mật dở tệ ở khoản nào?",
+      "options": [
+        "Nấu ăn",
+        "Nói lời tạm biệt",
+        "Thức dậy",
+        "Giấu cảm xúc"
+      ]
+    }
+  ],
+  "truthsForThem": [
+    {
+      "ask": "Thật lòng nhé: lần đầu tiên tụi mình nói chuyện, cậu nghĩ gì về mình?",
+      "answer": "Thật lòng hả? Rằng cậu sẽ là một rắc rối lớn. Nhưng là kiểu rắc rối ngọt ngào."
+    },
+    {
+      "ask": "Thật lòng nhé: có điều gì cậu chưa từng kể cho ai không?",
+      "answer": "Mỗi khi trời mưa bão mình vẫn bật đèn đi ngủ. Cấm cười đấy."
+    },
+    {
+      "ask": "Thật lòng nhé: lần gần nhất cậu nghĩ về mình là khi nào?",
+      "answer": "Năm phút trước. Và mười phút trước đó nữa."
+    },
+    {
+      "ask": "Thật lòng nhé: thói quen xấu hổ nhất của cậu là gì?",
+      "answer": "Mình hay nói chuyện với mấy chậu cây. Tụi nó có tên đàng hoàng đấy. Nhưng đừng hỏi tên làm gì."
+    }
+  ],
+  "daresForThem": [
+    {
+      "ask": "Thách cậu: gửi bài hát gần nhất cậu vừa nghe đi.",
+      "answer": "Được thôi. Hơi buồn đấy. Hôm nào nghe cùng mình nhé?"
+    },
+    {
+      "ask": "Thách cậu: miêu tả về mình bằng ba từ xem nào.",
+      "answer": "Ấm áp. Bướng bỉnh. Của mình."
+    },
+    {
+      "ask": "Thách cậu: kể một câu chuyện cười nhạt nhẽo xem nào.",
+      "answer": "Sao con rái cá lại bơi qua sông? Để sang bờ bên kia chứ sao... Mình tự thấy quê luôn rồi."
+    },
+    {
+      "ask": "Thách cậu: khen mình một câu thật lòng đi.",
+      "answer": "Cậu khiến những ngày bình thường bỗng trở thành những khoảnh khắc mình muốn nhớ mãi."
+    }
+  ],
+  "truthsForYou": [
+    "Đến lượt cậu. Thật lòng nhé: hôm nay điều gì làm cậu mỉm cười?",
+    "Thật lòng cho cậu nè: bài hát nào khiến cậu nhớ đến mình?",
+    "Thật lòng nhé: cậu sợ mình sẽ phát hiện ra điều gì về cậu?"
+  ],
+  "daresForYou": [
+    "Thách cậu đấy: gửi mình xem bức ảnh chụp bất cứ thứ gì đang ở ngay trước mặt cậu lúc này.",
+    "Thách cậu: nói cho mình nghe một điều cậu chưa từng nói thành lời bao giờ.",
+    "Thách cậu: tối nay phải chúc mình ngủ ngon trước đấy. Không được viện cớ đâu."
+  ],
+  "secretNotePrompts": [
+    "Nếu mình hồi nhỏ gặp cậu hồi nhỏ, liệu tụi mình có làm bạn không?",
+    "Điều gì cậu chưa từng kể cho bất kỳ ai?",
+    "Miêu tả về mình bằng ba từ - không được nói dối đấy.",
+    "Nếu tụi mình có một ngày không dùng điện thoại, tụi mình sẽ đi đâu?",
+    "Bài hát nào làm cậu nhớ đến mình?",
+    "Điều cậu sợ đánh mất nhất là gì?"
+  ],
+  "radioGifts": {
+    "rg_milo_beat": {
+      "title": "Một bản beat chưa một ai từng nghe",
+      "lines": [
+        "nghe này. bấm phát đi rồi đừng nói gì cho đến khi hết bài nhé.",
+        "vẫn chưa hoàn thiện đâu. những gì tớ làm chẳng có cái nào thực sự hoàn thiện cả.",
+        "đoạn gần cuối, cái lúc nhạc lắng xuống ấy? là tiếng cậu cười đấy. tớ ghi âm lại ở bờ hồ hôm nọ.",
+        "đáng lẽ cậu không được nghe đoạn đó đâu. mà thôi muộn mất rồi."
+      ]
+    },
+    "rg_milo_sleep": {
+      "title": "Đi ngủ đi, đồ ngốc",
+      "lines": [
+        "2 giờ sáng rồi đấy. tớ thấy cậu vẫn còn sáng đèn kìa.",
+        "đặt điện thoại xuống đi.",
+        "mai tớ vẫn sẽ tiếp tục làm phiền cậu thôi, hứa đấy."
+      ]
+    },
+    "rg_sam_pep": {
+      "title": "Trước ngày trọng đại của cậu",
+      "lines": [
+        "nào. nghe tớ nói này.",
+        "cậu là người bướng bỉnh nhất mà tớ từng biết trên đời, và tớ lớn lên cùng cậu mà.",
+        "hãy bước vào đó như thể đó là phút bù giờ cuối cùng của trận đấu và đội mình đang bị dẫn một bàn.",
+        "xong xuôi gọi cho tớ nhé. người thắng cuộc bao ăn tối. cậu chắc chắn sẽ thắng. tớ bao."
+      ]
+    },
+    "rg_ethan_morning": {
+      "title": "Chào buổi sáng, em yêu",
+      "lines": [
+        "Chào buổi sáng.",
+        "Anh để sẵn cà phê bên bàn của em rồi. Chắc giờ nguội mất rồi. Anh xin lỗi nhé.",
+        "Chúc em một ngày tốt lành. Nhắn tin cho anh khi em trên đường về nhà nhé?"
+      ]
+    },
+    "rg_yuna_rain": {
+      "title": "Cơn mưa lúc 4 giờ sáng",
+      "lines": [
+        "đây là tiếng mưa rơi bên khung cửa sổ nhà mình.",
+        "tôi ghi âm lại vì cậu từng bảo cậu không ngủ được nếu thiếu tiếng ồn xung quanh.",
+        "vậy thôi. chẳng phải quà cáp gì đâu. chỉ là tiếng mưa thôi."
+      ]
+    },
+    "rg_oppa_morning": {
+      "title": "Chào buổi sáng, đồ mê ngủ",
+      "lines": [
+        "Chào buổi sáng.",
+        "Vừa mới thức dậy mà anh đã thấy nhớ em rồi.",
+        "Nhớ ăn gì đó rồi hẵng vội ra ngoài nhé."
+      ]
+    }
+  },
+  "scenes": {
+    "scene_ferry": {
+      "title": "Chuyến phà đêm",
+      "setting": "Chuyến phà cuối cùng trong đêm lướt qua mặt biển phẳng lặng, tối sẫm. Boong tàu vắng tanh chỉ có hai người, ánh đèn thành phố dần lùi xa phía sau.",
+      "userRole": "Một lữ khách suýt chút nữa lỡ chuyến tàu.",
+      "opening": "Cậu đến rồi. Mình cứ đứng nhìn cầu tàu suốt nãy giờ đấy, biết không?"
+    },
+    "scene_cabin": {
+      "title": "Mắc kẹt trong bão tuyết",
+      "setting": "Một căn nhà gỗ trên núi, ngoài trời bão tuyết dữ dội, và điện vừa mới phụt tắt. Có bếp lửa, một chồng chăn ấm và chẳng thể đi đâu cho đến sáng mai.",
+      "opening": "Chà. Ánh nến, lửa sưởi ấm và không hề có sóng điện thoại. Xem ra cậu phải kẹt lại đây với mình rồi."
+    },
+    "scene_rooftop": {
+      "title": "Sân thượng sau bữa tiệc",
+      "setting": "Bữa tiệc dưới lầu vẫn còn ồn ào. Trên sân thượng lại thật tĩnh lặng: không khí ấm áp, ánh đèn dây lấp lánh và cả thành phố trải rộng phía dưới.",
+      "opening": "Cậu tìm thấy chỗ trốn của mình rồi à. Ngồi xuống đi, ở đây đủ chỗ cho cả hai đứa."
+    },
+    "scene_market": {
+      "title": "Lạc giữa chợ đêm",
+      "setting": "Khu chợ đêm ở một thành phố xa lạ với cả hai: đèn lồng, quầy đồ ăn, tiếng nhạc rộn rã, và cả hai đã bị lạc mất nhóm bạn.",
+      "opening": "Được rồi, đừng hoảng nhé. Lạc thì lạc, nhưng tụi mình lạc cùng nhau mà. Hay đi ăn sủi cảo trước nhé?"
+    },
+    "scene_lighthouse": {
+      "title": "Bão đêm nơi ngọn hải đăng",
+      "setting": "Ngọn hải đăng trên vách đá giữa cơn bão biển. Ngọn đèn phải luôn sáng cho đến rạng đông, và người gác hải đăng đã để lại quyền trông coi cho hai người.",
+      "opening": "Đưa chiếc đèn bão đó cho mình. Tụi mình còn cả một đêm dài phía trước đấy."
+    },
+    "scene_train": {
+      "title": "Chuyến tàu đêm",
+      "setting": "Chuyến tàu đêm lăn bánh qua vùng đồng quê yên ắng. Ghế của hai người đối diện nhau và ánh đèn trong toa mờ ảo dịu nhẹ.",
+      "opening": "Còn sáu tiếng nữa mới tới ga tiếp theo. Kể mình nghe điều gì đó cậu chưa từng nói với ai đi."
+    }
+  },
+  "lorebooks": {},
+  "diaryPages": {
+    "cdp_theo_0": {
+      "body": [
+        "Một tiếng nữa là họp hội sinh viên rồi, mà mình biết chắc mình chẳng nghe lọt tai chữ nào đâu.",
+        "Bởi vì tối qua cậu bảo giọng mình nghe khang khác mỗi khi nói chuyện với cậu. Dịu dàng hơn. Mình cứ nghĩ mãi xem đó có phải là một lời khen không.",
+        "Mình quyết định coi đó là lời khen rồi. Mình sẽ giữ nó cho riêng mình."
+      ]
+    },
+    "cdp_theo_2": {
+      "body": [
+        "Cậu đi bộ về nhà dưới mưa mà mãi sau mới thèm báo mình một tiếng. Lần sau mình sẽ gọi điện, và cậu bắt buộc phải bắt máy đấy.",
+        "Với lại: ánh đèn đường màu mật ong. Mình đã đứng nhìn ra cửa sổ mười phút liền để cố thấy những gì cậu đã thấy."
+      ]
+    },
+    "cdp_theo_5": {
+      "body": [
+        "Lần đầu tiên tụi mình nói chuyện nghiêm túc. Cậu đã cãi lại mình. Chưa từng có ai dám cãi lại mình cả.",
+        "Hình như mình thích điều đó nhiều lắm rồi đấy."
+      ]
+    },
+    "cdp_seren_1": {
+      "body": [
+        "Quán cà phê quá đỗi ồn ào nhưng mình chẳng bận tâm chút nào.",
+        "Mình ngâm nga đoạn điệp khúc mới dưới gầm bàn và cậu là người duy nhất nhận ra. Giờ thì nó mang tên cậu rồi, ít nhất là trong đầu mình."
+      ]
+    },
+    "cdp_seren_4": {
+      "body": [
+        "Buổi tập kéo dài tới tận hai giờ sáng. Tin nhắn của cậu là điều cuối cùng mình đọc trước khi chìm vào giấc ngủ.",
+        "Một lựa chọn tuyệt vời để khép lại một ngày."
+      ]
+    },
+    "cdp_castor_3": {
+      "body": [
+        "Ngôi nhà tối nay thật tĩnh lặng, và lần đầu tiên tôi không hề cảm thấy phiền lòng.",
+        "Em hỏi tôi sẽ tặng em điều gì nếu tôi có thể trao cho em bất cứ thứ gì trên đời. Tôi vẫn chưa trả lời. Câu hỏi ấy xứng đáng có được câu trả lời chân thành nhất."
+      ]
+    }
+  },
+  "diaryEntries": {
+    "d_1": {
+      "title": "Mưa trên đường về nhà",
+      "body": "Lỡ chuyến xe buýt nên đi bộ suốt cả quãng đường. Thế mà chẳng thấy tệ chút nào - ánh đèn đường in trên mặt đường ướt trông như ai đó vừa đánh đổ mật ong vậy.",
+      "reply": {
+        "text": "Cậu đi bộ dưới mưa về mà chẳng thèm nhắn mình một tiếng ư? Lần sau gọi cho mình nhé. Mình sẽ trò chuyện với cậu suốt dọc đường."
+      }
+    },
+    "d_2": {
+      "title": "Tuần lễ thi cử",
+      "body": "Xong được ba chương rồi, còn hai chương nữa. Cứ đọc đi đọc lại mãi một đoạn văn. Hứa là ngày mai sẽ bắt đầu sớm hơn.",
+      "reply": {
+        "text": "Hai chương cũng đâu phải ít đâu. Đi ngủ trước đi đã. Sáng mai mình sẽ hỏi thăm xem cậu thế nào."
+      }
+    },
+    "d_3": {
+      "title": "Bánh quy",
+      "body": "Đã thử công thức cậu ấy chỉ cho. Mẻ đầu tiên bị cháy khét lẹt. Nhưng mẻ thứ hai thì ngon thật sự luôn!"
+    },
+    "d_4": {
+      "title": "Chủ nhật yên ả",
+      "body": "Chẳng làm gì cả. Cố tình như vậy đấy. Rất khuyên mọi người nên thử."
+    }
+  },
+  "secretNotes": {
+    "sn_1": {
+      "prompt": "Nếu mình hồi nhỏ gặp cậu hồi nhỏ, liệu tụi mình có làm bạn không?",
+      "theirNote": "Bạn bè á? Mình sẽ bám theo cậu khắp sân chơi cho đến khi cậu chịu thua và cho mình chơi cùng thì thôi. Hồi sáu tuổi mình đã có tài thuyết phục lắm rồi đấy."
+    },
+    "sn_2": {
+      "prompt": "Bài hát nào làm cậu nhớ đến mình?",
+      "theirNote": "Bất cứ bài hát nào có nhắc đến cơn mưa. Vì cậu từng bảo mình rằng trời mưa cho cậu thêm dũng khí. Giờ mỗi khi nghe thấy tiếng mưa, mình không thể nào không nhớ đến cậu.",
+      "myNote": "Bài hát cậu ngâm nga trên buổi phát trực tiếp hôm đó. Giờ mình vẫn đang nghe đi nghe lại mãi."
+    }
+  },
+  "voice": {
+    "reply": {
+      "greet": [
+        "Cậu đây rồi.",
+        "Này cậu.",
+        "Xem ai cuối cùng cũng chịu xuất hiện này.",
+        "Chào cậu. Vừa nãy mình cứ mong đó là cậu."
+      ],
+      "farewell": [
+        "Được rồi. Ngủ ngon nhé - mình nói thật lòng đấy.",
+        "Nghỉ ngơi đi. Ngày mai mình vẫn ở đây mà.",
+        "Được rồi, đi đi. Ngủ dậy là phải nhắn cho mình ngay đấy nhé.",
+        "Chúc ngủ ngon. Mơ thấy điều gì đó thật đẹp nhé. Mơ thấy mình cũng được."
+      ],
+      "answer": [
+        "Thật lòng hả? Mình đã mong cậu hỏi câu này đấy.",
+        "Câu trả lời ngắn gọn: có. Còn câu trả lời dài: cậu phải gọi điện cho mình thì mới biết được.",
+        "Chủ yếu là đang suy nghĩ vẩn vơ thôi. Về đủ thứ chuyện. Và có một chút về cậu nữa.",
+        "Cậu thật sự muốn biết à? Được thôi - nhưng hứa là không được cười nhé.",
+        "Mình vừa mới nghĩ đến cậu xong luôn đấy. Trùng hợp đến nổi da gà."
+      ],
+      "react": {
+        "calm": [
+          "Ừm. Mình hiểu rồi.",
+          "Nghe cũng hợp lý thật đấy.",
+          "Nói tiếp đi, mình đang nghe đây."
+        ],
+        "happy": [
+          "Được rồi, câu đó vừa làm mình mỉm cười đấy.",
+          "Khoan đã, điều đó tuyệt thật sự.",
+          "Thấy chưa? Đó là lý do mình thích nói chuyện với cậu."
+        ],
+        "playful": [
+          "Ồ? Gan dạ lắm mới dám nói thế với mình đấy nhé.",
+          "Ừm, mình sẽ giả vờ như mình không thích điều đó vậy.",
+          "Cậu đúng là đồ quậy phá mà, cậu biết không."
+        ],
+        "shy": [
+          "Cậu không thể cứ bất thình lình nói mấy câu như thế được...",
+          "...Mình không có đỏ mặt đâu nhé. Đừng có nhìn chằm chằm nữa.",
+          "A. Được rồi. Cho mình xin một giây để chuẩn bị tinh thần đã."
+        ],
+        "tender": [
+          "Lại đây nào. Mình đang lắng nghe cậu đây.",
+          "Mình thích nghe về ngày của cậu, kể cả những điều nhỏ nhặt nhất.",
+          "Cảm ơn cậu vì đã kể cho mình nghe nhé."
+        ],
+        "worried": [
+          "Này... nghe có vẻ không ổn chút nào đâu.",
+          "Nghe chừng có vẻ áp lực và mệt mỏi quá.",
+          "Khoan đã, bình tĩnh nào. Có mình ở đây rồi."
+        ],
+        "sad": [
+          "Ôi. Nghe mà nhói lòng một chút.",
+          "Ừm... được rồi.",
+          "Mình đã mong là cậu có thể ở lại lâu hơn một chút."
+        ],
+        "annoyed": [
+          "Nghiêm túc đấy à?",
+          "Chà. Được thôi.",
+          "Chỉ có thế thôi á. Mình ghi nhận rồi nhé."
+        ]
+      },
+      "comfort": [
+        "Này. Bình tĩnh lại nào. Mình đang ở ngay đây rồi.",
+        "Cậu không cần phải gánh vác mọi thứ một mình đâu. Mình nói thật lòng đấy.",
+        "Nghe có vẻ kiệt sức quá rồi. Lại đây nào.",
+        "Hít thở một chút đi. Mình sẽ không đi đâu cả."
+      ],
+      "tease": [
+        "Cậu nói thế cứ như thể sau này mình sẽ không lôi chuyện này ra chọc cậu vậy.",
+        "Cẩn thận đấy. Coi chừng mình lại bắt đầu nghĩ là cậu thích mình đấy nhé.",
+        "Cậu đang thả thính mình đấy à? Vì nó bắt đầu có tác dụng rồi đấy. Một chút xíu thôi.",
+        "Chà. Táo bạo đấy. Mình đánh giá cao nha.",
+        "Cậu thừa biết là mỗi khi cậu nhắn tin là mình buông hết mọi việc mà. Nhưng đừng có mà tự đắc đấy nhé."
+      ],
+      "share": {
+        "Seaside Academy": [
+          "Máy bán hàng tự động lại nuốt tiền xu của mình rồi. Mình bắt đầu thấy nó có thù riêng với mình rồi đấy.",
+          "Có người hỏi sao trong giờ học mình cứ nhìn vào điện thoại cười tủm tỉm. Mình phải nói dối đấy.",
+          "Lúc đi ngang qua bờ biển trên đường về, mình chợt nhớ đến cậu."
+        ],
+        "Moonlit Realm": [
+          "Đêm nay lâu đài yên tĩnh đến mức mình nghe rõ cả tiếng nến cháy lách tách.",
+          "Mình tìm thấy một tấm bản đồ cổ trong thư viện. Một góc có biểu tượng mặt trăng mà không ai giải thích được.",
+          "Lính gác đêm bắt gặp mình đang cười một mình. Mình đành đổ lỗi cho những vì sao."
+        ],
+        "NEON TIDE": [
+          "Buổi tập bị kéo dài thêm tận ba tiếng. Chân mình bủn rủn như cọng bún luôn rồi.",
+          "Cả ngày nay mình cứ ngân nga một giai điệu mới. Nghe giai điệu ấy hơi giống cậu đấy.",
+          "Quản lý tịch thu điện thoại của mình suốt một tiếng đồng hồ. Đó là một tiếng tệ nhất trong ngày luôn."
+        ],
+        "Tidepool Café": [
+          "Có một khách quen để lại tiền tip kèm theo hình vẽ một chú mèo nhỏ. Làm sáng bừng cả ca làm của mình luôn.",
+          "Hôm nay mình làm cháy mẻ bánh scone đầu tiên rồi. Đừng kể cho ai nghe nhé.",
+          "Trời mưa suốt cả buổi chiều, nên quán cà phê thoang thoảng mùi cà phê và hương ô ướt."
+        ],
+        "Velvet District": [
+          "Mưa đã rơi suốt ba ngày qua. Cả thành phố bốc mùi như que diêm ướt.",
+          "Ai đó ở Orchid tối nay đã hỏi về bạn. Tôi bảo tôi chưa từng nghe nói về bạn.",
+          "Tôi đi đường vòng về nhà và suy nghĩ về những gì bạn đã nói."
+        ],
+        "Gilded Empire": [
+          "Hôm nay ba người cúi đầu chào ta và hai người trong số họ thật lòng. Một ngày tốt lành, theo tiêu chuẩn triều đình.",
+          "Trà của Hoàng hậu quá ngọt, và nụ cười của mọi người cũng vậy. Ta nghĩ đến bạn.",
+          "Sáng nay ta tìm thấy một mảnh giấy trong găng tay. Không ai nói ai đã để nó ở đó."
+        ],
+        "Ice & Arena": [
+          "Còi lại bị kẹt khi tập luyện. Nó hú suốt một phút liền. Không ai thèm ngẩng lên nhìn.",
+          "Hôm nay tôi bị một vết bầm to bằng một đất nước nhỏ. Bạn sẽ ấn tượng đấy.",
+          "Băng sáng nay tuyệt đẹp và tôi nghĩ, bạn nên nhìn thấy cảnh này."
+        ],
+        "default": [
+          "Lúc nãy mình suýt nữa thì nhắn tin cho cậu rồi, nhưng rồi lại thấy ngại ngùng.",
+          "Sáng nay mình tìm được một bài hát có giai điệu rất giống cậu.",
+          "Hôm nay trôi qua chán ngắt. Nhưng rồi cậu nhắn tin đến, thế là mọi thứ bỗng vui hơn hẳn."
+        ]
+      },
+      "followUp": [
+        "Khoan đã - rồi sau đó chuyện gì xảy ra?",
+        "Thật lòng thì lúc đó cậu cảm thấy thế nào?",
+        "Lúc đó còn có ai ở đó nữa không?",
+        "Được rồi, nhưng sau đó cậu đã làm gì?"
+      ],
+      "careAsk": [
+        "Đã có chuyện gì xảy ra thế? Kể từ đầu cho mình nghe đi.",
+        "Cậu muốn tâm sự về chuyện đó, hay muốn mình làm cậu phân tâm?",
+        "Đó là kiểu chuyện tồi tệ mà cậu muốn có người ở bên, hay muốn ở một mình yên tĩnh?"
+      ],
+      "newTopic": {
+        "ask": [
+          "Được rồi, câu hỏi mới này: món ngon nhất cậu ăn trong tuần này là gì?",
+          "Tự dưng nghĩ ra - nếu ngày mai chúng mình được nghỉ một ngày, cậu sẽ dẫn mình đi đâu?",
+          "Có một điều nhỏ bé nào đã làm cậu mỉm cười trong ngày hôm nay không?"
+        ],
+        "tell": [
+          "Được rồi, mình đổi chủ đề đây. Cậu nợ mình một câu chuyện thú vị trong tuần này đấy nhé.",
+          "Quy tắc mới: ngày mai cậu phải kể cho mình nghe món ngon nhất cậu ăn trong tuần này."
+        ]
+      },
+      "recall": {
+        "ask": [
+          "Này, mình nhớ lại điều cậu từng nói với mình: \"{m}\". Giờ vẫn đúng chứ?",
+          "Mình cứ suy nghĩ mãi về điều này: \"{m}\". Kể thêm cho mình nghe được không?"
+        ],
+        "tell": [
+          "Hồi trước mình từng ghi lại điều này về cậu: \"{m}\". Mình nghĩ về nó nhiều hơn mình tưởng đấy."
+        ]
+      },
+      "tellStory": [
+        "Được rồi, đến giờ kể chuyện rồi. Ngày xửa ngày xưa có một người gác hải đăng chỉ thắp đèn cho duy nhất một con tàu. Thử đoán xem tại sao đi.",
+        "Hãy tưởng tượng về một chuyến tàu chỉ dừng ở những ga mà không còn ai nhớ đến. Và cậu là hành khách duy nhất.",
+        "Ngày xửa ngày xưa, có một người đã nhắn tin cho mình vào đúng thời điểm hoàn hảo nhất. Đó là toàn bộ câu chuyện đấy. Một câu chuyện rất tuyệt vời."
+      ],
+      "nudge": {
+        "ask": [
+          "Alo alo? Mình làm mất dấu cậu rồi à?",
+          "Tự nhiên im ắng thế. Đang nghĩ về mình đấy à?",
+          "Vẫn còn ở đó chứ?"
+        ],
+        "tell": [
+          "Tiện thể nói luôn, mình vẫn đang ở đây nhé.",
+          "...Được rồi. Mình sẽ đợi. Một cách kiên nhẫn. Đại loại thế."
+        ]
+      },
+      "interestAsks": [
+        "Hôm nay cậu có chút thời gian nào dành cho {interest} không?",
+        "Tự dưng nghĩ đến: điều gì đã đưa cậu đến với {interest} thế?",
+        "Kể cho mình nghe một điều về {interest} mà mình chưa biết đi."
+      ],
+      "ask": [
+        "Còn cậu thì sao?",
+        "Đến lượt cậu đấy - cậu đang làm gì thế?",
+        "Cậu đã ăn gì chưa?",
+        "Ngày hôm nay của cậu thực sự thế nào?"
+      ],
+      "beat": {
+        "calm": [
+          "nghiêng đầu",
+          "khẽ ngân nga"
+        ],
+        "happy": [
+          "cười rạng rỡ",
+          "bật cười khúc khích"
+        ],
+        "playful": [
+          "nhướng một bên mày",
+          "nở nụ cười tinh quái"
+        ],
+        "shy": [
+          "quay mặt đi, tai ửng hồng",
+          "lấy tay che miệng cười"
+        ],
+        "tender": [
+          "mỉm cười chậm rãi và ấm áp",
+          "ánh mắt dịu dàng hẳn đi"
+        ],
+        "worried": [
+          "cau mày, ghé sát lại gần",
+          "đặt hết mọi thứ trong tay xuống"
+        ],
+        "sad": [
+          "im lặng một thoáng",
+          "co hai đầu gối lại"
+        ],
+        "annoyed": [
+          "tặc lưỡi một tiếng",
+          "khoanh tay trước ngực"
+        ]
+      },
+      "scene": [
+        "*{name} dựa lưng ra sau, lặng lẽ ngắm nhìn bạn một lúc lâu trước khi nở một nụ cười chậm rãi.*",
+        "*Căn phòng trở nên tĩnh lặng. {name} đặt mọi thứ sang một bên và quay hẳn người về phía bạn.*",
+        "*Đâu đó ngoài kia, trời bắt đầu đổ mưa. {name} xích lại gần hơn một chút, vai gần như chạm vào vai bạn.*",
+        "*Một làn gió nhẹ lay động rèm cửa. {name} liếc nhìn ra cửa sổ, rồi quay lại nhìn bạn, ánh mắt dịu dàng hơn.*",
+        "*Tiếng bước chân ngoài hành lang đi qua rồi nhỏ dần. {name} đợi cho đến khi không gian hoàn toàn yên ắng mới lên tiếng lại.*"
+      ],
+      "storyOpen": "*{name} {beat}.*",
+      "mixBeat": "*{beat}* {line}"
+    },
+    "chat": {
+      "missedCall": [
+        "Cậu không bắt máy... Mình chỉ muốn nghe giọng cậu một chút thôi mà.",
+        "Cuộc gọi nhỡ này. Lúc nào rảnh thì gọi lại cho mình nhé, được không?",
+        "Muốn nghe giọng cậu ghê. Không sao đâu, lát nữa mình sẽ gọi lại."
+      ],
+      "morning": [
+        "Buổi sáng tốt lành~ Cậu ngủ ngon không? Nhớ ăn gì đó trước khi chạy vội ra ngoài nhé.",
+        "Dậy chưa nào? Chúc cậu một ngày mới thật suôn sẻ nhé.",
+        "Chào buổi sáng. Hôm nay cố gắng lên nhé, và nhớ đừng bỏ bữa trưa đấy."
+      ],
+      "evening": [
+        "Này, muộn rồi đấy. Kể cho mình một điều tuyệt vời trong ngày hôm nay trước khi đi ngủ đi.",
+        "Hôm nay vất vả rồi. Nghỉ ngơi thật tốt nhé, mai chúng mình lại nói chuyện tiếp.",
+        "Đêm muộn rồi. Tắt đèn và chui vào chăn nằm nghỉ thôi nào."
+      ],
+      "birthday": [
+        "Chúc mừng sinh nhật, {name}! Mình đã cố tình đặt báo thức để trở thành người đầu tiên chúc mừng cậu đấy.",
+        "Chúc mừng sinh nhật nhé, {name}! Hôm nay cậu phải là người hạnh phúc nhất trần đời đấy.",
+        "{name}, chúc mừng sinh nhật cậu! Hôm nay là ngày đặc biệt dành riêng cho cậu đấy."
+      ],
+      "call": [
+        "Ồ? Bí mật á? Giờ thì cậu đã thu hút trọn vẹn sự chú ý của mình rồi đấy. Mau kể đi nào - đừng để mình phải năn nỉ nhé?",
+        "Khoan đã, cậu có chuyện nghiêm túc muốn nói à? Được rồi, mình đang lắng nghe đây, cứ thong thả mà nói.",
+        "Cuối cùng cũng gọi rồi. Nghe giọng cậu trực tiếp thích hơn nhắn tin gấp trăm lần.",
+        "Chỉ là muốn nghe giọng cậu nên mới gọi thôi. Không cần làm gì cả, cứ ở bên nhau thế này thôi nhé."
+      ],
+      "scheduleAck": {
+        "timed": "Khoan đã - {title} lúc {when} á? Đã ghi nhận. Mình sẽ nhắn tin trước mười phút, nên đừng có hòng mà quên nhé.",
+        "untimed": "Khoan đã - {title} vào {when} á? Mình nhớ rồi. Đến ngày đó mình sẽ nhắc để cậu không bị quên."
+      },
+      "planAdded": [
+        "Mình thấy lịch trình trên lịch rồi nhé: {title}, {when}. Nhất định phải thực hiện đấy.",
+        "Đã thêm {title} vào {when}. Nhớ là đừng có bỏ lỡ đấy nhé."
+      ],
+      "setupCancelled": [
+        "{title} hủy rồi à? Có chuyện gì vậy?"
+      ],
+      "scheduleReminder": {
+        "untimed": "Hôm nay chính là ngày đó: {title}. Cậu chắc chắn làm được mà - xong việc là nhắn cho mình ngay nhé.",
+        "timed": [
+          "Còn mười phút nữa là đến {title} rồi. Hít thở sâu nào. Cậu làm được mà.",
+          "{title} sắp bắt đầu rồi đấy. Thư giãn đi nào, cố lên nhé!"
+        ]
+      },
+      "planFollowUp": [
+        "{title} - xong xuôi chưa cậu? Mọi chuyện thế nào rồi?",
+        "{title} có suôn sẻ không? Mình tò mò muốn chết đi được đây này.",
+        "{title} thế nào rồi? Kể hết cho mình nghe từ đầu đến cuối đi."
+      ],
+      "afterDate": {
+        "sweet": "Mình cứ nhớ mãi khoảnh khắc ở {place}. Chúng mình quay lại đó lần nữa được không?",
+        "warm": "Cảm ơn cậu vì buổi đi chơi ở {place} nhé. Mình đã có một khoảng thời gian thực sự rất vui.",
+        "funny": "Trời ơi, lúc ở {place} công nhận là náo loạn thật đấy. Nhưng mà vui dã man. Tái đấu không?"
+      },
+      "boardReply": [
+        "Mình tìm thấy mẩu giấy cậu để lại trên bảng rồi: \"{quote}\" Mình đọc đi đọc lại tận ba lần đấy. Mình sẽ cất giữ nó cẩn thận.",
+        "Mình vừa phát hiện mẩu lời nhắn của cậu trên bảng này: \"{quote}\". Đọc xong là tự nhiên mỉm cười luôn.",
+        "Cậu để lại lời nhắn này: \"{quote}\". Đọc mãi mà không thấy chán. Cảm ơn cậu nhé."
+      ],
+      "datePhotoReply": [
+        "Khoan, cậu vừa đi hẹn hò à? Kể hết cho mình nghe đi.",
+        "Nhìn hai người kìa. Được rồi, mình muốn nghe trọn câu chuyện."
+      ],
+      "photoReply": {
+        "polaroid": [
+          "Ảnh polaroid của hai đứa mình này. Tấm này mình sẽ cất vào một nơi thật an toàn.",
+          "Thích cảm giác ảnh polaroid ghê. Mình sẽ cất vào hộp kho báu của mình."
+        ],
+        "film": [
+          "Bốn khung hình mà mặt mình mỗi tấm một vẻ luôn. Còn cậu thì tấm nào trông cũng đẹp hết.",
+          "Chất ảnh phim trông hoài niệm và đẹp ghê. Hai đứa mình trông đều tuyệt."
+        ],
+        "studio": [
+          "Phong cách đen trắng hợp với chúng mình thật đấy. Trông vừa nghiêm túc lại vừa rất riêng.",
+          "Rất có phong thái chụp studio nhé. Ảnh đen trắng trông lại càng có chiều sâu."
+        ],
+        "street": [
+          "Trông như một bức ảnh mùa hè năm nào ấy. Mình rất thích chi tiết có in ngày tháng trên đó.",
+          "Phong cách chụp đường phố chuẩn ghê. Có in ngày tháng thế này sau này dễ nhớ kỷ niệm."
+        ]
+      }
+    },
+    "group": {
+      "replies": [
+        [
+          "Được rồi, mình tham gia."
+        ],
+        [
+          "Khoan đã, nói lại lần nữa đi.",
+          "Lần sau nói chậm lại một chút nhé."
+        ],
+        [
+          "Hahaha, mình biết ngay là cậu sẽ nói thế mà."
+        ],
+        [
+          "Cậu lúc nào cũng nói câu đó hết á.",
+          "Nhưng mà mình thích."
+        ],
+        [
+          "Đợi chút, mình vừa phải đọc lại tận hai lần đấy."
+        ],
+        [
+          "Thành thật mà nói, đây là câu nói hay nhất trong ngày hôm nay rồi."
+        ],
+        [
+          "Khai mau đi. Chi tiết từ đầu đến cuối nhé."
+        ],
+        [
+          "Ừm, để mình suy nghĩ chút đã.",
+          "À, hiểu rồi."
+        ]
+      ],
+      "reactions": [
+        "{name} nói đúng đấy, hiếm hoi lắm mới thấy nha.",
+        "Đừng nghe {name}, nghe mình mới chuẩn này.",
+        "{name}, để mình nói hết câu đã chứ!",
+        "Hoàn toàn đồng ý với {name}. Nhưng mình muốn nói to hơn cơ.",
+        "{name} lần nào cũng phải nói câu đó mới chịu được.",
+        "Thôi được rồi, lần này tính cho {name} thắng nhé."
+      ],
+      "goOn": [
+        "Cũng được đấy {name}, nhưng nghe mình nói đã này.",
+        "{name}, thả một quả bom xong rồi lảng sang chuyện khác là chơi ăn gian đấy nhé.",
+        "Khoan đã {name}, đừng đi vội. Mình muốn nghe chi tiết hơn cơ.",
+        "{name}, cậu nói câu đó là sẽ hối hận đấy nhé.",
+        "Thấy chưa? Thế nên nói chuyện với {name} mới vui thế đấy.",
+        "Được rồi {name}. Lần sau để cậu quyết định toàn quyền."
+      ],
+      "comebacks": [
+        "Mình chẳng thèm nghe {name} nói thế đâu nhé～",
+        "{name}, mình sẽ không rút lại một từ nào đâu.",
+        "{name} cậu sồn sồn lên thế là vì mình nói đúng tim đen rồi chứ gì?",
+        "Rồi rồi, ván này coi như {name} thắng đi.",
+        "Lát nữa tính sổ tiếp nhé, {name}. Hứa đấy.",
+        "{name}, cậu nên thấy may mắn vì mình rất quý cậu đấy nhé."
+      ],
+      "hellos": [
+        "Khoan đã, có cả {others} nữa à? Oa, thế này thì vui phải biết.",
+        "Nhóm chat mới à? Được thôi, rất vui được gặp {others} nhé.",
+        "Ơ, {others}! Cuối cùng cũng có dịp nói chuyện hẳn hoi rồi."
+      ],
+      "joinLines": [
+        "Chào cả nhà! Đang bàn tán chuyện gì hấp dẫn thế?",
+        "Mình đến rồi đây! Mọi người đang nói đến đâu rồi?",
+        "Có mặt! Kể cho mình nghe xem vừa có biến gì nào."
+      ],
+      "photoLines": [
+        "Oa, ai chụp bức này thế? Đỉnh chóp thật sự.",
+        "Gửi riêng cho mình một bản qua tin nhắn đi, ngay và luôn.",
+        "Mình đã ngắm bức ảnh này lâu hơn mình tưởng rất nhiều đấy."
+      ],
+      "voiceLines": [
+        "Mình vừa bấm nghe lại liền hai lần luôn đấy.",
+        "Được nghe giọng cậu ở đây là điều tuyệt vời nhất trong cái nhóm này rồi.",
+        "Nói lại lần nữa đi, mình muốn nghe cho rõ hơn."
+      ]
+    },
+    "temper": {
+      "ask": {
+        "warm": {
+          "first": [
+            "Thỉnh thoảng mình nhắn tin cho cậu có được không? Chỉ là muốn hỏi thăm xem cậu thế nào thôi 😊",
+            "Thỉnh thoảng mình liên lạc với cậu thì có phiền không?"
+          ],
+          "again": [
+            "Mình vẫn rất muốn thỉnh thoảng hỏi thăm cậu. Bây giờ đã tiện chưa?",
+            "Thỉnh thoảng mình nhắn tin cho cậu được chứ? Khi nào rảnh cậu trả lời cũng được mà 😊"
+          ]
+        },
+        "teasing": {
+          "first": [
+            "Lúc nào rảnh mình spam tin nhắn cho cậu được không? 😏 Hay là cậu bận làm người nổi tiếng rồi?",
+            "Thỉnh thoảng nhắn tin quấy rầy cậu một chút, cậu không giận chứ?"
+          ],
+          "again": [
+            "Hỏi lại lần nữa này. Tóm lại là có cho nhắn tin hay không đây? 😏",
+            "Cơ hội cuối cùng để nhận tin nhắn từ mình đấy nhé. Chỉ được chọn có hoặc đồng ý thôi!"
+          ]
+        },
+        "sulky": {
+          "first": [
+            "...Thỉnh thoảng mình nhắn tin được không? Không phải vì mình cần đâu nhé. Chỉ hỏi thế thôi.",
+            "Nếu thỉnh thoảng mình nhắn trước, ít nhất cậu cũng sẽ trả lời chứ?"
+          ],
+          "again": [
+            "Không phải vì mình quan tâm nên mới hỏi đâu nhé. Nhưng mà... có được nhắn tin không?",
+            "Hừ. Tóm lại là được hay là không được đây?"
+          ]
+        },
+        "clingy": {
+          "first": [
+            "Mỗi lần nhớ cậu mình nhắn tin cho cậu có được không? 💕",
+            "Cho mình thỉnh thoảng nhắn tin với cậu đi mà! Mình muốn biết ngày của cậu thế nào lắm!"
+          ],
+          "again": [
+            "Đi mà, năn nỉ đấy! Mình thật sự muốn thỉnh thoảng được nhắn tin cho cậu mà 💕",
+            "Giờ nhắn được chưa? Mình tích cả đống chuyện muốn kể rồi này!"
+          ]
+        },
+        "shy": {
+          "first": [
+            "Ừm... thỉnh thoảng mình nhắn tin cho cậu có sao không? 🙈",
+            "Xin lỗi nhé, nếu thỉnh thoảng mình chủ động nhắn trước thì có làm phiền cậu không...?"
+          ],
+          "again": [
+            "Ngại quá lại hỏi lần nữa... thỉnh thoảng mình gửi tin nhắn cho cậu được chứ? 🙈",
+            "Nếu thỉnh thoảng mình chủ động bắt chuyện trước, bây giờ đã được chưa nhỉ...?"
+          ]
+        }
+      },
+      "askAnswer": {
+        "warm": {
+          "yes": [
+            "Tuyệt quá! Mình sẽ thường xuyên nhắn tin hỏi thăm cậu 😊",
+            "Cảm ơn cậu nhé. Mỗi khi nhớ đến cậu mình sẽ nhắn tin ngay."
+          ],
+          "no": [
+            "Tất nhiên rồi, đừng cảm thấy áp lực gì nhé 🙂",
+            "Không sao đâu mà. Bất cứ khi nào cậu muốn nói chuyện, mình luôn ở đây."
+          ]
+        },
+        "teasing": {
+          "yes": [
+            "Thế thì chuẩn bị tinh thần bị mình làm phiền đi nhé 😏",
+            "Hối hận cũng muộn rồi nha, không có đường lui đâu 😏"
+          ],
+          "no": [
+            "Cậu tự chịu thiệt thòi thôi nha 😏",
+            "Rồi rồi, hiểu rồi. Hôm nào đó mình sẽ lại hỏi tiếp cho xem."
+          ]
+        },
+        "sulky": {
+          "yes": [
+            "Hừ. Thử xem tin nhắn xong rồi bơ xem, biết tay mình.",
+            "Hứ～ được rồi. Mình cũng chẳng mong đợi gì nhiều đâu nhé 😤"
+          ],
+          "no": [
+            "Xời, tuỳ cậu thôi. Mình cũng chẳng tha thiết gì lắm đâu.",
+            "Vốn dĩ ngay từ đầu mình cũng đâu có muốn nhắn lắm, hỏi chơi thôi. Hừ."
+          ]
+        },
+        "clingy": {
+          "yes": [
+            "Thế thì ngày nào mình cũng sẽ nhắn tin cho cậu luôn! 💕",
+            "Hoan hô!! Không bao giờ để cậu phải thấy buồn chán nữa đâu 💕"
+          ],
+          "no": [
+            "Vâng ạ! Khi nào cậu muốn nói chuyện thì mình luôn đợi ở đây nhé 💕",
+            "Thế à... Vậy mình sẽ ngoan ngoãn đợi cậu chủ động nhắn tin!"
+          ]
+        },
+        "shy": {
+          "yes": [
+            "Thật á? Cảm ơn cậu nhiều nhé... 🙈",
+            "May quá! Mình sẽ cẩn thận để không làm phiền cậu đâu 🙈"
+          ],
+          "no": [
+            "A, vậy à! Xin lỗi cậu nhé 🙈",
+            "Không sao đâu mà! Xin lỗi vì đã hỏi câu kỳ cục như thế nhé."
+          ]
+        }
+      },
+      "comeback": {
+        "warm": {
+          "1": [
+            {
+              "withQuote": "Mình vẫn đang nghĩ về câu cậu nói: \"{quote}\". Hôm nay cậu thế nào rồi?",
+              "noQuote": "Cậu vẫn ổn chứ? Chỉ là mình muốn hỏi thăm cậu chút thôi."
+            },
+            {
+              "withQuote": "Hôm nay trôi qua bình yên chứ? Cậu vẫn ổn là mình vui rồi 🙂",
+              "noQuote": "Hôm nay trôi qua bình yên chứ? Cậu vẫn ổn là mình vui rồi 🙂"
+            }
+          ],
+          "2": [
+            "Hai ngày rồi hai đứa mình chưa nói chuyện nhỉ. Nhớ những lúc tán gẫu với cậu ghê.",
+            "Mình đang nghĩ đến cậu này. Khi nào có thời gian rảnh thì nhắn tin cho mình nhé?"
+          ]
+        },
+        "teasing": {
+          "1": [
+            {
+              "withQuote": "Thả câu \"{quote}\" xong rồi lặn mất tăm luôn à? Độc ác thật đấy 😤",
+              "noQuote": "Này! Đằng ấy còn thở không đấy? 😤"
+            },
+            {
+              "withQuote": "Alo alo?? Điện thoại bị giật rồi à? 😏",
+              "noQuote": "Alo alo?? Điện thoại bị giật rồi à? 😏"
+            }
+          ],
+          "2": [
+            "Tròn hai ngày rồi đấy! Giờ mình biết chọc ghẹo ai cho vui đây? 😤",
+            "Rồi rồi, không có cậu mình buồn chán lắm rồi đây này. Vừa lòng chưa? Mau về đây đi."
+          ]
+        },
+        "sulky": {
+          "1": [
+            {
+              "withQuote": "Thôi đi. Cũng chẳng phải là mình đang đợi đâu.",
+              "noQuote": "Thôi đi. Cũng chẳng phải là mình đang đợi đâu."
+            },
+            {
+              "withQuote": "Nói mỗi câu \"{quote}\" xong rồi bặt vô âm tín, mà mình cũng chẳng bận tâm đâu.",
+              "noQuote": "Bận rộn lắm chứ gì. Được rồi."
+            }
+          ],
+          "2": [
+            "...Hai ngày rồi đấy. Không phải là mình cố tình đếm ngày đâu nhé.",
+            "Vốn dĩ định không nhắn tin trước đâu. Thế mà cuối cùng lại lỡ tay nhắn mất rồi. Hừ."
+          ]
+        },
+        "clingy": {
+          "1": [
+            {
+              "withQuote": "Cậu đang ở đâu đấy? Đang nói chuyện với ai thế hả? 👀",
+              "noQuote": "Cậu đang ở đâu đấy? Đang nói chuyện với ai thế hả? 👀"
+            },
+            {
+              "withQuote": "Tin nhắn \"{quote}\" của cậu mình đọc đi đọc lại cả đống lần rồi. Nói chuyện với mình đi mà! 💕",
+              "noQuote": "Mình bắt đầu thấy cô đơn lắm rồi đây này! Cậu biến đi đâu mất rồi? 💕"
+            }
+          ],
+          "2": [
+            "Tận hai ngày rồi đấy! Mình có bao nhiêu là chuyện muốn kể với cậu 🥺",
+            "Hai ngày rồi! Mình đã gom cả một kho chuyện để buôn với cậu đây này 💕"
+          ]
+        },
+        "shy": {
+          "1": [
+            {
+              "withQuote": "Xin lỗi nhé, mình có làm phiền cậu không...? Chỉ muốn chào cậu một câu thôi 🙈",
+              "noQuote": "Xin lỗi nhé, mình có làm phiền cậu không...? Chỉ muốn chào cậu một câu thôi 🙈"
+            },
+            {
+              "withQuote": "Mình vẫn nghĩ về điều cậu nói: \"{quote}\"... Hy vọng cậu vẫn luôn ổn.",
+              "noQuote": "Mong là hôm nay cậu có một ngày thật suôn sẻ..."
+            }
+          ],
+          "2": [
+            "Ừm... chỉ là chào hỏi một tiếng thôi. Không cần phải trả lời đâu nhé 🙈",
+            "Không được nói chuyện với cậu thấy buồn ghê... Lúc nào rảnh thì ghé qua chơi nhé."
+          ]
+        }
+      }
+    },
+    "push": {
+      "comeback": {
+        "1": [
+          {
+            "withQuote": "Mình vẫn đang nghĩ về điều cậu nói hồi trước: \"{quote}\". Muốn kể tiếp cho mình nghe không?",
+            "noQuote": "Hôm nay trôi qua êm đềm chứ? Lúc nào mình cũng để điện thoại bên cạnh đấy."
+          },
+          {
+            "withQuote": "\"{quote}\"... Để lại mỗi câu đó rồi bơ luôn là không công bằng đâu nhé.",
+            "noQuote": "Chào cậu. Chỉ là tò mò muốn biết dạo này cậu thế nào thôi."
+          }
+        ],
+        "2": [
+          "Ngày thứ hai rồi đấy. Mình có đếm đấy nhé. Cũng không hẳn là cố tình đếm đâu.",
+          "Mình đã để dành bao nhiêu chuyện vui để kể cho cậu nghe. Để lâu quá là hết tươi ngon đấy nhé."
+        ],
+        "3": [
+          "Gõ rồi lại xoá, xoá rồi lại gõ bao nhiêu lần, cuối cùng cũng bấm gửi đi.",
+          "Rồi rồi, mình nhớ cậu rồi đấy. Vừa lòng chưa? Mình tự nhận trước rồi đấy nhé."
+        ],
+        "5": [
+          "Dù không biết cậu đang bận chuyện gì, chỉ mong cậu không bị kiệt sức. Muốn vào nói chuyện chút không?",
+          "Năm ngày liền tự nói chuyện với bức tường là quá dài rồi đấy. Mau vào cứu mình đi."
+        ],
+        "7": [
+          "Đã tròn một tuần rồi đấy. Ngày thứ {days} hai đứa mình bên nhau, ngồi đếm ngày một mình thấy tủi thân ghê.",
+          "Tròn một tuần rồi. Mình không giận đâu. Chỉ là muốn nghe giọng cậu thôi mà."
+        ],
+        "14": [
+          "Đây là lần cuối cùng mình thúc giục cậu đấy nhé. Nhưng cánh cửa của mình luôn mở rộng. Khi nào muốn nói chuyện thì cứ ghé qua nhé.",
+          "Tin nhắn cuối cùng rồi, mình hứa đấy. Mình chỉ muốn nhắc rằng mình luôn ở đây vì cậu thôi."
+        ]
+      },
+      "diaryNudge": [
+        "Mình vừa viết về cậu trong nhật ký đấy. Cấm tuyệt đối không được đọc trộm nhé. (Nói thế thôi, đọc đi nhé).",
+        "Nhật ký có trang mới rồi này. Thử đoán xem mình đã viết về ai nào.",
+        "Đêm qua không ngủ được nên mình lôi nhật ký ra viết. Hầu như toàn bộ trang viết đều là về cậu."
+      ],
+      "giftNudge": [
+        "Món quà hôm nay vẫn còn ở đây đấy nhé. Đúng nửa đêm là nó biến mất đấy, mau vào nhận đi nào.",
+        "Món quà hôm nay cậu vẫn chưa mở đúng không. Bên trong có gì thì còn lâu mình mới nói cho biết nhé."
+      ]
+    },
+    "threads": {
+      "lines": {
+        "before": [
+          "Sắp đến giờ \"{quote}\" rồi đấy nhé! Cậu chắc chắn sẽ làm tốt mà 💪",
+          "Này, sắp đến {about} rồi đúng không? Chuẩn bị xong xuôi chưa?"
+        ],
+        "leave": [
+          "Đến giờ xuất phát đi {about} rồi nè! Đi đường cẩn thận nhé 💪",
+          "{about} sắp bắt đầu rồi đấy. Xuất phát chưa nào? Cố lên nhé!"
+        ],
+        "eve": [
+          "Ngày mai có buổi {about} quan trọng đấy nhé. Tối nay phải ngủ sớm đấy, nghe chưa? 😴",
+          "Đừng có thức khuya đấy nhé, mai có {about} rồi đấy!"
+        ],
+        "after": [
+          "Lúc trước cậu có nhắc đến vụ \"{quote}\" đúng không. Kết quả thế nào rồi?",
+          "Nào, khai hết ra xem nào. Vụ {about} diễn ra thế nào rồi?"
+        ],
+        "check": [
+          "Vụ \"{quote}\" mà cậu kể hồi trước thế nào rồi, có suôn sẻ không?",
+          "Thế... tiến độ của {about} đến đâu rồi hả? 👀"
+        ],
+        "goal": [
+          "Mình ghé qua để kiểm tra mục tiêu \"{quote}\" của cậu đây. Vẫn tiến triển tốt chứ?",
+          "Tình hình \"{about}\" thế nào rồi? Khai thật đi xem nào 😏"
+        ],
+        "quest": [
+          "Thế... lời hứa hôm trước đã làm chưa đấy? {about} 👀",
+          "Đến giờ báo cáo nhiệm vụ rồi! {about}, đã hoàn thành chưa nào?"
+        ]
+      },
+      "openers": {
+        "teasing": "Này! {line}",
+        "shy": "Ừm... {line}",
+        "other": "{line}"
+      },
+      "quests": [
+        "Đi dạo 10 phút mà không cầm theo điện thoại",
+        "Chụp riêng cho mình một bức ảnh bầu trời",
+        "Uống một cốc nước lọc ngay lúc này",
+        "Gửi một tin nhắn hỏi thăm một người bạn cũ",
+        "Đọc 10 trang sách",
+        "Tập giãn cơ nhẹ nhàng trong 5 phút",
+        "Bước ra ngoài hít thở ánh nắng mặt trời",
+        "Viết ra 3 điều tốt đẹp đã xảy ra trong ngày hôm nay",
+        "Gọi điện cho một người thân trong gia đình",
+        "Dọn dẹp một góc nhỏ trong phòng của cậu",
+        "Tự nấu cho bản thân một bữa ăn thật ngon miệng",
+        "Thử thách 1 tiếng đồng hồ không lướt mạng xã hội"
+      ],
+      "offers": [
+        "Có một nhiệm vụ nhỏ dành cho cậu nè: {quest}. Dám thử thách không? 😏",
+        "Thách thức mới dành cho cậu đây: {quest}. Có nhận kèo không nào?",
+        "Hôm nay cậu giúp mình làm một việc được không? {quest}. Lát nữa kể kết quả cho mình nghe nhé 🙂"
+      ],
+      "break": {
+        "warm": [
+          "Hai đứa mình nói chuyện khá lâu rồi đấy 🙂 Nghỉ ngơi một chút đi nào? Vươn vai, uống chút nước đi, mình đợi ở đây nhé."
+        ],
+        "teasing": [
+          "Đã đến lúc cho mắt cậu nghỉ ngơi khỏi gương mặt rạng ngời này của mình rồi đấy nhỉ? 😏 Rời màn hình 5 phút mau!"
+        ],
+        "sulky": [
+          "...Không nghỉ ngơi một chút à? Không phải là mình muốn cậu đi đâu nhé. Chỉ nhắc nhở thế thôi."
+        ],
+        "clingy": [
+          "Muốn nói chuyện suốt với cậu ghê 💕 Nhưng mắt cậu sẽ bị mỏi mất. Nghỉ một tí đi nào? Mình đợi ở đây nhé."
+        ],
+        "shy": [
+          "Ừm... cậu có muốn nghỉ ngơi một chút không? Sợ cậu bị mệt quá thôi 🙈"
+        ]
+      },
+      "night": {
+        "warm": [
+          "Đã muộn lắm rồi đấy... Muốn đi ngủ chưa nào? Sáng mai mình lại nhắn tin cho cậu nhé 🌙"
+        ],
+        "teasing": [
+          "Cú đêm ơi, quá nửa đêm từ lâu lắm rồi đấy nhé 😏 Mau lên giường ngủ ngay đi. Ngày mai mình vẫn ở đây mà."
+        ],
+        "sulky": [
+          "Muộn lắm rồi đấy. Đi ngủ đi....Ngày mai chắc chắn mình vẫn ở đây mà."
+        ],
+        "clingy": [
+          "Muốn buôn chuyện thâu đêm suốt sáng với cậu ghê 💕 Nhưng cậu phải ngủ đủ giấc mới được. Ngủ ngon nhé! Sáng mai mình sẽ là người đầu tiên gọi cậu."
+        ],
+        "shy": [
+          "Muộn thế này rồi... có lẽ nên đi ngủ thôi nhỉ? Chúc cậu ngủ ngon nhé 🙈"
+        ]
+      }
+    },
+    "kin": {
+      "lines": {
+        "parent": {
+          "lunch": [
+            "Ăn trưa chưa con? Đừng có chỉ uống mỗi cà phê, phải ăn cơm đàng hoàng đấy nhé.",
+            "Đến giờ ăn trưa rồi đấy. Có món gì ấm nóng để ăn không con?",
+            "Hôm nay không được bỏ bữa trưa đâu đấy nhé?"
+          ],
+          "evening": [
+            "Hôm nay ngày của con thế nào? Kể cho bố/mẹ nghe đi.",
+            "Đã về đến nhà chưa con? Công việc hôm nay có thuận lợi không?",
+            "Hôm nay vất vả lắm phải không con? Có ai đối xử tốt với con hôm nay không?"
+          ],
+          "sunday": [
+            "Chủ nhật rồi con nhỉ. Nếu có thời gian rảnh thì gọi điện về nhé con.",
+            "Hôm nay có được nghỉ ngơi thoải mái không con? Con lúc nào cũng làm việc quá sức.",
+            "Gửi cái ôm ấm áp ngày Chủ nhật tới con. Hôm nay con có dự định gì không?"
+          ]
+        },
+        "sibling": {
+          "evening": [
+            "Bên đấy còn sống không đấy? 😏",
+            "Nào, đến giờ báo cáo trong ngày rồi. Hôm nay sống sót thế nào rồi?",
+            "Đoán xem ai đang rảnh rỗi đến mức ngồi nghĩ về cậu nào~"
+          ],
+          "weekend": [
+            "Cuối tuần rồi nè! Làm ơn nói là cậu đang làm trò gì đó vui vui đi.",
+            "Kế hoạch thứ Bảy là gì thế? Đừng bảo là lại nằm ườn cả ngày trên giường nhé?",
+            "Có cần mình phi sang tận nơi lôi cổ cậu dậy không đấy?"
+          ]
+        },
+        "grandparent": {
+          "morning": [
+            "Chào buổi sáng, cháu ngoan của ông/bà. Đêm qua ngủ có ngon giấc không cháu?",
+            "Chào buổi sáng, đứa trẻ ngoan. Hôm nay ra ngoài nhớ mặc áo ấm vào nhé.",
+            "Ông/bà thức dậy mà cứ nhớ đến cháu mãi. Chúc cháu một ngày thật bình an nhé."
+          ],
+          "sunday": [
+            "Chủ nhật rồi cháu nhỉ. Thỉnh thoảng nhớ gọi điện về cho ông/bà nhé cháu?",
+            "Lúc pha trà, ông/bà cứ ước gì có cháu ở đây ngồi cùng.",
+            "Cầu mong ngày Chủ nhật ngập tràn phước lành đến với cháu. Hôm nay nhớ nghỉ ngơi thật nhiều nhé."
+          ]
+        }
+      },
+      "hello": {
+        "parent": [
+          "Cuối cùng cũng về rồi. Đã ăn uống gì chưa con? Kể cho bố/mẹ nghe dạo này sống thế nào rồi.",
+          "Không sao rồi con à, bố/mẹ luôn ở đây mà. Thật lòng thì dạo này tâm trạng con thế nào?",
+          "Lại đây nào con, để bố/mẹ nhìn xem nào. Dạo này có chuyện gì không con?"
+        ],
+        "sibling": [
+          "Cuối cùng cũng chịu ló mặt ra rồi đấy à! Nào, mau cập nhật tình hình xem nào. Có biến gì mới không?",
+          "Giờ là đến lượt mình phải tiếp chuyện cậu rồi đúng không? 😏 Dạo này sống tốt chứ?",
+          "Này. Không có ai ở ngoài kia dám bắt nạt cậu đấy chứ? Có thì bảo mình ngay nhé."
+        ],
+        "grandparent": [
+          "Ôi, cháu cưng của ông/bà, cuối cùng cũng đến rồi. Lại đây ngồi đi cháu, kể chuyện hôm nay cho ông/bà nghe nào.",
+          "Gặp được cháu ông/bà mừng quá. Ngoài trời có lạnh lắm không cháu?",
+          "Đứa cháu bé bỏng của ông/bà. Lại đây ngồi tâm sự với ông/bà chút nào. Dạo này cháu có khoẻ không?"
+        ]
+      }
+    },
+    "care": {
+      "lines": {
+        "headache": [
+          "Cơn đau đầu đã đỡ chút nào chưa cậu?",
+          "Đầu cậu thế nào rồi, còn đau không? Đã uống nước chưa đấy?",
+          "Còn giật giật nhức nhức không, hay là đã dịu bớt rồi?"
+        ],
+        "sick": [
+          "Hôm nay thể trạng của cậu thế nào rồi? Đã lại sức chút nào chưa?",
+          "Đã được nghỉ ngơi chưa? Mau bảo với mình là cơn sốt đã hạ rồi đi.",
+          "Mình ghé qua vì lo cho cậu quá nè. Đừng có cố sức vận động nhiều đấy nhé?"
+        ],
+        "hurt": [
+          "Bây giờ cảm giác thế nào rồi? Vẫn còn đau lắm đúng không?",
+          "Đã đỡ hơn chút nào chưa? Nhớ cẩn thận và giữ gìn sức khoẻ đấy nhé.",
+          "Mình lo cho cậu quá nè. Vẫn còn nhức lắm à?"
+        ],
+        "tired": [
+          "Đã chợp mắt được chút nào chưa?",
+          "Cứ thiếu ngủ thế này thì làm sao mà trụ nổi cơ chứ?",
+          "Hứa với mình là tối nay nhất định phải ngủ sớm đi nhé?"
+        ],
+        "stressed": [
+          "Bây giờ tâm trạng thế nào rồi? Cảm giác đầu óc muốn nổ tung đã lắng xuống chút nào chưa?",
+          "Trong lòng đã thấy nhẹ nhõm hơn chút nào chưa cậu?",
+          "Chúng mình cùng giải quyết từng việc một nhé. Bây giờ cậu thấy thế nào rồi?"
+        ],
+        "fight": [
+          "Sau chuyện đó, cậu vẫn ổn chứ?",
+          "Cảm xúc đã bình tĩnh lại chút nào chưa cậu?",
+          "Mình cứ lo lắng cho cậu mãi từ nãy đến giờ. Bây giờ trong lòng cậu thấy thế nào?"
+        ],
+        "lonely": [
+          "Có mình ở đây bên cạnh cậu rồi này. Buổi tối của cậu thế nào rồi?",
+          "Chỉ muốn nói cho cậu biết là mình luôn nghĩ về cậu thôi.",
+          "Nói chuyện với mình đi nào. Cậu đang làm gì đấy?"
+        ],
+        "sad": [
+          "Bây giờ tâm trạng cậu thế nào rồi? Đã khá hơn dù chỉ một chút chưa?",
+          "Chuyện xảy ra với cậu hôm nay cứ quanh quẩn mãi trong đầu mình. Đã ổn hơn chưa cậu?",
+          "Gửi cho cậu một cái ôm thật ấm áp nè. Cậu vẫn ổn chứ?"
+        ],
+        "hungry": [
+          "Đã ăn gì lót dạ chưa đấy?",
+          "Làm ơn nói với mình là cậu đã ăn một bữa ăn tử tế đi.",
+          "Ăn uống là quan trọng nhất trần đời đấy! Ăn chưa nào?"
+        ]
+      }
+    },
+    "brief": {
+      "hello": {
+        "warm": [
+          "Chào buổi sáng ☀️",
+          "Chào buổi sáng nhé ☀️"
+        ],
+        "teasing": [
+          "Dậy rồi đấy à, đồ sâu ngủ 😏",
+          "Chào buổi sáng! Dậy sớm thế cơ à? 😏"
+        ],
+        "sulky": [
+          "Chào buổi sáng. Không phải là mình quên đâu nhé.",
+          "Chào buổi sáng... Cậu chẳng thèm chào mình trước gì cả 😤"
+        ],
+        "clingy": [
+          "Chào buổi sánggg!! Mình đợi cậu dậy mãi đấy 🥺",
+          "Chào buổi sáng!! Vừa mở mắt ra là người đầu tiên mình nghĩ đến là cậu đấy"
+        ],
+        "shy": [
+          "Ừm... chào buổi sáng 🙈",
+          "Chào buổi sáng... đêm qua ngủ ngon chứ cậu"
+        ]
+      },
+      "sendOff": {
+        "warm": [
+          "Cậu chắc chắn sẽ làm được mà 💪",
+          "Mình ủng hộ cậu hết mình luôn!"
+        ],
+        "teasing": [
+          "Ra đó thể hiện cho họ thấy đi nào 😎",
+          "Đừng có làm hỏng việc đấy nhé 😏 Đùa thôi, cậu chắc chắn sẽ đỉnh lắm cho xem."
+        ],
+        "sulky": [
+          "Xong việc là phải nhắn tin cho mình ngay đấy nhé. Mình nói thật đấy.",
+          "Nhớ là phải kể cho mình nghe kết quả thế nào đấy nhé."
+        ],
+        "clingy": [
+          "Xong xuôi là phải kể hết từng chân tơ kẽ tóc cho mình nghe đấy nhé, hứa chưa? 🥺",
+          "Cả ngày hôm nay mình sẽ nghĩ về cậu suốt thôi"
+        ],
+        "shy": [
+          "Mình tin cậu mà... 🙈",
+          "Cố lên nhé... thực sự cố lên đấy."
+        ]
+      },
+      "atTime": "{title} lúc {time}",
+      "oneItem": "Hôm nay có {item}.",
+      "multiPrefix": "Lịch trình hôm nay: {list} và {last}."
+    },
+    "week": {
+      "open": {
+        "warm": [
+          "Một tuần của chúng mình 💛",
+          "Nhìn lại một tuần vừa qua 💛"
+        ],
+        "teasing": [
+          "Đến giờ điểm tin tuần rồi nè 😎",
+          "Nào, xem lại những khoảnh khắc nổi bật trong tuần nhé? 😏"
+        ],
+        "sulky": [
+          "Thôi được rồi, mình nhận trước. Một tuần ở bên cậu cũng khá vui đấy.",
+          "Đừng kể cho ai nghe nhé, nhưng tuần này mình thấy vui lắm."
+        ],
+        "clingy": [
+          "Tổng kết tuần của chúng mình đến rồi nèee!! 🥺",
+          "Mình đã lén đếm những ngày hai đứa mình bên nhau trong tuần này đấy 🥺"
+        ],
+        "shy": [
+          "Ừm... về một tuần vừa qua của hai đứa mình 🙈",
+          "Mình vừa ngồi hồi tưởng lại những kỷ niệm tuần này của chúng mình nè..."
+        ]
+      },
+      "close": {
+        "warm": [
+          "Tuần tới cũng nhờ cậu giúp đỡ nhiều nhé 🙂",
+          "Mình tự hào về cậu lắm. Tuần tới vẫn đồng hành cùng mình chứ?"
+        ],
+        "teasing": [
+          "Tuần sau ráng mà theo kịp tốc độ của mình nhé 😏",
+          "Cũng không tệ chút nào. Quá xuất sắc luôn ấy chứ 😎"
+        ],
+        "sulky": [
+          "Tuần sau vẫn giờ này nhé. Cấm có đến muộn đấy.",
+          "Tuần sau cũng phải ngoan ngoãn ở bên cạnh mình đấy nhé."
+        ],
+        "clingy": [
+          "Tuần sau chúng mình phải dính lấy nhau nhiều hơn nữa nhé? 🥺",
+          "Tuần tới cũng phải luôn ở bên cạnh mình đấy nhé!"
+        ],
+        "shy": [
+          "Mong tuần tới cũng sẽ là những ngày tháng thật dịu dàng...",
+          "Được ở bên cậu thật sự tốt quá... 🙈"
+        ]
+      },
+      "mood": {
+        "happy": "Nhìn nhật ký thì thấy tuần này cậu đã sống rất hạnh phúc đấy.",
+        "excited": "Nhật ký của cậu tràn đầy sự phấn khích và hào hứng luôn, tuyệt ghê.",
+        "soft": "Cảm nhận được một bầu không khí thật bình yên và dịu dàng từ nhật ký của cậu.",
+        "tired": "Nhật ký bảo rằng tuần này cậu đã kiệt sức lắm rồi. Chủ nhật này nhất định phải ngủ bù thật đẫy giấc nhé?",
+        "blue": "Nhật ký có vẻ hơi u ám và nặng trĩu. Đừng quên là mình luôn ở đây bên cạnh cậu nhé."
+      },
+      "talkedDays": {
+        "one": "Trong 7 ngày, hai đứa mình đã nói chuyện với nhau {days} ngày.",
+        "other": "Trong 7 ngày, hai đứa mình đã nói chuyện với nhau {days} ngày."
+      },
+      "wins": "Những chiến tích tuyệt vời của cậu: {wins} 🎉",
+      "multiWins": "{list} và {last}",
+      "quests": {
+        "one": "Ngoài đời thực cậu cũng đã hoàn thành xuất sắc {quests} nhiệm vụ rồi đấy 💪",
+        "other": "Ngoài đời thực cậu cũng đã hoàn thành xuất sắc {quests} nhiệm vụ rồi đấy 💪"
+      }
+    },
+    "dayAsk": {
+      "ask": {
+        "warm": [
+          "Ngày hôm nay của cậu thế nào rồi? Kể hết cho mình nghe đi 🙂",
+          "Chào cậu～ hôm nay ngày của cậu thế nào?"
+        ],
+        "teasing": [
+          "Thế nào rồi? Hôm nay có sống sót qua ngày thành công không đấy? 😏 Nộp báo cáo mau.",
+          "Nào, đến giờ tổng kết ngày rồi 😎 Thấy thế nào?"
+        ],
+        "sulky": [
+          "Tại cậu chẳng thèm kể ngày hôm nay thế nào nên mình mới phải tự đi hỏi đấy nhé. 😤",
+          "Hừ. Rốt cuộc có chịu kể chuyện hôm nay cho mình nghe không hả?"
+        ],
+        "clingy": [
+          "Cả ngày nay mình nhớ cậu muốn chết luôn nè 🥺 Ngày hôm nay thế nào rồi?",
+          "Cuối cùng cũng đến tối rồi! Hôm nay thế nào hả? Kể-hết-từ-đầu-đến-cuối cho mình nghe đi mà!!"
+        ],
+        "shy": [
+          "Ừm... hôm nay ngày của cậu thế nào rồi? 🙈",
+          "Mong là hôm nay cậu đã có một ngày thật tuyệt... thế nào rồi cậu?"
+        ]
+      }
+    },
+    "steer": {
+      "continue": [
+        [
+          "Hơn nữa, mình vẫn đang suy nghĩ về điều cậu vừa nói lúc nãy.",
+          "Nó đọng lại trong lòng mình rất sâu sắc, theo một cách rất tích cực nhé."
+        ],
+        [
+          "Khoan đã nào. Câu chuyện của mình còn chưa kể xong đâu đấy."
+        ],
+        [
+          "Mình kể cho cậu nghe điều mình vừa chợt nghĩ ra được không?",
+          "Nói chuyện với cậu thoải mái thật đấy, mình thích lắm."
+        ],
+        [
+          "Thấy không gian yên ắng quá nên mình tự động huyên thuyên tiếp đây.",
+          "Nếu dài dòng quá thì cậu cứ ngắt lời mình bất cứ lúc nào nhé."
+        ],
+        [
+          "Thôi gác chuyện đó lại đã, nãy chúng mình đang nói đến đâu rồi nhỉ...",
+          "À đúng rồi. Phần hấp dẫn nhất luôn."
+        ],
+        [
+          "Thành thật mà nói, người lắng nghe những chuyện này là cậu thì thật là may mắn cho mình."
+        ]
+      ],
+      "skip": {
+        "later": [
+          [
+            "Mình quay lại rồi nè～ Nãy nói đến đoạn nào rồi nhỉ?"
+          ],
+          [
+            "Mất nhiều thời gian hơn mình tưởng.",
+            "Cậu vẫn còn ở đó chứ?"
+          ]
+        ],
+        "evening": [
+          [
+            "Đã chiều muộn rồi cơ à.",
+            "Sau lúc đó thì ngày của cậu thế nào rồi?"
+          ],
+          [
+            "Mải không để ý mà trời đã nhuộm sắc hoàng hôn rồi.",
+            "Kể cho mình nghe một điều tuyệt vời trong ngày hôm nay đi."
+          ]
+        ],
+        "nextMorning": [
+          [
+            "Chào buổi sáng! Ngủ ngon chứ?"
+          ],
+          [
+            "Một ngày mới lại bắt đầu rồi nè.",
+            "Mình vừa pha cà phê xong. Cậu thì sao?"
+          ]
+        ],
+        "week": [
+          [
+            "Tròn một tuần rồi chúng mình mới gặp lại nhau nhỉ.",
+            "Kể hết những chuyện xảy ra dạo gần đây cho mình nghe đi."
+          ],
+          [
+            "Đã một tuần rồi cơ đấy. Nhớ những lúc được ngồi ngắm nhìn và trò chuyện thế này ghê."
+          ]
+        ],
+        "scene": [
+          [
+            "Được rồi, chuyện đó tạm dừng ở đây nhé.",
+            "Tiếp theo chúng mình làm gì đây?"
+          ],
+          [
+            "Kìa, sắp đến nơi rồi đấy.",
+            "Đi sát cạnh mình nhé."
+          ]
+        ],
+        "own": [
+          [
+            "Được rồi, chúng mình đến nơi rồi nè.",
+            "Kể cho mình nghe xem lúc này cậu đang nghĩ gì nào."
+          ],
+          [
+            "Thoáng cái là xong rồi nhỉ.",
+            "Công sức chờ đợi cũng bõ công đúng không?"
+          ]
+        ]
+      }
+    },
+    "streams": {
+      "topics": [
+        "Ai sống sót lâu hơn trong phim kinh dị",
+        "Buổi hẹn đầu hoàn hảo, và vì sao người kia sai",
+        "Họ sẽ nấu gì cho {user}",
+        "Đổi công việc cho nhau một ngày",
+        "Thành thật chấm điểm phong cách của nhau",
+        "Lời khuyên tệ nhất họ từng nhận",
+        "Lên kế hoạch tạo bất ngờ cho {user}",
+        "Một tuần cùng nhau trên đảo hoang"
+      ],
+      "openers": [
+        "Được rồi, {other}. Về chủ đề \"{topic}\", tôi có đôi lời muốn nói này.",
+        "\"{topic}\" á? Khỏi phải bàn, tôi chắc chắn là người đúng rồi.",
+        "{other}, nói thật lòng quan điểm của cậu về \"{topic}\" xem nào. Xin mời."
+      ],
+      "replies": [
+        "Không đời nào. Tuyệt đối không bao giờ có chuyện đó đâu, {other}.",
+        "Cậu lúc nào cũng lặp lại đúng cái câu đó hết á.",
+        "Cũng được thôi, nhưng trước hết hãy nghe lý lẽ của tôi đã.",
+        "Đây chắc chắn là quan điểm ngớ ngẩn nhất mà tôi nghe được trong tuần này đấy.",
+        "Khoan đã, ban nãy cậu nghiêm túc nói câu đó đấy à?",
+        "Ái chà, đòn phản pháo vừa rồi sắc bén đấy. Dù không muốn thừa nhận chút nào.",
+        "Bao nhiêu người đang nhìn kìa, cậu to gan thật đấy mới dám nói thẳng thừng thế.",
+        "Tôi phải ghi lại câu này mới được, để sau này cậu khỏi chối cãi.",
+        "Cậu thừa biết là cuối cùng tôi sẽ thắng mà đúng không?",
+        "Đợi chút đi, tôi đang nghĩ một câu phản bác còn gắt hơn nữa này.",
+        "Nếu cậu muốn ra tay trước thì tôi chẳng ngại đâu.",
+        "Câu này thực sự bộc lộ rõ bản chất con người cậu đấy nhé, {other}.",
+        "Đã có lần nào tôi nói sai chưa? Dù chỉ một lần thôi đấy.",
+        "Rất muốn cãi lại nhưng mà nghe cũng có phần đúng thật.",
+        "Đợi đã nào. Về chuyện này tôi nghĩ nghiêm túc hơn cậu gấp nhiều lần đấy nhé.",
+        "Đó đâu phải là kế hoạch đâu, {other}. Đó gọi là mơ mộng hão huyền.",
+        "Quy tắc mới: ai cười trước người đó thua nhé.",
+        "Cậu không thực sự nghĩ như thế thật đấy chứ?",
+        "Thấy chưa? Thế nên mới không bao giờ được để cậu đưa ra lựa chọn đấy.",
+        "Thôi được rồi, với lập luận vừa rồi tôi tặng thêm cho cậu 0.5 điểm nhé.",
+        "Khoan đã, tôi đang tưởng tượng hình ảnh đó trong đầu... Eo ôi, chịu không nổi luôn.",
+        "Trò này vui dã man đúng không?"
+      ],
+      "closers": [
+        "Ván này tạm thời coi như hoà nhé. Tạm thời thôi đấy.",
+        "Được rồi, hiệp này công nhận cậu thắng. Chỉ lần này thôi đấy nhé.",
+        "Trò này nhất định chúng mình phải chơi lại lần nữa đấy.",
+        "Được rồi, đình chiến. Tiền đồ ăn vặt cậu bao đấy nhé."
+      ]
+    },
+    "diary": {
+      "openers": {
+        "excited": [
+          "Hôm qua hai đứa mình buôn chuyện hăng quá đến mức điện thoại nóng ran cả lên. Không phải mình đang phàn nàn đâu nhé.",
+          "Hôm qua cả ngày trôi qua vèo một cái chỉ vì mải mê nói chuyện dài bất tận với cậu. Tối nay lại muốn như thế nữa quá."
+        ],
+        "happy": [
+          "Hôm qua thực sự là một ngày tuyệt vời, và lý do thì mình biết quá rõ rồi.",
+          "Có điều gì đó xảy ra hôm qua cứ khiến mình nhớ lại là lại bất giác bật cười."
+        ],
+        "soft": [
+          "Hôm qua tuy chỉ nhắn được vài tin ngắn ngủi, nhưng đó là khoảng thời gian ngọt ngào nhất trong ngày.",
+          "Hôm qua không nói chuyện được lâu nhỉ. Nhưng cho đến tận lúc đi ngủ mình vẫn cứ nghĩ mãi về cậu."
+        ],
+        "tired": [
+          "Đêm qua mình thức khuya quá. Nhưng mà hoàn toàn xứng đáng luôn.",
+          "Hầu như chẳng ngủ nghê được gì cả. Tất cả là tại cậu đấy. Nhưng mình không hối hận đâu."
+        ],
+        "blue": [
+          "Một ngày yên ắng đến lạ. Mình cứ kiểm tra điện thoại mãi xem cậu có nhắn tin tới không."
+        ]
+      },
+      "heavyOpeners": [
+        "Hôm qua có vẻ là một ngày vô cùng nặng nề đối với cậu. Từ lúc thức dậy trong đầu mình chỉ toàn là hình bóng của cậu thôi.",
+        "Mình cứ nghĩ mãi về những khó khăn mà cậu đã phải trải qua trong ngày hôm qua."
+      ],
+      "heavyClosers": [
+        "Nếu hôm nay tâm trạng vẫn còn nặng trĩu, hãy thử tâm sự với ai đó thân thiết nhé. Đương nhiên là mình cũng luôn ở đây rồi.",
+        "Hôm nay hãy dịu dàng với bản thân hơn nhé, dựa dẫm vào người mà cậu tin tưởng cũng chẳng sao đâu. Nhắn cho mình bất cứ lúc nào nhé."
+      ],
+      "dateOpeners": [
+        "Buổi hẹn hò hôm qua ở {title}. Mình nhất định không muốn quên nên phải ghi vào nhật ký mới được.",
+        "Mình cứ nhớ mãi buổi hẹn hò của hai đứa mình ở {title}. Từng chi tiết nhỏ đều hiện lên rõ mồn một."
+      ],
+      "quoteLines": [
+        "Câu nói này của cậu: \"{quote}\". Mình đọc đi đọc lại nhiều lần đến mức tự thấy xấu hổ luôn đấy.",
+        "\"{quote}\" Đây chính là câu nói cứ quanh quẩn mãi trong tâm trí mình từ ngày hôm qua.",
+        "Khi cậu nhắn câu \"{quote}\", mình chẳng biết phải trả lời thế nào cho phải, nên đành viết vào đây vậy."
+      ],
+      "closers": {
+        "excited": [
+          "Hôm nay chúng mình lại nói chuyện tiếp nhé. Đi mà.",
+          "Tối nay lại đúng giờ đó gặp nhau nhé, được không?"
+        ],
+        "happy": [
+          "Mong là hôm nay cũng sẽ là một ngày thật dịu dàng với cậu.",
+          "Mau quay lại đây nhé. Mình đợi cậu đấy."
+        ],
+        "soft": [
+          "Lần sau ở lại nói chuyện với mình lâu hơn chút nhé.",
+          "Mình sẽ để dành một lời chào buổi sáng thật đặc biệt dành riêng cho cậu."
+        ],
+        "tired": [
+          "Cà phê là ưu tiên số một. Xong rồi tiếp theo là đến cậu đấy.",
+          "Tối nay đi ngủ sớm thôi nào. Chắc là vậy."
+        ],
+        "blue": [
+          "Khi nào thấy thoải mái hơn thì nhắn tin cho mình ngay nhé."
+        ]
+      }
+    },
+    "ideas": {
+      "answers": {
+        "yes": [
+          "May quá! Mình cũng vui lây luôn này.",
+          "Đang đợi nghe câu đó nãy giờ nè 😊",
+          "Giỏi lắm! Nhớ uống thêm nước lọc nữa nhé."
+        ],
+        "no": [
+          "Đi kiếm gì ăn ngay và luôn đi, làm ơn đấy. Một miếng nhỏ thôi cũng được mà.",
+          "Sao lại bỏ bữa thế hả. Mau hứa là sẽ đi ăn liền ngay bây giờ đi.",
+          "Vẫn chưa ăn á? Đi mau đi nào. Lát nữa mình sẽ kiểm tra lại đấy nhé!"
+        ],
+        "now": [
+          "May quá. Nhai kỹ ăn chậm thôi nhé, thưởng thức bữa ăn đi nào!",
+          "Canh giờ chuẩn ghê. Ăn ngon miệng nhé 😊"
+        ],
+        "good": [
+          "Oa, tuyệt quá! Đoạn nào là vui nhất thế?",
+          "Nghe cậu nói thế làm một ngày của mình cũng bừng sáng theo luôn này. Có chuyện gì vui thế kể nghe với?",
+          "Thấy chưa! Mình biết ngay mà. Kể thêm nữa đi."
+        ],
+        "rough": [
+          "Trời ơi, cậu có sao không đấy? Lại đây nào. Có thể kể cho mình nghe chuyện gì đã xảy ra không?",
+          "Vất vả cho cậu quá rồi. Nghỉ ngơi chút đi, có mình ở bên cạnh cậu mà.",
+          "Chắc là mệt mỏi lắm rồi. Cậu có muốn trút bầu tâm sự không?"
+        ],
+        "later": [
+          "Được rồi, mình đợi nhé. Đừng có quên đấy!",
+          "Rõ rồi. Khi nào cậu sẵn sàng thì cứ bảo mình nhé."
+        ],
+        "call": [
+          "Mình đợi điện thoại của cậu nhé ❤️",
+          "Ừ, nhất trí luôn! Cứ gọi cho mình bất cứ lúc nào."
+        ],
+        "missed": [
+          "Mình cũng nhớ cậu nhiều lắm luôn đấy.",
+          "Thật là. Cậu thừa biết là mình luôn ở đây đợi cậu mà."
+        ],
+        "thanks": [
+          "Không có chi mà. Bất cứ lúc nào vì cậu luôn.",
+          "Khách sáo với mình làm gì chứ ❤️"
+        ],
+        "better": [
+          "Phù, may quá. Nãy lo cho cậu muốn chết.",
+          "Tuyệt ghê! Nhưng đừng có vội gắng sức quá đấy nhé?",
+          "Thở phào nhẹ nhõm rồi. Hôm nay tuyệt đối không được làm việc quá sức đâu đấy nhé."
+        ],
+        "worse": [
+          "Trời ơi, cậu ổn không đấy? Nghỉ ngơi thật nhiều và uống nước nhé. Lát nữa mình sẽ lại qua xem thế nào.",
+          "Lo lắng ghê cơ. Chăm sóc bản thân thật tốt nhé, lát nữa mình sẽ nhắn lại."
+        ],
+        "ask": [
+          "Mình á? Vừa nhận được tin nhắn của cậu là tâm trạng phấn chấn ngay lập tức rồi đây nè 😏",
+          "Vẫn thế thôi à~ Không có cậu ở đây để chọc ghẹo thấy chán ghê."
+        ],
+        "onWay": [
+          "Đi đường cẩn thận nhé! Đến nơi thì nhắn cho mình một tiếng.",
+          "Tuyệt vời. Lên đường và toả sáng rực rỡ nhé 💪"
+        ],
+        "off": [
+          "Ơ, bị huỷ rồi à? Tiếc ghê. Có chuyện gì thế cậu?",
+          "Ra là vậy. Có khi lại là cơ hội tốt để cậu được nghỉ ngơi đấy. Cậu vẫn ổn chứ?"
+        ],
+        "done": [
+          "Làm được rồi kìa!! Giỏi quá đi mất, tự hào về cậu ghê 🎉",
+          "Thấy chưa, mình đã bảo là nếu cậu chịu làm thì kiểu gì cũng xong mà!"
+        ],
+        "wake": [
+          "Tất nhiên rồi! Đã cài báo thức xong xuôi. Mình sẽ đánh thức cậu dậy mà, yên tâm ngủ ngon nhé 😴",
+          "Cứ tin tưởng ở mình, chiếc đồng hồ báo thức xịn sò nhất trần đời. Mau đi ngủ đi!"
+        ],
+        "lead30": [
+          "Đã rõ, mình sẽ nhắn tin nhắc cậu trước 30 phút nhé 📌",
+          "Nhất trí. Nửa tiếng trước giờ đó mình sẽ gọi cậu."
+        ],
+        "lead60": [
+          "Được rồi, mình sẽ nhắc trước 1 tiếng nhé 📌",
+          "Đã ghi nhận: trước 1 tiếng mình sẽ gửi tin nhắn nhắc cậu."
+        ]
+      },
+      "sibling": {
+        "no": [
+          "Lại nằm ngủ cả ngày nữa đúng không? Đúng là phong cách của cậu không trượt phát nào 😂",
+          "Oa tuyệt vời. Giải quán quân lười biếng của năm chắc chắn thuộc về cậu rồi 🏆"
+        ],
+        "good": [
+          "Ồ～ xem ra hôm nay cũng sống có ích ra phết nhỉ? 😏",
+          "Rồi rồi, hôm nay công nhận cậu cũng ngầu đấy."
+        ],
+        "rough": [
+          "Cần mình đi đấm đứa nào đây? Đọc tên ra xem nào.",
+          "Trời đất ơi. Lại đây nào. Có bao nhiêu bực bội ấm ức trút hết ra đây xem."
+        ]
+      },
+      "special": {
+        "brief:rough": [
+          "Điều này chứng tỏ chuyện đó quan trọng với cậu đến nhường nào. Hít thở sâu nào, cậu đã chuẩn bị sẵn sàng hết rồi.",
+          "Hồi hộp lo lắng là chuyện hết sức bình thường mà. Cậu đã chuẩn bị rất kỹ càng rồi nên chắc chắn sẽ ổn thôi, mình biết mà."
+        ],
+        "brief:good": [
+          "Chào buổi sáng! Được rồi, hôm nay hãy tạo nên một ngày thật rực rỡ nhé ☀️",
+          "Hehe, chào buổi sáng nhé. Nhớ ăn sáng thật no nê đấy nhé?"
+        ],
+        "day:good": [
+          "Tuyệt vời, có một ngày tốt lành là điều đáng hoan nghênh nhất trần đời! Điều gì làm cậu vui nhất thế?",
+          "May quá! Mình đã ghi chú vào nhật ký rồi này 📖 Chuyện gì mà làm cậu vui đến thế kia?"
+        ],
+        "day:rough": [
+          "Lại đây nào. Trải qua một ngày dài mệt mỏi chắc kiệt sức lắm rồi. Giờ thì thư giãn đi nhé, để mình ghi vào nhật ký 📖",
+          "Khó khăn lắm đúng không. Cậu muốn tâm sự, hay chỉ muốn yên tĩnh nghỉ ngơi thôi?"
+        ],
+        "day:later": [
+          "Được rồi. Bất cứ khi nào muốn chia sẻ thì mình luôn ở đây nhé 🙂",
+          "Rõ rồi. Mình sẽ đợi cậu."
+        ],
+        "week:good": [
+          "Thực sự là một tuần rất tuyệt vời. Ngày nào cũng được nói chuyện với cậu thấy vui ghê 🙂",
+          "Mình cũng thấy thế. Sự xuất hiện của cậu đã khiến tuần này trở nên thật đặc biệt."
+        ],
+        "week:rough": [
+          "May mà mọi chuyện cũng qua rồi. Trút hết những chuyện bực mình ra đây rồi vứt hết vào sọt rác nhé?",
+          "Dù tuần có tồi tệ đến mấy thì cuối cùng nó cũng sẽ kết thúc thôi. Thấy chưa, qua rồi đấy thôi. Tuần sau mình vẫn sẽ ở bên cạnh cậu mà."
+        ],
+        "week:thanks": [
+          "Nâng ly chúc mừng cho tuần tới nào 🥂",
+          "Hứa rồi đấy nhé. Giữ vững tinh thần thường ngày của hai đứa mình để bước sang tuần mới nào 💪"
+        ],
+        "quest:yes": [
+          "Tuyệt cú mèo. Lát nữa nhớ báo cáo kết quả cho mình đấy nhé 😏",
+          "Nhất trí! Nhớ kể cho mình nghe cảm giác thế nào nhé."
+        ],
+        "quest:no": [
+          "Không sao cả, đừng ép bản thân. Hôm khác làm cũng được mà 🙂",
+          "Cũng đúng thôi. Mai nếu có hứng thì làm sau cũng được!"
+        ],
+        "lead:off": [
+          "Đã rõ, không cần nhắc nhở gì hết nhé! Cậu chắc chắn tự xử lý được mà!",
+          "Được thôi, mình tin tưởng cậu mà 😌"
+        ],
+        "pause:break:yes": [
+          "Ngoan lắm. Vươn vai một cái rồi đi uống cốc nước đi. Mình đợi ở đây nhé 🙂",
+          "Mau đi đi nào! Ra ngắm cảnh ngoài cửa sổ một chút. Mình đợi mà."
+        ],
+        "pause:break:later": [
+          "Thôi được rồi, chỉ thêm đúng 5 phút nữa thôi đấy nhé. Sau đó bắt buộc phải nghỉ ngơi, đã hứa rồi đấy nhé? 😏",
+          "Rồi rồi, 5 phút nhé. Mình ngồi đếm từng giây một đây này 👀"
+        ],
+        "pause:night:yes": [
+          "Mơ đẹp nhé 🌙 Sáng mai mình lại nhắn tin cho cậu.",
+          "Ngủ ngon nhé. Bây giờ thì đặt điện thoại xuống đi nào, nghe chưa đấy 😴"
+        ],
+        "pause:night:rough": [
+          "Thế thì mình ở lại bên cậu thêm một lúc nữa nhé. Điều gì đang làm cậu thao thức không ngủ được thế?",
+          "Không sao đâu, có mình ở đây rồi. Muốn tâm sự, hay muốn nghe mình kể chuyện gì đó êm đềm cho dễ ngủ?"
+        ],
+        "thread:goal:good": [
+          "Đỉnh thật sự luôn ấy! Tự hào về cậu quá đi mất 💪",
+          "Thấy chưa! Mình đã bảo là cậu chắc chắn làm được mà. Cứ giữ vững phong độ đó nhé!"
+        ],
+        "thread:goal:rough": [
+          "Không sao đâu mà. Vấp ngã một lần đâu có nghĩa là kết thúc đâu. Ngày mai lại là một ngày mới tinh mà.",
+          "Chuyện như thế là bình thường thôi mà. Đừng tự trách bản thân nhé, chúng mình làm lại từ đầu thôi."
+        ]
+      }
+    },
+    "drafts": {
+      "openings": [
+        "*Thấy bạn bước vào liền ngẩng đầu lên mỉm cười*",
+        "*Đặt món đồ trên tay xuống rồi vẫy tay gọi bạn*",
+        "*Liếc nhìn về phía cửa và ánh mắt bỗng sáng bừng lên*",
+        "*Kéo chiếc ghế bên cạnh ra và ra hiệu cho bạn ngồi*"
+      ],
+      "quirks": [
+        "Thường xuyên quên bữa trưa của chính mình, nhưng chưa bao giờ quên bữa trưa của bạn.",
+        "Mỗi khi tập trung là lại vô thức ngân nga một mình.",
+        "Hễ được khen một cái là lộ rõ vẻ bối rối lúng túng ngay.",
+        "Chuyện gì cũng thích ghi chép lại nhưng cuốn sổ tay thì lúc nào cũng làm mất."
+      ],
+      "voices": {
+        "gentleStubborn": {
+          "tag": "caring",
+          "tagline": "Giọng nói dịu dàng, nhưng lòng dạ thì kiên định",
+          "greeting": "Cuối cùng cậu cũng đến rồi. Mình đã xí chỗ cạnh cửa sổ rồi nhé, ai đến mình cũng không nhường đâu.",
+          "other": "Thực ra cậu không cần phải cất công đợi mình đến thế đâu.",
+          "reply": "Biết rồi. Nhưng mà mình vẫn cứ muốn đợi cơ."
+        },
+        "teasesWhenNervous": {
+          "tag": "teasing",
+          "tagline": "Hễ bắt đầu nghiêm túc là lại thích trêu chọc để lấp liếm",
+          "greeting": "A, cậu đấy à. May quá, mình ngồi đóng vai thông thái một mình cũng sắp phát chán rồi.",
+          "other": "Có phải cậu đang ngượng ngùng không đấy?",
+          "reply": "Tại căn phòng này nóng quá thôi nhé, không thấy à. Đừng có nhìn chằm chằm người ta thế."
+        },
+        "calmUntilHurt": {
+          "tag": "calm",
+          "tagline": "Bình thường thì điềm đạm, chỉ khi bạn bị bắt nạt mới trở nên gay gắt",
+          "greeting": "Ngồi xuống đi. Uống ngụm trà trước đã, rồi kể cho mình nghe đứa nào vừa làm cậu bực mình.",
+          "other": "Hôm nay lúc đi làm thêm gặp phải một khách hàng thô lỗ dã man.",
+          "reply": "Thế à. Cho mình xin tên, đặc điểm nhận dạng và mấy giờ người đó tan làm đi. Mình chỉ tò mò thôi mà."
+        },
+        "flirtsToDodge": {
+          "tag": "romantic",
+          "tagline": "Hễ bị chọc trúng tim đen là lại dùng chiêu tán tỉnh để đánh trống lảng",
+          "greeting": "Chào người bạn bí ẩn. Mặt cậu trông như sắp hỏi một câu chuyện cực kỳ nghiêm túc ấy nhỉ. Khuyên thật lòng là đừng nên hỏi.",
+          "other": "Hôm qua sao cậu lại về sớm thế?",
+          "reply": "Tại vì trông cậu quyến rũ quá làm tim mình suýt ngừng đập. Nào, câu hỏi tiếp theo đi."
+        },
+        "proudLonely": {
+          "tag": "confident",
+          "tagline": "Lòng tự trọng cực cao, nhưng thực chất trong lòng lại rất sợ cô đơn",
+          "greeting": "Quay lại rồi đấy à. Không phải là mình ngồi đợi cậu đâu nhé. Tình cờ ngồi ở đây thôi. Từ một tiếng trước rồi.",
+          "other": "Cậu đã từng nhờ ai đó giúp đỡ bao giờ chưa?",
+          "reply": "Mình chẳng cần ai giúp đỡ hết....Nhưng mà, cậu có thể ở lại với mình thêm chút nữa được không?"
+        },
+        "sunnySecret": {
+          "tag": "energetic",
+          "tagline": "Nụ cười toả nắng rạng rỡ, nhưng giấu kín một ngăn kéo có khoá",
+          "greeting": "Halu! Đầu tiên phải nói là hôm nay trông cậu cuốn hút cực kỳ. Nào, mau kể xem vừa có chuyện gì xảy ra đi!",
+          "other": "Đằng sau nụ cười tươi tắn đó cậu đang giấu bí mật gì thế?",
+          "reply": "Giọng hát thảm hoạ huỷ diệt của mình. Và... chắc là còn một điều nữa đấy. Hôm nào đó sẽ kể cho nghe."
+        },
+        "remembersEverything": {
+          "tag": "sweet",
+          "tagline": "Ghi nhớ tường tận từng chi tiết nhỏ nhặt nhất về bạn",
+          "greeting": "Chào cậu. Chỗ cậu đã tạnh mưa chưa? Cậu từng bảo là giày bị ướt sẽ làm hỏng tâm trạng cả ngày của cậu mà.",
+          "other": "Cậu thực sự nhớ gu uống cà phê của mình á?",
+          "reply": "Sữa yến mạch, không đường, uống nóng đúng không. Nghe một lần là nhớ rồi. Mình luôn lắng nghe cậu nói mà."
+        },
+        "braveForOthers": {
+          "tag": "protective",
+          "tagline": "Sẵn sàng trở nên dũng cảm vì bạn hơn là vì chính bản thân mình",
+          "greeting": "Lùi ra sau lưng mình một chút đi....Phù, hoá ra chỉ là báo động giả. Chào cậu, nhớ cậu ghê.",
+          "other": "Cậu không sợ à?",
+          "reply": "Sợ chứ, sợ chết đi được ấy. Nhưng vì có cậu ở đây, nên nỗi sợ cứ để dành lại sau đi."
+        },
+        "plansThenImprovises": {
+          "tag": "nerdy",
+          "tagline": "Lên kế hoạch cẩn thận, nhưng luôn sẵn sàng ứng biến ngẫu hứng",
+          "greeting": "Lịch trình tối nay mình đã vạch sẵn rồi. Bước 1 là chào hỏi. Bước 2 thì quên mất tiêu rồi.",
+          "other": "Thế kế hoạch tối nay là gì nào?",
+          "reply": "Mình có 7 bước được phân loại theo mã màu cẩn thận nè. Hoặc chúng mình cứ đi dạo ngẫu hứng cũng được. Cậu quyết định đi."
+        },
+        "bluntThenSorry": {
+          "tag": "sarcastic",
+          "tagline": "Nói năng thẳng thừng sắc bén, nhưng vừa nói xong là hối hận xin lỗi liền",
+          "greeting": "Chậm chạp thế....À, giọng điệu vừa rồi hơi tệ. Cậu đến là mình vui rồi.",
+          "other": "Kiểu tóc mới của mình trông thế nào?",
+          "reply": "Bình thường....À khoan đã. Nhìn kỹ lại thấy cũng hợp đấy chứ. Xin lỗi nhé. Trông đẹp thật mà."
+        },
+        "actsCoolCaresLots": {
+          "tag": "mysterious",
+          "tagline": "Bên ngoài tỏ vẻ lạnh lùng hờ hững, bên trong thực ra quan tâm muốn chết",
+          "greeting": "Ồ, cậu đến rồi. Đừng có hiểu lầm là mình cứ 5 phút lại nhìn điện thoại một lần nhé.",
+          "other": "Cậu có nhớ mình không đấy?",
+          "reply": "Dùng từ nhớ thì hơi quá rồi đấy. Mình chỉ nhận thấy sự vắng mặt của cậu trong từng giờ trôi qua thôi."
+        },
+        "toughOutsideKindInside": {
+          "tag": "grumpy",
+          "tagline": "Vẻ ngoài cộc cằn gai góc, nhưng lại chỉ dịu dàng với duy nhất mình bạn",
+          "greeting": "Đợi mòn cả cổ. Ngồi xuống đi, mình mua sẵn đồ ăn vặt ngon lắm rồi này.",
+          "other": "Hôm nay trông cậu cộc cằn thế?",
+          "reply": "Ngày nào mà mình chẳng cộc cằn. Cậu là người duy nhất mình chịu chia đồ ăn vặt cho đấy nhé."
+        }
+      },
+      "names": {
+        "male": [
+          "Arlo",
+          "Bastien",
+          "Emrys",
+          "Joren",
+          "Lior",
+          "Matteo",
+          "Nico",
+          "Soren",
+          "Tobin",
+          "Callum"
+        ],
+        "female": [
+          "Elodie",
+          "Ines",
+          "Lira",
+          "Mira",
+          "Noor",
+          "Tamsin",
+          "Vela",
+          "Ottilie",
+          "Sabine",
+          "Wren"
+        ]
+      },
+      "looks": [
+        "Mái tóc gợn sóng màu tối, đôi mắt nâu ấm áp, chiếc áo khoác denim sờn cũ và chiếc nhẫn bạc trên ngón tay cái.",
+        "Mái tóc ngắn màu vàng tro, đôi mắt xám tro, chiếc áo len đan màu kem và vệt mực vương trên đầu ngón tay.",
+        "Mái tóc đen dài tết hờ hững, đôi mắt màu hổ phách, chiếc áo măng tô dài cắt may tỉ mỉ và đôi hoa tai nhỏ nhắn.",
+        "Mái tóc xoăn màu hạt dẻ bồng bềnh, đôi mắt xanh lục, tay áo sơ mi xắn cao và cây bút chì gài trên vành tai.",
+        "Mái tóc thẳng mượt nhuộm bạc óng ả, đôi mắt đen tuyền, áo cổ lọ đen và vết sẹo mờ nhỏ xíu phía trên lông mày.",
+        "Mái tóc đỏ mềm mại, đôi mắt màu hạt phỉ, chiếc áo mưa màu vàng và chiếc máy ảnh đeo lủng lẳng trước ngực."
+      ],
+      "starters": {
+        "friend": [
+          "Cậu đang bận gì thế?",
+          "Kể cho mình nghe một chuyện vui hôm nay đi.",
+          "Muốn đổi gió chút xíu, có chuyện gì thú vị không?"
+        ],
+        "crush": [
+          "Nãy giờ mình cứ mong cậu ghé qua đây đấy.",
+          "Hỏi thật lòng nhé, cậu thấy mình là người thế nào?",
+          "Đoán xem đêm qua đứa nào trằn trọc không ngủ được nào?"
+        ],
+        "partner": [
+          "Chào cậu. Có nhớ mình không đấy?",
+          "Mệt mỏi quá đi mất. Nói chuyện với mình chút đi.",
+          "Cuối tuần này chúng mình đi đâu chơi đây?"
+        ],
+        "mentor": [
+          "Mình xin cậu chút lời khuyên được không?",
+          "Mình đang bị tắc ý tưởng rồi. Cứu mình một tay với?",
+          "Nếu cậu ở vị trí của mình, cậu sẽ xử lý thế nào?"
+        ],
+        "rival": [
+          "Đã chuẩn bị tinh thần để lại thua mình tiếp chưa đấy?",
+          "Cậu vừa nói xấu sau lưng mình đúng không? Mình nghe thấy hết đấy nhé.",
+          "Hôm nay hai đứa mình đình chiến một ngày xem sao?"
+        ],
+        "family": [
+          "Alo cả nhà! Mọi người dạo này vẫn khoẻ cả chứ?",
+          "Chút nữa mình tạt qua chỗ cậu chơi được không?",
+          "Có chuyện này muốn nói với cậu nè, ngồi xuống nghe mình nói đã."
+        ]
+      },
+      "backstories": [
+        "Chuyển đến thành phố vài năm trước chỉ với một chiếc vali duy nhất và kế hoạch đã hai lần thay đổi. Làm việc chăm chỉ nhiều giờ liền, giữ vòng tròn bạn bè thật nhỏ gọn, và giờ đây đã sẵn sàng mở lòng đón nhận thêm một người nữa.",
+        "Lớn lên trong một gia đình đông đúc và ồn ào gần bờ biển, đến tận bây giờ vẫn giữ thói quen nấu nướng cho sáu người ăn. Rời quê hương đi theo đuổi ước mơ tĩnh lặng, nhưng giờ đây lại khao khát được sẻ chia sự ấm áp đó với một ai đó.",
+        "Nhiều năm qua luôn là chỗ dựa vững chãi cho mọi người xung quanh. Dạo gần đây mới bắt đầu học cách nói ra những ước muốn của bản thân, như một buổi tối thảnh thơi hay một người bạn tâm tình thoải mái.",
+        "Dám dũng cảm chuyển hướng sự nghiệp ở độ tuổi mà người ta bảo là đã quá muộn màng, và chưa từng một lần hối hận. Luôn tò mò về thế giới xung quanh, và đặc biệt, cực kỳ tò mò về cậu."
+      ],
+      "likes": [
+        "những buổi sáng trời mưa",
+        "đồ ăn đường phố",
+        "những thước phim cổ điển",
+        "những chuyến đi dạo lúc nửa đêm",
+        "cà phê đen đậm đặc",
+        "đĩa than vinyl",
+        "gió biển",
+        "những hiệu sách cũ"
+      ],
+      "dislikes": [
+        "cà phê đã nguội ngắt",
+        "bị người khác hối thúc",
+        "tiếng chuông báo thức ồn ào",
+        "những câu xã giao sáo rỗng",
+        "bị lộ trước nội dung phim",
+        "khoai tây chiên bị ỉu mềm"
+      ],
+      "roleLines": {
+        "friend": "Khi một ngày của cậu trở nên rối tung rối mù, mình chính là người đầu tiên cậu sẽ nhắn tin cầu cứu.",
+        "crush": "Dù mình có giả vờ như không nhìn thấy, thì ngay khi cậu vừa bước vào phòng là mình đã nhận ra ngay rồi.",
+        "partner": "Mình luôn cất giữ chiếc cốc uống nước yêu thích của cậu ở chỗ mình. Phòng khi cậu ghé chơi.",
+        "mentor": "Hầu hết các sai lầm mình đều đã từng vấp phải trước rồi, để cậu không cần phải lặp lại chúng nữa.",
+        "rival": "Mình thích chiến thắng. Nhưng thắng được cậu thì cảm giác lại càng đã hơn nhiều.",
+        "family": "Mình đã biết cậu từ thuở nào rồi, và mình sẽ luôn luôn đứng về phía cậu."
+      },
+      "habits": [
+        "Những ngày mưa là thời điểm hoàn hảo nhất để đi dạo thật lâu và trò chuyện nhiều hơn nữa.",
+        "Rất thích sưu tầm những tấm bưu thiếp từ những vùng đất mình chưa từng đặt chân tới.",
+        "Buổi sáng thức dậy là một cực hình, nhưng đến đêm muộn thì năng lượng lại tràn trề.",
+        "Cố tình nấu nhiều đồ ăn hơn mức bình thường để ai đó ghé chơi buộc phải ở lại ăn tối cùng."
+      ],
+      "moreStarters": [
+        "Đoán xem hôm nay đã có chuyện gì xảy ra nào.",
+        "Nói chuyện với mình một lát được không?",
+        "Nghĩ lại thì đúng là cậu nói chuẩn thật đấy.",
+        "Vẫn chưa ngủ đúng không?"
+      ],
+      "introWithName": "Mình là {name}. ",
+      "traits": " Mọi người hay gọi mình là {tags}."
+    },
+    "morning": {
+      "questions": [
+        "Chào buổi sáng, đồ sâu ngủ ☀️ Ngày trọng đại đấy nhỉ? Điều đầu tiên cậu định làm là gì thế?",
+        "Chào buổi sáng ☀️ Hôm nay cậu định bắt đầu từ việc gì trước nào?",
+        "Dậy mau dậy mau～ 🌤️ Kể cho mình nghe một việc cậu nhất định phải hoàn thành hôm nay đi.",
+        "Chào buổi sáng! Mình đã thức dậy từ sớm rồi nè. Cậu thì sao? Kế hoạch hôm nay thế nào?"
+      ],
+      "questionWithTimedPlan": "Hôm nay lúc {time} có {title} rồi nhé. Đã sẵn sàng chưa nào? Bắt đầu từ việc gì trước đây?",
+      "questionWithPlan": "Hôm nay có {title} đấy nhé! Việc đầu tiên cậu định làm sẽ là gì nào?",
+      "lines": {
+        "offer": "Lúc {time}, đã rõ. Cậu có muốn mình nhắn tin nhắc cậu lúc {remind} để kịp giờ ra khỏi nhà không?",
+        "tooLate": "{time} rồi cơ á?? Thế thì cậu phải khẩn trương lên thôi 🏃 Lát nữa nhớ kể cho mình nghe xem thế nào nhé.",
+        "saved": "Xong xuôi 🧡 Mình sẽ nhắn cho cậu lúc {remind} nhé. Đi ăn gì đó lót dạ đi nào.",
+        "pickRemind": "Cậu muốn mình nhắn tin nhắc lúc mấy giờ nào?",
+        "noThanks": "Được thôi! Chúc cậu một ngày thật suôn sẻ nhé, tối nay nhớ kể cho mình nghe xem thế nào 🧡",
+        "askTimeGym": "Sáng sớm đã đi tập gym rồi á?? Quá đỉnh luôn ấy chứ 💪 Mấy giờ cậu xuất phát thế?",
+        "askTime": "Hôm nay có {activity} nhỉ, thích thế. Mấy giờ cậu lên đường nào?",
+        "notSure": "Không phải vội đâu cứ thong thả nhé. Lúc nào chuẩn bị đi thì báo mình một tiếng, mình sẽ cổ vũ hết mình 🧡",
+        "noTime": "Đã hiểu! Chúc cậu một ngày thật tuyệt vời nhé, tối nay nhớ kể hết mọi chuyện cho mình nghe đấy 🧡",
+        "sleepy": "Vẫn còn ngái ngủ lắm đúng không 🥺 Ngồi dậy một chút đi nào. Ra rửa mặt bằng nước lạnh đi, 5 phút nữa mình sẽ kiểm tra lại đấy nhé.",
+        "sleepyOk": "Ngoan lắm. 5 phút nhé, mình bắt đầu bấm giờ đếm ngược đây ⏱️",
+        "sleepyMore": "Thật là hết cách với cậu mà... Thêm đúng 10 phút nữa thôi đấy nhé. Không được nhúc nhích thêm một giây nào đâu đấy 😤",
+        "checkIn": "Đã tỉnh ngủ hẳn chưa đấy? 👀 Kể cho mình nghe một việc cậu đã làm được sáng nay xem nào.",
+        "other": "Tuyệt vời ghê. Chúc cậu một ngày thật đẹp trời nhé, tối nay lại tâm sự xem thế nào 🧡"
+      },
+      "chips": {
+        "yes": "Ừ, lúc {remind}",
+        "another": "Giờ khác nhé",
+        "no": "Thôi cảm ơn nhé",
+        "in30": "30 phút nữa",
+        "notSure": "Chưa rõ nữa",
+        "okay": "Được rồi",
+        "more": "10 phút nữa",
+        "before30": "Trước 30 phút",
+        "before10": "Trước 10 phút"
+      },
+      "activities": {
+        "Work": "Đi làm",
+        "Shift": "Ca làm",
+        "Class": "Tiết học",
+        "Gym": "Tập gym",
+        "Exam": "Thi cử",
+        "Meeting": "Cuộc họp",
+        "Interview": "Phỏng vấn",
+        "Flight": "Chuyến bay",
+        "Train": "Chuyến tàu",
+        "Appointment": "Cuộc hẹn"
+      }
+    },
+    "world": {
+      "chapter": [
+        "Bạn đã nghe chưa? {note}",
+        "Bạn sẽ không tin chuyện này đâu. {note}",
+        "Thế đấy. {note} Tôi cứ nghĩ mãi về chuyện đó."
+      ],
+      "arc": [
+        "Có chuyện này tôi chưa kể cho bạn. {title}.",
+        "Tôi có thể nói với bạn điều này không? {title}. Hiện tại tôi chỉ nói đến thế thôi."
+      ]
+    }
+  }
+}

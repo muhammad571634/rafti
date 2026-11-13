@@ -1,11 +1,12 @@
-import * as Haptics from 'expo-haptics';
-import { Pressable, PressableProps, Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+
+import { haptic as hapticFeedback } from '@/lib/haptics';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -58,9 +59,7 @@ export function PressableScale({
       {...a11y}
       onPressIn={(e) => {
         pressed.value = withSpring(1, { damping: 22, stiffness: 420 });
-        if (haptic && Platform.OS !== 'web') {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-        }
+        if (haptic) hapticFeedback.tap();
         onPressIn?.(e);
       }}
       onPressOut={(e) => {

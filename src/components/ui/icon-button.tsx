@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space } from '@/theme';
+import { radius, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -29,7 +29,7 @@ export function IconButton({
   icon,
   onPress,
   size = 22,
-  color = colors.text,
+  color,
   background,
   badge,
   dot,
@@ -37,6 +37,9 @@ export function IconButton({
   haptic,
   style,
 }: IconButtonProps) {
+  const styles = useThemed(sheet);
+  const { colors } = useTokens();
+  const ink = color ?? colors.text;
   const box = size + space.lg;
 
   return (
@@ -52,10 +55,10 @@ export function IconButton({
         background ? { backgroundColor: background } : null,
         style,
       ]}>
-      <Ionicons name={icon} size={size} color={color} />
+      <Ionicons name={icon} size={size} color={ink} />
       {badge != null && badge > 0 ? (
         <View style={styles.badge}>
-          <Txt variant="tiny" color={colors.white}>
+          <Txt variant="tiny" color={colors.textOnPrimary}>
             {badge > 99 ? '99+' : badge}
           </Txt>
         </View>
@@ -66,30 +69,32 @@ export function IconButton({
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: 2,
-    right: 0,
-    minWidth: 16,
-    height: 16,
-    paddingHorizontal: 4,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dot: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 7,
-    height: 7,
-    borderRadius: radius.pill,
-    backgroundColor: colors.danger,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    base: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    badge: {
+      position: 'absolute',
+      top: 2,
+      right: 0,
+      minWidth: 16,
+      height: 16,
+      paddingHorizontal: 4,
+      borderRadius: radius.pill,
+      backgroundColor: colors.primaryFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    dot: {
+      position: 'absolute',
+      top: 6,
+      right: 6,
+      width: 7,
+      height: 7,
+      borderRadius: radius.pill,
+      backgroundColor: colors.danger,
+    },
+  }),
+);

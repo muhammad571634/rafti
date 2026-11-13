@@ -1,0 +1,258 @@
+<title>Our Moments Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: three phone screens side by side (stacked on a phone), one recommendation marked. */
+:root {
+  --page: #ECECF1; --ink: #1C1C1E; --muted: #6E6E73; --frame: #0B0B0C;
+  --screen: #FFFFFF; --label: #000000; --label2: rgba(60,60,67,0.6); --sep: rgba(60,60,67,0.18);
+  --fill: #F2F2F7; --chip: #E5E5EA; --seg: #FFFFFF; --pick: #007AFF;
+  --mint1: #C9F3E1; --mint2: #A8E9CF; --mintInk: #1E9E78;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  --display: "Nunito", -apple-system, "SF Pro Rounded", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #000000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E;
+  --screen: #000000; --label: #FFFFFF; --label2: rgba(235,235,245,0.6); --sep: rgba(84,84,88,0.6);
+  --fill: #1C1C1E; --chip: #3A3A3C; --seg: #636366; --pick: #0A84FF;
+  --mint1: #123B2F; --mint2: #0F2F26; --mintInk: #4FD8A8; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --page: #000000; --ink: #F2F2F7; --muted: #98989F; --frame: #2C2C2E;
+  --screen: #000000; --label: #FFFFFF; --label2: rgba(235,235,245,0.6); --sep: rgba(84,84,88,0.6);
+  --fill: #1C1C1E; --chip: #3A3A3C; --seg: #636366; --pick: #0A84FF;
+  --mint1: #123B2F; --mint2: #0F2F26; --mintInk: #4FD8A8; color-scheme: dark }
+body { background: var(--page); color: var(--ink); font-family: var(--font); margin: 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap">
+<style>
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 22px; }
+h1 { font-family: var(--display); font-weight: 900; font-size: 28px; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; font-size: 15px; max-width: 70ch; line-height: 1.45; }
+.fixes { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.5; max-width: 80ch; }
+.row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 900px) { .row { grid-template-columns: minmax(0, 1fr); max-width: 360px; margin: 0 auto; width: 100%; } }
+.opt { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.tag { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 16px; }
+.tag b { font-family: var(--display); font-weight: 900; font-size: 20px; }
+.rec { font-size: 12px; font-weight: 700; color: #fff; background: var(--pick); padding: 3px 8px; border-radius: 999px; }
+.note { color: var(--muted); font-size: 13.5px; line-height: 1.45; margin: 0; }
+.phone { background: var(--frame); border-radius: 40px; padding: 9px; }
+.screen { background: var(--screen); border-radius: 32px; overflow: hidden; height: 660px; position: relative; color: var(--label); }
+.status { height: 34px; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-size: 13px; font-weight: 600; }
+.top { display: flex; align-items: center; gap: 8px; padding: 2px 14px 6px; }
+.top .t { font-family: var(--display); font-weight: 900; font-size: 30px; flex: 1; }
+.round { width: 36px; height: 36px; border-radius: 18px; background: var(--fill); display: grid; place-items: center; }
+.round.acc { background: #F8B07C; color: #fff; }
+.round svg { width: 18px; height: 18px; }
+.h2 { font-family: var(--display); font-weight: 900; font-size: 22px; padding: 8px 16px 10px; }
+svg.i { width: 16px; height: 16px; fill: #fff; flex: none; }
+
+/* iOS segmented control */
+.segc { display: flex; margin: 0 14px 12px; background: var(--chip); border-radius: 9px; padding: 2px; }
+.segc span { flex: 1; text-align: center; font-size: 12.5px; font-weight: 600; padding: 6px 0; border-radius: 7px; white-space: nowrap; }
+.segc span.on { background: var(--seg); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+
+.tile { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+.note-c { background: #FFCC00; } .photo-c { background: #007AFF; } .date-c { background: #FF2D55; }
+.diary-c { background: #A2845E; } .call-c { background: #34C759; } .board-c { background: #32ADE6; }
+.plan-c { background: #FF3B30; } .met-c { background: #AF52DE; } .lvl-c { background: #1E9E78; }
+.time { font-size: 12.5px; color: var(--label2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chev { color: var(--label2); font-size: 16px; line-height: 1; }
+.ttl { font-weight: 600; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { font-size: 13px; color: var(--label2); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sub b { color: var(--label); font-weight: 600; }
+.hearts { color: #FF2D55; font-weight: 700; }
+.thumb { width: 34px; height: 42px; border-radius: 4px; background: #fff; padding: 3px 3px 9px; box-shadow: 0 1px 4px rgba(0,0,0,0.25); flex: none; }
+.thumb i { display: block; width: 100%; height: 100%; border-radius: 2px; background: linear-gradient(150deg, #7D5A8C, #E6B3C3 60%, #F6D6A8); }
+.grow { min-width: 0; flex: 1; display: grid; gap: 2px; }
+.tabbar { position: absolute; left: 10px; right: 10px; bottom: 12px; display: flex; gap: 8px; align-items: center; }
+.tb { flex: 1; height: 50px; border-radius: 25px; background: var(--screen); box-shadow: 0 6px 16px rgba(0,0,0,0.16); display: flex; padding: 4px; }
+.tb span { flex: 1; border-radius: 21px; display: grid; place-items: center; font-size: 10.5px; font-weight: 700; color: var(--label2); }
+.tb span.on { background: var(--chip); color: var(--label); }
+.tf { width: 50px; height: 50px; border-radius: 25px; background: var(--screen); box-shadow: 0 6px 16px rgba(0,0,0,0.16); display: grid; place-items: center; }
+.tf svg { width: 18px; height: 18px; fill: none; stroke: var(--label); stroke-width: 2.4; }
+.fade { position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(transparent, var(--screen) 70%); pointer-events: none; }
+
+/* A: days, each a grouped card */
+.day { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 18px 6px; }
+.day b { font-size: 16px; font-weight: 700; }
+.day span { font-size: 12.5px; color: var(--label2); }
+.card { background: var(--fill); border-radius: 16px; margin: 0 12px 12px; overflow: hidden; }
+.it { display: flex; gap: 11px; align-items: center; padding: 10px 12px; }
+.it + .it { border-top: 0.5px solid var(--sep); margin-left: 53px; padding-left: 0; }
+.it + .it .tile { margin-left: -41px; }
+.end { display: flex; align-items: center; gap: 6px; }
+.mile { margin: 0 12px 12px; border-radius: 16px; background: linear-gradient(135deg, var(--mint1), var(--mint2)); display: flex; gap: 12px; align-items: center; padding: 12px 14px; }
+.mile .big { font-family: var(--display); font-weight: 900; font-size: 30px; color: var(--mintInk); line-height: 1; min-width: 34px; text-align: center; }
+.mile .ttl { font-family: var(--display); font-weight: 900; font-size: 16px; }
+
+/* B: the thread, made smarter */
+.thr { position: relative; padding: 0 14px 0 14px; }
+.thr::before { content: ""; position: absolute; left: 31px; top: 8px; bottom: 0; width: 2px; background: var(--chip); }
+.dlab { position: relative; margin: 4px 0 6px 0; display: inline-block; background: var(--chip); font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.nd { position: relative; display: flex; gap: 11px; align-items: center; padding: 7px 0; }
+.dot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; box-shadow: 0 0 0 3px var(--screen); }
+.nd.big .dot { width: 36px; height: 36px; box-shadow: 0 0 0 3px var(--screen), 0 0 0 7px var(--mint2); }
+.nd.big .ttl { font-family: var(--display); font-weight: 900; font-size: 16px; }
+.cnt { font-size: 11px; font-weight: 800; background: var(--chip); color: var(--label); border-radius: 999px; padding: 1px 6px; margin-left: 4px; }
+
+/* C: highlights, then the month in numbers */
+.hl { display: flex; gap: 10px; padding: 0 14px 14px; overflow: hidden; }
+.hc { flex: none; width: 128px; height: 156px; border-radius: 18px; padding: 11px; display: flex; flex-direction: column; justify-content: space-between; color: #fff; position: relative; overflow: hidden; }
+.hc .k { font-size: 11.5px; font-weight: 700; opacity: 0.9; display: flex; gap: 5px; align-items: center; }
+.hc .v { font-family: var(--display); font-weight: 900; font-size: 15.5px; line-height: 1.2; }
+.hc .q { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.hc1 { background: linear-gradient(160deg, #FF5E7E, #C2185B); }
+.hc2 { background: linear-gradient(160deg, #7D5A8C, #E6B3C3 60%, #F6D6A8); }
+.hc3 { background: linear-gradient(160deg, #FFD54A, #F5A623); color: #3A2A00; }
+.hc3 svg.i { fill: #3A2A00; }
+.month { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 18px 8px; }
+.month b { font-size: 16px; font-weight: 700; }
+.nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 12px 14px; }
+.num { background: var(--fill); border-radius: 14px; padding: 9px 4px 8px; display: grid; justify-items: center; gap: 4px; }
+.num .tile { width: 26px; height: 26px; border-radius: 7px; }
+.num .tile svg.i { width: 14px; height: 14px; }
+.num b { font-family: var(--display); font-weight: 900; font-size: 19px; line-height: 1; }
+.num span { font-size: 11px; color: var(--label2); font-weight: 600; }
+.mini { display: flex; gap: 10px; align-items: center; padding: 8px 18px; }
+.mini .tile { width: 26px; height: 26px; border-radius: 7px; }
+.mini .tile svg.i { width: 14px; height: 14px; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="env" viewBox="0 0 24 24"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5zm2 .9v.3l7 4.6 7-4.6v-.3z"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><path d="M9 4h6l1.6 2H20a1.5 1.5 0 0 1 1.5 1.5v10A1.5 1.5 0 0 1 20 19H4a1.5 1.5 0 0 1-1.5-1.5v-10A1.5 1.5 0 0 1 4 6h3.4zm3 4.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20.5s-8-4.8-8-10.6A4.4 4.4 0 0 1 12 7.3a4.4 4.4 0 0 1 8 2.6c0 5.8-8 10.6-8 10.6z"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H7a2 2 0 0 1-2-2zm2 13v1h10v-1z"/></symbol>
+  <symbol id="phone" viewBox="0 0 24 24"><path d="M6.6 3.5l3 .5 1.2 4-2 1.6a11 11 0 0 0 5.6 5.6l1.6-2 4 1.2.5 3a2 2 0 0 1-2 2.1C10.3 19.5 4.5 13.7 4.5 5.5a2 2 0 0 1 2.1-2z"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M9 3h6l-1 6 3 3v2h-4v7l-1 1-1-1v-7H7v-2l3-3z"/></symbol>
+  <symbol id="cal" viewBox="0 0 24 24"><path d="M7 3h2v2h6V3h2v2h2a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5v-12A1.5 1.5 0 0 1 5 5h2zm-1.5 6v9h13V9z"/></symbol>
+  <symbol id="spark" viewBox="0 0 24 24"><path d="M12 2l2.2 6.3L20.5 10l-6.3 2.2L12 18.5l-2.2-6.3L3.5 10l6.3-1.7zM18.5 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></symbol>
+  <symbol id="key" viewBox="0 0 24 24"><path d="M14.5 3a6.5 6.5 0 1 1-5.9 9.2L3 17.8V21h3.2v-2h2v-2h2l1.6-1.6A6.5 6.5 0 0 1 14.5 3zm2 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<div class="wrap">
+  <h1>Our moments: three ways</h1>
+  <p class="lede">Today every row says only what kind of thing it was ("Exchanged secret notes"), so rows look like copies and there is nothing to remember. All three options fix the logic the same way; they differ only in how it looks.</p>
+  <ul class="fixes">
+    <li>Each moment is tied to its own note, date, call or photo: the row shows their words, the hearts or the length, and a tap opens exactly that one.</li>
+    <li>A plan shows on the day it happens (with its time), not on the day it was made; upcoming plans stay in the calendar above, so nothing is listed twice.</li>
+    <li>Big moments (you met, a new level, a chapter opened) stand out from everyday ones.</li>
+    <li>Four filters that fit the screen (All, Together, Words, Milestones) instead of seven that run off it.</li>
+  </ul>
+
+  <div class="row">
+    <!-- A -->
+    <div class="opt">
+      <div class="tag"><b>A</b> By day <span class="rec">Recommended</span></div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>20:26</span><span>100%</span></div>
+        <div class="top"><span class="t">Us</span><span class="round"><svg><use href="#bell"/></svg></span><span class="round acc"><svg><use href="#plus"/></svg></span></div>
+        <div class="h2">Our moments</div>
+        <div class="segc"><span class="on">All</span><span>Together</span><span>Words</span><span>Milestones</span></div>
+
+        <div class="day"><b>Today</b><span>Mon, 9 Nov</span></div>
+        <div class="card">
+          <div class="it"><span class="tile note-c"><svg class="i"><use href="#env"/></svg></span>
+            <div class="grow"><span class="ttl">What do you miss most?</span><span class="sub"><b>Hana:</b> Your voice notes at 2 am.</span></div>
+            <div class="end"><span class="time">18:26</span><span class="chev">›</span></div></div>
+          <div class="it"><span class="tile photo-c"><svg class="i"><use href="#cam"/></svg></span>
+            <div class="grow"><span class="ttl">Photo booth</span><span class="sub">Polaroid</span></div>
+            <div class="end"><span class="thumb"><i></i></span><span class="time">13:18</span><span class="chev">›</span></div></div>
+        </div>
+
+        <div class="day"><b>Yesterday</b><span>Sun, 8 Nov</span></div>
+        <div class="card">
+          <div class="it"><span class="tile date-c"><svg class="i"><use href="#heart"/></svg></span>
+            <div class="grow"><span class="ttl">Late night at the studio</span><span class="sub"><span class="hearts">♥ 9/12</span> · Sweet ending</span></div>
+            <div class="end"><span class="time">21:40</span><span class="chev">›</span></div></div>
+          <div class="it"><span class="tile plan-c"><svg class="i"><use href="#cal"/></svg></span>
+            <div class="grow"><span class="ttl">Cinema</span><span class="sub">20:00</span></div>
+            <div class="end"><span class="chev">›</span></div></div>
+          <div class="it"><span class="tile diary-c"><svg class="i"><use href="#book"/></svg></span>
+            <div class="grow"><span class="ttl">A quiet Sunday</span><span class="sub"><b>Hana</b> wrote back</span></div>
+            <div class="end"><span class="time">16:10</span><span class="chev">›</span></div></div>
+        </div>
+
+        <div class="day"><b>Saturday</b><span>7 Nov</span></div>
+        <div class="mile"><span class="big">11</span><div class="grow"><span class="ttl">More than friends</span><span class="sub">Level 11</span></div><span class="chev">›</span></div>
+        <div class="card">
+          <div class="it"><span class="tile call-c"><svg class="i"><use href="#phone"/></svg></span>
+            <div class="grow"><span class="ttl">Call</span><span class="sub">12 min</span></div>
+            <div class="end"><span class="time">22:05</span><span class="chev">›</span></div></div>
+        </div>
+        <div class="fade"></div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span>Chats</span><span class="on">Us</span></div><div class="tf"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></div></div>
+      </div></div>
+      <p class="note">Like Apple's Journal and Wallet: a header per day, the day's moments in one rounded card. Each row: a coloured tile, what it was, their words or the result, the time. A new level is a mint card of its own.</p>
+    </div>
+
+    <!-- B -->
+    <div class="opt">
+      <div class="tag"><b>B</b> Thread</div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>20:26</span><span>100%</span></div>
+        <div class="top"><span class="t">Us</span><span class="round"><svg><use href="#bell"/></svg></span><span class="round acc"><svg><use href="#plus"/></svg></span></div>
+        <div class="h2">Our moments</div>
+        <div class="segc"><span class="on">All</span><span>Together</span><span>Words</span><span>Milestones</span></div>
+        <div class="thr">
+          <span class="dlab">Today</span>
+          <div class="nd"><span class="dot note-c"><svg class="i"><use href="#env"/></svg></span>
+            <div class="grow"><span class="ttl">Secret notes<span class="cnt">2</span></span><span class="sub"><b>Hana:</b> Your voice notes at 2 am.</span></div>
+            <span class="time">18:26</span></div>
+          <div class="nd"><span class="dot photo-c"><svg class="i"><use href="#cam"/></svg></span>
+            <div class="grow"><span class="ttl">Photo booth</span><span class="sub">Polaroid</span></div>
+            <span class="thumb"><i></i></span></div>
+          <span class="dlab">Yesterday</span>
+          <div class="nd"><span class="dot date-c"><svg class="i"><use href="#heart"/></svg></span>
+            <div class="grow"><span class="ttl">Late night at the studio</span><span class="sub"><span class="hearts">♥ 9/12</span> · Sweet ending</span></div>
+            <span class="time">21:40</span></div>
+          <div class="nd"><span class="dot plan-c"><svg class="i"><use href="#cal"/></svg></span>
+            <div class="grow"><span class="ttl">Cinema</span><span class="sub">20:00</span></div></div>
+          <div class="nd"><span class="dot diary-c"><svg class="i"><use href="#book"/></svg></span>
+            <div class="grow"><span class="ttl">A quiet Sunday</span><span class="sub"><b>Hana</b> wrote back</span></div>
+            <span class="time">16:10</span></div>
+          <span class="dlab">Sat, 7 Nov</span>
+          <div class="nd big"><span class="dot lvl-c"><svg class="i"><use href="#heart"/></svg></span>
+            <div class="grow"><span class="ttl">Level 11 · More than friends</span></div></div>
+          <div class="nd"><span class="dot call-c"><svg class="i"><use href="#phone"/></svg></span>
+            <div class="grow"><span class="ttl">Call</span><span class="sub">12 min</span></div>
+            <span class="time">22:05</span></div>
+        </div>
+        <div class="fade"></div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span>Chats</span><span class="on">Us</span></div><div class="tf"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></div></div>
+      </div></div>
+      <p class="note">Today's thread kept, made readable: a day label on the thread, their words under each row, two notes of one day as one row with "2", a ring round the big moments. Closest to what is there now.</p>
+    </div>
+
+    <!-- C -->
+    <div class="opt">
+      <div class="tag"><b>C</b> Highlights</div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>20:26</span><span>100%</span></div>
+        <div class="top"><span class="t">Us</span><span class="round"><svg><use href="#bell"/></svg></span><span class="round acc"><svg><use href="#plus"/></svg></span></div>
+        <div class="h2">Our moments</div>
+        <div class="hl">
+          <div class="hc hc1"><span class="k"><svg class="i"><use href="#heart"/></svg>Last date</span><div><div class="v">Late night at the studio</div><div class="q">♥ 9/12</div></div></div>
+          <div class="hc hc2"><span class="k"><svg class="i"><use href="#cam"/></svg>Photo</span><div class="v">Today</div></div>
+          <div class="hc hc3"><span class="k"><svg class="i"><use href="#env"/></svg>Hana wrote</span><div class="q">“Your voice notes at 2 am.”</div></div>
+        </div>
+        <div class="month"><b>November</b><span class="time">9 days</span></div>
+        <div class="nums">
+          <div class="num"><span class="tile date-c"><svg class="i"><use href="#heart"/></svg></span><b>3</b><span>dates</span></div>
+          <div class="num"><span class="tile note-c"><svg class="i"><use href="#env"/></svg></span><b>5</b><span>notes</span></div>
+          <div class="num"><span class="tile photo-c"><svg class="i"><use href="#cam"/></svg></span><b>2</b><span>photos</span></div>
+          <div class="num"><span class="tile call-c"><svg class="i"><use href="#phone"/></svg></span><b>4</b><span>calls</span></div>
+        </div>
+        <div class="mini"><span class="tile note-c"><svg class="i"><use href="#env"/></svg></span><div class="grow"><span class="ttl">What do you miss most?</span></div><span class="time">18:26</span></div>
+        <div class="mini"><span class="tile photo-c"><svg class="i"><use href="#cam"/></svg></span><div class="grow"><span class="ttl">Photo booth</span></div><span class="time">13:18</span></div>
+        <div class="mini"><span class="tile date-c"><svg class="i"><use href="#heart"/></svg></span><div class="grow"><span class="ttl">Late night at the studio</span></div><span class="time">Yesterday</span></div>
+        <div class="mini"><span class="tile diary-c"><svg class="i"><use href="#book"/></svg></span><div class="grow"><span class="ttl">A quiet Sunday</span></div><span class="time">Yesterday</span></div>
+        <div class="fade"></div>
+        <div class="tabbar"><div class="tb"><span>Today</span><span>Chats</span><span class="on">Us</span></div><div class="tf"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></div></div>
+      </div></div>
+      <p class="note">Three cards of the best recent moments on top, the month in numbers (a tap filters), then a short list. Most "wow", but the list itself carries less.</p>
+    </div>
+  </div>
+</div>

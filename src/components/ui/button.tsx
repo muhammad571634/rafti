@@ -1,13 +1,14 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space } from '@/theme';
+import { gradients, radius, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 /**
- * `primary` is the one solid apricot action on a screen; `secondary` is the quiet
- * white button beside it. No gradients or glow: colour alone marks the main action.
+ * `primary` is the one soft peach action on a screen (a light top-to-bottom peach with
+ * ink-brown text, owner's pick 2026-10-15); `secondary` is the quiet white button beside it.
  */
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'soft' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -25,7 +26,8 @@ export interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 48 };
+// lg is iOS's large control (50 pt); sm reaches the 44 pt target through hitSlop.
+const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 50 };
 
 export function Button({
   label,
@@ -39,12 +41,14 @@ export function Button({
   right,
   style,
 }: ButtonProps) {
+  const styles = useThemed(sheet);
   const fg = foreground(variant);
 
   return (
     <PressableScale
       onPress={onPress}
       disabled={disabled || loading}
+      hitSlop={size === 'sm' ? 5 : undefined}
       style={[
         styles.base,
         {
@@ -57,13 +61,19 @@ export function Button({
         full && styles.full,
         style,
       ]}>
+      {variant === 'primary' ? <LinearGradient colors={gradients.primary} style={StyleSheet.absoluteFill} /> : null}
       <View style={styles.row}>
         {loading ? (
           <ActivityIndicator size="small" color={fg} />
         ) : (
           <>
             {left}
-            <Txt variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'} color={fg}>
+            <Txt
+              variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'}
+              color={fg}
+              lines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}>
               {label}
             </Txt>
             {right}
@@ -75,9 +85,10 @@ export function Button({
 }
 
 function background(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
-      return colors.primary;
+      return colors.primaryFill;
     case 'secondary':
       return colors.surface;
     case 'accent':
@@ -92,14 +103,16 @@ function background(variant: ButtonVariant) {
 }
 
 function foreground(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
-    case 'accent':
       return colors.textOnPrimary;
+    case 'accent':
+      return colors.white;
     case 'secondary':
       return colors.text;
     case 'soft':
-      return colors.primary;
+      return colors.brandText;
     case 'danger':
       return colors.danger;
     default:
@@ -109,20 +122,22 @@ function foreground(variant: ButtonVariant) {
 
 const bordered = (variant: ButtonVariant) => variant === 'secondary' || variant === 'ghost';
 
-const styles = StyleSheet.create({
-  base: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  border: {
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  full: { alignSelf: 'stretch' },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    base: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    border: {
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    full: { alignSelf: 'stretch' },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: space.sm,
+    },
+  }),
+);

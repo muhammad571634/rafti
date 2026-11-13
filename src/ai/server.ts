@@ -1,0 +1,318 @@
+import Constants from 'expo-constants';
+
+import type { ChatPromptInput } from './chat-prompt';
+import type { DraftField, DraftInput, DraftResult, FieldContext } from './character-draft';
+import type { StreamLineRequest } from './content-prompts';
+import type { FirstTextRequest } from './first-text';
+import type { GroupPromptInput } from './group-reply';
+import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
+import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
+import { cleanDayNotes } from './own-day';
+import { cleanReact, type React } from './react';
+import { cleanSetup } from './setup-prompt';
+import { cleanThreadOps, type ThreadOps } from './thread-prompt';
+import { cleanIdeas, EMOTIONS } from './reply-style';
+import type { CharacterArc, Emotion, PlanId } from '@/types';
+import type { SetupOffer } from '@/types';
+import type { WriteKind, WriteRequest, WriteResults } from './writes';
+import type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  ClientConfig,
+  GrantRequest,
+  MemoriesState,
+  MemorySyncRequest,
+  MemorySyncResult,
+  MessageSyncRequest,
+  MessageSyncResult,
+  MessagesPage,
+  ReportRequest,
+  ShareResult,
+  SpeakRequest,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+} from './session-types';
+
+/**
+ * The phone's side of the Sigmazam API (`server/`). Every build talks to the cloud server
+ * (`server/fly.toml`, Tokyo) unless `EXPO_PUBLIC_API_URL` names another one; `local` means the
+ * laptop's test server at Metro's host on port 8787. Every call has a deadline and any failure
+ * returns null: the caller then says so (Not Delivered, a paused stream, a Retry) or stays quiet, so
+ * the chat never stalls on a network or a free-tier daily cap and no stock line passes for a reply.
+ */
+const CLOUD_API = 'https://sigmazam-api.fly.dev';
+const DEV_PORT = 8787;
+const TIMEOUT_MS = 25_000;
+/** A minute of voice on a slow connection. */
+const TRANSCRIBE_TIMEOUT_MS = 40_000;
+/** A spoken line; later than this and the call shows its caption alone. */
+const SPEAK_TIMEOUT_MS = 12_000;
+/** Nobody waits on a text they write first, but "typing…" shows meanwhile: past this the scripted line goes. */
+const FIRST_TEXT_TIMEOUT_MS = 15_000;
+/** A whole character is the longest answer the model writes. */
+const DRAFT_TIMEOUT_MS = 40_000;
+/** A stream line is short; a stuck one would stall the stream, so the stand-in goes sooner. */
+const STREAM_LINE_TIMEOUT_MS = 22_000;
+/** The group waits on one member at a time, as long as the server tries its models (`LLM_TIMEOUT_MS`). */
+const GROUP_REPLY_TIMEOUT_MS = 22_000;
+/** A note, a page or a round: as long as the server tries its models (`LLM_TIMEOUT_MS`). */
+const WRITE_TIMEOUT_MS = 22_000;
+/** A reply that looks at a photo also uploads it, on whatever connection the phone has. */
+const PHOTO_TIMEOUT_EXTRA_MS = 12_000;
+/** Nobody waits on the memory pass. */
+const MEMORY_PASS_TIMEOUT_MS = 30_000;
+
+export function apiBase(): string | null {
+  const fromEnv = process.env.EXPO_PUBLIC_API_URL;
+  if (fromEnv !== 'local') return (fromEnv || CLOUD_API).replace(/\/$/, '');
+  const host = Constants.expoConfig?.hostUri?.split(':')[0];
+  return __DEV__ && host ? `http://${host}:${DEV_PORT}` : null;
+}
+
+async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T | null> {
+  const base = apiBase();
+  if (!base) return null;
+  try {
+    const res = await fetch(`${base}${path}`, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+    return res.ok ? ((await res.json()) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Which model the server runs, or null when it is off or unreachable. */
+export async function serverModel(): Promise<string | null> {
+  const health = await call<{ ok: boolean; model: string | null }>('/health', undefined, 4000);
+  return health?.model ?? null;
+}
+
+/** Where the app signs in (the Supabase URL and publishable key), or null when the server has no database. */
+export function serverClientConfig(): Promise<ClientConfig | null> {
+  return call<ClientConfig>('/v1/client-config', undefined, 4000);
+}
+
+/** The signed-in user's profile, wallet and plan; the first call creates them and pays the welcome gift. */
+export function serverBootstrap(accessToken: string, input: BootstrapInput): Promise<BootstrapResult | null> {
+  return call<BootstrapResult>('/v1/session/bootstrap', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(input),
+  });
+}
+
+const withToken = (accessToken: string, init: RequestInit = {}): RequestInit => ({
+  ...init,
+  headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
+});
+const post = (accessToken: string, body: unknown) => withToken(accessToken, { method: 'POST', body: JSON.stringify(body) });
+
+/**
+ * The wallet on the server (B1.2). Each call answers the server's wallet, or null when the server is
+ * off or refused (no shells, a grant on a server that takes none); the caller then reads the wallet
+ * again and takes it as the truth.
+ */
+export const serverWallet = {
+  state: (accessToken: string) => call<WalletState>('/v1/wallet', withToken(accessToken), 8000),
+  spend: (accessToken: string, request: SpendRequest) => call<WalletState>('/v1/wallet/spend', post(accessToken, request), 8000),
+  grant: (accessToken: string, request: GrantRequest) => call<WalletState>('/v1/wallet/grant', post(accessToken, request), 8000),
+  checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
+  spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
+  share: (accessToken: string) => call<ShareResult>('/v1/wallet/share', post(accessToken, {}), 8000),
+  /**
+   * A plan with no store behind it, before billing (0z142): the server records it for allow-listed
+   * test accounts and pays its monthly shells itself. Null when refused (any other account).
+   */
+  testPlan: (accessToken: string, request: { plan: PlanId; trial: boolean }) =>
+    call<{ wallet: WalletState; subscription: { plan: PlanId; status: 'trial' | 'active'; termStart: string } | null }>(
+      '/v1/subscription/test',
+      post(accessToken, request),
+      8000,
+    ),
+};
+
+/**
+ * The chats on the server (B1.3b): the phone's unsent rows go up, a new install reads them back,
+ * and deleting the account deletes the server's copy. Null when the server is off or refused.
+ */
+export const serverMessages = {
+  sync: (accessToken: string, request: MessageSyncRequest) =>
+    call<MessageSyncResult>('/v1/messages/sync', post(accessToken, request), 20_000),
+  page: (accessToken: string, after: number) => call<MessagesPage>(`/v1/messages?after=${after}`, withToken(accessToken), 20_000),
+  deleteAccount: (accessToken: string) =>
+    call<{ ok: true }>('/v1/account', withToken(accessToken, { method: 'DELETE' }), 15_000),
+};
+
+/**
+ * One of the character's lines in their voice (a call): base64 mp3, `'off'` while the server has no
+ * voice service (calls then show captions alone), or null when it failed this time.
+ */
+export async function serverSpeak(request: SpeakRequest, accessToken?: string | null): Promise<string | 'off' | null> {
+  const base = apiBase();
+  if (!base) return 'off';
+  try {
+    const res = await fetch(`${base}/v1/voice/speak`, { ...withOptionalToken(accessToken, request), signal: AbortSignal.timeout(SPEAK_TIMEOUT_MS) });
+    const body = (await res.json().catch(() => null)) as { audio?: unknown; error?: unknown } | null;
+    if (res.ok && typeof body?.audio === 'string' && body.audio) return body.audio;
+    return res.status === 503 && body?.error === 'noVoice' ? 'off' : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A report on a character's message, for a person to review. `refused`: the server will never take
+ * it (400, 413), so sending again is no use; null: it did not get there (offline, busy, an old
+ * server without the route) and goes again later.
+ */
+export const serverReports = {
+  send: async (accessToken: string, request: ReportRequest): Promise<'kept' | 'refused' | null> => {
+    const base = apiBase();
+    if (!base) return null;
+    try {
+      const res = await fetch(`${base}/v1/reports`, { ...post(accessToken, request), signal: AbortSignal.timeout(15_000) });
+      if (res.ok) return 'kept';
+      return res.status === 400 || res.status === 413 ? 'refused' : null;
+    } catch {
+      return null;
+    }
+  },
+};
+
+/** The memory on the server (B2.3): the characters the phone changed go up whole; a new phone reads it all back. */
+export const serverMemories = {
+  sync: (accessToken: string, request: MemorySyncRequest) => call<MemorySyncResult>('/v1/memories/sync', post(accessToken, request), 20_000),
+  all: (accessToken: string) => call<MemoriesState>('/v1/memories', withToken(accessToken), 20_000),
+};
+
+/**
+ * The real model's reply as chat bubbles, or null (fall back to the stand-in). `crisis`: the
+ * server's crisis check found the user may be in danger, so the helpline card goes with it. With the
+ * account's token the server ties the call's cost to this user (`usage_events`); without one it
+ * still answers.
+ */
+export async function serverReply(
+  input: ChatPromptInput,
+  accessToken?: string | null,
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; ideas?: string[]; emotion?: Emotion; intensity?: number } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown }>(
+    '/v1/chat/reply',
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+      body: JSON.stringify(input),
+    },
+    TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+  );
+  // On a call the server signs each line it may read aloud (`voice`, one per message); the
+  // signatures stay paired with their lines.
+  const signs = Array.isArray(reply?.voice) ? reply.voice : [];
+  const kept = (reply?.messages ?? [])
+    .map((line, i) => ({ line, sig: typeof signs[i] === 'string' ? (signs[i] as string) : undefined }))
+    .filter(({ line }) => typeof line === 'string' && line.trim());
+  if (!kept.length) return null;
+  return {
+    lines: kept.map((k) => k.line),
+    crisis: reply?.crisis === true,
+    photos: reply?.photos,
+    voice: signs.length ? kept.map((k) => k.sig) : undefined,
+    setup: reply?.crisis === true ? undefined : cleanSetup(reply?.setup),
+    threads: reply?.crisis === true ? undefined : cleanThreadOps(reply?.threads),
+    // New things the friend said of their own day (0z144): kept for the next replies.
+    day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day),
+    // A sticker the friend put on the user's latest message (owner, 2026-11-08).
+    react: reply?.crisis === true ? undefined : cleanReact(reply?.react),
+    // One-tap replies in the chat's language (0z176), checked again: they come over the network.
+    ideas: reply?.crisis === true ? undefined : cleanIdeas(reply?.ideas),
+    // How the friend feels after this reply, in the model's own reading (0z141): it carries into the next one.
+    ...(EMOTIONS.includes(reply?.emotion as Emotion)
+      ? { emotion: reply?.emotion as Emotion, intensity: typeof reply?.intensity === 'number' ? Math.min(1, Math.max(0, reply.intensity)) : 0.5 }
+      : {}),
+  };
+}
+
+const withOptionalToken = (accessToken: string | null | undefined, body: unknown): RequestInit => ({
+  method: 'POST',
+  headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+  body: JSON.stringify(body),
+});
+
+/**
+ * Quick create on the server (B1.4b): the whole draft, or one field written again. The server runs
+ * the same checks (`parseDraft`, `parseField`). Null when it is off, busy or slow: the caller uses
+ * the stand-in, as before.
+ */
+export const serverStudio = {
+  draft: (input: DraftInput, accessToken?: string | null) =>
+    call<DraftResult>('/v1/characters/draft', withOptionalToken(accessToken, input), DRAFT_TIMEOUT_MS),
+  field: async (field: DraftField, character: FieldContext, language: string, accessToken?: string | null) => {
+    const reply = await call<{ value?: string | string[] | CharacterArc | null }>('/v1/characters/draft/field', withOptionalToken(accessToken, { field, character, language }));
+    return reply ? (reply.value ?? null) : undefined;
+  },
+};
+
+/** The memory pass (B2): what to remember from the new lines, or null (off, busy, slow); the next pass tries again. */
+export async function serverMemoryPass(request: MemoryPassRequest, accessToken?: string | null): Promise<MemoryPassResult | null> {
+  const reply = await call<Omit<MemoryPassResult, 'day'> & { day?: unknown }>('/v1/memory/pass', withOptionalToken(accessToken, request), MEMORY_PASS_TIMEOUT_MS);
+  if (!reply || !Array.isArray(reply.ops)) return null;
+  const day = cleanDayNotes(reply.day);
+  return { summary: typeof reply.summary === 'string' ? reply.summary : undefined, ops: reply.ops, ...(day.length ? { day } : {}) };
+}
+
+/** What a voice message says: the words ('' when none were made out) and their language, or null (off, busy, slow or a broken answer). */
+export async function serverTranscribe(clip: VoiceClip, accessToken?: string | null): Promise<Transcript | null> {
+  const reply = await call<{ text?: string | null; language?: unknown }>('/v1/voice/transcribe', withOptionalToken(accessToken, { clip }), TRANSCRIBE_TIMEOUT_MS);
+  return typeof reply?.text === 'string' ? { text: reply.text, language: cleanLanguage(reply.language) } : null;
+}
+
+/** The next stream line in the speaker's voice (B1.4b) and anything new of their own day, or null (off, busy, slow or no usable line). */
+export async function serverStreamLine(request: StreamLineRequest, accessToken?: string | null): Promise<{ line: string; day: string[] } | null> {
+  const reply = await call<{ line?: string | null; day?: unknown }>('/v1/streams/line', withOptionalToken(accessToken, request), STREAM_LINE_TIMEOUT_MS);
+  return typeof reply?.line === 'string' && reply.line.trim() ? { line: reply.line, day: cleanDayNotes(reply.day) } : null;
+}
+
+/** One group member's next message in their own voice, or null (off, busy or slow: the caller writes the stand-in). */
+export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; day?: string[] } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; day?: unknown }>(
+    '/v1/chat/group',
+    withOptionalToken(accessToken, input),
+    GROUP_REPLY_TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+  );
+  const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
+  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day) } : null;
+}
+
+/**
+ * What a friend writes on a screen of its own (src/ai/writes.ts) and anything new of their own day
+ * it told (`OWN_DAY_WRITES`), or null (off, busy, slow or a broken answer).
+ */
+export async function serverWrite<K extends WriteKind>(request: WriteRequest & { kind: K }, accessToken?: string | null): Promise<{ result: WriteResults[K]; day: string[] } | null> {
+  const reply = await call<{ result?: WriteResults[K] | null; day?: unknown }>('/v1/ai/write', withOptionalToken(accessToken, request), WRITE_TIMEOUT_MS);
+  return reply?.result ? { result: reply.result, day: cleanDayNotes(reply.day) } : null;
+}
+
+/**
+ * A text they write first, in the model's words (B1.4a): `skip` when the model passed (the chat
+ * already settled it), null when the server is off, busy or slow (the caller writes the scripted line).
+ */
+export async function serverFirstText(
+  request: FirstTextRequest,
+  accessToken?: string | null,
+): Promise<{ skip: boolean; lines: string[]; ideas: { label: string; text: string }[]; day?: string[] } | null> {
+  const reply = await call<{ skip?: boolean; lines?: unknown[]; ideas?: { label?: unknown; text?: unknown }[]; day?: unknown }>(
+    '/v1/ai/first-text',
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+      body: JSON.stringify(request),
+    },
+    FIRST_TEXT_TIMEOUT_MS,
+  );
+  if (!reply) return null;
+  const lines = (reply.lines ?? []).filter((line): line is string => typeof line === 'string' && !!line.trim());
+  // The answer comes over the network, so only strings count as a reply's words.
+  const ideas = (reply.ideas ?? []).flatMap((idea) => (typeof idea?.label === 'string' && typeof idea.text === 'string' ? [{ label: idea.label, text: idea.text }] : []));
+  const skip = reply.skip === true || !lines.length;
+  return { skip, lines, ideas, ...(skip ? {} : { day: cleanDayNotes(reply.day) }) };
+}

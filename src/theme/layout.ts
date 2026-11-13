@@ -43,17 +43,49 @@ const shadow = (
     },
   })!;
 
+/**
+ * A shadow for see-through glass. Android's `elevation` draws its shadow under the whole shape,
+ * so through a translucent fill it shows as a pale polygon (the square inside the Find button);
+ * a CSS box-shadow stays outside the shape, as on the web.
+ */
+const glassShadow = (y: number, blur: number, opacity: number): ViewStyle =>
+  Platform.select<ViewStyle>({
+    android: { boxShadow: `0px ${y}px ${blur}px rgba(0,0,0,${opacity})` },
+    default: {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: y },
+      shadowOpacity: opacity,
+      shadowRadius: blur,
+    },
+  })!;
+
 export const shadows = {
   none: {} as ViewStyle,
   card: shadow(2, 10, 0.08, 2),
   raised: shadow(4, 16, 0.12, 4),
-  fab: shadow(6, 14, 0.24, 8, '#E8742A'),
+  fab: shadow(6, 14, 0.24, 8, '#F79E63'),
   modal: shadow(10, 30, 0.18, 12),
   bar: shadow(-2, 12, 0.06, 8),
+  /** The floating glass tab bar. */
+  glass: glassShadow(8, 24, 0.14),
+  /** Small glass buttons on a screen's top bar (Chats: Edit, new chat). */
+  glassButton: glassShadow(1, 8, 0.08),
 } as const;
 
 export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 } as const;
 
-/** Height of the custom bottom tab bar (excluding safe-area inset). */
-export const TAB_BAR_HEIGHT = 58;
+/**
+ * Room a tab screen leaves under its content for the floating tab bar (62 tall, 12 above the
+ * safe area), excluding the safe-area inset itself.
+ */
+export const TAB_BAR_HEIGHT = 84;
 export const HEADER_HEIGHT = 52;
+
+/**
+ * Room under a control pinned to the bottom edge, from the safe-area inset. iOS rests it on the
+ * thin home indicator (at least `min`); Android's navigation bar is a solid strip, so the control
+ * keeps a small gap above it instead of sitting on its edge.
+ */
+export function bottomRoom(inset: number, min: number = space.md) {
+  return Platform.OS === 'android' && inset > 0 ? inset + space.sm : Math.max(inset, min);
+}
