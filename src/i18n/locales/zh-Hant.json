@@ -1534,6 +1534,7 @@
     "talkedWith": "你和誰聊過 · {{month}}",
     "whoTalked": "你和誰聊過",
     "yourDays": "你的日子",
+    "showMore": "再顯示 {{count}} 個",
     "level": "等級 {{level}}",
     "intimacy": "親密值 {{count}}",
     "streak": "連續互動 {{count}} 天",

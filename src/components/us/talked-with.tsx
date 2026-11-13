@@ -56,7 +56,7 @@ export function talkHue(shares: readonly TalkShare[], characterId: string | unde
 /**
  * "Who you talked with" in the Ink look (owner, 2026-11-13, from the canvas frame "6 · Us"): the month
  * in serif, then up to three overlapping discs, one per friend, sized by their share of this month's
- * lines, blending where they overlap (screen at night, multiply by day), each with its name and whole
+ * lines, blending where they overlap (screen at night, a little see-through by day), each with its name and whole
  * percent inside (HIG Charts: label the marks directly, no separate legend to match colours against).
  * The discs swell in one after another when the section first appears; reduced motion shows them at
  * once. Hidden until two friends have talked this month.
@@ -119,15 +119,18 @@ export const TalkedWith = memo(function TalkedWith() {
   );
 });
 
-function useSwellStyle(swell: SharedValue<number>) {
+/** The disc's see-through by day (no blend there); full at night, where screen does the mixing. */
+const DISC_OPACITY = isDark ? 1 : 0.86;
+
+function useSwellStyle(swell: SharedValue<number>, opacity = 1) {
   return useAnimatedStyle(() => {
     const p = swell.get();
-    return { opacity: Math.min(1, p * 1.6), transform: [{ scale: 0.2 + 0.8 * p }] };
+    return { opacity: opacity * Math.min(1, p * 1.6), transform: [{ scale: 0.2 + 0.8 * p }] };
   });
 }
 
 function Disc({ size, x, y, hue, swell }: { size: number; x: number; y: number; hue: readonly [string, string]; swell: SharedValue<number> }) {
-  const style = useSwellStyle(swell);
+  const style = useSwellStyle(swell, DISC_OPACITY);
   return (
     <Animated.View style={[styles.disc, { width: size, height: size, borderRadius: size / 2, marginLeft: x - size / 2, marginTop: y - size / 2 }, style]}>
       <LinearGradient colors={hue} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={StyleSheet.absoluteFill} />
@@ -156,7 +159,9 @@ const styles = StyleSheet.create({
     left: '50%',
     top: '50%',
     overflow: 'hidden',
-    mixBlendMode: isDark ? 'screen' : 'multiply',
+    // Screen lights the overlaps on black (the canvas); on the light ground multiply muddied them to
+    // brown on the A51, so by day the discs are just a little see-through.
+    ...(isDark ? { mixBlendMode: 'screen' as const } : null),
   },
   label: { position: 'absolute', left: '50%', top: '50%', height: 24, alignItems: 'center', justifyContent: 'center' },
   // Dark ink on the bright discs reads in both appearances (WCAG AA on the lightest stop).

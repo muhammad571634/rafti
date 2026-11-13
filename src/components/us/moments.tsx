@@ -3,16 +3,18 @@ import { LinearGradient as Gradient } from 'expo-linear-gradient';
 import { type Href, useRouter } from 'expo-router';
 import { type ReactNode, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { moduleTile, PressableScale, SFIcon, SymbolTile, Txt } from '@/components/ui';
+import { characterImage } from '@/components/ui/avatar';
 import { phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
 import { clockTime, shortName } from '@/lib/format';
-import { buildTimeline, groupByDay, type MomentLine, momentLines, momentTarget, recentRows, type TimelineItem } from '@/lib/moment-groups';
-import { dateFromKey } from '@/mock';
+import { buildTimeline, type MomentLine, momentTarget, recentRows, type TimelineItem } from '@/lib/moment-groups';
+import { dateFromKey, dayKey } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, isDark, systemColors, systemGround } from '@/theme';
@@ -251,36 +253,150 @@ export function OurMoments({
   const router = useRouter();
   const everything = useMomentTimeline(character.id, today);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const lines = useMemo(() => momentLines(groupByDay(recentRows(everything, new Date()))), [everything, today]);
+  const recent = useMemo(() => recentRows(everything, new Date()), [everything, today]);
   const content = useMomentContent(character, relationship);
   const open = useOpenMoment(onOpenDay);
+  const more = everything.length - recent.length;
+  const face = characterImage(character);
 
   return (
     <View>
-      <View style={styles.head}>
-        <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-          {t('us.moments')}
-        </Txt>
-        {everything.length ? (
-          <PressableScale
-            scaleTo={0.94}
-            accessibilityRole="button"
-            accessibilityLabel={`${t('us.moments')}, ${t('common.seeAll')}`}
-            onPress={() => router.push(`/moments/${encodeURIComponent(character.id)}` as Href)}
-            style={styles.seeAll}>
-            <Txt style={styles.seeAllText} maxFontSizeMultiplier={1.3}>
-              {t('common.seeAll')}
-            </Txt>
-          </PressableScale>
-        ) : null}
-      </View>
-      {lines.length === 0 ? (
+      <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        {t('us.moments')}
+      </Txt>
+      {recent.length === 0 ? (
         <Txt style={styles.hint}>{t('us.noMoments')}</Txt>
       ) : (
-        lines.map((line) => <MomentLineView key={line.key} line={line} today={today} content={content} open={open} />)
+        <View style={styles.cards}>
+          {recent.map((item) => (
+            <MomentCard key={item.key} item={item} today={today} content={content(item)} face={face} onPress={open(item)} />
+          ))}
+        </View>
       )}
+      {/* The rest of the story, older than the last week: the whole timeline (what "See all" opened). */}
+      {more > 0 ? (
+        <PressableScale
+          scaleTo={0.96}
+          accessibilityRole="button"
+          onPress={() => router.push(`/moments/${encodeURIComponent(character.id)}` as Href)}
+          style={styles.more}>
+          <Txt style={styles.moreText} maxFontSizeMultiplier={1.3}>
+            {t('us.showMore', { count: more })}
+          </Txt>
+        </PressableScale>
+      ) : null}
     </View>
   );
+}
+
+/**
+ * One moment as the Ink canvas draws it (owner, 2026-11-13, frame "Our moments"): a dark card washed
+ * with the kind's colour from the left, the day on top, then what it was in serif with the particular
+ * part in italic in that colour ("A date: walk in the rain"), their words under it when there are
+ * any, and the friend's face in a ring of the same colour (a photo's picture for a photo).
+ */
+function MomentCard({ item, today, content, face, onPress }: { item: TimelineItem; today: string; content: MomentContent; face: string | number | undefined; onPress?: () => void }) {
+  const { t, i18n } = useTranslation();
+  const hue = KIND_TILE[item.kind].fill;
+  const { label, highlight, sub } = cardParts(item, content, t);
+  const day = dayKey(item.at) === today ? t('common.today') : cardDay(item.at, today, i18n.language, t);
+  const time = item.kind === 'plan' && !item.plan?.time ? undefined : clockTime(item.at);
+  const when = time ? `${day} · ${time}` : day;
+  return (
+    <PressableScale
+      scaleTo={0.98}
+      disabled={!onPress}
+      onPress={onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={[when, highlight ? `${label}: ${highlight}` : label, content.hearts, sub].filter(Boolean).join(', ')}
+      style={styles.card}>
+      <Gradient colors={[`${hue}4D`, `${hue}00`]} start={{ x: 0, y: 0.3 }} end={{ x: 0.75, y: 0.7 }} style={StyleSheet.absoluteFill} />
+      <View style={styles.cardBody}>
+        <Txt style={styles.cardWhen} lines={1} maxFontSizeMultiplier={1.3}>
+          {when}
+        </Txt>
+        <View style={styles.cardBottom}>
+          <View style={styles.grow}>
+            <Text style={styles.cardTitle} numberOfLines={2} maxFontSizeMultiplier={1.3}>
+              {label}
+              {highlight ? (
+                <>
+                  {': '}
+                  <Text style={[styles.cardHighlight, { color: isDark ? hue : deeper(hue) }]}>{highlight}</Text>
+                </>
+              ) : null}
+            </Text>
+            {content.hearts ? (
+              <View style={styles.heartsLine}>
+                <SFIcon ios="heart.fill" icon="heart" size={12} color={systemColors.pink} />
+                <Txt style={styles.hearts}>{content.hearts}</Txt>
+                {sub ? (
+                  <Txt style={[styles.cardSub, styles.shrink]} lines={1}>
+                    {`· ${sub}`}
+                  </Txt>
+                ) : null}
+              </View>
+            ) : sub ? (
+              <Txt style={styles.cardSub} lines={1}>
+                {sub}
+              </Txt>
+            ) : null}
+          </View>
+          <View style={[styles.ring, { borderColor: hue }]}>
+            <View style={styles.ringInner}>
+              {content.thumb ? content.thumb : face != null ? <Image source={typeof face === 'string' ? { uri: face } : face} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+            </View>
+          </View>
+        </View>
+      </View>
+    </PressableScale>
+  );
+}
+
+/**
+ * The kind's colour made dark enough to read as text on a light card (yellow on white failed on the
+ * A51 by day; HIG Color: enough contrast for text). At night the bright colour reads as it is.
+ */
+function deeper(hex: string, by = 0.42): string {
+  const n = parseInt(hex.slice(1, 7), 16);
+  const dim = (c: number) => Math.round(c * (1 - by));
+  return `#${((1 << 24) | (dim((n >> 16) & 255) << 16) | (dim((n >> 8) & 255) << 8) | dim(n & 255)).toString(16).slice(1)}`;
+}
+
+/** A card's two parts: what it was ("A date") and the particular ("walk in the rain"), plus their words. */
+function cardParts(item: TimelineItem, c: MomentContent, t: (key: string, o?: Record<string, unknown>) => string): { label: string; highlight?: string; sub?: string } {
+  switch (item.kind) {
+    case 'call':
+    case 'photo':
+      return { label: c.title, highlight: c.sub };
+    case 'levelUp':
+      return { label: c.sub ?? '', highlight: c.title };
+    case 'met':
+      return { label: c.title };
+    case 'arc':
+      return { label: t('us.momentTitle.arc'), highlight: c.title };
+    case 'secretNote':
+      return { label: t('secretNote.title'), highlight: c.title, sub: c.sub };
+    case 'board':
+      return { label: t('us.publishKind.board'), highlight: c.title, sub: c.sub };
+    case 'diary':
+      return { label: t('us.publishKind.diary'), highlight: c.title, sub: c.sub };
+    case 'dating':
+      return { label: t('home.short.dating'), highlight: c.title, sub: c.sub };
+    case 'quiz':
+      return { label: t('us.momentTitle.quiz'), highlight: c.title, sub: c.sub };
+    case 'plan':
+      return { label: t('us.publishKind.plan'), highlight: c.title };
+  }
+}
+
+/** "Yesterday", else "Sat, 8 Nov" (with the year once it is another year), as the canvas dates its cards. */
+function cardDay(at: string, today: string, locale: string, t: (key: string) => string): string {
+  const date = new Date(at);
+  const ago = Math.round((dateFromKey(today).getTime() - dateFromKey(dayKey(at)).getTime()) / 86_400_000);
+  if (ago === 1) return t('common.yesterday');
+  const sameYear = date.getFullYear() === dateFromKey(today).getFullYear();
+  return date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) });
 }
 
 /** A big moment: the level's number (a glyph for meeting and a chapter) on the bond's mint. */
@@ -343,13 +459,31 @@ function dayHeading(day: string, today: string, locale: string, t: (key: string)
   return { title: date.toLocaleDateString(locale, { day: 'numeric', month: 'long', ...(sameYear ? {} : { year: 'numeric' }) }) };
 }
 
+const FACE = 40;
+
 const styles = StyleSheet.create({
-  head: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 24, marginLeft: 18, marginRight: 8 },
-  title: { flex: 1, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: systemGround.label },
-  // "See all": the iOS section header's trailing link, in the brand's ink; 44pt tall to tap.
-  seeAll: { minHeight: 44, paddingHorizontal: 10, justifyContent: 'center' },
-  seeAllText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.brandText },
-  hint: { marginTop: 8, marginHorizontal: 18, fontSize: 15, color: colors.textSecondary },
+  title: { marginTop: 28, marginHorizontal: 20, fontFamily: fonts.serif, fontSize: 24, lineHeight: 30, letterSpacing: -0.3, color: systemGround.label },
+  hint: { marginTop: 8, marginHorizontal: 20, fontSize: 15, color: colors.textSecondary },
+  // The canvas's glow cards.
+  cards: { marginTop: 12, marginHorizontal: SIDE, gap: 12 },
+  card: {
+    minHeight: 104,
+    borderRadius: 26,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: systemGround.card,
+    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)' } : null),
+  },
+  cardBody: { flex: 1, justifyContent: 'space-between', gap: 14, paddingTop: 14, paddingBottom: 16, paddingHorizontal: 16 },
+  cardWhen: { fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
+  cardBottom: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
+  cardTitle: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 24, letterSpacing: -0.2, color: systemGround.label },
+  cardHighlight: { fontFamily: fonts.serifItalic },
+  cardSub: { marginTop: 3, fontSize: 13.5, lineHeight: 18, color: systemGround.secondaryLabel },
+  ring: { width: FACE + 6, height: FACE + 6, borderRadius: (FACE + 6) / 2, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  ringInner: { width: FACE, height: FACE, borderRadius: FACE / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  more: { alignSelf: 'center', minHeight: 44, paddingHorizontal: 16, marginTop: 6, justifyContent: 'center' },
+  moreText: { fontSize: 15, color: systemGround.secondaryLabel },
   dayHead: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 14, marginBottom: 8, marginHorizontal: 18 },
   dayTitle: { flex: 1, fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: systemGround.label },
   dayDate: { fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },

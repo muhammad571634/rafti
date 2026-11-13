@@ -1534,6 +1534,7 @@
     "talkedWith": "話した相手 · {{month}}",
     "whoTalked": "話した相手",
     "yourDays": "あなたの毎日",
+    "showMore": "さらに{{count}}件表示",
     "level": "レベル {{level}}",
     "intimacy": "親密度 {{count}}",
     "streak": "{{count}}日連続",

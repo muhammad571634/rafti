@@ -1612,6 +1612,7 @@
     "talkedWith": "С кем вы общались · {{month}}",
     "whoTalked": "С кем вы общались",
     "yourDays": "Ваши дни",
+    "showMore": "Показать ещё {{count}}",
     "level": "Уровень {{level}}",
     "intimacy": "близость {{count}}",
     "streak": "{{count}} дн. подряд",

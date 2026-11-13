@@ -1560,6 +1560,7 @@
     "talkedWith": "Com quem você conversou · {{month}}",
     "whoTalked": "Com quem você conversou",
     "yourDays": "Seus dias",
+    "showMore": "Ver mais {{count}}",
     "level": "Nível {{level}}",
     "intimacy": "{{count}} intimidade",
     "streak": "{{count}} dias de sequência",
