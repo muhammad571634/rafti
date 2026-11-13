@@ -1532,6 +1532,8 @@
   "us": {
     "title": "우리",
     "talkedWith": "대화한 사람 · {{month}}",
+    "whoTalked": "대화한 사람",
+    "yourDays": "나의 하루들",
     "level": "레벨 {{level}}",
     "intimacy": "친밀도 {{count}}",
     "streak": "{{count}}일 연속",

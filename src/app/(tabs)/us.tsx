@@ -14,7 +14,7 @@ import { OurMoments } from '@/components/us/moments';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
-import { TalkedWith } from '@/components/us/talked-with';
+import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
@@ -146,6 +146,18 @@ export default function UsScreen() {
     for (const a of friendAlarms) if (!a.repeat.length) days.add(dayKey(nextAlarmAt(a, new Date())));
     return days;
   }, [plans, friendAlarms]);
+  // Days you talked with this friend: a dot in their disc's colour on the calendar.
+  const friendChatId = useMemo(() => conversations.find((c) => c.characterId === selected?.character.id)?.id, [conversations, selected]);
+  const friendMessages = useAppStore((s) => (friendChatId ? s.messages[friendChatId] : undefined));
+  const talkedDays = useMemo(() => {
+    const days = new Set<string>();
+    for (const m of friendMessages ?? []) {
+      if ((m.kind === 'text' || m.kind === 'voice' || m.kind === 'image') && !m.failed && !m.pending) days.add(dayKey(m.createdAt));
+    }
+    return days;
+  }, [friendMessages]);
+  const shares = useTalkShares();
+  const talkColor = talkHue(shares, selected?.character.id);
   const dayPlans = useMemo(
     () => plans.filter((x) => x.date === day).sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '')),
     [plans, day],
@@ -334,7 +346,7 @@ export default function UsScreen() {
         <TalkedWith />
 
         <View onLayout={(e) => (calendarY.current = e.nativeEvent.layout.y)}>
-          <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} />
+          <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} talked={talkedDays} talkColor={talkColor} title={t('us.yourDays')} />
         </View>
 
         <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>

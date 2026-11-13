@@ -1558,6 +1558,8 @@
   "us": {
     "title": "Wir",
     "talkedWith": "Mit wem du gesprochen hast · {{month}}",
+    "whoTalked": "Mit wem du gesprochen hast",
+    "yourDays": "Deine Tage",
     "level": "Stufe {{level}}",
     "intimacy": "{{count}} Nähe",
     "streak": "{{count}} Tage Serie",

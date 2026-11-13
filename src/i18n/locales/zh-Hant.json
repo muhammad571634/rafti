@@ -1532,6 +1532,8 @@
   "us": {
     "title": "我們",
     "talkedWith": "你和誰聊過 · {{month}}",
+    "whoTalked": "你和誰聊過",
+    "yourDays": "你的日子",
     "level": "等級 {{level}}",
     "intimacy": "親密值 {{count}}",
     "streak": "連續互動 {{count}} 天",

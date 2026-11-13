@@ -1532,6 +1532,8 @@
   "us": {
     "title": "Chúng ta",
     "talkedWith": "Bạn đã trò chuyện với ai · {{month}}",
+    "whoTalked": "Bạn đã trò chuyện với ai",
+    "yourDays": "Những ngày của bạn",
     "level": "Cấp {{level}}",
     "intimacy": "{{count}} thân thiết",
     "streak": "chuỗi {{count}} ngày",

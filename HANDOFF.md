@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z206. Us: "Who you talked with" and "Your days" in the Ink look (2026-11-13, Claude, Opus 5.5). NEXT: owner looks at it on the phone
+
+- **Owner's ask**: the canvas frame "6 · Us" (Ink prototype): names inside the three circles instead of a legend under them, the circles swelling in one after another as on the canvas, the calendar like the canvas too, all by Apple's rules.
+- **Built**: `src/components/us/talked-with.tsx`: serif month title ("November"), "Who you talked with" (`us.whoTalked`), discs in the canvas pairs by rank (coral, amber, sky; `TALK_HUES`), sized by share (46% → 150), name and percent inside in dark ink (HIG Charts: label marks directly), screen / multiply blend, no card; staggered 900 ms swell (0.2 → 1, slight overshoot, 120 ms apart) once on first show, instant with reduced motion. `useTalkShares` / `talkHue` exported. `src/components/us/plan-calendar.tsx`: "Your days" (`us.yourDays`) serif title, the month as a peach toggle under it, Apple Calendar month view (weekday caps, plain 17 pt numbers, the picked day in a peach circle, today's number peach), dots under a day: a filled dot in the friend's disc colour for a day you talked with them (from that chat's lines), a peach ring for a plan (grey once past); whole month by default, the month name folds it to a week. Us passes `talked` / `talkColor` (`src/app/(tabs)/us.tsx`).
+- **The canvas's bottom card** ("Sat, 8 Nov · A walk with Clara") was the next plan with its friend's face; Us already lists the picked day's plans under the calendar, so it was not added.
+- **Checked**: on the A51's installed app via OTA (dark, English): discs, labels, the swell, the calendar week with Sam's dots; tsc 0, npm test 922/922, check:locales. **Not checked**: light mode (multiply blend on the grey ground), two friends only, a long name in the smallest disc, the month view after the last fix (a new OTA carries it).
+
 ### 0z205. "Closer" level-up moment rebuilt in the Ink look (2026-11-13, Claude, Fable 5.2 / Opus 5.5). NEXT: owner looks at it on the phone
 
 - **Owner's ask**: the canvas frame "9 · Level up" of the Ink prototype (https://claude.ai/artifact/K3fciVZVynp5VQbZK7XPyT) replaces the old moment (confetti, sunburst, blurred photo, peach gradient button), made better. Improved prototype approved: `docs/prototypes/closer-ink.html` (https://claude.ai/artifact/GPM4DJAZp1ydAffuMuqsLA).

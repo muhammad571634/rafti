@@ -1532,6 +1532,8 @@
   "us": {
     "title": "Kita",
     "talkedWith": "Dengan siapa kamu mengobrol · {{month}}",
+    "whoTalked": "Dengan siapa kamu mengobrol",
+    "yourDays": "Hari-harimu",
     "level": "Level {{level}}",
     "intimacy": "keintiman {{count}}",
     "streak": "streak {{count}} hari",

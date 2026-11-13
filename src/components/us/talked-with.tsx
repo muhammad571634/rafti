@@ -1,53 +1,93 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated';
 
-import { Txt } from '@/components/ui';
 import { useDayKey } from '@/hooks/use-day-key';
 import { shortName } from '@/lib/format';
 import { monthStart, talkShares, type TalkShare } from '@/lib/talk-shares';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { isDark, space, systemGround } from '@/theme';
+import { fonts, isDark, systemGround } from '@/theme';
 
-const HEIGHT = 168;
-const SHINE = ['rgba(255,255,255,0.3)', 'rgba(255,255,255,0)'] as const;
-/** An orb's diameter from its share: never so small its glow vanishes, never wider than the card's middle. */
-const orbSize = (percent: number) => Math.round(76 + percent * 1.3);
 /**
- * One luminous hue per place, not the friend's own: friend hues are muted and two friends can share
- * one (Mia and Milo both drew violet on the A51), and the legend must tell them apart.
+ * One bright pair per place (the Ink canvas, owner 2026-11-13): coral, amber, sky. By rank, not the
+ * friend's own hue: friend hues are muted and two friends can draw the same one, and the discs must
+ * tell them apart. The calendar's dot for a friend uses the same colour (`talkHue`).
  */
-const ORB_HUES = ['#7C6CF6', '#F472B6', '#2DD4BF'] as const;
-
-/** Where each orb sits, as offsets from the card's centre: the biggest left, the others overlapping it. */
-const SPOTS = [
-  { x: -46, y: 6 },
-  { x: 40, y: 26 },
-  { x: 54, y: -34 },
+export const TALK_HUES = [
+  ['#FF5E62', '#FF9966'],
+  ['#F8C13F', '#F08A3C'],
+  ['#6E8BFF', '#58C7F3'],
 ] as const;
 
-/**
- * "Who you talked with · November" (owner's brief, 2026-11-11, from the dark prototype): up to three
- * overlapping glowing glass orbs, one per friend, sized by their share of this month's lines, one
- * luminous hue per place (`ORB_HUES`), blending where they overlap (screen at night, multiply by day), with a
- * legend of names and whole percents in tabular figures. Hidden until two friends have talked
- * this month. Read only from the store; worked out again when the chats or the day change.
- */
-export const TalkedWith = memo(function TalkedWith() {
-  const { t, i18n } = useTranslation();
+/** Where each disc's centre sits (the canvas layout): the biggest left, the next overlapping it low right, the third high right. */
+const SPOTS = [
+  { x: -55, y: -10 },
+  { x: 46, y: 42 },
+  { x: 80, y: -44 },
+] as const;
+/** A disc's diameter from its share, as on the canvas (46% → 150), never too small for its label, never wider than the middle. */
+const discSize = (percent: number) => Math.round(Math.min(176, Math.max(100, 70 + percent * 1.75)));
+const SWELL_MS = 900;
+const STAGGER_MS = 120;
+// The canvas's swell: a quick rise that overshoots a touch and settles.
+const SWELL = Easing.bezier(0.2, 1.3, 0.4, 1);
+
+/** This month's top friends by lines, worked out again when the chats or the day change. */
+export function useTalkShares(): TalkShare[] {
   const conversations = useAppStore((s) => s.conversations);
   const messages = useAppStore((s) => s.messages);
-  const characters = useAppStore((s) => s.characters);
-  const relationships = useAppStore((s) => s.relationships);
   const today = useDayKey();
-
-  const shares = useMemo(
+  return useMemo(
     () => talkShares(conversations.map((c) => ({ conversationId: c.id, characterId: c.characterId })), messages, monthStart()),
     // `today` turns the month over at midnight on the 1st.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [conversations, messages, today],
   );
+}
+
+/** A friend's colour on the discs, or undefined when they are not among them. */
+export function talkHue(shares: readonly TalkShare[], characterId: string | undefined): string | undefined {
+  const i = shares.findIndex((s) => s.characterId === characterId);
+  return i >= 0 ? TALK_HUES[i][0] : undefined;
+}
+
+/**
+ * "Who you talked with" in the Ink look (owner, 2026-11-13, from the canvas frame "6 · Us"): the month
+ * in serif, then up to three overlapping discs, one per friend, sized by their share of this month's
+ * lines, blending where they overlap (screen at night, multiply by day), each with its name and whole
+ * percent inside (HIG Charts: label the marks directly, no separate legend to match colours against).
+ * The discs swell in one after another when the section first appears; reduced motion shows them at
+ * once. Hidden until two friends have talked this month.
+ */
+export const TalkedWith = memo(function TalkedWith() {
+  const { t, i18n } = useTranslation();
+  const characters = useAppStore((s) => s.characters);
+  const relationships = useAppStore((s) => s.relationships);
+  const shares = useTalkShares();
+  const swell = [useSharedValue(0), useSharedValue(0), useSharedValue(0)];
+
+  useEffect(() => {
+    if (!shares.length) return;
+    swell.forEach((v, i) => v.set(withDelay(i * STAGGER_MS, withTiming(1, { duration: SWELL_MS, easing: SWELL }))));
+    // Once, when the discs first appear; later changes of the shares just resize them.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shares.length > 0]);
+
+  const layout = useMemo(() => {
+    const discs = shares.map((s, i) => ({ s, i, size: discSize(s.percent), x: SPOTS[i].x, y: SPOTS[i].y }));
+    if (!discs.length) return { discs, height: 0 };
+    // Centre the group: its bounding box, then every disc shifted by the box's middle.
+    const left = Math.min(...discs.map((d) => d.x - d.size / 2));
+    const right = Math.max(...discs.map((d) => d.x + d.size / 2));
+    const top = Math.min(...discs.map((d) => d.y - d.size / 2));
+    const bottom = Math.max(...discs.map((d) => d.y + d.size / 2));
+    const mx = (left + right) / 2;
+    const my = (top + bottom) / 2;
+    return { discs: discs.map((d) => ({ ...d, x: d.x - mx, y: d.y - my })), height: bottom - top };
+  }, [shares]);
+
   if (shares.length === 0) return null;
 
   const nameOf = (s: TalkShare) => {
@@ -55,82 +95,71 @@ export const TalkedWith = memo(function TalkedWith() {
     return c ? shortName(displayName(c, relationships[c.id])) : '';
   };
   const month = new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(new Date());
-  const title = t('us.talkedWith', { month: month.charAt(0).toLocaleUpperCase(i18n.language) + month.slice(1) });
+  const monthTitle = month.charAt(0).toLocaleUpperCase(i18n.language) + month.slice(1);
   const summary = shares.map((s) => `${nameOf(s)} ${s.percent}%`).join(', ');
 
   return (
-    <View style={styles.card}>
-      <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-        {title}
-      </Txt>
-      <View style={styles.orbs} accessible accessibilityLabel={`${title}: ${summary}`}>
-        {/* Drawn smallest first, so the biggest share sits on top. */}
-        {shares
-          .map((s, i) => ({ s, i }))
-          .reverse()
-          .map(({ s, i }) => {
-            const size = orbSize(s.percent);
-            const hue = ORB_HUES[i];
-            return (
-              <View
-                key={s.characterId}
-                style={[
-                  styles.orb,
-                  {
-                    width: size,
-                    height: size,
-                    borderRadius: size / 2,
-                    marginLeft: SPOTS[i].x - size / 2,
-                    marginTop: SPOTS[i].y - size / 2,
-                    boxShadow: `0px 0px ${Math.round(size / 3)}px 0px ${hue}88`,
-                  },
-                ]}>
-                <LinearGradient colors={[`${hue}F2`, `${hue}99`]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: size / 2 }]} />
-                {/* Light falling on the glass from the top left, fading out before the middle. */}
-                <LinearGradient colors={SHINE} start={{ x: 0.15, y: 0.05 }} end={{ x: 0.55, y: 0.6 }} style={StyleSheet.absoluteFill} />
-              </View>
-            );
-          })}
-      </View>
-      <View style={styles.legend}>
-        {shares.map((s, i) => (
-          <View key={s.characterId} style={styles.legendItem}>
-            <View style={[styles.dot, { backgroundColor: ORB_HUES[i] }]} />
-            <Txt style={styles.legendName} lines={1} maxFontSizeMultiplier={1.3}>
-              {nameOf(s)}
-            </Txt>
-            <Txt style={styles.legendPercent} maxFontSizeMultiplier={1.3}>{`${s.percent}%`}</Txt>
-          </View>
+    <View style={styles.root}>
+      <Text style={styles.month} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        {monthTitle}
+      </Text>
+      <Text style={styles.subtitle} maxFontSizeMultiplier={1.3}>
+        {t('us.whoTalked')}
+      </Text>
+      <View style={[styles.discs, { height: layout.height }]} accessible accessibilityLabel={`${monthTitle}, ${t('us.whoTalked')}: ${summary}`}>
+        {/* Drawn smallest first, so the biggest share sits on top; the labels ride above every disc. */}
+        {[...layout.discs].reverse().map((d) => (
+          <Disc key={d.s.characterId} size={d.size} x={d.x} y={d.y} hue={TALK_HUES[d.i]} swell={swell[d.i]} />
+        ))}
+        {layout.discs.map((d) => (
+          <DiscLabel key={d.s.characterId} size={d.size} x={d.x} y={d.y} swell={swell[d.i]} name={nameOf(d.s)} percent={d.s.percent} />
         ))}
       </View>
     </View>
   );
 });
 
+function useSwellStyle(swell: SharedValue<number>) {
+  return useAnimatedStyle(() => {
+    const p = swell.get();
+    return { opacity: Math.min(1, p * 1.6), transform: [{ scale: 0.2 + 0.8 * p }] };
+  });
+}
+
+function Disc({ size, x, y, hue, swell }: { size: number; x: number; y: number; hue: readonly [string, string]; swell: SharedValue<number> }) {
+  const style = useSwellStyle(swell);
+  return (
+    <Animated.View style={[styles.disc, { width: size, height: size, borderRadius: size / 2, marginLeft: x - size / 2, marginTop: y - size / 2 }, style]}>
+      <LinearGradient colors={hue} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={StyleSheet.absoluteFill} />
+    </Animated.View>
+  );
+}
+
+function DiscLabel({ size, x, y, swell, name, percent }: { size: number; x: number; y: number; swell: SharedValue<number>; name: string; percent: number }) {
+  const style = useSwellStyle(swell);
+  return (
+    <Animated.View pointerEvents="none" style={[styles.label, { width: size - 20, marginLeft: x - (size - 20) / 2, marginTop: y - 12 }, style]}>
+      <Text style={styles.labelText} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
+        {name} <Text style={styles.labelPercent}>{`${percent}%`}</Text>
+      </Text>
+    </Animated.View>
+  );
+}
+
 const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: 14,
-    marginTop: space.md,
-    paddingTop: space.lg,
-    paddingBottom: space.lg,
-    borderRadius: 22,
-    borderCurve: 'continuous',
-    backgroundColor: systemGround.card,
-    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' } : null),
-  },
-  title: { marginHorizontal: space.lg, fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: systemGround.secondaryLabel },
-  orbs: { height: HEIGHT, alignItems: 'center', justifyContent: 'center' },
-  orb: {
+  root: { marginHorizontal: 20, marginTop: 22 },
+  month: { fontFamily: fonts.serif, fontSize: 32, lineHeight: 38, letterSpacing: -0.4, color: systemGround.label },
+  subtitle: { marginTop: 2, fontSize: 15, lineHeight: 20, color: systemGround.secondaryLabel },
+  discs: { marginTop: 16 },
+  disc: {
     position: 'absolute',
     left: '50%',
     top: '50%',
     overflow: 'hidden',
     mixBlendMode: isDark ? 'screen' : 'multiply',
-    opacity: isDark ? 0.92 : 0.85,
   },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', columnGap: space.lg, rowGap: space.xs, marginHorizontal: space.lg },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6, maxWidth: 160 },
-  dot: { width: 10, height: 10, borderRadius: 5 },
-  legendName: { flexShrink: 1, fontSize: 15, color: systemGround.label },
-  legendPercent: { fontSize: 15, fontWeight: '700', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  label: { position: 'absolute', left: '50%', top: '50%', height: 24, alignItems: 'center', justifyContent: 'center' },
+  // Dark ink on the bright discs reads in both appearances (WCAG AA on the lightest stop).
+  labelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: 'rgba(0,0,0,0.86)', textAlign: 'center' },
+  labelPercent: { fontWeight: '700', fontVariant: ['tabular-nums'] },
 });

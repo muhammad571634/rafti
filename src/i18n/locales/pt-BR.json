@@ -1558,6 +1558,8 @@
   "us": {
     "title": "Nós",
     "talkedWith": "Com quem você conversou · {{month}}",
+    "whoTalked": "Com quem você conversou",
+    "yourDays": "Seus dias",
     "level": "Nível {{level}}",
     "intimacy": "{{count}} intimidade",
     "streak": "{{count}} dias de sequência",

@@ -1558,6 +1558,8 @@
   "us": {
     "title": "Biz",
     "talkedWith": "Kiminle konuştun · {{month}}",
+    "whoTalked": "Kiminle konuştun",
+    "yourDays": "Günlerin",
     "level": "Seviye {{level}}",
     "intimacy": "{{count}} samimiyet",
     "streak": "{{count}} günlük seri",
