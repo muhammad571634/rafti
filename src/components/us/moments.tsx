@@ -13,7 +13,7 @@ import { characterImage } from '@/components/ui/avatar';
 import { phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
 import { clockTime, shortName } from '@/lib/format';
-import { buildTimeline, type MomentLine, momentTarget, recentRows, type TimelineItem } from '@/lib/moment-groups';
+import { buildTimeline, type MomentLine, momentTarget, type TimelineItem } from '@/lib/moment-groups';
 import { dateFromKey, dayKey } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -234,8 +234,8 @@ export function MomentLineView({
 }
 
 /**
- * The moments on Us: the last week (`recentRows`), so the screen stops; "See all" in the header
- * opens the whole story. A plan opens its day in the calendar above (`onOpenDay`).
+ * The moments on Us: the newest three, so the screen stops; "Show N more" under them opens the
+ * whole story with its filters. A plan opens its day in the calendar above (`onOpenDay`).
  */
 export function OurMoments({
   character,
@@ -252,8 +252,9 @@ export function OurMoments({
   const { t } = useTranslation();
   const router = useRouter();
   const everything = useMomentTimeline(character.id, today);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const recent = useMemo(() => recentRows(everything, new Date()), [everything, today]);
+  // The newest three only, so Us stays short (owner, 2026-11-13; the canvas shows three); the rest
+  // live in the whole story with its filters, one tap away.
+  const recent = useMemo(() => everything.slice(0, SHOWN), [everything]);
   const content = useMomentContent(character, relationship);
   const open = useOpenMoment(onOpenDay);
   const more = everything.length - recent.length;
@@ -273,7 +274,7 @@ export function OurMoments({
           ))}
         </View>
       )}
-      {/* The rest of the story, older than the last week: the whole timeline (what "See all" opened). */}
+      {/* The rest of the story: the whole timeline with its filters (what "See all" opened). */}
       {more > 0 ? (
         <PressableScale
           scaleTo={0.96}
@@ -460,6 +461,8 @@ function dayHeading(day: string, today: string, locale: string, t: (key: string)
 }
 
 const FACE = 40;
+/** Moments shown on Us before "Show N more". */
+const SHOWN = 3;
 
 const styles = StyleSheet.create({
   title: { marginTop: 28, marginHorizontal: 20, fontFamily: fonts.serif, fontSize: 24, lineHeight: 30, letterSpacing: -0.3, color: systemGround.label },
