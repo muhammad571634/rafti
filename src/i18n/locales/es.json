@@ -321,6 +321,7 @@
     "removedLine": "Sacaste a {{name}} del grupo"
   },
   "chat": {
+    "jumpToNewest": "Ir a los mensajes más recientes",
     "notifyOff": "Las notificaciones están apagadas, así que los mensajes de {{name}} no pueden llegarte.",
     "notifyOffAction": "Activar",
     "ideaEditHint": "Mantén presionado para cambiarlo antes de enviar",

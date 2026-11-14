@@ -316,6 +316,7 @@
     "removedLine": "你將{{name}}移出群組"
   },
   "chat": {
+    "jumpToNewest": "前往最新訊息",
     "notifyOff": "通知已關閉，因此你將無法即時收到{{name}}傳來的訊息。",
     "notifyOffAction": "開啟通知",
     "ideaEditHint": "長按可在發送前進行修改",

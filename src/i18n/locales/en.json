@@ -321,6 +321,7 @@
     "removedLine": "You removed {{name}}"
   },
   "chat": {
+    "jumpToNewest": "Go to the newest messages",
     "notifyOff": "Notifications are off, so {{name}}'s texts can't reach you.",
     "notifyOffAction": "Turn on",
     "ideaEditHint": "Long press to change it before sending",

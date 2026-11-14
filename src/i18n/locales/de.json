@@ -321,6 +321,7 @@
     "removedLine": "Du hast {{name}} entfernt"
   },
   "chat": {
+    "jumpToNewest": "Zu den neuesten Nachrichten",
     "notifyOff": "Mitteilungen sind aus, du verpasst Nachrichten von {{name}}.",
     "notifyOffAction": "Einschalten",
     "ideaEditHint": "Lange drücken zum Bearbeiten vor dem Senden",

@@ -316,6 +316,7 @@
     "removedLine": "{{name}} 님을 내보냈습니다"
   },
   "chat": {
+    "jumpToNewest": "최신 메시지로 이동",
     "notifyOff": "알림이 꺼져 있어 {{name}}의 메시지를 받을 수 없습니다.",
     "notifyOffAction": "켜기",
     "ideaEditHint": "보내기 전에 길게 눌러 수정하세요",

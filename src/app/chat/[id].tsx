@@ -31,6 +31,7 @@ import { ToneMenu } from '@/components/chat/tone-menu';
 import type { VoiceNote } from '@/components/chat/use-voice-note';
 import { dropNote } from '@/lib/voice-files';
 import { useFollowNewest } from '@/components/chat/follow-newest';
+import { JumpToNewest } from '@/components/chat/jump-to-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, asIdeas, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
@@ -222,7 +223,7 @@ export default function ChatRoomScreen() {
   );
 
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
-  const { onScroll, follow } = useFollowNewest(listRef);
+  const { onScroll, follow, jump, away, unseen } = useFollowNewest(listRef, messages?.length ?? 0);
   const newestMine = messages?.at(-1)?.author === 'me';
   useEffect(() => {
     follow(newestMine);
@@ -567,6 +568,7 @@ export default function ChatRoomScreen() {
               }}
             />
             {onPicture ? <PictureEdge top={pictureTop} /> : null}
+            <JumpToNewest visible={away && !editing} unseen={unseen} onPress={jump} />
             {/* The ground fades out under the header, so bubbles slide away beneath the glass. */}
             {!onPicture ? <HeaderFade color={background[0]} room={headerRoom} /> : null}
             {/* While you edit, the chat fades back; a tap on it cancels the edit. */}

@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { useFollowNewest } from '@/components/chat/follow-newest';
+import { JumpToNewest } from '@/components/chat/jump-to-newest';
 import type { VoiceNote } from '@/components/chat/use-voice-note';
 import { dropNote } from '@/lib/voice-files';
 import { lastMineId, runOf } from '@/components/chat/runs';
@@ -143,7 +144,7 @@ export default function GroupChatScreen() {
   );
 
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
-  const { onScroll, follow } = useFollowNewest(listRef);
+  const { onScroll, follow, jump, away, unseen } = useFollowNewest(listRef, messages?.length ?? 0);
   const newestMine = messages?.at(-1)?.author === 'me';
   useEffect(() => {
     follow(newestMine);
@@ -369,6 +370,7 @@ export default function GroupChatScreen() {
               }}
             />
             {onPicture ? <PictureEdge top={pictureTop} /> : null}
+            <JumpToNewest visible={away} unseen={unseen} onPress={jump} />
             {!artWallpaper ? <HeaderFade color={wallpaper.colors[0]} room={headerRoom} /> : null}
           </View>
 

@@ -316,6 +316,7 @@
     "removedLine": "Bạn đã xóa {{name}} khỏi nhóm"
   },
   "chat": {
+    "jumpToNewest": "Đến tin nhắn mới nhất",
     "notifyOff": "Thông báo đang tắt, nên tin nhắn của {{name}} không thể đến được với bạn.",
     "notifyOffAction": "Bật lên",
     "ideaEditHint": "Nhấn giữ để chỉnh sửa trước khi gửi",

@@ -316,6 +316,7 @@
     "removedLine": "{{name}}をグループから外しました"
   },
   "chat": {
+    "jumpToNewest": "最新のメッセージへ",
     "notifyOff": "通知がオフになっているため、{{name}}からのメッセージが届きません。",
     "notifyOffAction": "オンにする",
     "ideaEditHint": "送信前に長押しして編集",

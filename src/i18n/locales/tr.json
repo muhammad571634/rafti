@@ -321,6 +321,7 @@
     "removedLine": "{{name}} gruptan çıkarıldı"
   },
   "chat": {
+    "jumpToNewest": "En yeni mesajlara git",
     "notifyOff": "Bildirimler kapalı olduğundan {{name}} mesajları sana ulaşamaz.",
     "notifyOffAction": "Aç",
     "ideaEditHint": "Göndermeden önce değiştirmek için uzun bas",

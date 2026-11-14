@@ -316,6 +316,7 @@
     "removedLine": "Kamu mengeluarkan {{name}}"
   },
   "chat": {
+    "jumpToNewest": "Ke pesan terbaru",
     "notifyOff": "Notifikasi mati, sehingga pesan dari {{name}} tidak dapat sampai kepadamu.",
     "notifyOffAction": "Nyalakan",
     "ideaEditHint": "Tekan lama untuk mengedit sebelum mengirim",

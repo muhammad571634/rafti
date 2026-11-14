@@ -321,6 +321,7 @@
     "removedLine": "Você removeu {{name}}"
   },
   "chat": {
+    "jumpToNewest": "Ir para as mensagens mais recentes",
     "notifyOff": "As notificações estão desativadas, então as mensagens de {{name}} não chegam até você.",
     "notifyOffAction": "Ativar",
     "ideaEditHint": "Pressione e segure para alterar antes de enviar",
