@@ -210,3 +210,88 @@ are in `docs/later-list.md` or go there.
   reads as broken; a disabled `PillButton` keeps its shape at 40 % with the reason one tap away.
 - Not reachable in this pass: dark mode (the phone is set to light; the owner switches it), the
   onboarding (needs a fresh install), iOS.
+
+## 8. Owner's direction, 2026-11-15 (outranks the sections above where they differ)
+
+The owner: "simple, pleasant, Apple iOS, modern minimalism that never gets boring; **the app must
+behave as if it is alive**. Competitors on the App Store are mostly dark, people use these apps in
+the evening (from about 8 pm). Decide yourself." The lead's decisions:
+
+### 8.1 One appearance: night
+
+- **The whole app is dark, always, whatever the phone is set to.** This replaces "screens with a
+  character are dark, tools follow the phone" (0z196). Reasons: the product is used in the evening;
+  character art is lit like cinema and looks best on black; today the user flips light ↔ dark every
+  time a chat opens or closes (seen on the A51: light Chats → dark chat → light settings); one
+  appearance halves what has to be designed, tested and kept consistent.
+- How: the root is one `NightScope`; `Screen` is night by default; the launch splash, system status
+  and navigation bars are dark; the reload-on-scheme-change (`hooks/use-theme-reload.ts`) goes. Do
+  not delete the light tokens in this job, just stop reaching them (a light option could return
+  after launch as a setting). The 91 module-level `isDark` branches then resolve to night: remove
+  them as each file is touched.
+- Night is not flat black: ground `#09090D`, raised surfaces one step lighter (no borders around
+  cards and bubbles where a surface step can do the job), one warm accent (peach) for the user's
+  side and the primary action, each friend's own hue as light on their screens (a soft glow behind
+  their picture, their bubbles' tint, the ring on their face). Pastel widget fills and saturated
+  icon tiles (Today, Find folders, the "+" panel) become deep tints of the same hues.
+- Exceptions that stay as they are: paper (diary pages, board notes, polaroids, posters).
+
+### 8.2 "Alive", defined so it can be built and checked
+
+Alive does not mean more animation. It means the app answers the hand and the friends seem to be
+somewhere, doing something. Budget: **one living thing per screen**, everything else still.
+
+1. **Presence** (the friend exists when you are not typing): a status line under the name that the
+   model already knows how to write from their day ("at the gym", "can't sleep"), the green dot
+   only when it is their waking hours, the hero picture on Today breathing by 1-2 % and drifting a
+   few points with the gyroscope, typing dots that sometimes start, stop and start again.
+2. **Response** (every touch is answered within 100 ms): a pressed state on everything, a spring
+   on release, haptics by meaning (selection, success, warning; the wrapper in `lib/haptics.ts`),
+   the send button morphing, a sent bubble that rises out of the field.
+3. **Continuity** (things come from somewhere): a chat row grows into its chat and a tile into its
+   screen (`GrowInto` in `design-ink.md`), lists re-order with layout transitions, numbers count
+   (`CountIn`), titles arrive line by line once (`LineIn`).
+4. **Time** (the app knows what hour it is): Today's greeting, hero light and friend order change
+   between morning, evening and late night; after midnight the app gets quieter (dimmer accents,
+   softer sounds); the friend's "good night" closes the day.
+5. **Sound** (small, optional, never synthetic-sounding): send, receive, level-up, a call
+   connecting; made and measured with earshot, behind one switch.
+
+Rules that still hold: sheets and menus appear at once (owner); typing dots and voice waves are not
+redesigned; everything stops under Reduce Motion, runs on the UI thread, holds 60 fps on the A51
+and pauses when its screen is not focused. If a motion cannot be explained as presence, response,
+continuity or time, it is decoration: leave it out.
+
+### 8.3 Order after this section
+
+Step 1 (truth, tokens, kit) now also makes the root night (8.1). Then Step 2, Step 3, Step 4 as
+written; presence and response (8.2.1, 8.2.2) ride with Step 3 because they live in the chat;
+continuity and time ride with the Step 5 sweep, tabs first.
+
+## 9. How to work on this (for the engineer who takes it)
+
+You are the senior React Native engineer, the designer and the product manager of this app at
+once; the owner does not read code and judges only what is on the phone.
+
+- **As product manager**: before a step, write one line on what the user gains; refuse work that
+  adds a surface or a setting; when something would change what the user can do or pay, stop and
+  put it to the owner in plain words with one recommendation (section 6), never an option list.
+- **As designer**: look before you draw. Load the UI skills first (`mobile-app-design:ios-screens`,
+  `expo-native-ui`, `expo-animation`, `appllama-app-design-skill`), read the Apple HIG page for the
+  component you are about to touch, and open two or three real apps on the A51 (iMessage-like
+  chats, Apple Health, How We Feel) for the same pattern. Take the structure, never the art or
+  words. After drawing, run `break-ui` on the screen and `mobile-app-design:ios-review` on the
+  result.
+- **As engineer**: tokens and kit before screens; no literal in a screen that a token could hold;
+  one component per role (extend the kit, never fork it); logic gets a test (`node:test`, see
+  `src/lib/*.test.ts`); fix weak code you pass (re-renders, whole-store selectors, crash risks) and
+  name it in the report; library questions go to Context7, not memory (Expo SDK 57, Reanimated 4,
+  expo-router 58 have all changed).
+- **Proof**: nothing is "done" from reading code. Drive the changed screen on the A51 through adb
+  (`docs/` has the adb path; screenshots into the scratchpad), worst case first: longest name, most
+  items, empty, keyboard up, largest text size, a second quick tap. Say plainly what was not seen.
+- **Rhythm**: one step, one commit, pushed; `npx tsc --noEmit`, `npm test`, locale checks; an OTA
+  to the phone when the native side allows it; a short HANDOFF block in English; a report to the
+  owner in a few plain Uzbek lines: what changed for the user, what to try, the single next step.
+- **When unsure between two looks**: pick the quieter one. Simple wins; alive comes from response
+  and presence, not from more colour or more parts.
