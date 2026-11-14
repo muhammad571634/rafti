@@ -14,7 +14,7 @@ Motion prototype (nine screens, motion live): https://claude.ai/artifact/K3fciVZ
 
 **Apple HIG pass (2026-11-11, owner approved the direction): `docs/design-ink-polish.md` amends this plan (type scale, label colours, segmented controls, the floating glass tab bar, settings tiles, motion and haptics rules, follow the phone for dark / light). Where the two differ, the polish file wins.**
 
-Status: PLAN. Nothing below is built. The owner approves the prototype first (project rule), then
+Status (2026-11-15): BUILDING. Night only (design-audit-2026-11-15 §8.1: no light set, whatever the phone says). Tokens in `src/theme/ink.ts`, kit in `src/components/ink/`; the order of work is in `docs/agent-tasks/design-audit-2026-11-15.md` §3. Old text: Status: PLAN. Nothing below is built. The owner approves the prototype first (project rule), then
 task 0 lands, then the screen tasks. Until then `docs/design-style.md` is still the law.
 
 ## 1. What the reference does (read off every screen and clip)

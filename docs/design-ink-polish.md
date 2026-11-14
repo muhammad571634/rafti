@@ -56,6 +56,8 @@ The other boards changed only through the shared stylesheet.
 
 ## 3. Appearance: follow the phone (Dark Mode)
 
+> **Superseded 2026-11-15**: the app is night only (owner: used in the evening, competitors are dark; HIG allows a dark-only app for immersive media). See design-audit-2026-11-15 §8.1. The light values below are not built.
+
 "Avoid offering an app-specific appearance setting"; "ensure that your app looks good in both modes";
 "in rare cases, consider using only a dark appearance ... immersive media". Decision for the owner's
 open question in `design-ink.md` §4.1: **follow the phone**. Dark is the reference look; every screen

@@ -28,7 +28,7 @@ This file is loaded automatically in Antigravity (`always_on`) and imported via 
 - **Visual rules**:
   - Minimal text UI: headings, numbers, and icons only — no helper subtitles on screens.
   - Photo cards keep a dark scrim + clear see-through glass buttons (never solid white buttons or opaque frosted capsules covering character art).
-  - **Ground (owner, 2026-11-08)**: Apple's system ground (white + `#F2F2F7` cards, black + `#1C1C1E` at night, `systemGround` in `src/theme/colors.ts`) replaces the cream on every screen but the chat itself (owner: leave the chat), 0z163-0z165 (design-style §10).
+  - **Night only (owner, 2026-11-15; replaces the 2026-11-08 ground and the 2026-11-11 split)**: the whole app is dark whatever the phone is set to (`isDark = true`, `src/theme/colors.ts`); every screen moves to the Ink look built from `src/theme/ink.ts` and `src/components/ink/` (no sizes, hexes or radii in screens). Order of work and the rules: `docs/agent-tasks/design-audit-2026-11-15.md`. Paper stays paper.
   - **Screen families (owner, 2026-11-08)**: a friend's space in their accent (`FriendAccent` + `friendAccent`), feature screens with one hero card in their signature colour (`signature`), lists on Apple's grouped ground, moments full-bleed; rules in design-style §10.
   - **Friend on the trailing side (owner, 2026-11-08, every character, from now on)**: a photo card with words on it puts the character's face and body on the right and the name / info / line on the left (`sceneFocus(id, aspect, 0.68)`); Today's hero ends at the screen's vertical middle on every phone.
   - Motion: popups appear instantly; typing dots, voice waves, and existing animations stay untouched unless specifically requested.

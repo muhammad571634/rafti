@@ -1,5 +1,7 @@
 # Sigmazam design style ("calm cards")
 
+> **Superseded where it differs (2026-11-15).** The one look is now **Ink**, night only: `docs/design-ink.md`, amended by `docs/design-ink-polish.md` and `docs/agent-tasks/design-audit-2026-11-15.md` (§8 wins). Tokens and roles: `src/theme/ink.ts`; parts: `src/components/ink/`. From this file still hold: minimal text, clear glass on photos, a friend on the trailing side of a photo card, share posters carry only the character, Apple-style icons, colour that carries meaning. Not any more: the aurora ground (§1), the h2/h3 sizes (§2), Fredoka / Nunito titles and radius 24 / 30 (§10), following the phone for dark / light.
+
 The user chose this style on 2026-10-09 as **the one design method for the whole app**. Every new
 screen, and every screen that is changed, follows it. The reference is the F17 plan screens:
 

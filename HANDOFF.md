@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z214. Night only, the Ink kit, the Ink screens on it (2026-11-15, Claude, Opus 5.5). NEXT: Step 2 of the audit brief (night leaks in the chat menus and header, the friend's chat settings)
+
+- **Owner's ask**: start the design brief (); the app dark like the competitors, simple, Apple-like, alive.
+- **Night only** (brief §8.1):  (),  on the phones in  (not on web: the static export has no such call),  in app.json (next APK), the reload on a scheme change and its stack restore removed (,  + test). **Fixed by it**: the white strip under every screen on the A51 was Android's light contrast scrim (pixel 231,231,231); after the OTA it is 5,5,8.
+- **Ink tokens** (): night colours (secondary text 0.62, Apple's fill / separator, the card rim, pill white / black, peach accent for money, danger, unread), type roles on the iOS Large steps ( 34,  28,  22,  20, ,  17,  15,  13,  12), ,  20,  (soft deep tile washes).
+- **Ink kit** ():  (ground, glass bar, serif title handing over to the bar, pinned footer),  / ,  (primary / secondary / accent / quiet; disabled keeps its shape), ,  + ,  (a chosen chip is tinted, never white).
+- **Moved onto it**: Streams, World books (the loud tile hues became the soft tints), Dates (tiles, the go pill; a locked tile reads "🔒 Lv 6", full "Reach level 6" on the button and for VoiceOver), Secret note, the whole story, Us' moments / calendar / talked-with titles. Success haptic on a note swap and a date start; symbol empty states instead of the mascot there.
+- **Retired**: 56  PNGs, 10 launcher  PNGs, , , ,  (no consumers); the names stay as .
+- **Docs**: design-style.md, design-ink.md, design-ink-polish.md §3 point to Ink / night only; design-audit.md points to the new brief; project memory updated.
+- **Checked**: tsc 0, npm test 922/922; on the A51 via OTA: Dates, Streams (empty), World books (empty), the Android bar dark. **Not checked**: a stream card, a book with entries, the secret note screen and the moments list on the phone; iOS.
+
 ### 0z213. Full design audit and the work order for it (2026-11-15, Claude, Fable 5.2). NEXT: Opus 5.5 starts `docs/agent-tasks/design-audit-2026-11-15.md` at Step 1; the owner answers its section 6
 
 - **Owner's ask**: audit the whole design (skills, phone), say what is missing for a modern, minimal, Apple-like and never boring companion app, and hand the work to Opus 5.5.
