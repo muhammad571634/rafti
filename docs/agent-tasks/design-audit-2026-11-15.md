@@ -187,3 +187,26 @@ are in `docs/later-list.md` or go there.
 5. **Reactions are cartoon mascot stickers** on an otherwise adult, cinematic chat ("not toy-like",
    owner 2026-11-08). Proposal: plain emoji reactions as iMessage; the mascot stays for the brand
    moments.
+
+## 7. Second pass on the A51 (same day): add these to the steps named
+
+- **Step 2**: a friend's chat settings (`character/[id]/settings`) open light and grey straight from
+  the dark chat. Decide by 0z196: it is a screen "with a character", so it is night; its four red
+  rows in a row (clear chat, reset bond, remove friend, block) become one "Danger" group at the
+  very bottom with a confirm each, not a wall of red.
+- **Step 3**: the chat's "+" panel is nine saturated discs in nine colours on the dark chat (photo,
+  secret note, diary, date, truth or dare, quiz, scene, time skip, daily calls). In the Ink sweep
+  they become one quiet family (`ink.raised` discs, line icons, one accent for the picked one);
+  which of the nine stay is the owner's call (section 6.2).
+- **Step 3**: a failed send shows red "Not delivered · tap to retry" under the bubble: keep, but
+  check it still reads at the largest text size (it was one tight line on the A51).
+- **Step 5, Today**: when the hero friend has no line, the name floats mid-picture over an empty
+  gap above the message field; anchor the name to the field when there is no line.
+- **Step 5, Find**: the circle folders are flat yellow / pink / purple / blue blocks under photo
+  art, the most toy-like part left in the tabs; make them `Tile`s in the soft Ink tints (as the date
+  tiles). The section title "Who do you miss?" is clipped under the pinned segmented control while
+  scrolling: give the pinned header an opaque ground and the list a matching top inset.
+- **Step 5, Create character**: the disabled "Write the character" button is a pale grey slab that
+  reads as broken; a disabled `PillButton` keeps its shape at 40 % with the reason one tap away.
+- Not reachable in this pass: dark mode (the phone is set to light; the owner switches it), the
+  onboarding (needs a fresh install), iOS.
