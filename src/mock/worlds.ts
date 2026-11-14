@@ -1,4 +1,4 @@
-import type { ClayIconName } from '@/assets/brand/registry';
+import type { ArtId } from '@/assets/brand/registry';
 import type { DateRound } from '@/mock/dates';
 import type { PhotoFrame, WorldStory } from '@/types';
 
@@ -11,7 +11,7 @@ import type { PhotoFrame, WorldStory } from '@/types';
 export type WorldKey = string;
 
 /** How a Photo Booth frame dresses a picture's card (src/components/photo-booth/frame-card.tsx). */
-export type FrameLook = PhotoFrame & { stickers: ClayIconName[] };
+export type FrameLook = PhotoFrame & { stickers: ArtId[] };
 
 export interface WorldQuestion {
   text: string;

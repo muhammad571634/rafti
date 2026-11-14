@@ -1,4 +1,4 @@
-import type { ClayIconName } from '@/assets/brand/registry';
+import type { ArtId } from '@/assets/brand/registry';
 import type { ThemePools } from '@/lib/date-themes';
 
 /**
@@ -286,7 +286,7 @@ export const themePools: ThemePools = {
 };
 
 /** Pictures for a user's date: clay icons on a soft tint, like the map places. */
-export const THEME_ARTS: { id: ClayIconName; tint: string; labelKey: string }[] = [
+export const THEME_ARTS: { id: ArtId; tint: string; labelKey: string }[] = [
   { id: 'sun', tint: '#FFF0C7', labelKey: 'sun' },
   { id: 'date', tint: '#FBE3D2', labelKey: 'cafe' },
   { id: 'plane', tint: '#DCE7FB', labelKey: 'trip' },

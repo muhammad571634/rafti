@@ -1,4 +1,4 @@
-import type { ClayIconName } from '@/assets/brand/registry';
+import type { ArtId } from '@/assets/brand/registry';
 import { nightColors, playfulNightGround } from '@/theme';
 import { CREAM_BG } from './user';
 import type {
@@ -16,16 +16,16 @@ import { dayKey, daysAgo, hoursAgo, minutesAgo } from './time';
 
 /** The Home launcher grid. `tile` is a key into the Rafti tile art (assets/brand). */
 export const homeModules: HomeModule[] = [
-  { key: 'store', labelKey: 'shellStore', route: '/store/shell', tile: 'store' },
-  { key: 'dating', labelKey: 'dating', route: '/dating', tile: 'dating' },
-  { key: 'diary', labelKey: 'heartbeatDiary', route: '/diary', tile: 'diary' },
-  { key: 'photo', labelKey: 'photoBooth', route: '/photo-booth', tile: 'photo' },
-  { key: 'contacts', labelKey: 'myContacts', route: '/contacts', tile: 'contacts' },
-  { key: 'gifts', labelKey: 'freeGifts', route: '/gifts', tile: 'gifts' },
-  { key: 'calls', labelKey: 'callHistory', route: '/call-history', tile: 'calls' },
-  { key: 'bedtime', labelKey: 'bedtime', route: '/bedtime', tile: 'bedtime' },
-  { key: 'radio', labelKey: 'radio', route: '/radio', tile: 'radio' },
-  { key: 'board', labelKey: 'bulletinBoard', route: '/board', tile: 'board' },
+  { key: 'store', labelKey: 'shellStore', route: '/store/shell' },
+  { key: 'dating', labelKey: 'dating', route: '/dating' },
+  { key: 'diary', labelKey: 'heartbeatDiary', route: '/diary' },
+  { key: 'photo', labelKey: 'photoBooth', route: '/photo-booth' },
+  { key: 'contacts', labelKey: 'myContacts', route: '/contacts' },
+  { key: 'gifts', labelKey: 'freeGifts', route: '/gifts' },
+  { key: 'calls', labelKey: 'callHistory', route: '/call-history' },
+  { key: 'bedtime', labelKey: 'bedtime', route: '/bedtime' },
+  { key: 'radio', labelKey: 'radio', route: '/radio' },
+  { key: 'board', labelKey: 'bulletinBoard', route: '/board' },
 ];
 
 /** Mirrors the reference store: 50 / 300 / 500 / 1200. */
@@ -148,7 +148,7 @@ export const backgroundsById = Object.fromEntries(
 ) as Record<string, (typeof chatBackgrounds)[number]>;
 
 /** Ambient tracks for Radio / Bedtime. */
-export const radioTracks: { id: string; titleKey: string; icon: ClayIconName; minutes: number }[] = [
+export const radioTracks: { id: string; titleKey: string; icon: ArtId; minutes: number }[] = [
   { id: 'r_rain', titleKey: 'rain', icon: 'umbrella', minutes: 45 },
   { id: 'r_fire', titleKey: 'fireplace', icon: 'fireplace', minutes: 60 },
   { id: 'r_waves', titleKey: 'waves', icon: 'wave', minutes: 30 },

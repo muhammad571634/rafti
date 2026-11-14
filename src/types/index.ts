@@ -1,4 +1,3 @@
-import type { TileName } from '@/assets/brand/registry';
 import type { DateRound } from '@/mock/dates';
 
 export type CharacterCategory = 'school' | 'fantasy' | 'idol' | 'daily' | 'original';
@@ -1146,8 +1145,6 @@ export interface HomeModule {
   /** i18n key under `home.modules` */
   labelKey: string;
   route: string;
-  /** Key into the Rafti tile art (assets/brand) */
-  tile: TileName;
   badge?: number;
 }
 

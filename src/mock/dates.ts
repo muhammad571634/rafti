@@ -3,7 +3,7 @@
  * three answers; an answer is worth 0-3 hearts and gets its own reply. `{name}` is
  * the partner's first name. The server's model writes these later.
  */
-import type { ClayIconName } from '@/assets/brand/registry';
+import type { ArtId } from '@/assets/brand/registry';
 
 export interface DateChoice {
   text: string;
@@ -19,7 +19,7 @@ export interface DateRound {
 export interface DatePlace {
   id: string;
   titleKey: string;
-  icon: ClayIconName;
+  icon: ArtId;
   cost: number;
   levelRequired: number;
   /** Position of the pin on the map, as fractions of its width and height */
