@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z215. Chat feel, part 1: a faster first bubble, a way back to the newest (2026-11-15, Claude, Opus 5.5). NEXT: reply / quote (brief Step 3.3), then 3.5-3.8
+
+- **First bubble** (`bubbleTimes` in `src/lib/reply-engine/flow.ts`, used by `scheduleReply`): the model's time with "typing…" up counts toward the first bubble's read-and-type beat (at least 300 ms); gaps between bubbles keep their rhythm; a stand-in is paced as before. Test in `reply-engine.test.ts`. "Read" was already stamped when the dots appear; the audit misread that.
+- **Jump to newest** (`src/components/chat/jump-to-newest.tsx`, `useFollowNewest(listRef, count)` now returns `jump`, `away`, `unseen`): a 44 pt round button over the list's bottom right once about a screen up, with a peach count of lines since; chat and group. `chat.jumpToNewest` in 14 locales.
+- **Step 2 of the brief** is mostly done by night only (the light menus over the dark chat and the friend's light settings came from the phone's light mode). Left of it: the background picker's warm `#1A1613`.
+- **Reply / quote, planned, not started**: `replyTo?: { id; author; kind; text? }` snapshot on `Message` (quote cut ~120 chars), `sendText(..., replyTo)`, `messageText` prefixes `[Replying to your message: "…"]` for the model, a quote strip in `MessageBubble` and over `ChatInput` (cancel ×), "Reply" first in `message-menu.tsx`, swipe LEFT on a bubble to reply (Telegram; right would fight Android's back edge; skip the row inside `VersionSwipe`, which swipes both ways), strings `chat.reply`, `chat.replyingTo`, `chat.cancelReply`, `chat.you` in 14 locales (scratch helper idea: insert keys as text, the locale files are not in `JSON.stringify` order).
+- **Checked**: tsc 0, npm test 923/923, check:locales; OTA sent. **Not seen on the A51** yet.
+
 ### 0z214. Night only, the Ink kit, the Ink screens on it (2026-11-15, Claude, Opus 5.5). NEXT: Step 2 of the audit brief (night leaks in the chat menus and header, the friend's chat settings)
 
 - **Owner's ask**: start the design brief (`docs/agent-tasks/design-audit-2026-11-15.md`); the app dark like the competitors, simple, Apple-like, alive.
