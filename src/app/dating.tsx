@@ -211,7 +211,9 @@ export default function DatingScreen() {
 
         <View style={styles.tiles}>
           {tiles.map((tile) => {
-            const meta = tile.locked ? t('dating.locked', { level: tile.needs }) : `${tile.rounds} ${t('dating.rounds')} · ${tile.cost}`;
+            // On the tile the short form beside the lock ("🔒 Lv 6"); the full "Reach level 6" is on the button and read aloud.
+            const meta = tile.locked ? t('dating.level', { level: tile.needs }) : `${tile.rounds} ${t('dating.rounds')} · ${tile.cost}`;
+            const spoken = tile.locked ? t('dating.locked', { level: tile.needs }) : meta;
             return (
               <Tile
                 key={tile.id}
@@ -219,7 +221,7 @@ export default function DatingScreen() {
                 name={tile.name}
                 dimmed={tile.locked}
                 picked={tile.id === picked?.id}
-                accessibilityLabel={`${tile.name}, ${meta}`}
+                accessibilityLabel={`${tile.name}, ${spoken}`}
                 onPress={() => {
                   if (tile.id !== picked?.id) haptic.selection();
                   setOpenId(tile.id);
