@@ -8,7 +8,8 @@ import { useDayKey } from '@/hooks/use-day-key';
 import { shortName } from '@/lib/format';
 import { monthStart, talkShares, type TalkShare } from '@/lib/talk-shares';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { fonts, isDark, systemGround } from '@/theme';
+import { isDark } from '@/theme';
+import { inkType } from '@/theme/ink';
 
 /**
  * One bright pair per place (the Ink canvas, owner 2026-11-13): coral, amber, sky. By rank, not the
@@ -151,8 +152,8 @@ function DiscLabel({ size, x, y, swell, name, percent }: { size: number; x: numb
 
 const styles = StyleSheet.create({
   root: { marginHorizontal: 20, marginTop: 22 },
-  month: { fontFamily: fonts.serif, fontSize: 32, lineHeight: 38, letterSpacing: -0.4, color: systemGround.label },
-  subtitle: { marginTop: 2, fontSize: 15, lineHeight: 20, color: systemGround.secondaryLabel },
+  month: inkType.title,
+  subtitle: { ...inkType.sub, marginTop: 2 },
   discs: { marginTop: 16 },
   disc: {
     position: 'absolute',

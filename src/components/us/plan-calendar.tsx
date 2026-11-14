@@ -7,7 +7,8 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { PressableScale, Txt } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
-import { colors, fonts, isDark, radius, space, systemGround } from '@/theme';
+import { colors, isDark, radius, space, systemGround } from '@/theme';
+import { inkType } from '@/theme/ink';
 
 export interface PlanCalendarProps {
   /** Selected day key */
@@ -153,7 +154,7 @@ const NUM = 28;
 
 const styles = StyleSheet.create({
   root: { marginHorizontal: 14, marginTop: 26 },
-  title: { marginHorizontal: 6, marginBottom: 10, fontFamily: fonts.serif, fontSize: 24, lineHeight: 30, letterSpacing: -0.3, color: systemGround.label },
+  title: { ...inkType.card, marginHorizontal: 6, marginBottom: 10 },
   // The reference's white card on the grouped ground.
   card: {
     paddingTop: 4,

@@ -1,17 +1,19 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeatureBar } from '@/components/feature/feature-kit';
+import { InkText } from '@/components/ink';
 import { CharacterAvatar, EmptyState, Screen, SystemSegmented } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { MomentCard, useMomentContent, useMomentTimeline, useOpenMoment } from '@/components/us/moments';
 import { useDayKey } from '@/hooks/use-day-key';
 import { filtersWith, inFilter, type MomentFilter, type TimelineItem } from '@/lib/moment-groups';
 import { useAppStore } from '@/store/use-app-store';
-import { fonts, space, systemGround } from '@/theme';
+import { space } from '@/theme';
+import { ink, inkGutter } from '@/theme/ink';
 
 /**
  * The whole story with one friend ("Show N more" under Us' three newest moments): every moment
@@ -50,7 +52,7 @@ export default function MomentsScreen() {
   );
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
       <FlatList
         data={items}
         keyExtractor={(item) => item.key}
@@ -68,9 +70,9 @@ export default function MomentsScreen() {
               // Whose story this is, without words.
               right={character ? <CharacterAvatar character={character} size={36} /> : undefined}
             />
-            <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+            <InkText variant="display" style={styles.title}>
               {t('us.moments')}
-            </Text>
+            </InkText>
             {filters.length > 1 ? (
               <SystemSegmented
                 style={styles.segments}
@@ -81,14 +83,14 @@ export default function MomentsScreen() {
             ) : null}
           </View>
         }
-        ListEmptyComponent={<EmptyState title={t('us.noMoments')} />}
+        ListEmptyComponent={<EmptyState symbol={{ ios: 'sparkles', icon: 'sparkles-outline' }} title={t('us.noMoments')} />}
       />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { marginTop: 4, marginHorizontal: 20, marginBottom: 12, fontFamily: fonts.serif, fontSize: 34, lineHeight: 40, letterSpacing: -0.4, color: systemGround.label },
-  segments: { marginHorizontal: 14, marginBottom: 14 },
-  cell: { marginHorizontal: 14, marginBottom: 12 },
+  title: { marginTop: 4, marginHorizontal: inkGutter, marginBottom: 12 },
+  segments: { marginHorizontal: inkGutter, marginBottom: 14 },
+  cell: { marginHorizontal: inkGutter, marginBottom: 12 },
 });

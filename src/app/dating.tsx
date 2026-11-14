@@ -2,10 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LinearGradient } from 'expo-linear-gradient';
+import { InkText, PillButton, Tile, tileTint } from '@/components/ink';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import {
   BackButton,
@@ -13,46 +13,22 @@ import {
   CharacterAvatar,
   EmptyState,
   GlassButton,
-  LargeTitle,
   PressableScale,
   Screen,
   Sheet,
   ShellIcon,
   Txt,
 } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { moodOpen, MOOD_LEVEL, themeCost } from '@/lib/date-themes';
 import { shortName } from '@/lib/format';
 import { localized } from '@/i18n/content';
 import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, isDark, space } from '@/theme';
+import { colors, space } from '@/theme';
+import { ink, inkGutter } from '@/theme/ink';
 import type { Character, DateTheme } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
-
-/**
- * The places as soft tiles (owner, 2026-11-13, the Ink canvas "Where to"; replaces the Wallet
- * tickets): calm tints like Today's widgets, deep at night and pale by day, never loud. By place:
- * sky, sea, sun, dusk, night, rose; the user's own dates follow.
- */
-const TILES = isDark
-  ? [
-      ['#22364C', '#1B2C40'],
-      ['#183B39', '#14312F'],
-      ['#3E3322', '#342A1B'],
-      ['#2E2944', '#272239'],
-      ['#25294A', '#1F233F'],
-      ['#40263A', '#361F31'],
-    ]
-  : [
-      ['#DDEBFA', '#CEE0F6'],
-      ['#D7F0EC', '#C7E8E2'],
-      ['#FBEDCB', '#F5E1B2'],
-      ['#E7E1F7', '#DAD2F2'],
-      ['#DFE1F5', '#D1D4EF'],
-      ['#F8DFEC', '#F0CFE0'],
-    ];
-const INK = isDark ? '#FFFFFF' : '#1F1A17';
-const INK_SOFT = isDark ? 'rgba(255,255,255,0.66)' : 'rgba(31,26,23,0.6)';
 
 /**
  * Dates: the places and the user's own dates as a grid of soft tiles (the Ink canvas, owner
@@ -98,12 +74,15 @@ export default function DatingScreen() {
 
   if (!partner) {
     return (
-      <Screen background={colors.bg}>
+      <Screen background={ink.ground}>
         <View style={styles.bar}>
           <BackButton />
         </View>
-        <LargeTitle>{t('dating.walletTitle')}</LargeTitle>
+        <InkText variant="display" style={styles.title}>
+          {t('dating.walletTitle')}
+        </InkText>
         <EmptyState
+          symbol={{ ios: 'heart.circle', icon: 'heart-circle-outline' }}
           title={t('dating.noFriends')}
           actionLabel={t('common.findSomeone')}
           onAction={() => router.push('/(tabs)/find')}
@@ -122,6 +101,7 @@ export default function DatingScreen() {
     const result = beginDate(partner.id, p.id);
     if (result === 'noShells') return setPaywall(p.cost);
     if (result !== 'ok') return;
+    haptic.success();
     router.push({ pathname: '/date/[placeId]', params: { placeId: p.id, characterId: partner.id } });
   };
 
@@ -131,6 +111,7 @@ export default function DatingScreen() {
     const result = beginThemeDate(friend.id, d.id);
     if (result === 'noShells') return setPaywall(themeCost(d.rounds));
     if (result !== 'ok') return;
+    haptic.success();
     router.push({ pathname: '/date/[placeId]', params: { placeId: d.id, characterId: friend.id } });
   };
 
@@ -151,8 +132,8 @@ export default function DatingScreen() {
   const newestOpen = [...places].reverse().find((p) => p.levelRequired <= level)?.id ?? places[0].id;
   const current = openId ?? newestOpen;
 
-  type Tile = { id: string; name: string; locked: boolean; rounds: number; cost: number; needs: number; hue: readonly string[]; begin: () => void; theme?: DateTheme; friend?: Character };
-  const tiles: Tile[] = [
+  type DateTile = { id: string; name: string; locked: boolean; rounds: number; cost: number; needs: number; tint: readonly [string, string]; begin: () => void; theme?: DateTheme; friend?: Character };
+  const tiles: DateTile[] = [
     ...places.map((p, i) => ({
       id: p.id,
       name: t(`dating.places.${p.titleKey}`),
@@ -160,7 +141,7 @@ export default function DatingScreen() {
       rounds: p.rounds.length,
       cost: p.cost,
       needs: p.levelRequired,
-      hue: TILES[i % TILES.length],
+      tint: tileTint(i),
       begin: () => start(p),
     })),
     ...themes.map((d, i) => {
@@ -173,7 +154,7 @@ export default function DatingScreen() {
         rounds: d.rounds,
         cost: themeCost(d.rounds),
         needs: MOOD_LEVEL[d.mood],
-        hue: TILES[(places.length + i) % TILES.length],
+        tint: tileTint(places.length + i),
         begin: () => startTheme(d),
         theme: d,
         friend,
@@ -186,7 +167,7 @@ export default function DatingScreen() {
   const moreTheme = themes.find((d) => d.id === moreId);
 
   return (
-    <Screen background={colors.bg}>
+    <Screen background={ink.ground}>
       <View style={styles.bar}>
         <BackButton />
         <GlassButton
@@ -196,7 +177,9 @@ export default function DatingScreen() {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <LargeTitle>{t('dating.walletTitle')}</LargeTitle>
+        <InkText variant="display" style={styles.title}>
+          {t('dating.walletTitle')}
+        </InkText>
 
         <View style={styles.pills}>
           <PressableScale
@@ -206,72 +189,67 @@ export default function DatingScreen() {
             onPress={() => setChoosing(true)}
             style={[styles.pill, styles.partner]}>
             <CharacterAvatar character={partner} size={32} />
-            <Txt style={styles.partnerName} lines={1}>
+            <InkText variant="subStrong" lines={1} style={styles.partnerName}>
               {name}
-            </Txt>
+            </InkText>
             <View style={styles.level}>
               <Ionicons name="heart" size={12} color={colors.bondText} />
-              <Txt style={styles.levelText}>{level}</Txt>
+              <InkText variant="footnote" color={colors.bondText} style={styles.figure}>
+                {String(level)}
+              </InkText>
             </View>
-            <Ionicons name="chevron-down" size={13} color={colors.textSecondary} />
+            <Ionicons name="chevron-down" size={13} color={ink.text2} />
           </PressableScale>
           <View style={styles.grow} />
           <View style={[styles.pill, styles.shells]} accessible accessibilityLabel={`${shells}`}>
             <ShellIcon size={18} />
-            <Txt style={styles.shellsText}>{shells}</Txt>
+            <InkText variant="subStrong" style={styles.figure}>
+              {String(shells)}
+            </InkText>
           </View>
         </View>
 
         <View style={styles.tiles}>
           {tiles.map((tile) => {
-            const on = tile.id === picked?.id;
             const meta = tile.locked ? t('dating.locked', { level: tile.needs }) : `${tile.rounds} ${t('dating.rounds')} · ${tile.cost}`;
             return (
-              <PressableScale
+              <Tile
                 key={tile.id}
-                scaleTo={0.96}
-                haptic
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
+                tint={tile.tint}
+                name={tile.name}
+                dimmed={tile.locked}
+                picked={tile.id === picked?.id}
                 accessibilityLabel={`${tile.name}, ${meta}`}
-                onPress={() => setOpenId(tile.id)}
-                style={[styles.tileWrap, on && styles.tileOn]}>
-                <LinearGradient colors={tile.hue as [string, string]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={styles.tile}>
-                  <Text style={[styles.tileName, tile.locked && styles.tileLocked]} numberOfLines={3} adjustsFontSizeToFit minimumFontScale={0.7} maxFontSizeMultiplier={1.2}>
-                    {tile.name}
-                  </Text>
-                  <View style={styles.tileMeta}>
-                    {tile.locked ? <Ionicons name="lock-closed" size={12} color={INK_SOFT} /> : null}
-                    <Text style={styles.tileMetaText} numberOfLines={1} maxFontSizeMultiplier={1.2}>
+                onPress={() => {
+                  if (tile.id !== picked?.id) haptic.selection();
+                  setOpenId(tile.id);
+                }}
+                meta={
+                  <>
+                    {tile.locked ? <Ionicons name="lock-closed" size={12} color={ink.text2} /> : null}
+                    <InkText variant="footnote" lines={1} style={styles.figure}>
                       {meta}
-                    </Text>
+                    </InkText>
                     {tile.locked ? null : <ShellIcon size={13} />}
-                  </View>
-                </LinearGradient>
-              </PressableScale>
+                  </>
+                }
+              />
             );
           })}
         </View>
 
         {picked ? (
           <View style={styles.go}>
-            {picked.locked ? (
-              <View style={[styles.goButton, styles.goLocked]}>
-                <Ionicons name="lock-closed" size={15} color={colors.textSecondary} />
-                <Txt style={styles.goLockedText} lines={1}>
-                  {pickedWith ? t('dating.locked', { level: picked.needs }) : t('dating.noFriends')}
-                </Txt>
-              </View>
-            ) : (
-              <PressableScale scaleTo={0.97} accessibilityRole="button" onPress={picked.begin} style={[styles.goButton, styles.grow]}>
-                <Txt style={styles.goText} lines={1}>
-                  {t('dating.start', { name: pickedWith ? nameOf(pickedWith) : name })}
-                </Txt>
-              </PressableScale>
-            )}
+            <PillButton
+              style={styles.grow}
+              disabled={picked.locked}
+              icon={picked.locked ? 'lock-closed' : undefined}
+              label={picked.locked ? (pickedWith ? t('dating.locked', { level: picked.needs }) : t('dating.noFriends')) : t('dating.start', { name: pickedWith ? nameOf(pickedWith) : name })}
+              onPress={picked.begin}
+            />
             {picked.theme ? (
               <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('dating.more')} onPress={() => setMoreId(picked.id)} style={styles.more}>
-                <Ionicons name="ellipsis-horizontal" size={20} color={colors.text} />
+                <Ionicons name="ellipsis-horizontal" size={20} color={ink.text} />
               </PressableScale>
             ) : null}
           </View>
@@ -283,8 +261,8 @@ export default function DatingScreen() {
             accessibilityRole="button"
             onPress={() => router.push('/date/album')}
             style={[styles.pill, styles.past]}>
-            <Ionicons name="images-outline" size={18} color={colors.text} />
-            <Txt style={styles.pastText}>{t('dating.pastDates', { count: dates.length })}</Txt>
+            <Ionicons name="images-outline" size={18} color={ink.text} />
+            <InkText variant="subStrong">{t('dating.pastDates', { count: dates.length })}</InkText>
           </PressableScale>
         ) : null}
       </ScrollView>
@@ -342,40 +320,18 @@ const styles = StyleSheet.create({
     paddingTop: space.xs,
     paddingBottom: space.sm,
   },
-  pills: { marginTop: 12, marginBottom: 18, marginHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pill: {
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-    flexDirection: 'row',
-    alignItems: 'center',
-    ...(isDark
-      ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' }
-      : { shadowColor: colors.black, shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 1 }),
-  },
-  partner: { paddingLeft: 4, paddingRight: 12, gap: 8, maxWidth: 240 },
-  partnerName: { flexShrink: 1, fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.text },
+  title: { marginTop: 4, marginHorizontal: inkGutter },
+  pills: { marginTop: 12, marginBottom: 18, marginHorizontal: inkGutter, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  pill: { minHeight: 44, borderRadius: 22, backgroundColor: ink.raised, flexDirection: 'row', alignItems: 'center' },
+  partner: { paddingLeft: 6, paddingRight: 12, gap: 8, maxWidth: 240 },
+  partnerName: { flexShrink: 1 },
   level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  levelText: { fontSize: 13, fontWeight: '700', color: colors.bondText },
+  figure: { fontVariant: ['tabular-nums'], flexShrink: 1 },
   shells: { paddingLeft: 10, paddingRight: 14, gap: 6 },
-  shellsText: { fontSize: 15, fontWeight: '700', color: colors.text, fontVariant: ['tabular-nums'] },
-  // The canvas's tiles, two a row; the picked one ringed in the label colour.
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginHorizontal: space.lg },
-  tileWrap: { width: '47.5%', aspectRatio: 1, borderRadius: 34, borderCurve: 'continuous', padding: 3, borderWidth: 2, borderColor: 'transparent' },
-  tileOn: { borderColor: colors.text },
-  tile: { flex: 1, borderRadius: 30, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14 },
-  tileName: { fontFamily: fonts.serif, fontSize: 23, lineHeight: 28, letterSpacing: -0.3, color: INK, textAlign: 'center' },
-  tileLocked: { opacity: 0.6 },
-  tileMeta: { position: 'absolute', bottom: 14, left: 10, right: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
-  tileMetaText: { flexShrink: 1, fontSize: 13.5, color: INK_SOFT, fontVariant: ['tabular-nums'] },
-  go: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 20, marginHorizontal: space.lg },
-  goButton: { height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.md, backgroundColor: colors.text },
-  goText: { fontSize: 16, fontWeight: '600', color: colors.bg },
-  goLocked: { flex: 1, flexDirection: 'row', gap: 6, backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' },
-  goLockedText: { fontSize: 16, fontWeight: '600', color: colors.textSecondary },
-  more: { width: 54, height: 54, borderRadius: 27, backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)', alignItems: 'center', justifyContent: 'center' },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginHorizontal: inkGutter },
+  go: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 20, marginHorizontal: inkGutter },
+  more: { width: 56, height: 56, borderRadius: 28, backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
   past: { alignSelf: 'center', marginTop: 14, paddingHorizontal: 18, gap: 8 },
-  pastText: { fontSize: 15, fontWeight: '600', color: colors.text },
   people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, justifyContent: 'center', paddingVertical: space.md },
   person: { alignItems: 'center', gap: space.xs, width: 72 },
   moreActions: { gap: space.sm, paddingVertical: space.sm },

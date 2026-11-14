@@ -18,6 +18,7 @@ import { dateFromKey, dayKey } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, isDark, systemColors, systemGround } from '@/theme';
+import { inkGutter, inkType } from '@/theme/ink';
 import type { Character, MomentKind, Relationship } from '@/types';
 
 const THUMB = 38;
@@ -327,8 +328,8 @@ const FACE = 40;
 const SHOWN = 3;
 
 const styles = StyleSheet.create({
-  title: { marginTop: 28, marginHorizontal: 20, fontFamily: fonts.serif, fontSize: 24, lineHeight: 30, letterSpacing: -0.3, color: systemGround.label },
-  hint: { marginTop: 8, marginHorizontal: 20, fontSize: 15, color: colors.textSecondary },
+  title: { ...inkType.card, marginTop: 28, marginHorizontal: inkGutter },
+  hint: { ...inkType.sub, marginTop: 8, marginHorizontal: inkGutter },
   // The canvas's glow cards.
   cards: { marginTop: 12, marginHorizontal: SIDE, gap: 12 },
   card: {
@@ -340,17 +341,17 @@ const styles = StyleSheet.create({
     ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)' } : null),
   },
   cardBody: { flex: 1, justifyContent: 'space-between', gap: 14, paddingTop: 14, paddingBottom: 16, paddingHorizontal: 16 },
-  cardWhen: { fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
+  cardWhen: inkType.footnote,
   cardBottom: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
-  cardTitle: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 24, letterSpacing: -0.2, color: systemGround.label },
+  cardTitle: inkType.cardSmall,
   cardHighlight: { fontFamily: fonts.serifItalic },
-  cardSub: { marginTop: 3, fontSize: 13.5, lineHeight: 18, color: systemGround.secondaryLabel },
+  cardSub: { ...inkType.footnote, marginTop: 3 },
   ring: { width: FACE + 6, height: FACE + 6, borderRadius: (FACE + 6) / 2, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   ringInner: { width: FACE, height: FACE, borderRadius: FACE / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   more: { alignSelf: 'center', minHeight: 44, paddingHorizontal: 16, marginTop: 6, justifyContent: 'center' },
-  moreText: { fontSize: 15, color: systemGround.secondaryLabel },
+  moreText: inkType.sub,
   grow: { flex: 1, minWidth: 0, gap: 2 },
   heartsLine: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  hearts: { fontSize: 13.5, lineHeight: 18, fontWeight: '700', color: systemColors.pink, fontVariant: ['tabular-nums'] },
+  hearts: { ...inkType.footnote, fontWeight: '700', color: systemColors.pink, fontVariant: ['tabular-nums'] },
   shrink: { flexShrink: 1 },
 });
