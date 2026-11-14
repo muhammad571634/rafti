@@ -9,7 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Appearance, StyleSheet, View } from 'react-native';
+import { Appearance, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -31,7 +31,7 @@ startAwayClock();
 const SPLASH_LIMIT_MS = 8000;
 // Night only (theme/colors.ts): the native side (keyboard, pickers, system bars) is dark too, and
 // the window behind every screen (keyboard, transitions) is the night ground.
-Appearance.setColorScheme('dark');
+if (Platform.OS !== 'web') Appearance.setColorScheme('dark');
 SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
 export default function RootLayout() {
