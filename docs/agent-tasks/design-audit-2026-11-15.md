@@ -295,3 +295,36 @@ once; the owner does not read code and judges only what is on the phone.
   owner in a few plain Uzbek lines: what changed for the user, what to try, the single next step.
 - **When unsure between two looks**: pick the quieter one. Simple wins; alive comes from response
   and presence, not from more colour or more parts.
+
+## 10. Third pass on the A51: night mode and the onboarding (2026-11-15)
+
+Night confirms 8.1: the same tabs look a class better dark (character art glows, the pastel
+widgets become deep tints, the rings read). What is still wrong in night:
+
+- **Android system navigation bar is white under every dark screen** (tabs, chat, call, onboarding).
+  The most visible single defect in the app; first thing in Step 2.
+- Today: scrolling leaves a ghost of the hero's name under the pinned message field; the six app
+  icons stay fully saturated on black (deep tints, as the widgets); when the hero has no line the
+  field shows a lone orange dot in a small bubble.
+- Content language drifts from the app language: plan titles, moment cards and chat previews in
+  Turkish or Russian inside an English UI. Model-written text that the UI shows as a label (plan
+  names, moment titles) should be written in the app language (`noteLanguage`), see 0z187.
+
+Onboarding (opened with `adb shell am start -a android.intent.action.VIEW -d "sigmazam://onboarding"`;
+it shows the flow without deleting the account; do not press the last button on the owner's profile):
+
+- The intro says the same thing twice ("Someone is always near" over the orbit, then "Friends who
+  are always near" above the button), and the first line collides with the orbit's icons. One line.
+- Three looks in six screens: black with neon icons (intro), a loud teal / violet / magenta aurora
+  with the cartoon mascot (questions), cinematic character art (pick a friend). After 8.1 the whole
+  flow sits on the night ground; the aurora and the mascot leave the question steps (the mascot may
+  stay on the gift step as the brand's one moment).
+- Primary button is white on the intro and peach on every other step: one `PillButton`.
+- Good and to keep: the live preview bubble on the name step ("Hi, {name}! Finally."). Make it the
+  friend the user is about to meet, not a grey silhouette: move "pick a friend" before the name so
+  that friend greets them by name. That is the first "alive" moment of the product.
+- The gift step explains the meter ("one shell sends one message") before the first message: the
+  first thing a new user learns is that talking costs. Tied to section 6.3; at least move the
+  explanation out of the first run.
+- Order (section 6.4 stands): notifications are asked before the first exchange.
+- The back button shows a square highlight on press (Android ripple on a round button): clip it.
