@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z213. Full design audit and the work order for it (2026-11-15, Claude, Fable 5.2). NEXT: Opus 5.5 starts `docs/agent-tasks/design-audit-2026-11-15.md` at Step 1; the owner answers its section 6
+
+- **Owner's ask**: audit the whole design (skills, phone), say what is missing for a modern, minimal, Apple-like and never boring companion app, and hand the work to Opus 5.5.
+- **Done**: two code sweeps (design system; chat experience) and a drive of the preview APK on the A51 (four tabs, chat, message menu, call, friend page, Profile, Store, Dates, diary; light, Turkish). No code changed.
+- **Finding**: no screen is bad; five design generations are live at once (Ink on 7 of 70 screens, no Ink kit, 688 font-size literals, 46 radii, 6 icon sources, 5 header kits, 2 button shapes, light menus over the dark chat), and the chat answers slowly (4-9 s of staged delay before the first word) and lacks reply, jump-to-newest and a keyboard that follows the finger.
+- **Brief**: `docs/agent-tasks/design-audit-2026-11-15.md`: Step 1 truth + tokens + Ink kit, 2 night leaks and Android system bar, 3 chat feel, 4 call, 5 sweep by family with a per-screen checklist, 6 settings.
+- **Still to do (owner decides, brief section 6)**: Today as a launcher, feature sprawl behind "More", a shell per message, notifications asked before the first exchange, mascot-sticker reactions.
+- **Not checked**: dark mode on the phone (it was in light), onboarding (needs a fresh install), iOS.
+
 ### 0z212. A double tap opens a screen once (2026-11-13, Claude, Opus 5.5). NEXT: owner double-taps a chat row, a story icon, any button on the phone after the next OTA
 
 - **Owner's ask** (video): a quick double tap on a chat (Sam Okafor) or any icon / story / button opened the screen twice, so Back showed it again.
