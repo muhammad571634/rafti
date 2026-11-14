@@ -9,14 +9,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Appearance, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
 import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
-import { useThemeReload, useThemeRestore } from '@/hooks/use-theme-reload';
 import { initI18n } from '@/i18n';
 import { startAwayClock } from '@/lib/away-clock';
 import { noDuplicatePush } from '@/lib/no-duplicate-push';
@@ -30,7 +29,9 @@ SplashScreen.setOptions({ duration: 200, fade: true });
 startAwayClock();
 /** Longest the splash waits for saved data before it lets go anyway. */
 const SPLASH_LIMIT_MS = 8000;
-// The window behind every screen (keyboard, transitions) in the launch theme's canvas colour.
+// Night only (theme/colors.ts): the native side (keyboard, pickers, system bars) is dark too, and
+// the window behind every screen (keyboard, transitions) is the night ground.
+Appearance.setColorScheme('dark');
 SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
 
 export default function RootLayout() {
@@ -38,7 +39,6 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold, Nunito_800ExtraBold, Nunito_900Black, SourceSerif4_600SemiBold, SourceSerif4_600SemiBold_Italic });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
-  useThemeReload();
 
   useEffect(() => {
     initI18n()
@@ -129,11 +129,9 @@ function OnboardingGate() {
     if (navReady && hydrated && blocked) router.replace('/onboarding');
   }, [navReady, hydrated, blocked, router]);
 
-  // After a theme reload the screens the user had open come back under the cover first.
-  const restored = useThemeRestore(navReady && hydrated, onboarded);
   // The splash goes once saved data is in and the right first screen is underneath, so launch
   // goes straight from the splash to content, without a blank cover in between.
-  const released = hydrated && !blocked && restored;
+  const released = hydrated && !blocked;
   useEffect(() => {
     if (released) SplashScreen.hideAsync().catch(() => {});
   }, [released]);

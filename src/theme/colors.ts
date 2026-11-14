@@ -1,4 +1,3 @@
-import { Appearance } from 'react-native';
 
 import { friendHueIndex } from '../lib/friend-color';
 
@@ -265,12 +264,14 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
 };
 
 /**
- * Dark mode follows the phone, read once at launch: every screen builds its styles from
- * `colors` when it loads, so switching the phone's theme reloads the app (`useThemeReload`).
+ * Night only (owner, 2026-11-15, docs/agent-tasks/design-audit-2026-11-15.md §8.1): the app is used
+ * in the evening and its character art is lit for the dark, so every screen is night whatever the
+ * phone is set to. The light sets below are kept, unreached, for a possible later setting; the root
+ * layout also tells the native side (keyboard, pickers, system bars) the app is dark.
  * Paper (diary pages, polaroids, board notes) stays light in both themes, so text on it
  * uses paper ink (`paperText`, `palette.gray*`), never `text`, which turns light here.
  */
-export const isDark = Appearance.getColorScheme() === 'dark';
+export const isDark = true;
 
 export const colors: Record<keyof typeof lightColors, string> = isDark ? nightColors : lightColors;
 
