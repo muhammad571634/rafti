@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import { writeMockReply } from '../../mock/reply-writer';
 import type { Character, MemoryItem, Message, Relationship } from '@/types';
 
-import { chatRhythm, pace, planTurn, replyPrefs } from './flow';
+import { bubbleTimes, chatRhythm, FIRST_BUBBLE_MIN_MS, pace, planTurn, replyPrefs } from './flow';
 import { planReply } from './index';
 import { currentMood, feel, temperamentFor } from './mood';
 import { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
@@ -173,6 +173,15 @@ describe('planning a turn', () => {
     const [a, b] = pace(['Hi.', 'This one is a much longer line to type out on a phone.'], readMessage(undefined), fixed(0.5));
     assert.ok(b > a - 500);
     assert.ok(a >= 500);
+  });
+
+  it('counts the model’s thinking toward the first bubble, never the gaps between them', () => {
+    // A stand-in (no thinking): the full beat, as before.
+    assert.deepEqual(bubbleTimes([2000, 1500], 0), [2400, 3900]);
+    // The model took 1.2 s with the dots up: the first bubble comes that much sooner.
+    assert.deepEqual(bubbleTimes([2000, 1500], 1200), [1200, 2700]);
+    // It took longer than the whole beat: the first lands at once, the second still a typing time later.
+    assert.deepEqual(bubbleTimes([2000, 1500], 9000), [FIRST_BUBBLE_MIN_MS, FIRST_BUBBLE_MIN_MS + 1500]);
   });
 });
 

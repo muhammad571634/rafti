@@ -34,7 +34,7 @@ import {
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupInvokeCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
-import { pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
+import { bubbleTimes, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
@@ -5759,7 +5759,9 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
   // A rewind or an edit can take this reply back while it is on its way (`cancelReplies`).
   const epoch = replyEpoch.get(conversationId) ?? 0;
 
-  const readAt = new Date().toISOString();
+  // "Typing…" shows from here; the time the words take to come counts toward the first bubble (`bubbleTimes`).
+  const startedAt = Date.now();
+  const readAt = new Date(startedAt).toISOString();
   set((s) => ({
     typing: { ...s.typing, [conversationId]: true },
     messages: {
@@ -5823,13 +5825,13 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     if (noteVoice) set((s) => ({ daily: { ...s.daily, voiceNoteDay: todayKey() } }));
 
     // Each bubble waits a beat to read yours, then roughly as long as it takes to type, with
-    // "typing..." between. A burst never starts while the last one is still arriving, so two
-    // replies never interleave.
-    const delays = pace(lines, turn?.read ?? readMessage(undefined));
+    // "typing..." between; the model's own time already counts for the first. A burst never starts
+    // while the last one is still arriving, so two replies never interleave.
+    const times = bubbleTimes(pace(lines, turn?.read ?? readMessage(undefined)), Date.now() - startedAt);
     const busy = Math.max(0, (replyingUntil.get(conversationId) ?? 0) - Date.now());
-    let at = busy + 400;
+    let at = busy;
     lines.forEach((line, i) => {
-      at += delays[i];
+      at = busy + times[i];
       const last = i === lines.length - 1;
       bubbleLater(() => {
         if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;

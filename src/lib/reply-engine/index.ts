@@ -22,7 +22,7 @@ export function planReply(ctx: TurnContext) {
   return { read, plan: planTurn(ctx, temperament, read, mood) };
 }
 
-export { chatRhythm, DEFAULT_REPLY_PREFS, memoryQuote, pace, replyPrefs } from './flow';
+export { bubbleTimes, chatRhythm, DEFAULT_REPLY_PREFS, memoryQuote, pace, replyPrefs } from './flow';
 export { currentMood, temperamentFor } from './mood';
 export { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
 export type { Segment } from './narration';

@@ -170,6 +170,20 @@ function bubbleCount(plan: TurnPlan, t: Temperament, rand: () => number) {
   return rand() < t.chatty ? 3 : 2;
 }
 
+/** The shortest wait before the first bubble once the words are there: the dots settle, then it lands. */
+export const FIRST_BUBBLE_MIN_MS = 300;
+
+/**
+ * When each bubble lands, in ms from the moment the words are ready: the first after the beat it
+ * takes to read yours and type (`pace`) minus the time the model already spent with "typing…" on the
+ * screen, the rest a typing time apart. A model that took three seconds has done the reading and the
+ * typing; its first bubble comes at once instead of after another few seconds (design audit §3.1).
+ */
+export function bubbleTimes(delays: readonly number[], thoughtMs: number, leadMs = 400): number[] {
+  let at = 0;
+  return delays.map((delay, i) => (at += i === 0 ? Math.max(FIRST_BUBBLE_MIN_MS, leadMs + delay - Math.max(0, thoughtMs)) : delay));
+}
+
 /** Human pacing: a beat to read yours, then typing time that grows with each bubble. */
 export function pace(bubbles: readonly string[], read: MessageRead, rand: () => number = Math.random) {
   return bubbles.map((text, i) => {
