@@ -43,7 +43,7 @@ import { clipName, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 
 /** "Waiting for you" and the sealed note: the sun's deep tint, its light for the words that matter. */
@@ -442,7 +442,7 @@ export default function HomeScreen() {
         )}
       </ScrollView>
 
-      {onPhoto ? <TopEdge mode={pastHero ? 'ground' : scrolled ? 'photo' : 'none'} height={insets.top + space.xl} /> : null}
+      {onPhoto ? <TopEdge mode={pastHero ? 'ground' : scrolled ? 'photo' : 'none'} solid={insets.top} height={insets.top + space.xl} /> : null}
 
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')}>
         <ScrollView style={styles.gallery} showsVerticalScrollIndicator={false}>
@@ -488,7 +488,7 @@ export default function HomeScreen() {
  * screenshots, 2026-11-11). Over the picture it is a dark veil that keeps the light glyphs legible;
  * once the picture is gone it is the ground, under the dark glyphs. Not drawn at rest.
  */
-function TopEdge({ mode, height }: { mode: 'none' | 'photo' | 'ground'; height: number }) {
+function TopEdge({ mode, solid, height }: { mode: 'none' | 'photo' | 'ground'; solid: number; height: number }) {
   const still = useReducedMotion();
   const shown = useSharedValue(0);
   useEffect(() => {
@@ -496,17 +496,17 @@ function TopEdge({ mode, height }: { mode: 'none' | 'photo' | 'ground'; height: 
     shown.value = still ? to : withTiming(to, { duration: 160 });
   }, [mode, still, shown]);
   const fade = useAnimatedStyle(() => ({ opacity: shown.value }));
-  const veil = mode === 'ground' ? systemGround.topEdge : TOP_EDGE_PHOTO;
+  const veil = mode === 'ground' ? TOP_EDGE_GROUND : TOP_EDGE_PHOTO;
   return (
     <Animated.View pointerEvents="none" style={[styles.topEdge, { height }, fade]}>
-      <LinearGradient colors={veil} locations={TOP_EDGE_STOPS} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={veil} locations={[0, solid / height, 1]} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
 }
-// Nearly opaque under the glyphs, then a short fade: at 0.7 the line's white words still showed
-// through behind the clock on the A51.
-const TOP_EDGE_PHOTO = ['rgba(10,12,20,0.96)', 'rgba(10,12,20,0.88)', 'rgba(10,12,20,0)'] as const;
-const TOP_EDGE_STOPS = [0, 0.62, 1] as const;
+// Opaque under the status bar, then a short fade: at 0.96 the hero's name and line still showed as a
+// ghost behind the clock once scrolled (A51, design-audit §10).
+const TOP_EDGE_PHOTO = ['rgba(10,12,20,1)', 'rgba(10,12,20,1)', 'rgba(10,12,20,0)'] as const;
+const TOP_EDGE_GROUND = ['rgba(9,9,13,1)', 'rgba(9,9,13,1)', 'rgba(9,9,13,0)'] as const;
 
 /** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
 function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {

@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { TabGlyph, Txt, type TabGlyphName } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { TabGlyph, type TabGlyphName } from '@/components/ui';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
 import { colors, playful, space, systemGround } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -162,15 +164,15 @@ const TabItem = memo(function TabItem({
         <TabGlyph name={glyph} filled={focused} color={tint} bg={focused ? playful.tabOn : playful.bar} />
         {count > 0 ? (
           <View style={styles.badge}>
-            <Txt style={styles.badgeText} maxFontSizeMultiplier={1.1}>
+            <InkText variant="caption" color={colors.white} maxFontSizeMultiplier={1.1}>
               {badgeText(count)}
-            </Txt>
+            </InkText>
           </View>
         ) : null}
       </View>
-      <Txt variant="tiny" color={tint} style={styles.label} maxFontSizeMultiplier={1.2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+      <InkText variant="caption" color={tint} maxFontSizeMultiplier={1.2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
         {label}
-      </Txt>
+      </InkText>
     </Pressable>
   );
 });
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
   // content (HIG Tab bars, Materials). The fill stays nearly opaque: Android has no blur here, and a
   // see-through fill shows its own elevation shadow through it.
   floating: {
-    borderRadius: BAR / 2,
+    borderRadius: inkRadius.pill,
     borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: playful.barRim,
@@ -210,17 +212,16 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     height: BAR - space.sm,
-    borderRadius: (BAR - space.sm) / 2,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
   },
   on: { backgroundColor: playful.tabOn },
-  label: { fontWeight: '700' },
   round: { width: BAR, height: BAR },
   roundPress: { flex: 1, padding: space.xs },
-  roundInner: { flex: 1, borderRadius: (BAR - space.sm) / 2, alignItems: 'center', justifyContent: 'center' },
-  // The count of chats waiting, in the same red as Chats' Unread pill, ringed in the bar's white.
+  roundInner: { flex: 1, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  // The count of chats waiting, in the same red as Chats' Unread chip, ringed in the bar's own colour.
   badge: {
     position: 'absolute',
     top: -6,
@@ -228,12 +229,11 @@ const styles = StyleSheet.create({
     minWidth: 20,
     height: 20,
     paddingHorizontal: 5,
-    borderRadius: 10,
+    borderRadius: inkRadius.pill,
     borderWidth: 2,
-    borderColor: colors.surface,
-    backgroundColor: playful.red,
+    borderColor: playful.bar,
+    backgroundColor: ink.danger,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '800', color: colors.white },
 });
