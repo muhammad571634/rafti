@@ -10,6 +10,7 @@ import { CharacterAvatar, characterImage, GlassButton, Sheet, Txt } from '@/comp
 import { shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character, LoreEntry, LoreKind, Lorebook } from '@/types';
 
 type IconName = keyof typeof Ionicons.glyphMap;
@@ -192,14 +193,14 @@ const styles = StyleSheet.create({
   body: { flex: 1, minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 8 },
   entryBody: { paddingVertical: 10 },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  title: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  text: { marginTop: 2, fontSize: 15, lineHeight: 20, letterSpacing: -0.2, color: colors.text },
-  hint: { marginTop: 3, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
+  title: { ...inkFace('body'), color: colors.text },
+  text: { ...inkFace('sub'), marginTop: 2, color: colors.text },
+  hint: { ...inkFace('footnote'), marginTop: 3, color: colors.textSecondary },
   side: { width: 56, alignItems: 'center', justifyContent: 'center' },
   art: { width: 44, height: 44, borderRadius: 10 },
   artBody: { minHeight: 64 },
   info: { gap: space.lg, paddingBottom: space.sm },
   point: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
-  pointTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  pointText: { marginTop: 2, fontSize: 15, lineHeight: 20, color: colors.textSecondary },
+  pointTitle: { ...inkFace('bodyStrong'), color: colors.text },
+  pointText: { ...inkFace('sub'), marginTop: 2, color: colors.textSecondary },
 });

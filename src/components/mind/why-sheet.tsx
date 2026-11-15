@@ -7,6 +7,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { reachReason, reasonThreadId, type ReachReason } from '@/lib/mind';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character, Message, Thread } from '@/types';
 
 import { kindOf, KIND_LOOK } from './labels';
@@ -145,10 +146,10 @@ const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.md },
   tile: { width: 30, height: 30, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
   quoteBox: { paddingHorizontal: space.lg, paddingBottom: space.md, gap: 4 },
-  small: { fontSize: 13 },
-  quote: { fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text },
+  small: { ...inkFace('footnote') },
+  quote: { ...inkFace('body'), color: colors.text },
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
   lineTop: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
-  label: { fontSize: 17, letterSpacing: -0.4 },
+  label: { ...inkFace('body') },
 });

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { colors, fonts, space, systemColors, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /**
  * The create screen's parts in the playful skin (design-style §10, 0z149): the cream ground, a
@@ -260,34 +261,32 @@ const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
   round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  title: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: systemGround.label },
+  title: { ...inkFace('title'), color: systemGround.label },
   card: { marginHorizontal: space.lg, marginTop: 14, padding: space.lg, borderRadius: 24, backgroundColor: systemGround.card, borderWidth: 2, borderColor: 'transparent' },
   cardProblem: { borderColor: systemColors.red },
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  cardTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
+  cardTitle: { ...inkFace('cardSmall'), color: systemGround.label },
   problem: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
-  problemText: { flex: 1, fontSize: 14, fontWeight: '600', color: systemColors.red },
+  problemText: { ...inkFace('subStrong'), flex: 1, color: systemColors.red },
   field: { marginTop: space.sm },
   fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginBottom: 6 },
-  label: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  count: { fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  label: { ...inkFace('subStrong'), color: colors.textSecondary },
+  count: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   input: {
+    ...inkFace('body'),
     minHeight: 48,
     paddingHorizontal: 14,
     paddingTop: 12,
     paddingBottom: 12,
     borderRadius: 14,
     backgroundColor: systemGround.fill,
-    fontSize: 17,
-    lineHeight: 22,
-    letterSpacing: -0.3,
     color: colors.text,
   },
   pair: { flexDirection: 'row', gap: space.md },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, borderRadius: 19, backgroundColor: systemGround.fill },
   chipOn: { backgroundColor: systemGround.label },
-  chipText: { fontFamily: fonts.playfulBold, fontSize: 14.5, color: systemGround.label },
+  chipText: { ...inkFace('subStrong'), color: systemGround.label },
   chipTextOn: { color: systemGround.ground },
   rewrite: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
   soft: { backgroundColor: systemGround.fill },
@@ -295,7 +294,7 @@ const styles = StyleSheet.create({
   off: { opacity: 0.4 },
   disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: space.sm },
   // Reads as a card title: the closed card is its own section.
-  disclosureText: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label },
+  disclosureText: { ...inkFace('cardSmall'), color: systemGround.label },
   bar: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: systemGround.ground },
   // The ground fades in above the bar; behind it the ground is solid, so nothing shows through.
   fade: { position: 'absolute', left: 0, right: 0, top: -28, height: 28 },
@@ -313,9 +312,9 @@ const styles = StyleSheet.create({
   ctaOff: { backgroundColor: systemGround.fill },
   ctaTextOff: { color: colors.textFaint },
   // System bold: the button's words come in every script.
-  ctaText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
-  caption: { textAlign: 'center', fontSize: 13, color: colors.textSecondary },
+  ctaText: { ...inkFace('bodyStrong'), color: colors.textOnPrimary },
+  caption: { ...inkFace('footnote'), textAlign: 'center', color: colors.textSecondary },
   secondary: { height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  secondaryText: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
-  error: { textAlign: 'center', fontSize: 14, fontWeight: '600', color: systemColors.red },
+  secondaryText: { ...inkFace('bodyStrong'), color: systemGround.label },
+  error: { ...inkFace('subStrong'), textAlign: 'center', color: systemColors.red },
 });

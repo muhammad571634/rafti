@@ -9,6 +9,7 @@ import { DRAFT_MS } from '@/ai/character-studio';
 import { DotMatrix, PressableScale, Txt } from '@/components/ui';
 import { ROLES } from '@/lib/create-character';
 import { colors, fonts, space, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { CharacterRole } from '@/types';
 
 import { Card, Chip, ChipGroup, SmallRound } from './kit';
@@ -198,23 +199,23 @@ function StepMark({ state }: { state: 'done' | 'now' | 'later' }) {
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   // Find's section title.
-  ask: { marginTop: space.md, marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: systemGround.label },
-  idea: { minHeight: 112, fontSize: 18, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
-  count: { textAlign: 'right', fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  ask: { ...inkFace('card'), marginTop: space.md, marginHorizontal: space.lg, color: systemGround.label },
+  idea: { ...inkFace('body'), minHeight: 112, color: colors.text },
+  count: { ...inkFace('caption'), textAlign: 'right', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   continueRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   continueIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  continueText: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
+  continueText: { ...inkFace('bodyStrong'), color: systemGround.label },
   continueButtons: { flexDirection: 'row', gap: space.sm, marginTop: space.md },
   smallButton: { flex: 1, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   smallOn: { backgroundColor: systemGround.label },
-  smallText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
+  smallText: { ...inkFace('subStrong'), color: systemGround.label },
   smallTextOn: { color: systemGround.ground },
   // The writing wait, centred in the page.
   wait: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: space.huge },
   waitTitle: { marginTop: space.xl, fontFamily: fonts.serifItalic, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, color: WAIT_DOTS, textAlign: 'center' },
   steps: { marginTop: space.lg, gap: 4 },
   step: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 40 },
-  stepText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.3, color: systemGround.secondaryLabel },
+  stepText: { ...inkFace('body'), color: systemGround.secondaryLabel },
   stepNow: { fontWeight: '600', color: systemGround.label },
   mark: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
   markNow: { width: 14, height: 14, borderRadius: 7, backgroundColor: WAIT_DOTS },

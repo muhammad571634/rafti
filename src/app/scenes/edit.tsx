@@ -12,6 +12,7 @@ import { haptic } from '@/lib/haptics';
 import { SCENE_OPENING_MAX, SCENE_ROLE_MAX, SCENE_SETTING_MAX, SCENE_TITLE_MAX } from '@/lib/scenes';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /**
  * Write or edit one of your own scenes: a title, where you are and what is happening, who you are
@@ -147,13 +148,13 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   first: { marginTop: 14 },
   gap: { marginTop: space.xxl },
-  titleInput: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  area: { minHeight: 72, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  titleInput: { ...inkFace('bodyStrong'), minHeight: 50, paddingHorizontal: space.lg, color: colors.text },
+  area: { ...inkFace('body'), minHeight: 72, paddingHorizontal: space.lg, paddingTop: 12, color: colors.text },
   tall: { minHeight: 132 },
   countRow: { paddingHorizontal: space.lg, paddingBottom: 10 },
-  count: { textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  count: { ...inkFace('footnote'), textAlign: 'right', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   row: { minHeight: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg },
-  rowText: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  rowText: { ...inkFace('body'), color: colors.text },
   pressed: { backgroundColor: colors.surfaceAlt },
-  error: { marginTop: space.md, marginHorizontal: space.lg * 2, fontSize: 13, color: systemColors.red },
+  error: { ...inkFace('footnote'), marginTop: space.md, marginHorizontal: space.lg * 2, color: systemColors.red },
 });

@@ -12,6 +12,7 @@ import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /**
  * One world book: the world in a few lines (always known), who it serves, and its entries by
@@ -115,9 +116,9 @@ export default function LorebookScreen() {
 
 const styles = StyleSheet.create({
   gap: { marginTop: space.xxl },
-  about: { paddingHorizontal: space.lg, paddingVertical: 12, fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  about: { ...inkFace('body'), paddingHorizontal: space.lg, paddingVertical: 12, color: colors.text },
+  footer: { ...inkFace('footnote'), marginTop: space.sm, marginHorizontal: space.lg * 2, color: colors.textSecondary },
   add: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
-  addText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  addText: { ...inkFace('body'), flex: 1, color: colors.text },
   muted: { color: colors.textSecondary },
 });

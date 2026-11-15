@@ -11,6 +11,7 @@ import { CharacterAvatar, EmptyState, GlassBar, IconRow, InsetGroup, LargeTitle,
 import { mindSections, nextTouch } from '@/lib/mind';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Thread } from '@/types';
 
 /**
@@ -89,7 +90,7 @@ export default function MindScreen() {
 
 const styles = StyleSheet.create({
   section: {
-    fontSize: 13,
+    ...inkFace('footnote'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
     paddingHorizontal: space.lg * 2,

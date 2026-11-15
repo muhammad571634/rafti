@@ -13,6 +13,7 @@ import { localized } from '@/i18n/content';
 import { officialScenes } from '@/mock/scenes';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Scene } from '@/types';
 
 type SceneLook = { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string };
@@ -166,12 +167,12 @@ const styles = StyleSheet.create({
   row: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
-  title: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  meta: { fontSize: 15, color: colors.textSecondary },
+  title: { ...inkFace('body'), flex: 1, color: colors.text },
+  meta: { ...inkFace('sub'), color: colors.textSecondary },
   sceneWrap: { flexDirection: 'row' },
   scene: { flex: 1, flexDirection: 'row', gap: space.md, paddingLeft: space.lg },
   sceneTile: { paddingTop: 12 },
   sceneBody: { flex: 1, paddingVertical: 11, paddingRight: space.lg, gap: 2 },
-  setting: { fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  setting: { ...inkFace('footnote'), color: colors.textSecondary },
   edit: { width: 52, alignItems: 'center', justifyContent: 'center' },
 });

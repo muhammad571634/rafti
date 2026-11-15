@@ -6,6 +6,7 @@ import { PressableScale, Txt } from '@/components/ui';
 import { useAppStore } from '@/store/use-app-store';
 // It sits under a line in the chat, which is always dark (appearance B): the night tokens.
 import { nightColors as colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Message } from '@/types';
 
 import { kindOf, KIND_LOOK, whenText } from './labels';
@@ -61,5 +62,5 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.primarySoft,
   },
-  text: { flexShrink: 1, fontSize: 12, lineHeight: 15, fontWeight: '600', letterSpacing: -0.1 },
+  text: { ...inkFace('caption'), flexShrink: 1 },
 });

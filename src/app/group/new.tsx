@@ -12,6 +12,7 @@ import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemGround, type } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /** What the user may call a group. */
 const NAME_MAX = 40;
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  faceName: { fontSize: 13, fontWeight: '600', color: systemGround.label },
+  faceName: { ...inkFace('caption'), color: systemGround.label },
   // An empty seat: the dashed ring the playful layer uses for a slot waiting to be filled.
   seat: {
     width: 60,
@@ -186,13 +187,13 @@ const styles = StyleSheet.create({
     borderColor: systemGround.dash,
     backgroundColor: systemGround.well,
   },
-  optional: { fontSize: 13, color: colors.textSecondary },
+  optional: { ...inkFace('footnote'), color: colors.textSecondary },
   input: {
+    ...inkFace('body'),
     minHeight: 54,
     paddingHorizontal: 18,
     paddingBottom: 4,
     color: colors.text,
     ...type.body,
-    fontSize: 17,
   },
 });

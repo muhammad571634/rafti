@@ -23,6 +23,7 @@ import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 type Filter = 'all' | 'mine';
 
@@ -160,8 +161,8 @@ const styles = StyleSheet.create({
   },
   addText: { flex: 1 },
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  name: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  name: { ...inkFace('bodyStrong'), color: colors.text },
   bond: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  bondLabel: { flexShrink: 1, fontSize: 13, fontWeight: '600', color: colors.bondText },
-  meta: { fontSize: 13, color: colors.textSecondary },
+  bondLabel: { ...inkFace('caption'), flexShrink: 1, color: colors.bondText },
+  meta: { ...inkFace('footnote'), color: colors.textSecondary },
 });

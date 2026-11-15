@@ -52,6 +52,7 @@ import {
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, fonts, space, systemColors, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 
@@ -952,10 +953,10 @@ const styles = StyleSheet.create({
   heroCenter: { alignItems: 'center', justifyContent: 'center' },
   heroScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
   // Their avatar's monogram, white on its colours, set a little high so the name below stays clear.
-  initial: { fontFamily: fonts.playful, fontSize: 96, lineHeight: 112, marginTop: -56, color: colors.white },
+  initial: { ...inkFace('display'), marginTop: -56, color: colors.white },
   heroFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 18 },
-  heroName: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: colors.onMedia },
-  heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, fontWeight: '600', color: colors.onMediaMuted },
+  heroName: { ...inkFace('display'), color: colors.onMedia },
+  heroLine: { ...inkFace('subStrong'), marginTop: 2, color: colors.onMediaMuted },
   // Clear glass on a photo (Find's "Say hi"); on a colour, the same shape a shade over it.
   photoButton: {
     position: 'absolute',
@@ -971,22 +972,22 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  photoButtonText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.onMedia },
+  photoButtonText: { ...inkFace('subStrong'), color: colors.onMedia },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.md },
-  toggleText: { fontSize: 15, lineHeight: 20, color: colors.text },
+  toggleText: { ...inkFace('sub'), color: colors.text },
   fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginTop: space.sm, marginBottom: 6 },
-  subLabel: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  dialog: { minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: systemGround.fill, fontSize: 16, lineHeight: 22, color: colors.text },
+  subLabel: { ...inkFace('subStrong'), color: colors.textSecondary },
+  dialog: { ...inkFace('body'), minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: systemGround.fill, color: colors.text },
   inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
-  inlineActionText: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.brandText },
+  inlineActionText: { ...inkFace('subStrong'), color: colors.brandText },
   lines: { marginTop: space.sm },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  lineInput: { minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: systemGround.fill, fontSize: 16, lineHeight: 21, color: colors.text },
+  lineInput: { ...inkFace('body'), minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: systemGround.fill, color: colors.text },
   meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
   meetFace: { width: MEET, height: MEET, borderRadius: MEET / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-  meetInitial: { fontFamily: fonts.playful, fontSize: 56, lineHeight: 66, color: colors.white },
-  meetTitle: { textAlign: 'center', fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: systemGround.label },
+  meetInitial: { ...inkFace('display'), color: colors.white },
+  meetTitle: { ...inkFace('display'), textAlign: 'center', color: systemGround.label },
   // Their first message as the chat shows theirs: a white bubble.
   meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: systemGround.card },
-  meetBubbleText: { fontSize: 17, lineHeight: 23, color: colors.text },
+  meetBubbleText: { ...inkFace('body'), color: colors.text },
 });

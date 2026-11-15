@@ -10,6 +10,7 @@ import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { defaultPersona, personaList } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /**
  * Who the user can be in a chat (Character.AI's personas): the profile first, then up to five
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   pressed: { backgroundColor: colors.surfaceAlt },
   body: { flex: 1, minHeight: 64, justifyContent: 'center' },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  name: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  meta: { marginTop: 2, fontSize: 13, color: colors.textSecondary },
+  name: { ...inkFace('body'), color: colors.text },
+  meta: { ...inkFace('footnote'), marginTop: 2, color: colors.textSecondary },
   pick: { width: 56, alignItems: 'center', justifyContent: 'center' },
 });

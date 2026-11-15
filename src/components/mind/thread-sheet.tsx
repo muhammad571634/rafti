@@ -12,6 +12,7 @@ import { haptic } from '@/lib/haptics';
 import { dateFromKey, dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Thread, ThreadOutcome } from '@/types';
 
 import { kindOf, whenText } from './labels';
@@ -262,14 +263,14 @@ const styles = StyleSheet.create({
   grow: { flex: 1 },
   quoteHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md },
   stamp: { marginLeft: 'auto' },
-  small: { fontSize: 13 },
-  quote: { fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md },
+  small: { ...inkFace('footnote') },
+  quote: { ...inkFace('body'), color: colors.text, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md },
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
-  label: { fontSize: 17, letterSpacing: -0.4 },
-  meta: { fontSize: 15, color: colors.textSecondary },
-  section: { fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase', paddingHorizontal: space.lg, paddingTop: 22, paddingBottom: space.sm - 2 },
+  label: { ...inkFace('body') },
+  meta: { ...inkFace('sub'), color: colors.textSecondary },
+  section: { ...inkFace('footnote'), color: colors.textSecondary, textTransform: 'uppercase', paddingHorizontal: space.lg, paddingTop: 22, paddingBottom: space.sm - 2 },
   pill: { height: 34, paddingHorizontal: 11, borderRadius: 8, justifyContent: 'center', backgroundColor: colors.surfaceAlt },
-  pillText: { fontSize: 16, letterSpacing: -0.3 },
+  pillText: { ...inkFace('body') },
 });

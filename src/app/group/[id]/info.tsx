@@ -28,6 +28,7 @@ import { shortName } from '@/lib/format';
 import { canAddMember, canRemoveMember, groupTitle } from '@/lib/group-chat';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemGround, type } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
   // No colour here: Txt's `color` prop (peach Add, red Remove) must win.
-  memberName: { fontSize: 17, letterSpacing: -0.4 },
+  memberName: { ...inkFace('body') },
   input: {
     minHeight: 52,
     paddingHorizontal: space.md + 2,
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     ...type.body,
   },
   save: { marginTop: space.lg },
-  note: { marginTop: space.sm, fontSize: 13, color: colors.textSecondary },
+  note: { ...inkFace('footnote'), marginTop: space.sm, color: colors.textSecondary },
   ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
   way: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
 });

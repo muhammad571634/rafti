@@ -17,6 +17,7 @@ import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Lorebook } from '@/types';
 
 const NO_MESSAGES: never[] = [];
@@ -132,6 +133,6 @@ export default function CharacterLoreScreen() {
 }
 
 const styles = StyleSheet.create({
-  empty: { paddingHorizontal: space.lg, paddingVertical: 14, fontSize: 15, lineHeight: 20, color: colors.textSecondary },
+  empty: { ...inkFace('sub'), paddingHorizontal: space.lg, paddingVertical: 14, color: colors.textSecondary },
   mark: { width: 56, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
 });

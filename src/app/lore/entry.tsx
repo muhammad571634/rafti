@@ -13,6 +13,7 @@ import { haptic } from '@/lib/haptics';
 import { LORE_KINDS, LORE_NAME_MAX, LORE_TEXT_MAX } from '@/lib/lorebook';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { LoreKind } from '@/types';
 
 /**
@@ -152,16 +153,16 @@ const styles = StyleSheet.create({
   first: { marginTop: space.xl },
   gap: { marginTop: space.xxl },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginHorizontal: space.lg },
-  nameInput: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  input: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  nameInput: { ...inkFace('bodyStrong'), minHeight: 50, paddingHorizontal: space.lg, color: colors.text },
+  input: { ...inkFace('body'), minHeight: 50, paddingHorizontal: space.lg, color: colors.text },
   line: { marginLeft: space.lg, height: StyleSheet.hairlineWidth, backgroundColor: colors.borderStrong },
-  area: { minHeight: 132, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  area: { ...inkFace('body'), minHeight: 132, paddingHorizontal: space.lg, paddingTop: 12, color: colors.text },
   countRow: { paddingHorizontal: space.lg, paddingBottom: 10 },
-  count: { textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  count: { ...inkFace('footnote'), textAlign: 'right', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  footer: { ...inkFace('footnote'), marginTop: space.sm, marginHorizontal: space.lg * 2, color: colors.textSecondary },
   row: { minHeight: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg },
-  rowText: { fontSize: 17, letterSpacing: -0.4 },
+  rowText: { ...inkFace('body') },
   danger: { color: colors.danger },
   pressed: { backgroundColor: colors.surfaceAlt },
-  error: { marginTop: space.md, marginHorizontal: space.lg * 2, fontSize: 13, color: systemColors.red },
+  error: { ...inkFace('footnote'), marginTop: space.md, marginHorizontal: space.lg * 2, color: systemColors.red },
 });

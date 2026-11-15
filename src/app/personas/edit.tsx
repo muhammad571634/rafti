@@ -15,6 +15,7 @@ import { perkLimit } from '@/economy/perks';
 import { addTopicLine, PERSONA_ABOUT_MAX, PERSONA_NAME_MAX, PERSONA_TOPICS, PROFILE_PERSONA } from '@/lib/personas';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Pronouns } from '@/types';
 
 const PRONOUNS: Pronouns[] = ['she', 'he', 'they'];
@@ -204,13 +205,13 @@ const styles = StyleSheet.create({
   topLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
   formRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, marginLeft: space.lg, paddingRight: space.lg },
-  formLabel: { width: 84, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  formInput: { flex: 1, minHeight: 48, fontSize: 17, letterSpacing: -0.4, color: colors.text, textAlign: 'right' },
-  about: { minHeight: 150, paddingHorizontal: space.lg, paddingTop: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  count: { paddingHorizontal: space.lg, paddingBottom: 10, textAlign: 'right', fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  formLabel: { ...inkFace('body'), width: 84, color: colors.text },
+  formInput: { ...inkFace('body'), flex: 1, minHeight: 48, color: colors.text, textAlign: 'right' },
+  about: { ...inkFace('body'), minHeight: 150, paddingHorizontal: space.lg, paddingTop: 12, color: colors.text },
+  count: { ...inkFace('footnote'), paddingHorizontal: space.lg, paddingBottom: 10, textAlign: 'right', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   topics: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: 14 },
   gap: { marginTop: space.xxl },
   switchRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
-  rowText: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  error: { marginTop: space.md, marginHorizontal: space.lg * 2, fontSize: 13, color: systemColors.red },
+  rowText: { ...inkFace('body'), color: colors.text },
+  error: { ...inkFace('footnote'), marginTop: space.md, marginHorizontal: space.lg * 2, color: systemColors.red },
 });
