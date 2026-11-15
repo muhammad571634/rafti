@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z222. Step 5, the four tabs on the Ink kit (2026-11-15, Claude, Opus 5.5). NEXT: the rest of the tab family (Today's widgets `components/today/widgets.tsx`, Us' calendar / moments / plan and publish sheets, the tab bar, Today's ghost name under the field and the name anchored to the field when the hero has no line), then the friend space
+
+- **Owner, on the call (0z221)**: drove it on the A51 after starting the trial: "the interface side all works"; the real voice is tested once the voice service is on. Stuck background task from 0z220 (a `cat` waiting on stdin) stopped; it changed nothing.
+- **Chats** (`1fe20cd`): serif display title, `GlassButton`s (44 pt; were 40) for Edit / search / new chat, `InkChip` filters (InkChip gains an optional `count` for Unread), Ink roles for names / previews / times, ink tokens, deep Ink tints in the new-chat sheet, pressed state on unpin / remove / swipe actions. No font size, weight or radius literal left in the file.
+- **Find** (`05b7899`, `family-row.tsx`): serif title and section heads, glass + and close (the + was the money peach), segmented control on dark, the circle folders keep their pocket and faces in deep Ink tints with serif names, New in clear glass (was a tilted yellow sticker), Ink roles for top hit, results, recents, Who-do-you-miss seats.
+- **Us** (`1ea7d3a`): serif title and day head, glass bell (red count kept) and +, a new `inkType.figure` role (system 28 bold, tabular) for days together and the level in the rings, Ink roles and tokens for picker, bond card, legend, share capsule, plan / alarm rows; the Plan pill stays peach (planning costs shells).
+- **Today** (`820dc3f`): Waiting-for-you bubble and the sealed note in the sun's deep tint with yellow light for the title, the six app icons as deep tints (`SymbolTile deep`), Ink roles for the capsule, counts, badges, Edit / Done, gallery labels. Hero and widgets untouched (audit §6.1 waits for the owner).
+- **Checked**: tsc 0, npm test 949/949; OTAs `ffcc0e24`, `e60e7b47`, `64761c33`, `f452abef`; each tab seen on the A51 (Chats with a row swiped open and the new-chat sheet; Find scrolled through folders; Us scrolled to moments; Today scrolled to the icons). A test swipe marked Sam's chat unread by mistake; opening it put it back. **Not checked**: largest text size, a 40-character name, 60 chats.
+
 ### 0z221. The voice call, Step 4: live rings, real connecting, Speaker, talking over them (2026-11-15, Claude, Opus 5.5). NEXT: drive a live call on the A51 (needs call minutes: the owner's OK to start the mock trial there), then Step 5
 
 - **Connecting** (`b2ca4f0`, `src/app/call/[id].tsx`): an outgoing call asks for their opening line while "Connecting" and turns active when it shows (or when it fails, so the retry shows); the clock and the minutes start then. The fixed 1.6 s is gone; with the model off it goes straight to active.
