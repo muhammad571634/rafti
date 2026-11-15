@@ -447,6 +447,8 @@ export interface Conversation {
   summary?: string;
   /** The last message the memory pass has read; it reads only what came after. */
   memoryMark?: string;
+  /** The name for the friend's first hello after onboarding, while it is still on its way (`firstHello`); a restart resumes it. */
+  firstHello?: string;
 }
 
 /**

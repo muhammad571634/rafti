@@ -56,6 +56,7 @@ import {
   dateDoneCue,
   datePhotoCue,
   familyHelloCue,
+  firstHelloCue,
   greetingCue,
   lifeCue,
   missedCallCue,
@@ -1878,7 +1879,8 @@ export const useAppStore = create<AppState>()(
               characterId,
               lastMessagePreview: plainText(greeting),
               lastMessageAt: now,
-              unreadCount: 1,
+              // A quiet chat starts with nothing to read; its first line counts itself.
+              unreadCount: greeting ? 1 : 0,
               pinned: false,
               muted: false,
             },
@@ -1937,15 +1939,9 @@ export const useAppStore = create<AppState>()(
         // Day one of the check-in week is part of the welcome, not a popup over the first chat.
         get().claimDailyLogin();
         set({ dailyReward: null });
-        const conversationId = get().addFriend(characterId);
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'them',
-          kind: 'text',
-          text: firstAsk,
-          createdAt: new Date().toISOString(),
-        });
+        // Quiet: their first words come below, written by the model (audit 2026-11-15 §6.4).
+        const conversationId = get().addFriend(characterId, { quiet: true });
+        firstHello(set, get, conversationId, name, firstAsk);
         return conversationId;
       },
 
@@ -4238,6 +4234,7 @@ async function finishHydration() {
   useAppStore.setState((s) => ({ ledger: oneExpiryPerMidnight(s.ledger) }));
   useAppStore.getState().expireFreeShells();
   dropChatAiNotices();
+  resumeFirstHellos();
   refreshPreviews();
   useAppStore.setState({ hydrated: true });
   useAppStore.getState().writeDueDiaryPages();
@@ -4645,6 +4642,44 @@ function sendBrief(set: Setter, get: Getter, at: Date): string | null {
 /** How long a first text waits before asking the model again. */
 const FIRST_TEXT_RETRIES_MS = [45_000, 180_000];
 
+/**
+ * The friend's first words after onboarding: with the model on, one hello it writes from the friend's
+ * temper and day, in the app's language (no chat yet to read it from), using the name just typed.
+ * With the model off, or if it does not answer at once, their own opening and the stock ask, as before:
+ * a new user never waits on an empty first chat (the usual retries are skipped).
+ */
+function firstHello(set: Setter, get: Getter, conversationId: string, name: string, firstAsk: string) {
+  // The name goes into the cue: one line, no quotes, as long as the name field allows.
+  const clean = name.replace(/[\r\n"“”]+/g, ' ').trim().slice(0, 40);
+  set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, firstHello: clean } : c)) }));
+  // Called once, right before anything lands: clears the mark, and says no when the chat already has a line
+  // (the user wrote first, or a resumed hello raced the first one): the hello would answer nothing.
+  const claim = () => {
+    set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, firstHello: undefined } : c)) }));
+    return (get().messages[conversationId] ?? []).length === 0;
+  };
+  const stock = () => {
+    if (!claim()) return;
+    const conversation = get().conversations.find((c) => c.id === conversationId);
+    const character = get().characters.find((c) => c.id === conversation?.characterId);
+    const opening = character ? openingFor(get(), character, conversationId) : '';
+    for (const text of [opening, firstAsk]) if (text) appendMessage(set, get, conversationId, themText(conversationId, text), { countUnread: true });
+  };
+  if (!get().settings.realAi || !apiBase()) return stock();
+  const request = momentRequest(get, conversationId, firstHelloCue(clean), new Date());
+  request.input = { ...request.input, replyLanguage: languageName(i18n.language) };
+  // The model choosing to say nothing still leaves the stock ask: the first chat is never empty.
+  writeFirst(set, get, conversationId, firstAsk, undefined, request, 'scripted', stock, FIRST_TEXT_RETRIES_MS.length, claim);
+}
+
+/** A first hello the app closed on (killed or swept away mid-request): asked again at the next launch. */
+function resumeFirstHellos() {
+  for (const c of useAppStore.getState().conversations) {
+    if (c.firstHello === undefined) continue;
+    firstHello(useAppStore.setState, useAppStore.getState, c.id, c.firstHello, i18n.t('onboarding.firstAsk', { name: c.firstHello }));
+  }
+}
+
 function writeFirst(
   set: Setter,
   get: Getter,
@@ -4656,8 +4691,11 @@ function writeFirst(
   /** The model never answered and the text is dropped. */
   onGiveUp?: () => void,
   attempt = 0,
+  /** Asked right before the text lands; false drops it (the moment has passed). */
+  wanted?: () => boolean,
 ) {
-  const send = (lines: string[], written?: { label: string; text: string }[]) =>
+  const send = (lines: string[], written?: { label: string; text: string }[]) => {
+    if (wanted && !wanted()) return;
     lines.forEach((text, i) => {
       // The model's buttons in the chat's language, each keeping its stock button's intent.
       const ideas = i === lines.length - 1 && reach ? writtenIdeas(ideasFor(reach), written) : [];
@@ -4669,6 +4707,7 @@ function writeFirst(
         { countUnread: true },
       );
     });
+  };
   if (!get().settings.realAi || !apiBase()) return send([scripted]);
   // A reply already "typing…" in this chat keeps the indicator; this text does not take it over.
   const owns = !get().typing[conversationId];
@@ -4689,7 +4728,7 @@ function writeFirst(
           const last = get().messages[conversationId]?.at(-1);
           // The chat moved on meanwhile: this text would answer nothing.
           if (last && Date.parse(last.createdAt) > asked) return onGiveUp?.();
-          writeFirst(set, get, conversationId, scripted, reach, request, onSkip, onGiveUp, attempt + 1);
+          writeFirst(set, get, conversationId, scripted, reach, request, onSkip, onGiveUp, attempt + 1, wanted);
         }, wait);
         return;
       }
@@ -4697,6 +4736,11 @@ function writeFirst(
         send(reply.lines, reply.ideas);
         if (reply.day?.length) keepOwnDay(set, request.input.character.id, reply.day);
       } else if (onSkip === 'scripted') send([scripted]);
+    })
+    // A malformed answer must not leave "typing…" on for good.
+    .catch(() => {
+      if (owns) set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
+      onGiveUp?.();
     });
 }
 

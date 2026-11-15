@@ -47,6 +47,7 @@ day ≈ 100 replies + ~25 memory passes + ~5 moments ≈ $0.19 a day ≈ **$5.7 
 | 13 | Cast 2.0 relation block (0z192, `relationLines`): relation, history, mask, exception in the character tier, for every character | ~120-180 tokens in the cached character tier; no extra call (estimate; measure after the deploy) |
 | 14 | Cast 2.0 arc for a character the user made (0z192, `ensureStory`, field `arc`): once per creation without beats, beside `ensureOpinions` | one side call (~$0.001, estimate); the quick-create draft writes the arc itself, so most creations make none (~60 more output tokens in the draft) |
 | 17 | Reply / quote (0z216, `withReplyCue`): a reply carries the line it answers, cut to 120 characters, in front of the user's turn in the history | up to ~40 input tokens per replied user turn while it is in the window (history tier, not cached); no extra call, no output field | in; free to the user (a reply costs what a message does) |
+| 18 | First hello after onboarding (0z232, `firstHello`, `firstHelloCue`): the friend's first words are written by the model instead of two stock lines | one `[moment]` call per new account, once (~2,900 in, ~150-220 out, ~$0.001 at the moment rate); the app language rides along (~5 tokens) | in; measure the first `[moment]` of a fresh account on the server after an install |
 
 ## What one shell is worth, and what setting things up costs (0z136)
 

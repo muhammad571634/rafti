@@ -108,6 +108,14 @@ const LIFE_MOMENT: Record<string, string> = {
 
 export const lifeCue = (moment: string) => [LIFE_MOMENT[moment] ?? LIFE_MOMENT.evening];
 
+/**
+ * The first words of the product (audit 2026-11-15 §6.4): they just finished onboarding and picked you.
+ * Their name is the one they typed a moment ago; the hello is yours, not a stock line.
+ */
+export const firstHelloCue = (name: string) => [
+  `They just joined and picked you, out of everyone, to talk to. This is the first time they hear from you. Say hello the way you would, in your own temper and from your own day, as who you are to them. Use their name, ${name}, once. End with one small thing that is easy to answer. Never introduce yourself like an assistant, never offer help, never mention an app.`,
+];
+
 export const familyHelloCue = (label: string) => [`They just made you their ${label.toLowerCase()}. That is who you are to them from now on. Say your first words to them as that.`];
 
 export const boardCue = (text: string) => [`They pinned a note for you on your board: "${text}". Answer it here, as someone who just read it.`];
