@@ -1,5 +1,6 @@
 import { Text, TextProps } from 'react-native';
 
+import { titleFit } from '@/lib/title-fit';
 import { inkEm, inkType, type InkRole } from '@/theme/ink';
 
 const SERIF: ReadonlySet<InkRole> = new Set(['display', 'title', 'card', 'cardSmall', 'numeral', 'numeralMid', 'numeralSmall']);
@@ -17,19 +18,23 @@ export interface InkTextProps extends TextProps {
  * The Ink text primitive. Serif roles scale with Dynamic Type up to 1.6× (polish §1: display sizes
  * only); the system roles scale freely. A screen title is a header for VoiceOver.
  */
-export function InkText({ variant = 'body', color, center, lines, style, ...rest }: InkTextProps) {
+export function InkText({ variant = 'body', color, center, lines, style, children, ...rest }: InkTextProps) {
   const serif = SERIF.has(variant);
+  const fit = lines === undefined && (variant === 'display' || variant === 'title') ? titleFit(children) : {};
   return (
     <Text
-      numberOfLines={lines}
+      numberOfLines={lines ?? fit.numberOfLines}
+      adjustsFontSizeToFit={fit.adjustsFontSizeToFit}
+      minimumFontScale={fit.minimumFontScale}
       ellipsizeMode={lines ? 'tail' : undefined}
       maxFontSizeMultiplier={serif ? 1.6 : undefined}
-      // A long word in a big serif line (German 'Mitteilungseinstellungen') breaks with a hyphen, not mid-word.
+      // Long words hyphenate where the phone's hyphenator knows the language; one long word shrinks (`titleFit`).
       android_hyphenationFrequency={serif ? 'full' : undefined}
       accessibilityRole={variant === 'display' ? 'header' : undefined}
       style={[inkType[variant], color ? { color } : null, center ? { textAlign: 'center' } : null, style]}
-      {...rest}
-    />
+      {...rest}>
+      {children}
+    </Text>
   );
 }
 

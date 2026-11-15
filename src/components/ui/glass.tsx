@@ -14,6 +14,7 @@ import {
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { colors as dayColors, shadows, space, themed, useThemed, useTokens } from '@/theme';
+import { titleFit } from '@/lib/title-fit';
 import { inkFace } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
@@ -251,7 +252,7 @@ export function AddRow({ label, count, locked, onPress }: { label: string; count
 export function LargeTitle({ children }: { children: string }) {
   const styles = useThemed(sheet);
   return (
-    <Txt style={styles.largeTitle} accessibilityRole="header" android_hyphenationFrequency="full">
+    <Txt style={styles.largeTitle} accessibilityRole="header" android_hyphenationFrequency="full" {...titleFit(children)}>
       {children}
     </Txt>
   );
