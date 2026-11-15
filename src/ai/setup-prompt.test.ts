@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import { parseModelReply } from './reply-style';
 import { messageText } from '../lib/story-continuity';
-import { cleanSetup, offerLines, sameSetup, SETUP_RULES_LINES, setupHistoryText, setupUsable } from './setup-prompt';
+import { cleanSetup, offerLines, sameSetup, SETUP_RULES_LINES, setupHistoryText, setupTitleLine, setupUsable } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, wallTime, wallToIso } from './thread-prompt';
 
 // Saturday, Nov 7 2026, 19:10 on the phone's clock.
@@ -206,5 +206,12 @@ describe('"how did it go?" never before the thing (0z185, seen on the A51)', () 
     assert.equal(ops.add[1].touches[0].at, '2026-11-10T13:00');
     // A month's end rolls over.
     assert.equal(cleanThreadOps({ move: [{ id: 't1', happensAt: '2026-11-30T20:00', touches: [{ at: '2026-11-30T19:00', phase: 'after', why: 'x' }] }] }).move[0].touches[0].at, '2026-12-01T11:00');
+  });
+});
+
+describe('setup titles follow the app language (audit §10)', () => {
+  it('names the app language, not the chat one', () => {
+    assert.match(setupTitleLine('English'), /SETUP TITLES: write a "setup" title in English/);
+    assert.ok(SETUP_RULES_LINES.some((l) => l.includes('the language SETUP TITLES names')));
   });
 });

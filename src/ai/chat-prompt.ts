@@ -14,7 +14,7 @@ import { modePart, type PromptMode } from './modes';
 import type { HistoryTurn, HistoryWindow, PromptPart } from './prompt-layout';
 import { isToneLine, whispered, withoutTone } from './tone';
 import { layoutPrompt, part } from './prompt-layout';
-import { followsUser, followUserLanguage, languageCue, userLines } from './reply-language';
+import { followsUser, followUserLanguage, languageCue, noteLanguage, userLines } from './reply-language';
 import { openerLines, repeatCue } from './repetition';
 import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
@@ -24,7 +24,7 @@ import { ideasCue, REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
 import { threadParts } from './thread-prompt';
-import { offerLines, SETUP_RULES_LINES } from './setup-prompt';
+import { offerLines, SETUP_RULES_LINES, setupTitleLine } from './setup-prompt';
 import { clockLines, togetherLines, type ChatClock, type Together } from './together-prompt';
 
 /**
@@ -185,6 +185,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     modePart(input.mode ?? 'chat'),
     part('pinned', 'chat', pinnedLines(input.pinned ?? [])),
     part('facts', 'chat', factLines(input.facts ?? [])),
+    // A setup's title is a label in the app (Us, Today, the plan card): the app's language (audit §10).
+    part('setupTitles', 'chat', input.mode === 'call' ? [] : [setupTitleLine(noteLanguage(input.user.locale))]),
     part('summary', 'chat', summary ? ['YOUR STORY SO FAR (your earlier chats, in short):', summary] : []),
     part('recall', 'turn', recallLines(input.memories ?? [])),
     // 👍 👎 and happy stickers so far (`src/lib/reply-rating.ts`): a vote now and then would re-bill

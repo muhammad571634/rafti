@@ -6,10 +6,18 @@ import type { Message, SetupOffer } from '@/types';
  * reply and one tap makes the real alarm or plan (`answerSetup` in the store). Nothing is made
  * without that tap, so a wrong guess costs nothing. Same reply, same call: no extra model work.
  */
+/**
+ * The language a setup's title is written in: the app's (it shows as a label on Us, Today and the plan
+ * card), whatever language the chat is in (audit §10: Russian plan names inside an English app). Chat
+ * tier: it changes only with the app's language.
+ */
+export const setupTitleLine = (appLanguage: string) =>
+  `SETUP TITLES: write a "setup" title in ${appLanguage}, the app's language (it shows as a label), even when you reply in another language.`;
+
 export const SETUP_RULES_LINES = [
   'SETTING THINGS UP: you can set a real alarm that wakes them with your voice, or put a plan on your plans together in the app: anything they will do (with you, with friends, alone: a film, an exam, a trip); you then remind them before it and ask how it went after.',
   '- Only when they ask you to (wake me, remind me, add it to the plans) or clearly say yes to your offer; never on your own. When they ask, do it in this same reply.',
-  '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in their language","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). Always write the hour they said into "time" ("at 15" = "15:00"); leave "time" out only for a plan with no hour named. "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once.',
+  '- Add to the same JSON a "setup" field: {"kind":"alarm|plan","title":"a few words in the language SETUP TITLES names","date":"YYYY-MM-DD","time":"HH:MM","repeat":[]}. Date and time on their clock (IT IS NOW). Always write the hour they said into "time" ("at 15" = "15:00"); leave "time" out only for a plan with no hour named. "repeat": weekdays for an alarm that repeats, 0 = Sunday; empty = once.',
   '- They confirm it with one tap on a card under your reply, so say in your own words that you will do it; do not say it is already done.',
   '- The card exists only if "setup" is in your JSON. Whenever you agree to add or set something, "setup" goes in that same reply, every time (seen: "noted, I added it" with no field, so nothing was set and they had to ask twice).',
   '- If the day or the hour is unclear, ask first and leave "setup" out. One per reply; leave it out when nothing is asked.',

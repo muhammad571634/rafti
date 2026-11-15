@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z248. Fable's leftovers: plan titles in the app's language; an onboarding prototype (2026-11-16, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/onboarding-night.html` (audit §10), then code it in `src/app/onboarding.tsx`; the server deploy for this and 0z239
+
+- **Owner**: "carry on with what is left of Fable's plan".
+- **What is left, checked against the code**: Steps 1-6, §6, §7 done (Danger group, "+" panel, disabled pill at 40 %, Find tiles, Today's name and ghost); §8.2.1 typing dots that stop and start (owner rule: typing dots stay as they are, not done); 8.2.3 continuity (`GrowInto` / `CountIn` / `LineIn` were planned in `design-ink.md`, never written); 8.2.4 friend order by the hour and a quieter app after midnight (product change, not started); §10 the content language of model-written labels (done here) and the whole onboarding list (prototype here); the navigation bar (owner: leave it).
+- **Plan titles** (audit §10: Russian plan names in an English app): the setup rule now says `"title":"a few words in the language SETUP TITLES names"`; `setupTitleLine(noteLanguage(locale))` in the chat tier (`src/ai/setup-prompt.ts`, `src/ai/chat-prompt.ts`, placed with the facts so the summary stays last before the history). Test added; cost ledger row 20 (~30 cached input tokens). **Needs the server deploy** (the server builds the prompt from `src/ai`).
+- **Onboarding prototype** `docs/prototypes/onboarding-night.html` (A51 screenshots of today's flow under "Hozirgi"; preview link `sigmazam://onboarding?preview=1`, the last button was not pressed): all six steps on the night ground with one white pill; the intro keeps the orbit without its words, one title and one short line; aurora and the peeking mascot leave the question steps (the mascot stays on the gift only); order age -> friend -> name -> address -> gift, so the picked friend's face says "Hey Sukut! Finally." live on the name step and the title reads "What should Milo call you?"; the gift shows +100 and one line (the free-messages and shell facts move out of the first run).
+- **Checked**: tsc 0, npm test 967/967, server tests 110/110.
+
 ### 0z247. Keyboard that follows the finger (audit Step 3.4) and preview APK 1.2.0 (2026-11-16, Claude, Opus 5.5). NEXT: the owner tries typing and dragging the keyboard down in a chat; Fable's audit has nothing left but the navigation bar (owner: leave it) and 8.2.4 (product call)
 
 - **Owner**: "the keyboard must follow the finger, Apple-grade; learn from Apple"; then full authority for whatever the app needs, a new APK included, without breaking architecture, logic or design.
