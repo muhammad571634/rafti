@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2 },
   card: {
     backgroundColor: colors.surface,
-    borderRadius: inkRadius.pill,
+    borderRadius: inkRadius.sheet,
     paddingTop: 26,
     paddingHorizontal: 18,
     paddingBottom: 18,
