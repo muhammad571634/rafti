@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z249. Interactive Onboarding Night prototype for Fable §10 (2026-11-16, Gemini 4 Argon). NEXT: the owner reviews and approves `docs/prototypes/onboarding-night.html`, then code it in `src/app/onboarding.tsx` and `src/components/onboarding/glass-icon-orbit.tsx`; the server deploy for 0z248 and 0z239
+
+- **Owner**: asked to locate Fable 5.2's §10 onboarding findings and build the onboarding prototype following the Ink design and Fable's audit rules.
+- **Prototype upgraded** (`docs/prototypes/onboarding-night.html`): self-contained interactive HTML prototype (all inline SVGs, no external icon dependency, all four Cast 2.0 portraits and avatars embedded) covering every rule of `design-audit-2026-11-15.md` §10 and `ink-1-onboarding.md`:
+  1. **One Ink night look (`#09090D`)**: all six steps sit on `#09090D` with `#16161E` cards and `0.5px` hairlines; aurora and the peeking mascot (`BRAND.peek`) leave the question steps.
+  2. **One primary `PillButton`**: 56 pt white capsule (`#FFFFFF` / `#000000`) on every step, keeping its shape at 40% opacity when disabled (minor `<18` or empty name); 44 pt round clipped back button (`overflow: hidden`).
+  3. **Intro (`1 · Kirish`)**: Glass Icon Orbit with our 8 neon SVG feature icons and hopping mascot (`BRAND.hop`), without the colliding duplicate words over the ring; one serif title and one short subtitle above the white pill.
+  4. **Order (`Age -> Friend -> Name -> Address -> Gift`)**: friend pick moves to step 3 (fanned `DeckCard` stack with photo, scrim, frosted relation chip, serif name and greeting quote + 4 round face pickers for Milo, Caleb, Mia, Sam), so step 4 (`Name`) asks *"What should Milo call you?"* and shows the chosen friend's own face, friend-hue ring and live greeting bubble (*"Hey Sukut! Finally."*) as you type — the first alive moment.
+  5. **Gift (`6 · Sovg'a`)**: the brand's one mascot moment (`BRAND.love` + sparks), serif `+100` and one short line (*"A welcome gift of shells."*) — no meter/cost lecture on the first run.
+  6. **Interactive modes & `break-ui` toggles**: 6-step overview (`Yangi`), 1-screen interactive walkthrough (`Interaktiv`), and side-by-side A51 current screenshots (`Hozirgi`), plus live toggles for Milo / Caleb / Mia / Sam, `<18` minor block (`2010`), German longest strings (`Deutsch`), and Reduce Motion.
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 967/967 pass.
+
 ### 0z248. Fable's leftovers: plan titles in the app's language; an onboarding prototype (2026-11-16, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/onboarding-night.html` (audit §10), then code it in `src/app/onboarding.tsx`; the server deploy for this and 0z239
 
 - **Owner**: "carry on with what is left of Fable's plan".
