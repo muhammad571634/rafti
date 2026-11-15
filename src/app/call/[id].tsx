@@ -26,6 +26,7 @@ import { shareText } from '@/lib/share';
 import { dropClip, keepSpeech } from '@/lib/voice-files';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, space, systemColors } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -523,7 +524,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },

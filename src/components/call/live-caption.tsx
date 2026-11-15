@@ -8,6 +8,7 @@ import { HELPLINE_URL } from '@/ai/safety';
 import { callGlass } from '@/components/call/call-controls';
 import { Anim, PressableScale, Txt } from '@/components/ui';
 import { colors, space } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /**
  * The live caption on a call on the model: their line in quotes (on a group call with the speaker's
@@ -83,8 +84,8 @@ export function CallHelpline() {
 
 const styles = StyleSheet.create({
   caption: { minHeight: 56, justifyContent: 'center' },
-  captionSoft: { fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
-  who: { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.72)', textAlign: 'center', marginBottom: 2 },
+  captionSoft: { ...inkFace('sub'), color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
+  who: { ...inkFace('caption'), color: 'rgba(255,255,255,0.72)', textAlign: 'center', marginBottom: 2 },
   helpline: {
     alignSelf: 'center',
     flexDirection: 'row',
@@ -92,8 +93,8 @@ const styles = StyleSheet.create({
     gap: space.sm,
     minHeight: 44,
     paddingHorizontal: 18,
-    borderRadius: 22,
+    borderRadius: inkRadius.pill,
     marginBottom: 14,
   },
-  helplineText: { fontSize: 16, fontWeight: '600', color: colors.onMedia },
+  helplineText: { ...inkFace('bodyStrong'), color: colors.onMedia },
 });

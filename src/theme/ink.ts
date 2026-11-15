@@ -75,6 +75,10 @@ export const inkType = StyleSheet.create({
   cardSmall: serif(20, 25, -0.2),
   /** A big count or a time. */
   numeral: { ...serif(72, 76, -1.5), fontVariant: ['tabular-nums', 'lining-nums'] },
+  /** A clock or count that leads a moment (an alarm's list time, the next wake-up). */
+  numeralMid: { ...serif(52, 58, -1), fontVariant: ['tabular-nums', 'lining-nums'] },
+  /** A clock inside a row or a timer (an alarm row, the bedtime timer). */
+  numeralSmall: { ...serif(36, 42, -0.6), fontVariant: ['tabular-nums', 'lining-nums'] },
   /** A figure on a card (days together, a level inside its rings): Title 1 in the system face. */
   figure: { ...system(28, 34, '700'), letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
   /** A figure inside a row (a pack's shells, a price): Title 2 in the system face. */

@@ -16,7 +16,8 @@ import { nextAlarmAt } from '@/lib/alarms';
 import { callClock } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, fonts, radius, sleepColors as night, space, systemColors } from '@/theme';
+import { bottomRoom, sleepColors as night, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
 /** Sleep timer steps for -/+, in minutes. */
@@ -338,18 +339,18 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   scroll: { gap: space.lg, paddingBottom: space.xl },
-  title: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 34, lineHeight: 42, color: night.text },
-  proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: 15, backgroundColor: night.primarySofter },
-  proText: { fontFamily: fonts.playfulBold, fontSize: 14, color: night.brandText },
+  title: { marginHorizontal: space.lg, ...inkFace('display'), color: night.text },
+  proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: inkRadius.pill, backgroundColor: night.primarySofter },
+  proText: { ...inkFace('subStrong'), color: night.brandText },
   hero: { alignItems: 'center', gap: space.lg, marginTop: space.xs },
-  badge: { position: 'absolute', right: -10, bottom: -10, padding: 3, borderRadius: 32, backgroundColor: night.primary },
-  heroTitle: { marginHorizontal: space.lg, fontFamily: fonts.playful, fontSize: 26, lineHeight: 32, color: night.text },
+  badge: { position: 'absolute', right: -10, bottom: -10, padding: 3, borderRadius: inkRadius.pill, backgroundColor: night.primary },
+  heroTitle: { marginHorizontal: space.lg, ...inkFace('title'), color: night.text },
   faces: { flexGrow: 1, justifyContent: 'center', gap: space.md, paddingHorizontal: space.lg },
   timerCard: {
     marginHorizontal: space.lg,
     height: 92,
     paddingHorizontal: 14,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: night.surface,
     flexDirection: 'row',
@@ -357,13 +358,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   timerValue: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  timerText: { fontFamily: fonts.display, fontSize: 36, lineHeight: 44, color: night.text, fontVariant: ['tabular-nums'] },
+  timerText: { ...inkFace('numeralSmall'), color: night.text },
   wakeCard: {
     marginHorizontal: space.lg,
     minHeight: 78,
     paddingHorizontal: space.lg,
     paddingVertical: space.md,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: night.surface,
     flexDirection: 'row',
@@ -374,10 +375,10 @@ const styles = StyleSheet.create({
   wakeEmpty: { backgroundColor: 'transparent', borderWidth: 2, borderStyle: 'dashed', borderColor: 'rgba(163,168,200,0.35)' },
   wakeTile: { width: 46, height: 46, borderRadius: 14, borderCurve: 'continuous', backgroundColor: systemColors.green, alignItems: 'center', justifyContent: 'center' },
   wakeTileSoft: { backgroundColor: 'rgba(52,199,89,0.18)' },
-  wakeTime: { fontFamily: fonts.display, fontSize: 26, lineHeight: 32, color: night.text, fontVariant: ['tabular-nums'] },
-  wakeLine: { fontSize: 14, fontWeight: '700', color: night.textSecondary },
-  wakeSet: { fontFamily: fonts.playfulBold, fontSize: 18, color: night.text },
-  plus: { width: 36, height: 36, borderRadius: 18, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  wakeTime: { ...inkFace('figure'), color: night.text },
+  wakeLine: { ...inkFace('subStrong'), color: night.textSecondary },
+  wakeSet: { ...inkFace('bodyStrong'), color: night.text },
+  plus: { width: 36, height: 36, borderRadius: inkRadius.pill, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
   bar: { paddingHorizontal: space.lg, paddingTop: space.md },
   // While whispering everything fits one screen: the friend, the ring, the time, Stop and Pause.
   whisperPage: { flex: 1, alignItems: 'center', gap: space.xl, paddingTop: space.sm },
@@ -386,17 +387,17 @@ const styles = StyleSheet.create({
     height: 38,
     paddingLeft: 6,
     paddingRight: 14,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     backgroundColor: night.well,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
   },
-  whisperName: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 15, color: night.text },
+  whisperName: { flexShrink: 1, ...inkFace('subStrong'), color: night.text },
   ring: { alignItems: 'center', justifyContent: 'center' },
-  countdown: { fontFamily: fonts.display, fontSize: 56, lineHeight: 64, color: night.text, fontVariant: ['tabular-nums'] },
+  countdown: { ...inkFace('numeralMid'), color: night.text },
   controls: { flexDirection: 'row', gap: 44 },
-  control: { width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center' },
+  control: { width: 76, height: 76, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   controlGrey: { backgroundColor: night.well },
   controlWarm: { backgroundColor: night.primary },
   stopGlyph: { width: 22, height: 22, borderRadius: 5, backgroundColor: night.text },
@@ -404,12 +405,12 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 8,
     paddingRight: 16,
-    borderRadius: 20,
+    borderRadius: inkRadius.pill,
     backgroundColor: night.well,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
   },
-  wakePillTime: { fontFamily: fonts.display, fontSize: 16, color: night.text, fontVariant: ['tabular-nums'] },
-  wakePillName: { flexShrink: 1, fontSize: 15, fontWeight: '700', color: night.textSecondary },
+  wakePillTime: { ...inkFace('bodyStrong'), color: night.text, fontVariant: ['tabular-nums'] },
+  wakePillName: { flexShrink: 1, ...inkFace('subStrong'), color: night.textSecondary },
 });

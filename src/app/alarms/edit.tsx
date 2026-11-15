@@ -20,7 +20,8 @@ import { weekdayNames } from '@/lib/calendar';
 import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
 import { alarmSetupCost, useAppStore } from '@/store/use-app-store';
-import { fonts, radius, sleepColors as night, space, systemColors, type } from '@/theme';
+import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Alarm, AlarmSound, Character } from '@/types';
 
 type Page = 'main' | 'sound';
@@ -491,25 +492,25 @@ const styles = StyleSheet.create({
   scroll: { gap: space.lg, paddingTop: space.sm },
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
-  bell: { width: FACE, height: FACE, borderRadius: FACE / 2, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
-  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: FACE_ON / 2, backgroundColor: night.primary },
-  timeCard: { marginHorizontal: space.lg, borderRadius: 28, backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
+  bell: { width: FACE, height: FACE, borderRadius: inkRadius.pill, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
+  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: night.primary },
+  timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
   timeBox: { minWidth: 196, alignItems: 'center' },
-  bigTime: { fontFamily: fonts.display, fontSize: 72, lineHeight: 84, color: night.text, fontVariant: ['tabular-nums'] },
-  period: { fontFamily: fonts.display, fontSize: 24, color: night.textSecondary },
+  bigTime: { ...inkFace('numeral'), color: night.text },
+  period: { ...inkFace('card'), color: night.textSecondary },
   until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   days: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: space.lg },
-  day: { width: 44, height: 44, borderRadius: 22, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
+  day: { width: 44, height: 44, borderRadius: inkRadius.pill, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
   dayOn: { backgroundColor: night.primary },
-  dayText: { fontSize: 14, fontWeight: '700', color: night.textSecondary },
+  dayText: { ...inkFace('subStrong'), color: night.textSecondary },
   dayTextOn: { color: night.textOnPrimary },
   tiles: { flexDirection: 'row', gap: space.sm + 2, marginHorizontal: space.lg },
   tile: { flex: 1, height: 92, borderRadius: 20, backgroundColor: night.surface, alignItems: 'center', justifyContent: 'center', gap: space.sm },
   tileOn: { backgroundColor: night.primary },
   tileOff: { opacity: 0.4 },
-  tileText: { fontSize: 14, fontWeight: '600', color: night.textSecondary },
+  tileText: { ...inkFace('subStrong'), color: night.textSecondary },
   tileTextOn: { color: night.textOnPrimary },
   group: {
     marginHorizontal: space.lg,
@@ -533,11 +534,11 @@ const styles = StyleSheet.create({
   labelInput: { flex: 1, textAlign: 'right', color: night.textMuted, paddingVertical: space.sm, ...type.body },
   lead: { flexDirection: 'row', alignItems: 'center', gap: space.md, flexShrink: 1 },
   footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  cta: { height: 56, borderRadius: 28, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  cta: { height: 56, borderRadius: inkRadius.pill, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
   // System bold, not Fredoka: the button's words come in every script (Fredoka has Latin only).
-  ctaText: { fontSize: 18, fontWeight: '700', color: night.textOnPrimary },
+  ctaText: { ...inkFace('bodyStrong'), color: night.textOnPrimary },
   price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(42,26,18,0.12)' },
-  priceText: { fontSize: 15, fontWeight: '700', color: night.textOnPrimary },
+  priceText: { ...inkFace('subStrong'), color: night.textOnPrimary },
   moment: { alignItems: 'center', justifyContent: 'center' },
   momentBody: { alignItems: 'center', gap: space.lg },
   momentBadge: {
@@ -546,15 +547,15 @@ const styles = StyleSheet.create({
     bottom: 4,
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: inkRadius.pill,
     backgroundColor: night.primary,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
     borderColor: night.bgPlain,
   },
-  momentBell: { width: 148, height: 148, borderRadius: 74, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  momentTime: { fontFamily: fonts.display, fontSize: 84, lineHeight: 96, color: night.text, fontVariant: ['tabular-nums'] },
+  momentBell: { width: 148, height: 148, borderRadius: inkRadius.pill, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  momentTime: { ...inkFace('numeral'), color: night.text },
   momentDone: { position: 'absolute', left: space.lg, right: space.lg },
-  doneButton: { height: 56, borderRadius: 28, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
+  doneButton: { height: 56, borderRadius: inkRadius.pill, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
 });

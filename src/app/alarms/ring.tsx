@@ -18,6 +18,7 @@ import { SNOOZE_MIN } from '@/lib/alarms';
 import { countsAsWakeReply, MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
 import { useAppStore } from '@/store/use-app-store';
 import { fonts, gradients, space } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 import { showOverLockScreen, unlockPhone } from '../../../modules/alarm-screen';
 
@@ -241,11 +242,11 @@ const styles = StyleSheet.create({
   dawnShade: { backgroundColor: 'rgba(0,0,0,0.18)' },
   fill: { flex: 1, justifyContent: 'space-between', paddingHorizontal: 20 },
   top: { alignItems: 'center' },
-  over: { fontSize: 17, fontWeight: '600', color: 'rgba(255,255,255,0.82)', textShadowColor: 'rgba(0,0,0,0.35)', textShadowRadius: 6 },
+  over: { ...inkFace('bodyStrong'), color: 'rgba(255,255,255,0.82)', textShadowColor: 'rgba(0,0,0,0.35)', textShadowRadius: 6 },
   clockLine: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
   // Lock-screen scale; serif as the canvas has it.
   clock: { fontFamily: fonts.serif, fontSize: 104, lineHeight: 118, letterSpacing: -2, color: '#FFFFFF', fontVariant: ['tabular-nums'], textShadowColor: 'rgba(0,0,0,0.3)', textShadowRadius: 12 },
-  period: { fontFamily: fonts.serif, fontSize: 28, color: '#FFFFFF' },
+  period: { ...inkFace('title'), color: '#FFFFFF' },
   actions: { gap: 12 },
   // Dark glass on the picture, as the canvas's bubble and field.
   bubble: {
@@ -253,39 +254,39 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingVertical: 14,
     paddingHorizontal: 18,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: 'rgba(0,0,0,0.5)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.2)',
   },
-  from: { fontSize: 13, fontWeight: '600', color: MUTED },
-  say: { fontSize: 17, lineHeight: 23, letterSpacing: -0.3, color: '#FFFFFF' },
-  meta: { fontSize: 13, color: MUTED },
+  from: { ...inkFace('caption'), color: MUTED },
+  say: { ...inkFace('body'), color: '#FFFFFF' },
+  meta: { ...inkFace('footnote'), color: MUTED },
   clipLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   field: {
     height: 54,
-    borderRadius: 27,
+    borderRadius: inkRadius.pill,
     paddingHorizontal: 20,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.45)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.24)',
   },
-  input: { fontSize: 17, color: '#FFFFFF', padding: 0 },
-  primary: { height: 56, borderRadius: 28, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
+  input: { ...inkFace('body'), color: '#FFFFFF', padding: 0 },
+  primary: { height: 56, borderRadius: inkRadius.pill, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
   // Until three real words are typed: a paler white (the press animation owns opacity), so it reads as waiting.
   primaryWaiting: { backgroundColor: 'rgba(255,255,255,0.55)' },
-  primaryText: { fontSize: 17, fontWeight: '600', letterSpacing: -0.2, color: '#000' },
+  primaryText: { ...inkFace('bodyStrong'), color: '#000' },
   snooze: {
     height: 52,
-    borderRadius: 26,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.16)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.3)',
   },
-  snoozeText: { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
-  hold: { alignSelf: 'center', paddingVertical: 4, fontSize: 13, color: MUTED },
+  snoozeText: { ...inkFace('bodyStrong'), color: '#FFFFFF' },
+  hold: { alignSelf: 'center', paddingVertical: 4, ...inkFace('footnote'), color: MUTED },
 });

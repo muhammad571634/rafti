@@ -14,7 +14,8 @@ import { nextAlarmAt } from '@/lib/alarms';
 import { weekdayNames } from '@/lib/calendar';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, sleepColors as night, space, systemColors } from '@/theme';
+import { colors, sleepColors as night, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
 /** The next alarm's face, as the picked face in the editor; a row's face is smaller. */
@@ -183,11 +184,11 @@ function Face({ friend, size, ring }: { friend?: Character; size: number; ring?:
   const pad = ring ? 3 : 0;
   const border = ring ? 3 : 0;
   return (
-    <View style={[ring && styles.ring, { padding: pad, borderWidth: border, borderRadius: size / 2 + pad + border }]}>
+    <View style={[ring && styles.ring, { padding: pad, borderWidth: border, borderRadius: inkRadius.pill }]}>
       {friend ? (
         <CharacterAvatar character={friend} size={size} />
       ) : (
-        <View style={[styles.bell, { width: size, height: size, borderRadius: size / 2 }]}>
+        <View style={[styles.bell, { width: size, height: size, borderRadius: inkRadius.pill }]}>
           <Ionicons name="musical-notes" size={size * 0.42} color={night.textOnPrimary} />
         </View>
       )}
@@ -199,41 +200,38 @@ const styles = StyleSheet.create({
   title: {
     paddingHorizontal: space.lg,
     paddingBottom: space.md,
-    fontSize: 34,
-    lineHeight: 41,
-    fontWeight: '700',
-    letterSpacing: 0.4,
+    ...inkFace('display'),
     color: night.text,
   },
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.sm + 2 },
-  hero: { flexDirection: 'row', alignItems: 'center', gap: space.lg, padding: space.lg, borderRadius: 28, backgroundColor: night.surface, marginBottom: space.sm },
+  hero: { flexDirection: 'row', alignItems: 'center', gap: space.lg, padding: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, marginBottom: space.sm },
   heroOff: { gap: space.sm, paddingVertical: space.lg },
   heroText: { flex: 1, gap: 2 },
-  heroLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.6, color: night.primary },
-  heroTime: { fontFamily: fonts.display, fontSize: 56, lineHeight: 64, color: night.text, fontVariant: ['tabular-nums'] },
-  heroPeriod: { fontFamily: fonts.display, fontSize: 20, color: night.textSecondary },
+  heroLabel: { ...inkFace('caption'), color: night.primary },
+  heroTime: { ...inkFace('numeralMid'), color: night.text },
+  heroPeriod: { ...inkFace('cardSmall'), color: night.textSecondary },
   until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  untilText: { fontSize: 15, color: night.textSecondary },
+  untilText: { ...inkFace('sub'), color: night.textSecondary },
   ring: { borderColor: night.primary },
   bell: { backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  swipe: { borderRadius: 22, overflow: 'hidden' },
+  swipe: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
   card: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: night.surface },
   cardBody: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md },
   off: { opacity: 0.45 },
   cardText: { flex: 1, gap: 2 },
-  time: { fontFamily: fonts.display, fontSize: 38, lineHeight: 44, color: night.text, fontVariant: ['tabular-nums'] },
-  period: { fontFamily: fonts.display, fontSize: 16, color: night.textSecondary },
+  time: { ...inkFace('numeralSmall'), color: night.text },
+  period: { ...inkFace('bodyStrong'), color: night.textSecondary },
   days: { flexDirection: 'row', gap: 6 },
-  day: { fontSize: 12, fontWeight: '600', color: night.textFaint },
+  day: { ...inkFace('caption'), color: night.textFaint },
   dayOn: { color: night.primary, fontWeight: '800' },
-  line: { fontSize: 14, color: night.textSecondary },
+  line: { ...inkFace('sub'), color: night.textSecondary },
   delete: { width: 96, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center', gap: 4 },
-  deleteText: { fontSize: 13, fontWeight: '600', color: colors.white },
+  deleteText: { ...inkFace('caption'), color: colors.white },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.lg, paddingBottom: space.huge },
-  emptyBell: { width: 120, height: 120, borderRadius: 60, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  emptyText: { fontSize: 20, fontWeight: '700', color: night.text },
+  emptyBell: { width: 120, height: 120, borderRadius: inkRadius.pill, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
+  emptyText: { ...inkFace('bodyStrong'), color: night.text },
   footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  cta: { height: 56, borderRadius: 28, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  cta: { height: 56, borderRadius: inkRadius.pill, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
   // System bold, as in the editor: the words come in every script.
-  ctaText: { fontSize: 18, fontWeight: '700', color: night.textOnPrimary },
+  ctaText: { ...inkFace('bodyStrong'), color: night.textOnPrimary },
 });

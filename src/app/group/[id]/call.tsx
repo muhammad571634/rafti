@@ -32,6 +32,7 @@ import { callClock, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -450,16 +451,16 @@ const styles = StyleSheet.create({
   rings: { position: 'absolute', alignSelf: 'center', top: -60 },
   face: { width: 100, alignItems: 'center', gap: 10 },
   quiet: { opacity: 0.6 },
-  faceName: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.onMedia },
+  faceName: { ...inkFace('subStrong'), color: colors.onMedia },
   head: { marginTop: 50, paddingHorizontal: space.xl },
-  who: { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.72)' },
+  who: { ...inkFace('caption'), color: 'rgba(255,255,255,0.72)' },
   badge: {
     position: 'absolute',
     right: -2,
     bottom: -2,
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemColors.green,
     borderWidth: 3,
     borderColor: 'rgba(16,16,24,0.55)',
@@ -468,5 +469,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 2,
   },
-  bar: { width: 3, height: 12, borderRadius: 2, backgroundColor: colors.onMedia },
+  bar: { width: 3, height: 12, borderRadius: inkRadius.pill, backgroundColor: colors.onMedia },
 });

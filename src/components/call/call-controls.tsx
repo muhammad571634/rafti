@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /**
  * Mute, End and Speaker under a call (canvas "CallVoice" / "CallGroup", 2026-10-21): two glass
@@ -93,17 +94,18 @@ export const callGlass = StyleSheet.create({
     marginBottom: 38,
     paddingHorizontal: 18,
     paddingVertical: 14,
-    borderRadius: 22,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     alignItems: 'center',
     gap: 4,
   },
-  captionText: { fontSize: 17, lineHeight: 23, fontWeight: '500', letterSpacing: -0.3, color: colors.onMedia, textAlign: 'center' },
+  captionText: { ...inkFace('body'), color: colors.onMedia, textAlign: 'center' },
   // "2 min left", centred in the top row.
-  warn: { height: 32, paddingHorizontal: 14, borderRadius: 16, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  warnText: { fontSize: 15, fontWeight: '600', color: colors.onMedia, fontVariant: ['tabular-nums'] },
+  warn: { height: 32, paddingHorizontal: 14, borderRadius: inkRadius.pill, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  warnText: { ...inkFace('subStrong'), color: colors.onMedia, fontVariant: ['tabular-nums'] },
   top: { height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: space.lg },
-  title: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.3, color: colors.onMedia, textAlign: 'center' },
-  timer: { marginTop: 4, fontSize: 17, letterSpacing: -0.2, color: 'rgba(255,255,255,0.72)', fontVariant: ['tabular-nums'], textAlign: 'center' },
+  title: { ...inkFace('title'), color: colors.onMedia, textAlign: 'center' },
+  timer: { marginTop: 4, ...inkFace('body'), color: 'rgba(255,255,255,0.72)', fontVariant: ['tabular-nums'], textAlign: 'center' },
 });
 
 const styles = StyleSheet.create({
@@ -112,13 +114,13 @@ const styles = StyleSheet.create({
   control: { alignItems: 'center', gap: space.sm, width: 84 },
   // Every button sits in a slot as tall as the hang-up, so the labels line up.
   slot: { height: 76, justifyContent: 'center' },
-  label: { fontSize: 13, color: 'rgba(255,255,255,0.8)' },
-  toggle: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  label: { ...inkFace('footnote'), color: 'rgba(255,255,255,0.8)' },
+  toggle: { width: 64, height: 64, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   toggleOn: { backgroundColor: colors.onMedia },
   hangUp: {
     width: 76,
     height: 76,
-    borderRadius: 38,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemColors.red,
     alignItems: 'center',
     justifyContent: 'center',
