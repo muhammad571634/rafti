@@ -414,7 +414,8 @@ function WayRow({
 /** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
 const PEEK_WIDTH = 104;
 const GLOW = 200;
-const PEEK_ROOM = 40;
+// 72 pt of mascot above the card: the title keeps clear of its hair at every text size.
+const PEEK_ROOM = 60;
 /** On the red card: a day still to come, and the surprise day's chip. */
 const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
 

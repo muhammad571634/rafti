@@ -142,7 +142,7 @@ function Disc({ size, x, y, hue, swell }: { size: number; x: number; y: number; 
 function DiscLabel({ size, x, y, swell, name, percent }: { size: number; x: number; y: number; swell: SharedValue<number>; name: string; percent: number }) {
   const style = useSwellStyle(swell);
   return (
-    <Animated.View pointerEvents="none" style={[styles.label, { width: size - 20, marginLeft: x - (size - 20) / 2, marginTop: y - 12 }, style]}>
+    <Animated.View pointerEvents="none" style={[styles.label, { width: size - 20, marginLeft: x - (size - 20) / 2, marginTop: y - 15 }, style]}>
       <Text style={styles.labelText} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
         {name} <Text style={styles.labelPercent}>{`${percent}%`}</Text>
       </Text>
@@ -164,8 +164,8 @@ const styles = StyleSheet.create({
     // brown on the A51, so by day the discs are just a little see-through.
     ...(isDark ? { mixBlendMode: 'screen' as const } : null),
   },
-  label: { position: 'absolute', left: '50%', top: '50%', height: 24, alignItems: 'center', justifyContent: 'center' },
+  label: { position: 'absolute', left: '50%', top: '50%', height: 30, alignItems: 'center', justifyContent: 'center' },
   // Dark ink on the bright discs reads in both appearances (WCAG AA on the lightest stop).
-  labelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: 'rgba(0,0,0,0.86)', textAlign: 'center' },
+  labelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: 'rgba(0,0,0,0.86)', textAlign: 'center', includeFontPadding: false },
   labelPercent: { fontWeight: '700', fontVariant: ['tabular-nums'] },
 });

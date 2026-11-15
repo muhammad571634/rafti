@@ -50,7 +50,7 @@ export function FamilyRow({
               <Ionicons name="add" size={26} color={ink.text} />
             </View>
           )}
-          <InkText variant="caption" color={who ? ink.text : ink.text2} center lines={2} adjustsFontSizeToFit minimumFontScale={0.8}>
+          <InkText variant="caption" color={who ? ink.text : ink.text2} center lines={2} wordSafe>
             {who ? who.name : phrase(role)}
           </InkText>
         </PressableScale>
