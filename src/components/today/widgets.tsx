@@ -5,8 +5,10 @@ import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
-import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, Txt, type ModuleKey } from '@/components/ui';
-import { colors, fonts, isDark, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
+import { InkText } from '@/components/ink';
+import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, type ModuleKey } from '@/components/ui';
+import { colors, isDark, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
+import { inkRadius, inkType } from '@/theme/ink';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -158,18 +160,18 @@ export function WidgetView({
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
         // The thing itself, whole where it fits: a step smaller before it is cut, never tiny.
-        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={styles.quote} color={ink} />
+        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={[inkType.subStrong, styles.quote]} color={ink} />
       ) : (
         <>
           {model.figure ? (
             <View style={styles.figureLine}>
-              <Txt style={[styles.figure, { color: ink }]} lines={1}>
+              <InkText variant="figureLarge" color={ink} lines={1} style={styles.shrink}>
                 {model.figure}
-              </Txt>
+              </InkText>
               {model.unit ? (
-                <Txt style={[styles.unit, { color: sub }]} lines={1}>
+                <InkText variant="subStrong" color={sub} lines={1} style={styles.shrink}>
                   {model.unit}
-                </Txt>
+                </InkText>
               ) : null}
             </View>
           ) : null}
@@ -180,13 +182,13 @@ export function WidgetView({
               text={model.title}
               lines={model.titleLines}
               sizes={model.figure ? SUBTITLE_SIZES : TITLE_SIZES}
-              style={model.figure ? styles.subtitle : styles.title}
+              style={model.figure ? inkType.subStrong : inkType.bodyStrong}
               color={ink}
             />
           ) : model.title ? (
-            <Txt style={[model.figure ? styles.subtitle : styles.title, { color: ink }]} lines={1}>
+            <InkText variant={model.figure ? 'subStrong' : 'bodyStrong'} color={ink} lines={1}>
               {model.title}
-            </Txt>
+            </InkText>
           ) : null}
         </>
       )}
@@ -194,9 +196,9 @@ export function WidgetView({
         <View style={styles.days}>
           {model.days.map((d, i) =>
             d.label != null ? (
-              <Txt key={i} style={[styles.dayLetter, { color: ink, opacity: d.on ? 1 : 0.45 }]}>
+              <InkText key={i} variant="caption" color={ink} style={[styles.dayLetter, { opacity: d.on ? 1 : 0.45 }]}>
                 {d.label}
-              </Txt>
+              </InkText>
             ) : (
               <View key={i} style={[styles.dayDot, d.on && { backgroundColor: ink }]} />
             ),
@@ -211,14 +213,14 @@ export function WidgetView({
       {model.pill || !model.line ? null : model.lineFace ? (
         <View style={styles.lineRow}>
           <CharacterAvatar character={model.lineFace} size={18} />
-          <Txt variant="caption" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
+          <InkText variant="caption" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
             {model.line}
-          </Txt>
+          </InkText>
         </View>
       ) : (
-        <Txt variant="caption" color={sub} lines={model.lineLines ?? 1}>
+        <InkText variant="caption" color={sub} lines={model.lineLines ?? 1}>
           {model.line}
-        </Txt>
+        </InkText>
       )}
       {model.list && !model.pill
         ? // What comes after, as list rows under the first (a forecast's next days), each with its face.
@@ -231,9 +233,9 @@ export function WidgetView({
                   <View style={[styles.afterDot, { backgroundColor: ink }]} />
                 </View>
               )}
-              <Txt variant="caption" color={sub} lines={1} style={styles.flexText}>
+              <InkText variant="caption" color={sub} lines={1} style={styles.flexText}>
                 {row.text}
-              </Txt>
+              </InkText>
             </View>
           ))
         : null}
@@ -249,12 +251,12 @@ export function WidgetView({
           <Ionicons name="call" size={10} color={colors.white} />
         </View>
       </View>
-      <Txt style={[styles.personName, { color: ink }]} lines={1}>
+      <InkText variant="bodyStrong" color={ink} lines={1} style={styles.personName}>
         {model.title}
-      </Txt>
-      <Txt style={[styles.personLine, { color: sub }]} lines={1}>
+      </InkText>
+      <InkText variant="caption" color={sub} lines={1}>
         {model.line}
-      </Txt>
+      </InkText>
     </View>
   ) : (
     <>
@@ -266,7 +268,9 @@ export function WidgetView({
           ))}
           {model.badge ? (
             <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
-              <Txt style={[styles.badgeText, { color: onPhoto ? tone[1] : colors.textOnInk }]}>{model.badge}</Txt>
+              <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk}>
+                {model.badge}
+              </InkText>
             </View>
           ) : null}
         </View>
@@ -328,9 +332,9 @@ export function WidgetView({
       {model.pill ? (
         <View style={styles.pillWrap} pointerEvents={inert ? 'none' : 'box-none'}>
           <PressableScale scaleTo={0.94} accessibilityRole="button" accessibilityLabel={model.pill.label} onPress={model.pill.onPress} style={styles.pill}>
-            <Txt style={styles.pillText} lines={1}>
+            <InkText variant="subStrong" color={colors.textOnInk} lines={1}>
               {model.pill.label}
-            </Txt>
+            </InkText>
           </PressableScale>
         </View>
       ) : null}
@@ -364,11 +368,11 @@ function FitText({
   const fit = { fontSize: size, lineHeight: Math.round(size * 1.27) };
   return (
     <View>
-      <Txt style={[style, fit, { color }]} lines={lines}>
+      <InkText style={[style, fit]} color={color} lines={lines}>
         {text}
-      </Txt>
+      </InkText>
       {step < last ? (
-        <Txt
+        <InkText
           style={[style, fit, styles.twin]}
           accessible={false}
           importantForAccessibility="no-hide-descendants"
@@ -377,7 +381,7 @@ function FitText({
             if (e.nativeEvent.lines.length > lines) setStep((s) => (s === step ? Math.min(s + 1, last) : s));
           }}>
           {text}
-        </Txt>
+        </InkText>
       ) : null}
     </View>
   );
@@ -390,7 +394,8 @@ const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
 const SUB = 'rgba(255,255,255,0.85)';
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 28, overflow: 'hidden' },
+  card: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
+  shrink: { flexShrink: 1 },
   // Flat colour, no elevation: Android would lift the card over the "−" badge and its neighbours.
   pinned: { transform: [{ rotate: '-1.6deg' }] },
   tape: {
@@ -411,52 +416,44 @@ const styles = StyleSheet.create({
   badge: {
     height: 24,
     paddingHorizontal: 9,
-    borderRadius: 12,
+    borderRadius: inkRadius.pill,
     justifyContent: 'center',
     backgroundColor: colors.white,
   },
   badgeInk: { backgroundColor: colors.text },
-  badgeText: { fontSize: 12, fontWeight: '700' },
   // A word that does not fit beside its number goes under it; the number is never cut ("… new pages"
   // in the gallery's narrow card, Russian, A51 2026-11-05).
   figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
-  // The number is the widget's headline (a clock's time, a balance): large, tight, heavy.
-  figure: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 36, lineHeight: 42, letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
-  unit: { flexShrink: 1, fontSize: 15, fontWeight: '600' },
-  title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22 },
-  // Under a number: what it is for (a plan's name), up to two lines.
-  subtitle: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2 },
   days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
-  dayLetter: { width: 16, textAlign: 'center', fontSize: 12, lineHeight: 15, fontWeight: '700' },
-  dayDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)' },
+  dayLetter: { width: 16, textAlign: 'center' },
+  dayDot: { width: 9, height: 9, borderRadius: inkRadius.pill, backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)' },
   afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
-  afterDot: { width: 5, height: 5, borderRadius: 2.5, opacity: 0.5 },
+  afterDot: { width: 5, height: 5, borderRadius: inkRadius.pill, opacity: 0.5 },
   flexText: { flexShrink: 1 },
   // The note itself, in its own words: the widget is the note.
-  quote: { fontSize: 15, lineHeight: 19, fontWeight: '600', letterSpacing: -0.2, marginBottom: 4 },
+  quote: { marginBottom: 4 },
   // FitText's line counter: laid out like the words, never seen.
   twin: { position: 'absolute', top: 0, left: 0, right: 0, opacity: 0 },
   // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
   // stays, no colour added inside).
   track: {
     height: 8,
-    borderRadius: 4,
+    borderRadius: inkRadius.pill,
     marginTop: 8,
     marginBottom: 6,
     backgroundColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.7)',
     overflow: 'hidden',
   },
-  bar: { height: 8, borderRadius: 4, backgroundColor: colors.text },
+  bar: { height: 8, borderRadius: inkRadius.pill, backgroundColor: colors.text },
   person: { flex: 1, alignItems: 'center', paddingTop: 0 },
-  personName: { marginTop: 6, fontFamily: fonts.playful, fontSize: 16, lineHeight: 20 },
-  personLine: { fontSize: 12, lineHeight: 15, fontWeight: '500' },
+  personName: { marginTop: 6 },
   // A soft white circle on the tint (the prototype's buttons), a faint one on a deep tint.
   button: {
     width: BUTTON,
     height: BUTTON,
-    borderRadius: BUTTON / 2,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.75)',
@@ -469,15 +466,14 @@ const styles = StyleSheet.create({
   abovePill: { marginBottom: 44 },
   pillWrap: { position: 'absolute', left: 14, right: 14, bottom: 14 },
   // The one main thing, as a dark pill (the Payme and iOS wallet buttons).
-  pill: { height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.text },
-  pillText: { fontSize: 15, fontWeight: '700', color: colors.textOnInk },
+  pill: { minHeight: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.text },
   callDot: {
     position: 'absolute',
     right: -3,
     bottom: -3,
     width: 18,
     height: 18,
-    borderRadius: 9,
+    borderRadius: inkRadius.pill,
     borderWidth: 2,
     borderColor: colors.white,
     backgroundColor: systemColors.green,

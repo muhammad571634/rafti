@@ -10,11 +10,13 @@ import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { FACE_AT, portraitOf, sceneFocus, stretchLeft } from '@/components/chat/chat-ground';
-import { Anim, characterImage, PressableScale, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { Anim, characterImage, PressableScale } from '@/components/ui';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, space } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
 /** A tall or square picture has no width to slide: it is drawn this much wider than the card instead (`FACE_AT`). */
@@ -228,9 +230,9 @@ export function TodayHero({
       <View style={styles.bottom}>
         {/* The name sits right on their line, the way a message is signed (owner, 2026-11-08: no days,
             level or time here). */}
-        <Txt color={colors.onMedia} lines={1} style={styles.name}>
+        <InkText variant="title" color={colors.onMedia} lines={1} style={styles.name}>
           {name}
-        </Txt>
+        </InkText>
         {line && typing ? (
           <View style={styles.said}>
             <View style={[styles.bubble, styles.typing]}>
@@ -240,16 +242,16 @@ export function TodayHero({
         ) : line ? (
           <Animated.View entering={FadeIn.duration(220)} style={styles.said}>
             <View style={styles.bubble}>
-              <Txt style={styles.lineText} color={colors.onMedia} lines={lines}>
+              <InkText color={colors.onMedia} lines={lines}>
                 {line.text}
-              </Txt>
+              </InkText>
             </View>
           </Animated.View>
         ) : null}
         <View style={styles.field}>
-          <Txt style={styles.fieldText} color={colors.onMediaMuted} lines={1}>
+          <InkText variant="sub" color={colors.onMediaMuted} lines={1} style={styles.fieldText}>
             {t('chat.inputPlaceholder')}
-          </Txt>
+          </InkText>
           <MicrophoneIcon size={19} color={colors.onMediaSoft} />
         </View>
       </View>
@@ -275,7 +277,7 @@ const styles = StyleSheet.create({
   header: { position: 'absolute', left: 0, right: 0 },
   wide: { position: 'absolute', left: 0, top: 0, bottom: 0 },
   // The leading side: the friend keeps the trailing side clear; the name hugs their line.
-  name: { maxWidth: '72%', marginBottom: -2, fontSize: 30, lineHeight: 35, fontWeight: '800', letterSpacing: -0.6 },
+  name: { maxWidth: '72%', marginBottom: -2 },
   typing: { paddingVertical: 2 },
   bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.lg, gap: space.sm },
   said: { alignItems: 'flex-start' },
@@ -291,7 +293,6 @@ const styles = StyleSheet.create({
     borderColor: colors.onMediaHairline,
     backgroundColor: colors.onMediaBubble,
   },
-  lineText: { fontSize: 16, lineHeight: 21, letterSpacing: -0.2 },
   // Frosted glass on the picture's dark foot, a 1 pt rim, 44 pt tall (HIG: touch target).
   field: {
     height: 44,
@@ -300,11 +301,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: space.lg,
     paddingRight: space.md,
-    borderRadius: 22,
+    borderRadius: inkRadius.pill,
     borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: colors.onMediaRim,
     backgroundColor: colors.onMediaFrost,
   },
-  fieldText: { flex: 1, fontSize: 15 },
+  fieldText: { flex: 1 },
 });

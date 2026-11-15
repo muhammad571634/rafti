@@ -16,7 +16,8 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
-import { Anim, CharacterAvatar, glassStyle, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { Anim, CharacterAvatar, glassStyle } from '@/components/ui';
 import { awayAt, markWelcomed, noteWelcomeCheck, openedFromNotification } from '@/lib/away-clock';
 import { pickWelcome, shouldWelcome, welcomeLineKey } from '@/lib/welcome-back';
 import { useAppStore } from '@/store/use-app-store';
@@ -206,13 +207,11 @@ export function WelcomeBack() {
           style={({ pressed }) => [styles.bubble, pressed && styles.pressed]}>
           <CharacterAvatar character={shown.character} size={38} />
           <View style={styles.words}>
-            <Txt style={styles.name} lines={1}>
+            <InkText variant="footnote" lines={1}>
               {shown.character.name}
-            </Txt>
+            </InkText>
             {typed ? (
-              <Txt style={styles.line} lines={2}>
-                {shown.line}
-              </Txt>
+              <InkText lines={2}>{shown.line}</InkText>
             ) : (
               <Anim name="typing" size={30} tint={colors.textSecondary} />
             )}
@@ -239,7 +238,4 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.85 },
   words: { flexShrink: 1, minHeight: 39, justifyContent: 'center' },
-  // HIG Typography: Footnote 13/18 for who, Callout 16/21 for what they say.
-  name: { fontSize: 13, lineHeight: 18, fontWeight: '600', color: colors.textSecondary },
-  line: { fontSize: 16, lineHeight: 21, fontWeight: '500', color: colors.text },
 });
