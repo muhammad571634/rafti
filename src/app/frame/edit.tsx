@@ -21,6 +21,7 @@ import {
 } from '@/lib/frames';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, signature, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { UserFrame } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
@@ -197,8 +198,8 @@ export default function FrameEditScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  previewCard: { marginTop: 18, padding: CARD_PAD, borderRadius: 24 },
+  round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  previewCard: { marginTop: 18, padding: CARD_PAD, borderRadius: inkRadius.card, borderCurve: 'continuous' },
   // The picture's stage: the white ground set into the grey card.
   preview: { height: 236, borderRadius: 16, borderCurve: 'continuous', backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
   tilt: { transform: [{ rotate: '-2deg' }] },
@@ -206,8 +207,8 @@ const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   gutter: { marginHorizontal: GUTTER },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: systemGround.secondaryLabel },
-  swatchRing: { width: 46, height: 46, borderRadius: 23, borderWidth: 2.5, borderColor: 'transparent', padding: 3 },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  swatchRing: { width: 46, height: 46, borderRadius: inkRadius.pill, borderWidth: 2.5, borderColor: 'transparent', padding: 3 },
   swatchOn: { borderColor: signature.photo.strong },
   swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderStrong },
   stickers: { flexDirection: 'row', justifyContent: 'space-between' },
@@ -221,5 +222,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stickerOn: { borderColor: signature.photo.strong },
-  input: { minHeight: 50, paddingHorizontal: GUTTER, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
+  input: { minHeight: 50, paddingHorizontal: GUTTER, ...inkFace('body'), color: systemGround.label },
 });

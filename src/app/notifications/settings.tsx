@@ -16,6 +16,7 @@ import { hourClock, pushDay } from '@/notifications/budget';
 import { requestPushPermission } from '@/notifications/sync';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { AppSettings } from '@/types';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -235,13 +236,11 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
-  turnOn: { height: 30, paddingHorizontal: 14, borderRadius: 15, justifyContent: 'center', backgroundColor: systemColors.fill },
-  turnOnText: { fontSize: 15, fontWeight: '600', color: colors.brandText },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: colors.textSecondary },
+  turnOn: { minHeight: 30, paddingHorizontal: 14, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemColors.fill },
+  turnOnText: { ...inkFace('subStrong'), color: colors.brandText },
 });

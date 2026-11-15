@@ -19,7 +19,8 @@ import {
 } from '@/lib/profile';
 import { phrase } from '@/i18n';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, space, systemColors, systemGround } from '@/theme';
+import { colors, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Pronouns } from '@/types';
 
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
@@ -209,27 +210,27 @@ const CAMERA = 34;
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: space.sm, paddingTop: space.xs, paddingBottom: space.xs },
   // A white ring lifts the photo off the ground.
-  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: systemGround.card },
+  ring: { padding: 4, borderRadius: inkRadius.pill, backgroundColor: systemGround.card },
   camera: {
     position: 'absolute',
     right: 0,
     bottom: 4,
     width: CAMERA,
     height: CAMERA,
-    borderRadius: CAMERA / 2,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primaryFill,
     borderWidth: 3,
     borderColor: systemGround.ground,
   },
-  error: { fontSize: 13, color: colors.danger },
+  error: { ...inkFace('footnote'), color: colors.danger },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: 18, paddingTop: 10, paddingBottom: 18 },
-  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: 18, justifyContent: 'center', backgroundColor: systemGround.fill },
+  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
   chipPressed: { opacity: 0.7 },
-  chipText: { fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
+  chipText: { ...inkFace('subStrong'), color: systemGround.label },
   add: { width: 52, alignItems: 'center', paddingHorizontal: 0, backgroundColor: colors.primarySofter },
   about: { minHeight: 54, paddingHorizontal: 18, paddingTop: 8, paddingBottom: 18, justifyContent: 'center', alignItems: 'flex-start' },
   aboutPressed: { backgroundColor: systemGround.fill },
-  aboutText: { fontSize: 17, lineHeight: 23, letterSpacing: -0.4, color: colors.text },
+  aboutText: { ...inkFace('body'), color: colors.text },
 });

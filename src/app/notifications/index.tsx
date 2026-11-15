@@ -11,6 +11,7 @@ import { buildInbox, isUnread, type InboxItem, type InboxKind } from '@/lib/inbo
 import { dayKey } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -163,20 +164,18 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   row: { flexDirection: 'row', alignItems: 'center', paddingLeft: space.xs },
   pressed: { backgroundColor: colors.surfaceAlt },
   dotCell: { width: 14, alignItems: 'center' },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
-  iconTile: { width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2, alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 8, height: 8, borderRadius: inkRadius.pill, backgroundColor: colors.primary },
+  iconTile: { width: AVATAR, height: AVATAR, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minHeight: 68, marginLeft: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14 },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  text: { flex: 1, fontSize: 15, lineHeight: 20, letterSpacing: -0.2, color: colors.text, paddingVertical: space.sm },
+  text: { flex: 1, ...inkFace('sub'), color: colors.text, paddingVertical: space.sm },
   textUnread: { fontWeight: '600' },
-  when: { fontSize: 13, color: colors.textSecondary },
+  when: { ...inkFace('footnote'), color: colors.textSecondary },
 });

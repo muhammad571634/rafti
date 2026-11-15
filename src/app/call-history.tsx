@@ -24,6 +24,7 @@ import { clockTime, relativeStamp, shortName } from '@/lib/format';
 import { dayKey, dayKeyFromToday } from '@/mock';
 import { displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { CallRecord, Character } from '@/types';
 
 type Filter = 'all' | 'missed';
@@ -231,25 +232,23 @@ function CallRow({
 
 const styles = StyleSheet.create({
   clear: { alignSelf: 'center', marginTop: space.xl, paddingVertical: 10, paddingHorizontal: space.lg },
-  clearText: { fontSize: 17, color: systemColors.red },
+  clearText: { ...inkFace('body'), color: systemColors.red },
   minutes: {
     height: 44,
-    borderRadius: 22,
+    borderRadius: inkRadius.pill,
     paddingLeft: 12,
     paddingRight: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
-  minutesText: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, fontVariant: ['tabular-nums'], color: colors.text },
+  minutesText: { ...inkFace('subStrong'), fontVariant: ['tabular-nums'], color: colors.text },
   track: { marginTop: 12, marginHorizontal: space.lg },
   sectionLabel: {
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
@@ -258,16 +257,16 @@ const styles = StyleSheet.create({
   rowTap: { flex: 1, minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: 12 },
   pressed: { opacity: 0.6 },
   body: { flex: 1, minWidth: 0, gap: 2 },
-  name: { fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  name: { ...inkFace('bodyStrong'), color: colors.text },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   // iOS draws the direction as a diagonal arrow: down-left in, up-right out.
   arrow: { transform: [{ rotate: '45deg' }] },
-  metaText: { fontSize: 13, color: colors.textSecondary },
-  when: { fontSize: 15, letterSpacing: -0.2, color: colors.textSecondary },
+  metaText: { ...inkFace('footnote'), color: colors.textSecondary },
+  when: { ...inkFace('sub'), color: colors.textSecondary },
   callBack: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemColors.fill,
     alignItems: 'center',
     justifyContent: 'center',
@@ -290,5 +289,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: space.sm,
   },
-  noMissedText: { fontSize: 15, color: colors.textSecondary },
+  noMissedText: { ...inkFace('sub'), color: colors.textSecondary },
 });

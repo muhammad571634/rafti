@@ -1,7 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Txt } from '@/components/ui';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 
 /** How full the profile is: a thin ink bar and the percent beside it (the calm-cards meter). */
 export function CompletionMeter({ percent }: { percent: number }) {
@@ -22,9 +23,9 @@ const styles = StyleSheet.create({
   track: {
     flex: 1,
     height: 8,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.border,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.text },
+  fill: { height: '100%', borderRadius: inkRadius.pill, backgroundColor: colors.text },
 });

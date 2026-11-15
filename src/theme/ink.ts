@@ -77,6 +77,8 @@ export const inkType = StyleSheet.create({
   numeral: { ...serif(72, 76, -1.5), fontVariant: ['tabular-nums', 'lining-nums'] },
   /** A figure on a card (days together, a level inside its rings): Title 1 in the system face. */
   figure: { ...system(28, 34, '700'), letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
+  /** A figure inside a row (a pack's shells, a price): Title 2 in the system face. */
+  figureSmall: { ...system(22, 28, '700'), letterSpacing: -0.3, fontVariant: ['tabular-nums'] },
   /** A widget's headline number (a plan's time, a balance): Large Title in the system face. */
   figureLarge: { ...system(34, 41, '700'), letterSpacing: -0.6, fontVariant: ['tabular-nums'] },
   body: system(17, 22),

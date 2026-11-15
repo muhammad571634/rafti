@@ -42,7 +42,8 @@ import { countMessages } from '@/store/message-db';
 import { syncMemories } from '@/store/memory-sync';
 import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/store/message-sync';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, moduleFills, space, storeColors, systemColors, systemGround } from '@/theme';
+import { colors, moduleFills, space, storeColors, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -519,29 +520,29 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', paddingHorizontal: space.xl, paddingTop: space.xs },
   // A white ring lifts the photo off the ground.
-  ring: { padding: 4, borderRadius: AVATAR / 2 + 4, backgroundColor: systemGround.card },
+  ring: { padding: 4, borderRadius: inkRadius.pill, backgroundColor: systemGround.card },
   camera: {
     position: 'absolute',
     right: 0,
     bottom: 4,
     width: 34,
     height: 34,
-    borderRadius: 17,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: systemGround.card,
     borderWidth: 3,
     borderColor: systemGround.ground,
   },
-  name: { marginTop: 14, fontFamily: fonts.playful, fontSize: 30, lineHeight: 38, letterSpacing: -0.3, textAlign: 'center', color: systemGround.label },
-  handle: { marginTop: 2, fontSize: 15, color: colors.textSecondary },
+  name: { marginTop: 14, ...inkFace('display'), textAlign: 'center', color: systemGround.label },
+  handle: { marginTop: 2, ...inkFace('sub'), color: colors.textSecondary },
   tiles: { flexDirection: 'row', gap: space.md, marginHorizontal: space.lg, marginTop: 22 },
-  tile: { flex: 1, minWidth: 0, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 4, borderRadius: 24, backgroundColor: systemGround.card },
+  tile: { flex: 1, minWidth: 0, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 4, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card },
   tileHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  tileLabel: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 13, color: colors.textSecondary },
-  tileValue: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 36, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  tilePill: { alignSelf: 'flex-start', maxWidth: '100%', height: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: systemGround.fill },
-  tilePillText: { fontFamily: fonts.playfulBold, fontSize: 13, color: systemGround.label },
+  tileLabel: { flexShrink: 1, ...inkFace('caption'), color: colors.textSecondary },
+  tileValue: { ...inkFace('figure'), color: systemGround.label },
+  tilePill: { alignSelf: 'flex-start', maxWidth: '100%', minHeight: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
+  tilePillText: { ...inkFace('caption'), color: systemGround.label },
   peachPill: { backgroundColor: colors.primarySofter },
   peachInk: { color: colors.brandText },
   violetPill: { backgroundColor: storeColors.violetSoft },

@@ -6,6 +6,7 @@ import { Button, Chip, PressableScale, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { INTEREST_OPTIONS, MAX_INTERESTS, birthdayKey, daysInMonth, monthNames } from '@/lib/profile';
 import { colors, radius, space, type } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 
 /** One text field and Save. Cleared to the saved value each time it opens. */
 export function TextFieldSheet({
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
   day: {
     width: DAY,
     height: DAY,
-    borderRadius: DAY / 2,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
