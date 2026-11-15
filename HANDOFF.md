@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z216. Chat feel, part 2: reply to a line, with its quote (2026-11-15, Claude, Opus 5.5). NEXT: brief Step 3.5 (heartBurst on the double-tap love, send / receive ticks via earshot, the send / mic cross-scale), then 3.6-3.8; 3.4 (keyboard-controller) waits for the next APK
+
+- **Reply** (`fbbfc28`): swipe a bubble LEFT (`SwipeToReply` in `src/components/chat/reply-quote.tsx`: follows the finger, arrow disc fades in on the right, a selection tick at 56 pt, springs back; vertical first = scroll, still hold = menu) or "Reply" first in the long-press menu (`onReply`, icon `return-up-back-outline`; Rewind keeps its `arrow-undo`). Their newest burst inside `VersionSwipe` keeps its two-way version swipe and gets Reply from the menu only. Cards, system lines, calls, pending lines cannot be answered (`canReplyTo`).
+- **Composer**: `ChatInput.replying` draws `ReplyBar` over the field ("Replying to Sam", the line, ×), focuses the field; Android back and × drop it; it clears on a sent text, starting an edit drops it, out of shells keeps it. A voice note does not carry it.
+- **Bubble**: `Message.replyTo` (`ReplyTo`: id, author, characterId, kind, text cut at a word to 120 chars, `replySnapshot`), `BubbleQuote` inside the text bubble (peach bar, "You" / their name, two lines); a tap scrolls to the line and tints it (`goToMessage`, now also used for search results in chat and group). The quote outlives a deleted original (tap does nothing).
+- **Model**: `withReplyCue` puts `[Replying to your message: "…"]` (or "my own earlier message", a photo, a voice message) before the user's turn in `chatTurns` and `groupTurns`; in a group each member hears whether it was their line or `Kai's message`. `messageText` is unchanged (diary, repetition, search read the plain words). Cost ledger row 17.
+- **Strings**: `chat.reply`, `chat.replyingTo`, `chat.cancelReply` in 14 locales; "You" reuses `search.you`, photo / voice reuse `chatList.preview*`.
+- **Checked**: tsc 0, npm test 930/930 (7 new in `reply-quote.test.ts`), check:locales, check:content; OTA sent (`562edb9a`). **Not seen on the A51** (phone not connected): the swipe feel next to the double tap and the list scroll, the quote in a long reply, the bar with the keyboard up, a group quote.
+- **Small gaps, left on purpose**: the lifted bubble in the long-press menu (`HeldBubble`) shows the reply without its quote; a quote of a member who left a group shows no quote.
+
 ### 0z215. Chat feel, part 1: a faster first bubble, a way back to the newest (2026-11-15, Claude, Opus 5.5). NEXT: reply / quote (brief Step 3.3), then 3.5-3.8
 
 - **First bubble** (`bubbleTimes` in `src/lib/reply-engine/flow.ts`, used by `scheduleReply`): the model's time with "typing…" up counts toward the first bubble's read-and-type beat (at least 300 ms); gaps between bubbles keep their rhythm; a stand-in is paced as before. Test in `reply-engine.test.ts`. "Read" was already stamped when the dots appear; the audit misread that.
