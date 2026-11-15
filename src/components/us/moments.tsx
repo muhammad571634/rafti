@@ -18,7 +18,7 @@ import { dateFromKey, dayKey } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, isDark, systemColors, systemGround } from '@/theme';
-import { inkGutter, inkType } from '@/theme/ink';
+import { ink, inkGutter, inkRadius, inkType } from '@/theme/ink';
 import type { Character, MomentKind, Relationship } from '@/types';
 
 const THUMB = 38;
@@ -334,11 +334,12 @@ const styles = StyleSheet.create({
   cards: { marginTop: 12, marginHorizontal: SIDE, gap: 12 },
   card: {
     minHeight: 104,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     overflow: 'hidden',
-    backgroundColor: systemGround.card,
-    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.06)' } : null),
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
   cardBody: { flex: 1, justifyContent: 'space-between', gap: 14, paddingTop: 14, paddingBottom: 16, paddingHorizontal: 16 },
   cardWhen: inkType.footnote,
@@ -346,12 +347,12 @@ const styles = StyleSheet.create({
   cardTitle: inkType.cardSmall,
   cardHighlight: { fontFamily: fonts.serifItalic },
   cardSub: { ...inkType.footnote, marginTop: 3 },
-  ring: { width: FACE + 6, height: FACE + 6, borderRadius: (FACE + 6) / 2, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
-  ringInner: { width: FACE, height: FACE, borderRadius: FACE / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  ring: { width: FACE + 6, height: FACE + 6, borderRadius: inkRadius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  ringInner: { width: FACE, height: FACE, borderRadius: inkRadius.pill, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
   more: { alignSelf: 'center', minHeight: 44, paddingHorizontal: 16, marginTop: 6, justifyContent: 'center' },
   moreText: inkType.sub,
   grow: { flex: 1, minWidth: 0, gap: 2 },
   heartsLine: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  hearts: { ...inkType.footnote, fontWeight: '700', color: systemColors.pink, fontVariant: ['tabular-nums'] },
+  hearts: { ...inkType.footnote, ...inkType.caption, color: systemColors.pink, fontVariant: ['tabular-nums'] },
   shrink: { flexShrink: 1 },
 });

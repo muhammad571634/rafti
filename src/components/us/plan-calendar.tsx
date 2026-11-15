@@ -7,8 +7,8 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { PressableScale, Txt } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
-import { colors, isDark, radius, space, systemGround } from '@/theme';
-import { inkType } from '@/theme/ink';
+import { colors, radius, space } from '@/theme';
+import { ink, inkRadius, inkType } from '@/theme/ink';
 
 export interface PlanCalendarProps {
   /** Selected day key */
@@ -88,13 +88,13 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
             <Txt style={styles.month} lines={1} maxFontSizeMultiplier={1.3}>
               {shown.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
             </Txt>
-            <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={14} color={systemGround.secondaryLabel} />
+            <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={14} color={ink.text2} />
           </PressableScale>
           <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.prevMonth')} onPress={() => step(-1)}>
-            <Ionicons name="chevron-back" size={18} color={systemGround.label} />
+            <Ionicons name="chevron-back" size={18} color={ink.text} />
           </PressableScale>
           <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.nextMonth')} onPress={() => step(1)}>
-            <Ionicons name="chevron-forward" size={18} color={systemGround.label} />
+            <Ionicons name="chevron-forward" size={18} color={ink.text} />
           </PressableScale>
           {onAdd ? (
             <PressableScale style={styles.add} scaleTo={0.88} hitSlop={6} accessibilityLabel={t('us.add')} onPress={onAdd}>
@@ -129,13 +129,13 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
                 <View style={[styles.capsule, !inMonth && styles.capsuleOut]}>
                   {/* The dot row keeps its height when empty, so every number sits on one line. */}
                   <View style={styles.dots}>
-                    {spoke ? <View style={[styles.dot, { backgroundColor: talkColor ?? systemGround.secondaryLabel }]} /> : null}
+                    {spoke ? <View style={[styles.dot, { backgroundColor: talkColor ?? ink.text2 }]} /> : null}
                     {plan ? <View style={[styles.dot, key < today ? styles.dotPast : styles.dotPlan]} /> : null}
                   </View>
                   <View style={[styles.num, selected && styles.numOn]}>
                     <Txt
                       style={[styles.numText, isToday && !selected && styles.numToday, selected && styles.numTextOn]}
-                      color={!inMonth ? colors.textFaint : undefined}
+                      color={!inMonth ? ink.text3 : undefined}
                       maxFontSizeMultiplier={1.2}>
                       {dateFromKey(key).getDate()}
                     </Txt>
@@ -160,19 +160,20 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 10,
     paddingHorizontal: 8,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
-    backgroundColor: systemGround.card,
-    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' } : null),
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: 2, paddingLeft: 10, paddingRight: 2 },
   toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
-  month: { flexShrink: 1, fontSize: 18, lineHeight: 23, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label, textTransform: 'capitalize' },
+  month: { ...inkType.bodyStrong, flexShrink: 1, textTransform: 'capitalize' },
   // A round grey button each, 44 pt to tap, as the reference's ‹ ›.
-  nav: { width: 36, height: 36, margin: 4, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  nav: { width: 36, height: 36, margin: 4, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
   add: { width: 32, height: 32, marginLeft: space.xs, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primaryFill },
   row: { flexDirection: 'row', marginTop: 2, marginBottom: 4 },
-  weekday: { fontSize: 13, lineHeight: 16, fontWeight: '500', color: systemGround.secondaryLabel, textTransform: 'uppercase' },
+  weekday: { ...inkType.caption, textTransform: 'uppercase' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 6 },
   // A hair under a seventh: seven exact sevenths can round past the row and drop Sunday to the next line (seen on the A51).
   cell: { width: '14.28%', alignItems: 'center' },
@@ -181,20 +182,20 @@ const styles = StyleSheet.create({
     height: 54,
     paddingTop: 7,
     paddingBottom: 3,
-    borderRadius: 18,
+    borderRadius: inkRadius.chip,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: systemGround.fill,
+    backgroundColor: ink.raised,
   },
   capsuleOut: { backgroundColor: 'transparent' },
   dots: { height: 7, flexDirection: 'row', alignItems: 'center', gap: 3 },
-  dot: { width: 6, height: 6, borderRadius: 3 },
+  dot: { width: 6, height: 6, borderRadius: inkRadius.pill },
   dotPlan: { borderWidth: 1.5, borderColor: colors.primary },
-  dotPast: { borderWidth: 1.5, borderColor: colors.textFaint },
-  num: { width: NUM, height: NUM, borderRadius: NUM / 2, alignItems: 'center', justifyContent: 'center' },
+  dotPast: { borderWidth: 1.5, borderColor: ink.text3 },
+  num: { width: NUM, height: NUM, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   numOn: { backgroundColor: colors.primaryFill },
-  numText: { fontSize: 15, lineHeight: 19, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  numToday: { color: colors.brandText, fontWeight: '700' },
-  numTextOn: { color: colors.textOnPrimary, fontWeight: '700' },
+  numText: { ...inkType.sub, color: ink.text, fontVariant: ['tabular-nums'] },
+  numToday: { ...inkType.subStrong, color: ink.accent },
+  numTextOn: { ...inkType.subStrong, color: ink.onAccent },
 });

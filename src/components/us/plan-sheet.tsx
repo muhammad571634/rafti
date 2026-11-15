@@ -2,14 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 
 import { CalendarPopover } from '@/components/diary/calendar-popover';
-import { CharacterAvatar, PressableScale, Sheet, ShellIcon, Toggle, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { CharacterAvatar, PressableScale, Sheet, ShellIcon, Toggle } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
-import { colors, space } from '@/theme';
+import { colors, space, systemColors } from '@/theme';
+import { ink, inkRadius, inkType } from '@/theme/ink';
 import type { Character } from '@/types';
 
 const STEP_MIN = 15;
@@ -145,13 +147,13 @@ export function PlanSheet({
       <View style={[styles.group, styles.gap]}>
         {character ? (
           <View style={[styles.row, styles.line]}>
-            <Txt style={[styles.label, styles.grow]}>{t('us.with')}</Txt>
+            <InkText style={styles.grow}>{t('us.with')}</InkText>
             <CharacterAvatar character={character} size={26} />
-            <Txt style={[styles.label, styles.meta]}>{name}</Txt>
+            <InkText color={ink.text2}>{name}</InkText>
           </View>
         ) : null}
 
-        <Txt style={[styles.label, styles.dayLabel]}>{t('us.day')}</Txt>
+        <InkText style={styles.dayLabel}>{t('us.day')}</InkText>
         <View style={styles.segment} accessibilityRole="radiogroup">
           <Segment label={t('common.today')} active={date === today} onPress={() => setDate(today)} />
           <Segment label={t('common.tomorrow')} active={date === tomorrow} onPress={() => setDate(tomorrow)} />
@@ -165,17 +167,18 @@ export function PlanSheet({
         </View>
 
         <View style={[styles.row, styles.lineTop]}>
-          <Txt style={[styles.label, styles.grow]}>{t('us.time')}</Txt>
+          <InkText style={styles.grow}>{t('us.time')}</InkText>
           {timed ? (
-            <Pressable
+            <PressableScale
+              scaleTo={0.94}
               onPress={pickTime}
               accessibilityRole="button"
               accessibilityLabel={`${t('us.time')}, ${toClock(minutes)}`}
               style={styles.timePill}>
-              <Txt style={styles.timeText} color={colors.brandText}>
+              <InkText color={ink.accent} style={styles.tabular}>
                 {toClock(minutes)}
-              </Txt>
-            </Pressable>
+              </InkText>
+            </PressableScale>
           ) : null}
           <Toggle
             value={timed}
@@ -198,9 +201,9 @@ export function PlanSheet({
       </View>
 
       {character ? (
-        <Txt style={styles.footer}>
+        <InkText variant="footnote" style={styles.footer}>
           {timed ? t('us.remindBefore', { name, count: REMIND_BEFORE_MIN }) : t('us.remindMorning', { name })}
-        </Txt>
+        </InkText>
       ) : null}
 
       {/* One big action with its price, as on the alarm screens (owner, 2026-11-07). */}
@@ -211,11 +214,15 @@ export function PlanSheet({
         accessibilityState={{ disabled: !title.trim() }}
         accessibilityLabel={cost ? `${t('chat.setup.add')}, ${cost} ${t('common.shells')}` : t('chat.setup.add')}
         style={[styles.cta, !title.trim() && styles.ctaOff]}>
-        <Txt style={styles.ctaText}>{t('chat.setup.add')}</Txt>
+        <InkText variant="bodyStrong" color={ink.onAccent}>
+          {t('chat.setup.add')}
+        </InkText>
         {cost ? (
           <View style={styles.cost}>
             <ShellIcon size={15} />
-            <Txt style={styles.costText}>{cost}</Txt>
+            <InkText variant="subStrong" color={ink.onAccent} style={styles.tabular}>
+              {cost}
+            </InkText>
           </View>
         ) : null}
       </PressableScale>
@@ -249,61 +256,58 @@ function Segment({
   onPress: () => void;
 }) {
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.97}
       style={[styles.segmentItem, active && styles.segmentOn]}
       accessibilityRole="radio"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected: active }}
       onPress={onPress}>
-      {icon ? <Ionicons name="calendar-outline" size={13} color={colors.text} /> : null}
-      <Txt style={[styles.segmentText, active && styles.segmentTextOn]} lines={1}>
+      {icon ? <Ionicons name="calendar-outline" size={13} color={ink.text} /> : null}
+      <InkText variant={active ? 'subStrong' : 'sub'} color={ink.text} lines={1}>
         {label}
-      </Txt>
-    </Pressable>
+      </InkText>
+    </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1 },
-  // iOS inset groups on the white sheet: grey cards, hairlines between rows.
-  group: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  tabular: { fontVariant: ['tabular-nums'] },
+  // iOS inset groups on the sheet: raised cards, hairlines between rows.
+  group: { borderRadius: inkRadius.field, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
   gap: { marginTop: 22 },
-  input: { minHeight: 48, paddingHorizontal: space.lg, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  input: { ...inkType.body, minHeight: 48, paddingHorizontal: space.lg },
   row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  lineTop: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong, minHeight: 52 },
-  label: { fontSize: 17, letterSpacing: -0.4 },
-  meta: { color: colors.textSecondary },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },
+  lineTop: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: ink.line, minHeight: 52 },
   dayLabel: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
+  // Apple's segmented control on dark.
   segment: {
     flexDirection: 'row',
-    height: 34,
+    minHeight: 34,
     marginHorizontal: space.lg,
     marginBottom: space.md,
     padding: 2,
-    borderRadius: 9,
-    backgroundColor: colors.surfaceAlt,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
   },
-  segmentItem: { flex: 1, flexDirection: 'row', gap: 4, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
-  segmentOn: { backgroundColor: colors.surface },
-  segmentText: { fontSize: 13, color: colors.text },
-  segmentTextOn: { fontWeight: '600' },
-  timePill: { height: 34, paddingHorizontal: space.md, borderRadius: 8, backgroundColor: colors.primarySofter, justifyContent: 'center' },
-  timeText: { fontSize: 17, fontVariant: ['tabular-nums'] },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary },
+  segmentItem: { flex: 1, flexDirection: 'row', gap: 4, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  segmentOn: { backgroundColor: systemColors.thumb },
+  timePill: { minHeight: 34, paddingHorizontal: space.md, borderRadius: inkRadius.pill, backgroundColor: colors.primarySofter, justifyContent: 'center' },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg },
+  // Adding a plan costs shells: the money peach.
   cta: {
-    height: 56,
-    borderRadius: 28,
+    minHeight: 56,
+    borderRadius: inkRadius.pill,
     marginTop: space.lg,
     marginHorizontal: space.lg,
-    backgroundColor: colors.primary,
+    backgroundColor: ink.accent,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.sm,
   },
   ctaOff: { opacity: 0.45 },
-  ctaText: { fontSize: 18, fontWeight: '700', color: colors.textOnPrimary },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(42,26,18,0.12)' },
-  costText: { fontSize: 15, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: inkRadius.pill, backgroundColor: 'rgba(42,26,18,0.12)' },
 });

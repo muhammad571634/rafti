@@ -3,25 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { PressableScale, SFIcon, Sheet, ShellIcon, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { PressableScale, SFIcon, Sheet, ShellIcon } from '@/components/ui';
 import { shellCosts } from '@/mock';
-import { fonts, isDark } from '@/theme';
+import { ink, inkRadius, inkTints } from '@/theme/ink';
 
 export type PublishKind = 'plan' | 'diary' | 'board';
-
-const INK = isDark ? '#FFFFFF' : '#1F1A17';
 
 /** What each costs, on its tile, before the tap (a diary page is free). */
 const COST: Record<PublishKind, number> = { plan: shellCosts.planSetup, diary: 0, board: shellCosts.boardNote };
 
 /**
- * Three big soft tiles (the four-tab prototype): a plan in apricot, a diary page in paper, a board
- * note in sky; each a light tint with ink on it (deep tints with white in dark mode).
+ * Three tiles in deep Ink tints, as the new-chat sheet on Chats: a plan in the warm one, a diary
+ * page in dusk, a board note in sea; white words on each.
  */
 const OPTIONS: { kind: PublishKind; ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
-  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: isDark ? '#4A2E1E' : '#FFE6D4' },
-  { kind: 'diary', ios: 'book.closed.fill', icon: 'book', fill: isDark ? '#3E3226' : '#F3E2D2' },
-  { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: isDark ? '#163A44' : '#CFF2FA' },
+  { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: inkTints[2][0] },
+  { kind: 'diary', ios: 'book.closed.fill', icon: 'book', fill: inkTints[3][0] },
+  { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: inkTints[1][0] },
 ];
 
 /** The [Us] "+": add a plan, write a diary page or pin a note on the board. */
@@ -52,18 +51,18 @@ export function PublishSheet({
             accessibilityLabel={[t(`us.publishKind.${kind}`), hint(kind), COST[kind] ? `${COST[kind]} ${t('common.shells')}` : ''].filter(Boolean).join(', ')}
             style={[styles.tile, { backgroundColor: fill }]}>
             <View style={styles.icon}>
-              <SFIcon ios={ios} icon={icon} size={22} color={INK} />
+              <SFIcon ios={ios} icon={icon} size={22} color={ink.text} />
             </View>
             <View style={styles.text}>
-              <Txt style={styles.title} maxFontSizeMultiplier={1.3}>
-                {t(`us.publishKind.${kind}`)}
-              </Txt>
-              <Txt style={styles.hint}>{hint(kind)}</Txt>
+              <InkText variant="bodyStrong">{t(`us.publishKind.${kind}`)}</InkText>
+              <InkText variant="footnote">{hint(kind)}</InkText>
             </View>
             {COST[kind] ? (
               <View style={styles.cost}>
                 <ShellIcon size={14} />
-                <Txt style={styles.costText}>{COST[kind]}</Txt>
+                <InkText variant="subStrong" style={styles.tabular}>
+                  {COST[kind]}
+                </InkText>
               </View>
             ) : null}
           </PressableScale>
@@ -75,26 +74,24 @@ export function PublishSheet({
 
 const styles = StyleSheet.create({
   tiles: { gap: 10 },
-  tile: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: 22 },
+  tile: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: inkRadius.field, borderCurve: 'continuous' },
   icon: {
     width: 48,
     height: 48,
-    borderRadius: 16,
+    borderRadius: inkRadius.chip,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+    backgroundColor: ink.raised,
   },
   text: { flex: 1, gap: 2 },
-  title: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22, color: INK },
-  hint: { fontSize: 13, lineHeight: 17, color: INK },
   cost: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 14,
-    backgroundColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
   },
-  costText: { fontSize: 14, fontWeight: '700', color: INK, fontVariant: ['tabular-nums'] },
+  tabular: { fontVariant: ['tabular-nums'] },
 });
