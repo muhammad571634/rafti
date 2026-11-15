@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z243. Tab bar in dark Liquid Glass, owner's pick A (2026-11-16, Claude, Opus 5.5). NEXT: the owner looks at the bar on the phone; then the typography offer (widget lines 13 pt) or the open items in 0z242
+
+- **Owner**: picked A of `docs/prototypes/tab-bar.html`; after the first OTA: "exactly the prototype, icons too, clean, no shadow at all".
+- **Code** (`src/app/(tabs)/_layout.tsx`, Android and web; iPhone keeps the system bar): the pill and Find's circle are a near-opaque top-to-bottom wash (`inkGlass.fill`), a hairline rim and a top light that fades out toward the ends; no shadow, no elevation, no sheen. The current tab sits in a clear lens (`inkGlass.lens` + rim) with a white filled Ionicon and label; the rest are outline Ionicons at 55 % (house, chatbubbles, heart; search). Tokens `inkGlass` in `src/theme/ink.ts`. `TabGlyph` is no longer used by this bar.
+- **Checked**: tsc 0, npm test 964/964; three OTAs (the last "Tab bar exactly as the prototype"); on the A51 the bar on Today, Us and Find (current tab lens, outlines, Find's lens). A shaped sheen showed its outline and the top light stopped short on the first OTA: both fixed, then removed / faded at the owner's ask. **Not driven**: iOS (system bar, unchanged), the minimize-on-scroll the prototype showed (not asked for).
+
 ### 0z242. Calm Today in code, audit §6.1, and a tab bar prototype (2026-11-16, Claude, Opus 5.5). NEXT: the owner picks A / B in `docs/prototypes/tab-bar.html`, then code it in `src/app/(tabs)/_layout.tsx` (Android only; iOS keeps the system bar)
 
 - **Owner**: build `docs/prototypes/today-calm.html` without drifting; mid-session (2026-11-16) "too much text on the picture, follow Apple, people must understand it visually". HIG read: Widgets ("essential information at a glance ... replacing text with graphics"), Writing (one idea per place), Materials (clear glass on media). So the picture now holds two words only: the friend's name and their newest line.

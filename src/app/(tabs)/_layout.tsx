@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, Tabs } from 'expo-router';
 import { memo, type ReactNode } from 'react';
@@ -6,19 +7,24 @@ import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { InkText } from '@/components/ink';
-import { TabGlyph, type TabGlyphName } from '@/components/ui';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
-import { colors, playful, space, systemGround } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { colors, space, systemGround } from '@/theme';
+import { ink, inkGlass, inkRadius } from '@/theme/ink';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
 /**
- * Each tab's icon, a line one and its filled twin while current: our own drawings in the manner of
- * the iOS bar's SF Symbols (house, bubble.left.and.bubble.right, heart), which may not be drawn here.
+ * Each tab's symbol, an outline and its filled twin while current (owner, 2026-11-16: exactly the
+ * prototype's, `docs/prototypes/tab-bar.html`): house, two bubbles, heart; search stays one shape.
  */
-const GLYPHS: Record<string, TabGlyphName> = { index: 'home', chat: 'chats', us: 'us' };
+type Glyph = { on: keyof typeof Ionicons.glyphMap; off: keyof typeof Ionicons.glyphMap };
+const GLYPHS: Record<string, Glyph> = {
+  index: { on: 'home', off: 'home-outline' },
+  chat: { on: 'chatbubbles', off: 'chatbubbles-outline' },
+  us: { on: 'heart', off: 'heart-outline' },
+};
+const ICON = 24;
 
 /** The bar's height; `TAB_BAR_HEIGHT` leaves room for it. */
 const BAR = 62;
@@ -50,18 +56,37 @@ export default function TabsLayout() {
 }
 
 /**
- * A white floating shape with a soft shadow. No live blur: on Android it redraws the whole screen
- * into a full-size layer for each glass shape on every frame (atrace on a Galaxy A51), and iPhone
- * has the system tab bar (`_layout.ios.tsx`).
+ * A floating shape of dark Liquid Glass (owner's pick A, 2026-11-16, `docs/prototypes/tab-bar.html`): a
+ * near-opaque wash, a hairline rim and a lit top edge; clean, no shadow and no sheen (owner). No live blur: on Android it
+ * redraws the whole screen into a full-size layer for each glass shape on every frame (atrace on a Galaxy
+ * A51), and iPhone has the system tab bar (`_layout.ios.tsx`), which is real Liquid Glass.
  */
 function Floating({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
-  return <View style={[styles.floating, style]}>{children}</View>;
+  return (
+    <View style={[styles.floating, style]}>
+      <View style={styles.glass} pointerEvents="none">
+        <LinearGradient colors={inkGlass.fill} locations={inkGlass.fillStops} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={TOP_LIGHT} locations={TOP_LIGHT_STOPS} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.topLight} />
+      </View>
+      {children}
+    </View>
+  );
+}
+
+/** The lit top edge fades out toward the rounded ends instead of stopping short. */
+const TOP_LIGHT = ['rgba(255,255,255,0)', inkGlass.topLight, inkGlass.topLight, 'rgba(255,255,255,0)'] as const;
+const TOP_LIGHT_STOPS = [0.04, 0.3, 0.7, 0.96] as const;
+
+/** The current tab's clear lens: a lighter glass inside the bar, rimmed, lit from the top. */
+function Lens() {
+  return <LinearGradient colors={inkGlass.lens} style={styles.lens} pointerEvents="none" />;
 }
 
 /**
- * The playful tab bar of the approved four-tab prototype (0z124): a white pill holding Today,
- * Chats and Us, with Find as its own round button beside it, the way iOS sets the search tab apart.
- * The current tab is a light grey capsule with an ink icon and label (a darker grey with a white one at night); the rest are ink at 60 %. Chats
+ * The tab bar of the four-tab prototype (0z124) in dark Liquid Glass (owner's pick A, 2026-11-16): one
+ * glass pill holding Today, Chats and Us, with Find as its own round glass button beside it, the way iOS
+ * sets the search tab apart. The current tab sits in a clear lens with a white filled symbol and label;
+ * the rest are outlines at 55 %, monochrome over colourful art (HIG Tab bars). Chats
  * carries the number of chats waiting, the same number Today's bubble and Chats' Unread pill show.
  * Content fades out under the bar instead of showing through the navigation bar area (the iOS 26
  * scroll edge effect, as a plain gradient). Tapping the current tab again scrolls it to the top
@@ -104,7 +129,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
                   key={route.key}
                   routeKey={route.key}
                   label={label}
-                  glyph={GLYPHS[route.name] ?? 'home'}
+                  glyph={GLYPHS[route.name] ?? GLYPHS.index}
                   focused={focused}
                   count={count}
                   a11yLabel={count > 0 ? t('a11y.unreadTab', { label, count }) : label}
@@ -123,8 +148,9 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
               accessibilityState={{ selected: find.focused }}
               onPress={() => open(find.route.key, find.focused)}>
               {/* Never flattened: Android drops the corners of a view that gains its fill later. */}
-              <View collapsable={false} style={[styles.roundInner, find.focused && styles.on]}>
-                <TabGlyph name="find" filled={find.focused} color={find.focused ? playful.tabOnText : systemGround.label} bg={find.focused ? playful.tabOn : playful.bar} />
+              <View collapsable={false} style={styles.roundInner}>
+                {find.focused ? <Lens /> : null}
+                <Ionicons name="search" size={ICON} color={find.focused ? inkGlass.on : inkGlass.off} />
               </View>
             </Pressable>
           </Floating>
@@ -146,22 +172,23 @@ const TabItem = memo(function TabItem({
 }: {
   routeKey: string;
   label: string;
-  glyph: TabGlyphName;
+  glyph: Glyph;
   focused: boolean;
   count: number;
   a11yLabel: string;
   onOpen: (key: string, focused: boolean) => void;
 }) {
-  const tint = focused ? playful.tabOnText : playful.tabOff;
+  const tint = focused ? inkGlass.on : inkGlass.off;
   return (
     <Pressable
-      style={[styles.item, focused && styles.on]}
+      style={styles.item}
       accessibilityRole="tab"
       accessibilityLabel={a11yLabel}
       accessibilityState={{ selected: focused }}
       onPress={() => onOpen(routeKey, focused)}>
+      {focused ? <Lens /> : null}
       <View>
-        <TabGlyph name={glyph} filled={focused} color={tint} bg={focused ? playful.tabOn : playful.bar} />
+        <Ionicons name={focused ? glyph.on : glyph.off} size={ICON} color={tint} />
         {count > 0 ? (
           <View style={styles.badge}>
             <InkText variant="caption" color={colors.white} maxFontSizeMultiplier={1.1}>
@@ -187,20 +214,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm + 2,
   },
-  // A wide, soft ambient shadow and a 1 pt rim, so the bar reads as a lifted glass edge over any
-  // content (HIG Tab bars, Materials). The fill stays nearly opaque: Android has no blur here, and a
-  // see-through fill shows its own elevation shadow through it.
+  // No shadow (owner, 2026-11-16: clean); the glass's own rim and top light set it off the content.
   floating: {
     borderRadius: inkRadius.pill,
     borderCurve: 'continuous',
-    borderWidth: 1,
-    borderColor: playful.barRim,
-    backgroundColor: playful.bar,
-    shadowColor: '#000000',
-    shadowOpacity: 0.12,
-    shadowRadius: 30,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 8,
+    backgroundColor: inkGlass.flat,
+  },
+  // The glass itself, clipped to the pill.
+  glass: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkGlass.rim,
+  },
+  // The lit top edge; the glass clips it to the curve.
+  topLight: { position: 'absolute', top: 0, left: 0, right: 0, height: 1 },
+  lens: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkGlass.lensRim,
   },
   pill: {
     flex: 1,
@@ -217,10 +261,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 2,
   },
-  on: { backgroundColor: playful.tabOn },
   round: { width: BAR, height: BAR },
   roundPress: { flex: 1, padding: space.xs },
-  roundInner: { flex: 1, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  roundInner: { flex: 1, borderRadius: inkRadius.pill, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   // The count of chats waiting, in the same red as Chats' Unread chip, ringed in the bar's own colour.
   badge: {
     position: 'absolute',
@@ -231,7 +274,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderRadius: inkRadius.pill,
     borderWidth: 2,
-    borderColor: playful.bar,
+    borderColor: inkGlass.flat,
     backgroundColor: ink.danger,
     alignItems: 'center',
     justifyContent: 'center',

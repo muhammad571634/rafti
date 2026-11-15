@@ -137,3 +137,25 @@ export const inkReaction = {
   hyped: '#FF8A3D',
   thumbs: '#52D9A2',
 } as const;
+
+/**
+ * Liquid Glass drawn without a live blur (owner's pick A, 2026-11-16, `docs/prototypes/tab-bar.html`): the Android
+ * tab bar's dark glass. A Galaxy A51 cannot afford a blur layer per frame, so the glass is a near-opaque top-to-bottom
+ * wash with a hairline rim and a lit top edge, no shadow; the current tab sits in a clear lens. Monochrome over colourful art
+ * (HIG Tab bars). iPhone keeps the system bar, which is real Liquid Glass.
+ */
+export const inkGlass = {
+  /** The glass, top to bottom, and where each stop sits. */
+  fill: ['#2F2F37', '#1B1B21', '#131319'],
+  fillStops: [0, 0.46, 1],
+  /** The hairline edge all round, and the brighter line along the top. */
+  rim: 'rgba(255,255,255,0.12)',
+  topLight: 'rgba(255,255,255,0.22)',
+  /** The current tab's lens and its rim. */
+  lens: ['rgba(255,255,255,0.20)', 'rgba(255,255,255,0.09)'],
+  lensRim: 'rgba(255,255,255,0.16)',
+  /** The glass's flat equal (the bar's own fill under the wash, the badge's ring). */
+  flat: '#1D1D23',
+  on: '#FFFFFF',
+  off: 'rgba(255,255,255,0.55)',
+} as const;
