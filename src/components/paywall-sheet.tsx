@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Divider, Icon3D, moduleTile, PressableScale, Sheet, ShellBadge, SymbolTile, Txt } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
+import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import {
   FREE_SPINS_PER_DAY,
   shellPacks,
@@ -43,6 +44,8 @@ export function PaywallSheet({
   const daily = useAppStore((s) => s.daily);
 
   const today = todayKey();
+  // In a chat with today's free messages used, the sheet says so and when they come back (audit §6.3).
+  const freeUsed = useFreeMessagesLeft() === 0 && chat;
   const spinLeft = (daily.spinDay === today ? daily.spinsUsed : 0) < FREE_SPINS_PER_DAY;
 
   const go = (route: Href) => {
@@ -81,7 +84,7 @@ export function PaywallSheet({
             : wallet.trialUsed
               ? t('paywall.getBasic')
               : t('plans.tryTrial', { count: TRIAL.days }),
-          meta: member ? t('paywall.proMeta') : t('paywall.planMeta'),
+          meta: member ? t('paywall.proMeta') : freeUsed ? t('paywall.planChatMeta') : t('paywall.planMeta'),
           onPress: () =>
             go(member || !wallet.trialUsed ? '/store/shell?tab=plans&plan=proAnnual' : '/store/shell?tab=plans&plan=basic'),
         },
@@ -98,7 +101,7 @@ export function PaywallSheet({
       </View>
 
       <Txt variant="body" color={colors.textSecondary} style={styles.copy}>
-        {chat ? t('paywall.chatBody') : t('paywall.body', { count: need ?? 0 })}
+        {freeUsed ? t('paywall.freeUsedBody') : chat ? t('paywall.chatBody') : t('paywall.body', { count: need ?? 0 })}
       </Txt>
 
       <View style={styles.ways}>
@@ -120,7 +123,7 @@ export function PaywallSheet({
       </View>
 
       <Txt variant="small" color={colors.textSecondary} center style={styles.note}>
-        {t('paywall.comeBack')}
+        {freeUsed ? t('paywall.freeBack') : t('paywall.comeBack')}
       </Txt>
     </Sheet>
   );

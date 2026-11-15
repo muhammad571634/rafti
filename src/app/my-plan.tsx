@@ -19,6 +19,7 @@ import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
+import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -97,7 +98,7 @@ export default function MyPlanScreen() {
   );
 
   const note = !status
-    ? t('plans.freeNote')
+    ? t('plans.freeNote', { count: FREE_MESSAGES_PER_DAY })
     : status.trial
       ? t('plans.trialNote', {
           calls: planTime(t, PLANS[TRIAL.plan].callSeconds),

@@ -210,6 +210,7 @@ import {
   TRIAL,
   type MinutesKind,
 } from '@/economy/plans';
+import { freeMessagesPerDay, usedToday } from '@/economy/free-messages';
 import {
   INVITE_REWARD,
   DAILY_CHECK_IN,
@@ -674,6 +675,8 @@ export interface AppState {
 
   /* economy */
   spendShells: (amount: number, reason?: LedgerReason, characterId?: string) => boolean;
+  /** Uses one of today's free messages (audit §6.3); false once the count is used up, and then a shell pays. */
+  takeFreeMessage: () => boolean;
   addShells: (amount: number, reason?: LedgerReason) => void;
   /** Removes yesterday's unspent check-in shells. Safe to call often. */
   expireFreeShells: () => void;
@@ -1571,7 +1574,7 @@ export const useAppStore = create<AppState>()(
       sendGroupText: (groupId, text, replyTo) => {
         const trimmed = text.trim();
         if (!trimmed || !get().groups.some((g) => g.id === groupId)) return 'empty';
-        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
         countMessage(set, get);
         noticeGroupAiIfDue(set, get, groupId);
         appendGroupMessage(set, get, groupId, {
@@ -1589,7 +1592,7 @@ export const useAppStore = create<AppState>()(
 
       sendGroupVoice: (groupId, durationSec, transcript, audioFile, levels) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
-        if (!get().spendShells(shellCosts.voiceMessage, 'voice')) return 'noShells';
+        if (!payLine(get, shellCosts.voiceMessage, 'voice')) return 'noShells';
         countMessage(set, get);
         noticeGroupAiIfDue(set, get, groupId);
         appendGroupMessage(set, get, groupId, {
@@ -1633,7 +1636,7 @@ export const useAppStore = create<AppState>()(
         if (steerBlock(state.messages[groupId], !!state.groupTyping[groupId]?.length)) return 'empty';
         const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
         if (!first) return 'empty';
-        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
         countMessage(set, get);
         const lastSpeaker = speakersIn(state, groupId).at(-1);
         appendGroupMessage(set, get, groupId, { id: uid('m'), ...steerMarker(groupId, 'continue') }, { quiet: true });
@@ -1656,7 +1659,7 @@ export const useAppStore = create<AppState>()(
         // Nothing to answer before the first line, and not after a crisis (the one-to-one rules).
         const last = state.messages[groupId]?.at(-1);
         if (!last || last.card === 'helpline') return 'empty';
-        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
         countMessage(set, get);
         const lastSpeaker = speakersIn(state, groupId).findLast((id) => id !== characterId);
         writeGroupTurns(set, get, groupId, [
@@ -1679,7 +1682,7 @@ export const useAppStore = create<AppState>()(
         if (words !== undefined && checkSkipTo(words).length) return 'empty';
         const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
         if (!first) return 'empty';
-        if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
         countMessage(set, get);
         const marker: Message = { id: uid('m'), ...steerMarker(groupId, 'skip', skip, new Date(), words) };
         appendGroupMessage(set, get, groupId, marker, { quiet: true });
@@ -2381,6 +2384,15 @@ export const useAppStore = create<AppState>()(
       dismissLevelUp: () => set({ levelUp: null }),
 
       /* ── economy ──────────────────────────────────────────────────────── */
+
+      takeFreeMessage: () => {
+        const today = todayKey();
+        const { daily, wallet } = get();
+        const used = usedToday(daily.freeDay, daily.freeUsed, today);
+        if (used >= freeMessagesPerDay(wallet.subscription, Date.now())) return false;
+        set((s) => ({ daily: { ...s.daily, freeDay: today, freeUsed: used + 1 } }));
+        return true;
+      },
 
       spendShells: (amount, reason = 'other', characterId) => {
         get().expireFreeShells();
@@ -4503,6 +4515,15 @@ function payPlanShells(set: Setter, get: Getter) {
 /** Every message costs shells, members included (the credit model, backend-plan §15.10). */
 function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
+  return payLine(get, cost, reason, characterId);
+}
+
+/**
+ * Pays for a line the user sends (audit §6.3, shape B): a text or a voice line uses today's free count
+ * first (a plan's fair use), then a shell; a photo always takes its shell (it costs more to read).
+ */
+function payLine(get: Getter, cost: number, reason: LedgerReason, characterId?: string) {
+  if ((reason === 'chat' || reason === 'voice') && get().takeFreeMessage()) return true;
   return get().spendShells(cost, reason, characterId);
 }
 

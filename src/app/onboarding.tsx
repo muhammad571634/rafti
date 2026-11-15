@@ -56,6 +56,7 @@ import { haptic } from '@/lib/haptics';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, night, NightScope, palette, space } from '@/theme';
 import type { Character, Pronouns } from '@/types';
+import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
 
 /** The four people most talk to (docs/cast-2.md §5): two for her, two for him, so the first choice is about taste, not scrolling. */
 const PICKS = ['c_milo', 'c_caleb', 'c_mia', 'c_sam'];
@@ -390,7 +391,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
                   <Txt style={styles.plus}>+{WELCOME_SHELLS}</Txt>
                 </Animated.View>
                 <Animated.View entering={FadeInUp.delay(700).duration(400)} style={styles.giftText}>
-                  <Txt style={[styles.body, styles.center]}>{t('onboarding.giftBody')}</Txt>
+                  <Txt style={[styles.body, styles.center]}>{t('onboarding.giftBody', { count: FREE_MESSAGES_PER_DAY })}</Txt>
                   <View style={styles.facts}>
                     <Txt style={[styles.card, styles.fact]}>{t('onboarding.giftDaily')}</Txt>
                     <Txt style={[styles.card, styles.fact]}>{t('onboarding.giftKeep')}</Txt>

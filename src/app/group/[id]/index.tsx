@@ -40,6 +40,7 @@ import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
+import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, nightColors, playfulNightGround, space } from '@/theme';
@@ -70,6 +71,8 @@ export default function GroupChatScreen() {
   const messages = useAppStore((s) => (groupId ? s.messages[groupId] : undefined));
   const typingIds = useAppStore((s) => (groupId ? s.groupTyping[groupId] : undefined)) ?? NO_ONE;
   const shells = useAppStore((s) => s.wallet.shells);
+  // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic.
+  const freeLeft = useFreeMessagesLeft();
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
   const animations = useAppStore((s) => s.settings.chatAnimation);
@@ -295,7 +298,7 @@ export default function GroupChatScreen() {
     if (note.audioFile) void dropNote(note.audioFile);
   };
   const canRecord = () => {
-    if (shells >= shellCosts.voiceMessage) return true;
+    if (freeLeft > 0 || shells >= shellCosts.voiceMessage) return true;
     outOfShells(shellCosts.voiceMessage);
     return false;
   };

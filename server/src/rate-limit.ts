@@ -43,8 +43,11 @@ export const MODEL_LIMITS: ModelLimits = {
   // A heavy day is ~25 memory passes, a stream or two (20-60 lines) and a few writes.
   sidePerDay: 300,
   // Measured 2026-11-10 over 14 days: an account's replies a day stay within a few of its spends
-  // (91 to 98, 62 to 61, 58 to 62); one early day had 37 replies on 5 spends.
-  freeRepliesPerDay: 40,
+  // (91 to 98, 62 to 61, 58 to 62); one early day had 37 replies on 5 spends. That share (40) plus
+  // the day's free messages, which spend no shell (`FREE_MESSAGES_PER_DAY` = 30 in
+  // src/economy/free-messages.ts, audit §6.3). A plan's fair use (200) is not known here until billing
+  // runs on the server; while `ENFORCE_WALLET` is off this only logs.
+  freeRepliesPerDay: 70,
   // About half an hour of a call's turns.
   callRepliesPerDay: 300,
 };

@@ -62,6 +62,7 @@ import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from 
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
 import { nightColors as colors, shadows, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
+import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -85,6 +86,8 @@ export default function ChatRoomScreen() {
   const typing = useAppStore((s) => (conversationId ? !!s.typing[conversationId] : false));
   const levelUp = useAppStore((s) => s.levelUp);
   const shells = useAppStore((s) => s.wallet.shells);
+  // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic.
+  const freeLeft = useFreeMessagesLeft();
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
@@ -443,7 +446,7 @@ export default function ChatRoomScreen() {
     if (note.audioFile) void dropNote(note.audioFile);
   };
   const canRecord = () => {
-    if (shells >= shellCosts.voiceMessage) return true;
+    if (freeLeft > 0 || shells >= shellCosts.voiceMessage) return true;
     outOfShells(shellCosts.voiceMessage);
     return false;
   };

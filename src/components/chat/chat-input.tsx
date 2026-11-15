@@ -10,6 +10,7 @@ import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { useLeftNote } from '@/lib/use-free-messages';
 import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
 import type { MessageTone, ReplyTo } from '@/types';
 
@@ -175,6 +176,7 @@ export function ChatInput({
     drawn.current = true;
   }, []);
   const onPhoto = useOnPhoto();
+  const leftNote = useLeftNote();
   const surface = [styles.surface, onPhoto && styles.photoSurface];
   const ink = onPhoto ? colors.onMedia : colors.text;
 
@@ -244,6 +246,14 @@ export function ChatInput({
 
   return (
     <View>
+      {/* The free count's last few (audit §6.3): a quiet line, never on a plan, gone at zero. */}
+      {leftNote !== null ? (
+        <View style={styles.left} accessibilityLiveRegion="polite">
+          <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} center>
+            {t('chat.freeLeft', { count: leftNote })}
+          </Txt>
+        </View>
+      ) : null}
       {replying && !editing ? <ReplyBar quote={replying.quote} title={replying.title} onCancel={replying.onCancel} /> : null}
       <View style={[styles.bar, { paddingBottom: barBottom }]}>
         {toneTip.show ? (
@@ -415,6 +425,7 @@ const styles = StyleSheet.create({
     borderColor: colors.bubbleOtherRim,
     ...shadows.glassButton,
   },
+  left: { paddingTop: space.xs, paddingHorizontal: space.lg },
   plus: { width: FIELD, height: FIELD, borderRadius: FIELD / 2, alignItems: 'center', justifyContent: 'center' },
   field: {
     flex: 1,
