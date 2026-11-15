@@ -6,7 +6,8 @@ import { ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-nat
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
-import { CharacterAvatar, EmptyState, PressableScale, Screen, SFIcon, ShellIcon, Txt, UserAvatar } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIcon, ShellIcon, UserAvatar } from '@/components/ui';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { OurMoments } from '@/components/us/moments';
@@ -22,7 +23,8 @@ import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, hitSlop, isDark, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, friendColor, hitSlop, isDark, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 /** The friend picker's faces, and the ring of their own hue round the chosen one. */
 const STORY = 56;
@@ -174,41 +176,31 @@ export default function UsScreen() {
 
   // Notifications live here, as a bell beside "+" (BIMOBIMO keeps them on Us too).
   const bell = (
-    <PressableScale
-      scaleTo={0.9}
-      accessibilityRole="button"
-      accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
-      onPress={() => router.push('/notifications')}
-      style={[styles.round, styles.roundSoft]}>
-      <Ionicons name="notifications-outline" size={21} color={systemGround.label} />
+    <View>
+      <GlassButton
+        icon="notifications-outline"
+        accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
+        onPress={() => router.push('/notifications')}
+      />
       {unread > 0 ? (
         <View style={styles.badge} pointerEvents="none">
-          <Txt style={styles.badgeText} maxFontSizeMultiplier={1.2}>
+          <InkText variant="caption" color={WHITE}>
             {unread > 99 ? '99+' : unread}
-          </Txt>
+          </InkText>
         </View>
       ) : null}
-    </PressableScale>
+    </View>
   );
 
-  const addButton = (
-    <PressableScale
-      scaleTo={0.9}
-      accessibilityRole="button"
-      accessibilityLabel={t('us.add')}
-      onPress={() => setPublishOpen(true)}
-      style={[styles.round, styles.roundAccent]}>
-      <Ionicons name="add" size={24} color={colors.textOnPrimary} />
-    </PressableScale>
-  );
+  const addButton = <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />;
 
   if (!selected) {
     return (
-      <Screen background={systemGround.ground}>
+      <Screen background={ink.ground}>
         <View style={styles.head}>
-          <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          <InkText variant="display" style={styles.grow}>
             {t('us.title')}
-          </Txt>
+          </InkText>
           {bell}
         </View>
         <EmptyState
@@ -227,11 +219,11 @@ export default function UsScreen() {
   const days = daysBetween(relationship.anniversary) + 1;
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
       <View style={styles.head}>
-        <Txt style={[styles.title, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        <InkText variant="display" style={styles.grow}>
           {t('us.title')}
-        </Txt>
+        </InkText>
         {bell}
         {addButton}
       </View>
@@ -255,9 +247,9 @@ export default function UsScreen() {
                 <View style={[styles.storyRing, active && { borderColor: friendColor(c.id).fill }]}>
                   <CharacterAvatar character={c} size={STORY} />
                 </View>
-                <Txt style={[styles.pickName, active && styles.pickActive]} lines={1} maxFontSizeMultiplier={1.3}>
+                <InkText variant="caption" color={active ? ink.text : ink.text2} lines={1}>
                   {shortName(displayName(c, r))}
-                </Txt>
+                </InkText>
               </PressableScale>
             );
           })}
@@ -276,16 +268,12 @@ export default function UsScreen() {
             <BondRings closeness={progress} streak={Math.min(relationship.streakDays, STREAK_WEEK) / STREAK_WEEK} level={relationship.level} label={t('us.ringLevel')} />
             <View style={styles.grow}>
               <View style={styles.daysLine}>
-                <Txt style={styles.days} maxFontSizeMultiplier={1.2}>
-                  {days}
-                </Txt>
-                <Txt style={styles.daysLabel} maxFontSizeMultiplier={1.3}>
-                  {t('us.daysShort', { count: days })}
-                </Txt>
+                <InkText variant="figure">{days}</InkText>
+                <InkText variant="subStrong">{t('us.daysShort', { count: days })}</InkText>
               </View>
-              <Txt style={styles.levelText} lines={1} maxFontSizeMultiplier={1.3}>
+              <InkText variant="subStrong" color={ink.text2} lines={1}>
                 {phrase(relationship.levelTitle)}
-              </Txt>
+              </InkText>
               <View style={styles.legend}>
                 <Legend color={RING_HUES.outer} value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
                 <Legend color={RING_HUES.inner} value={String(relationship.streakDays)} label={t('us.statStreak')} />
@@ -302,12 +290,12 @@ export default function UsScreen() {
               <UserAvatar user={user} size={PAIR} style={styles.pairFace} />
               <CharacterAvatar character={character} size={PAIR} style={[styles.pairFace, styles.overlap]} />
             </View>
-            <Txt style={[styles.levelMeta, styles.grow]} lines={1} maxFontSizeMultiplier={1.3}>
+            <InkText variant="footnote" lines={1} style={[styles.grow, styles.tabular]}>
               {t('us.toLevel', {
                 count: Math.max(0, relationship.nextLevelAt - relationship.intimacy),
                 level: relationship.level + 1,
               })}
-            </Txt>
+            </InkText>
             {/* Share opens the bond's card (HIG Activity views): small, beside the figures, today's reward on it. */}
             <PressableScale
               style={styles.share}
@@ -316,13 +304,11 @@ export default function UsScreen() {
               accessibilityRole="button"
               accessibilityLabel={`${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward ? `, +${reward} ${t('common.shells')}` : ''}`}
               onPress={() => setSharing(true)}>
-              <SFIcon ios="square.and.arrow.up" icon="share-outline" size={15} color={systemGround.label} />
-              <Txt style={styles.shareText} maxFontSizeMultiplier={1.3}>
-                {t('common.share')}
-              </Txt>
+              <SFIcon ios="square.and.arrow.up" icon="share-outline" size={15} color={ink.text} />
+              <InkText variant="subStrong">{t('common.share')}</InkText>
               {reward ? (
                 <View style={styles.reward}>
-                  <Txt style={styles.rewardText} maxFontSizeMultiplier={1.2}>{`+${reward}`}</Txt>
+                  <InkText variant="caption" color={ink.accent}>{`+${reward}`}</InkText>
                   <ShellIcon size={12} />
                 </View>
               ) : null}
@@ -336,9 +322,9 @@ export default function UsScreen() {
           <PlanCalendar value={day} onChange={setDay} today={today} marked={planDays} talked={talkedDays} talkColor={talkColor} title={t('us.yourDays')} />
         </View>
 
-        <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        <InkText variant="cardSmall" accessibilityRole="header" style={styles.section}>
           {day === today ? t('common.today') : dayTitle(day, i18n.language)}
-        </Txt>
+        </InkText>
         <View style={styles.card}>
           {dayAlarms.map((alarm, i) => (
             <PressableScale
@@ -351,22 +337,24 @@ export default function UsScreen() {
               style={styles.planRow}>
               <TimeTile time={clock(new Date(2000, 0, 1, alarm.hour, alarm.minute))} />
               <View style={[styles.planBody, (i < dayAlarms.length - 1 || dayPlans.length > 0) && styles.line]}>
-                <Txt style={[styles.rowText, styles.grow]} lines={2}>
+                <InkText lines={2} style={styles.grow}>
                   {alarm.label || t('alarms.defaultLabel')}
-                </Txt>
-                <Ionicons name="alarm" size={18} color={colors.textSecondary} />
+                </InkText>
+                <Ionicons name="alarm" size={18} color={ink.text2} />
               </View>
             </PressableScale>
           ))}
           {dayPlans.length === 0 && dayAlarms.length === 0 ? (
             // The day is free: one quiet line, and one tap plans something.
             <View style={styles.free}>
-              <Txt style={[styles.freeText, styles.grow]}>{t('us.nothingPlanned')}</Txt>
+              <InkText variant="sub" style={styles.grow}>
+                {t('us.nothingPlanned')}
+              </InkText>
               <PressableScale style={styles.planPill} scaleTo={0.94} accessibilityRole="button" onPress={() => setPlanOpen(true)}>
-                <Ionicons name="add" size={16} color={colors.brandText} />
-                <Txt style={styles.planPillText} maxFontSizeMultiplier={1.3}>
+                <Ionicons name="add" size={16} color={ink.accent} />
+                <InkText variant="subStrong" color={ink.accent}>
                   {t('us.plan')}
-                </Txt>
+                </InkText>
               </PressableScale>
             </View>
           ) : (
@@ -376,13 +364,15 @@ export default function UsScreen() {
                 <View key={item.id} style={styles.planRow}>
                   <TimeTile time={item.time} />
                   <View style={[styles.planBody, i < dayPlans.length - 1 && styles.line]}>
-                    <Txt style={[styles.rowText, styles.grow]} lines={2}>
+                    <InkText lines={2} style={styles.grow}>
                       {item.title}
-                    </Txt>
+                    </InkText>
                     {pending ? (
                       <View style={styles.remind}>
-                        <Ionicons name="notifications" size={12} color={colors.textSecondary} />
-                        <Txt style={styles.remindText}>{clock(reminderAt(item))}</Txt>
+                        <Ionicons name="notifications" size={12} color={ink.text2} />
+                        <InkText variant="footnote" style={styles.tabular}>
+                          {clock(reminderAt(item))}
+                        </InkText>
                       </View>
                     ) : item.followedUp ? (
                       <Ionicons name="checkmark-circle" size={18} color={colors.success} />
@@ -392,7 +382,7 @@ export default function UsScreen() {
                       scaleTo={0.85}
                       accessibilityLabel={t('a11y.removePlan')}
                       onPress={() => removeSchedule(item.id)}>
-                      <Ionicons name="close-circle" size={20} color={colors.textFaint} />
+                      <Ionicons name="close-circle" size={20} color={ink.text3} />
                     </PressableScale>
                   </View>
                 </View>
@@ -447,9 +437,9 @@ function TimeTile({ time }: { time?: string }) {
   }
   return (
     <View style={styles.timeTile}>
-      <Txt style={styles.time} maxFontSizeMultiplier={1.3}>
+      <InkText variant="bodyStrong" style={styles.tabular}>
         {time}
-      </Txt>
+      </InkText>
     </View>
   );
 }
@@ -484,12 +474,10 @@ function BondRings({ closeness, streak, level, label }: { closeness: number; str
         <Ionicons name="flame" size={8} color={WHITE} />
       </View>
       <View style={styles.ringLabel}>
-        <Txt style={styles.ringLevel} maxFontSizeMultiplier={1.2}>
-          {level}
-        </Txt>
-        <Txt style={styles.ringCaption} lines={1} maxFontSizeMultiplier={1.2}>
+        <InkText variant="figure">{level}</InkText>
+        <InkText variant="caption" lines={1}>
           {label}
-        </Txt>
+        </InkText>
       </View>
     </View>
   );
@@ -499,19 +487,20 @@ function BondRings({ closeness, streak, level, label }: { closeness: number; str
 function Legend({ color, value, label }: { color?: string; value: string; label: string }) {
   return (
     <View style={styles.legendRow}>
-      {color ? <View style={[styles.legendDot, { backgroundColor: color }]} /> : <Ionicons name="calendar-outline" size={12} color={systemGround.secondaryLabel} />}
-      <Txt style={styles.legendValue} lines={1} maxFontSizeMultiplier={1.2}>
+      {color ? <View style={[styles.legendDot, { backgroundColor: color }]} /> : <Ionicons name="calendar-outline" size={12} color={ink.text2} />}
+      <InkText variant="subStrong" lines={1} style={styles.tabular}>
         {value}
-      </Txt>
-      <Txt style={styles.legendLabel} lines={1} maxFontSizeMultiplier={1.2}>
+      </InkText>
+      <InkText variant="footnote" lines={1} style={styles.legendLabel}>
         {label}
-      </Txt>
+      </InkText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
+  tabular: { fontVariant: ['tabular-nums'] },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -520,11 +509,6 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
     paddingBottom: space.xs,
   },
-  title: { fontFamily: fonts.playful, fontSize: 36, lineHeight: 44, letterSpacing: -0.4, color: systemGround.label },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  roundSoft: { backgroundColor: systemGround.fill },
-  // The screen's one apricot action (design-style §10).
-  roundAccent: { backgroundColor: colors.primaryFill },
   // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
   badge: {
     position: 'absolute',
@@ -533,112 +517,79 @@ const styles = StyleSheet.create({
     minWidth: 20,
     height: 20,
     paddingHorizontal: 5,
-    borderRadius: 10,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: playful.red,
+    backgroundColor: ink.danger,
     borderWidth: 2,
-    borderColor: systemGround.ground,
+    borderColor: ink.ground,
   },
-  badgeText: { fontSize: 11, lineHeight: 13, fontWeight: '800', color: WHITE },
   picker: { gap: 12, paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xs },
   pick: { alignItems: 'center', gap: 5, width: STORY + (STORY_RING + STORY_GAP) * 2 },
   // A ring with a gap of ground round the face; only the chosen bond's is coloured.
   storyRing: {
     padding: STORY_GAP,
     borderWidth: STORY_RING,
-    borderRadius: STORY / 2 + STORY_RING + STORY_GAP,
+    borderRadius: inkRadius.pill,
     borderColor: 'transparent',
   },
-  pickName: { fontFamily: fonts.playfulBold, fontSize: 12, color: colors.textSecondary },
-  pickActive: { fontFamily: fonts.playful, color: systemGround.label },
-  // The bond as a plain card on the grouped ground, the rings and figures on it (Apple Health).
+  // The bond as a card on the night ground, the rings and figures on it (Apple Health).
   bond: {
     marginHorizontal: 14,
     marginTop: 14,
     paddingTop: 16,
     paddingBottom: 12,
     paddingHorizontal: 16,
-    borderRadius: 28,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
-    backgroundColor: systemGround.card,
-    ...(isDark ? { borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.08)' } : null),
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
   bondMain: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   rings: { width: RINGS, height: RINGS, alignItems: 'center', justifyContent: 'center' },
   // The arcs start at twelve o'clock.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
-  cap: { position: 'absolute', left: RINGS / 2 - RING_W / 2, width: RING_W, height: RING_W, borderRadius: RING_W / 2, alignItems: 'center', justifyContent: 'center' },
+  cap: { position: 'absolute', left: RINGS / 2 - RING_W / 2, width: RING_W, height: RING_W, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   ringLabel: { alignItems: 'center', maxWidth: RINGS - (RING_W * 2 + RING_GAP) * 2 },
-  ringLevel: { fontSize: 32, lineHeight: 36, fontWeight: '600', letterSpacing: -0.5, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  ringCaption: { fontSize: 11, lineHeight: 14, color: systemGround.secondaryLabel },
   daysLine: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
-  days: { fontSize: 28, lineHeight: 33, fontWeight: '700', letterSpacing: -0.5, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  daysLabel: { fontSize: 15, fontWeight: '600', color: systemGround.label },
-  levelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: systemGround.secondaryLabel },
   legend: { marginTop: 8, gap: 4 },
   legendRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendDot: { width: 8, height: 8, borderRadius: 4, marginHorizontal: 2 },
-  legendValue: { fontSize: 15, fontWeight: '700', color: systemGround.label, fontVariant: ['tabular-nums'] },
-  legendLabel: { flexShrink: 1, fontSize: 13, color: systemGround.secondaryLabel },
+  legendDot: { width: 8, height: 8, borderRadius: inkRadius.pill, marginHorizontal: 2 },
+  legendLabel: { flexShrink: 1 },
   bondFoot: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
   pair: { flexDirection: 'row' },
-  pairFace: { borderWidth: 2, borderColor: systemGround.card, borderRadius: PAIR / 2 + 2 },
+  pairFace: { borderWidth: 2, borderColor: ink.card, borderRadius: inkRadius.pill },
   overlap: { marginLeft: -8 },
-  levelMeta: { fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  // Share: a small grey capsule (it was the card's width), today's reward riding on it.
+  // Share: a small grey capsule, today's reward riding on it.
   share: {
-    height: 34,
+    minHeight: 34,
     paddingHorizontal: 12,
-    borderRadius: 17,
+    borderRadius: inkRadius.pill,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: systemGround.fill,
+    backgroundColor: ink.raised,
   },
-  shareText: { fontSize: 14, fontWeight: '600', color: systemGround.label },
   reward: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: 2 },
-  rewardText: { fontSize: 12.5, fontWeight: '700', color: colors.brandText },
-  section: {
-    marginTop: 20,
-    marginBottom: 8,
-    marginHorizontal: 18,
-    fontFamily: fonts.playful,
-    fontSize: 17,
-    lineHeight: 22,
-    color: systemGround.label,
-  },
-  sectionBig: {
-    marginTop: 24,
-    marginBottom: 10,
-    marginHorizontal: 18,
-    fontFamily: fonts.playful,
-    fontSize: 21,
-    lineHeight: 26,
-    color: systemGround.label,
-  },
-  card: { marginHorizontal: 14, borderRadius: 22, backgroundColor: systemGround.card, overflow: 'hidden' },
-  rowText: { fontSize: 16, letterSpacing: -0.3, color: systemGround.label },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-  pressed: { opacity: 0.6 },
+  section: { marginTop: 20, marginBottom: 8, marginHorizontal: 18 },
+  card: { marginHorizontal: 14, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },
   free: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: space.lg, paddingRight: 10 },
-  freeText: { fontSize: 15, color: colors.textSecondary },
+  // Planning costs shells, so the pill is the money peach.
   planPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    height: 36,
+    minHeight: 36,
     paddingLeft: 10,
     paddingRight: 14,
-    borderRadius: 18,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.primarySoft,
   },
-  planPillText: { fontFamily: fonts.playful, fontSize: 14, color: colors.brandText },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
   planBody: { flex: 1, minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingRight: space.lg },
-  planIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  planIcon: { width: 32, height: 32, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   timeTile: { minWidth: 48, justifyContent: 'center' },
-  time: { fontFamily: fonts.playful, fontSize: 17, color: systemGround.label, fontVariant: ['tabular-nums'] },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  remindText: { fontSize: 13, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
 });

@@ -75,6 +75,8 @@ export const inkType = StyleSheet.create({
   cardSmall: serif(20, 25, -0.2),
   /** A big count or a time. */
   numeral: { ...serif(72, 76, -1.5), fontVariant: ['tabular-nums', 'lining-nums'] },
+  /** A figure on a card (days together, a level inside its rings): Title 1 in the system face. */
+  figure: { ...system(28, 34, '700'), letterSpacing: -0.5, fontVariant: ['tabular-nums'] },
   body: system(17, 22),
   bodyStrong: system(17, 22, '600'),
   /** Chips, segments, a secondary line (Subheadline). */
