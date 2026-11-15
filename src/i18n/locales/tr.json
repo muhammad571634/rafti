@@ -342,6 +342,7 @@
     "notDelivered": "İletilemedi",
     "tryAgain": "Tekrar denemek için dokun",
     "tapToPlay": "Dinlemek için dokun · metin için basılı tut",
+    "voiceText": "Metni göster",
     "callDuration": "Sesli arama · {{duration}}",
     "callMissed": "Cevapsız arama",
     "callBack": "Geri ara",

@@ -342,6 +342,7 @@
     "notDelivered": "Nicht zugestellt",
     "tryAgain": "Tippen zum Wiederholen",
     "tapToPlay": "Tippen zum Abspielen · halten für Text",
+    "voiceText": "Text anzeigen",
     "callDuration": "Sprachanruf · {{duration}}",
     "callMissed": "Verpasster Anruf",
     "callBack": "Zurückrufen",

@@ -14,6 +14,7 @@ import { AppState, Platform } from 'react-native';
 import { accessToken } from '@/ai/account';
 import { apiBase, serverTranscribe } from '@/ai/server';
 import { VOICE_NO_WORDS, VOICE_SECONDS_MAX } from '@/ai/voice-prompt';
+import { waveFromMeter } from '@/lib/voice-wave';
 import { dropClip, keepNote, readClip } from '@/lib/voice-files';
 import { useAppStore } from '@/store/use-app-store';
 
@@ -49,6 +50,8 @@ export interface VoiceNote {
   audioFile?: string;
   /** The language it was heard in. */
   language?: string;
+  /** Its loudness as bars (`waveFromMeter`), drawn as the note's wave. */
+  levels?: number[];
 }
 
 export type VoicePhase = 'idle' | 'recording' | 'sending' | 'failed';
@@ -81,7 +84,9 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   const looks = useRef(0);
   const loud = useRef(0);
   const peak = useRef(-Infinity);
-  const waiting = useRef<{ uri: string; seconds: number } | null>(null);
+  /** Every meter reading of this clip, for its wave. */
+  const meter = useRef<number[]>([]);
+  const waiting = useRef<{ uri: string; seconds: number; levels: number[] } | null>(null);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
   const inTurn = (job: () => Promise<unknown>) => {
     queue.current = queue.current.then(job).catch((error: unknown) => {
@@ -93,9 +98,9 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     latestOnNote.current = onNote;
   });
 
-  const hand = async (clip: { uri: string; seconds: number }, transcript: string, language?: string) => {
+  const hand = async (clip: { uri: string; seconds: number; levels: number[] }, transcript: string, language?: string) => {
     const audioFile = chatId ? await keepNote(clip.uri, chatId) : undefined;
-    latestOnNote.current({ seconds: clip.seconds, transcript, audioFile, language });
+    latestOnNote.current({ seconds: clip.seconds, transcript, audioFile, language, ...(clip.levels.length ? { levels: clip.levels } : {}) });
   };
 
   const deliver = async () => {
@@ -161,6 +166,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     looks.current = 0;
     loud.current = 0;
     peak.current = -Infinity;
+    meter.current = [];
     setSeconds(0);
     setPhase('recording');
   };
@@ -206,7 +212,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
         if (uri) void dropClip(uri);
         return;
       }
-      waiting.current = { uri, seconds: held };
+      waiting.current = { uri, seconds: held, levels: waveFromMeter(meter.current) };
       await deliver();
     });
   };
@@ -226,6 +232,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
       if (typeof metering === 'number') {
         looks.current += 1;
         peak.current = Math.max(peak.current, metering);
+        meter.current.push(metering);
         if (metering > VOICE_DB) loud.current += 1;
       }
       if (elapsed >= VOICE_SECONDS_MAX) latestFinish.current(true);

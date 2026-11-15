@@ -430,7 +430,7 @@ export default function ChatRoomScreen() {
   };
 
   const sendNote = (note: VoiceNote) => {
-    const result = sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile, note.language);
+    const result = sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile, note.language, note.levels);
     if (result === 'sent') playSend();
     if (result !== 'noShells') return;
     outOfShells(shellCosts.voiceMessage);
@@ -497,8 +497,8 @@ export default function ChatRoomScreen() {
       case 'timeSkip':
         return setSkipOpen(true);
       case 'photo':
-        return pickPhoto((uri) => {
-          if (sendImage(conversation.id, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+        return pickPhoto((uri, aspect) => {
+          if (sendImage(conversation.id, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage);
         });
       case 'secretNote':
         return router.push(`/secret-note/${character.id}`);

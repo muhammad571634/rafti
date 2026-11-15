@@ -292,6 +292,10 @@ export interface Message {
   /** The language the transcript was heard in ("Uzbek"), for this message's reply (`spokenCue`). */
   transcriptLanguage?: string;
   durationSec?: number;
+  /** A voice message's loudness as bars from 0 to 1 (`waveFromMeter`), drawn as its wave. */
+  levels?: number[];
+  /** A photo's width over its height, so its bubble has the right shape before it loads. */
+  imageAspect?: number;
   /** The name of a voice message's file on this phone (`noteUri`); the sound is never kept anywhere else. */
   audioFile?: string;
   imageUri?: string;

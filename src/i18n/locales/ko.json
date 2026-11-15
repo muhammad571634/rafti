@@ -337,6 +337,7 @@
     "notDelivered": "전송 실패",
     "tryAgain": "탭하여 다시 시도",
     "tapToPlay": "탭하여 재생 · 길게 눌러 텍스트 보기",
+    "voiceText": "텍스트 보기",
     "callDuration": "음성 통화 · {{duration}}",
     "callMissed": "부재중 전화",
     "callBack": "다시 걸기",

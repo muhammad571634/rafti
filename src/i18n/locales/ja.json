@@ -337,6 +337,7 @@
     "notDelivered": "未配信",
     "tryAgain": "タップして再試行",
     "tapToPlay": "タップして再生 · 長押しでテキスト",
+    "voiceText": "テキストを表示",
     "callDuration": "音声通話 · {{duration}}",
     "callMissed": "不在着信",
     "callBack": "かけ直す",

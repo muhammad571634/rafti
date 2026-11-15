@@ -337,6 +337,7 @@
     "notDelivered": "ส่งไม่สำเร็จ",
     "tryAgain": "แตะเพื่อลองใหม่",
     "tapToPlay": "แตะเพื่อฟัง · กดค้างเพื่อดูข้อความ",
+    "voiceText": "แสดงข้อความ",
     "callDuration": "โทรด้วยเสียง · {{duration}}",
     "callMissed": "สายที่ไม่ได้รับ",
     "callBack": "โทรกลับ",

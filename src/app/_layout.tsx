@@ -91,6 +91,8 @@ function AppRoot() {
         <Stack.Screen name="streams/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
         <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
+        {/* A chat photo full screen: see-through, so a drag down shows the chat fading back in. */}
+        <Stack.Screen name="photo/view" options={{ presentation: 'transparentModal', animation: 'fade', gestureEnabled: false }} />
         <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
         {/* A swipe must not end a date by accident; the close button asks first. */}
         <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />

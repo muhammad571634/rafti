@@ -342,6 +342,7 @@
     "notDelivered": "No entregado",
     "tryAgain": "Toca para reintentar",
     "tapToPlay": "Toca para reproducir · mantén para ver texto",
+    "voiceText": "Mostrar el texto",
     "callDuration": "Llamada de voz · {{duration}}",
     "callMissed": "Llamada perdida",
     "callBack": "Devolver llamada",

@@ -286,7 +286,7 @@ export default function GroupChatScreen() {
   };
 
   const sendNote = (note: VoiceNote) => {
-    const result = sendGroupVoice(groupId, note.seconds, note.transcript, note.audioFile);
+    const result = sendGroupVoice(groupId, note.seconds, note.transcript, note.audioFile, note.levels);
     if (result === 'sent') playSend();
     if (result !== 'noShells') return;
     outOfShells(shellCosts.voiceMessage);
@@ -321,8 +321,8 @@ export default function GroupChatScreen() {
     setAttachOpen(false);
     switch (key) {
       case 'photo':
-        return pickPhoto((uri) => {
-          if (sendGroupImage(groupId, uri) === 'noShells') outOfShells(shellCosts.textMessage);
+        return pickPhoto((uri, aspect) => {
+          if (sendGroupImage(groupId, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage);
         });
       case 'truthOrDare':
         return setTruthWith(members[Math.floor(Math.random() * members.length)]);

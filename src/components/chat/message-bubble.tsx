@@ -13,7 +13,7 @@ import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { BubbleQuote } from '@/components/chat/reply-quote';
 import { SetupCard } from '@/components/chat/setup-card';
-import { playNote, stopNote } from '@/components/chat/voice-player';
+import { playNote, seekNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
 import { Polaroid } from '@/components/date/polaroid';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
@@ -23,6 +23,7 @@ import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
 import { useReveal } from '@/lib/reveal';
+import { barsFor, resampleWave } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, palette, radius, shadows, space, systemColors } from '@/theme';
 import type { Character, Message, WeekStats } from '@/types';
@@ -141,8 +142,9 @@ export const MessageBubble = memo(function MessageBubble({
       .maxDuration(250)
       .runOnJS(true)
       .onEnd((_e, success) => {
-        // A Photo Booth picture opens itself on a tap; a hold still gives its menu.
-        if (!success || latest.current.message.photoId || Date.now() - innerPressAt.current < 600) return;
+        // A picture opens itself on a tap; a hold still gives its menu.
+        const shown = latest.current.message;
+        if (!success || shown.photoId || (shown.kind === 'image' && shown.imageUri) || Date.now() - innerPressAt.current < 600) return;
         latest.current.openHeld();
       });
     return Gesture.Exclusive(double, single);
@@ -159,6 +161,8 @@ export const MessageBubble = memo(function MessageBubble({
   const onPhoto = useOnPhoto();
   const mine = message.author === 'me';
   const photoId = message.photoId;
+  /** A photo the user sent: a tap opens it full screen. */
+  const viewUri = message.kind === 'image' && !message.dateId && !photoId ? message.imageUri : undefined;
   const named = !mine && showAvatar && !!senderName;
   const time = showTime ? clockTime(message.createdAt) : undefined;
   // Their bubble with a name over it or a time under it: the column holds the width cap.
@@ -189,7 +193,7 @@ export const MessageBubble = memo(function MessageBubble({
       ) : message.kind === 'image' && message.photoId ? (
         <BoothPhotoMessage photoId={message.photoId} character={character} />
       ) : message.kind === 'image' && message.imageUri ? (
-        <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
+        <ChatPhoto uri={message.imageUri} aspect={message.imageAspect} />
       ) : (
         <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={quotePress} />
       )}
@@ -231,7 +235,13 @@ export const MessageBubble = memo(function MessageBubble({
     <Pressable
       ref={holdRef}
       delayLongPress={280}
-      onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
+      onPress={
+        photoId
+          ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } })
+          : viewUri
+            ? () => router.push({ pathname: '/photo/view', params: { uri: viewUri } })
+            : undefined
+      }
       onLongPress={onLongPress ? openHeld : undefined}
       style={holdStyle}>
       {inner}
@@ -240,7 +250,7 @@ export const MessageBubble = memo(function MessageBubble({
   const content =
     message.kind === 'voice' ? (
       <VoiceBubble message={message} mine={mine} tail={runEnd} wide={column} />
-    ) : !onLongPress && !photoId ? (
+    ) : !onLongPress && !photoId && !viewUri ? (
       // Nothing to press (a stream's lines): a plain view.
       <View style={holdStyle}>{inner}</View>
     ) : onDoubleTap ? (
@@ -359,13 +369,39 @@ function TextBubble({
   );
 }
 
-/** Heights of the still waveform on a voice message (iOS draws one from the clip). */
-const WAVE = [6, 10, 14, 8, 16, 12, 18, 10, 6, 12, 16, 20, 14, 8, 12, 16, 10, 6, 14, 18, 12, 8];
+/** The largest a sent photo is drawn in the chat; it keeps its own shape inside these. */
+const PHOTO_MAX_W = 240;
+const PHOTO_MAX_H = 300;
 
-/** Play button, waveform and length; tap plays, long-press shows or hides what was said. Their notes have no file yet: the clock runs. */
+/** A sent photo in its own shape (width over height kept when it was sent, or read as it loads). */
+function ChatPhoto({ uri, aspect }: { uri: string; aspect?: number }) {
+  const [loaded, setLoaded] = useState<number>();
+  const shape = Math.max(0.5, Math.min(2, aspect ?? loaded ?? 0.8));
+  const width = Math.min(PHOTO_MAX_W, PHOTO_MAX_H * shape);
+  return (
+    <Image
+      source={{ uri }}
+      style={[styles.photo, { width, height: width / shape }]}
+      contentFit="cover"
+      onLoad={(e) => {
+        if (!aspect && e.source.width > 0 && e.source.height > 0) setLoaded(e.source.width / e.source.height);
+      }}
+    />
+  );
+}
+
+/** A note recorded before levels were kept draws this shape instead (0-1). */
+const STILL_WAVE = [0.3, 0.5, 0.7, 0.4, 0.8, 0.6, 0.9, 0.5, 0.3, 0.6, 0.8, 1, 0.7, 0.4, 0.6, 0.8, 0.5, 0.3, 0.7, 0.9, 0.6, 0.4];
+/** The tallest bar of a note's wave. */
+const WAVE_H = 20;
+
 function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: boolean; tail: boolean; wide?: boolean }) {
   const { t } = useTranslation();
   const [playing, setPlaying] = useState(false);
+  /** How far it has played (0-1): the bars up to here are drawn in full ink. */
+  const [at, setAt] = useState(0);
+  /** Its file is not on this phone (a chat restored from the server): it opens as text, never a silent "play". */
+  const [missing, setMissing] = useState(false);
   // Your own note shows what the model heard, so a wrong hearing is seen and not only answered.
   const [showTranscript, setShowTranscript] = useState(!!message.audioFile && message.transcript !== VOICE_NO_WORDS);
   /** It is this bubble that plays, so scrolling it away stops the sound. */
@@ -381,37 +417,81 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
   const theirsOnPhoto = !mine && onPhoto;
   const ink = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMedia : colors.bubbleOtherText;
   const faint = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMediaMuted : colors.textSecondary;
+  const playable = !!message.audioFile && !missing;
+  const bars = useMemo(() => resampleWave(message.levels?.length ? message.levels : STILL_WAVE, barsFor(seconds)), [message.levels, seconds]);
+  const [waveWidth, setWaveWidth] = useState(0);
 
-  const play = () => {
+  const start = (from = 0) => {
+    if (!message.audioFile) return;
+    setPlaying(true);
+    setAt(from);
+    sounding.current = true;
+    const done = () => {
+      sounding.current = false;
+      setPlaying(false);
+      setAt(0);
+    };
+    void playNote(message.audioFile, done, { from, onProgress: setAt }).then((found) => {
+      if (found) return;
+      // Not on this phone: say what it said instead.
+      sounding.current = false;
+      setPlaying(false);
+      setMissing(true);
+      setShowTranscript(true);
+    });
+  };
+  const press = () => {
+    // A note with no sound (a friend's spoken line, or one whose file is gone) opens as its words.
+    if (!playable) return setShowTranscript((v) => !v);
     if (playing) {
       if (sounding.current) stopNote();
+      setAt(0);
       return setPlaying(false);
     }
-    setPlaying(true);
-    if (message.audioFile) {
-      sounding.current = true;
-      const done = () => {
-        sounding.current = false;
-        setPlaying(false);
-      };
-      void playNote(message.audioFile, done).then((found) => {
-        // Not on this phone (a chat restored from the server): the clock runs instead.
-        if (found) return;
-        sounding.current = false;
-        setTimeout(() => setPlaying(false), Math.min(seconds, 12) * 1000);
-      });
-      return;
-    }
-    setTimeout(() => setPlaying(false), Math.min(seconds, 12) * 1000);
+    start();
   };
+
+  // Drag along the wave to move through it (Telegram): playing, it jumps there; still, it starts there.
+  const latest = useRef({ playing, start, waveWidth });
+  latest.current = { playing, start, waveWidth };
+  const scrub = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetX([-6, 6])
+        .failOffsetY([-10, 10])
+        .runOnJS(true)
+        .onUpdate((e) => {
+          const width = latest.current.waveWidth;
+          if (width > 0) setAt(Math.max(0, Math.min(1, e.x / width)));
+        })
+        .onEnd((e) => {
+          const width = latest.current.waveWidth;
+          if (!(width > 0)) return;
+          const to = Math.max(0, Math.min(0.98, e.x / width));
+          if (latest.current.playing) seekNote(to);
+          else latest.current.start(to);
+        }),
+    [],
+  );
+
+  const wave = (
+    <View style={styles.wave} onLayout={(e) => setWaveWidth(e.nativeEvent.layout.width)}>
+      {bars.map((v, i) => (
+        <View
+          key={i}
+          style={[styles.waveBar, { height: 3 + v * (WAVE_H - 3), backgroundColor: playing && i / bars.length < at ? ink : faint }, playing && i / bars.length < at && styles.waveBarPlayed]}
+        />
+      ))}
+    </View>
+  );
 
   return (
     <View style={[styles.voiceWrap, mine && styles.voiceWrapMine, wide && styles.wide]}>
       <Pressable
-        onPress={play}
+        onPress={press}
         onLongPress={() => setShowTranscript((v) => !v)}
         accessibilityRole="button"
-        accessibilityLabel={t('chat.tapToPlay')}
+        accessibilityLabel={playable ? t('chat.tapToPlay') : t('chat.voiceText')}
         style={[
           styles.bubble,
           styles.voiceBubble,
@@ -419,22 +499,16 @@ function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: bo
           tail && (mine ? styles.tailMine : styles.tailTheirs),
           theirsOnPhoto && styles.photoBubble,
         ]}>
-        <View style={[styles.play, { backgroundColor: ink }]}>
-          <Ionicons name={playing ? 'pause' : 'play'} size={15} color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther} />
+        <View style={[styles.play, { backgroundColor: ink }, !playable && styles.playText]}>
+          <Ionicons
+            name={!playable ? 'text' : playing ? 'pause' : 'play'}
+            size={!playable ? 14 : 15}
+            color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther}
+          />
         </View>
-        {playing ? (
-          <View style={styles.wave}>
-            <Anim name="voiceWave" size={24} tint={ink} />
-          </View>
-        ) : (
-          <View style={styles.wave}>
-            {WAVE.slice(0, Math.max(8, Math.min(WAVE.length, 6 + seconds))).map((h, i) => (
-              <View key={i} style={[styles.waveBar, { height: h, backgroundColor: faint }]} />
-            ))}
-          </View>
-        )}
+        {playable ? <GestureDetector gesture={scrub}>{wave}</GestureDetector> : wave}
         <Txt style={styles.voiceLength} color={faint}>
-          {fmtDuration(seconds)}
+          {fmtDuration(playing ? Math.round(seconds * at) : seconds)}
         </Txt>
       </Pressable>
 
@@ -815,15 +889,16 @@ const styles = StyleSheet.create({
   },
   play: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center', paddingLeft: 2 },
   wave: { flexDirection: 'row', alignItems: 'center', gap: 2, height: 20, minWidth: 40 },
-  waveBar: { width: 2, borderRadius: 1, opacity: 0.6 },
+  waveBar: { width: 3, borderRadius: 1.5, opacity: 0.5 },
+  waveBarPlayed: { opacity: 1 },
+  // A note with no sound: its disc says "text", a little quieter than a play button.
+  playText: { paddingLeft: 0, opacity: 0.85 },
   voiceLength: { fontSize: 13, marginLeft: space.xs },
   transcript: {
     backgroundColor: colors.bubbleTranscript,
     maxWidth: '100%',
   },
   photo: {
-    width: 168,
-    height: 210,
     borderRadius: radius.lg,
     borderCurve: 'continuous',
     backgroundColor: colors.surfaceAlt,

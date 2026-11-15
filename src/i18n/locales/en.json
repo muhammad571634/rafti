@@ -342,6 +342,7 @@
     "notDelivered": "Not Delivered",
     "tryAgain": "Tap to try again",
     "tapToPlay": "Tap to play · hold for text",
+    "voiceText": "Show the words",
     "callDuration": "Voice call · {{duration}}",
     "callMissed": "Missed call",
     "callBack": "Call back",

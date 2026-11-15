@@ -487,8 +487,9 @@ export interface AppState {
   /* chat */
   /** `replyTo` quotes the line it answers (swipe or Reply in the menu). */
   sendText: (conversationId: string, text: string, tone?: MessageTone, replyTo?: ReplyTo) => SendResult;
-  sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string, language?: string) => SendResult;
-  sendImage: (conversationId: string, imageUri: string) => SendResult;
+  sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string, language?: string, levels?: number[]) => SendResult;
+  /** `aspect`: the photo's width over its height, for its bubble's shape. */
+  sendImage: (conversationId: string, imageUri: string, aspect?: number) => SendResult;
   markRead: (conversationId: string) => void;
   /** Chats "Mark as Unread": the chat or group shows its dot again until it is opened. */
   markUnread: (conversationId: string) => void;
@@ -531,8 +532,8 @@ export interface AppState {
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
   createGroup: (memberIds: string[], name?: string) => string | null;
   sendGroupText: (groupId: string, text: string, replyTo?: ReplyTo) => SendResult;
-  sendGroupVoice: (groupId: string, durationSec: number, transcript: string, audioFile?: string) => SendResult;
-  sendGroupImage: (groupId: string, imageUri: string) => SendResult;
+  sendGroupVoice: (groupId: string, durationSec: number, transcript: string, audioFile?: string, levels?: number[]) => SendResult;
+  sendGroupImage: (groupId: string, imageUri: string, aspect?: number) => SendResult;
   /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
   continueGroup: (groupId: string) => SendResult;
   /** A tap on a member's avatar: they speak now (Character.AI's invoke). */
@@ -1210,7 +1211,7 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendVoice: (conversationId, durationSec, transcript, audioFile, language) => {
+      sendVoice: (conversationId, durationSec, transcript, audioFile, language, levels) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
         const heard = !!transcript && transcript !== VOICE_NO_WORDS;
@@ -1228,6 +1229,7 @@ export const useAppStore = create<AppState>()(
           transcript,
           transcriptLanguage: heard ? language : undefined,
           audioFile,
+          ...(levels?.length ? { levels } : {}),
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
@@ -1246,7 +1248,7 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendImage: (conversationId, imageUri) => {
+      sendImage: (conversationId, imageUri, aspect) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!conversation) return 'empty';
         if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
@@ -1258,6 +1260,7 @@ export const useAppStore = create<AppState>()(
           author: 'me',
           kind: 'image',
           imageUri,
+          ...(aspect ? { imageAspect: aspect } : {}),
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
@@ -1579,7 +1582,7 @@ export const useAppStore = create<AppState>()(
         return 'sent';
       },
 
-      sendGroupVoice: (groupId, durationSec, transcript, audioFile) => {
+      sendGroupVoice: (groupId, durationSec, transcript, audioFile, levels) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
         if (!get().spendShells(shellCosts.voiceMessage, 'voice')) return 'noShells';
         countMessage(set, get);
@@ -1592,13 +1595,14 @@ export const useAppStore = create<AppState>()(
           durationSec,
           transcript,
           audioFile,
+          ...(levels?.length ? { levels } : {}),
           createdAt: new Date().toISOString(),
         });
         answerGroup(set, get, groupId, transcript, (gender) => [pick(groupVoiceLines(gender))]);
         return 'sent';
       },
 
-      sendGroupImage: (groupId, imageUri) => {
+      sendGroupImage: (groupId, imageUri, aspect) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
         if (!get().spendShells(shellCosts.textMessage, 'photo')) return 'noShells';
         countMessage(set, get);
@@ -1609,6 +1613,7 @@ export const useAppStore = create<AppState>()(
           author: 'me',
           kind: 'image',
           imageUri,
+          ...(aspect ? { imageAspect: aspect } : {}),
           createdAt: new Date().toISOString(),
         });
         answerGroup(set, get, groupId, '', (gender) => [pick(groupPhotoLines(gender))]);

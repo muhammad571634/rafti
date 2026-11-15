@@ -19,21 +19,39 @@ export function stopNote() {
   playing.done();
 }
 
-/** Plays a kept note; `done` runs when it ends or is stopped. False when its file is not on this phone. */
-export async function playNote(name: string, done: () => void): Promise<boolean> {
+/**
+ * Plays a kept note; `done` runs when it ends or is stopped. False when its file is not on this phone.
+ * `from` starts it part way (0-1, a scrub on a still note); `onProgress` hears how far it is (0-1).
+ */
+export async function playNote(name: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
   stopNote();
   const mine = turn;
   const uri = await noteUri(name);
   if (!uri) return false;
   await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
   if (mine !== turn) return true;
-  const player = createAudioPlayer(uri);
+  const player = createAudioPlayer(uri, { updateInterval: 100 });
   current = { player, done };
+  let started = false;
   player.addListener('playbackStatusUpdate', (status) => {
-    if (status.didJustFinish && current?.player === player) stopNote();
+    if (current?.player !== player) return;
+    if (status.didJustFinish) return stopNote();
+    // The length is known once it loaded: a scrub's start point waits for it.
+    if (!started && status.isLoaded && status.duration > 0) {
+      started = true;
+      if (options.from && options.from > 0) void player.seekTo(options.from * status.duration);
+    }
+    if (status.duration > 0) options.onProgress?.(Math.min(1, status.currentTime / status.duration));
   });
   player.play();
   return true;
+}
+
+/** Moves the playing note to `at` (0-1 of its length); nothing when none plays. */
+export function seekNote(at: number) {
+  const player = current?.player;
+  if (!player || !(player.duration > 0)) return;
+  void player.seekTo(Math.max(0, Math.min(1, at)) * player.duration);
 }
 
 /**

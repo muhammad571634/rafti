@@ -337,6 +337,7 @@
     "notDelivered": "未送達",
     "tryAgain": "點擊重試",
     "tapToPlay": "點擊播放 · 長按顯示文字",
+    "voiceText": "顯示文字",
     "callDuration": "語音通話 · {{duration}}",
     "callMissed": "未接來電",
     "callBack": "回電",
