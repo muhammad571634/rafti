@@ -2,15 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { BlurTargetView } from 'expo-blur';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
-import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, type ScrollViewProps, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewInstance, type ViewStyle } from 'react-native';
 import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { apiBase } from '@/ai/server';
 import { ChatInput, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { composerKeyboardOffset } from '@/components/chat/chat-input';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { MoreSheet } from '@/components/more-sheet';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
@@ -64,6 +65,7 @@ import { nightColors as colors, shadows, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
+import { KC } from '@/lib/keyboard-native';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -545,6 +547,19 @@ export default function ChatRoomScreen() {
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
 
+  // The keyboard (audit Step 3.4): with keyboard-controller in the APK the composer rides the keyboard
+  // frame by frame, the list lifts its newest lines by the same distance, and a drag down on the chat
+  // takes the keyboard with the finger on Android too (iOS Messages). Older APKs keep the padding box.
+  const keyboardLift = composerKeyboardOffset(insets.bottom);
+  const renderChatScroll = useMemo(
+    () =>
+      ChatScroll
+        ? (props: ScrollViewProps) => <ChatScroll {...props} inverted offset={keyboardLift} freeze={attachOpen} />
+        : undefined,
+    [keyboardLift, attachOpen],
+  );
+
+
   return (
     <Screen background={(onPicture ? [colors.black, colors.black] : background) as readonly [string, string]} statusBarStyle="light" edgeToEdge>
       {/* Every ground is dark now, a picture or a wallpaper: the whole chat takes its on-picture look. */}
@@ -553,8 +568,8 @@ export default function ChatRoomScreen() {
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         {/* Outside the keyboard's room, so the picture stays put while the keyboard is up. */}
         {picture ? <PictureGround picture={picture} /> : null}
-        <KeyboardAvoidingView style={styles.flex} behavior="padding">
-          <View style={styles.flex}>
+        <KeyboardBox style={styles.flex} {...keyboardBoxProps}>
+          <ChatGestureArea style={styles.flex}>
             <FlatList
               ref={listRef}
               data={rows}
@@ -569,7 +584,9 @@ export default function ChatRoomScreen() {
               onScroll={onScroll}
               scrollEventThrottle={100}
               // The keyboard goes with a drag of the chat (iOS follows the finger).
-              keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+              keyboardDismissMode={KC || Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+              // With keyboard-controller the list lifts its newest lines with the keyboard, frame by frame.
+              renderScrollComponent={renderChatScroll}
               // Inverted: the bottom padding is the room under the header at the top of the screen.
               contentContainerStyle={[styles.list, { paddingBottom: onPicture ? space.md : headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM : 0) }]}
               // On a picture the list starts under the header (lower while the keyboard is down), and
@@ -649,9 +666,10 @@ export default function ChatRoomScreen() {
                 sendToned.current?.(tone);
               }}
             />
-          </View>
+          </ChatGestureArea>
 
-          <ChatInput
+          <ComposerBox lift={keyboardLift}>
+            <ChatInput
             key={conversationId}
             draftId={conversationId}
             placeholder={t('chat.inputPlaceholder', { name })}
@@ -680,9 +698,10 @@ export default function ChatRoomScreen() {
             replying={replyTo ? { quote: replyTo, title: replyTo.author === 'me' ? you : name, onCancel: cancelReply } : undefined}
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
             onTyping={conversationId ? (isTyping) => setComposing(conversationId, isTyping) : undefined}
-          />
+            />
+          </ComposerBox>
           <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
-        </KeyboardAvoidingView>
+        </KeyboardBox>
 
         <ChatHeader
           avatar={<CharacterAvatar character={character} size={46} />}
@@ -881,6 +900,31 @@ export default function ChatRoomScreen() {
   );
 }
 
+
+/** The chat's keyboard room: keyboard-controller lifts the parts itself; older APKs keep the padding box. */
+const KeyboardBox = KC ? View : KeyboardAvoidingView;
+const ChatScroll = KC?.KeyboardChatScrollView;
+const keyboardBoxProps = KC ? {} : { behavior: 'padding' as const };
+/** A drag starting this far above the keyboard (the composer's height) already takes it along. */
+const GESTURE_OFFSET = 64;
+
+/** Android: a drag down on the chat takes the keyboard with the finger, as iOS's interactive dismiss. */
+function ChatGestureArea({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
+  if (KC && Platform.OS === 'android') {
+    return (
+      <KC.KeyboardGestureArea interpolator="ios" offset={GESTURE_OFFSET} style={style}>
+        {children}
+      </KC.KeyboardGestureArea>
+    );
+  }
+  return <View style={style}>{children}</View>;
+}
+
+/** The composer rides the keyboard frame by frame; `lift` is the room under it the keyboard covers. */
+function ComposerBox({ lift, children }: { lift: number; children: ReactNode }) {
+  if (!KC) return <>{children}</>;
+  return <KC.KeyboardStickyView offset={{ closed: 0, opened: lift }}>{children}</KC.KeyboardStickyView>;
+}
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },

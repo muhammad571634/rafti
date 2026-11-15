@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
+import { hasKeyboardController } from '@/lib/keyboard-native';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useLeftNote } from '@/lib/use-free-messages';
@@ -37,6 +38,12 @@ const SWAP_OUT = ZoomOut.duration(150);
  * react-native-web draws a two-row textarea unless told otherwise.
  */
 const webField = Platform.OS === 'web' ? ({ rows: 1, submitBehavior: 'submit', blurOnSubmit: true, returnKeyType: 'send' } as const) : {};
+
+/**
+ * How much of the keyboard's height the composer does not need to rise: its resting room under the
+ * bar (the home indicator or navigation bar) is covered by the keyboard, so it sits `space.sm` above it.
+ */
+export const composerKeyboardOffset = (bottomInset: number) => bottomRoom(bottomInset, space.md) - space.sm;
 
 export interface ChatInputProps {
   placeholder: string;
@@ -106,8 +113,10 @@ export function ChatInput({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   // With the keyboard or the "+" panel up, the home indicator is covered, so the bar sits right on it.
+  // With keyboard-controller the chat lifts the bar frame by frame instead (`composerKeyboardOffset`),
+  // so its padding stays put and nothing jumps when the keyboard's show / hide event lands.
   const keyboardUp = useKeyboardVisible();
-  const barBottom = keyboardUp || attachOpen ? space.sm : bottomRoom(insets.bottom, space.md);
+  const barBottom = attachOpen || (keyboardUp && !hasKeyboardController) ? space.sm : bottomRoom(insets.bottom, space.md);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<TextInputInstance>(null);
   /** The unsent draft waits here while a message is edited, and comes back after. */

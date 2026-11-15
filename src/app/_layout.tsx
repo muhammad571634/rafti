@@ -21,6 +21,7 @@ import { startAwayClock } from '@/lib/away-clock';
 import { noDuplicatePush } from '@/lib/no-duplicate-push';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { KeyboardRoot } from '@/lib/keyboard-native';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 // A short fade: the launch intro (or the first screen) is already drawn under the splash.
@@ -56,7 +57,11 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {ready ? <AppRoot /> : null}
+      {ready ? (
+        <KeyboardRoot>
+          <AppRoot />
+        </KeyboardRoot>
+      ) : null}
       {/* From the first render, so it plays while fonts, words and saved data load. */}
       <LaunchIntro ready={ready} />
     </GestureHandlerRootView>
