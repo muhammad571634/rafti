@@ -3,7 +3,7 @@ import { BlurTargetView } from 'expo-blur';
 import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, Pressable, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
+import { FlatList, Platform, ScrollView, StyleSheet, View, type ViewInstance } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -17,12 +17,12 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path } from 'react-native-svg';
 
 import { ChatMenu, type ChatMenuTarget } from '@/components/chat/chat-menu';
 import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
-import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, SFIcon, Sheet, Txt } from '@/components/ui';
+import { InkChip, InkText } from '@/components/ink';
+import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar, SFIcon, Sheet } from '@/components/ui';
 import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetNotes } from '@/lib/voice-files';
@@ -30,7 +30,8 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendHues, isDark, palette, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT, type Hue } from '@/theme';
+import { isDark, palette, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { ink, inkRadius, inkTints } from '@/theme/ink';
 import type { Character, Conversation, GroupChat } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
@@ -90,9 +91,6 @@ type ChatItem =
 const rowOf = (item: ChatItem) => (item.kind === 'chat' ? item.conversation : item.group);
 const isPinned = (item: ChatItem) => item.kind === 'chat' && item.conversation.pinned;
 const isUnread = (item: ChatItem) => rowOf(item).unreadCount > 0;
-/** A deep bubble (the blue, every dark-mode hue) takes white marks instead of ink ones. */
-const isDeep = (hue: Hue) => hue.ink === WHITE;
-const countText = (n: number) => (n > 99 ? '99+' : String(n));
 
 /** The handlers every row shares; stable, so a row re-renders only when its own chat changes. */
 interface RowActions {
@@ -323,56 +321,27 @@ export default function ChatListScreen() {
   );
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
       <BlurTargetView ref={blurTarget} style={styles.flex}>
         <View style={styles.topBar}>
           {items.length > 0 && !searching ? (
-            <PressableScale
-              scaleTo={0.94}
-              onPress={() => setEditing((v) => !v)}
-              accessibilityRole="button"
-              style={[styles.editPill, editing && styles.editPillOn]}>
-              <Txt style={[styles.editText, editing && styles.editTextOn]} maxFontSizeMultiplier={1.3}>
-                {editing ? t('common.done') : t('common.edit')}
-              </Txt>
-            </PressableScale>
+            <GlassButton label={editing ? t('common.done') : t('common.edit')} onPress={() => setEditing((v) => !v)} />
           ) : (
             <View />
           )}
           {searching ? null : (
             <View style={styles.topRight}>
               {items.length > 0 ? (
-                <PressableScale
-                  scaleTo={0.88}
+                <GlassButton
+                  icon="search"
+                  accessibilityLabel={t('common.search')}
                   onPress={() => {
                     setEditing(false);
                     setSearching(true);
                   }}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('common.search')}
-                  style={styles.roundButton}>
-                  <Ionicons name="search" size={19} color={systemGround.label} />
-                </PressableScale>
+                />
               ) : null}
-              <PressableScale
-                scaleTo={0.88}
-                onPress={() => setStarting(true)}
-                accessibilityRole="button"
-                accessibilityLabel={t('chatList.newChat')}
-                style={styles.roundButton}>
-                <Svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={systemGround.label}
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round">
-                  <Path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" />
-                  <Path d="M17.5 3.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z" />
-                </Svg>
-              </PressableScale>
+              <GlassButton icon="create-outline" accessibilityLabel={t('chatList.newChat')} onPress={() => setStarting(true)} />
             </View>
           )}
         </View>
@@ -388,14 +357,14 @@ export default function ChatListScreen() {
               autoFocus
               style={styles.search}
             />
-            <Pressable onPress={stopSearch} hitSlop={8} accessibilityRole="button">
-              <Txt style={styles.cancel}>{t('common.cancel')}</Txt>
-            </Pressable>
+            <PressableScale scaleTo={0.94} onPress={stopSearch} hitSlop={8} accessibilityRole="button">
+              <InkText color={ink.accent}>{t('common.cancel')}</InkText>
+            </PressableScale>
           </View>
         ) : (
-          <Txt accessibilityRole="header" style={styles.title} maxFontSizeMultiplier={1.3}>
+          <InkText variant="display" style={styles.title}>
             {t('chatList.title')}
-          </Txt>
+          </InkText>
         )}
 
         {items.length === 0 ? (
@@ -429,9 +398,9 @@ export default function ChatListScreen() {
               ListHeaderComponent={
                 pinned.length > 0 ? (
                   <View>
-                    <Txt accessibilityRole="header" style={styles.section} maxFontSizeMultiplier={1.3}>
+                    <InkText variant="subStrong" accessibilityRole="header" style={styles.section}>
                       {t('chatList.pinned')}
-                    </Txt>
+                    </InkText>
                     <ScrollView
                       horizontal
                       showsHorizontalScrollIndicator={false}
@@ -457,15 +426,13 @@ export default function ChatListScreen() {
               ListHeaderComponentStyle={styles.listTop}
               ListEmptyComponent={
                 needle ? (
-                  <Txt variant="small" color={colors.textSecondary} center style={styles.noResults}>
+                  <InkText variant="sub" center style={styles.noResults}>
                     {t('chatList.noResults', { query: query.trim() })}
-                  </Txt>
+                  </InkText>
                 ) : filter !== 'all' && !searching ? (
                   <View style={styles.caughtUp}>
-                    <Ionicons name={filter === 'unread' ? 'checkmark' : 'people-outline'} size={28} color={colors.textSecondary} />
-                    <Txt style={styles.caughtUpText}>
-                      {filter === 'unread' ? t('chatList.caughtUp') : t('chatList.noGroups')}
-                    </Txt>
+                    <Ionicons name={filter === 'unread' ? 'checkmark' : 'people-outline'} size={28} color={ink.text2} />
+                    <InkText variant="subStrong">{filter === 'unread' ? t('chatList.caughtUp') : t('chatList.noGroups')}</InkText>
                   </View>
                 ) : undefined
               }
@@ -490,15 +457,15 @@ export default function ChatListScreen() {
       <Sheet visible={starting} onClose={() => setStarting(false)} title={t('chatList.newTitle')}>
         <View style={styles.ways}>
           <WayTile
-            icon={<SFIcon ios="person.fill" icon="person" size={22} color={friendHues[0].ink} />}
-            hue={friendHues[0]}
+            icon={<SFIcon ios="person.fill" icon="person" size={22} color={ink.text} />}
+            tint={inkTints[0][0]}
             title={t('group.newChat')}
             hint={t('group.newChatHint')}
             onPress={() => startWith('/(tabs)/find')}
           />
           <WayTile
-            icon={<SFIcon ios="person.2.fill" icon="people" size={22} color={friendHues[1].ink} />}
-            hue={friendHues[1]}
+            icon={<SFIcon ios="person.2.fill" icon="people" size={22} color={ink.text} />}
+            tint={inkTints[1][0]}
             title={t('group.newGroup')}
             hint={friends < 2 ? t('group.needFriends') : t('group.newGroupHint')}
             disabled={friends < 2}
@@ -506,8 +473,8 @@ export default function ChatListScreen() {
           />
           {/* Character.AI's Stream: two characters talk while you watch (flows.md D74). */}
           <WayTile
-            icon={<SFIcon ios="play.rectangle.fill" icon="tv" size={22} color={playful.plumInk} />}
-            hue={{ fill: playful.plum, ink: playful.plumInk }}
+            icon={<SFIcon ios="play.rectangle.fill" icon="tv" size={22} color={ink.text} />}
+            tint={inkTints[3][0]}
             title={t('streams.title')}
             badge={t('streams.live')}
             hint={t('streams.sheetHint')}
@@ -519,37 +486,14 @@ export default function ChatListScreen() {
   );
 }
 
-/** All / Unread / Groups as three pills, ink when on; Unread carries its count in a red chip. */
+/** All / Unread / Groups as three Ink chips; Unread carries its count in a red capsule. */
 function Filters({ value, unread, onChange }: { value: Filter; unread: number; onChange: (f: Filter) => void }) {
   const { t } = useTranslation();
   return (
     <View style={styles.filters} accessibilityRole="tablist" accessibilityLabel={t('chatList.show')}>
-      {FILTERS.map((f) => {
-        const on = f === value;
-        const count = f === 'unread' ? unread : 0;
-        return (
-          <PressableScale
-            key={f}
-            scaleTo={0.95}
-            dimOnPress={false}
-            onPress={() => onChange(f)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: on }}
-            aria-selected={on}
-            style={[styles.pill, on && styles.pillOn]}>
-            <Txt style={[styles.pillText, on && styles.pillTextOn]} maxFontSizeMultiplier={1.3}>
-              {t(`chatList.${f}`)}
-            </Txt>
-            {count > 0 ? (
-              <View style={styles.redCount}>
-                <Txt style={styles.redCountText} maxFontSizeMultiplier={1.2}>
-                  {countText(count)}
-                </Txt>
-              </View>
-            ) : null}
-          </PressableScale>
-        );
-      })}
+      {FILTERS.map((f) => (
+        <InkChip key={f} label={t(`chatList.${f}`)} on={f === value} count={f === 'unread' ? unread : 0} onPress={() => onChange(f)} />
+      ))}
     </View>
   );
 }
@@ -636,33 +580,34 @@ function PinnedTile({
           {item.kind === 'chat' ? (
             <CharacterAvatar character={item.character} size={PINNED_AVATAR} />
           ) : (
-            <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={systemGround.ground} />
+            <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={ink.ground} />
           )}
         </View>
         {typing ? (
           <View style={styles.pinnedTyping} pointerEvents="none">
-            <TypingDots color={systemGround.label} />
+            <TypingDots color={ink.text} />
           </View>
         ) : unread ? (
           <View style={styles.pinnedDot} pointerEvents="none" />
         ) : editing ? null : (
           <View style={styles.pinMark} pointerEvents="none">
-            <Ionicons name="pin" size={11} color={systemGround.ground} />
+            <Ionicons name="pin" size={11} color={ink.ground} />
           </View>
         )}
-        <Txt style={[styles.pinnedName, unread && styles.pinnedNameUnread]} lines={1} maxFontSizeMultiplier={1.3}>
+        <InkText variant="caption" color={unread ? ink.text : ink.text2} lines={1} style={styles.pinnedName}>
           {item.kind === 'chat' ? shortName(item.name) : item.name}
-        </Txt>
+        </InkText>
       </PressableScale>
       {editing ? (
-        <Pressable
+        <PressableScale
+          scaleTo={0.9}
           onPress={onUnpin}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={`${t('chatList.unpin')}, ${item.name}`}
           style={styles.unpinBadge}>
-          <Ionicons name="remove" size={14} color={systemGround.label} />
-        </Pressable>
+          <Ionicons name="remove" size={14} color={ink.text} />
+        </PressableScale>
       ) : null}
     </View>
   );
@@ -708,18 +653,19 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
     transform: [{ scale: interpolate(progress.value, [0, 1], [0.6, 1], Extrapolation.CLAMP) }],
   }));
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.9}
       onPress={action.onPress}
       accessibilityRole="button"
       accessibilityLabel={action.label}
       style={[styles.action, { backgroundColor: action.fill }]}>
       <Animated.View style={[styles.actionInner, grow]}>
         <Ionicons name={action.icon} size={22} color={WHITE} />
-        <Txt style={styles.actionText} lines={2} maxFontSizeMultiplier={1.2}>
+        <InkText variant="caption" color={WHITE} center lines={2}>
           {action.label}
-        </Txt>
+        </InkText>
       </Animated.View>
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -800,14 +746,15 @@ const ChatRow = memo(function ChatRow({
     <View style={styles.rowWrap}>
       {/* Beside the bubble, not inside it: a button cannot hold another one. */}
       {editing ? (
-        <Pressable
+        <PressableScale
+          scaleTo={0.9}
           onPress={() => actions.remove(item)}
           hitSlop={6}
           accessibilityRole="button"
           accessibilityLabel={`${t('common.delete')}, ${item.name}`}
           style={styles.removeCell}>
-          <Ionicons name="remove-circle" size={26} color={colors.danger} />
-        </Pressable>
+          <Ionicons name="remove-circle" size={26} color={ink.danger} />
+        </PressableScale>
       ) : null}
       <SwipeRow
         ref={swipe}
@@ -852,37 +799,33 @@ const ChatRow = memo(function ChatRow({
           {item.kind === 'chat' ? (
             <CharacterAvatar character={item.character} size={AVATAR} />
           ) : (
-            <GroupAvatar members={item.members} size={AVATAR} ringColor={systemGround.ground} />
+            <GroupAvatar members={item.members} size={AVATAR} ringColor={ink.ground} />
           )}
 
           <View style={styles.body}>
             <View style={styles.line}>
-              <Txt style={styles.name} lines={1} maxFontSizeMultiplier={1.3}>
+              <InkText variant="bodyStrong" lines={1} style={styles.name}>
                 {item.name}
-              </Txt>
+              </InkText>
               {level != null ? (
                 <View style={styles.level}>
                   <Ionicons name="heart" size={10} color={systemColors.pink} />
-                  <Txt style={styles.levelText} maxFontSizeMultiplier={1.2}>
-                    {level}
-                  </Txt>
+                  <InkText variant="caption">{level}</InkText>
                 </View>
               ) : null}
-              {row.muted ? <Ionicons name="notifications-off" size={13} color={systemGround.secondaryLabel} /> : null}
+              {row.muted ? <Ionicons name="notifications-off" size={13} color={ink.text3} /> : null}
               <View style={styles.spacer} />
-              <Txt style={styles.stamp} maxFontSizeMultiplier={1.3}>
-                {relativeStamp(row.lastMessageAt)}
-              </Txt>
-              <Ionicons name="chevron-forward" size={15} color={systemGround.secondaryLabel} />
+              <InkText variant="footnote">{relativeStamp(row.lastMessageAt)}</InkText>
+              <Ionicons name="chevron-forward" size={15} color={ink.text3} />
             </View>
             {typing ? (
               <View style={styles.typing}>
-                <TypingDots color={systemGround.secondaryLabel} size={7} />
+                <TypingDots color={ink.text2} size={7} />
               </View>
             ) : row.lastMessagePreview ? (
-              <Txt style={styles.preview} lines={2}>
+              <InkText variant="sub" lines={2}>
                 {row.lastMessagePreview}
-              </Txt>
+              </InkText>
             ) : null}
           </View>
         </PressableScale>
@@ -891,10 +834,10 @@ const ChatRow = memo(function ChatRow({
   );
 });
 
-/** One choice in the pencil's sheet: a big tile in its own colour, an icon box, the action and a line. */
+/** One choice in the pencil's sheet: a tile in a deep Ink tint, an icon box, the action and a line. */
 function WayTile({
   icon,
-  hue,
+  tint,
   title,
   badge,
   hint,
@@ -902,14 +845,13 @@ function WayTile({
   onPress,
 }: {
   icon: React.ReactNode;
-  hue: Hue;
+  tint: string;
   title: string;
   badge?: string;
   hint: string;
   disabled?: boolean;
   onPress: () => void;
 }) {
-  const deep = isDeep(hue);
   return (
     <PressableScale
       scaleTo={0.97}
@@ -917,22 +859,20 @@ function WayTile({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={[title, badge, hint].filter(Boolean).join(', ')}
-      style={[styles.way, { backgroundColor: hue.fill }]}>
-      <View style={[styles.wayIcon, deep && styles.wayIconDeep]}>{icon}</View>
+      style={[styles.way, { backgroundColor: tint }, disabled && styles.wayOff]}>
+      <View style={styles.wayIcon}>{icon}</View>
       <View style={styles.wayText}>
         <View style={styles.wayTitleRow}>
-          <Txt style={[styles.wayTitle, { color: hue.ink }]} maxFontSizeMultiplier={1.3}>
-            {title}
-          </Txt>
+          <InkText variant="bodyStrong">{title}</InkText>
           {badge ? (
             <View style={styles.live}>
-              <Txt style={styles.liveText} maxFontSizeMultiplier={1.2}>
+              <InkText variant="caption" color={WHITE} style={styles.liveText}>
                 {badge}
-              </Txt>
+              </InkText>
             </View>
           ) : null}
         </View>
-        <Txt style={[styles.wayHint, { color: hue.ink }]}>{hint}</Txt>
+        <InkText variant="footnote">{hint}</InkText>
       </View>
     </PressableScale>
   );
@@ -949,33 +889,7 @@ const styles = StyleSheet.create({
     height: 44 + space.sm,
   },
   topRight: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  editPill: {
-    height: 36,
-    paddingHorizontal: 16,
-    borderRadius: 18,
-    justifyContent: 'center',
-    backgroundColor: systemGround.fill,
-  },
-  editPillOn: { backgroundColor: systemGround.label },
-  editText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
-  editTextOn: { color: systemGround.ground },
-  roundButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: systemGround.fill,
-  },
-  title: {
-    marginTop: 2,
-    marginHorizontal: space.lg,
-    fontFamily: fonts.playful,
-    fontSize: 36,
-    lineHeight: 44,
-    letterSpacing: -0.4,
-    color: systemGround.label,
-  },
+  title: { marginTop: 2, marginHorizontal: space.lg },
   searchRow: {
     marginTop: 4,
     marginHorizontal: space.lg,
@@ -986,42 +900,13 @@ const styles = StyleSheet.create({
   search: {
     flex: 1,
     height: 44,
-    borderRadius: 22,
+    borderRadius: inkRadius.pill,
     paddingHorizontal: space.md,
     gap: 6,
   },
-  cancel: { fontSize: 17, letterSpacing: -0.4, color: colors.brandText },
   filters: { marginTop: space.sm, marginHorizontal: space.lg, flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  pill: {
-    minHeight: 34,
-    paddingHorizontal: 14,
-    borderRadius: 17,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: systemGround.fill,
-  },
-  pillOn: { backgroundColor: systemGround.label },
-  pillText: { fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
-  pillTextOn: { color: systemGround.ground },
-  redCount: {
-    minWidth: 20,
-    height: 18,
-    paddingHorizontal: 6,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: playful.red,
-  },
-  redCountText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: WHITE },
   listTop: { paddingTop: space.md, paddingBottom: space.md },
-  section: {
-    marginHorizontal: space.lg,
-    marginBottom: space.sm,
-    fontFamily: fonts.playful,
-    fontSize: 15,
-    color: systemGround.label,
-  },
+  section: { marginHorizontal: space.lg, marginBottom: space.sm },
   // Pinned chats: one row of ringed faces that scrolls sideways when there are many.
   pinnedRow: { paddingHorizontal: space.lg, paddingTop: 2, gap: 14 },
   pinnedCell: { width: PINNED_AVATAR + (PINNED_RING + PINNED_GAP) * 2, alignItems: 'center' },
@@ -1029,9 +914,9 @@ const styles = StyleSheet.create({
   pinnedRing: {
     padding: PINNED_GAP,
     borderWidth: PINNED_RING,
-    borderRadius: PINNED_AVATAR / 2 + PINNED_GAP + PINNED_RING,
-    borderColor: systemGround.ground,
-    backgroundColor: systemGround.ground,
+    borderRadius: inkRadius.pill,
+    borderColor: ink.ground,
+    backgroundColor: ink.ground,
   },
   pinMark: {
     position: 'absolute',
@@ -1039,10 +924,10 @@ const styles = StyleSheet.create({
     top: 0,
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemGround.label,
+    backgroundColor: ink.text,
   },
   pinnedTyping: {
     position: 'absolute',
@@ -1050,9 +935,9 @@ const styles = StyleSheet.create({
     top: -2,
     height: 20,
     paddingHorizontal: 6,
-    borderRadius: 10,
+    borderRadius: inkRadius.pill,
     justifyContent: 'center',
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
   },
   pinnedDot: {
     position: 'absolute',
@@ -1060,39 +945,33 @@ const styles = StyleSheet.create({
     top: 2,
     width: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: inkRadius.pill,
     borderWidth: 2.5,
-    borderColor: systemGround.ground,
+    borderColor: ink.ground,
     backgroundColor: UNREAD,
   },
-  pinnedName: {
-    maxWidth: PINNED_AVATAR + 14,
-    fontFamily: fonts.playfulBold,
-    fontSize: 12,
-    color: systemGround.label,
-  },
-  pinnedNameUnread: { fontFamily: fonts.playful },
+  pinnedName: { maxWidth: PINNED_AVATAR + 14 },
   unpinBadge: {
     position: 'absolute',
     top: -2,
     left: 0,
     width: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
     borderWidth: 2,
-    borderColor: systemGround.ground,
+    borderColor: ink.ground,
   },
   dots: { flexDirection: 'row', alignItems: 'center' },
   rowWrap: { flexDirection: 'row', alignItems: 'center' },
   removeCell: { width: 44, paddingLeft: 8, alignItems: 'center', justifyContent: 'center' },
   swipe: { flex: 1 },
   // Opaque, so the swipe actions under it never show through a closed row.
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingRight: space.lg, backgroundColor: systemGround.ground },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingRight: space.lg, backgroundColor: ink.ground },
   dotColumn: { width: DOT_COLUMN - 12 + 6, marginRight: -6, alignItems: 'flex-end' },
-  unreadDot: { width: 11, height: 11, borderRadius: 5.5, backgroundColor: UNREAD },
+  unreadDot: { width: 11, height: 11, borderRadius: inkRadius.pill, backgroundColor: UNREAD },
   // The hairline runs under the text only, as in Messages, from the name to the edge.
   body: {
     flex: 1,
@@ -1102,17 +981,14 @@ const styles = StyleSheet.create({
     minHeight: AVATAR + 22,
     justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: systemGround.dash,
+    borderBottomColor: ink.line,
   },
   line: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   // The name shrinks first, so the level heart stays right after it and the time stays whole.
-  name: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 16, lineHeight: 21, color: systemGround.label },
+  name: { flexShrink: 1 },
   level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  levelText: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, color: systemGround.secondaryLabel },
   spacer: { flex: 1, minWidth: 6 },
-  preview: { fontSize: 14.5, lineHeight: 19, letterSpacing: -0.1, color: systemGround.secondaryLabel },
   typing: { height: 19, justifyContent: 'center', paddingTop: 4 },
-  stamp: { fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
   actions: { flex: 1, flexDirection: 'row', overflow: 'hidden' },
   actionsLeft: {},
   actionsRight: {},
@@ -1121,40 +997,36 @@ const styles = StyleSheet.create({
     marginHorizontal: ACTION_GAP,
     marginVertical: ACTION_GAP + 2,
     paddingHorizontal: space.xs,
-    borderRadius: 18,
+    borderRadius: inkRadius.chip,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
   },
   actionInner: { alignItems: 'center', gap: 3 },
-  actionText: { fontSize: 12, lineHeight: 14, fontWeight: '600', color: WHITE, textAlign: 'center' },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
   caughtUp: {
     height: 120,
     marginHorizontal: space.lg,
-    borderRadius: 28,
-    backgroundColor: systemGround.card,
+    borderRadius: inkRadius.card,
+    backgroundColor: ink.card,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
   },
-  caughtUpText: { fontFamily: fonts.playfulBold, fontSize: 15, color: systemGround.label },
-  // The pencil's sheet: three big coloured tiles.
+  // The pencil's sheet: three tiles in deep Ink tints.
   ways: { gap: 10 },
-  way: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: 22 },
+  way: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 14, borderRadius: inkRadius.field, borderCurve: 'continuous' },
+  wayOff: { opacity: 0.45 },
   wayIcon: {
     width: 48,
     height: 48,
-    borderRadius: 16,
+    borderRadius: inkRadius.chip,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: ink.raised,
   },
-  wayIconDeep: { backgroundColor: 'rgba(255,255,255,0.14)' },
   wayText: { flex: 1, gap: 2 },
   wayTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  wayTitle: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 22 },
-  wayHint: { fontSize: 13, lineHeight: 17 },
-  live: { paddingHorizontal: 6, height: 18, borderRadius: 6, justifyContent: 'center', backgroundColor: playful.red },
-  liveText: { fontSize: 11, lineHeight: 14, fontWeight: '800', color: WHITE, textTransform: 'uppercase' },
+  live: { paddingHorizontal: 6, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: ink.danger },
+  liveText: { textTransform: 'uppercase' },
 });
