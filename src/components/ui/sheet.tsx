@@ -1,7 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo, useRef } from 'react';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, { Extrapolation, interpolate, ReduceMotion, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { radius, shadows, space, themed, useThemed, useTokens } from '@/theme';
@@ -33,11 +37,18 @@ export interface SheetProps {
 /** iOS 26/27 floating sheet: 8pt in from the screen edges, with the device's large corners. */
 const EDGE = 8;
 const CORNER = 38;
+/** A drag down this far, or a flick, closes the sheet; anything less springs it back. */
+const CLOSE_AT = 110;
+const FLICK = 900;
+const BACK = { damping: 26, stiffness: 320, reduceMotion: ReduceMotion.System };
 
 /**
  * Bottom sheet (or centred card) over a light scrim, iOS style (approved prototype, 2026-10-16):
  * a floating card with a grabber and, when it has a title, a header row of × / title / ✓.
- * It appears and leaves at once: no slide, spring or fade, so it never "jumps" at you.
+ * It appears and leaves at once: no slide, spring or fade, so it never "jumps" at you. A bottom sheet
+ * that can be dismissed also follows a drag down from its top (the grabber and the header row): far
+ * enough or flicked, it carries on down and closes; otherwise it springs back. Only the top takes the
+ * drag, so lists, wheels and fields inside keep their own touches.
  */
 export function Sheet({
   visible,
@@ -64,6 +75,37 @@ export function Sheet({
       ? insets.bottom + EDGE
       : Math.max(EDGE, insets.bottom - 26);
   const { t } = useTranslation();
+  const { height } = useWindowDimensions();
+
+  // The drag down: the card follows the finger, the scrim fades with it.
+  const drop = useSharedValue(0);
+  useEffect(() => {
+    if (visible) drop.value = 0;
+  }, [visible, drop]);
+  const latestClose = useRef(onClose);
+  latestClose.current = onClose;
+  const draggable = !center && dismissable;
+  const drag = useMemo(() => {
+    const close = () => latestClose.current();
+    return Gesture.Pan()
+      .enabled(draggable)
+      .activeOffsetY(8)
+      .failOffsetX([-20, 20])
+      .onUpdate((e) => {
+        // Down follows the finger; up gives a little, as iOS does.
+        drop.value = e.translationY > 0 ? e.translationY : e.translationY * 0.15;
+      })
+      .onEnd((e) => {
+        if (drop.value > CLOSE_AT || e.velocityY > FLICK) {
+          drop.value = withTiming(height, { duration: 160, reduceMotion: ReduceMotion.System });
+          scheduleOnRN(close);
+          return;
+        }
+        drop.value = withSpring(0, BACK);
+      });
+  }, [draggable, drop, height]);
+  const following = useAnimatedStyle(() => ({ transform: [{ translateY: drop.value }] }));
+  const fading = useAnimatedStyle(() => ({ opacity: interpolate(drop.value, [0, 400], [1, 0.2], Extrapolation.CLAMP) }));
 
   const header = title ? (
     center ? (
@@ -107,17 +149,23 @@ export function Sheet({
     )
   ) : null;
 
-  const content = (
-    <>
-      {header}
-      {children}
-    </>
+  // The part that takes the drag: the grabber, and the header row when there is one.
+  const top = (
+    <GestureDetector gesture={drag}>
+      <View collapsable={false} style={styles.top}>
+        {!center ? <View style={styles.grabber} /> : null}
+        {header}
+      </View>
+    </GestureDetector>
   );
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <View style={styles.fill}>
-        <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={dismissable ? onClose : undefined} />
+      {/* A Modal is its own window on Android: gestures inside it need their own root. */}
+      <GestureHandlerRootView style={styles.fill}>
+        <Animated.View style={[StyleSheet.absoluteFill, fading]}>
+          <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={dismissable ? onClose : undefined} />
+        </Animated.View>
 
         {/* Edge-to-edge Android does not resize the window for the keyboard either, so both need the padding. */}
         <KeyboardAvoidingView
@@ -131,27 +179,30 @@ export function Sheet({
           ]}
           pointerEvents="box-none">
           {/* The room under the card is its margin: KeyboardAvoidingView owns its own paddingBottom. */}
-          <View
+          <Animated.View
             style={[
               center ? styles.centerCard : [styles.bottomCard, { marginBottom: sheetBottom }],
               scrolls && styles.capped,
               shadows.modal,
+              following,
             ]}>
-            {!center ? <View style={styles.grabber} /> : null}
+            {/* The top stays put over a list that scrolls, so the drag never fights the scroll. */}
+            {top}
             {scrolls ? (
               <ScrollView
                 bounces={false}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
+                style={styles.scrollBox}
                 contentContainerStyle={styles.scroll}>
-                {content}
+                {children}
               </ScrollView>
             ) : (
-              content
+              children
             )}
-          </View>
+          </Animated.View>
         </KeyboardAvoidingView>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -182,6 +233,10 @@ const sheet = themed(({ colors }) =>
     /** Never taller than the room left above the keyboard. */
     capped: { maxHeight: '100%' },
     scroll: { flexGrow: 1 },
+    // Under a fixed top, the list takes what is left of the capped card.
+    scrollBox: { flexShrink: 1 },
+    // The grabber's row reaches the card's top edge, so a drag can start right at it.
+    top: { marginTop: -space.sm, paddingTop: space.sm },
     grabber: {
       alignSelf: 'center',
       width: 36,
