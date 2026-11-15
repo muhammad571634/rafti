@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -6,10 +5,10 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, HEADER_HEIGHT, hitSlop, night as nightTokens, NightScope, space, useNight, useTokens } from '@/theme';
+import { colors, HEADER_HEIGHT, night as nightTokens, NightScope, space, useNight, useTokens } from '@/theme';
 
 import { AuroraBackground } from './aurora';
-import { PressableScale } from './pressable-scale';
+import { GlassButton } from './glass';
 import { Txt } from './text';
 
 export interface ScreenProps {
@@ -105,14 +104,7 @@ export function Header({
     <View style={[styles.header, large && styles.headerLarge, style]}>
       <View style={styles.headerSide}>
         {back ? (
-          <PressableScale
-            onPress={goBack}
-            hitSlop={hitSlop}
-            style={styles.iconBtn}
-            scaleTo={0.88}
-            accessibilityLabel={t('a11y.back')}>
-            <Ionicons name="chevron-back" size={26} color={ink} />
-          </PressableScale>
+          <GlassButton icon="chevron-back" onPress={goBack} accessibilityLabel={t('a11y.back')} />
         ) : (
           left
         )}
@@ -158,10 +150,4 @@ const styles = StyleSheet.create({
   headerRight: { justifyContent: 'flex-end' },
   headerCenter: { flex: 1, justifyContent: 'center' },
   headerCenterStart: { alignItems: 'flex-start' },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });
