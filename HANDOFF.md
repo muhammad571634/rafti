@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z232. The first hello comes from the model; a reactions prototype (2026-11-15, Claude, Opus 5.5). NEXT: the owner picks a reactions look (A, B, C or a mix) in `docs/prototypes/reactions-ink.html`, then code §6.5
+
+- **Owner**: the plans are Fable 5.2's (audit section 6, 0z213); yes to the second half of §6.4 (first hello from the model) and to a reactions prototype; reactions must be our own, not a platform's emoji (no Windows / Fluent, Noto, Twemoji look).
+- **First hello** (`a92beb9`): `completeOnboarding` adds the friend quietly; `firstHello` asks the model (`firstHelloCue`, `src/ai/moment-prompt.ts`) for one hello from the friend's temper and day in the app's language, with the name just typed (one line, no quotes, max 40). Model off, busy or skipping: their opening + `onboarding.firstAsk` at once (no 45 s / 180 s retries): a documented exception to model-first in `.agents/rules/project-memory.md`. Second read by another agent; its fixes are in: pending hello marked on the conversation (`Conversation.firstHello`) and resumed at the next launch, dropped when the chat already has a line, a quiet chat starts with 0 unread, `writeFirst` gets a `wanted` guard and a `.catch` (typing never sticks). Cost ledger row 18 (one `[moment]` call per new account).
+- **Reactions prototype** (`docs/prototypes/reactions-ink.html`): the same six names (so model and server are untouched), our own SVG glyphs in three looks: A tapback disc in the reactor's colour (mine peach with dark ink, theirs their hue), B line glyph in its own hue on a dark chip, C filled glyph with its own glow. Tap a bubble, pick, pick again to remove; the bar appears at once.
+- **Checked**: tsc 0; npm test 955/955 four runs, one earlier run had 1 failure that did not repeat (a flaky test, not identified); OTA `53335dd6`; prototype driven in the browser pane (all three looks, bar open, legend). **Not driven**: the model hello on the phone (needs a fresh account; the preview link does not create one), iOS.
+
 ### 0z231. Audit §6.4: onboarding no longer asks for notifications; the friend asks in the chat (2026-11-15, Claude, Opus 5.5). NEXT: §6.5 emoji reactions (owner: one item at a time, each looked at before the next; Today last)
 
 - **Owner**: yes to §6.4; work the owner items one at a time (4, then 5, then the rest after thinking them through; Today last); may test by deleting data was offered, the owner chose the preview link instead (no data deleted).
