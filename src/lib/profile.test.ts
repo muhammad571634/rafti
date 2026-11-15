@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { birthdayLabel, monthNames } from './profile';
+import { birthdayLabel, monthNames, profileCompletion } from './profile';
 
 describe('the birthday reads in the app language (0z156)', () => {
   it('writes month and day the way the language does', () => {
@@ -20,5 +20,21 @@ describe('the birthday reads in the app language (0z156)', () => {
     assert.equal(tr.length, 12);
     assert.equal(tr[0], 'Oca');
     assert.equal(monthNames('en')[11], 'Dec');
+  });
+});
+
+describe('profileCompletion', () => {
+  const base = { displayName: '', interests: [] } as unknown as Parameters<typeof profileCompletion>[0];
+  it('counts the seven parts the edit screen shows', () => {
+    assert.equal(profileCompletion(base), 0);
+    assert.equal(profileCompletion({ ...base, displayName: 'Sukut' }), 14);
+    assert.equal(profileCompletion({ ...base, displayName: 'Sukut', interests: ['Music'] }), 29);
+    assert.equal(
+      profileCompletion({ ...base, avatarUri: 'file://a.jpg', displayName: 'Sukut', pronouns: 'he', birthday: '03-14', job: 'Dev', interests: ['Music'], about: 'Hi' } as typeof base),
+      100,
+    );
+  });
+  it('does not count blank words', () => {
+    assert.equal(profileCompletion({ ...base, displayName: '   ', job: ' ', about: '\n' } as typeof base), 0);
   });
 });

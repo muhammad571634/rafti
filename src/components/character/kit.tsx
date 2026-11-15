@@ -428,33 +428,42 @@ export function LinkRow({
   );
 }
 
-/** How full something is (your profile): a heavy title and the percent, a peach track, a hint under it. */
+/**
+ * How full something is (your profile), in Apple's type (owner, 2026-11-16): the title in the system
+ * face, the figure light and plain with a light "%" beside it, a thin peach track; a hint under it.
+ */
 export function ProgressCard({ title, percent, hint, onPress }: { title: string; percent: number; hint?: string; onPress?: () => void }) {
   const styles = useThemed(sheet);
   const { colors } = useTokens();
+  const value = Math.round(Math.min(100, Math.max(0, percent)));
   const body = (
     <>
       <View style={styles.progressHead}>
-        <Txt style={[styles.groupTitle, styles.grow]} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxFontSizeMultiplier={1.3}>
+        <Txt style={[styles.progressTitle, styles.grow]} lines={2} maxFontSizeMultiplier={1.3}>
           {title}
         </Txt>
-        <Txt style={styles.progressFigure} maxFontSizeMultiplier={1.3}>
-          {percent}%
-        </Txt>
+        <View style={styles.progressFigureRow}>
+          <Txt style={styles.progressFigure} maxFontSizeMultiplier={1.2}>
+            {value}
+          </Txt>
+          <Txt style={styles.progressUnit} maxFontSizeMultiplier={1.2}>
+            %
+          </Txt>
+        </View>
         {onPress ? <Ionicons name="chevron-forward" size={16} color={colors.textFaint} /> : null}
       </View>
-      <View style={[styles.track, hint ? styles.trackTight : null]}>
-        <View style={[styles.fill, { width: `${Math.round(Math.min(100, Math.max(0, percent)))}%` }]} />
+      <View style={[styles.track, styles.progressTrack, hint ? styles.trackTight : null]}>
+        <View style={[styles.fill, { width: `${value}%` }]} />
       </View>
       {hint ? <Txt style={styles.progressHint}>{hint}</Txt> : null}
     </>
   );
   return onPress ? (
-    <PressableScale onPress={onPress} scaleTo={0.98} accessibilityRole="button" accessibilityLabel={`${title}, ${percent}%`} style={styles.group}>
+    <PressableScale onPress={onPress} scaleTo={0.98} accessibilityRole="button" accessibilityLabel={`${title}, ${value}%`} style={styles.group}>
       {body}
     </PressableScale>
   ) : (
-    <View style={styles.group} accessible accessibilityLabel={`${title}, ${percent}%`}>
+    <View style={styles.group} accessible accessibilityRole="progressbar" accessibilityLabel={`${title}, ${value}%`} accessibilityValue={{ min: 0, max: 100, now: value }}>
       {body}
     </View>
   );
@@ -746,8 +755,13 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     rowIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
     rowPill: { minHeight: 26, paddingHorizontal: 10, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: colors.primarySofter },
     rowPillText: { ...inkFace('caption'), color: colors.brandText },
-    progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
-    progressFigure: { ...inkFace('cardSmall'), color: systemGround.label, fontVariant: ['tabular-nums'] },
+    progressHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 18, paddingRight: 14, paddingTop: 14 },
+    progressTitle: { ...inkFace('bodyStrong'), color: systemGround.label },
+    progressFigureRow: { flexDirection: 'row', alignItems: 'baseline', gap: 2 },
+    progressFigure: { ...inkFace('figureThin'), color: systemGround.label },
+    progressUnit: { ...inkFace('figureThinUnit'), color: colors.textSecondary },
+    // A thin line under the light figure (the level bar keeps its 8 pt).
+    progressTrack: { height: 4, marginTop: 10, marginBottom: 18 },
     trackTight: { marginBottom: 0 },
     progressHint: { marginHorizontal: 18, marginTop: 10, marginBottom: 16, ...inkFace('footnote'), color: colors.textSecondary },
     faceRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 10 },

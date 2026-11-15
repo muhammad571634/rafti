@@ -87,6 +87,10 @@ export const inkType = StyleSheet.create({
   figureSmall: { ...system(22, 28, '700'), letterSpacing: -0.3, fontVariant: ['tabular-nums'] },
   /** A widget's headline number (a plan's time, a balance): Large Title in the system face. */
   figureLarge: { ...system(34, 41, '700'), letterSpacing: -0.6, fontVariant: ['tabular-nums'] },
+  /** A quiet measure (how full your profile is): Large Title in the system face, light, as Apple's Health summaries. */
+  figureThin: { ...system(34, 41, '300'), letterSpacing: -0.6, fontVariant: ['tabular-nums'] },
+  /** Its unit beside it ("%"), Title 3 light. */
+  figureThinUnit: system(20, 25, '300', ink.text2),
   body: system(17, 22),
   bodyStrong: system(17, 22, '600'),
   /** Chips, segments, a secondary line (Subheadline). */

@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z246. Profile: no completion card; Edit profile's meter in Apple type (2026-11-16, Claude, Opus 5.5). NEXT: Step 3.4 keyboard-controller with a new preview APK (owner asked for it); the navigation bar stays (owner: leave it, the phone's own screen may be the cause)
+
+- **Owner**: remove "Complete your profile" from Profile (the avatar already opens Edit profile: two ways to one place); in Edit profile write it in Apple's type, the percent light and plain, and check the percent is right.
+- **Code**: `src/app/profile.tsx` drops the card (and `profile.completeHint` in 14 locales). Kit `ProgressCard` (`src/components/character/kit.tsx`): title in the system face (Body semibold, two lines), the figure in new `inkType.figureThin` (34 pt light, tabular) with a light "%" (`figureThinUnit`, 20 pt), a 4 pt track (`progressTrack`; the friend level bar keeps 8 pt), `progressbar` role with its value. Edit profile shows the meter only below 100 %.
+- **Percent**: seven parts (photo, name, pronouns, birthday, job, interests, about), the same the screen lists; new tests in `src/lib/profile.test.ts` (0, 14, 29, 100, blank words do not count). The owner's 29 % = name + pronouns.
+- **Checked**: tsc 0, npm test 966/966, check:locales; OTA "Profile: no completion card"; on the A51 Profile without the card, Edit profile "Complete your profile  29 %".
+
 ### 0z245. Us calendar's picked day round on Android; poster label 11 pt (2026-11-16, Claude, Opus 5.5). NEXT: a new preview APK (owner's yes) for the white navigation bar and Step 3.4 keyboard-controller, the last open items of Fable's audit
 
 - **Owner**: the picked day in Us' calendar showed as a square; the poster's 10 pt label to 11; asked whether day letters and red badges should grow too; then "carry on with what is left of Fable's plan".

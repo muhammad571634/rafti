@@ -88,7 +88,8 @@ export default function EditProfileScreen() {
           {photoError ? <Txt style={styles.error}>{t('editProfile.photoTooLarge')}</Txt> : null}
         </View>
 
-        <ProgressCard title={percent < 100 ? t('profile.completeTitle') : t('editProfile.title')} percent={percent} />
+        {/* Only while something is missing; a full profile needs no meter. */}
+        {percent < 100 ? <ProgressCard title={t('profile.completeTitle')} percent={percent} /> : null}
 
         <Group title={t('editProfile.basics')}>
           <LinkRow icon="person" fill={FILL.name} label={t('editProfile.name')} meta={user.displayName} onPress={() => setOpen('name')} />

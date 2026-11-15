@@ -10,7 +10,7 @@ import * as Updates from 'expo-updates';
 import { LEGAL_URLS, SUPPORT_EMAIL } from '@/ai/safety';
 import { connectAccount, deleteServerAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
-import { DangerRow, Group, LinkRow, ProfileTop, ProgressCard, SwitchRow } from '@/components/character/kit';
+import { DangerRow, Group, LinkRow, ProfileTop, SwitchRow } from '@/components/character/kit';
 import {
   Button,
   CharacterAvatar,
@@ -33,7 +33,6 @@ import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetAllSelfies } from '@/lib/booth-selfies';
 import { forgetAllNotes } from '@/lib/voice-files';
-import { profileCompletion } from '@/lib/profile';
 import { INVITE_REWARD } from '@/mock';
 import { sendTestPushes } from '@/notifications/sync';
 import { defaultPersona } from '@/lib/personas';
@@ -201,7 +200,6 @@ export default function ProfileScreen() {
     setTestResult(count > 0 ? t('profile.testPushesSent', { count }) : t('profile.testPushesUnavailable'));
   };
 
-  const percent = profileCompletion(user);
   // One language for now: the picker shows up once there is a second one.
   const canPickLanguage = SUPPORTED_LOCALES.length > 1;
 
@@ -286,7 +284,6 @@ export default function ProfileScreen() {
     // Account (sign-in) waits for Sign in with Apple, so it has no row yet either.
     ...legalRows.map(({ key, url, icon }) => ({ key, label: t(`profile.${key}`), icon, fill: FILL[key], onPress: () => void Linking.openURL(url) })),
   ];
-  const completeTitle = percent < 100 ? t('profile.completeTitle') : t('profile.editProfile');
 
   return (
     <Screen background={systemGround.ground}>
@@ -363,13 +360,6 @@ export default function ProfileScreen() {
             </View>
           </PressableScale>
         </View>
-
-        <ProgressCard
-          title={completeTitle}
-          percent={percent}
-          hint={percent < 100 ? t('profile.completeHint') : undefined}
-          onPress={() => router.push('/edit-profile')}
-        />
 
         <Group>
           {groupA.map(({ key, ...row }) => (
