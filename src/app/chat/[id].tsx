@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { LinearGradient } from 'expo-linear-gradient';
 import { BlurTargetView } from 'expo-blur';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, type ScrollViewProps, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewInstance, type ViewStyle } from 'react-native';
-import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
+import Animated, { FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { apiBase } from '@/ai/server';
@@ -901,6 +902,9 @@ export default function ChatRoomScreen() {
 }
 
 
+const COMPOSER_VEIL = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.88)', 'rgba(0,0,0,0.94)'] as const;
+const COMPOSER_VEIL_STOPS = [0, 0.3, 1] as const;
+
 /** The chat's keyboard room: keyboard-controller lifts the parts itself; older APKs keep the padding box. */
 const KeyboardBox = KC ? View : KeyboardAvoidingView;
 const ChatScroll = KC?.KeyboardChatScrollView;
@@ -920,13 +924,36 @@ function ChatGestureArea({ style, children }: { style: StyleProp<ViewStyle>; chi
   return <View style={style}>{children}</View>;
 }
 
-/** The composer rides the keyboard frame by frame; `lift` is the room under it the keyboard covers. */
+/**
+ * The composer rides the keyboard frame by frame, its foot always `space.sm` over the keyboard's top
+ * (iOS Messages): it starts to rise only once the keyboard covers its resting room (`lift`), so a drag
+ * down never opens a gap between them (a progress-based offset did, mid-drag on the A51).
+ */
 function ComposerBox({ lift, children }: { lift: number; children: ReactNode }) {
   if (!KC) return <>{children}</>;
-  return <KC.KeyboardStickyView offset={{ closed: 0, opened: lift }}>{children}</KC.KeyboardStickyView>;
+  return <StickyComposer lift={lift}>{children}</StickyComposer>;
+}
+
+function StickyComposer({ lift, children }: { lift: number; children: ReactNode }) {
+  // KC is set whenever this renders (ComposerBox checks it), and it never changes while the app runs.
+  const { height, progress } = KC!.useReanimatedKeyboardAnimation();
+  const ride = useAnimatedStyle(() => ({ transform: [{ translateY: Math.min(0, height.value + lift) }] }), [lift]);
+  // A drag down scrolls the chat with the finger, so lines pass behind the bar; iOS hides them under its
+  // glass. Android cannot afford a live blur, so a dark veil rises with the keyboard (none at rest).
+  const veil = useAnimatedStyle(() => ({ opacity: progress.value }));
+  return (
+    <Animated.View style={ride}>
+      <Animated.View pointerEvents="none" style={[styles.composerVeil, veil]}>
+        <LinearGradient colors={COMPOSER_VEIL} locations={COMPOSER_VEIL_STOPS} style={StyleSheet.absoluteFill} />
+      </Animated.View>
+      {children}
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({
+  // Behind the composer while the keyboard is up or moving: from a little above the bar to its foot.
+  composerVeil: { position: 'absolute', left: 0, right: 0, top: -28, bottom: 0 },
   flex: { flex: 1 },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   list: { paddingTop: space.sm },
