@@ -65,6 +65,8 @@ const FILL = {
   personas: systemColors.blue,
   lore: systemColors.indigo,
   mind: systemColors.orange,
+  notifications: systemColors.red,
+  sound: systemColors.green,
 };
 
 /** The legal rows that have a published page to open (`LEGAL_URLS`). */
@@ -270,6 +272,7 @@ export default function ProfileScreen() {
       meta: ownBooks ? String(ownBooks) : undefined,
       onPress: () => router.push('/lore'),
     },
+    { key: 'notifications', label: t('notifications.title'), icon: 'notifications' as IoniconName, fill: FILL.notifications, onPress: () => router.push('/notifications/settings') },
     ...(canPickLanguage
       ? [{ key: 'language', label: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => router.push('/language') }]
       : []),
@@ -372,6 +375,7 @@ export default function ProfileScreen() {
           {groupA.map(({ key, ...row }) => (
             <LinkRow key={key} {...row} />
           ))}
+          <SwitchRow icon="volume-high" fill={FILL.sound} label={t('profile.messageSound')} value={settings.messageSound} onChange={(v) => setSetting('messageSound', v)} />
           <SwitchRow icon="sparkles" fill={FILL.animation} label={t('profile.chatAnimation')} value={settings.chatAnimation} onChange={(v) => setSetting('chatAnimation', v)} />
           <SwitchRow icon="phone-portrait" fill={FILL.haptics} label={t('profile.haptics')} value={settings.haptics} onChange={(v) => setSetting('haptics', v)} last />
         </Group>
