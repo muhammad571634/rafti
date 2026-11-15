@@ -42,7 +42,7 @@ export interface MessageBubbleProps {
   showTime?: boolean;
   animate?: boolean;
   onCallBack?: () => void;
-  /** Long-press on a text or photo opens the message menu (react, copy, delete), lifted over where the bubble is. */
+  /** A tap (with `onDoubleTap`) or a hold on a text or photo opens the message menu (react, reply, copy, delete), lifted over where the bubble is. */
   onLongPress?: (message: Message, anchor?: BubbleAnchor) => void;
   /** A double tap on a text or photo: love it, or take the love back (Instagram). */
   onDoubleTap?: (message: Message) => void;
@@ -103,19 +103,42 @@ export const MessageBubble = memo(function MessageBubble({
   const { t } = useTranslation();
   /** The held area, measured on a long press so the menu lifts the bubble where it is. */
   const holdRef = useRef<ViewInstance>(null);
-  const latest = useRef({ message, onDoubleTap });
-  latest.current = { message, onDoubleTap };
-  const doubleTap = useMemo(
-    () =>
-      Gesture.Tap()
-        .numberOfTaps(2)
-        .maxDelay(260)
-        .runOnJS(true)
-        .onEnd((_e, success) => {
-          if (success) latest.current.onDoubleTap?.(latest.current.message);
-        }),
-    [],
-  );
+  /** When a button inside the bubble (the quote) took the tap, so the tap does not open the menu too. */
+  const innerPressAt = useRef(0);
+  const openHeld = () => {
+    if (!onLongPress) return;
+    const node = holdRef.current;
+    if (!node) return onLongPress(message);
+    node.measureInWindow((x, y, width, height) => onLongPress(message, width > 0 ? { x, y, width, height } : undefined));
+  };
+  const latest = useRef({ message, onDoubleTap, openHeld });
+  latest.current = { message, onDoubleTap, openHeld };
+  // One tap opens the menu (Telegram), once a second tap did not follow; two taps love the line.
+  const taps = useMemo(() => {
+    const double = Gesture.Tap()
+      .numberOfTaps(2)
+      .maxDelay(260)
+      .runOnJS(true)
+      .onEnd((_e, success) => {
+        if (success) latest.current.onDoubleTap?.(latest.current.message);
+      });
+    const single = Gesture.Tap()
+      // A hold is the long press's, not a tap.
+      .maxDuration(250)
+      .runOnJS(true)
+      .onEnd((_e, success) => {
+        // A Photo Booth picture opens itself on a tap; a hold still gives its menu.
+        if (!success || latest.current.message.photoId || Date.now() - innerPressAt.current < 600) return;
+        latest.current.openHeld();
+      });
+    return Gesture.Exclusive(double, single);
+  }, []);
+  const quotePress = onQuotePress
+    ? (id: string) => {
+        innerPressAt.current = Date.now();
+        onQuotePress(id);
+      }
+    : undefined;
   // The name the user gave them ("Mom") is the one the chat header shows, so notes use it too.
   const nickname = useAppStore((s) => s.relationships[character.id]?.nickname);
   const name = nickname || character.name;
@@ -154,7 +177,7 @@ export const MessageBubble = memo(function MessageBubble({
       ) : message.kind === 'image' && message.imageUri ? (
         <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
       ) : (
-        <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={onQuotePress} />
+        <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={quotePress} />
       )}
       {pinned ? (
         <View
@@ -188,19 +211,13 @@ export const MessageBubble = memo(function MessageBubble({
       ) : null}
     </>
   );
-  const hold = () => {
-    if (!onLongPress) return;
-    const node = holdRef.current;
-    if (!node) return onLongPress(message);
-    node.measureInWindow((x, y, width, height) => onLongPress(message, width > 0 ? { x, y, width, height } : undefined));
-  };
   const pressable = (
     // Still under the finger, as in iOS Messages: a hold opens the menu, nothing shrinks or dims.
     <Pressable
       ref={holdRef}
       delayLongPress={280}
       onPress={photoId ? () => router.push({ pathname: '/photo/[id]', params: { id: photoId } }) : undefined}
-      onLongPress={onLongPress ? hold : undefined}
+      onLongPress={onLongPress ? openHeld : undefined}
       style={holdStyle}>
       {inner}
     </Pressable>
@@ -212,7 +229,7 @@ export const MessageBubble = memo(function MessageBubble({
       // Nothing to press (a stream's lines): a plain view.
       <View style={holdStyle}>{inner}</View>
     ) : onDoubleTap ? (
-      <GestureDetector gesture={doubleTap}>
+      <GestureDetector gesture={taps}>
         <View collapsable={false} style={column ? styles.wide : styles.tapArea}>
           {pressable}
         </View>
