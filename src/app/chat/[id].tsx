@@ -42,7 +42,7 @@ import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
-import { CharacterAvatar, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, Header, Screen, Txt } from '@/components/ui';
 import { usePickPhoto } from '@/components/chat/use-pick-photo';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
@@ -405,7 +405,7 @@ export default function ChatRoomScreen() {
   if (!conversation || !character) {
     return (
       <Screen>
-        <Txt style={styles.missing}>{t('errors.notFound')}</Txt>
+        <Header title={t('errors.notFound')} />
       </Screen>
     );
   }
@@ -875,7 +875,6 @@ export default function ChatRoomScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
-  missing: { padding: space.xl },
   list: { paddingTop: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
   // iOS-style notice over the bottom of the chat, in ink with light text.

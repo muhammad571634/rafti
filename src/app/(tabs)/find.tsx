@@ -495,7 +495,8 @@ const WorldFolder = memo(function WorldFolder({
           ) : null,
         )}
         <View style={[styles.folderFront, { backgroundColor: front, height: height * 0.52 }]}>
-          <InkText variant="cardSmall" lines={2}>
+          {/* The name sits on a fixed pocket over the faces: it grows with text size to 1.15, then wraps or shrinks. */}
+          <InkText variant="cardSmall" lines={2} maxFontSizeMultiplier={1.15}>
             {name}
           </InkText>
           {/* How many people live there, with the glyph the world page uses. */}

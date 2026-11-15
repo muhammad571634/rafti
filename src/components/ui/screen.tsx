@@ -97,7 +97,9 @@ export function Header({
 
   const goBack = () => {
     if (onBack) return onBack();
+    // Opened cold from a push or a link there is nothing behind it: go home rather than nowhere.
     if (router.canGoBack()) router.back();
+    else router.replace('/');
   };
 
   return (
