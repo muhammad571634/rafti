@@ -24,6 +24,7 @@ import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
+import { SwipeToReply } from '@/components/chat/reply-quote';
 import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
@@ -57,7 +58,8 @@ import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, 
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
 import { nightColors as colors, shadows, space } from '@/theme';
-import type { Message, MessageTone, ReplyIdea, TimeSkip } from '@/types';
+import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
+import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -172,6 +174,14 @@ export default function ChatRoomScreen() {
   const [editing, setEditing] = useState<Message | null>(null);
   const cancelEdit = useCallback(() => setEditing(null), []);
   useBackToClose(!!editing, cancelEdit);
+  /** The line your next message answers (swipe left on it, or Reply in the menu). */
+  const [replyTo, setReplyTo] = useState<ReplyTo | null>(null);
+  const cancelReply = useCallback(() => setReplyTo(null), []);
+  useBackToClose(!!replyTo, cancelReply);
+  const startReply = useCallback((message: Message) => {
+    setEditing(null);
+    setReplyTo(replySnapshot(message));
+  }, []);
   /** How far their newest reply follows a sideways swipe; all its bubbles share it. */
   const swipeOffset = useSharedValue(0);
   const reportMessage = useAppStore((s) => s.reportMessage);
@@ -194,6 +204,24 @@ export default function ChatRoomScreen() {
     [conversationId, reactToMessage],
   );
 
+  /** Scrolls to a line and tints it for a moment (a search result, a reply's quote). */
+  const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(flashTimer.current), []);
+  const goToMessage = useCallback(
+    (id: string) => {
+      if (!conversationId) return;
+      const lines = useAppStore.getState().messages[conversationId] ?? [];
+      const at = lines.findIndex((m) => m.id === id);
+      if (at < 0) return;
+      // The list runs newest first.
+      listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
+      setFlash(id);
+      clearTimeout(flashTimer.current);
+      flashTimer.current = setTimeout(() => setFlash(null), 1600);
+    },
+    [conversationId],
+  );
+
   // Replies that land while this chat is on screen are read, not unread.
   useFocusEffect(
     useCallback(() => {
@@ -201,25 +229,12 @@ export default function ChatRoomScreen() {
       setActiveConversation(conversationId);
       // Back from a search result: scroll to that message and flash it (iOS Messages).
       const target = takeFocus(conversationId);
-      const timers: ReturnType<typeof setTimeout>[] = [];
-      if (target) {
-        timers.push(
-          setTimeout(() => {
-            const lines = useAppStore.getState().messages[conversationId] ?? [];
-            const at = lines.findIndex((m) => m.id === target);
-            if (at < 0) return;
-            // The list runs newest first.
-            listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
-            setFlash(target);
-            timers.push(setTimeout(() => setFlash(null), 1600));
-          }, 350),
-        );
-      }
+      const timer = target ? setTimeout(() => goToMessage(target), 350) : undefined;
       return () => {
-        timers.forEach(clearTimeout);
+        clearTimeout(timer);
         setActiveConversation(null);
       };
-    }, [conversationId, setActiveConversation]),
+    }, [conversationId, setActiveConversation, goToMessage]),
   );
 
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
@@ -296,6 +311,9 @@ export default function ChatRoomScreen() {
   }, [conversationId, retryReply]);
   // The model's own chips ride only on the newest line: older replies keep none.
   const newestLineId = useMemo(() => data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card)?.id, [data]);
+  // Whose line a quote is: "You" or their name as the header shows it.
+  const theirName = character ? displayName(character, relationship) : '';
+  const you = t('search.you');
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
@@ -315,6 +333,8 @@ export default function ChatRoomScreen() {
           onDoubleTap={toggleLove}
           pinned={pinnedIds.has(item.id)}
           onRetry={item.failed ? retry : undefined}
+          quoteTitle={item.replyTo ? (item.replyTo.author === 'me' ? you : theirName) : undefined}
+          onQuotePress={goToMessage}
         />
       );
       return (
@@ -326,10 +346,13 @@ export default function ChatRoomScreen() {
             {item.id === flash ? (
               <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
             ) : null}
+            {/* Their newest reply swipes both ways through its versions; any other line swipes left to answer it. */}
             {swipeable && burstIds.has(item.id) ? (
               <VersionSwipe offset={swipeOffset} onStep={stepVersion}>
                 {bubble}
               </VersionSwipe>
+            ) : canReplyTo(item) ? (
+              <SwipeToReply onReply={() => startReply(item)}>{bubble}</SwipeToReply>
             ) : (
               bubble
             )}
@@ -351,7 +374,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry],
+    [character, animations, openedAt, data, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -391,7 +414,10 @@ export default function ChatRoomScreen() {
     setIdeaDraft(null);
     // The composer stays live under the tone menu: a plain send closes it too.
     setToneOpen(false);
-    const result = draftIdea ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text) : sendText(conversation.id, text, tone);
+    const result = draftIdea
+      ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text)
+      : sendText(conversation.id, text, tone, replyTo ?? undefined);
+    if (result === 'sent') setReplyTo(null);
     if (draftIdea && result === 'sent') afterIdea(data.find((m) => m.id === draftIdea.messageId), draftIdea.idea);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
@@ -624,6 +650,7 @@ export default function ChatRoomScreen() {
             initialValue={typeof draft === 'string' ? draft : undefined}
             fill={ideaDraft ? { text: phrase(ideaDraft.idea.text), at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
+            replying={replyTo ? { quote: replyTo, title: replyTo.author === 'me' ? you : name, onCancel: cancelReply } : undefined}
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
             onTyping={conversationId ? (isTyping) => setComposing(conversationId, isTyping) : undefined}
           />
@@ -735,10 +762,19 @@ export default function ChatRoomScreen() {
           if (message.audioFile) void dropNote(message.audioFile);
           setMenu(null);
         }}
+        onReply={
+          menu && canReplyTo(menu)
+            ? (message) => {
+                setMenu(null);
+                startReply(message);
+              }
+            : undefined
+        }
         onEdit={
           menu && menu.id === editableId
             ? (message) => {
                 setMenu(null);
+                setReplyTo(null);
                 setEditing(message);
               }
             : undefined

@@ -375,6 +375,9 @@
     "edit": "Düzenle",
     "edited": "Düzenlendi",
     "cancelEdit": "Düzenlemeyi iptal et",
+    "reply": "Yanıtla",
+    "replyingTo": "Yanıtlanan: {{name}}",
+    "cancelReply": "Yanıtı iptal et",
     "saveEdit": "Düzenlemeyi gönder",
     "toneTip": "Ton seçmek için basılı tut",
     "tones": {

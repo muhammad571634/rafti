@@ -369,6 +369,9 @@
     "edit": "編集",
     "edited": "編集済み",
     "cancelEdit": "編集をキャンセル",
+    "reply": "返信",
+    "replyingTo": "{{name}}に返信",
+    "cancelReply": "返信をキャンセル",
     "saveEdit": "編集内容を送信",
     "toneTip": "長押しでトーンを選ぶ",
     "tones": {

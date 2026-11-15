@@ -369,6 +369,9 @@
     "edit": "수정",
     "edited": "수정됨",
     "cancelEdit": "수정 취소",
+    "reply": "답장",
+    "replyingTo": "{{name}}에게 답장",
+    "cancelReply": "답장 취소",
     "saveEdit": "수정본 보내기",
     "toneTip": "길게 눌러 말투 고르기",
     "tones": {

@@ -267,6 +267,16 @@ export type MessageAuthor = 'me' | 'them';
 /** How a text was said, picked by holding send (`src/ai/tone.ts`). */
 export type MessageTone = 'whisper' | 'playful' | 'flirty' | 'serious';
 
+/** The quoted line a reply carries: who said it and its words, cut short (`replySnapshot`). */
+export interface ReplyTo {
+  id: string;
+  author: MessageAuthor;
+  /** Group chats: the member who said it. */
+  characterId?: string;
+  kind: MessageKind;
+  text?: string;
+}
+
 export interface Message {
   id: string;
   conversationId: string;
@@ -275,6 +285,8 @@ export interface Message {
   text?: string;
   /** The tone the user sent this text in; the model hears it for this reply. */
   tone?: MessageTone;
+  /** The line this one answers (swipe or Reply in the menu): a copy, so it outlives the original (`src/lib/reply-quote.ts`). */
+  replyTo?: ReplyTo;
   /** Speech-to-text of a voice message, rendered as a muted sub-bubble */
   transcript?: string;
   /** The language the transcript was heard in ("Uzbek"), for this message's reply (`spokenCue`). */

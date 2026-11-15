@@ -333,6 +333,7 @@ import type {
   TouchPhase,
   IdeaIntent,
   ReplyIdea,
+  ReplyTo,
   SecretNote,
   MessageReport,
   User,
@@ -484,7 +485,8 @@ export interface AppState {
   frames: UserFrame[];
 
   /* chat */
-  sendText: (conversationId: string, text: string, tone?: MessageTone) => SendResult;
+  /** `replyTo` quotes the line it answers (swipe or Reply in the menu). */
+  sendText: (conversationId: string, text: string, tone?: MessageTone, replyTo?: ReplyTo) => SendResult;
   sendVoice: (conversationId: string, durationSec: number, transcript: string, audioFile?: string, language?: string) => SendResult;
   sendImage: (conversationId: string, imageUri: string) => SendResult;
   markRead: (conversationId: string) => void;
@@ -528,7 +530,7 @@ export interface AppState {
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
   createGroup: (memberIds: string[], name?: string) => string | null;
-  sendGroupText: (groupId: string, text: string) => SendResult;
+  sendGroupText: (groupId: string, text: string, replyTo?: ReplyTo) => SendResult;
   sendGroupVoice: (groupId: string, durationSec: number, transcript: string, audioFile?: string) => SendResult;
   sendGroupImage: (groupId: string, imageUri: string) => SendResult;
   /** » in a group: two members trade a line without the user writing (`continueSpeakers`); a message's price. */
@@ -1180,7 +1182,7 @@ export const useAppStore = create<AppState>()(
 
       /* ── chat ─────────────────────────────────────────────────────────── */
 
-      sendText: (conversationId, text, tone) => {
+      sendText: (conversationId, text, tone, replyTo) => {
         const trimmed = text.trim();
         const conversation = get().conversations.find((c) => c.id === conversationId);
         if (!trimmed || !conversation) return 'empty';
@@ -1197,6 +1199,7 @@ export const useAppStore = create<AppState>()(
           kind: 'text',
           text: trimmed,
           tone,
+          ...(replyTo ? { replyTo } : {}),
           createdAt: new Date().toISOString(),
         });
         touchStreak(set, get, conversation.characterId);
@@ -1557,7 +1560,7 @@ export const useAppStore = create<AppState>()(
         return id;
       },
 
-      sendGroupText: (groupId, text) => {
+      sendGroupText: (groupId, text, replyTo) => {
         const trimmed = text.trim();
         if (!trimmed || !get().groups.some((g) => g.id === groupId)) return 'empty';
         if (!get().spendShells(shellCosts.textMessage, 'chat')) return 'noShells';
@@ -1569,6 +1572,7 @@ export const useAppStore = create<AppState>()(
           author: 'me',
           kind: 'text',
           text: trimmed,
+          ...(replyTo ? { replyTo } : {}),
           createdAt: new Date().toISOString(),
         });
         answerGroup(set, get, groupId, trimmed, (gender) => pick(groupReplies(gender)));

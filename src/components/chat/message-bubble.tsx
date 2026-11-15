@@ -11,6 +11,7 @@ import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
 import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
 import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { BubbleQuote } from '@/components/chat/reply-quote';
 import { SetupCard } from '@/components/chat/setup-card';
 import { playNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
@@ -55,6 +56,10 @@ export interface MessageBubbleProps {
   onRetry?: () => void;
   /** Group chats: a tap on the member's avatar asks them to speak. */
   onAvatarPress?: (character: Character) => void;
+  /** A reply's quote: whose line it answers ("You", their name); without it no quote shows. */
+  quoteTitle?: string;
+  /** A tap on the quote goes to the quoted line. */
+  onQuotePress?: (id: string) => void;
 }
 
 /** Where a held bubble sits on the screen, so the menu can lift it in place (iOS context menus). */
@@ -91,6 +96,8 @@ export const MessageBubble = memo(function MessageBubble({
   pinned,
   onRetry,
   onAvatarPress,
+  quoteTitle,
+  onQuotePress,
 }: MessageBubbleProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -147,7 +154,7 @@ export const MessageBubble = memo(function MessageBubble({
       ) : message.kind === 'image' && message.imageUri ? (
         <Image source={{ uri: message.imageUri }} style={styles.photo} contentFit="cover" />
       ) : (
-        <TextBubble message={message} mine={mine} tail={runEnd} />
+        <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={onQuotePress} />
       )}
       {pinned ? (
         <View
@@ -268,7 +275,19 @@ export const MessageBubble = memo(function MessageBubble({
   );
 });
 
-function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; tail: boolean }) {
+function TextBubble({
+  message,
+  mine,
+  tail,
+  quoteTitle,
+  onQuotePress,
+}: {
+  message: Message;
+  mine: boolean;
+  tail: boolean;
+  quoteTitle?: string;
+  onQuotePress?: (id: string) => void;
+}) {
   const onPhoto = useOnPhoto();
   const muted = message.muted;
   const parts = useMemo(() => segments(message.text ?? ''), [message.text]);
@@ -287,6 +306,7 @@ function TextBubble({ message, mine, tail }: { message: Message; mine: boolean; 
         !mine && onPhoto && styles.photoBubble,
         muted && styles.bubbleMuted,
       ]}>
+      {message.replyTo && quoteTitle ? <BubbleQuote quote={message.replyTo} title={quoteTitle} onPress={onQuotePress} /> : null}
       <Txt
         style={styles.text}
         color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : onPhoto ? colors.onMedia : colors.bubbleOtherText}

@@ -369,6 +369,9 @@
     "edit": "編輯",
     "edited": "已編輯",
     "cancelEdit": "取消編輯",
+    "reply": "回覆",
+    "replyingTo": "回覆 {{name}}",
+    "cancelReply": "取消回覆",
     "saveEdit": "發送修改",
     "toneTip": "長按選擇語氣",
     "tones": {

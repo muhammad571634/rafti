@@ -375,6 +375,9 @@
     "edit": "Bearbeiten",
     "edited": "Bearbeitet",
     "cancelEdit": "Bearbeitung abbrechen",
+    "reply": "Antworten",
+    "replyingTo": "Antwort an {{name}}",
+    "cancelReply": "Antwort abbrechen",
     "saveEdit": "Änderung senden",
     "toneTip": "Halten, um einen Ton zu wählen",
     "tones": {

@@ -369,6 +369,9 @@
     "edit": "Edit",
     "edited": "Diedit",
     "cancelEdit": "Batalkan edit",
+    "reply": "Balas",
+    "replyingTo": "Membalas {{name}}",
+    "cancelReply": "Batalkan balasan",
     "saveEdit": "Kirim editan",
     "toneTip": "Tahan untuk memilih nada",
     "tones": {

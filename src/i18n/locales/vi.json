@@ -369,6 +369,9 @@
     "edit": "Chỉnh sửa",
     "edited": "Đã chỉnh sửa",
     "cancelEdit": "Hủy chỉnh sửa",
+    "reply": "Trả lời",
+    "replyingTo": "Đang trả lời {{name}}",
+    "cancelReply": "Hủy trả lời",
     "saveEdit": "Gửi chỉnh sửa",
     "toneTip": "Giữ để chọn giọng điệu",
     "tones": {

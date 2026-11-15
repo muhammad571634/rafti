@@ -10,10 +10,11 @@ import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
-import type { MessageTone } from '@/types';
+import type { MessageTone, ReplyTo } from '@/types';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
 import { HoldMic } from './hold-mic';
+import { ReplyBar } from './reply-quote';
 import { useKeptDraft } from './use-kept-draft';
 import { useToneTip } from './use-tone-tip';
 import { useVoiceNote, type VoiceNote } from './use-voice-note';
@@ -68,6 +69,8 @@ export interface ChatInputProps {
   onTyping?: (typing: boolean) => void;
   /** Keeps the unsent text for this chat, so it waits in the field after leaving. Key the input by it. */
   draftId?: string;
+  /** A reply being written: its quote sits over the field, × drops it; the field takes focus. */
+  replying?: { quote: ReplyTo; title: string; onCancel: () => void };
 }
 
 /**
@@ -94,6 +97,7 @@ export function ChatInput({
   onStop,
   onTyping,
   draftId,
+  replying,
 }: ChatInputProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -132,6 +136,14 @@ export function ChatInput({
     // A new fill only, not every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fillAt]);
+
+  // A new reply: the keyboard comes up for it (iOS Messages, Telegram).
+  const replyingId = replying?.quote.id;
+  useEffect(() => {
+    if (!replyingId) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 60);
+    return () => clearTimeout(timer);
+  }, [replyingId]);
 
   const hasText = value.trim().length > 0;
 
@@ -222,150 +234,153 @@ export function ChatInput({
     );
 
   return (
-    <View style={[styles.bar, { paddingBottom: barBottom }]}>
-      {toneTip.show ? (
-        <View pointerEvents="none" style={styles.tip}>
-          <Txt variant="caption" color={colors.textOnInk}>
-            {t('chat.toneTip')}
-          </Txt>
-        </View>
-      ) : null}
-      {/* While a hold records: slide up to here to lock it and let go (WhatsApp). */}
-      {recording && !handsFree ? (
-        <View pointerEvents="none" style={[styles.lock, { bottom: barBottom + FIELD + space.sm }]}>
-          <Ionicons name="lock-closed-outline" size={19} color={ink} />
-          <Ionicons name="chevron-up" size={15} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
-        </View>
-      ) : null}
-
-      {leftButton}
-
-      <View style={[...surface, styles.field]}>
-        <TextInput
-          ref={inputRef}
-          value={value}
-          onChangeText={setValue}
-          onFocus={onFieldFocus}
-          // The voice row lies over the field (see-through on a picture): no placeholder under it.
-          placeholder={voiceBusy || voice.notice ? '' : placeholder}
-          placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
-          style={[styles.input, onPhoto && styles.photoInput]}
-          multiline
-          maxLength={2000}
-          onSubmitEditing={Platform.OS === 'web' ? () => submit() : undefined}
-          {...webField}
-        />
-
-        {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach paper plane once there is text. */}
-        {editing ? (
-          // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
-          <IconButton
-            icon="checkmark"
-            size={23}
-            color={hasText ? colors.textOnPrimary : colors.textFaint}
-            background={hasText ? colors.primaryFill : colors.surfaceAlt}
-            haptic={hasText}
-            accessibilityLabel={t('chat.saveEdit')}
-            onPress={() => submit()}
-            style={styles.action}
-          />
-        ) : onStop && !hasText && !voiceBusy ? (
-          // Typing a new line brings send back; the reply then answers both.
-          <IconButton
-            icon="stop"
-            size={16}
-            color={colors.textOnPrimary}
-            background={colors.primaryFill}
-            accessibilityLabel={t('a11y.stopReply')}
-            onPress={onStop}
-            style={styles.action}
-          />
-        ) : hasText ? (
-          <PressableScale
-            onPress={() => submit()}
-            onLongPress={onHoldSend ? holdSend : undefined}
-            delayLongPress={400}
-            hitSlop={8}
-            scaleTo={0.88}
-            haptic
-            accessibilityLabel={t('a11y.send')}
-            accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
-            style={[styles.action, styles.send]}>
-            <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
-          </PressableScale>
-        ) : Platform.OS === 'web' || !onVoiceNote ? (
-          <IconButton
-            icon="mic-outline"
-            size={26}
-            color={ink}
-            accessibilityLabel={t('a11y.voiceMessage')}
-            onPress={onVoice}
-            style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
-          />
-        ) : (
-          <HoldMic
-            recording={recording && !handsFree}
-            onTap={recordHandsFree}
-            onHoldStart={() => {
-              setHandsFree(false);
-              voice.start();
-            }}
-            onHoldEnd={voice.finish}
-            onLock={() => setHandsFree(true)}
-            accessibilityLabel={t('a11y.voiceMessage')}
-            accessibilityHint={t('chat.voice.hold')}
-            style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
-          />
-        )}
-
-        {/* Over the empty field while a voice message is made; a hold leaves the mic under the finger uncovered. */}
-        {voiceBusy || voice.notice ? (
-          <View style={[styles.voiceRow, onPhoto && styles.photoVoiceRow, handsFree && recording && styles.voiceRowFull]}>
-            {recording ? (
-              <>
-                <View style={styles.recDot} />
-                <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
-                {handsFree ? (
-                  <>
-                    <View style={styles.voiceWave}>
-                      <Anim name="voiceWave" size={40} tint={systemColors.red} />
-                    </View>
-                    <PressableScale
-                      onPress={() => voice.finish(true)}
-                      hitSlop={8}
-                      scaleTo={0.88}
-                      haptic
-                      accessibilityLabel={t('a11y.send')}
-                      style={[styles.action, styles.send]}>
-                      <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
-                    </PressableScale>
-                  </>
-                ) : (
-                  <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
-                    {t('chat.voice.slideCancel')}
-                  </Txt>
-                )}
-              </>
-            ) : voice.phase === 'sending' ? (
-              <>
-                <ActivityIndicator color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
-                <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
-              </>
-            ) : voice.phase === 'failed' ? (
-              <>
-                <Txt variant="small" color={colors.danger} numberOfLines={1} style={styles.voiceHint}>
-                  {t('chat.notDelivered')}
-                </Txt>
-                <IconButton icon="refresh" size={20} color={ink} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
-                <IconButton icon="trash-outline" size={20} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
-              </>
-            ) : (
-              <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
-                {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : t('chat.voice.noSpeech')}
-              </Txt>
-            )}
+    <View>
+      {replying && !editing ? <ReplyBar quote={replying.quote} title={replying.title} onCancel={replying.onCancel} /> : null}
+      <View style={[styles.bar, { paddingBottom: barBottom }]}>
+        {toneTip.show ? (
+          <View pointerEvents="none" style={styles.tip}>
+            <Txt variant="caption" color={colors.textOnInk}>
+              {t('chat.toneTip')}
+            </Txt>
           </View>
         ) : null}
+        {/* While a hold records: slide up to here to lock it and let go (WhatsApp). */}
+        {recording && !handsFree ? (
+          <View pointerEvents="none" style={[styles.lock, { bottom: barBottom + FIELD + space.sm }]}>
+            <Ionicons name="lock-closed-outline" size={19} color={ink} />
+            <Ionicons name="chevron-up" size={15} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} />
+          </View>
+        ) : null}
+
+        {leftButton}
+
+        <View style={[...surface, styles.field]}>
+          <TextInput
+            ref={inputRef}
+            value={value}
+            onChangeText={setValue}
+            onFocus={onFieldFocus}
+            // The voice row lies over the field (see-through on a picture): no placeholder under it.
+            placeholder={voiceBusy || voice.notice ? '' : placeholder}
+            placeholderTextColor={onPhoto ? colors.onMediaMuted : colors.textFaint}
+            style={[styles.input, onPhoto && styles.photoInput]}
+            multiline
+            maxLength={2000}
+            onSubmitEditing={Platform.OS === 'web' ? () => submit() : undefined}
+            {...webField}
+          />
+
+          {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach paper plane once there is text. */}
+          {editing ? (
+            // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
+            <IconButton
+              icon="checkmark"
+              size={23}
+              color={hasText ? colors.textOnPrimary : colors.textFaint}
+              background={hasText ? colors.primaryFill : colors.surfaceAlt}
+              haptic={hasText}
+              accessibilityLabel={t('chat.saveEdit')}
+              onPress={() => submit()}
+              style={styles.action}
+            />
+          ) : onStop && !hasText && !voiceBusy ? (
+            // Typing a new line brings send back; the reply then answers both.
+            <IconButton
+              icon="stop"
+              size={16}
+              color={colors.textOnPrimary}
+              background={colors.primaryFill}
+              accessibilityLabel={t('a11y.stopReply')}
+              onPress={onStop}
+              style={styles.action}
+            />
+          ) : hasText ? (
+            <PressableScale
+              onPress={() => submit()}
+              onLongPress={onHoldSend ? holdSend : undefined}
+              delayLongPress={400}
+              hitSlop={8}
+              scaleTo={0.88}
+              haptic
+              accessibilityLabel={t('a11y.send')}
+              accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
+              style={[styles.action, styles.send]}>
+              <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+            </PressableScale>
+          ) : Platform.OS === 'web' || !onVoiceNote ? (
+            <IconButton
+              icon="mic-outline"
+              size={26}
+              color={ink}
+              accessibilityLabel={t('a11y.voiceMessage')}
+              onPress={onVoice}
+              style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
+            />
+          ) : (
+            <HoldMic
+              recording={recording && !handsFree}
+              onTap={recordHandsFree}
+              onHoldStart={() => {
+                setHandsFree(false);
+                voice.start();
+              }}
+              onHoldEnd={voice.finish}
+              onLock={() => setHandsFree(true)}
+              accessibilityLabel={t('a11y.voiceMessage')}
+              accessibilityHint={t('chat.voice.hold')}
+              style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
+            />
+          )}
+
+          {/* Over the empty field while a voice message is made; a hold leaves the mic under the finger uncovered. */}
+          {voiceBusy || voice.notice ? (
+            <View style={[styles.voiceRow, onPhoto && styles.photoVoiceRow, handsFree && recording && styles.voiceRowFull]}>
+              {recording ? (
+                <>
+                  <View style={styles.recDot} />
+                  <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
+                  {handsFree ? (
+                    <>
+                      <View style={styles.voiceWave}>
+                        <Anim name="voiceWave" size={40} tint={systemColors.red} />
+                      </View>
+                      <PressableScale
+                        onPress={() => voice.finish(true)}
+                        hitSlop={8}
+                        scaleTo={0.88}
+                        haptic
+                        accessibilityLabel={t('a11y.send')}
+                        style={[styles.action, styles.send]}>
+                        <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+                      </PressableScale>
+                    </>
+                  ) : (
+                    <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                      {t('chat.voice.slideCancel')}
+                    </Txt>
+                  )}
+                </>
+              ) : voice.phase === 'sending' ? (
+                <>
+                  <ActivityIndicator color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+                  <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
+                </>
+              ) : voice.phase === 'failed' ? (
+                <>
+                  <Txt variant="small" color={colors.danger} numberOfLines={1} style={styles.voiceHint}>
+                    {t('chat.notDelivered')}
+                  </Txt>
+                  <IconButton icon="refresh" size={20} color={ink} accessibilityLabel={t('chat.tryAgain')} onPress={() => void voice.retry()} style={styles.voiceAction} />
+                  <IconButton icon="trash-outline" size={20} color={onPhoto ? colors.onMediaMuted : colors.textSecondary} accessibilityLabel={t('common.delete')} onPress={voice.discard} style={styles.voiceAction} />
+                </>
+              ) : (
+                <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} numberOfLines={1} style={styles.voiceHint}>
+                  {voice.notice === 'tooShort' ? t('chat.voice.tooShort') : t('chat.voice.noSpeech')}
+                </Txt>
+              )}
+            </View>
+          ) : null}
+        </View>
       </View>
     </View>
   );

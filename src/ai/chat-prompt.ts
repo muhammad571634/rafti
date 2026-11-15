@@ -6,6 +6,7 @@ import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relation
 import { steerCue } from '../lib/chat-steer';
 import { redoCue } from '../lib/chat-turns';
 import { offCue, type OffReason, tasteLines } from '../lib/reply-rating';
+import { withReplyCue } from '../lib/reply-quote';
 import { messageText } from '../lib/story-continuity';
 import { callTurnLines } from './call-prompt';
 
@@ -113,7 +114,7 @@ export function chatTurns(messages: readonly Message[]): HistoryTurn[] {
     }
     const text = messageText(message);
     if (text === null) continue;
-    add(message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant', text);
+    add(message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant', withReplyCue(message, text));
   }
   return turns;
 }

@@ -35,6 +35,8 @@ export interface MessageMenuProps {
   onCopy: (message: Message) => void;
   onReport: (message: Message) => void;
   onDelete: (message: Message) => void;
+  /** Answer this line: its quote goes over the field (`canReplyTo`). */
+  onReply?: (message: Message) => void;
   /** Given only for your newest text: it opens in the field to change (iOS Messages Edit). */
   onEdit?: (message: Message) => void;
   /** Given only for their lines before your newest message (`canRewindTo`). */
@@ -64,6 +66,7 @@ export function MessageMenu({
   onCopy,
   onReport,
   onDelete,
+  onReply,
   onEdit,
   onRewind,
   onPin,
@@ -78,6 +81,7 @@ export function MessageMenu({
   if (!message) return null;
   const mine = message.author === 'me';
   const align = mine ? styles.alignMine : styles.alignTheirs;
+  const reply = onReply ? { key: 'reply', label: t('chat.reply'), icon: 'return-up-back-outline' as const, onPress: () => onReply(message) } : null;
   const copy = message.text ? { key: 'copy', label: t('chat.copy'), icon: 'copy-outline' as const, onPress: () => onCopy(message) } : null;
   const edit = mine && onEdit ? { key: 'edit', label: t('chat.edit'), icon: 'create-outline' as const, onPress: () => onEdit(message) } : null;
   const pin = onPin
@@ -85,7 +89,7 @@ export function MessageMenu({
     : null;
   const why = !mine && onWhy ? { key: 'why', label: t('why.menu'), icon: 'help-circle-outline' as const, onPress: () => onWhy(message) } : null;
   const report = mine ? null : { key: 'report', label: t('safety.report'), icon: 'flag-outline' as const, onPress: () => onReport(message) };
-  const firstGroup = (mine ? [copy, edit, pin] : [copy, why, pin, report]).filter((row) => row !== null);
+  const firstGroup = (mine ? [reply, copy, edit, pin] : [reply, copy, why, pin, report]).filter((row) => row !== null);
 
   const reactions = (
     <View style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
@@ -108,7 +112,7 @@ export function MessageMenu({
   );
   const menu = (
     <View style={styles.menu} accessibilityRole="menu">
-      {/* First group: yours Copy, Edit, Pin; theirs Copy, Why? (a line they wrote first), Pin, Report. */}
+      {/* First group: yours Reply, Copy, Edit, Pin; theirs Reply, Copy, Why? (a line they wrote first), Pin, Report. */}
       {firstGroup.map((row, i) => (
         <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
       ))}

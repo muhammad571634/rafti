@@ -1,5 +1,6 @@
 import type { Character, Message } from '@/types';
 
+import { withReplyCue } from '../lib/reply-quote';
 import { messageText } from '../lib/story-continuity';
 
 import type { ChatPromptInput } from './chat-prompt';
@@ -41,7 +42,8 @@ export function groupTurns({ character, others, user, persona, messages }: TurnI
     if (text === null) continue;
     const own = message.author === 'them' && message.characterId === character.id;
     const speaker = message.author === 'me' ? you : (names.get(message.characterId ?? '') ?? 'Someone');
-    const line = own || message.card === 'skip' ? text : `${speaker}: ${text}`;
+    const said = withReplyCue(message, text, character.id, names);
+    const line = own || message.card === 'skip' ? said : `${speaker}: ${said}`;
     const role = own ? 'assistant' : 'user';
     const last = turns[turns.length - 1];
     if (last?.role === role) last.text = `${last.text}\n${line}`;

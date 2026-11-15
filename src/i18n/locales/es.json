@@ -375,6 +375,9 @@
     "edit": "Editar",
     "edited": "Editado",
     "cancelEdit": "Cancelar edición",
+    "reply": "Responder",
+    "replyingTo": "Respondiendo a {{name}}",
+    "cancelReply": "Cancelar respuesta",
     "saveEdit": "Enviar cambio",
     "toneTip": "Mantén pulsado para elegir un tono",
     "tones": {

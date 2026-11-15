@@ -20,7 +20,9 @@ import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/c
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
 import type { BubbleAnchor } from '@/components/chat/message-bubble';
-import { MessageMenu } from '@/components/chat/message-menu';
+import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
+import { SwipeToReply } from '@/components/chat/reply-quote';
+import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { ReplyControls } from '@/components/chat/reply-controls';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
@@ -39,7 +41,7 @@ import { haptic } from '@/lib/haptics';
 import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, nightColors, playfulNightGround, space } from '@/theme';
-import type { Character, Message, TimeSkip } from '@/types';
+import type { Character, Message, ReplyTo, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
 type WithOne = 'secretNote' | 'quiz' | 'date' | 'dailyCalls';
@@ -100,6 +102,11 @@ export default function GroupChatScreen() {
   /** The message a search result pointed at, tinted for a moment. */
   const [flash, setFlash] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<BubbleAnchor>();
+  /** The line your next message answers (swipe left on it, or Reply in the menu). */
+  const [replyTo, setReplyTo] = useState<ReplyTo | null>(null);
+  const cancelReply = useCallback(() => setReplyTo(null), []);
+  useBackToClose(!!replyTo, cancelReply);
+  const startReply = useCallback((message: Message) => setReplyTo(replySnapshot(message)), []);
   const openMenu = useCallback((message: Message, anchor?: BubbleAnchor) => {
     setMenuAnchor(anchor);
     haptic.lift();
@@ -115,6 +122,24 @@ export default function GroupChatScreen() {
     [groupId, reactToMessage],
   );
 
+  /** Scrolls to a line and tints it for a moment (a search result, a reply's quote). */
+  const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(flashTimer.current), []);
+  const goToMessage = useCallback(
+    (id: string) => {
+      if (!groupId) return;
+      const lines = useAppStore.getState().messages[groupId] ?? [];
+      const at = lines.findIndex((m) => m.id === id);
+      if (at < 0) return;
+      // The list runs newest first.
+      listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
+      setFlash(id);
+      clearTimeout(flashTimer.current);
+      flashTimer.current = setTimeout(() => setFlash(null), 1600);
+    },
+    [groupId],
+  );
+
   // Replies that land while the group is on screen are read, not unread.
   useFocusEffect(
     useCallback(() => {
@@ -122,25 +147,12 @@ export default function GroupChatScreen() {
       setActiveConversation(groupId);
       // Back from a search result: scroll to that message and tint it (iOS Messages).
       const target = takeFocus(groupId);
-      const timers: ReturnType<typeof setTimeout>[] = [];
-      if (target) {
-        timers.push(
-          setTimeout(() => {
-            const lines = useAppStore.getState().messages[groupId] ?? [];
-            const at = lines.findIndex((m) => m.id === target);
-            if (at < 0) return;
-            // The list runs newest first.
-            listRef.current?.scrollToIndex({ index: lines.length - 1 - at, animated: true, viewPosition: 0.5 });
-            setFlash(target);
-            timers.push(setTimeout(() => setFlash(null), 1600));
-          }, 350),
-        );
-      }
+      const timer = target ? setTimeout(() => goToMessage(target), 350) : undefined;
       return () => {
-        timers.forEach(clearTimeout);
+        clearTimeout(timer);
         setActiveConversation(null);
       };
-    }, [groupId, setActiveConversation]),
+    }, [groupId, setActiveConversation, goToMessage]),
   );
 
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
@@ -195,6 +207,16 @@ export default function GroupChatScreen() {
   const fallback = members[0];
   // The title's "&" as it is: an English "and" read wrong in every other language.
   const noticeText = t('group.aiNotice', { names });
+  // Whose line a quote is: "You" or the member's name.
+  const you = t('search.you');
+  const quoteTitle = useCallback(
+    (quote: ReplyTo) => {
+      if (quote.author === 'me') return you;
+      const member = quote.characterId ? byId.get(quote.characterId) : undefined;
+      return member ? nameOf(member) : '';
+    },
+    [you, byId, nameOf],
+  );
 
   // A tap on a member's avatar: they speak now.
   const invoke = useCallback(
@@ -211,6 +233,25 @@ export default function GroupChatScreen() {
       const character = author ?? fallback;
       if (!character) return null;
       const run = runOf(data, data.length - 1 - index);
+      const bubble = (
+        <MessageBubble
+          message={item}
+          character={character}
+          animate={animations && Date.parse(item.createdAt) > openedAt}
+          showAvatar={run.runStart}
+          runEnd={run.runEnd}
+          receipt={item.id === lastMine}
+          showTime={run.showTime}
+          senderName={author ? nameOf(author) : undefined}
+          aiNoticeText={noticeText}
+          onLongPress={openMenu}
+          onDoubleTap={toggleLove}
+          onRetry={item.failed && groupId ? () => retryGroupReply(groupId) : undefined}
+          onAvatarPress={author ? invoke : undefined}
+          quoteTitle={item.replyTo ? quoteTitle(item.replyTo) : undefined}
+          onQuotePress={goToMessage}
+        />
+      );
       return (
         // One View: an inverted list lays each cell out column-reverse, so a Fragment's
         // children would draw bottom to top (the day chip under its line).
@@ -220,26 +261,12 @@ export default function GroupChatScreen() {
             {item.id === flash ? (
               <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
             ) : null}
-            <MessageBubble
-              message={item}
-              character={character}
-              animate={animations && Date.parse(item.createdAt) > openedAt}
-              showAvatar={run.runStart}
-              runEnd={run.runEnd}
-              receipt={item.id === lastMine}
-              showTime={run.showTime}
-              senderName={author ? nameOf(author) : undefined}
-              aiNoticeText={noticeText}
-              onLongPress={openMenu}
-              onDoubleTap={toggleLove}
-              onRetry={item.failed && groupId ? () => retryGroupReply(groupId) : undefined}
-              onAvatarPress={author ? invoke : undefined}
-            />
+            {canReplyTo(item) ? <SwipeToReply onReply={() => startReply(item)}>{bubble}</SwipeToReply> : bubble}
           </View>
         </View>
       );
     },
-    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, toggleLove, groupId, retryGroupReply, invoke],
+    [data, byId, fallback, lastMine, flash, animations, openedAt, nameOf, noticeText, openMenu, toggleLove, groupId, retryGroupReply, invoke, quoteTitle, goToMessage, startReply],
   );
 
   if (!group || !groupId || members.length < 2) {
@@ -267,7 +294,8 @@ export default function GroupChatScreen() {
   };
 
   const send = (text: string) => {
-    const result = sendGroupText(groupId, text);
+    const result = sendGroupText(groupId, text, replyTo ?? undefined);
+    if (result === 'sent') setReplyTo(null);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
@@ -388,6 +416,7 @@ export default function GroupChatScreen() {
             onVoice={() => setVoiceOpen(true)}
             onVoiceNote={sendNote}
             canRecord={canRecord}
+            replying={replyTo ? { quote: replyTo, title: quoteTitle(replyTo), onCancel: cancelReply } : undefined}
           />
           <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} hide={['scene']} />
         </KeyboardAvoidingView>
@@ -492,6 +521,14 @@ export default function GroupChatScreen() {
           setReporting(message);
           setMenu(null);
         }}
+        onReply={
+          menu && canReplyTo(menu)
+            ? (message) => {
+                setMenu(null);
+                startReply(message);
+              }
+            : undefined
+        }
         onDelete={(message) => {
           deleteMessage(groupId, message.id);
           if (message.audioFile) void dropNote(message.audioFile);
