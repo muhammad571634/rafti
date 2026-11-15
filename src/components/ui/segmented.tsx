@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { radius, shadows, space, themed, useThemed, useTokens } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -118,7 +119,7 @@ const systemSheet = themed(({ colors, systemColors }) =>
     segment: { flex: 1, borderRadius: 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
     on: { backgroundColor: systemColors.thumb, ...shadows.card },
     // UISegmentedControl's 13 pt.
-    text: { fontSize: 13, fontWeight: '500', letterSpacing: -0.1, color: colors.text },
+    text: { ...inkFace('footnote'), color: colors.text },
     textOn: { fontWeight: '600' },
   }),
 );

@@ -9,6 +9,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { radius, shadows, space, themed, useThemed, useTokens } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -255,7 +256,7 @@ const sheet = themed(({ colors }) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    title: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+    title: { ...inkFace('bodyStrong'), flex: 1, textAlign: 'center', color: colors.text },
     done: {
       width: 36,
       height: 36,

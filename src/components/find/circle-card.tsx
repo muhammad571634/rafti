@@ -10,6 +10,7 @@ import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground'
 import { characterImage, PressableScale, Txt } from '@/components/ui';
 import { localCharacter } from '@/i18n/content';
 import { colors, fonts, gradients, gradientStops, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character } from '@/types';
 
 /** The card's height for its width: a wide photo, about 196 pt on a 390 pt phone. */
@@ -126,12 +127,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFC93C',
     transform: [{ rotate: '-6deg' }],
   },
-  newText: { fontFamily: fonts.playful, fontSize: 13, lineHeight: 17, color: '#1F1A17' },
+  newText: { ...inkFace('caption'), color: '#1F1A17' },
   // The leading side: the name and the relation stop short of the face and the button.
   words: { position: 'absolute', left: space.lg, right: '50%', bottom: 16 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  name: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 22, lineHeight: 27, color: colors.onMedia },
-  role: { marginTop: 2, fontSize: 14, lineHeight: 18, fontStyle: 'italic', fontWeight: '600', color: colors.onMediaSoft },
+  name: { ...inkFace('card'), flexShrink: 1, color: colors.onMedia },
+  role: { ...inkFace('subStrong'), marginTop: 2, fontStyle: 'italic', color: colors.onMediaSoft },
   // Clear glass on the photo (HIG Materials: the clear variant is for components over rich media).
   button: {
     position: 'absolute',
@@ -148,5 +149,5 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  buttonText: { fontFamily: fonts.playful, fontSize: 15, color: colors.onMedia },
+  buttonText: { ...inkFace('subStrong'), color: colors.onMedia },
 });

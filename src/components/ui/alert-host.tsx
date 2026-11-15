@@ -3,6 +3,7 @@ import { Modal, Platform, Pressable, ScrollView, StyleSheet, useWindowDimensions
 import { alertLayout, cancelButton, closeAlert, useCurrentAlert, type AlertButton } from '@/lib/alert';
 import { haptic } from '@/lib/haptics';
 import { isDark, systemColors, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 import { Txt } from './text';
 
@@ -78,8 +79,8 @@ const styles = StyleSheet.create({
   card: { borderRadius: 16, backgroundColor: CARD, overflow: 'hidden' },
   textScroll: { flexGrow: 0, flexShrink: 1 },
   text: { paddingHorizontal: 18, paddingTop: 20, paddingBottom: 18, gap: 4 },
-  title: { fontSize: 17, lineHeight: 22, fontWeight: '700', textAlign: 'center', color: systemGround.label },
-  message: { fontSize: 13.5, lineHeight: 18, textAlign: 'center', color: systemGround.label },
+  title: { ...inkFace('bodyStrong'), textAlign: 'center', color: systemGround.label },
+  message: { ...inkFace('footnote'), textAlign: 'center', color: systemGround.label },
   row: { flexDirection: 'row' },
   button: {
     minHeight: 46,
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   },
   rowButton: { flex: 1 },
   rowDivider: { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: systemGround.dash },
-  buttonText: { fontSize: 17, lineHeight: 22, textAlign: 'center', color: systemGround.label },
+  buttonText: { ...inkFace('body'), textAlign: 'center', color: systemGround.label },
   cancelText: { fontWeight: '600' },
   destructiveText: { color: systemColors.red },
 });

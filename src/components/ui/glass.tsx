@@ -14,6 +14,7 @@ import {
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { colors as dayColors, shadows, space, themed, useThemed, useTokens } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -264,7 +265,7 @@ const sheet = themed(({ colors }) =>
     capsuleItem: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
     pill: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
     back: { marginLeft: -2 },
-    label: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4 },
+    label: { ...inkFace('body') },
     bar: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -278,30 +279,27 @@ const sheet = themed(({ colors }) =>
     barScrolled: { borderBottomColor: colors.borderStrong },
     // Centred on the screen, between the side buttons (they keep 44pt each side).
     barTitleWrap: { position: 'absolute', left: 72, right: 72, top: space.xs, bottom: space.sm, justifyContent: 'center' },
-    barTitle: { textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+    barTitle: { ...inkFace('bodyStrong'), textAlign: 'center', color: colors.text },
     barSpacer: { width: 44 },
     group: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface, overflow: 'hidden' },
     row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg },
     rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
     rowPressed: { backgroundColor: colors.surfaceAlt },
-    rowText: { fontSize: 17, letterSpacing: -0.4 },
+    rowText: { ...inkFace('body') },
     meta: { color: colors.textSecondary },
     flex: { flex: 1 },
     iconRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
     iconTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
     iconBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 6 },
     iconMeta: { maxWidth: '50%' },
-    hint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: colors.textSecondary },
+    hint: { ...inkFace('footnote'), marginTop: 1, color: colors.textSecondary },
     resting: { opacity: 0.4 },
     addRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
-    addCount: { fontSize: 15, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+    addCount: { ...inkFace('sub'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
     largeTitle: {
+      ...inkFace('display'),
       marginTop: 10,
       marginHorizontal: space.lg,
-      fontSize: 34,
-      lineHeight: 41,
-      fontWeight: '700',
-      letterSpacing: 0.4,
       color: colors.text,
     },
   }),

@@ -6,6 +6,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
 import { hitSlop, immersive, space, systemGround, type Look } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /**
  * The parts every feature screen shares (design-style §10, family 2: Gifts, Store, Radio, Board,
@@ -97,6 +98,6 @@ const styles = StyleSheet.create({
   // No clip: a card may have something peeking over its edge (the check-in's mascot).
   hero: { marginHorizontal: space.lg, borderRadius: 26, borderCurve: 'continuous' },
   capsule: { minWidth: 64, height: 32, paddingHorizontal: 14, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  capsuleText: { fontSize: 15, fontWeight: '700' },
+  capsuleText: { ...inkFace('subStrong') },
   off: { opacity: 0.5 },
 });
