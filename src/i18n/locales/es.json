@@ -82,6 +82,11 @@
     },
     "allChats": "Todos los chats",
     "waiting": "Esperándote",
+    "presence": {
+      "awake": "Disponible",
+      "asleep": "Durmiendo"
+    },
+    "chooseWidgets": "Elegir widgets",
     "and": "y",
     "widget": {
       "call": "Llamar a {{name}}",

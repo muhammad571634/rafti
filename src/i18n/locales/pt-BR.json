@@ -82,6 +82,11 @@
     },
     "allChats": "Todas as conversas",
     "waiting": "Esperando por você",
+    "presence": {
+      "awake": "Disponível",
+      "asleep": "Dormindo"
+    },
+    "chooseWidgets": "Escolher widgets",
     "and": "e",
     "widget": {
       "call": "Ligar para {{name}}",

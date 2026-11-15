@@ -82,6 +82,11 @@
     },
     "allChats": "Semua obrolan",
     "waiting": "Menunggumu",
+    "presence": {
+      "awake": "Terjaga",
+      "asleep": "Tidur"
+    },
+    "chooseWidgets": "Pilih widget",
     "and": "dan",
     "widget": {
       "call": "Telepon {{name}}",

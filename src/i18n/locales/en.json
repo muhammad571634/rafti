@@ -82,6 +82,11 @@
     },
     "allChats": "All chats",
     "waiting": "Waiting for you",
+    "presence": {
+      "awake": "Awake",
+      "asleep": "Asleep"
+    },
+    "chooseWidgets": "Choose widgets",
     "and": "and",
     "widget": {
       "call": "Call {{name}}",

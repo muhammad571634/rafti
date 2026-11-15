@@ -82,6 +82,11 @@
     },
     "allChats": "Все чаты",
     "waiting": "Ждут вас",
+    "presence": {
+      "awake": "Не спит",
+      "asleep": "Спит"
+    },
+    "chooseWidgets": "Выбрать виджеты",
     "and": "и",
     "widget": {
       "call": "Позвонить {{name}}",

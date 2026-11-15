@@ -82,6 +82,11 @@
     },
     "allChats": "Tüm sohbetler",
     "waiting": "Seni bekliyor",
+    "presence": {
+      "awake": "Uyanık",
+      "asleep": "Uyuyor"
+    },
+    "chooseWidgets": "Widget seç",
     "and": "ve",
     "widget": {
       "call": "{{name}} ara",

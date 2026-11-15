@@ -82,6 +82,11 @@
     },
     "allChats": "所有對話",
     "waiting": "正在等待你",
+    "presence": {
+      "awake": "醒著",
+      "asleep": "睡著了"
+    },
+    "chooseWidgets": "選擇小工具",
     "and": "和",
     "widget": {
       "call": "致電{{name}}",

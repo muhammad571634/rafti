@@ -1,22 +1,33 @@
 import { useFocusEffect } from 'expo-router';
 import { Image, type ImageContentPosition } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MicrophoneIcon } from 'phosphor-react-native/src/icons/Microphone';
+import { Ionicons } from '@expo/vector-icons';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { FACE_AT, portraitOf, sceneFocus, stretchLeft } from '@/components/chat/chat-ground';
 import { InkText } from '@/components/ink';
 import { Anim, characterImage, PressableScale } from '@/components/ui';
+import { useDayKey } from '@/hooks/use-day-key';
 import { plainText, speechOnly } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
+import { awakeAt, freshDayNote } from '@/lib/today';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, gradientStops, space } from '@/theme';
-import { inkRadius } from '@/theme/ink';
+import { colors, gradients, gradientStops, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character, Conversation, Message, Relationship } from '@/types';
 
 /** A tall or square picture has no width to slide: it is drawn this much wider than the card instead (`FACE_AT`). */
@@ -32,6 +43,14 @@ const BEFORE = 4;
 /** Their unread line types in once a session, as if said now. */
 const TYPING_MS = 1400;
 const typedIn = new Set<string>();
+/**
+ * One slow breath of the picture each time Today comes into view (audit §8.2.1: the one living
+ * thing on the screen): 1.8 % larger and a few points over, then back, and still after that. An
+ * endless breath cost 12-13 ms of GPU per frame on a Galaxy A51 (0z131), so it never loops.
+ */
+const BREATH_MS = 4500;
+const BREATH_DELAY = 700;
+const BREATH_SCALE = 0.018;
 
 /** Room for Today's top row over the picture: 44 pt plus the room the wordmark's mascot rises into. */
 const BAR = 56;
@@ -42,7 +61,7 @@ const BOTTOM_RADIUS = 32;
  */
 export const heroTopHeight = (windowHeight: number) => Math.round(windowHeight / 2);
 /** Their line's longest run for the room under the top row, so it never climbs into that row. */
-const lineCap = (room: number) => (room >= 300 ? 4 : room >= 260 ? 3 : 2);
+const lineCap = (room: number) => (room >= 260 ? 3 : 2);
 
 /** The light over their picture follows the user's hour, the way Replika's room does. */
 export function dayLight(hour: number): 'dawn' | 'day' | 'evening' | 'night' {
@@ -148,8 +167,8 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
  * The friend waiting for you, Replika's feel inside our Today (owner, 2026-11-03): about half the
  * screen of their picture, still and lit for the user's hour; their name right on their newest
  * line, which sits in dark glass, typed in first while
- * it is unread; a "Message" field under it. The whole card is one button that opens the chat; the
- * field is a cue, not a second control. Reduce Motion: no typing.
+ * it is unread; a round reply glyph beside it. The whole card is one button that opens the chat; the
+ * glyph is a cue, not a second control. Reduce Motion: no typing.
  */
 export function TodayHero({
   friend,
@@ -164,7 +183,7 @@ export function TodayHero({
   topInset?: number;
   onPress: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { character, relationship, conversation, image, framing } = friend;
   const messages = useAppStore((s) => s.messages[conversation.id]);
   const line = useMemo(() => waitingLine(messages), [messages]);
@@ -186,12 +205,48 @@ export function TodayHero({
   // The light is read again on each visit. The picture holds still: its slow "breath" (0z107) redrew
   // half the screen every frame while Today was open, 12-13 ms of GPU per frame on a Galaxy A51 with
   // nothing moving, so scrolls and tab switches missed their frames (0z131, owner: keep it still).
-  useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
+  const breath = useSharedValue(0);
+  useFocusEffect(
+    useCallback(() => {
+      setHour(new Date().getHours());
+      if (!still) {
+        const ease = { duration: BREATH_MS, easing: Easing.inOut(Easing.sin) };
+        breath.value = withDelay(BREATH_DELAY, withSequence(withTiming(1, ease), withTiming(0, ease)));
+      }
+      return () => {
+        cancelAnimation(breath);
+        breath.value = 0;
+      };
+    }, [still, breath]),
+  );
+  const breathing = useAnimatedStyle(() => ({
+    transform: [{ translateX: -3 * breath.value }, { translateY: -2 * breath.value }, { scale: 1 + BREATH_SCALE * breath.value }],
+  }));
   const light = dayLight(hour);
+
+  // Presence (audit §8.2.1): what they said they are doing, if it is fresh; their notes are kept in
+  // English (0z187), so another app language gets the plain awake / asleep line instead.
+  const today = useDayKey();
+  const awake = awakeAt(hour);
+  const doing = useMemo(
+    () => (i18n.language.startsWith('en') ? freshDayNote(relationship.ownDay, today, Date.now()) : undefined),
+    // `hour` re-reads it on each visit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [relationship.ownDay, today, hour, i18n.language],
+  );
+  const status = doing ?? t(awake ? 'home.presence.awake' : 'home.presence.asleep');
 
   const lineKey = line ? `${conversation.id}|${line.at}` : undefined;
   const fresh = !!lineKey && conversation.unreadCount > 0 && !still && !typedIn.has(lineKey);
   const [typing, setTyping] = useState(fresh);
+  // The line fades in only after it was typed; otherwise it is simply there. A layout `entering`
+  // fade here stuck at 0 on a cold start on the A51, leaving an empty gap under the name (audit §10).
+  const shown = useSharedValue(fresh ? 0 : 1);
+  useEffect(() => {
+    if (typing) shown.value = 0;
+    else shown.value = still ? 1 : withTiming(1, { duration: 220 });
+  }, [typing, still, shown]);
+  const fade = useAnimatedStyle(() => ({ opacity: shown.value }));
   useEffect(() => {
     if (!fresh || !lineKey) return;
     setTyping(true);
@@ -207,16 +262,22 @@ export function TodayHero({
     <PressableScale
       style={StyleSheet.absoluteFill}
       scaleTo={1}
-      accessibilityLabel={[t('home.hero.open', { name }), line?.text]
+      accessibilityLabel={[
+        conversation.unreadCount > 0 ? t('a11y.unreadTab', { label: t('home.hero.open', { name }), count: conversation.unreadCount }) : t('home.hero.open', { name }),
+        status,
+        line?.text,
+      ]
         .filter(Boolean)
         .join(', ')}
       onPress={onPress}>
-      <Image
-        source={typeof image === 'string' ? { uri: image } : image}
-        style={stretch > 1 ? [styles.wide, { width: width * stretch, left }] : StyleSheet.absoluteFill}
-        contentFit="cover"
-        contentPosition={position}
-      />
+      <Animated.View style={[StyleSheet.absoluteFill, breathing]} renderToHardwareTextureAndroid>
+        <Image
+          source={typeof image === 'string' ? { uri: image } : image}
+          style={stretch > 1 ? [styles.wide, { width: width * stretch, left }] : StyleSheet.absoluteFill}
+          contentFit="cover"
+          contentPosition={position}
+        />
+      </Animated.View>
       {light !== 'day' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[light] }]} /> : null}
       <LinearGradient colors={gradients.heroTopScrim} locations={gradientStops.heroTopScrim} style={StyleSheet.absoluteFill} />
       <LinearGradient
@@ -227,32 +288,43 @@ export function TodayHero({
         style={StyleSheet.absoluteFill}
       />
 
+      {/* Two words on the picture and no more (owner, 2026-11-16, HIG Widgets: "replacing text with
+          graphics"): their name with a green dot while they are awake, and their newest line. The hour
+          shows in the picture's light, the way in by the round reply glyph; the whole card is the button. */}
       <View style={styles.bottom}>
-        {/* The name sits right on their line, the way a message is signed (owner, 2026-11-08: no days,
-            level or time here). */}
-        <InkText variant="title" color={colors.onMedia} lines={1} style={styles.name}>
-          {name}
-        </InkText>
-        {line && typing ? (
-          <View style={styles.said}>
-            <View style={[styles.bubble, styles.typing]}>
-              <Anim name="typing" size={34} tint={colors.onMediaSoft} />
-            </View>
+        <View style={styles.words}>
+          <View style={styles.nameRow}>
+            <InkText variant="title" color={colors.onMedia} lines={1} style={styles.name}>
+              {name}
+            </InkText>
+            {awake ? <View style={styles.dot} /> : null}
           </View>
-        ) : line ? (
-          <Animated.View entering={FadeIn.duration(220)} style={styles.said}>
-            <View style={styles.bubble}>
-              <InkText color={colors.onMedia} lines={lines}>
-                {line.text}
+          {line && typing ? (
+            <View style={styles.said}>
+              <View style={[styles.bubble, styles.typing]}>
+                <Anim name="typing" size={34} tint={colors.onMediaSoft} />
+              </View>
+            </View>
+          ) : line ? (
+            <Animated.View style={[styles.said, fade]}>
+              <View style={styles.bubble}>
+                <InkText color={colors.onMedia} lines={lines}>
+                  {line.text}
+                </InkText>
+              </View>
+            </Animated.View>
+          ) : null}
+        </View>
+        <View style={styles.reply}>
+          <Ionicons name="chatbubble" size={20} color={colors.onMedia} />
+          {/* How many of their messages wait, as the app icon's badge says it: a number, no words. */}
+          {conversation.unreadCount > 0 ? (
+            <View style={styles.unread}>
+              <InkText variant="caption" color={colors.white}>
+                {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
               </InkText>
             </View>
-          </Animated.View>
-        ) : null}
-        <View style={styles.field}>
-          <InkText variant="sub" color={colors.onMediaMuted} lines={1} style={styles.fieldText}>
-            {t('chat.inputPlaceholder')}
-          </InkText>
-          <MicrophoneIcon size={19} color={colors.onMediaSoft} />
+          ) : null}
         </View>
       </View>
     </PressableScale>
@@ -277,13 +349,17 @@ const styles = StyleSheet.create({
   header: { position: 'absolute', left: 0, right: 0 },
   wide: { position: 'absolute', left: 0, top: 0, bottom: 0 },
   // The leading side: the friend keeps the trailing side clear; the name hugs their line.
-  name: { maxWidth: '72%', marginBottom: -2 },
+  bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.lg, flexDirection: 'row', alignItems: 'flex-end', gap: space.md },
+  words: { flex: 1, minWidth: 0, gap: space.sm },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  name: { flexShrink: 1, maxWidth: '86%' },
+  // Presence as a mark, not words (audit §8.2.1): green in their waking hours.
+  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: systemColors.green, borderWidth: 1.5, borderColor: colors.onMediaRim },
   typing: { paddingVertical: 2 },
-  bottom: { position: 'absolute', left: space.lg, right: space.lg, bottom: space.lg, gap: space.sm },
   said: { alignItems: 'flex-start' },
   // Their line as the chat draws it on their picture: dark glass, the tail at the bottom left.
   bubble: {
-    maxWidth: '76%',
+    maxWidth: '94%',
     paddingHorizontal: 13,
     paddingVertical: space.sm,
     borderRadius: 18,
@@ -293,19 +369,27 @@ const styles = StyleSheet.create({
     borderColor: colors.onMediaHairline,
     backgroundColor: colors.onMediaBubble,
   },
-  // Frosted glass on the picture's dark foot, a 1 pt rim, 44 pt tall (HIG: touch target).
-  field: {
-    height: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: space.lg,
-    paddingRight: space.md,
+  unread: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    minWidth: 22,
+    height: 22,
+    paddingHorizontal: 6,
     borderRadius: inkRadius.pill,
-    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.unread,
+  },
+  // A round frosted glass glyph, 44 pt (HIG: touch target), where the "Message" field was.
+  reply: {
+    width: 44,
+    height: 44,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.onMediaRim,
     backgroundColor: colors.onMediaFrost,
   },
-  fieldText: { flex: 1 },
 });

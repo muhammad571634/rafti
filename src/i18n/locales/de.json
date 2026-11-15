@@ -82,6 +82,11 @@
     },
     "allChats": "Alle Chats",
     "waiting": "Wartet auf dich",
+    "presence": {
+      "awake": "Wach",
+      "asleep": "Schläft"
+    },
+    "chooseWidgets": "Widgets auswählen",
     "and": "und",
     "widget": {
       "call": "{{name}} anrufen",

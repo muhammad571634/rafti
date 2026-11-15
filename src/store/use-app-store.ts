@@ -8,6 +8,7 @@ import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { canPayShare } from '@/lib/share-outcome';
 import { isBirthday } from '@/lib/profile';
 import { pickSeeded } from '@/lib/seeded';
+import { twoWidgets } from '@/lib/today';
 import { greeters } from '@/lib/greeters';
 import { lastTalkedAt } from '@/lib/talk';
 import { dailyNoteStep } from '@/lib/daily-note';
@@ -995,8 +996,8 @@ type PersistedKeys =
   | 'daily'
   | 'settings';
 
-/** Today's widgets before the user changes them (owner's pick, 2026-10-21). */
-const DEFAULT_WIDGETS: WidgetKind[] = ['calls', 'diary', 'date', 'sleep'];
+/** Today's two widgets before the user changes them (calm Today, audit 2026-11-15 §6.1; was four). */
+const DEFAULT_WIDGETS: WidgetKind[] = ['calls', 'diary'];
 
 /** How many recent searches and recently viewed characters Find keeps. */
 const RECENT_LIMIT = 8;
@@ -4008,7 +4009,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: STORE_KEY,
-      version: 16,
+      version: 17,
       migrate: (persisted, version) => {
         let state = persisted as PersistedState & { wallet?: LegacyWallet };
         // v2: the currency became shells (was acorns) — carry the balance over.
@@ -4104,6 +4105,8 @@ export const useAppStore = create<AppState>()(
           state = retireCast(state, new Set(seedCharacters.map((c) => c.id)));
           retiredChats = endedChats(before, state);
         }
+        // v17: the calm Today shows two widgets (audit §6.1): the user's first two filled slots stay.
+        if (version < 17) state.todayWidgets = twoWidgets(state.todayWidgets, DEFAULT_WIDGETS);
         return state as AppState;
       },
       storage: storeStorage,

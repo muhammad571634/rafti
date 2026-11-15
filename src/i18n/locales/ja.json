@@ -82,6 +82,11 @@
     },
     "allChats": "すべてのチャット",
     "waiting": "あなたを待っています",
+    "presence": {
+      "awake": "起きてる",
+      "asleep": "寝てる"
+    },
+    "chooseWidgets": "ウィジェットを選ぶ",
     "and": "と",
     "widget": {
       "call": "{{name}}に通話",

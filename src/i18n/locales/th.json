@@ -82,6 +82,11 @@
     },
     "allChats": "แชททั้งหมด",
     "waiting": "กำลังรอคุณอยู่",
+    "presence": {
+      "awake": "ตื่นอยู่",
+      "asleep": "หลับอยู่"
+    },
+    "chooseWidgets": "เลือกวิดเจ็ต",
     "and": "และ",
     "widget": {
       "call": "โทรหา {{name}}",

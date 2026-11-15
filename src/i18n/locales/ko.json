@@ -82,6 +82,11 @@
     },
     "allChats": "모든 대화",
     "waiting": "당신을 기다리고 있어요",
+    "presence": {
+      "awake": "깨어 있음",
+      "asleep": "자는 중"
+    },
+    "chooseWidgets": "위젯 선택",
     "and": "및",
     "widget": {
       "call": "{{name}}에게 전화하기",

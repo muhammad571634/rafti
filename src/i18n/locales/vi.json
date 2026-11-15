@@ -82,6 +82,11 @@
     },
     "allChats": "Tất cả cuộc trò chuyện",
     "waiting": "Đang đợi bạn",
+    "presence": {
+      "awake": "Đang thức",
+      "asleep": "Đang ngủ"
+    },
+    "chooseWidgets": "Chọn tiện ích",
     "and": "và",
     "widget": {
       "call": "Gọi cho {{name}}",

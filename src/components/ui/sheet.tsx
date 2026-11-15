@@ -66,6 +66,7 @@ export function Sheet({
   const styles = useThemed(sheet);
   const { colors } = useTokens();
   const insets = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
   const scrolls = avoidKeyboard || scroll;
   // iOS tucks the card into the home-indicator room; Android's nav bar is solid, so the card stands
   // above it. The keyboard covers either, and the card then sits just over the keys.
@@ -184,6 +185,9 @@ export function Sheet({
             style={[
               center ? styles.centerCard : [styles.bottomCard, { marginBottom: sheetBottom }],
               scrolls && styles.capped,
+              // A percentage cap ignored the status bar's padding on the A51 (the widget gallery ran
+              // under the clock, 2026-11-16): with the keyboard down it is the room in points.
+              scrolls && !keyboardUp && !center && { maxHeight: windowHeight - insets.top - space.md - sheetBottom },
               shadows.modal,
               following,
             ]}>

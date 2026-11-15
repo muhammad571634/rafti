@@ -82,6 +82,11 @@
     },
     "allChats": "Toutes les discussions",
     "waiting": "Vous attend",
+    "presence": {
+      "awake": "Disponible",
+      "asleep": "Au lit"
+    },
+    "chooseWidgets": "Choisir les widgets",
     "and": "et",
     "widget": {
       "call": "Appeler {{name}}",
