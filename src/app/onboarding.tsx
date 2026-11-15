@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Redirect, useRouter } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
+import * as Updates from 'expo-updates';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -102,13 +103,20 @@ const NO_PHOTO: [string, string] = ['#A5ABB8', '#858A96'];
  * the tabs instead of starting over. Read once on mount, so finishing here (which sets
  * `onboardedAt` and then navigates on its own) never races this redirect.
  */
+/** Developer and preview builds, as in Profile. */
+const SHOW_DEV = __DEV__ || Updates.channel === 'preview';
+
 export default function OnboardingRoute() {
+  // Dev / preview only: `sigmazam://onboarding?preview=1` walks the flow on an onboarded phone; its last
+  // button goes back instead of creating a profile, so nothing of the account changes.
+  const { preview } = useLocalSearchParams<{ preview?: string }>();
   const [done] = useState(() => !!useAppStore.getState().user.onboardedAt);
+  if (SHOW_DEV && preview === '1') return <OnboardingScreen preview />;
   if (done) return <Redirect href="/(tabs)" />;
   return <OnboardingScreen />;
 }
 
-function OnboardingScreen() {
+function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -174,6 +182,7 @@ function OnboardingScreen() {
 
   const finish = () => {
     if (!friend) return;
+    if (preview) return router.canGoBack() ? router.back() : router.replace('/(tabs)');
     const conversationId = completeOnboarding({
       name: trimmed,
       birthYear: year,
