@@ -7,6 +7,7 @@ import { PressableScale, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { tierForLevel, TIERS } from '@/mock';
 import { colors, radius, space } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 
 /**
  * "How closeness works": the five stages with their level ranges. Tapping a
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   heart: {
     width: 34,
     height: 34,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   label: {
     paddingHorizontal: space.sm + 2,
     paddingVertical: space.xs,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.surface,
   },
 });

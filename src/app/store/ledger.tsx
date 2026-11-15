@@ -26,6 +26,7 @@ import { callClock, clockTime } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -306,8 +307,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.surface,
   },
-  summaryTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text, fontVariant: ['tabular-nums'] },
-  summaryNote: { marginTop: 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  summaryTitle: { ...inkFace('bodyStrong'), color: colors.text, fontVariant: ['tabular-nums'] },
+  summaryNote: { marginTop: 2, ...inkFace('footnote'), color: colors.textSecondary },
   ring: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
   // The arc starts at 12 o'clock, as Fitness draws it.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
@@ -315,9 +316,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
@@ -342,9 +341,9 @@ const styles = StyleSheet.create({
   },
   tile: { width: LEAD, height: LEAD, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  rowTitle: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  rowMeta: { fontSize: 13, color: colors.textSecondary },
+  rowTitle: { ...inkFace('body'), color: colors.text },
+  rowMeta: { ...inkFace('footnote'), color: colors.textSecondary },
   amount: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  amountText: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
-  footer: { marginTop: 22, textAlign: 'center', fontSize: 13, color: colors.textSecondary },
+  amountText: { ...inkFace('bodyStrong'), color: colors.text, fontVariant: ['tabular-nums'] },
+  footer: { marginTop: 22, textAlign: 'center', ...inkFace('footnote'), color: colors.textSecondary },
 });

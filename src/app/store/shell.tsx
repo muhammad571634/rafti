@@ -20,7 +20,6 @@ import {
 import {
   Anim,
   Button,
-  Icon3D,
   LargeTitle,
   moduleTile,
   PressableScale,
@@ -38,6 +37,7 @@ import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, palette, signature, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { PlanId, ShellPack } from '@/types';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
@@ -145,8 +145,8 @@ export default function StoreScreen() {
             </>
           ) : (
             <>
-              <Icon3D name="shell" size={84} />
-              <Txt variant="display" color={palette.shellText} center>
+              <ShellIcon size={84} />
+              <Txt style={styles.purchased} color={palette.shellText} center>
                 {t('store.purchased', { count: success?.kind === 'pack' ? success.amount : 0 })}
               </Txt>
             </>
@@ -390,6 +390,7 @@ const STACKS: Record<number, { left: number; top: number }[]> = {
 };
 
 const styles = StyleSheet.create({
+  purchased: inkFace('title'),
   bar: {
     height: 44,
     paddingHorizontal: space.lg,
@@ -407,31 +408,31 @@ const styles = StyleSheet.create({
     padding: space.lg,
   },
   balanceAmount: { flex: 1, minWidth: 0 },
-  balanceValue: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: 0.2, color: signature.shells.heroInk, fontVariant: ['tabular-nums'] },
-  balanceUnit: { marginTop: -2, fontSize: 15, fontWeight: '600', color: signature.shells.heroInk },
+  balanceValue: { ...inkFace('figureLarge'), color: signature.shells.heroInk },
+  balanceUnit: { marginTop: -2, ...inkFace('subStrong'), color: signature.shells.heroInk },
   freePill: {
     height: 36,
     paddingLeft: 12,
     paddingRight: 14,
-    borderRadius: 18,
+    borderRadius: inkRadius.pill,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     backgroundColor: 'rgba(255,255,255,0.55)',
   },
-  freeText: { fontSize: 15, fontWeight: '700', color: signature.shells.heroInk },
+  freeText: { ...inkFace('subStrong'), color: signature.shells.heroInk },
   packRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: space.lg },
   stack: { width: 46, height: 40 },
   stackShell: { position: 'absolute' },
   packBody: { flex: 1, minWidth: 0, gap: 3, paddingVertical: 12 },
   // The bonus line drops under the total when both do not fit (long locales, larger text).
   packAmount: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 5 },
-  packTotal: { fontSize: 20, lineHeight: 24, fontWeight: '700', letterSpacing: -0.2, color: systemGround.label, fontVariant: ['tabular-nums'] },
-  muted13: { flexShrink: 1, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  tag: { alignSelf: 'flex-start', minHeight: 20, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center' },
-  tagText: { fontSize: 12, lineHeight: 16, fontWeight: '700' },
+  packTotal: { ...inkFace('figureSmall'), color: systemGround.label },
+  muted13: { flexShrink: 1, ...inkFace('footnote'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  tag: { alignSelf: 'flex-start', minHeight: 20, paddingVertical: 2, paddingHorizontal: 7, borderRadius: inkRadius.pill, justifyContent: 'center' },
+  tagText: { ...inkFace('caption') },
   price: { alignItems: 'flex-end', gap: 1 },
-  priceText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  priceText: { ...inkFace('bodyStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   packLine: {
     position: 'absolute',
     left: 50,
@@ -442,11 +443,11 @@ const styles = StyleSheet.create({
   },
   costRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
   costLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  costTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
+  costTitle: { flex: 1, ...inkFace('body'), color: systemGround.label },
   costShells: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  costValue: { fontSize: 17, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  costValue: { ...inkFace('bodyStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   restore: { alignSelf: 'center', marginTop: 10, paddingVertical: 12, paddingHorizontal: 10 },
-  restoreText: { fontSize: 15, fontWeight: '600', color: systemGround.label },
+  restoreText: { ...inkFace('subStrong'), color: systemGround.label },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -50 },
 });

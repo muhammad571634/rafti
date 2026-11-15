@@ -18,6 +18,7 @@ import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -351,16 +352,13 @@ const styles = StyleSheet.create({
   largeTitle: {
     marginTop: 6,
     marginHorizontal: space.lg,
-    fontSize: 34,
-    lineHeight: 41,
-    fontWeight: '700',
-    letterSpacing: 0.4,
+    ...inkFace('display'),
     color: systemGround.label,
   },
   hero: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 20, padding: space.lg },
   heroPro: {
     marginHorizontal: space.lg,
-    borderRadius: 24,
+    borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     overflow: 'hidden',
   },
@@ -373,8 +371,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.22)',
   },
   heroIconPlain: { backgroundColor: systemColors.fill },
-  heroName: { fontSize: 26, lineHeight: 32, fontWeight: '800', letterSpacing: 0.2, color: colors.white },
-  heroLine: { marginTop: 2, fontSize: 15, lineHeight: 20, color: 'rgba(255,255,255,0.88)' },
+  heroName: { ...inkFace('title'), color: colors.white },
+  heroLine: { marginTop: 2, ...inkFace('sub'), color: 'rgba(255,255,255,0.88)' },
   inkText: { color: systemGround.label },
   mutedText: { color: systemGround.secondaryLabel },
   rings: { flexDirection: 'row', paddingVertical: 18, paddingHorizontal: space.sm },
@@ -382,31 +380,31 @@ const styles = StyleSheet.create({
   ring: { width: RING, height: RING, alignItems: 'center', justifyContent: 'center' },
   // The arc starts at 12 o'clock, as Fitness draws it.
   ringSvg: { position: 'absolute', transform: [{ rotate: '-90deg' }] },
-  ringLabel: { marginTop: 10, fontSize: 13, fontWeight: '600', color: systemGround.secondaryLabel },
-  ringValue: { marginTop: 2, fontSize: 22, lineHeight: 26, fontWeight: '800', color: systemGround.label, fontVariant: ['tabular-nums'] },
-  ringTotal: { fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  ringExtra: { marginTop: 4, fontSize: 13, fontWeight: '600', color: STORE.peachInk },
+  ringLabel: { marginTop: 10, ...inkFace('caption'), color: systemGround.secondaryLabel },
+  ringValue: { marginTop: 2, ...inkFace('figureSmall'), color: systemGround.label },
+  ringTotal: { ...inkFace('footnote'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  ringExtra: { marginTop: 4, ...inkFace('caption'), color: STORE.peachInk },
   row: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowTopLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
-  rowTitle: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
-  meta: { fontSize: 15, color: systemGround.secondaryLabel },
+  rowTitle: { flex: 1, ...inkFace('body'), color: systemGround.label },
+  meta: { ...inkFace('sub'), color: systemGround.secondaryLabel },
   value: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  valueText: { fontSize: 17, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  valueText: { ...inkFace('bodyStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   buy: {
     height: 32,
     paddingHorizontal: 12,
-    borderRadius: 16,
+    borderRadius: inkRadius.pill,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     backgroundColor: STORE.peachSoft,
   },
-  buyText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk, fontVariant: ['tabular-nums'] },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  buyText: { ...inkFace('subStrong'), color: STORE.peachInk, fontVariant: ['tabular-nums'] },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   cta: { gap: space.sm, marginTop: 22, marginHorizontal: space.lg },
-  ctaButton: { height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
-  ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
-  ctaCaption: { fontSize: 13, textAlign: 'center', color: systemGround.secondaryLabel },
+  ctaButton: { height: 52, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
+  ctaText: { ...inkFace('bodyStrong'), color: STORE.ctaInk },
+  ctaCaption: { ...inkFace('footnote'), textAlign: 'center', color: systemGround.secondaryLabel },
   done: { alignItems: 'center', gap: space.lg },
 });

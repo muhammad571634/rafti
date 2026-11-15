@@ -39,7 +39,8 @@ import {
   todayKey,
 } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, hitSlop, isDark, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
+import { colors, hitSlop, isDark, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -352,7 +353,7 @@ export default function GiftsScreen() {
           </Txt>
           <View style={styles.rewardRow}>
             <ShellIcon size={26} />
-            <Txt variant="display" color={palette.shellText}>
+            <Txt style={styles.rewardFigure} color={palette.shellText}>
               +{reward ?? 0}
             </Txt>
           </View>
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
     marginLeft: -GLOW / 2,
     width: GLOW,
     height: GLOW,
-    borderRadius: GLOW / 2,
+    borderRadius: inkRadius.pill,
     experimental_backgroundImage: 'radial-gradient(circle, rgba(251,191,36,0.34) 0%, rgba(251,191,36,0.12) 45%, rgba(251,191,36,0) 72%)',
   },
   bar: {
@@ -436,36 +437,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  capsule: { height: 40, borderRadius: 20, backgroundColor: systemGround.fill },
+  capsule: { height: 40, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
   capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
-  capsuleText: { fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
+  capsuleText: { ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   // Room above for the mascot peeking over the card.
-  checkIn: { marginTop: PEEK_ROOM + space.lg, borderRadius: 26, paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
+  checkIn: { marginTop: PEEK_ROOM + space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
   checkInHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: 4 },
-  checkInTitle: { flexShrink: 1, fontSize: 13, fontWeight: '700', letterSpacing: 0.3, textTransform: 'uppercase', color: colors.white },
-  checkInDay: { fontSize: 13, fontWeight: '600', color: colors.white, opacity: 0.85 },
+  checkInTitle: { flexShrink: 1, ...inkFace('caption'), textTransform: 'uppercase', color: colors.white },
+  checkInDay: { ...inkFace('caption'), color: colors.white, opacity: 0.85 },
   days: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 14 },
   day: { alignItems: 'center', gap: 6 },
-  dayDot: { width: 36, height: 36, borderRadius: 18, backgroundColor: ON_RED_SOFT, alignItems: 'center', justifyContent: 'center' },
+  dayDot: { width: 36, height: 36, borderRadius: inkRadius.pill, backgroundColor: ON_RED_SOFT, alignItems: 'center', justifyContent: 'center' },
   dayClaimed: { backgroundColor: colors.white },
   // Tomorrow's day: the next one to come back for.
   dayNext: { backgroundColor: 'transparent', borderWidth: 2.5, borderColor: colors.white },
-  dayNumber: { fontSize: 15, fontWeight: '700', color: colors.white },
-  dayAmount: { fontSize: 12, fontWeight: '700', color: colors.white, opacity: 0.85, fontVariant: ['tabular-nums'] },
+  dayNumber: { ...inkFace('subStrong'), color: colors.white },
+  dayAmount: { ...inkFace('caption'), color: colors.white, opacity: 0.85, fontVariant: ['tabular-nums'] },
   dayAmountOn: { opacity: 1 },
   offer: { paddingHorizontal: 6, borderRadius: 9, backgroundColor: ON_RED_SOFT },
-  offerText: { fontSize: 12, fontWeight: '800', color: colors.white },
+  offerText: { ...inkFace('caption'), color: colors.white },
   statusPill: {
     height: 24,
     marginBottom: 4,
     marginRight: space.lg,
     paddingHorizontal: 10,
-    borderRadius: 12,
+    borderRadius: inkRadius.pill,
     justifyContent: 'center',
     backgroundColor: signature.gifts.soft,
   },
-  statusText: { fontSize: 13, fontWeight: '700', color: signature.gifts.text },
+  statusText: { ...inkFace('caption'), color: signature.gifts.text },
   wheel: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -476,8 +477,8 @@ const styles = StyleSheet.create({
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
   wayBody: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  wayTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
-  waySub: { fontSize: 13, color: systemGround.secondaryLabel },
+  wayTitle: { ...inkFace('bodyStrong'), color: systemGround.label },
+  waySub: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
   wayLine: {
     position: 'absolute',
     left: 14 + WAY_ICON + 12,
@@ -488,15 +489,16 @@ const styles = StyleSheet.create({
   },
   codeRow: { marginTop: 22, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
   codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.strong },
-  codeLabel: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
-  code: { fontSize: 17, fontWeight: '700', letterSpacing: 3, color: systemGround.label },
-  copy: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.soft },
+  codeLabel: { flex: 1, ...inkFace('body'), color: systemGround.label },
+  code: { ...inkFace('bodyStrong'), letterSpacing: 3, color: systemGround.label },
+  copy: { width: 34, height: 34, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.soft },
   haveCode: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, marginTop: space.sm },
-  haveCodeText: { fontSize: 15, fontWeight: '600', color: signature.gifts.text },
-  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  haveCodeText: { ...inkFace('subStrong'), color: signature.gifts.text },
+  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', ...inkFace('footnote'), color: systemGround.secondaryLabel },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -60 },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  rewardFigure: inkFace('figureLarge'),
   redeem: { gap: space.md },
   codeInput: {
     height: 54,
@@ -504,10 +506,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.border,
     paddingHorizontal: space.lg,
-    fontSize: 22,
+    ...inkFace('figureSmall'),
     letterSpacing: 4,
     textAlign: 'center',
-    fontFamily: fonts.body,
     color: colors.text,
   },
   rules: { gap: space.xs },

@@ -11,7 +11,8 @@ import { count, duration, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { localCharacter } from '@/i18n/content';
-import { colors, radius, space } from '@/theme';
+import { colors, space } from '@/theme';
+import { inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 import { planTime } from './copy';
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     paddingVertical: space.sm,
     paddingLeft: space.sm,
     paddingRight: space.lg,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.bgPlain,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   play: {
     width: 40,
     height: 40,
-    borderRadius: radius.pill,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.text,
     alignItems: 'center',
     justifyContent: 'center',

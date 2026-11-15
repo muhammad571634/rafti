@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors, systemGround, type Look } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
 export const STORE = storeColors;
@@ -122,21 +123,19 @@ export function StoreBuyBar({
 }
 
 const styles = StyleSheet.create({
-  radio: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  radio: { width: 24, height: 24, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   radioOff: { borderWidth: 1.5, borderColor: STORE.ring },
   groupLabel: {
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: aurora.textMuted,
     textTransform: 'uppercase',
   },
   tile: { borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  proPill: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.violetSoft },
-  proPillText: { fontSize: 13, fontWeight: '700', color: STORE.violetInk },
+  proPill: { height: 24, paddingHorizontal: 9, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: STORE.violetSoft },
+  proPillText: { ...inkFace('caption'), color: STORE.violetInk },
   bar: {
     position: 'absolute',
     left: 0,
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
   },
   cta: {
     height: 52,
-    borderRadius: 26,
+    borderRadius: inkRadius.pill,
     flexDirection: 'row',
     gap: space.sm,
     alignItems: 'center',
@@ -161,8 +160,8 @@ const styles = StyleSheet.create({
   // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent. Opaque, so
   // the rows scrolling under the bar never show through the button.
   ctaOff: { backgroundColor: systemGround.fillSolid },
-  ctaText: { flexShrink: 1, fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  ctaText: { flexShrink: 1, ...inkFace('bodyStrong'), color: STORE.ctaInk },
   ctaTextOnLook: { color: colors.white },
   ctaTextOff: { color: colors.textFaint },
-  caption: { fontSize: 13, color: aurora.textMuted },
+  caption: { ...inkFace('footnote'), color: aurora.textMuted },
 });

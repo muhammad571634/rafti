@@ -22,7 +22,8 @@ import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, fonts, isDark, radius } from '@/theme';
+import { colors, isDark, radius } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
@@ -406,20 +407,20 @@ const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: YELLOW },
   flex: { flex: 1 },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 18 },
-  wallet: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 14, borderRadius: 18, backgroundColor: GLASS },
-  walletText: { fontSize: 16, fontWeight: '700', color: INK, fontVariant: ['tabular-nums'] },
-  round: { width: 40, height: 40, borderRadius: 20, backgroundColor: GLASS, alignItems: 'center', justifyContent: 'center' },
+  wallet: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 14, borderRadius: inkRadius.pill, backgroundColor: GLASS },
+  walletText: { ...inkFace('bodyStrong'), color: INK, fontVariant: ['tabular-nums'] },
+  round: { width: 40, height: 40, borderRadius: inkRadius.pill, backgroundColor: GLASS, alignItems: 'center', justifyContent: 'center' },
   heading: { alignItems: 'center', marginTop: 18, paddingHorizontal: 24 },
-  date: { fontSize: 14, fontWeight: '600', color: INK_SOFT },
-  day: { marginTop: 4, fontFamily: fonts.playful, fontSize: 50, lineHeight: 58, color: INK, letterSpacing: -0.5, textAlign: 'center' },
+  date: { ...inkFace('subStrong'), color: INK_SOFT },
+  day: { marginTop: 4, ...inkFace('display'), color: INK, textAlign: 'center' },
   prize: { marginTop: 2, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  prizeText: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36, color: INK },
+  prizeText: { ...inkFace('display'), color: INK },
   stage: { paddingHorizontal: 10, position: 'relative' },
   // The paws rest on the card's top edge.
   mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2 },
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 34,
+    borderRadius: inkRadius.pill,
     paddingTop: 26,
     paddingHorizontal: 18,
     paddingBottom: 18,
@@ -430,22 +431,22 @@ const styles = StyleSheet.create({
     // No Android elevation: it lifts the card above the later-drawn mascot and hides its paws (A51).
   },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 },
-  cardTitle: { fontFamily: fonts.playfulBold, fontSize: 17, color: colors.text },
-  cardCount: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  cardTitle: { ...inkFace('bodyStrong'), color: colors.text },
+  cardCount: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   week: { flexDirection: 'row', gap: 6 },
   dayCol: { flex: 1, alignItems: 'center', gap: 6 },
-  dayNum: { fontSize: 11, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  dayNum: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   chip: { width: '100%', aspectRatio: 1 / 1.15, borderRadius: radius.md, backgroundColor: CHIP, alignItems: 'center', justifyContent: 'center' },
   chipToday: { backgroundColor: CHIP_TODAY, borderWidth: 2.5, borderColor: isDark ? colors.text : INK },
   chipDone: { backgroundColor: CHIP_DONE, borderWidth: 2.5, borderColor: DONE_EDGE },
-  chipAmount: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.text },
+  chipAmount: { ...inkFace('subStrong'), color: colors.text },
   chipFace: { position: 'absolute' },
-  ring: { width: 16, height: 16, borderRadius: 8, borderWidth: 2, borderColor: colors.border },
-  surprise: { position: 'absolute', bottom: 4, fontSize: 10, fontWeight: '700', color: colors.textSecondary },
-  rule: { marginTop: 12, marginBottom: 14, fontSize: 12.5, lineHeight: 17, color: colors.textSecondary, textAlign: 'center' },
-  cta: { height: 54, borderRadius: 27, backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  ring: { width: 16, height: 16, borderRadius: inkRadius.pill, borderWidth: 2, borderColor: colors.border },
+  surprise: { position: 'absolute', bottom: 4, ...inkFace('caption'), color: colors.textSecondary },
+  rule: { marginTop: 12, marginBottom: 14, ...inkFace('footnote'), color: colors.textSecondary, textAlign: 'center' },
+  cta: { height: 54, borderRadius: inkRadius.pill, backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   ctaOff: { opacity: 0.55 },
   ctaPressed: { transform: [{ scale: 0.97 }] },
-  ctaText: { fontFamily: fonts.playfulBold, fontSize: 18, color: colors.textOnPrimary },
+  ctaText: { ...inkFace('bodyStrong'), color: colors.textOnPrimary },
   flying: { position: 'absolute', left: 0, top: 0, width: SHELL, height: SHELL },
 });
