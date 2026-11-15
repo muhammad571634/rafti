@@ -7,6 +7,7 @@ import Svg, { Circle } from 'react-native-svg';
 import type { Ionicons } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { InkSegmented } from '@/components/ink';
 import { planDate, wholeMinutes } from '@/components/plans/copy';
 import {
   CharacterAvatar,
@@ -17,7 +18,6 @@ import {
   Screen,
   SFIcon,
   ShellIcon,
-  SystemSegmented,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
@@ -112,7 +112,7 @@ export default function LedgerScreen() {
         ListHeaderComponent={
           <>
             <LargeTitle>{t('ledger.title')}</LargeTitle>
-            <SystemSegmented
+            <InkSegmented
               options={[
                 { value: 'shells', label: t('ledger.tabShells') },
                 { value: 'seconds', label: t('ledger.tabCalls') },

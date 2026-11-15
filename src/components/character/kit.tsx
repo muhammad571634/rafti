@@ -8,8 +8,8 @@ import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'reac
 
 import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground';
 import { GroupAvatar } from '@/components/group-avatar';
+import { InkSegmented } from '@/components/ink';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
-import { haptic } from '@/lib/haptics';
 import { gradients, gradientStops, hitSlop, space, themed, type Accent, useThemed, useTokens } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
@@ -72,44 +72,6 @@ export function TitleTop({ title, onBack, right }: { title: string; onBack: () =
         {title}
       </Txt>
       {right}
-    </View>
-  );
-}
-
-/** Two or three choices on a soft track, the chosen one a white pill (Find's who-switch). */
-export function SoftSegmented<T extends string>({
-  options,
-  value,
-  onChange,
-  accessibilityLabel,
-}: {
-  options: readonly { value: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
-  accessibilityLabel?: string;
-}) {
-  const styles = useThemed(sheet);
-  return (
-    <View style={styles.segments} accessibilityRole="tablist" accessibilityLabel={accessibilityLabel}>
-      {options.map((option) => {
-        const on = option.value === value;
-        return (
-          <Pressable
-            key={option.value}
-            onPress={() => {
-              if (on) return;
-              haptic.selection();
-              onChange(option.value);
-            }}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: on }}
-            style={[styles.segment, on && styles.segmentOn]}>
-            <Txt style={[styles.segmentText, on && styles.segmentTextOn]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
-              {option.label}
-            </Txt>
-          </Pressable>
-        );
-      })}
     </View>
   );
 }
@@ -639,7 +601,7 @@ export function ChoiceRow<T extends string>({
   return (
     <View style={[styles.choice, !last && styles.rowLine]}>
       <Txt style={styles.rowText}>{label}</Txt>
-      <SoftSegmented options={options} value={value} onChange={onChange} accessibilityLabel={label} />
+      <InkSegmented options={options} value={value} onChange={onChange} accessibilityLabel={label} />
     </View>
   );
 }
@@ -794,15 +756,6 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     pick: { width: 26, height: 26, borderRadius: inkRadius.pill, borderWidth: 1.5, borderColor: colors.borderStrong },
     pickOn: { borderWidth: 0, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
     choice: { gap: 10, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
-    segments: { flexDirection: 'row', padding: 3, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
-    segment: { flex: 1, minHeight: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
-    segmentOn: {
-      // Apple's segmented thumb: white by day (on the fill), #636366 at night.
-      backgroundColor: systemColors.thumb,
-      ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
-    },
-    segmentText: { ...inkFace('subStrong'), color: colors.textSecondary },
-    segmentTextOn: { color: systemGround.label },
     bondHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: 18, paddingRight: 14, paddingTop: 16 },
     heart: { width: 40, height: 40, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
     bondTitle: { ...inkFace('cardSmall'), color: systemGround.label },

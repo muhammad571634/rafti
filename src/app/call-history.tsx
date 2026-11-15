@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import {
   CharacterAvatar,
   EmptyState,
@@ -15,7 +16,6 @@ import {
   PressableScale,
   Screen,
   SFIcon,
-  SystemSegmented,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
@@ -112,7 +112,7 @@ export default function CallHistoryScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <LargeTitle>{t('callHistory.title')}</LargeTitle>
 
-        <SystemSegmented
+        <InkSegmented
           options={[
             { value: 'all', label: t('callHistory.all') },
             { value: 'missed', label: t('callHistory.missed') },

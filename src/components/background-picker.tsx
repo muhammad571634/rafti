@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import type { Picture } from '@/components/chat/chat-ground';
-import { SoftSegmented, TitleTop } from '@/components/character/kit';
+import { TitleTop } from '@/components/character/kit';
 import { glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
 import { colors as phoneColors, fonts, gradients, gradientStops, night, space } from '@/theme';
@@ -130,7 +131,7 @@ export function BackgroundPicker({
             ) : null}
 
             <View style={styles.segment}>
-              <SoftSegmented options={tabs} value={collection} onChange={setCollection} />
+              <InkSegmented options={tabs} value={collection} onChange={setCollection} />
             </View>
           </View>
         }

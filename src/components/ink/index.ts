@@ -5,6 +5,7 @@
  */
 export { GlowCard, type GlowCardProps } from './glow-card';
 export { InkScreen, type InkScreenProps } from './ink-screen';
+export { InkSegmented, type InkSegmentedOption, type InkSegmentedProps } from './ink-segmented';
 export { InkChip, type InkChipProps } from './ink-chip';
 export { InkEm, InkText, type InkTextProps } from './ink-text';
 export { PillButton, type PillButtonProps, type PillKind } from './pill-button';

@@ -7,7 +7,8 @@ import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { FriendAccent, PeachButton, SoftSegmented, TitleTop, TopButton, useFriendAccent } from '@/components/character/kit';
+import { InkSegmented } from '@/components/ink';
+import { FriendAccent, PeachButton, TitleTop, TopButton, useFriendAccent } from '@/components/character/kit';
 import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
@@ -134,7 +135,7 @@ export default function MemoriesScreen() {
                 full={full}
               />
               <View style={styles.tabs}>
-                <SoftSegmented
+                <InkSegmented
                   options={MEMORY_TABS.map((value) => ({ value, label: tabLabel[value] }))}
                   value={tab}
                   onChange={setTab}

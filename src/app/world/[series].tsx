@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import { FeatureBar, RoundButton } from '@/components/feature/feature-kit';
 import { CircleCard } from '@/components/find/circle-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, SearchBar, Segmented, SFIcon, Txt } from '@/components/ui';
+import { Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, SearchBar, SFIcon, Txt } from '@/components/ui';
 import { isReleased } from '@/economy/early-access';
 import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
@@ -151,7 +152,7 @@ export default function WorldScreen() {
             style={styles.search}
           />
         ) : null}
-        <Segmented
+        <InkSegmented
           options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
           value={who}
           onChange={setWho}

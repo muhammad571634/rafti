@@ -32,7 +32,7 @@ import { portraitPosition } from '@/components/chat/chat-ground';
 import { FamilyRow, familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { InkText, tileTint } from '@/components/ink';
+import { InkSegmented, InkText, tileTint } from '@/components/ink';
 import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
@@ -42,7 +42,7 @@ import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, friendColor, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, friendColor, space, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
 import type { Character, CharacterGender } from '@/types';
 
@@ -339,31 +339,10 @@ function Section({ title, count, first }: { title: string; count?: number; first
   );
 }
 
-/** Everyone / Him / Her: a soft track, the chosen one a white thumb. */
+/** Everyone / Him / Her on the kit's segmented control. */
 function WhoSwitch({ value, onChange }: { value: Who; onChange: (who: Who) => void }) {
   const { t } = useTranslation();
-  return (
-    <View style={styles.who} accessibilityRole="tablist">
-      {WHO.map((option) => {
-        const on = option === value;
-        return (
-          <PressableScale
-            key={option}
-            onPress={() => onChange(option)}
-            scaleTo={0.97}
-            dimOnPress={false}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: on }}
-            aria-selected={on}
-            style={[styles.whoSegment, on && styles.whoOn]}>
-            <InkText variant={on ? 'subStrong' : 'sub'} color={on ? ink.text : ink.text2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-              {t(`find.who.${option}`)}
-            </InkText>
-          </PressableScale>
-        );
-      })}
-    </View>
-  );
+  return <InkSegmented options={WHO.map((option) => ({ value: option, label: t(`find.who.${option}`) }))} value={value} onChange={onChange} style={styles.who} />;
 }
 
 /**
@@ -776,17 +755,7 @@ const styles = StyleSheet.create({
     marginTop: space.md,
   },
   search: { flex: 1, minWidth: 0, height: 44, borderRadius: inkRadius.pill },
-  // Everyone / Him / Her: Apple's segmented control on dark.
-  who: {
-    flexDirection: 'row',
-    marginHorizontal: space.lg,
-    marginTop: space.md,
-    padding: 3,
-    borderRadius: inkRadius.pill,
-    backgroundColor: ink.raised,
-  },
-  whoSegment: { flex: 1, minHeight: 32, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
-  whoOn: { backgroundColor: systemColors.thumb, ...softShadow },
+  who: { marginHorizontal: space.lg, marginTop: space.md },
   sectionRow: {
     flexDirection: 'row',
     alignItems: 'baseline',

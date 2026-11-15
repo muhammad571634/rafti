@@ -7,11 +7,12 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { InkSegmented } from '@/components/ink';
 import { featureStyles, FeatureBar, HeroCard } from '@/components/feature/feature-kit';
 import { CARD_SHADOW, GroupLabel, IconTile } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClips, type ClipView } from '@/components/radio/use-clips';
-import { Anim, CharacterAvatar, LargeTitle, PressableScale, Screen, Segmented, SFIcon, Txt } from '@/components/ui';
+import { Anim, CharacterAvatar, LargeTitle, PressableScale, Screen, SFIcon, Txt } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
@@ -60,7 +61,7 @@ export default function RadioScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl + (showBar ? MINI_HEIGHT + space.md : 0) }}>
         <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} />
         <LargeTitle>{t('radio.title')}</LargeTitle>
-        <Segmented<Tab>
+        <InkSegmented<Tab>
           options={[
             { value: 'clips', label: t('radio.tabClips') },
             { value: 'sounds', label: t('radio.tabSounds') },

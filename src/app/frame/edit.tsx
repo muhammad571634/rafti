@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
 import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
 import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
 import { StickerGlyph } from '@/components/photo-booth/frame-sticker';
-import { LargeTitle, PressableScale, Screen, Segmented, Txt } from '@/components/ui';
+import { LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
 import {
   FRAME_CAPTION_MAX,
   FRAME_COLORS,
@@ -134,7 +135,7 @@ export default function FrameEditScreen() {
           </View>
 
           <GroupLabel>{t('frames.pattern')}</GroupLabel>
-          <Segmented
+          <InkSegmented
             options={FRAME_PATTERNS.map((p) => ({ value: p, label: t(`frames.patterns.${p}`) }))}
             value={pattern}
             onChange={setPattern}

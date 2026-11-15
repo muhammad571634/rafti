@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import { ClosenessSheet } from '@/components/closeness-sheet';
 import {
   CharacterAvatar,
@@ -14,7 +15,6 @@ import {
   LargeTitle,
   PressableScale,
   Screen,
-  SystemSegmented,
   Txt,
   useScrolledPast,
 } from '@/components/ui';
@@ -73,7 +73,7 @@ export default function ContactsScreen() {
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
         <LargeTitle>{t('contacts.title')}</LargeTitle>
-        <SystemSegmented
+        <InkSegmented
           options={[
             { value: 'all', label: t('contacts.all') },
             { value: 'mine', label: t('contacts.createdByYou') },

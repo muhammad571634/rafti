@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { FrameSwatch } from '@/components/photo-booth/frame-card';
 import { SendPill } from '@/components/photo-booth/send-pill';
@@ -20,7 +21,6 @@ import {
   LargeTitle,
   PressableScale,
   Screen,
-  Segmented,
   SFIcon,
   Sheet,
   Txt,
@@ -341,7 +341,7 @@ export default function PhotoBoothScreen() {
         <Txt style={styles.footnote}>{frameHint}</Txt>
 
         <GroupLabel>{t('photoBooth.styles')}</GroupLabel>
-        <Segmented
+        <InkSegmented
           options={STYLES.map((key) => ({ value: key, label: t(`photoBooth.styleNames.${key}`) }))}
           value={style}
           onChange={pickStyle}

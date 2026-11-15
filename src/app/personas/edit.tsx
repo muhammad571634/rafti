@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, type TextInputInstance, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkSegmented } from '@/components/ink';
 import { Pill } from '@/components/create/quick-create';
 import { GroupLabel } from '@/components/plans/store-look';
-import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, PressableScale, Screen, SystemSegmented, Toggle, Txt, useScrolledPast } from '@/components/ui';
+import { Avatar, GlassBar, GlassButton, InsetGroup, LargeTitle, PressableScale, Screen, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { perkLimit } from '@/economy/perks';
@@ -127,7 +128,7 @@ export default function PersonaEditScreen() {
             <View style={styles.formRow}>
               <Txt style={styles.formLabel}>{t('editProfile.pronouns')}</Txt>
               {/* iOS segmented control; tapping the chosen one again clears it (pronouns are optional). */}
-              <SystemSegmented
+              <InkSegmented
                 options={PRONOUNS.map((p) => ({ value: p, label: t(`personas.pronounShort.${p}`) }))}
                 value={pronouns}
                 onChange={(p) => {

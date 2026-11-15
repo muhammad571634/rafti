@@ -6,6 +6,7 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { InkSegmented } from '@/components/ink';
 import { featureStyles, HeroCard, RoundButton } from '@/components/feature/feature-kit';
 import { PlanPicker } from '@/components/plans/plan-picker';
 import {
@@ -24,7 +25,6 @@ import {
   moduleTile,
   PressableScale,
   Screen,
-  Segmented,
   SFIcon,
   Sheet,
   ShellIcon,
@@ -105,7 +105,7 @@ export default function StoreScreen() {
         <RoundButton icon="time-outline" ios="clock.arrow.circlepath" accessibilityLabel={t('ledger.open')} onPress={() => router.push('/store/ledger')} />
       </View>
       <LargeTitle>{t('store.title')}</LargeTitle>
-      <Segmented
+      <InkSegmented
         options={[
           { value: 'plans', label: t('plans.tabPlans') },
           { value: 'shells', label: t('plans.tabShells') },

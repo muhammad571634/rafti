@@ -5,8 +5,9 @@ import { KeyboardAvoidingView, Linking, ScrollView, StyleSheet, TextInput, View 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
+import { InkSegmented } from '@/components/ink';
 import { artLook, DateTicket, TicketBadge } from '@/components/date/ticket';
-import { Button, GlassButton, glassStyle, PressableScale, Screen, SystemSegmented, Txt } from '@/components/ui';
+import { Button, GlassButton, glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import {
   DATE_MOODS,
@@ -193,7 +194,7 @@ export default function DateThemeScreen() {
           </View>
 
           {label(t('dateTheme.rounds'))}
-          <SystemSegmented
+          <InkSegmented
             options={ROUND_OPTIONS.map((n) => ({ value: n, label: String(n) }))}
             value={rounds}
             onChange={(n) => setRounds(n)}
@@ -201,7 +202,7 @@ export default function DateThemeScreen() {
           />
 
           {label(t('dateTheme.mood'))}
-          <SystemSegmented
+          <InkSegmented
             options={DATE_MOODS.map((m) => ({
               value: m,
               label: t(`dating.moods.${m}`),
@@ -216,7 +217,7 @@ export default function DateThemeScreen() {
           {only ? (
             <>
               {label(t('dateTheme.who'))}
-              <SystemSegmented
+              <InkSegmented
                 options={[
                   { value: 'one', label: t('dateTheme.only', { name: onlyName }) },
                   { value: 'any', label: t('dateTheme.anyFriend') },

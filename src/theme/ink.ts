@@ -17,6 +17,8 @@ export const ink = {
   card: ground.card,
   /** Chips, fields, round buttons, a secondary pill: Apple's fill on dark. */
   raised: 'rgba(118,118,128,0.24)',
+  /** The chosen segment's thumb on a `raised` track (Apple's dark segmented control). */
+  thumb: '#636366',
   /** The separator between rows (0.5 pt). */
   line: 'rgba(84,84,88,0.6)',
   /** The faint rim that keeps a card's edge on the ground. */

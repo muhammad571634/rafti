@@ -5,8 +5,8 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeatureBar } from '@/components/feature/feature-kit';
-import { InkText } from '@/components/ink';
-import { CharacterAvatar, EmptyState, Screen, SystemSegmented } from '@/components/ui';
+import { InkSegmented, InkText } from '@/components/ink';
+import { CharacterAvatar, EmptyState, Screen } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { MomentCard, useMomentContent, useMomentTimeline, useOpenMoment } from '@/components/us/moments';
 import { useDayKey } from '@/hooks/use-day-key';
@@ -74,7 +74,7 @@ export default function MomentsScreen() {
               {t('us.moments')}
             </InkText>
             {filters.length > 1 ? (
-              <SystemSegmented
+              <InkSegmented
                 style={styles.segments}
                 options={(['all', ...filters] as MomentFilter[]).map((key) => ({ value: key, label: t(`us.filter.${key}`) }))}
                 value={filter}
