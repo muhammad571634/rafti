@@ -99,15 +99,18 @@ export function SymbolTile({
   ios,
   icon,
   size = 30,
+  deep,
 }: {
   fill: string;
   ios: SFSymbol;
   icon: keyof typeof Ionicons.glyphMap;
   size?: number;
+  /** Night's deep tint (design-audit §8.1): the hue as a faint wash, the glyph in the hue itself. */
+  deep?: boolean;
 }) {
   return (
-    <View style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size * 0.24), backgroundColor: fill }]}>
-      <SFIcon ios={ios} icon={icon} size={Math.round(size * 0.56)} color={colors.white} />
+    <View style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size * 0.24), backgroundColor: deep ? `${fill}33` : fill }]}>
+      <SFIcon ios={ios} icon={icon} size={Math.round(size * 0.56)} color={deep ? fill : colors.white} />
     </View>
   );
 }

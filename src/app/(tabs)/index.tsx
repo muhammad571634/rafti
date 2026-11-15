@@ -34,16 +34,21 @@ import {
   Screen,
   Sheet,
   SymbolTile,
-  Txt,
   UserAvatar,
   type ModuleKey,
 } from '@/components/ui';
+import { InkText } from '@/components/ink';
 import { helplineToday } from '@/lib/daily-note';
 import { clipName, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, hitSlop, playful, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, hitSlop, space, systemColors, systemGround, TAB_BAR_HEIGHT } from '@/theme';
+import { ink, inkRadius, inkTints } from '@/theme/ink';
+
+/** "Waiting for you" and the sealed note: the sun's deep tint, its light for the words that matter. */
+const SUN_WASH = inkTints[2][0];
+const SUN_LIGHT = systemColors.yellow;
 import type { WidgetKind } from '@/types';
 
 /** Every module as an app-icon tile; the ones a widget stands in for step aside. */
@@ -242,14 +247,14 @@ export default function HomeScreen() {
               accessibilityLabel={t('home.widget.add')}
               onPress={() => setGallerySlot(firstEmpty)}>
               <Glass style={styles.round}>
-                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : systemGround.label} />
+                <Ionicons name="add" size={24} color={onPhoto ? colors.onMedia : ink.text} />
               </Glass>
             </PressableScale>
           ) : null}
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-            <Txt style={styles.doneText} maxFontSizeMultiplier={1.3}>
+            <InkText variant="bodyStrong" color={ink.onPill}>
               {t('home.widget.done')}
-            </Txt>
+            </InkText>
           </PressableScale>
         </>
       ) : (
@@ -262,9 +267,9 @@ export default function HomeScreen() {
           <Glass style={styles.me}>
             <UserAvatar user={user} size={34} />
             {user.displayName.trim() ? (
-              <Txt style={[styles.meName, onPhoto && styles.photoName]} lines={1} maxFontSizeMultiplier={1.3}>
+              <InkText variant="subStrong" color={onPhoto ? colors.onMedia : ink.text} lines={1}>
                 {clipName(user.displayName)}
-              </Txt>
+              </InkText>
             ) : null}
           </Glass>
         </PressableScale>
@@ -273,7 +278,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <Screen background={systemGround.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
+    <Screen background={ink.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
@@ -327,20 +332,20 @@ export default function HomeScreen() {
                 ))}
               </View>
               <View style={styles.flex}>
-                <Txt style={styles.waitingTitle} lines={1}>
+                <InkText variant="bodyStrong" color={SUN_LIGHT} lines={1}>
                   {t('home.waiting')}
-                </Txt>
-                <Txt style={styles.waitingNames} lines={1}>
+                </InkText>
+                <InkText variant="footnote" lines={1}>
                   {namesLine}
-                </Txt>
+                </InkText>
               </View>
               <View style={styles.count}>
-                <Txt style={styles.countText} maxFontSizeMultiplier={1.2}>
+                <InkText variant="caption" color={ink.onPill}>
                   {unreadCount > 99 ? '99+' : unreadCount}
-                </Txt>
+                </InkText>
               </View>
               <Svg width={TAIL_W} height={TAIL_H} viewBox={`0 0 ${TAIL_W} ${TAIL_H}`} style={styles.tail} pointerEvents="none">
-                <Path fill={playful.sun} d="M0 0 L26 0 C17 3 9 7 5 12 C5 7 3 3 0 0 Z" />
+                <Path fill={SUN_WASH} d="M0 0 L26 0 C17 3 9 7 5 12 C5 7 3 3 0 0 Z" />
               </Svg>
             </PressableScale>
           </View>
@@ -357,13 +362,13 @@ export default function HomeScreen() {
             style={[styles.noteRow, unread.length === 0 && styles.noteFirst]}>
             {/* The envelope as a line in ink on a sun squircle (four-tab prototype). */}
             <View style={styles.noteIcon}>
-              <ModuleLine name="note" size={24} color={playful.sunInk} />
+              <ModuleLine name="note" size={24} color={SUN_LIGHT} />
             </View>
             <View style={styles.flex}>
-              <Txt style={styles.noteTitle} lines={1}>
+              <InkText variant="bodyStrong" lines={1}>
                 {t('home.todo.note', { name: noteName })}
-              </Txt>
-              <Txt style={styles.noteSealed}>{t('home.widget.sealed')}</Txt>
+              </InkText>
+              <InkText variant="footnote">{t('home.widget.sealed')}</InkText>
             </View>
             <CharacterAvatar character={noteFrom} size={36} />
           </PressableScale>
@@ -394,7 +399,7 @@ export default function HomeScreen() {
                 onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
                 style={[styles.slot, styles.empty, { width: half }]}>
                 <SoftGlass style={styles.round}>
-                  <Ionicons name="add" size={24} color={systemGround.label} />
+                  <Ionicons name="add" size={24} color={ink.text} />
                 </SoftGlass>
               </PressableScale>
             ) : null,
@@ -412,15 +417,17 @@ export default function HomeScreen() {
                 accessibilityLabel={t(TILE_LABEL[tile.key])}
                 onPress={() => router.push(tile.route as never)}
                 style={styles.tileCell}>
-                <SymbolTile {...moduleTile(tile.key)} size={TILE} />
+                <SymbolTile {...moduleTile(tile.key)} size={TILE} deep />
                 {badge ? (
                   <View style={styles.badge}>
-                    <Txt style={styles.badgeText}>1</Txt>
+                    <InkText variant="caption" color={colors.white}>
+                      1
+                    </InkText>
                   </View>
                 ) : null}
-                <Txt style={styles.tileLabel} lines={1}>
+                <InkText variant="caption" color={ink.text} lines={1}>
                   {t(TILE_LABEL[tile.key])}
-                </Txt>
+                </InkText>
               </PressableScale>
             );
           })}
@@ -429,7 +436,7 @@ export default function HomeScreen() {
         {editing ? null : (
           <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(true)} style={styles.editWrap}>
             <SoftGlass style={styles.edit}>
-              <Txt style={styles.editText}>{t('home.widget.edit')}</Txt>
+              <InkText variant="subStrong">{t('home.widget.edit')}</InkText>
             </SoftGlass>
           </PressableScale>
         )}
@@ -457,7 +464,7 @@ export default function HomeScreen() {
                     style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
                     <LiveWidget kind={kind} height={GALLERY_HEIGHT} preview />
                     <View style={styles.galleryLabel}>
-                      <Txt style={styles.galleryLabelText}>{label}</Txt>
+                      <InkText variant="subStrong">{label}</InkText>
                       {used ? <Ionicons name="checkmark" size={15} color={colors.success} /> : null}
                     </View>
                   </PressableScale>
@@ -612,7 +619,7 @@ const Slot = memo(function Slot({
             accessibilityLabel={t('home.widget.remove', { name: widgetLabel(kind, t) })}
             onPress={() => onRemove(index)}
             style={styles.minus}>
-            <Ionicons name="remove" size={16} color={systemGround.label} />
+            <Ionicons name="remove" size={16} color={ink.text} />
           </PressableScale>
         ) : null}
       </Animated.View>
@@ -636,49 +643,44 @@ const styles = StyleSheet.create({
   // As tall as the capsule; the wordmark hangs from it so its letters centre on the capsule.
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
   // Your mascot and name in one capsule; the name is cut to six letters (clipName).
-  me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  meName: { fontSize: 15, fontWeight: '600', color: systemGround.label },
-  photoName: { color: colors.onMedia },
+  me: { height: CAPSULE, paddingLeft: 3, paddingRight: 14, borderRadius: inkRadius.pill, flexDirection: 'row', alignItems: 'center', gap: 7 },
   photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
-  softGlass: { backgroundColor: systemGround.fill },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  done: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center', backgroundColor: systemGround.label },
-  doneText: { fontSize: 17, fontFamily: fonts.playfulBold, color: systemGround.ground },
+  softGlass: { backgroundColor: ink.raised },
+  round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  done: { height: 44, paddingHorizontal: 18, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: ink.pill },
   waitingWrap: { marginHorizontal: space.lg, marginTop: space.lg, paddingBottom: TAIL_H - 2 },
   waiting: {
     minHeight: 64,
-    borderRadius: 26,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     paddingVertical: 12,
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: playful.sun,
+    backgroundColor: SUN_WASH,
   },
   tail: { position: 'absolute', left: 30, bottom: -(TAIL_H - 1) },
   faces: { flexDirection: 'row' },
   overlap: { marginLeft: -12 },
-  waitingTitle: { fontSize: 16, fontFamily: fonts.playful, color: playful.sunInk },
-  waitingNames: { fontSize: 12.5, fontWeight: '600', color: playful.sunInk },
   count: {
     minWidth: 26,
     height: 26,
     paddingHorizontal: 7,
-    borderRadius: 13,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemGround.label,
+    backgroundColor: ink.pill,
   },
-  countText: { fontSize: 13, fontWeight: '800', color: systemGround.ground },
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg, marginTop: space.lg },
   // The width comes from the screen (`half`), so two always fit.
   slot: { height: WIDGET_HEIGHT },
   empty: {
-    borderRadius: 24,
+    borderRadius: inkRadius.card,
     borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: systemGround.dash,
-    backgroundColor: systemGround.well,
+    borderColor: ink.text3,
+    backgroundColor: ink.raised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -689,31 +691,30 @@ const styles = StyleSheet.create({
     top: -7,
     width: 26,
     height: 26,
-    borderRadius: 13,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
     borderWidth: 1,
-    borderColor: systemGround.dash,
+    borderColor: ink.line,
   },
-  noteIcon: { width: 48, height: 48, borderRadius: 15, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.sun },
-  // A secondary-grey card on the white ground, flat like Apple's grouped content.
+  noteIcon: { width: 48, height: 48, borderRadius: inkRadius.chip, alignItems: 'center', justifyContent: 'center', backgroundColor: SUN_WASH },
+  // A card on the night ground, flat like Apple's grouped content.
   noteRow: {
     marginHorizontal: space.lg,
     marginTop: space.md,
     minHeight: 72,
-    borderRadius: 24,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     paddingVertical: 12,
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
   },
   // Straight under the picture when no chat is waiting.
   noteFirst: { marginTop: space.lg },
-  noteTitle: { fontSize: 15.5, fontFamily: fonts.playful, color: systemGround.label },
-  noteSealed: { fontSize: 12.5, color: systemGround.secondaryLabel },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.lg, paddingHorizontal: space.sm, marginTop: space.xl },
   // Six to a row; more modules (fewer widgets) wrap onto a second row.
   tileCell: { width: `${100 / 6}%`, alignItems: 'center', gap: 6 },
@@ -723,23 +724,19 @@ const styles = StyleSheet.create({
     right: 4,
     minWidth: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: inkRadius.pill,
     paddingHorizontal: 5,
     borderWidth: 2,
-    borderColor: systemGround.ground,
-    backgroundColor: systemColors.red,
+    borderColor: ink.ground,
+    backgroundColor: ink.danger,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { fontSize: 11, fontWeight: '700', color: colors.white },
-  tileLabel: { fontSize: 11, fontFamily: fonts.playfulBold, color: systemGround.label },
   editWrap: { alignSelf: 'center', marginTop: space.xl },
-  edit: { height: 40, paddingHorizontal: 20, borderRadius: 20, justifyContent: 'center' },
-  editText: { fontSize: 15, fontFamily: fonts.playfulBold, color: systemGround.label },
+  edit: { minHeight: 44, paddingHorizontal: 20, borderRadius: inkRadius.pill, justifyContent: 'center' },
   gallery: { maxHeight: 560 },
   galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingBottom: space.lg },
   galleryItem: { width: '47%', gap: space.sm },
   used: { opacity: 0.45 },
   galleryLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 4 },
-  galleryLabelText: { fontSize: 14, fontFamily: fonts.playfulBold, color: colors.text },
 });
