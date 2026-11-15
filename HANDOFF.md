@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z241. START HERE: build the calm Today from the approved prototype (2026-11-16, Claude, Opus 5.5). NEXT: `docs/agent-tasks/today-calm.md`, start to finish, then stop for the owner
+
+**Owner, 2026-11-16:** approved `docs/prototypes/today-calm.html` ("Ha, kodla") and opens a new session for it: build it without drifting, and improve it where it is weak (the brief lists the worst cases to drive). This is the last item of the design audit's section 6.
+
+**Where the session before stopped:** section 6 items done today: §6.5 reactions as our own drops (0z235), §6.2 one More sheet (0z237), §6.3 30 free messages a day (0z239, server share 70 waits for the next deploy). Today's code is untouched.
+
+**Still to do (owner asks not finished):**
+- §6.1 Today in code (the brief).
+- Server deploy for 0z239's free reply share (`server/src/rate-limit.ts` 70): give the owner the deploy line with the next server change (both forms, `!` for the chat box and the PowerShell `&` form).
+- Before `ENFORCE_WALLET` is ever on: the server must count free messages and plans (0z239).
+- Not driven yet: the last-five note and the zero paywall (needs 25+ real messages), a friend's reaction arriving from the model, a reaction on the user's own line, More in a group chat, iOS for everything since 0z222.
+- Older items from 0z233's list still stand (the model's first hello on a fresh install, the flaky test, the next APK's navigation bar and keyboard controller, Fredoka on the diary date, the deep link to the same screen with other params).
+
 ### 0z240. Audit §6.1 Today prototype (2026-11-16, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/today-calm.html`, then code it in `src/app/(tabs)/index.tsx`
 
 - **Owner** asked whether Fable wrote how to do Today or whether this is our own idea. Answer: Fable's audit §6.1 says it (Today is a launcher: hero, yellow bubble, note, four pastel widgets, six saturated icons, ~10 colours and ~15 ways out; proposal: hero + "waiting for you" + at most two widgets, the six icons into one More sheet, prototype first). Pieces from Fable's other sections: §8.2 one living thing (the hero breathes 1-2 %), time of day changes greeting and light, §10 the name sits on the field when there is no line, icons in deep tints. Ours: the yellow bubble and the sealed note merge into one "waiting for you" card; the gifts badge rides on the More row; Edit moves into More as "choose widgets".
