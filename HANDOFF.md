@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z229. Largest text size pass on the A51 (2026-11-15, Claude, Opus 5.5). NEXT: the open items of 0z228 (segmented controls into one kit part); audit section 6 waits for the owner
+
+- **How**: `adb shell settings put system font_scale 1.3` (Android's largest standard step; the owner's phone was 1.1 and is back at 1.1), app in German (longest strings), 19 screens plus Today, Find scrolled, Dates, a missing chat. Apple HIG (Typography, Accessibility; read through the JSON endpoints): keep truncation to a minimum, prefer more lines, adapt layouts; not every element must grow (tab titles), content first; no word on hyphenation.
+- **Fixed** (`b82bdf2`, `a05cf8c`, `1326d6e`, `d4b1ea1`):
+  - Words split mid-word (Dates tiles "Regne / rische", Find seats "Große Sc / hwester"): `InkText` `wordSafe` (on for serif roles, opt-in for narrow labels) reads `onTextLayout`; a split word (`breaksMidWord`, `src/lib/title-fit.ts`) steps the text 8% smaller per layout down to 0.6. Scripts without spaces never count. Android's `adjustsFontSizeToFit` on a wrapping Text reports a layout it does not draw, so wrapping serif names (Tile, Find folders) no longer use it; one-line labels keep it.
+  - Us' talked-with discs drew names a few pixels tall: the label box was 24 high for a 24 line plus font padding; 30 high, no font padding.
+  - The gifts mascot's hair crossed the title: 76 pt of room for its 72 pt.
+  - Find's circle folder names rose over the faces in two lines: one line that shrinks (to 0.6).
+  - A chat link to a friend who is gone showed "Not found" with no way out: `Header` with Back; `Header`'s Back on a screen opened cold goes home (`router.replace('/')`).
+- **Fine at 1.3**: Chats, Us, Profile, Store (both tabs), My plan, Gifts, History, Alarms, alarm editor, Bedtime, Radio, Notifications and their settings, Call history, Edit profile, Today.
+- **Not done**: Android's 1.5-2.0 accessibility sizes (Android 13 on the A51 tops out lower), iOS Larger Accessibility Sizes, the chat screen itself, sheets with the keyboard up at 1.3. A deep link to the same screen with other params (`store/shell?tab=plans` while the shells tab is open) does not switch the tab; in-app taps do.
+- **Checked**: tsc 0, npm test 955/955; OTAs `12fd89d6`, `0e0c4ac6`, `a62b3a9c`, `788e0228` (and `6ba96465`, a temporary log build, replaced); no JS errors in logcat.
+
 ### 0z228. Step 6, settings; the design audit's work order is done (2026-11-15, Claude, Opus 5.5). NEXT: the open items below; section 6 of the audit waits for the owner
 
 - **Profile** (`f79da16`): a Notifications row (red bell, opens notification settings; before only Us' bell led there) and a Message sound switch (in-app chat sounds and the new-message push sound, `settings.messageSound`) beside chat animation and haptics. New string `profile.messageSound` in 14 locales.
