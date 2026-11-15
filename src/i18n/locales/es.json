@@ -2659,5 +2659,12 @@
     "deleteRow": "Eliminar a {{name}}",
     "deleteTitle": "¿Eliminar a {{name}}?",
     "deleteBody": "Este personaje y todo lo que teníais juntos se eliminan. No se puede deshacer."
+  },
+  "more": {
+    "title": "Más",
+    "play": "Jugar juntos",
+    "story": "Historia",
+    "watch": "Escuchar y ver",
+    "you": "Tú"
   }
 }

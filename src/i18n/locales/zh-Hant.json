@@ -2621,5 +2621,12 @@
     "deleteRow": "刪除{{name}}",
     "deleteTitle": "要刪除{{name}}嗎？",
     "deleteBody": "這個角色和你們之間的一切都會被刪除，無法復原。"
+  },
+  "more": {
+    "title": "更多",
+    "play": "一起玩",
+    "story": "故事",
+    "watch": "聽與看",
+    "you": "你"
   }
 }

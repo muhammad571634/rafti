@@ -6,26 +6,27 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBackToClose } from '@/components/chat/message-menu';
 import { moduleTile, PressableScale, Txt } from '@/components/ui';
 // Only chats open it, and a chat is always dark (appearance B): the night tokens in both themes.
-import { bottomRoom, nightColors as colors, moduleFills, space, systemColors } from '@/theme';
+import { bottomRoom, nightColors as colors, moduleFills, space } from '@/theme';
 
-export type AttachKey = 'scene' | 'timeSkip' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary';
+export type AttachKey = 'scene' | 'timeSkip' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary' | 'more';
+
+/** More is no module: Apple's grey fill, as iOS's own More rows. */
+const MORE_FILL = 'rgba(118,118,128,0.36)';
 
 /**
- * Three rows of three (canvas v1 `Plus`): what you send, what you do together, the story. Modules
- * wear their own colour (`moduleTile`), the same as on Today; the games take hues no module here
- * uses. No Voice here: the mic in the field records.
+ * Two rows of three (audit §6.2, prototype `docs/prototypes/more-sheet.html`): the five things people
+ * use every day, then More (games and story tools, `MoreSheet`). Modules wear their own colour
+ * (`moduleTile`), the same as on Today. No Voice here: the mic in the field records.
  */
+
 const ITEMS: { key: AttachKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
   { key: 'photo', icon: 'image', fill: moduleFills.photo },
   { key: 'secretNote', ...moduleTile('note') },
   { key: 'diary', ...moduleTile('diary') },
   { key: 'date', ...moduleTile('date') },
-  { key: 'truthOrDare', icon: 'dice', fill: systemColors.purple },
-  { key: 'quiz', icon: 'help', fill: systemColors.indigo },
-  { key: 'scene', icon: 'film', fill: systemColors.teal },
-  // A clock's grey, as iOS's Clock: story time, not a module.
-  { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
   { key: 'dailyCalls', ...moduleTile('calls') },
+  // Games and story tools live behind More (audit §6.2): one sheet, the same as Us opens.
+  { key: 'more', icon: 'ellipsis-horizontal', fill: MORE_FILL },
 ];
 
 const COLUMNS = 3;

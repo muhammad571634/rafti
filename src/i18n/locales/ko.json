@@ -2621,5 +2621,12 @@
     "deleteRow": "{{name}} 지우기",
     "deleteTitle": "{{name}}을(를) 지울까요?",
     "deleteBody": "이 캐릭터와 함께한 모든 것이 삭제돼요. 되돌릴 수 없어요."
+  },
+  "more": {
+    "title": "더 보기",
+    "play": "함께 놀기",
+    "story": "스토리",
+    "watch": "듣고 보기",
+    "you": "나"
   }
 }

@@ -2659,5 +2659,12 @@
     "deleteRow": "{{name}} löschen",
     "deleteTitle": "{{name}} löschen?",
     "deleteBody": "Dieser Charakter und alles, was ihr zusammen hattet, wird gelöscht. Das lässt sich nicht rückgängig machen."
+  },
+  "more": {
+    "title": "Mehr",
+    "play": "Zusammen spielen",
+    "story": "Geschichte",
+    "watch": "Hören und sehen",
+    "you": "Du"
   }
 }

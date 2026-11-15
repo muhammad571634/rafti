@@ -2659,5 +2659,12 @@
     "deleteRow": "{{name}} silinsin",
     "deleteTitle": "{{name}} silinsin mi?",
     "deleteBody": "Bu karakter ve birlikte olan her şey silinir. Geri alınamaz."
+  },
+  "more": {
+    "title": "Daha fazla",
+    "play": "Birlikte oyna",
+    "story": "Hikâye",
+    "watch": "Dinle ve izle",
+    "you": "Sen"
   }
 }

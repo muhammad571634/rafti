@@ -16,6 +16,7 @@ import { dropNote } from '@/lib/voice-files';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
+import { MoreSheet } from '@/components/more-sheet';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, usePictureListTop } from '@/components/chat/chat-ground';
 import { DayChip } from '@/components/chat/day-chip';
@@ -88,6 +89,7 @@ export default function GroupChatScreen() {
   const reportMessage = useAppStore((s) => s.reportMessage);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [skipOpen, setSkipOpen] = useState(false);
   const blurTarget = useRef<ViewInstance>(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -331,8 +333,10 @@ export default function GroupChatScreen() {
       case 'timeSkip':
         return setSkipOpen(true);
       case 'scene':
-        // Hidden in groups (`hide` below): scenes play in one-to-one chats.
+        // Hidden in groups (`hide` on More): scenes play in one-to-one chats.
         return;
+      case 'more':
+        return setMoreOpen(true);
       default:
         return setWithOne(key);
     }
@@ -426,7 +430,7 @@ export default function GroupChatScreen() {
             canRecord={canRecord}
             replying={replyTo ? { quote: replyTo, title: quoteTitle(replyTo), onCancel: cancelReply } : undefined}
           />
-          <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} hide={['scene']} />
+          <AttachMenu visible={attachOpen} onClose={() => setAttachOpen(false)} onPick={attach} />
         </KeyboardAvoidingView>
 
         <ChatHeader
@@ -444,6 +448,7 @@ export default function GroupChatScreen() {
       </BlurTargetView>
 
       <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
+      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} hide={['scene']} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)} title={t('group.pickMember')}>

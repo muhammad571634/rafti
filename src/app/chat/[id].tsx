@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiBase } from '@/ai/server';
 import { ChatInput, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
+import { MoreSheet } from '@/components/more-sheet';
 import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/chat/chat-header';
 import { LevelUpTakeover } from '@/components/level-up';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
@@ -126,6 +127,7 @@ export default function ChatRoomScreen() {
   const dismissLevelUp = useAppStore((s) => s.dismissLevelUp);
 
   const [attachOpen, setAttachOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [toneOpen, setToneOpen] = useState(false);
   /** Sends what the field holds in the tone picked; set when send is held. */
   const sendToned = useRef<((tone: MessageTone) => void) | null>(null);
@@ -516,6 +518,8 @@ export default function ChatRoomScreen() {
         return setCallsOpen(true);
       case 'diary':
         return router.push('/diary/write');
+      case 'more':
+        return setMoreOpen(true);
     }
   };
 
@@ -735,6 +739,7 @@ export default function ChatRoomScreen() {
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
+      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} />
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}

@@ -2659,5 +2659,12 @@
     "deleteRow": "Delete {{name}}",
     "deleteTitle": "Delete {{name}}?",
     "deleteBody": "This character and everything you had together are deleted. This cannot be undone."
+  },
+  "more": {
+    "title": "More",
+    "play": "Play together",
+    "story": "Story",
+    "watch": "Listen and watch",
+    "you": "You"
   }
 }

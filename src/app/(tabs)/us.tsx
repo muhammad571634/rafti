@@ -15,6 +15,7 @@ import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
+import { MoreSheet } from '@/components/more-sheet';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { phrase } from '@/i18n';
@@ -73,6 +74,7 @@ export default function UsScreen() {
   const spendShells = useAppStore((s) => s.spendShells);
   const wallet = useAppStore((s) => s.wallet);
   const [paywall, setPaywall] = useState<number | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const today = useDayKey();
   const [day, setDay] = useState(today);
@@ -392,6 +394,17 @@ export default function UsScreen() {
         </View>
 
         <OurMoments character={character} relationship={relationship} today={today} onOpenDay={openDay} />
+
+        {/* One More (audit §6.2): the features people look for, the same sheet as the chat's "+". */}
+        <View style={[styles.card, styles.moreCard]}>
+          <PressableScale scaleTo={0.98} dimOnPress={false} accessibilityRole="button" accessibilityLabel={t('more.title')} onPress={() => setMoreOpen(true)} style={styles.moreRow}>
+            <View style={styles.moreTile}>
+              <Ionicons name="ellipsis-horizontal" size={19} color={ink.text} />
+            </View>
+            <InkText style={styles.grow}>{t('more.title')}</InkText>
+            <Ionicons name="chevron-forward" size={16} color={ink.text3} />
+          </PressableScale>
+        </View>
       </ScrollView>
 
       <PublishSheet
@@ -409,6 +422,16 @@ export default function UsScreen() {
         cost={shellCosts.planSetup}
       />
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
+      <MoreSheet
+        visible={moreOpen}
+        onClose={() => setMoreOpen(false)}
+        // From a friend's page the quiz and a scene are with that friend; truth or dare and a time skip play inside the chat.
+        hide={friendChatId ? ['truthOrDare', 'timeSkip'] : ['truthOrDare', 'timeSkip', 'scene']}
+        onChatPick={(key) => {
+          if (key === 'quiz') router.push({ pathname: '/quiz/[characterId]', params: { characterId: character.id } });
+          else if (key === 'scene' && friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });
+        }}
+      />
       <BondShareSheet
         visible={sharing}
         onClose={() => setSharing(false)}
@@ -574,6 +597,9 @@ const styles = StyleSheet.create({
   reward: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: 2 },
   section: { marginTop: 20, marginBottom: 8, marginHorizontal: 18 },
   card: { marginHorizontal: 14, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
+  moreCard: { marginTop: 20 },
+  moreRow: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, minHeight: 56 },
+  moreTile: { width: 32, height: 32, borderRadius: 8, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },
   free: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: space.lg, paddingRight: 10 },
   // Planning costs shells, so the pill is the money peach.

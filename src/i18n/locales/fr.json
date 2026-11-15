@@ -2659,5 +2659,12 @@
     "deleteRow": "Supprimer {{name}}",
     "deleteTitle": "Supprimer {{name}} ?",
     "deleteBody": "Ce personnage et tout ce que vous aviez ensemble sont supprimés. C’est définitif."
+  },
+  "more": {
+    "title": "Plus",
+    "play": "Jouer ensemble",
+    "story": "Histoire",
+    "watch": "Écouter et regarder",
+    "you": "Toi"
   }
 }

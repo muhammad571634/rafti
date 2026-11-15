@@ -2621,5 +2621,12 @@
     "deleteRow": "Hapus {{name}}",
     "deleteTitle": "Hapus {{name}} selamanya?",
     "deleteBody": "Karakter ini dan semua yang kalian punya bersama dihapus. Tidak bisa dibatalkan."
+  },
+  "more": {
+    "title": "Lainnya",
+    "play": "Main bareng",
+    "story": "Cerita",
+    "watch": "Dengar dan tonton",
+    "you": "Kamu"
   }
 }

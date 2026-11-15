@@ -2621,5 +2621,12 @@
     "deleteRow": "Xoá {{name}}",
     "deleteTitle": "Xoá hẳn {{name}}?",
     "deleteBody": "Nhân vật này và mọi thứ hai bạn có cùng nhau sẽ bị xoá. Không thể hoàn tác."
+  },
+  "more": {
+    "title": "Thêm",
+    "play": "Chơi cùng nhau",
+    "story": "Câu chuyện",
+    "watch": "Nghe và xem",
+    "you": "Bạn"
   }
 }

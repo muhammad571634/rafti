@@ -2659,5 +2659,12 @@
     "deleteRow": "Elimina {{name}}",
     "deleteTitle": "Eliminare {{name}}?",
     "deleteBody": "Questo personaggio e tutto ciò che avevate insieme vengono eliminati. Non si può annullare."
+  },
+  "more": {
+    "title": "Altro",
+    "play": "Giocare insieme",
+    "story": "Storia",
+    "watch": "Ascolta e guarda",
+    "you": "Tu"
   }
 }

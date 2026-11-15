@@ -2659,5 +2659,12 @@
     "deleteRow": "Excluir {{name}}",
     "deleteTitle": "Excluir {{name}}?",
     "deleteBody": "Este personagem e tudo o que vocês tinham juntos serão excluídos. Não dá para desfazer."
+  },
+  "more": {
+    "title": "Mais",
+    "play": "Jogar juntos",
+    "story": "História",
+    "watch": "Ouvir e assistir",
+    "you": "Você"
   }
 }
