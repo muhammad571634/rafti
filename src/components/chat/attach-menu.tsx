@@ -53,6 +53,8 @@ export function AttachMenu({
   useBackToClose(visible, onClose);
   if (!visible) return null;
   const items = ITEMS.filter((item) => !hide.includes(item.key));
+  // More is the sheet's own title, not an attachment.
+  const label = (key: AttachKey) => (key === 'more' ? t('more.title') : t(`chat.attachments.${key}`));
 
   return (
     <View style={[styles.panel, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]} accessibilityRole="menu">
@@ -64,13 +66,13 @@ export function AttachMenu({
               scaleTo={0.94}
               style={styles.item}
               accessibilityRole="menuitem"
-              accessibilityLabel={t(`chat.attachments.${item.key}`)}
+              accessibilityLabel={label(item.key)}
               onPress={() => onPick(item.key)}>
               <View style={[styles.icon, { backgroundColor: item.fill }]}>
                 <Ionicons name={item.icon} size={26} color={colors.white} />
               </View>
               <Txt style={styles.label} center lines={2}>
-                {t(`chat.attachments.${item.key}`)}
+                {label(item.key)}
               </Txt>
             </PressableScale>
           ))}
