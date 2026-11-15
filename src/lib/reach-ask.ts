@@ -10,8 +10,11 @@ import type { Message, ReachAsk, Relationship, Temper } from '@/types';
  * pushes at the moment the user is most willing. Pure and server-portable.
  */
 export const REACH_ASK = {
-  /** The user's own messages with this friend before the first ask. */
-  minTotal: 8,
+  /**
+   * The user's own messages with this friend before the first ask: the first real exchange. Five since
+   * onboarding stopped asking for pushes (audit 2026-11-15 §6.4): this ask is now the only way in.
+   */
+  minTotal: 5,
   /** …and in this sitting: they are here and enjoying it. */
   minSession: 4,
   /** A quiet gap this long starts a new sitting. */

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, useRouter } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   BackHandler,
@@ -43,7 +43,6 @@ import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
-import { LockPreview } from '@/components/notifications/lock-preview';
 import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
 import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
@@ -53,8 +52,6 @@ import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { morningGreetings } from '@/mock';
-import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, night, NightScope, palette, space } from '@/theme';
 import type { Character, Pronouns } from '@/types';
@@ -82,8 +79,10 @@ const CARD_SHADOW = Platform.select<ViewStyle>({
 })!;
 const SMOOTH = Easing.inOut(Easing.ease);
 
-type Step = 'intro' | 'age' | 'name' | 'gender' | 'meet' | 'notify' | 'gift';
-const ALL_STEPS: Step[] = ['intro', 'age', 'name', 'gender', 'meet', 'notify', 'gift'];
+// No notifications scene (audit 2026-11-15 §6.4, owner's yes): the friend asks in the chat after the first
+// real exchange (`src/lib/reach-ask.ts`), and "Yes, text me!" opens the system prompt there.
+type Step = 'intro' | 'age' | 'name' | 'gender' | 'meet' | 'gift';
+const STEPS: Step[] = ['intro', 'age', 'name', 'gender', 'meet', 'gift'];
 const GENDERS: { value: Pronouns; label: string }[] = [
   { value: 'she', label: 'onboarding.genderShe' },
   { value: 'he', label: 'onboarding.genderHe' },
@@ -96,8 +95,7 @@ const NO_PHOTO: [string, string] = ['#A5ABB8', '#858A96'];
  * First launch, reworked on Apple's HIG (Onboarding, Privacy, Entering data; 2026-10-29): the first
  * hello ends with Sigmazam's greeting and the one Start button, with no second hello screen. Then a
  * few short things on the aurora, one scene each: birth year (18+), name, first friend from a deck
- * of cards, notifications (only while the system has not decided; one button that opens the system
- * prompt), and a welcome gift. It ends in the first chat, where the new friend has already written.
+ * of cards, and a welcome gift. It ends in the first chat, where the new friend has already written.
  */
 /**
  * Onboarding is a one-way door: a link to it (`sigmazam://onboarding`) after it is done lands on
@@ -129,28 +127,18 @@ function OnboardingScreen() {
 
   const [step, setStep] = useState<Step>('intro');
   // HIG Entering data: what the system already knows is not asked again.
-  const [askPush, setAskPush] = useState(true);
-  const asked = useRef(false);
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [name, setName] = useState('');
   const [pronouns, setPronouns] = useState<Pronouns | null>(null);
   const [friendId, setFriendId] = useState(PICKS[0]);
-  const [notifications, setNotifications] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   // The keyboard covers the system bar, so its inset would only lift the button over the name preview.
   const keyboardUp = useKeyboardVisible();
   // Kept in state: the React Compiler caches a plain read during render, so the ✓ stayed on the launch choice.
   const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
 
-  useEffect(() => {
-    void pushPermission().then((state) => {
-      if (state === 'undetermined') return;
-      setAskPush(false);
-      setNotifications(state === 'granted');
-    });
-  }, []);
 
-  const steps = useMemo(() => ALL_STEPS.filter((s) => s !== 'notify' || askPush), [askPush]);
+  const steps = STEPS;
   const questions = steps.length - 1;
   // The intro is 0, the questions 1 and up.
   const index = steps.indexOf(step);
@@ -162,22 +150,16 @@ function OnboardingScreen() {
   const trimmed = name.trim();
 
   const next = () => setStep(steps[Math.min(index + 1, steps.length - 1)]);
-  // Once the system has asked, going back skips the notifications scene: there is nothing left to ask.
-  const back = () => {
-    let i = Math.max(index - 1, 1);
-    if (steps[i] === 'notify' && asked.current) i = Math.max(i - 1, 1);
-    setStep(steps[i]);
-  };
+  const back = () => setStep(steps[Math.max(index - 1, 1)]);
 
   // Android's own Back (the bottom bar's button or the edge swipe) goes where the arrow goes, and from the
   // first question back to Start; on Start it leaves, as on any first screen. iOS has the arrow only.
-  // The notifications pre-alert keeps its one way on (HIG Privacy).
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (step === 'intro') return false;
       if (step === 'age') setStep('intro');
-      else if (step !== 'notify') back();
+      else back();
       return true;
     });
     return () => sub.remove();
@@ -197,7 +179,8 @@ function OnboardingScreen() {
       birthYear: year,
       pronouns: pronouns ?? 'they',
       characterId: friend.id,
-      notifications,
+      // Morning and evening hellos stay on; they reach the phone once the system allows pushes.
+      notifications: true,
       firstAsk: t('onboarding.firstAsk', { name: trimmed }),
     });
     router.replace('/(tabs)');
@@ -257,21 +240,6 @@ function OnboardingScreen() {
             <Txt style={styles.caption}>{t('onboarding.meetNote')}</Txt>
           </>
         );
-      case 'notify':
-        // HIG Privacy, pre-alert screens: one button, it opens the system prompt, and whatever the
-        // answer the flow goes on. No "Allow" wording and no way round the prompt.
-        return (
-          <Cta
-            label={t('onboarding.continue')}
-            onPress={() => {
-              void requestPushPermission().then((granted) => {
-                asked.current = true;
-                setNotifications(granted);
-                next();
-              });
-            }}
-          />
-        );
       case 'gift':
         return <Cta label={t('onboarding.sayHi', { name: friendName })} onPress={finish} />;
     }
@@ -280,8 +248,7 @@ function OnboardingScreen() {
   return (
     <Screen night background="aurora">
       <View style={styles.top}>
-        {/* HIG Privacy: a pre-alert screen offers no way out but the system prompt. */}
-        {index > 1 && step !== 'notify' ? (
+        {index > 1 ? (
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back}>
             <AuroraGlass style={styles.round}>
               <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
@@ -406,24 +373,6 @@ function OnboardingScreen() {
               </>
             ) : null}
 
-            {step === 'notify' && friend ? (
-              <>
-                <Title title={t('onboarding.notifyTitle', { name: friendName })} body={t('onboarding.notifyBody')} />
-                <LockPreview
-                  at="7:30"
-                  day={tomorrow().toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
-                  character={friend}
-                  name={friend.name}
-                  line={morningGreetings(friend.gender)[0]}
-                  dropIn
-                  style={styles.lock}
-                />
-                <View style={styles.perks}>
-                  <Perk text={t('onboarding.notifyPerkMorning')} />
-                  <Perk text={t('onboarding.notifyPerkPlan')} />
-                </View>
-              </>
-            ) : null}
 
             {step === 'gift' ? (
               <View style={styles.hello}>
@@ -468,15 +417,6 @@ function Title({ title, body }: { title: string; body: string }) {
         {title}
       </Txt>
       <Txt style={styles.body}>{body}</Txt>
-    </View>
-  );
-}
-
-function Perk({ text }: { text: string }) {
-  return (
-    <View style={styles.perk}>
-      <Ionicons name="checkmark" size={18} color={aurora.tint} />
-      <Txt style={[styles.noteText, styles.flex]}>{text}</Txt>
     </View>
   );
 }
@@ -689,12 +629,6 @@ function WheelYear({ year, index, scrollY, onPress }: { year: number; index: num
   );
 }
 
-function tomorrow() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d;
-}
-
 const PEEK_W = 120;
 
 const styles = StyleSheet.create({
@@ -767,9 +701,6 @@ const styles = StyleSheet.create({
   faces: { flexDirection: 'row', justifyContent: 'center', gap: space.md, marginTop: space.md },
   face: { width: 48, height: 48, borderRadius: 24, borderWidth: 2, borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' },
   faceOn: { borderColor: aurora.tint },
-  lock: { marginHorizontal: 0, marginTop: 22 },
-  perks: { marginTop: space.lg, gap: space.sm + 2 },
-  perk: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm + 2 },
   // The pose sits at the bottom of the box; the sparks burst from just above its head.
   giftArt: { width: 300, alignItems: 'center', justifyContent: 'flex-end' },
   giftSpark: { position: 'absolute', top: 30, left: 144, width: 12, height: 12 },
