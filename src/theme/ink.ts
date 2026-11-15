@@ -92,6 +92,15 @@ export const inkType = StyleSheet.create({
 
 export type InkRole = keyof typeof inkType;
 
+/**
+ * A role's face, size and weight without its colour: for shared parts whose text takes its colour
+ * from elsewhere (a Txt `color`, a red row, words on a picture).
+ */
+export function inkFace(role: InkRole): TextStyle {
+  const { color: _color, ...face } = inkType[role] as TextStyle;
+  return face;
+}
+
 /** The italic, coloured part of a serif line ("New chapter: *the race*"). */
 export const inkEm = (color: string): TextStyle => ({ fontFamily: fonts.serifItalic, color });
 

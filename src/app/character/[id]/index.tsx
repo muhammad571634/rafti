@@ -30,7 +30,8 @@ import { heightLabel } from '@/lib/character-facts';
 import { daysBetween, shortName } from '@/lib/format';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { fonts, night, space } from '@/theme';
+import { night, space } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Character, Relationship } from '@/types';
 
 // Always dark (appearance B, owner 2026-11-11): a friend's page is a moment with them.
@@ -294,25 +295,25 @@ function BondCard({
 
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
-  bold: { fontWeight: '700' },
+  bold: { fontWeight: inkFace('subStrong').fontWeight },
   words: { paddingHorizontal: space.xl, paddingTop: 18, paddingBottom: 18, alignItems: 'center' },
-  // Their own words come in every script: the system face, heavy.
-  tagline: { fontSize: 19, lineHeight: 25, fontWeight: '800', letterSpacing: -0.4, color: systemGround.label },
-  bio: { marginTop: 8, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
+  // Their line in the serif (it carries Latin, Cyrillic and Greek; other scripts fall back cleanly).
+  tagline: { ...inkFace('cardSmall'), color: systemGround.label },
+  bio: { marginTop: 8, ...inkFace('sub'), color: colors.textSecondary },
   tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
-  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: 16, justifyContent: 'center', backgroundColor: systemGround.fill },
-  tagText: { fontFamily: fonts.playfulBold, fontSize: 13.5, color: systemGround.label },
+  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
+  tagText: { ...inkFace('sub'), color: systemGround.label },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   aboutStory: { paddingHorizontal: 18, paddingTop: 8, paddingBottom: 14, gap: 4 },
   aboutRow: { paddingHorizontal: 18, paddingVertical: 12, gap: 2 },
-  aboutLabel: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
-  aboutText: { fontSize: 15, lineHeight: 22 },
-  aboutValue: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
+  aboutLabel: { ...inkFace('footnote'), color: colors.textSecondary },
+  aboutText: inkFace('sub'),
+  aboutValue: inkFace('body'),
   storyList: { paddingTop: 4 },
   storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 12 },
-  storyIcon: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  storyIcon: { width: 32, height: 32, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   storyIconOpen: { backgroundColor: colors.primarySofter },
   storyLocked: { color: colors.textSecondary },
-  progress: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
+  progress: { ...inkFace('subStrong'), color: colors.textSecondary },
   bondFoot: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
 });

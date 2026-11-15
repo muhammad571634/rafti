@@ -15,7 +15,8 @@ import { count, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, fonts, night, palette, radius, space, type } from '@/theme';
+import { bottomRoom, night, palette, radius, space, type } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
 // Always dark (appearance B, owner 2026-11-11): what they keep of you is part of their space.
@@ -451,21 +452,20 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 8,
     paddingHorizontal: space.lg + 6,
-    fontFamily: fonts.playfulBold,
-    fontSize: 15,
+    ...inkFace('subStrong'),
     color: colors.textSecondary,
   },
   // Rows share one white card: the first rounds its top, the last its bottom.
   rowWrap: { marginHorizontal: space.lg, backgroundColor: systemGround.card, overflow: 'hidden' },
-  rowFirst: { borderTopLeftRadius: 24, borderTopRightRadius: 24 },
-  rowLast: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
+  rowFirst: { borderTopLeftRadius: inkRadius.card, borderTopRightRadius: inkRadius.card },
+  rowLast: { borderBottomLeftRadius: inkRadius.card, borderBottomRightRadius: inkRadius.card },
   memory: { paddingLeft: 18, backgroundColor: systemGround.card },
   memoryPressed: { backgroundColor: systemGround.fill },
   memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 14, paddingRight: 18 },
   memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  memoryText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  memoryText: { ...inkFace('body'), color: colors.text },
   quote: { fontStyle: 'italic' },
-  memoryMeta: { marginTop: 2, fontSize: 13, color: colors.textSecondary },
+  memoryMeta: { marginTop: 2, ...inkFace('footnote'), color: colors.textSecondary },
   pin: { marginTop: 3 },
   actionsRow: { flexDirection: 'row' },
   swipeAction: { width: 66, alignItems: 'center', justifyContent: 'center' },
@@ -481,26 +481,26 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     ...type.body,
   },
-  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: 24, backgroundColor: systemGround.card },
+  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: inkRadius.card, backgroundColor: systemGround.card },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterTitle: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 26, color: systemGround.label, fontVariant: ['tabular-nums'] },
+  meterTitle: { ...inkFace('cardSmall'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   figure: { fontVariant: ['tabular-nums'] },
   // The tabs' shares sit side by side with a hairline gap, on the soft track.
-  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: 5, backgroundColor: systemGround.fill, overflow: 'hidden' },
+  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill, overflow: 'hidden' },
   fill: { height: '100%' },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 10 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  dot: { width: 9, height: 9, borderRadius: 5 },
-  legendText: { fontFamily: fonts.playfulBold, fontSize: 13, color: colors.textSecondary },
+  dot: { width: 9, height: 9, borderRadius: inkRadius.pill },
+  legendText: { ...inkFace('footnote'), color: colors.textSecondary },
   locked: { gap: 8, paddingHorizontal: space.lg, paddingTop: 22 },
   lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 6 },
-  lockedTitle: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.textSecondary },
-  lockedBox: { borderRadius: 24, backgroundColor: systemGround.card, overflow: 'hidden' },
+  lockedTitle: { ...inkFace('subStrong'), color: colors.textSecondary },
+  lockedBox: { borderRadius: inkRadius.card, backgroundColor: systemGround.card, overflow: 'hidden' },
   lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 62, paddingHorizontal: 18 },
   lockTile: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemGround.fill,
     alignItems: 'center',
     justifyContent: 'center',
