@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z240. Audit §6.1 Today prototype (2026-11-16, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/today-calm.html`, then code it in `src/app/(tabs)/index.tsx`
+
+- **Owner** asked whether Fable wrote how to do Today or whether this is our own idea. Answer: Fable's audit §6.1 says it (Today is a launcher: hero, yellow bubble, note, four pastel widgets, six saturated icons, ~10 colours and ~15 ways out; proposal: hero + "waiting for you" + at most two widgets, the six icons into one More sheet, prototype first). Pieces from Fable's other sections: §8.2 one living thing (the hero breathes 1-2 %), time of day changes greeting and light, §10 the name sits on the field when there is no line, icons in deep tints. Ours: the yellow bubble and the sealed note merge into one "waiting for you" card; the gifts badge rides on the More row; Edit moves into More as "choose widgets".
+- **Prototype** `docs/prototypes/today-calm.html` (images inlined, ~270 KB): new / current switch (the current is two A51 screenshots), morning / evening / night, with or without unread, with or without the friend's line, Reduce Motion; the More sheet with the eight other modules as deep-tinted icons.
+
 ### 0z239. Audit §6.3 shape B in code: 30 free messages a day, plans without a count (2026-11-15, Claude, Opus 5.5). NEXT: stop and talk with the owner about §6.1 Today (the last section-6 item); the server deploy line for the free reply share goes with the next deploy ask
 
 - **Owner**: picked B of `docs/pricing-6-3.md` ("B (tavsiya)").
