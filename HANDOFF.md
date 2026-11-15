@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z227. Step 5, features and moments on Ink faces; Step 5 done (2026-11-15, Claude, Opus 5.5). NEXT: Step 6 (settings: a Notifications row and the message-sound switch in Profile, the Development group hidden outside dev builds, `SHOW_DEV` / `realAi` launch blocker)
+
+- **Features** (`bfc9a5c`): radio (list, player, make), board (list, write), streams (list, live, new), photo booth, dates (list, a place, album, theme, share sheet), quiz (play, write), secret note (screen, opened note), the feature kit: fonts to Ink roles, radii to `inkRadius`. The quiz score leaves the Fredoka `heroFigure` for a new serif `inkType.numeralMid` (52). Paper kept: the board's writing on the stationery, the date's paper shot; rings that follow the shape inside them (date looks, booth frames, radio voices, stream faces) keep their radii.
+- **Moments** (`234694d`): alarms (list, editor, ring), bedtime, the call's controls and captions, the group call. The Fredoka clocks become serif numerals: editor 72 (`numeral`), list hero 52 (`numeralMid`), rows and the bedtime timer 36 (new `numeralSmall`). Kept on purpose: the ringing alarm's 104 pt serif clock, the time wheel's picker face, level-up (the lead's, already Ink), tickets and polaroids.
+- **One Back** (`832634e`): the plain `Header` (alarms, bedtime, the not-found states) drew a bare 36 pt chevron; it is the 44 pt `GlassButton` every other screen has.
+- **Fredoka left**: the diary's day number (approved diary) and the lucky wheel's numbers (an SVG `fontFamily` inside its animation). The font can leave the bundle once the owner says the diary date may change.
+- **Checked**: tsc 0, npm test 949/949; OTAs `0f3d1274`, `74cb42b7`; on the A51 (app in German, the longest strings) Alarms, Bedtime, the alarm editor, Radio, Dates, Photo booth; no JS errors in logcat. **Not checked**: a ringing alarm, a live call (needs call minutes), a finished quiz, largest text size. `npx eslint` has no flat config in the repo (`expo lint` would set one up); not run.
+
 ### 0z226. Step 5, lists and store on Ink faces (2026-11-15, Claude, Opus 5.5). NEXT: features and moments (`docs/agent-tasks/ink-5-features-moments.md`); quiz's `heroFigure` and the alarms / bedtime Fredoka clocks move with them
 
 - **Owner, this session**: continue Fable's work order from where it stopped; fix every bug, small glitch and log warning met on the way; the white Android navigation bar waits (it needs the APK, `enforceContrast`, 0z153), do not spend time on it.
