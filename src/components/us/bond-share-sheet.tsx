@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: PAPER.ink,
   },
-  storeText: { flexShrink: 1, fontSize: 10, fontWeight: '700', color: PAPER.card },
+  // 11 pt, Apple's smallest (HIG Typography; owner, 2026-11-16).
+  storeText: { flexShrink: 1, fontSize: 11, fontWeight: '700', color: PAPER.card },
   wink: { position: 'absolute', right: 18, bottom: 30 },
 });

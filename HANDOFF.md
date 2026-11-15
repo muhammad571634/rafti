@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z245. Us calendar's picked day round on Android; poster label 11 pt (2026-11-16, Claude, Opus 5.5). NEXT: a new preview APK (owner's yes) for the white navigation bar and Step 3.4 keyboard-controller, the last open items of Fable's audit
+
+- **Owner**: the picked day in Us' calendar showed as a square; the poster's 10 pt label to 11; asked whether day letters and red badges should grow too; then "carry on with what is left of Fable's plan".
+- **Code**: `src/components/us/plan-calendar.tsx`: the number's circle is filled transparent from the start, `collapsable={false}`, radius NUM / 2 and overflow hidden (Android drops the corners of a view that gains its fill later; the tab bar met the same bug in 0z124). `src/components/us/bond-share-sheet.tsx` storeText 10 -> 11.
+- **Day letters and badges**: kept at 12 pt (Caption): HIG's floor is 11 pt and both are above it; growing a badge grows its circle over the icon it marks.
+- **Checked**: tsc 0, npm test 964/964; OTA "Us calendar: picked day round"; on the A51 today's circle, 19 picked after two quick taps (round), the share poster with "Free on the App Store" at 11 pt on one line.
+- **Fable's audit, what is left** (Steps 1-6 and section 6 done): (1) the white Android navigation bar and (2) Step 3.4 `react-native-keyboard-controller` both need a new preview APK (installed APK is from 2026-11-07; `androidNavigationBar.enforceContrast: false` is already in app.json); (3) closing counts re-measured: `fontSize` literals in `src/app` 688 -> 49, `fontWeight` 35, `borderRadius` 105 (all of `src`: 154 / 97 / 231); (4) 8.2.4 "after midnight the app gets quieter" and friend order by time of day are product changes, not started.
+
 ### 0z244. Widget small lines 13 pt (2026-11-16, Claude, Opus 5.5). NEXT: the open items in 0z242 (server deploy line with the next server change, hero line language, the not-driven list)
 
 - **Owner**: yes to the typography offer ("make it larger"): widgets' small lines 12 -> 13 pt (HIG: iOS default 17, minimum 11; Footnote is 13).
@@ -23,7 +31,6 @@
 
 **Still to do (owner asks not finished):**
 - Tab bar: the owner's pick of A / B (prototype above), then code + A51 check (and the minimize on scroll if they want it).
-- Typography: the share poster's 10 pt label (`bond-share-sheet.tsx` storeText) -> 11, if the owner wants it.
 - Server deploy for 0z239's free reply share (`server/src/rate-limit.ts` 70): give the owner the deploy line with the next server change (both forms).
 - Before `ENFORCE_WALLET` is ever on: the server must count free messages and plans (0z239).
 - Hero line language: Sam's last line is Russian inside an English UI (content language drift, audit §10 note; the model's language follows the chat).

@@ -132,7 +132,9 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
                     {spoke ? <View style={[styles.dot, { backgroundColor: talkColor ?? ink.text2 }]} /> : null}
                     {plan ? <View style={[styles.dot, key < today ? styles.dotPast : styles.dotPlan]} /> : null}
                   </View>
-                  <View style={[styles.num, selected && styles.numOn]}>
+                  {/* Never flattened, and filled from the start: Android drops the corners of a view that
+                      gains its fill later, so the picked day showed as a square (A51, 2026-11-16). */}
+                  <View collapsable={false} style={[styles.num, selected && styles.numOn]}>
                     <Txt
                       style={[styles.numText, isToday && !selected && styles.numToday, selected && styles.numTextOn]}
                       color={!inMonth ? ink.text3 : undefined}
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
   dot: { width: 6, height: 6, borderRadius: inkRadius.pill },
   dotPlan: { borderWidth: 1.5, borderColor: colors.primary },
   dotPast: { borderWidth: 1.5, borderColor: ink.text3 },
-  num: { width: NUM, height: NUM, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  num: { width: NUM, height: NUM, borderRadius: NUM / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' },
   numOn: { backgroundColor: colors.primaryFill },
   numText: { ...inkType.sub, color: ink.text, fontVariant: ['tabular-nums'] },
   numToday: { ...inkType.subStrong, color: ink.accent },
