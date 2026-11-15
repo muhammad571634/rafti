@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z223. Step 5, the rest of the tab family on the Ink kit (2026-11-15, Claude, Opus 5.5). NEXT: Step 5's next family, the friend space (`docs/agent-tasks/ink-3-friend-space.md`: character page, chat settings with one Danger group, memories, diary entry points), then lists and store
+
+- **Today** (`72551b3`): widgets on Ink type roles (new `inkType.figureLarge`, system 34 bold tabular, for the headline number; FitText keeps its step-down sizes), the hero's name in the serif title role, its line and field in Ink roles, the welcome-back bubble in Ink roles. (`df750d7`) The status-bar veil is opaque to the safe-area edge, then fades: no ghost of the hero behind the clock once scrolled (audit §10).
+- **Us** (`8cd2328`): calendar and moment cards on ink tokens / radii; the + sheet's three tiles in deep Ink tints (as Chats' new-chat sheet); the plan sheet in Ink roles, segmented control on dark, pressed states on the time pill and segments (were raw Pressables); the Add button stays the money peach with its price.
+- **Tab bar** (`df750d7`): labels and the unread count in Ink roles, pill radii from inkRadius, the count ringed in the bar's colour. The floating bar itself is the owner's (2026-11-09) and stays; ink-2's flat four-tab bar was not built.
+- **Checked**: tsc 0, npm test 949/949; OTA `29862518`; on the A51 Today scrolled (no ghost under the clock), Us with the + sheet and the plan sheet opened and closed without adding a plan. **Not checked**: largest text size, the widget gallery, the Bond and Gifts widgets.
+
 ### 0z222. Step 5, the four tabs on the Ink kit (2026-11-15, Claude, Opus 5.5). NEXT: the rest of the tab family (Today's widgets `components/today/widgets.tsx`, Us' calendar / moments / plan and publish sheets, the tab bar, Today's ghost name under the field and the name anchored to the field when the hero has no line), then the friend space
 
 - **Owner, on the call (0z221)**: drove it on the A51 after starting the trial: "the interface side all works"; the real voice is tested once the voice service is on. Stuck background task from 0z220 (a `cat` waiting on stdin) stopped; it changed nothing.
