@@ -32,7 +32,8 @@ import { portraitPosition } from '@/components/chat/chat-ground';
 import { FamilyRow, familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { CharacterAvatar, EmptyState, PressableScale, Screen, SearchBar, Txt } from '@/components/ui';
+import { InkText, tileTint } from '@/components/ink';
+import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
@@ -41,7 +42,8 @@ import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, fonts, friendColor, space, systemColors, systemGround, TAB_BAR_HEIGHT, worldHue } from '@/theme';
+import { colors, friendColor, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character, CharacterGender } from '@/types';
 
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
@@ -197,20 +199,13 @@ export default function FindScreen() {
   const folderWidth = Math.floor((page - space.lg * 2 - space.md) / 2);
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
       {searching ? null : (
         <View style={styles.head}>
-          <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          <InkText variant="display" style={styles.title}>
             {t('find.title')}
-          </Txt>
-          <PressableScale
-            scaleTo={0.9}
-            accessibilityRole="button"
-            accessibilityLabel={t('a11y.createCharacter')}
-            onPress={() => router.push('/create-character')}
-            style={[styles.round, styles.create]}>
-            <Ionicons name="add" size={26} color={colors.textOnPrimary} />
-          </PressableScale>
+          </InkText>
+          <GlassButton icon="add" accessibilityLabel={t('a11y.createCharacter')} onPress={() => router.push('/create-character')} />
         </View>
       )}
 
@@ -226,14 +221,7 @@ export default function FindScreen() {
           style={styles.search}
         />
         {searching ? (
-          <PressableScale
-            scaleTo={0.9}
-            accessibilityRole="button"
-            accessibilityLabel={t('find.closeSearch')}
-            onPress={closeSearch}
-            style={[styles.round, styles.close]}>
-            <Ionicons name="close" size={22} color={systemGround.label} />
-          </PressableScale>
+          <GlassButton icon="close" accessibilityLabel={t('find.closeSearch')} onPress={closeSearch} />
         ) : null}
       </View>
       <WhoSwitch value={who} onChange={setWho} />
@@ -293,8 +281,8 @@ export default function FindScreen() {
 
               <Section title={t('find.worlds')} count={groups.length} />
               <View style={styles.folders}>
-                {groups.map((g) => (
-                  <WorldFolder key={g.series} group={g} width={folderWidth} onOpen={openWorld} />
+                {groups.map((g, i) => (
+                  <WorldFolder key={g.series} group={g} index={i} width={folderWidth} onOpen={openWorld} />
                 ))}
               </View>
 
@@ -311,9 +299,9 @@ export default function FindScreen() {
                         onPress={() => open(c)}
                         style={styles.face}>
                         <CharacterAvatar character={c} size={72} ring ringColor={WHITE} verified badge="call" />
-                        <Txt style={styles.faceName} lines={1} maxFontSizeMultiplier={1.3}>
+                        <InkText variant="caption" color={ink.text} lines={1}>
                           {c.name.split(' ')[0]}
-                        </Txt>
+                        </InkText>
                       </PressableScale>
                     ))}
                   </ScrollView>
@@ -339,18 +327,14 @@ export default function FindScreen() {
   );
 }
 
-/** A section's heading in the playful face, with an optional count on the right. */
+/** A section's heading in the serif, with an optional count on the right. */
 function Section({ title, count, first }: { title: string; count?: number; first?: boolean }) {
   return (
     <View style={[styles.sectionRow, first && styles.sectionRowFirst]}>
-      <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+      <InkText variant="card" accessibilityRole="header" style={styles.section}>
         {title}
-      </Txt>
-      {count != null ? (
-        <Txt style={styles.sectionCount} maxFontSizeMultiplier={1.3}>
-          {count}
-        </Txt>
-      ) : null}
+      </InkText>
+      {count != null ? <InkText variant="footnote">{count}</InkText> : null}
     </View>
   );
 }
@@ -372,14 +356,9 @@ function WhoSwitch({ value, onChange }: { value: Who; onChange: (who: Who) => vo
             accessibilityState={{ selected: on }}
             aria-selected={on}
             style={[styles.whoSegment, on && styles.whoOn]}>
-            <Txt
-              style={[styles.whoText, on && styles.whoTextOn]}
-              lines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={0.75}
-              maxFontSizeMultiplier={1.3}>
+            <InkText variant={on ? 'subStrong' : 'sub'} color={on ? ink.text : ink.text2} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
               {t(`find.who.${option}`)}
-            </Txt>
+            </InkText>
           </PressableScale>
         );
       })}
@@ -426,19 +405,19 @@ function Feature({
         <LinearGradient colors={SCRIM} style={styles.featureScrim} />
         {isNew ? (
           <View style={styles.newSticker}>
-            <Txt style={styles.newText} maxFontSizeMultiplier={1.2}>
+            <InkText variant="caption" color={colors.onMedia}>
               {t('find.newBadge')}
-            </Txt>
+            </InkText>
           </View>
         ) : null}
         <View style={styles.featureFoot}>
-          <Txt style={styles.featureName} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} maxFontSizeMultiplier={1.2}>
+          <InkText variant="title" color={colors.onMedia} lines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
             {character.name}
-          </Txt>
+          </InkText>
           {character.series ? (
-            <Txt style={styles.featureWorld} lines={1} maxFontSizeMultiplier={1.3}>
+            <InkText variant="footnote" color={colors.onMediaMuted} lines={1} style={styles.featureWorld}>
               {phrase(character.series)}
-            </Txt>
+            </InkText>
           ) : null}
         </View>
       </PressableScale>
@@ -453,9 +432,9 @@ function Feature({
         style={styles.sayHi}>
         {Platform.OS === 'ios' ? <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} /> : null}
         <Ionicons name="hand-left" size={16} color={WHITE} />
-        <Txt style={styles.sayHiText} maxFontSizeMultiplier={1.3}>
+        <InkText variant="subStrong" color={colors.onMedia}>
           {t('find.sayHi')}
-        </Txt>
+        </InkText>
       </PressableScale>
     </View>
   );
@@ -471,21 +450,23 @@ const CARDS = [
 const DRAW_ORDER = [0, 2, 1] as const;
 
 /**
- * A world as a coloured folder: a back panel with its tab, three of its people as cards peeking out,
- * and the front with the world's name and head count. A press fans the cards up and out, a release
+ * A world as a folder in a deep Ink tint (design-audit §8.1): a back panel with its tab, three of its
+ * people as cards peeking out, and the front with the world's name in the serif and its head count. A press fans the cards up and out, a release
  * settles them; the tap opens the world. Memoised: Find re-renders on every keystroke of a search.
  */
 const WorldFolder = memo(function WorldFolder({
   group,
+  index,
   width,
   onOpen,
 }: {
   group: CharacterGroup;
+  index: number;
   width: number;
   onOpen: (group: CharacterGroup) => void;
 }) {
   const { t } = useTranslation();
-  const hue = worldHue(group.series);
+  const [front, back] = tileTint(index);
   const height = Math.round(width * 0.92);
   const card = Math.round(width * 0.46);
   const fan = useSharedValue(0);
@@ -505,24 +486,22 @@ const WorldFolder = memo(function WorldFolder({
       accessibilityRole="button"
       accessibilityLabel={t('find.openWorld', { world: name })}>
       <Animated.View style={[{ width, height }, press]}>
-        <View style={[styles.folderBack, { backgroundColor: hue.back, top: height * 0.14 }]}>
-          <View style={[styles.folderTab, { backgroundColor: hue.back, width: width * 0.46 }]} />
+        <View style={[styles.folderBack, { backgroundColor: back, top: height * 0.14 }]}>
+          <View style={[styles.folderTab, { backgroundColor: back, width: width * 0.46 }]} />
         </View>
         {DRAW_ORDER.map((i) =>
           faces[i] ? (
             <FolderCard key={faces[i].id} character={faces[i]} index={i} size={card} width={width} height={height} fan={fan} />
           ) : null,
         )}
-        <View style={[styles.folderFront, { backgroundColor: hue.fill, height: height * 0.52 }]}>
-          <Txt style={[styles.folderName, { color: hue.ink }]} lines={2} maxFontSizeMultiplier={1.3}>
+        <View style={[styles.folderFront, { backgroundColor: front, height: height * 0.52 }]}>
+          <InkText variant="cardSmall" lines={2} adjustsFontSizeToFit minimumFontScale={0.8}>
             {name}
-          </Txt>
+          </InkText>
           {/* How many people live there, with the glyph the world page uses. */}
           <View style={styles.folderCount}>
-            <Ionicons name="person" size={11} color={hue.ink} />
-            <Txt style={[styles.folderCountText, { color: hue.ink }]} maxFontSizeMultiplier={1.3}>
-              {group.characters.length}
-            </Txt>
+            <Ionicons name="person" size={11} color={ink.text2} />
+            <InkText variant="caption">{group.characters.length}</InkText>
           </View>
         </View>
       </Animated.View>
@@ -574,9 +553,9 @@ function FolderCard({
       ) : (
         // A creation without a picture yet: its initial on the friend's own hue, never a blank card.
         <View style={[styles.folderImage, styles.folderInitial, { backgroundColor: hue.fill }]}>
-          <Txt style={[styles.folderInitialText, { color: hue.ink }]} maxFontSizeMultiplier={1}>
+          <InkText variant="title" color={hue.ink} maxFontSizeMultiplier={1}>
             {character.name.trim().charAt(0).toUpperCase() || '?'}
-          </Txt>
+          </InkText>
         </View>
       )}
     </Animated.View>
@@ -613,9 +592,9 @@ function Results({
               style={styles.topOpen}>
               <CharacterAvatar character={top} size={72} />
               <View style={styles.flex}>
-                <Txt style={styles.topName} lines={1} maxFontSizeMultiplier={1.3}>
+                <InkText variant="cardSmall" lines={1}>
                   {top.name}
-                </Txt>
+                </InkText>
                 {top.series ? <WorldLine series={top.series} /> : null}
               </View>
             </PressableScale>
@@ -625,9 +604,9 @@ function Results({
               accessibilityLabel={`${t('find.sayHi')}, ${top.name}`}
               onPress={() => onSayHi(top)}
               style={styles.topButton}>
-              <Txt style={styles.topButtonText} maxFontSizeMultiplier={1.3}>
+              <InkText variant="subStrong" color={ink.onPill}>
                 {t('find.sayHi')}
-              </Txt>
+              </InkText>
             </PressableScale>
           </View>
         </>
@@ -647,9 +626,9 @@ function Results({
                 style={styles.row}>
                 <CharacterAvatar character={c} size={48} />
                 <View style={[styles.rowBody, i < rest.length - 1 && styles.rowLine]}>
-                  <Txt style={styles.rowName} lines={1}>
+                  <InkText variant="bodyStrong" lines={1}>
                     {c.name}
-                  </Txt>
+                  </InkText>
                   {c.series ? <WorldLine series={c.series} /> : null}
                 </View>
               </PressableScale>
@@ -674,10 +653,10 @@ function Results({
                   <Image source={heroOf(g.characters[0])} style={styles.worldThumb} contentFit="cover" />
                 ) : null}
                 <View style={[styles.rowBody, styles.rowInline, i < worlds.length - 1 && styles.rowLine]}>
-                  <Txt style={[styles.rowName, styles.flex]} lines={1}>
+                  <InkText variant="bodyStrong" lines={1} style={styles.flex}>
                     {phrase(g.series)}
-                  </Txt>
-                  <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+                  </InkText>
+                  <Ionicons name="chevron-forward" size={16} color={ink.text3} />
                 </View>
               </PressableScale>
             ))}
@@ -718,9 +697,9 @@ function Recent({
                 onPress={() => onOpen(c)}
                 style={styles.viewedItem}>
                 <CharacterAvatar character={c} size={68} ring ringColor={WHITE} />
-                <Txt style={styles.faceName} lines={1} maxFontSizeMultiplier={1.3}>
+                <InkText variant="caption" color={ink.text} lines={1}>
                   {c.name.split(' ')[0]}
-                </Txt>
+                </InkText>
               </PressableScale>
             ))}
           </View>
@@ -729,13 +708,13 @@ function Recent({
       {searches.length > 0 ? (
         <>
           <View style={[styles.sectionRow, viewed.length === 0 && styles.sectionRowFirst]}>
-            <Txt style={styles.section} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+            <InkText variant="card" accessibilityRole="header" style={styles.section}>
               {t('find.recentSearches')}
-            </Txt>
+            </InkText>
             <PressableScale scaleTo={0.94} hitSlop={8} accessibilityRole="button" onPress={onClear}>
-              <Txt style={styles.clear} maxFontSizeMultiplier={1.3}>
+              <InkText variant="subStrong" color={ink.accent}>
                 {t('find.clear')}
-              </Txt>
+              </InkText>
             </PressableScale>
           </View>
           {/* Recent searches as chips: one tap puts the words back in the field. */}
@@ -748,10 +727,10 @@ function Recent({
                 accessibilityLabel={term}
                 onPress={() => onSearch(term)}
                 style={styles.chip}>
-                <Ionicons name="search" size={13} color={systemGround.label} />
-                <Txt style={styles.chipText} lines={1} maxFontSizeMultiplier={1.3}>
+                <Ionicons name="search" size={13} color={ink.text} />
+                <InkText variant="sub" color={ink.text} lines={1} style={styles.chipText}>
                   {term}
-                </Txt>
+                </InkText>
               </PressableScale>
             ))}
           </View>
@@ -764,10 +743,10 @@ function Recent({
 function WorldLine({ series }: { series: string }) {
   return (
     <View style={styles.worldLine}>
-      <View style={[styles.dot, { backgroundColor: WORLDS.find((w) => w.series === series)?.accent ?? colors.textSecondary }]} />
-      <Txt variant="caption" color={colors.textSecondary} lines={1}>
+      <View style={[styles.dot, { backgroundColor: WORLDS.find((w) => w.series === series)?.accent ?? ink.text3 }]} />
+      <InkText variant="footnote" lines={1}>
         {phrase(series)}
-      </Txt>
+      </InkText>
     </View>
   );
 }
@@ -787,24 +766,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
-  title: {
-    flexShrink: 1,
-    fontFamily: fonts.playful,
-    fontSize: 36,
-    lineHeight: 44,
-    letterSpacing: -0.4,
-    color: systemGround.label,
-  },
-  round: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  // The screen's one apricot action (design-style §10).
-  create: { backgroundColor: colors.primaryFill },
-  close: { backgroundColor: systemGround.fill },
+  title: { flexShrink: 1 },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -812,19 +774,18 @@ const styles = StyleSheet.create({
     marginHorizontal: space.lg,
     marginTop: space.md,
   },
-  search: { flex: 1, minWidth: 0, height: 44, borderRadius: 22 },
+  search: { flex: 1, minWidth: 0, height: 44, borderRadius: inkRadius.pill },
+  // Everyone / Him / Her: Apple's segmented control on dark.
   who: {
     flexDirection: 'row',
     marginHorizontal: space.lg,
     marginTop: space.md,
     padding: 3,
-    borderRadius: 19,
-    backgroundColor: systemGround.fill,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
   },
-  whoSegment: { flex: 1, minHeight: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
+  whoSegment: { flex: 1, minHeight: 32, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6 },
   whoOn: { backgroundColor: systemColors.thumb, ...softShadow },
-  whoText: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
-  whoTextOn: { color: systemGround.label },
   sectionRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
@@ -835,25 +796,24 @@ const styles = StyleSheet.create({
     marginHorizontal: space.lg,
   },
   sectionRowFirst: { marginTop: 0 },
-  section: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 21, lineHeight: 26, color: systemGround.label },
-  sectionCount: { fontFamily: fonts.playfulBold, fontSize: 14, color: colors.textSecondary },
+  section: { flexShrink: 1 },
   featuredRow: { paddingHorizontal: space.lg, gap: space.md },
-  feature: { borderRadius: 30, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
+  feature: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: ink.card },
   featureScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
+  // "New" in clear glass on the picture, as the Say hi button.
   newSticker: {
     position: 'absolute',
     top: 14,
     left: 14,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 10,
-    backgroundColor: '#FFC93C',
-    transform: [{ rotate: '-6deg' }],
+    borderRadius: inkRadius.pill,
+    backgroundColor: colors.onMediaGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
   },
-  newText: { fontFamily: fonts.playful, fontSize: 13, lineHeight: 17, color: '#1F1A17' },
   featureFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 16 + SAY_HI_H + 10 },
-  featureName: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 32, color: colors.onMedia },
-  featureWorld: { marginTop: 2, fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.onMediaMuted },
+  featureWorld: { marginTop: 2 },
   // Clear glass on a photo (HIG: the clear variant is for components over rich media).
   sayHi: {
     position: 'absolute',
@@ -861,7 +821,7 @@ const styles = StyleSheet.create({
     bottom: 16,
     height: SAY_HI_H,
     paddingHorizontal: 16,
-    borderRadius: SAY_HI_H / 2,
+    borderRadius: inkRadius.pill,
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
@@ -870,7 +830,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.onMediaHairline,
   },
-  sayHiText: { fontFamily: fonts.playful, fontSize: 15, color: colors.onMedia },
   // Worlds: two folders a row; the gap above each lets the fanned cards rise without hitting the row above.
   folders: {
     flexDirection: 'row',
@@ -880,59 +839,55 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingHorizontal: space.lg,
   },
-  folderBack: { position: 'absolute', left: 0, right: 0, bottom: 0, borderRadius: 18, borderTopLeftRadius: 0 },
+  folderBack: { position: 'absolute', left: 0, right: 0, bottom: 0, borderRadius: inkRadius.chip, borderTopLeftRadius: 0 },
   folderTab: { position: 'absolute', left: 0, top: -12, height: 22, borderTopLeftRadius: 12, borderTopRightRadius: 14 },
   folderCard: {
     position: 'absolute',
     borderRadius: 11,
     borderWidth: 3,
     borderColor: WHITE,
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
     ...softShadow,
   },
   folderImage: { flex: 1, borderRadius: 8 },
   folderInitial: { alignItems: 'center', justifyContent: 'center' },
-  folderInitialText: { fontFamily: fonts.playful, fontSize: 30, lineHeight: 36 },
   folderFront: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: 18,
+    borderRadius: inkRadius.chip,
     paddingHorizontal: 12,
     paddingBottom: 10,
     justifyContent: 'flex-end',
     gap: 2,
   },
-  folderName: { fontFamily: fonts.playful, fontSize: 15, lineHeight: 18 },
   folderCount: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  folderCountText: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15 },
   faces: { paddingHorizontal: space.lg, gap: space.lg },
   face: { width: 76, alignItems: 'center', gap: 6 },
-  faceName: { fontFamily: fonts.playfulBold, fontSize: 12.5, color: systemGround.label },
   topHit: {
     marginHorizontal: space.lg,
     padding: 14,
-    borderRadius: 24,
-    backgroundColor: systemGround.card,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
   },
   topOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 14 },
-  topName: { fontFamily: fonts.playful, fontSize: 20, lineHeight: 25, color: systemGround.label },
   topButton: {
-    height: 38,
+    minHeight: 38,
     paddingHorizontal: space.lg,
-    borderRadius: 19,
+    borderRadius: inkRadius.pill,
     justifyContent: 'center',
-    backgroundColor: systemGround.label,
+    backgroundColor: ink.pill,
   },
-  topButtonText: { fontFamily: fonts.playful, fontSize: 14, color: systemGround.ground },
   list: {
     marginHorizontal: space.lg,
-    borderRadius: 24,
-    backgroundColor: systemGround.card,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
     overflow: 'hidden',
   },
   row: {
@@ -951,9 +906,8 @@ const styles = StyleSheet.create({
   rowInline: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   rowLine: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderStrong,
+    borderBottomColor: ink.line,
   },
-  rowName: { fontFamily: fonts.playfulBold, fontSize: 16, color: systemGround.label },
   viewed: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -961,20 +915,19 @@ const styles = StyleSheet.create({
     rowGap: space.lg,
   },
   viewedItem: { width: '25%', alignItems: 'center', gap: 6 },
-  clear: { fontFamily: fonts.playfulBold, fontSize: 15, color: colors.brandText },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingHorizontal: space.lg },
   chip: {
     maxWidth: '100%',
     minHeight: 36,
     paddingHorizontal: 14,
-    borderRadius: 18,
+    borderRadius: inkRadius.chip,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: systemGround.fill,
+    backgroundColor: ink.raised,
   },
-  chipText: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 14, color: systemGround.label },
+  chipText: { flexShrink: 1 },
   worldThumb: { width: 72, height: 44, borderRadius: 10 },
   worldLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 8, height: 8, borderRadius: inkRadius.pill },
 });

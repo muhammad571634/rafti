@@ -2,10 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { CharacterAvatar, PressableScale } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { FAMILY_LABELS, type FamilyLabel } from '@/lib/kin';
-import { colors, fonts, friendColor, space, systemGround } from '@/theme';
+import { friendColor, space } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 export interface FamilySeat {
@@ -45,17 +47,12 @@ export function FamilyRow({
             </View>
           ) : (
             <View style={styles.empty}>
-              <Ionicons name="add" size={26} color={systemGround.label} />
+              <Ionicons name="add" size={26} color={ink.text} />
             </View>
           )}
-          <Txt
-            style={[styles.label, !who && styles.labelEmpty]}
-            lines={2}
-            adjustsFontSizeToFit
-            minimumFontScale={0.8}
-            maxFontSizeMultiplier={1.3}>
+          <InkText variant="caption" color={who ? ink.text : ink.text2} center lines={2} adjustsFontSizeToFit minimumFontScale={0.8}>
             {who ? who.name : phrase(role)}
-          </Txt>
+          </InkText>
         </PressableScale>
       ))}
     </ScrollView>
@@ -75,18 +72,16 @@ const SEAT = FACE + (RING + GAP) * 2;
 const styles = StyleSheet.create({
   row: { paddingHorizontal: space.lg, gap: 12 },
   seat: { width: 70, alignItems: 'center', gap: 6 },
-  ring: { padding: GAP, borderWidth: RING, borderRadius: SEAT / 2 },
+  ring: { padding: GAP, borderWidth: RING, borderRadius: inkRadius.pill },
   empty: {
     width: SEAT,
     height: SEAT,
-    borderRadius: SEAT / 2,
+    borderRadius: inkRadius.pill,
     borderWidth: 2.5,
     borderStyle: 'dashed',
-    borderColor: systemGround.dash,
-    backgroundColor: systemGround.well,
+    borderColor: ink.text3,
+    backgroundColor: ink.raised,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { fontFamily: fonts.playfulBold, fontSize: 12, lineHeight: 15, textAlign: 'center', color: systemGround.label },
-  labelEmpty: { color: colors.textSecondary },
 });
