@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z244. Widget small lines 13 pt (2026-11-16, Claude, Opus 5.5). NEXT: the open items in 0z242 (server deploy line with the next server change, hero line language, the not-driven list)
+
+- **Owner**: yes to the typography offer ("make it larger"): widgets' small lines 12 -> 13 pt (HIG: iOS default 17, minimum 11; Footnote is 13).
+- **Code**: new role `inkType.footnoteStrong` (13/17, semibold) in `src/theme/ink.ts`; `src/components/today/widgets.tsx` uses it for a widget's line, its face line, its list rows and the contact card's line (day letters and badges stay Caption).
+- **Checked**: tsc 0, npm test 964/964; OTA "Widgets: small lines 13 pt"; on the A51 all eleven widgets in the gallery at font 1.1 and 1.3: nothing cut beyond the two-line limits that were there before. Font back to 1.1. The poster's 10 pt label (`bond-share-sheet.tsx`) is unchanged (not asked).
+
 ### 0z243. Tab bar in dark Liquid Glass, owner's pick A (2026-11-16, Claude, Opus 5.5). NEXT: the owner looks at the bar on the phone; then the typography offer (widget lines 13 pt) or the open items in 0z242
 
 - **Owner**: picked A of `docs/prototypes/tab-bar.html`; after the first OTA: "exactly the prototype, icons too, clean, no shadow at all".
@@ -17,7 +23,7 @@
 
 **Still to do (owner asks not finished):**
 - Tab bar: the owner's pick of A / B (prototype above), then code + A51 check (and the minimize on scroll if they want it).
-- Typography: owner's yes on widget lines 13 pt and the poster's 10 pt label -> 11.
+- Typography: the share poster's 10 pt label (`bond-share-sheet.tsx` storeText) -> 11, if the owner wants it.
 - Server deploy for 0z239's free reply share (`server/src/rate-limit.ts` 70): give the owner the deploy line with the next server change (both forms).
 - Before `ENFORCE_WALLET` is ever on: the server must count free messages and plans (0z239).
 - Hero line language: Sam's last line is Russian inside an English UI (content language drift, audit §10 note; the model's language follows the chat).

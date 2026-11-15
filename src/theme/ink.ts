@@ -94,6 +94,8 @@ export const inkType = StyleSheet.create({
   subStrong: system(15, 20, '600'),
   /** Section labels, field labels, timestamps (Footnote). */
   footnote: system(13, 18, '400', ink.text2),
+  /** A widget's small line (Footnote, semibold): 13 pt, a step over Caption for the A51's eyes (owner, 2026-11-16). */
+  footnoteStrong: system(13, 17, '600', ink.text2),
   /** Capsules, icon labels (Caption 1). */
   caption: system(12, 16, '600', ink.text2),
 });

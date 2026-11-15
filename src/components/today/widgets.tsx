@@ -213,12 +213,12 @@ export function WidgetView({
       {model.pill || !model.line ? null : model.lineFace ? (
         <View style={styles.lineRow}>
           <CharacterAvatar character={model.lineFace} size={18} />
-          <InkText variant="caption" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
+          <InkText variant="footnoteStrong" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
             {model.line}
           </InkText>
         </View>
       ) : (
-        <InkText variant="caption" color={sub} lines={model.lineLines ?? 1}>
+        <InkText variant="footnoteStrong" color={sub} lines={model.lineLines ?? 1}>
           {model.line}
         </InkText>
       )}
@@ -233,7 +233,7 @@ export function WidgetView({
                   <View style={[styles.afterDot, { backgroundColor: ink }]} />
                 </View>
               )}
-              <InkText variant="caption" color={sub} lines={1} style={styles.flexText}>
+              <InkText variant="footnoteStrong" color={sub} lines={1} style={styles.flexText}>
                 {row.text}
               </InkText>
             </View>
@@ -254,7 +254,7 @@ export function WidgetView({
       <InkText variant="bodyStrong" color={ink} lines={1} style={styles.personName}>
         {model.title}
       </InkText>
-      <InkText variant="caption" color={sub} lines={1}>
+      <InkText variant="footnoteStrong" color={sub} lines={1}>
         {model.line}
       </InkText>
     </View>
