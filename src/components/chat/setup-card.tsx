@@ -121,7 +121,7 @@ export function SetupCard({ message }: { message: Message }) {
           </View>
         ) : null}
       </View>
-      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
       {!alarm ? <PlanDetailSheet planId={planOpen ? (offer.madeId ?? null) : null} onClose={() => setPlanOpen(false)} /> : null}
     </View>
   );

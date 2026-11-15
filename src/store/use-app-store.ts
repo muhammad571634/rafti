@@ -4512,7 +4512,7 @@ function payPlanShells(set: Setter, get: Getter) {
   }));
 }
 
-/** Every message costs shells, members included (the credit model, backend-plan §15.10). */
+/** A message is paid by today's free count, then a shell (audit §6.3; `payLine`). */
 function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
   return payLine(get, cost, reason, characterId);

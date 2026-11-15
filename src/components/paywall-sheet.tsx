@@ -29,12 +29,15 @@ export function PaywallSheet({
   need,
   onClose,
   chat = false,
+  message = false,
 }: {
   /** Shells required; `null` hides the sheet. */
   need: number | null;
   onClose: () => void;
   /** Chat copy: the message is kept. */
   chat?: boolean;
+  /** It opened for a message (text, voice, regenerate, continue, skip, edit): with today's free count used, it says so. */
+  message?: boolean;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -45,7 +48,7 @@ export function PaywallSheet({
 
   const today = todayKey();
   // In a chat with today's free messages used, the sheet says so and when they come back (audit §6.3).
-  const freeUsed = useFreeMessagesLeft() === 0 && chat;
+  const freeUsed = useFreeMessagesLeft() === 0 && message;
   const spinLeft = (daily.spinDay === today ? daily.spinsUsed : 0) < FREE_SPINS_PER_DAY;
 
   const go = (route: Href) => {

@@ -39,7 +39,7 @@ import { useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, palette, signature, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { PlanId, ShellPack } from '@/types';
-import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
+import { freeMessagesPerDay } from '@/economy/free-messages';
 
 type Success = { kind: 'pack'; amount: number } | { kind: 'plan'; plan: PlanId; trial: boolean };
 type Tab = 'plans' | 'shells';
@@ -265,7 +265,7 @@ function ShellsTab({
                 <SFIcon ios={cost.ios} icon={cost.icon} size={17} color={colors.white} />
               </IconTile>
               <Txt style={styles.costTitle} lines={1}>
-                {t(`store.${cost.key}`, { count: FREE_MESSAGES_PER_DAY })}
+                {t(`store.${cost.key}`, { count: freeMessagesPerDay(wallet.subscription, Date.now()) })}
               </Txt>
               {cost.shells === null ? (
                 <ProPill />

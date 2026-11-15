@@ -40,7 +40,7 @@ import { steerBlock } from '@/lib/chat-steer';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
-import { useFreeMessagesLeft } from '@/lib/use-free-messages';
+import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, nightColors, playfulNightGround, space } from '@/theme';
@@ -71,8 +71,6 @@ export default function GroupChatScreen() {
   const messages = useAppStore((s) => (groupId ? s.messages[groupId] : undefined));
   const typingIds = useAppStore((s) => (groupId ? s.groupTyping[groupId] : undefined)) ?? NO_ONE;
   const shells = useAppStore((s) => s.wallet.shells);
-  // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic.
-  const freeLeft = useFreeMessagesLeft();
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
   const animations = useAppStore((s) => s.settings.chatAnimation);
@@ -101,6 +99,8 @@ export default function GroupChatScreen() {
   const [withOne, setWithOne] = useState<WithOne | null>(null);
   const [callsWith, setCallsWith] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<number | null>(null);
+  // The paywall opened for a message (not a photo): it then speaks of today's free messages.
+  const [paywallForMessage, setPaywallForMessage] = useState(false);
   const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
   const [reporting, setReporting] = useState<Message | null>(null);
@@ -230,7 +230,7 @@ export default function GroupChatScreen() {
   const invoke = useCallback(
     (member: Character) => {
       if (!groupId) return;
-      if (invokeGroupMember(groupId, member.id) === 'noShells') setPaywall(shellCosts.textMessage);
+      if (invokeGroupMember(groupId, member.id) === 'noShells') outOfShells(shellCosts.textMessage);
     },
     [groupId, invokeGroupMember],
   );
@@ -285,7 +285,8 @@ export default function GroupChatScreen() {
     );
   }
 
-  const outOfShells = (cost: number) => {
+  const outOfShells = (cost: number, message = true) => {
+    setPaywallForMessage(message);
     setPaywall(cost);
     return false;
   };
@@ -298,7 +299,8 @@ export default function GroupChatScreen() {
     if (note.audioFile) void dropNote(note.audioFile);
   };
   const canRecord = () => {
-    if (freeLeft > 0 || shells >= shellCosts.voiceMessage) return true;
+    // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic; read now, not at the last render (midnight).
+    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return true;
     outOfShells(shellCosts.voiceMessage);
     return false;
   };
@@ -327,7 +329,7 @@ export default function GroupChatScreen() {
     switch (key) {
       case 'photo':
         return pickPhoto((uri, aspect) => {
-          if (sendGroupImage(groupId, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage);
+          if (sendGroupImage(groupId, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage, false);
         });
       case 'truthOrDare':
         return setTruthWith(members[Math.floor(Math.random() * members.length)]);
@@ -496,7 +498,7 @@ export default function GroupChatScreen() {
         }}
       />
 
-      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat message={paywallForMessage} />
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}

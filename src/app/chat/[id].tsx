@@ -62,7 +62,7 @@ import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from 
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
 import { nightColors as colors, shadows, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
-import { useFreeMessagesLeft } from '@/lib/use-free-messages';
+import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -86,8 +86,6 @@ export default function ChatRoomScreen() {
   const typing = useAppStore((s) => (conversationId ? !!s.typing[conversationId] : false));
   const levelUp = useAppStore((s) => s.levelUp);
   const shells = useAppStore((s) => s.wallet.shells);
-  // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic.
-  const freeLeft = useFreeMessagesLeft();
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
@@ -142,6 +140,8 @@ export default function ChatRoomScreen() {
   const [callsOpen, setCallsOpen] = useState(false);
   const [skipOpen, setSkipOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
+  // The paywall opened for a message (not a photo): it then speaks of today's free messages.
+  const [paywallForMessage, setPaywallForMessage] = useState(false);
   const [menu, setMenu] = useState<Message | null>(null);
   /** Keeping in mind: the thread a noted chip or Why? opened, and the line Why? is about. */
   const [threadOpen, setThreadOpen] = useState<string | null>(null);
@@ -415,7 +415,8 @@ export default function ChatRoomScreen() {
     );
   }
 
-  const outOfShells = (cost: number) => {
+  const outOfShells = (cost: number, message = true) => {
+    setPaywallForMessage(message);
     setPaywall(cost);
     return false;
   };
@@ -446,7 +447,8 @@ export default function ChatRoomScreen() {
     if (note.audioFile) void dropNote(note.audioFile);
   };
   const canRecord = () => {
-    if (freeLeft > 0 || shells >= shellCosts.voiceMessage) return true;
+    // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic; read now, not at the last render (midnight).
+    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return true;
     outOfShells(shellCosts.voiceMessage);
     return false;
   };
@@ -507,7 +509,7 @@ export default function ChatRoomScreen() {
         return setSkipOpen(true);
       case 'photo':
         return pickPhoto((uri, aspect) => {
-          if (sendImage(conversation.id, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage);
+          if (sendImage(conversation.id, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage, false);
         });
       case 'secretNote':
         return router.push(`/secret-note/${character.id}`);
@@ -740,7 +742,7 @@ export default function ChatRoomScreen() {
         }}
       />
 
-      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat />
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat message={paywallForMessage} />
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
       <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} />
 
