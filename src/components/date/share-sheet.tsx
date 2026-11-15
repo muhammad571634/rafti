@@ -12,6 +12,7 @@ import { haptic } from '@/lib/haptics';
 import { shareImage } from '@/lib/share';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 const FACE = 60;
 
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
   facesScroll: { marginHorizontal: -space.xl, marginBottom: space.md },
   faces: { gap: space.md, paddingHorizontal: space.xl },
   face: { width: 72, alignItems: 'center', gap: 6 },
-  faceName: { fontSize: 12, fontWeight: '600', color: colors.text, textAlign: 'center' },
+  faceName: { ...inkFace('caption'), color: colors.text, textAlign: 'center' },
   check: {
     position: 'absolute',
     right: -2,
     bottom: -2,
     width: 24,
     height: 24,
-    borderRadius: 12,
+    borderRadius: inkRadius.pill,
     borderWidth: 2,
     borderColor: colors.surface,
     backgroundColor: colors.primaryFill,

@@ -16,6 +16,7 @@ import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, isDark, signature, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 type Tab = 'clips' | 'sounds';
@@ -277,25 +278,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.borderStrong,
   },
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  title: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
+  title: { ...inkFace('bodyStrong'), color: systemGround.label },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   titleShrink: { flexShrink: 1 },
-  newPill: { height: 20, paddingHorizontal: 7, borderRadius: 10, justifyContent: 'center', backgroundColor: signature.radio.soft },
-  newText: { fontSize: 12, fontWeight: '700', color: signature.radio.text },
+  newPill: { height: 20, paddingHorizontal: 7, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: signature.radio.soft },
+  newText: { ...inkFace('caption'), color: signature.radio.text },
   titleOn: { color: signature.radio.text },
-  sub: { fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
-  footnote: { marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
-  play: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.radio.soft },
+  sub: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  footnote: { marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  play: { width: 36, height: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.radio.soft },
   playOn: { backgroundColor: signature.radio.strong },
   // The play triangle sits a touch right of centre, as SF's play.fill does.
   playNudge: { marginLeft: 2 },
-  lockDot: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  lockDot: { width: 36, height: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   mini: {
     position: 'absolute',
     left: space.md,
     right: space.md,
     height: MINI_HEIGHT,
-    borderRadius: 22,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     overflow: 'hidden',
     justifyContent: 'center',
     borderWidth: StyleSheet.hairlineWidth,
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
   },
   miniHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 12 },
   miniWave: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.radio.soft },
-  miniTitle: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: systemGround.label },
-  miniTrack: { position: 'absolute', left: 16, right: 16, bottom: 6, height: 3, borderRadius: 2, backgroundColor: systemGround.fill },
+  miniTitle: { ...inkFace('subStrong'), color: systemGround.label },
+  miniTrack: { position: 'absolute', left: 16, right: 16, bottom: 6, height: 3, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
   miniFill: { height: '100%', borderRadius: 2, backgroundColor: signature.radio.strong },
 });

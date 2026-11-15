@@ -16,6 +16,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { CLIP_LINE_MAX, CLIP_MAX_LINES, CLIP_TITLE_MAX, checkClip, cleanLines, clipCost } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, signature, space, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /** How long the "is recording" moment lasts in the mock; real builds wait for the voiced file. */
 const RECORD_MS = 1800;
@@ -234,17 +235,17 @@ const styles = StyleSheet.create({
   friend: { width: 64, alignItems: 'center', gap: 6 },
   ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
   ringOn: { borderColor: signature.radio.strong },
-  friendName: { fontSize: 13, color: systemGround.secondaryLabel },
+  friendName: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
   friendNameOn: { fontWeight: '700', color: systemGround.label },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, fontSize: 13, color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   line: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 52, paddingHorizontal: PAD },
   divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
-  lineNo: { width: 18, fontSize: 15, fontWeight: '700', color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  lineInput: { flex: 1, paddingVertical: 14, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
-  addText: { fontSize: 17, fontWeight: '600', color: signature.radio.text },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  lineNo: { width: 18, ...inkFace('subStrong'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
+  lineInput: { flex: 1, paddingVertical: 14, ...inkFace('body'), color: systemGround.label },
+  addText: { ...inkFace('bodyStrong'), color: signature.radio.text },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   crisis: { marginTop: 22, gap: space.sm, padding: space.lg, alignItems: 'flex-start' },
-  input: { minHeight: 50, paddingHorizontal: PAD + 2, fontSize: 17, letterSpacing: -0.4, color: systemGround.label },
+  input: { minHeight: 50, paddingHorizontal: PAD + 2, ...inkFace('body'), color: systemGround.label },
   recording: { alignItems: 'center' },
 });

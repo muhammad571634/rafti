@@ -21,6 +21,7 @@ import { isPaused, isPlaying, lineMessage, nextTarget } from '@/lib/streams';
 import { todayKey } from '@/mock/time';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { night, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Character, Message } from '@/types';
 
 // Always dark (appearance B, owner 2026-11-11): a live stream is a moment with them.
@@ -211,9 +212,9 @@ export default function StreamScreen() {
 const styles = StyleSheet.create({
   list: { paddingHorizontal: space.md },
   head: { alignItems: 'center', gap: 6, paddingTop: space.md, paddingBottom: space.xl, paddingHorizontal: space.lg },
-  names: { marginTop: space.sm, fontSize: 22, fontWeight: '700', letterSpacing: 0.2, color: colors.text, textAlign: 'center' },
-  topic: { fontSize: 15, lineHeight: 20, color: colors.text, textAlign: 'center' },
-  note: { fontSize: 13, color: colors.textSecondary, textAlign: 'center' },
+  names: { marginTop: space.sm, ...inkFace('card'), color: colors.text, textAlign: 'center' },
+  topic: { ...inkFace('sub'), color: colors.text, textAlign: 'center' },
+  note: { ...inkFace('footnote'), color: colors.textSecondary, textAlign: 'center' },
   link: { alignSelf: 'center', paddingVertical: 4 },
-  linkText: { fontSize: 15, fontWeight: '600', color: colors.brandText },
+  linkText: { ...inkFace('subStrong'), color: colors.brandText },
 });

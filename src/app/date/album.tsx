@@ -13,6 +13,7 @@ import { localized } from '@/i18n/content';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { night, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { DateRecord } from '@/types';
 
 // Always dark (appearance B, owner 2026-11-11): the dates you had together, on the night ground.
@@ -117,14 +118,12 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 12,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, paddingHorizontal: space.lg },
   meta: { marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
-  name: { flexShrink: 1, fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.text },
-  hearts: { fontSize: 15, fontWeight: '600', color: PINK, fontVariant: ['tabular-nums'] },
+  name: { flexShrink: 1, ...inkFace('subStrong'), color: colors.text },
+  hearts: { ...inkFace('subStrong'), color: PINK, fontVariant: ['tabular-nums'] },
 });

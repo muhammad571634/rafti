@@ -13,6 +13,7 @@ import { relativeStamp, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { hitSlop, paperRoom, signature, space, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 const GAP = space.md;
 
@@ -117,6 +118,6 @@ const styles = StyleSheet.create({
   paper: { boxShadow: '0px 6px 14px rgba(0,0,0,0.1)' },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingHorizontal: 2 },
   who: { flex: 1, minWidth: 0 },
-  name: { fontSize: 13, fontWeight: '600', color: systemGround.label },
-  when: { fontSize: 11, color: systemGround.secondaryLabel },
+  name: { ...inkFace('caption'), color: systemGround.label },
+  when: { ...inkFace('caption'), color: systemGround.secondaryLabel },
 });

@@ -22,6 +22,7 @@ import {
 import { THEME_ARTS } from '@/mock/date-themes';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /**
  * Make or edit one of the user's own dates (canvas "DateMake", 2026-10-22): an iOS form under a
@@ -244,36 +245,34 @@ const styles = StyleSheet.create({
     paddingTop: space.xs,
     paddingBottom: space.sm,
   },
-  barTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  save: { height: 44, paddingHorizontal: 18, borderRadius: 22, justifyContent: 'center' },
+  barTitle: { flex: 1, textAlign: 'center', ...inkFace('bodyStrong'), color: colors.text },
+  save: { height: 44, paddingHorizontal: 18, borderRadius: inkRadius.pill, justifyContent: 'center' },
   saveOn: { backgroundColor: colors.text },
-  saveText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.4 },
+  saveText: { ...inkFace('bodyStrong') },
   ticket: { marginTop: space.sm, marginHorizontal: space.lg, borderRadius: 16, shadowColor: colors.black, shadowOpacity: 0.16, shadowRadius: 15, shadowOffset: { width: 0, height: 10 }, elevation: 6 },
-  preview: { height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center', justifyContent: 'center' },
-  previewText: { fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.9)' },
+  preview: { height: 44, borderRadius: inkRadius.pill, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center', justifyContent: 'center' },
+  previewText: { ...inkFace('subStrong'), color: 'rgba(255,255,255,0.9)' },
   sectionLabel: {
     marginTop: 22,
     marginBottom: 6,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
   card: { marginHorizontal: space.lg, borderRadius: 14, backgroundColor: colors.surface },
   sceneCard: { paddingHorizontal: space.lg, paddingVertical: 12 },
   whereCard: { height: 48, paddingHorizontal: space.lg, justifyContent: 'center' },
-  input: { padding: 0, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  input: { padding: 0, ...inkFace('body'), color: colors.text },
   sceneInput: { minHeight: 88, lineHeight: 22 },
-  count: { alignSelf: 'flex-end', fontSize: 12, color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  count: { alignSelf: 'flex-end', ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   looks: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 14 },
   // The chosen look gets an ink ring with a gap, as iOS colour pickers do.
   lookRing: { padding: 2, borderRadius: 27, borderWidth: 2, borderColor: 'transparent' },
   lookRingOn: { borderColor: colors.text },
   segmented: { marginHorizontal: space.lg },
-  note: { marginTop: 6, marginHorizontal: space.lg * 2, fontSize: 13, color: colors.textSecondary },
-  footer: { marginTop: 22, marginHorizontal: space.lg, textAlign: 'center', fontSize: 13, color: colors.textSecondary },
+  note: { marginTop: 6, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: colors.textSecondary },
+  footer: { marginTop: 22, marginHorizontal: space.lg, textAlign: 'center', ...inkFace('footnote'), color: colors.textSecondary },
   crisis: {
     marginTop: space.lg,
     marginHorizontal: space.lg,

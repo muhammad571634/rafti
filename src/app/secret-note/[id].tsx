@@ -17,7 +17,7 @@ import { shellCosts } from '@/mock';
 import { localSecretNote } from '@/i18n/content';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, space } from '@/theme';
-import { ink, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 
 const MAX_LENGTH = 400;
 /** Cards glide to their new height when a note opens or arrives (on-screen move: ease-in-out). */
@@ -235,12 +235,12 @@ const styles = StyleSheet.create({
   cardPad: { flex: 1, padding: 18, gap: 16, justifyContent: 'space-between' },
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   cardBottom: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
-  ring: { width: 48, height: 48, borderRadius: 24, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  ring: { width: 48, height: 48, borderRadius: inkRadius.pill, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   labelRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 26, marginHorizontal: inkGutter },
   count: { fontVariant: ['tabular-nums'] },
   field: { marginTop: 8, marginHorizontal: inkGutter, minHeight: 180, padding: 18, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card },
-  input: { minHeight: 144, padding: 0, fontSize: 17, lineHeight: 24, color: ink.text },
+  input: { minHeight: 144, padding: 0, ...inkFace('body'), color: ink.text },
   done: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 22 },
   foot: { paddingHorizontal: inkGutter, paddingTop: space.sm, alignItems: 'center', gap: 8 },
   swap: { alignSelf: 'stretch' },

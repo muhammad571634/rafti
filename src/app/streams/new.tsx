@@ -20,6 +20,7 @@ import { groupBySeries } from '@/mock/characters';
 import { todayKey } from '@/mock/time';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 /**
@@ -200,26 +201,26 @@ function PairSeats({ pair, onRemove }: { pair: Character[]; onRemove: (id: strin
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  input: { minHeight: 72, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 12, fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  input: { minHeight: 72, paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: 12, ...inkFace('body'), color: colors.text },
   ideasStrip: { flexGrow: 0, marginTop: space.md },
   ideas: { gap: space.sm, paddingHorizontal: space.lg },
   pair: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: space.lg, marginTop: space.xs, marginBottom: space.sm },
   pairLink: { height: 64, justifyContent: 'center' },
   seat: { width: 88, alignItems: 'center', gap: 6 },
-  seatEmpty: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', backgroundColor: systemColors.fill },
+  seatEmpty: { width: 64, height: 64, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemColors.fill },
   seatOut: {
     position: 'absolute',
     top: -2,
     right: -2,
     width: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: systemColors.gray,
     borderWidth: 2,
     borderColor: colors.bg,
   },
-  seatName: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2, color: colors.text },
-  barError: { textAlign: 'center', fontSize: 13, color: systemColors.red },
+  seatName: { ...inkFace('subStrong'), color: colors.text },
+  barError: { textAlign: 'center', ...inkFace('footnote'), color: systemColors.red },
 });

@@ -29,6 +29,7 @@ import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { askSelfQuiz, displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
 import { colors, friendAccent, hitSlop, isDark, moduleFills, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -312,7 +313,7 @@ export default function QuizScreen() {
             </View>
             <View style={styles.score} accessible accessibilityLabel={`${matches} / ${total}`}>
               <SFIcon ios={MODULE_GLYPH.bond.ios} icon={MODULE_GLYPH.bond.icon} size={36} color={moduleFills.bond} />
-              <Txt variant="heroFigure">
+              <Txt style={styles.scoreFigure}>
                 {matches}/{total}
               </Txt>
             </View>
@@ -448,6 +449,7 @@ function Option({
 }
 
 const styles = StyleSheet.create({
+  scoreFigure: inkFace('numeralMid'),
   flex: { flex: 1 },
   bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
   playBar: { height: 56, gap: space.md },
@@ -461,40 +463,38 @@ const styles = StyleSheet.create({
     right: 12,
     height: 26,
     paddingHorizontal: 10,
-    borderRadius: 13,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemGround.card,
     justifyContent: 'center',
   },
-  worldPillText: { fontSize: 13, fontWeight: '600', color: colors.text },
+  worldPillText: { ...inkFace('caption'), color: colors.text },
   selfBody: { padding: space.lg, paddingTop: 14, gap: 4 },
-  selfTitle: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: colors.text },
-  selfText: { fontSize: 15, lineHeight: 20, color: systemGround.secondaryLabel },
-  cta: { marginTop: 12, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
-  ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
+  selfTitle: { ...inkFace('card'), color: colors.text },
+  selfText: { ...inkFace('sub'), color: systemGround.secondaryLabel },
+  cta: { marginTop: 12, height: 50, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
+  ctaText: { ...inkFace('bodyStrong'), color: STORE.ctaInk },
   worldRow: { marginTop: space.md },
   row: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowOpen: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  rowTitle: { fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  rowHint: { marginTop: 1, fontSize: 13, lineHeight: 17, color: systemGround.secondaryLabel },
+  rowTitle: { ...inkFace('body'), color: colors.text },
+  rowHint: { marginTop: 1, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   won: { color: colors.bondText },
   addText: { flex: 1, color: STORE.peachInk },
-  newPill: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.peachSoft },
-  newText: { fontSize: 13, fontWeight: '700', color: STORE.peachInk },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  newPill: { height: 24, paddingHorizontal: 9, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: STORE.peachSoft },
+  newText: { ...inkFace('caption'), color: STORE.peachInk },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: systemGround.fill },
+  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
   dotOn: { backgroundColor: colors.brandText },
   progress: {
     marginTop: space.md,
     marginHorizontal: space.lg,
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    ...inkFace('caption'),
     color: systemGround.secondaryLabel,
     textTransform: 'uppercase',
   },
-  question: { marginTop: 6, marginHorizontal: space.lg, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
+  question: { marginTop: 6, marginHorizontal: space.lg, ...inkFace('title'), color: colors.text },
   options: { gap: 10, marginTop: space.xl, marginHorizontal: space.lg },
   option: {
     flexDirection: 'row',
@@ -508,12 +508,12 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     backgroundColor: systemGround.card,
   },
-  optionText: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  optionText: { flex: 1, ...inkFace('bodyStrong'), color: colors.text },
   mine: { borderColor: colors.text },
   both: { borderColor: colors.bond },
   dim: { opacity: 0.4 },
-  youTag: { height: 24, paddingHorizontal: 9, borderRadius: 12, justifyContent: 'center', backgroundColor: STORE.inkTag },
-  youText: { fontSize: 13, fontWeight: '700', color: STORE.inkTagText },
+  youTag: { height: 24, paddingHorizontal: 9, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: STORE.inkTag },
+  youText: { ...inkFace('caption'), color: STORE.inkTagText },
   says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, marginHorizontal: space.lg, marginTop: space.lg },
   bubble: {
     flexShrink: 1,
@@ -524,14 +524,14 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 6,
     backgroundColor: systemGround.card,
   },
-  verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
-  bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
+  verdict: { ...inkFace('caption') },
+  bubbleText: { ...inkFace('body'), color: colors.text },
   asking: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, paddingHorizontal: space.xl, paddingBottom: space.huge },
-  askingText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: systemGround.secondaryLabel },
+  askingText: { ...inkFace('body'), color: systemGround.secondaryLabel },
   result: { alignItems: 'center', gap: space.md, paddingHorizontal: space.xl },
   resultTop: { paddingTop: space.huge },
   pair: { flexDirection: 'row' },
   overlap: { marginLeft: -space.lg },
   score: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.md },
-  resultTitle: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
+  resultTitle: { ...inkFace('title'), color: colors.text },
 });

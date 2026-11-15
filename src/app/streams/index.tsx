@@ -10,7 +10,7 @@ import { groupTitle } from '@/lib/group-chat';
 import { isPlaying } from '@/lib/streams';
 import { useAppStore } from '@/store/use-app-store';
 import { systemColors } from '@/theme';
-import { ink, inkGutter } from '@/theme/ink';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, Stream } from '@/types';
 
 /** The cards' washes in turn (the Ink canvas: coral, blue, violet), the system's own hues. */
@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
   card: { minHeight: 120 },
   cardBody: { flex: 1, justifyContent: 'space-between', gap: 18 },
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 28 },
-  liveDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: ink.danger },
+  liveDot: { width: 10, height: 10, borderRadius: inkRadius.pill, backgroundColor: ink.danger },
   when: { flex: 1 },
-  goOn: { minHeight: 28, paddingHorizontal: 12, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
+  goOn: { minHeight: 28, paddingHorizontal: 12, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
   cardBottom: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
   topic: { flex: 1 },
   faces: { flexDirection: 'row' },

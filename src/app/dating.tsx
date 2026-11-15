@@ -26,7 +26,7 @@ import { localized } from '@/i18n/content';
 import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
-import { ink, inkGutter } from '@/theme/ink';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, DateTheme } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   },
   title: { marginTop: 4, marginHorizontal: inkGutter },
   pills: { marginTop: 12, marginBottom: 18, marginHorizontal: inkGutter, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pill: { minHeight: 44, borderRadius: 22, backgroundColor: ink.raised, flexDirection: 'row', alignItems: 'center' },
+  pill: { minHeight: 44, borderRadius: inkRadius.pill, backgroundColor: ink.raised, flexDirection: 'row', alignItems: 'center' },
   partner: { paddingLeft: 6, paddingRight: 12, gap: 8, maxWidth: 240 },
   partnerName: { flexShrink: 1 },
   level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   shells: { paddingLeft: 10, paddingRight: 14, gap: 6 },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginHorizontal: inkGutter },
   go: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 20, marginHorizontal: inkGutter },
-  more: { width: 56, height: 56, borderRadius: 28, backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
+  more: { width: 56, height: 56, borderRadius: inkRadius.pill, backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
   past: { alignSelf: 'center', marginTop: 14, paddingHorizontal: 18, gap: 8 },
   people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, justifyContent: 'center', paddingVertical: space.md },
   person: { alignItems: 'center', gap: space.xs, width: 72 },

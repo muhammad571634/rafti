@@ -6,7 +6,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
 import { hitSlop, immersive, space, systemGround, type Look } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { inkFace, inkRadius } from '@/theme/ink';
 
 /**
  * The parts every feature screen shares (design-style §10, family 2: Gifts, Store, Radio, Board,
@@ -87,17 +87,17 @@ export function TintCapsule({
 
 export const featureStyles = StyleSheet.create({
   /** A grey card on the white ground; rows inside run edge to edge. */
-  card: { marginHorizontal: space.lg, borderRadius: 22, borderCurve: 'continuous', backgroundColor: systemGround.card, overflow: 'hidden' },
+  card: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card, overflow: 'hidden' },
 });
 
 const styles = StyleSheet.create({
-  round: { width: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
+  round: { width: ROUND, height: ROUND, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
   roundDark: { backgroundColor: immersive.glass, borderWidth: StyleSheet.hairlineWidth, borderColor: immersive.rim },
   backNudge: { marginLeft: -2 },
   bar: { height: ROUND, paddingHorizontal: space.lg, marginTop: space.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   // No clip: a card may have something peeking over its edge (the check-in's mascot).
-  hero: { marginHorizontal: space.lg, borderRadius: 26, borderCurve: 'continuous' },
-  capsule: { minWidth: 64, height: 32, paddingHorizontal: 14, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  hero: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous' },
+  capsule: { minWidth: 64, height: 32, paddingHorizontal: 14, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   capsuleText: { ...inkFace('subStrong') },
   off: { opacity: 0.5 },
 });

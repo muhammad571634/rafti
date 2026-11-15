@@ -19,6 +19,7 @@ import {
 } from '@/lib/quiz';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, space, systemColors } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import { confirmAlert as confirm } from '@/lib/alert';
 
 type Draft = { text: string; options: string[] };
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   pressed: { backgroundColor: colors.surfaceAlt },
   groupGap: { marginTop: space.md },
-  nameInput: { minHeight: 50, paddingHorizontal: space.lg, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  nameInput: { minHeight: 50, paddingHorizontal: space.lg, ...inkFace('body'), color: colors.text },
   qHead: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -247,27 +248,27 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
   },
-  qLabel: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
-  qInput: { minHeight: 28, paddingTop: 2, fontSize: 17, lineHeight: 22, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
+  qLabel: { ...inkFace('caption'), color: colors.textSecondary },
+  qInput: { minHeight: 28, paddingTop: 2, ...inkFace('bodyStrong'), color: colors.text },
   answer: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
   letter: {
     width: LETTER,
     height: LETTER,
-    borderRadius: LETTER / 2,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: systemColors.fill,
   },
-  letterText: { fontSize: 13, fontWeight: '700', color: colors.textSecondary },
+  letterText: { ...inkFace('caption'), color: colors.textSecondary },
   answerBody: { flex: 1, paddingRight: space.lg },
-  answerInput: { minHeight: 46, fontSize: 17, letterSpacing: -0.4, color: colors.text },
+  answerInput: { minHeight: 46, ...inkFace('body'), color: colors.text },
   add: { minHeight: 46, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
-  addText: { fontSize: 17, letterSpacing: -0.4, color: colors.brandText },
-  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: colors.textSecondary },
+  addText: { ...inkFace('body'), color: colors.brandText },
+  footer: { marginTop: space.sm, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: colors.textSecondary },
   crisis: { padding: space.lg, gap: space.md, alignItems: 'flex-start' },
   crisisText: { gap: 4 },
-  crisisTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  crisisBody: { fontSize: 15, lineHeight: 20, color: colors.textSecondary },
-  helpline: { height: 36, paddingHorizontal: 16, borderRadius: 18, justifyContent: 'center', backgroundColor: systemColors.fill },
-  helplineText: { fontSize: 15, fontWeight: '600', color: colors.brandText },
+  crisisTitle: { ...inkFace('bodyStrong'), color: colors.text },
+  crisisBody: { ...inkFace('sub'), color: colors.textSecondary },
+  helpline: { height: 36, paddingHorizontal: 16, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemColors.fill },
+  helplineText: { ...inkFace('subStrong'), color: colors.brandText },
 });

@@ -21,6 +21,7 @@ import { haptic } from '@/lib/haptics';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, paperRoom, space } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { BoardStyleId } from '@/types';
 
 const MAX_LENGTH = 300;
@@ -215,15 +216,15 @@ const styles = StyleSheet.create({
     paddingTop: space.xs,
     paddingBottom: space.sm,
   },
-  barTitle: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4 },
-  post: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.lg, borderRadius: 22 },
+  barTitle: { ...inkFace('bodyStrong') },
+  post: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.lg, borderRadius: inkRadius.pill },
   postOn: { backgroundColor: colors.primaryFill },
-  postText: { fontSize: 17, fontWeight: '600' },
+  postText: { ...inkFace('bodyStrong') },
   scroll: { paddingTop: space.sm },
   toGroup: { marginBottom: space.lg },
   toRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
   pressed: { backgroundColor: colors.surfaceAlt },
-  toLabel: { fontSize: 17, letterSpacing: -0.4, color: colors.textSecondary },
+  toLabel: { ...inkFace('body'), color: colors.textSecondary },
   toChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -231,10 +232,10 @@ const styles = StyleSheet.create({
     height: 30,
     paddingLeft: 3,
     paddingRight: space.md,
-    borderRadius: 15,
+    borderRadius: inkRadius.pill,
     backgroundColor: colors.primarySofter,
   },
-  toName: { fontSize: 17, fontWeight: '500', letterSpacing: -0.4, flexShrink: 1 },
+  toName: { ...inkFace('body'), flexShrink: 1 },
   paper: { alignItems: 'center' },
   input: { flex: 1, fontSize: 17, lineHeight: 26, fontFamily: fonts.body },
   foot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: space.sm,
     marginHorizontal: space.lg * 2,
-    fontSize: 13,
+    ...inkFace('footnote'),
     color: colors.textSecondary,
     textTransform: 'uppercase',
   },
@@ -255,5 +256,5 @@ const styles = StyleSheet.create({
   person: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
   personBody: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', paddingRight: space.lg },
   line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  personName: { flex: 1, fontSize: 17, letterSpacing: -0.4 },
+  personName: { flex: 1, ...inkFace('body') },
 });

@@ -34,6 +34,7 @@ import { localized } from '@/i18n/content';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, paperRoom, signature, space, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
@@ -471,27 +472,27 @@ export default function PhotoBoothScreen() {
 }
 
 const styles = StyleSheet.create({
-  capsule: { height: 40, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14, backgroundColor: systemGround.fill },
-  capsuleText: { fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
-  proPill: { height: 28, paddingHorizontal: 12, borderRadius: 14, justifyContent: 'center', backgroundColor: STORE.violetSoft },
-  proPillText: { fontSize: 15, fontWeight: '700', color: STORE.violetInk },
-  card: { marginHorizontal: GUTTER, borderRadius: 24, backgroundColor: systemGround.card },
+  capsule: { height: 40, borderRadius: inkRadius.pill, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14, backgroundColor: systemGround.fill },
+  capsuleText: { ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
+  proPill: { height: 28, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: STORE.violetSoft },
+  proPillText: { ...inkFace('subStrong'), color: STORE.violetInk },
+  card: { marginHorizontal: GUTTER, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card },
   previewCard: { marginTop: 18, padding: CARD_PAD, gap: 12 },
   // The picture's stage: the white ground set into the grey card.
   preview: { borderRadius: 16, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   tilt: { transform: [{ rotate: '-2.5deg' }] },
   send: { position: 'absolute', top: space.sm, left: space.sm },
   caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md, paddingHorizontal: 2 },
-  captionTitle: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: systemGround.label },
-  muted15: { fontSize: 15, color: systemGround.secondaryLabel },
+  captionTitle: { flex: 1, ...inkFace('bodyStrong'), color: systemGround.label },
+  muted15: { ...inkFace('sub'), color: systemGround.secondaryLabel },
   partners: { gap: 14, paddingHorizontal: GUTTER },
   partner: { width: 60, alignItems: 'center', gap: 6 },
   ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
   ringOn: { borderColor: signature.photo.strong },
-  choiceLabel: { fontSize: 13, color: systemGround.secondaryLabel },
+  choiceLabel: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
   choiceLabelOn: { fontWeight: '700', color: systemGround.label },
   labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, maxWidth: '45%', fontSize: 13, color: systemGround.secondaryLabel },
+  labelValue: { marginBottom: 6, marginRight: space.lg * 2, maxWidth: '45%', ...inkFace('footnote'), color: systemGround.secondaryLabel },
   frames: { gap: 10, paddingHorizontal: GUTTER },
   frameChoice: { width: 72, alignItems: 'center', gap: 6 },
   frameBox: {
@@ -511,20 +512,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 26,
     height: 26,
-    borderRadius: 13,
+    borderRadius: inkRadius.pill,
     backgroundColor: systemGround.ground,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   styles: { marginHorizontal: GUTTER },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: CARD_PAD },
   thumb: { borderRadius: 12, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
   lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
   meter: { gap: 6, marginBottom: 4 },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterLeft: { flex: 1, fontSize: 15, fontWeight: '600', color: systemGround.label, fontVariant: ['tabular-nums'] },
-  meterReset: { fontSize: 13, color: systemGround.secondaryLabel },
-  track: { height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: systemGround.fill },
+  meterLeft: { flex: 1, ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
+  meterReset: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  track: { height: 6, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: systemGround.fill },
   fill: { height: '100%', borderRadius: 3, backgroundColor: signature.photo.strong },
 });

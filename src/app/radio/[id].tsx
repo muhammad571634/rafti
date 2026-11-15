@@ -23,6 +23,7 @@ import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, friendAccent, immersive, space, systemColors, systemGround } from '@/theme';
+import { inkFace, inkRadius } from '@/theme/ink';
 import { confirmAlert as confirm } from '@/lib/alert';
 
 const COVER = 220;
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: immersive.fill },
+  round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: immersive.fill },
   barRight: { flexDirection: 'row', gap: space.sm },
   body: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: 22 },
   head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg, paddingTop: (FIELD - COVER) / 2 - space.md },
@@ -236,7 +237,8 @@ const styles = StyleSheet.create({
   cover: {
     width: COVER,
     height: COVER,
-    borderRadius: 24,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     overflow: 'hidden',
     marginBottom: 18,
     backgroundColor: immersive.card,
@@ -247,24 +249,24 @@ const styles = StyleSheet.create({
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },
   },
-  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3, color: immersive.label },
-  by: { fontSize: 17, fontWeight: '600' },
-  words: { gap: 10, padding: 18, borderRadius: 22, backgroundColor: immersive.card },
-  line: { fontSize: 17, lineHeight: 23, color: immersive.secondaryLabel },
-  lineNow: { fontSize: 20, lineHeight: 26, fontWeight: '700', color: immersive.label },
+  title: { ...inkFace('card'), color: immersive.label },
+  by: { ...inkFace('bodyStrong') },
+  words: { gap: 10, padding: 18, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: immersive.card },
+  line: { ...inkFace('body'), color: immersive.secondaryLabel },
+  lineNow: { ...inkFace('bodyStrong'), color: immersive.label },
   controls: { gap: 18, paddingHorizontal: space.xl, paddingTop: space.md },
   meter: { gap: 6 },
-  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: immersive.fill },
+  track: { height: 5, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: immersive.fill },
   fill: { height: '100%', borderRadius: 3 },
   times: { flexDirection: 'row', justifyContent: 'space-between' },
-  clock: { fontSize: 12, fontWeight: '600', color: immersive.secondaryLabel, fontVariant: ['tabular-nums'] },
+  clock: { ...inkFace('caption'), color: immersive.secondaryLabel, fontVariant: ['tabular-nums'] },
   buttons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  side: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  side: { width: 52, height: 52, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   sideFill: { backgroundColor: immersive.fill },
   main: {
     width: 76,
     height: 76,
-    borderRadius: 38,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     ...CARD_SHADOW,
@@ -279,9 +281,10 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 12,
     paddingHorizontal: 18,
-    borderRadius: 22,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     backgroundColor: immersive.card,
     ...CARD_SHADOW,
   },
-  toastText: { fontSize: 15, fontWeight: '600', color: immersive.label },
+  toastText: { ...inkFace('subStrong'), color: immersive.label },
 });

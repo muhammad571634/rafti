@@ -15,6 +15,7 @@ import Animated, {
 import { Anim, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { aurora, colors, isDark, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 /** The sealed note's lock: mint, the bond colour (shared with the screen's sealed row). */
 export const LOCK_BG = isDark ? 'rgba(48,209,88,0.18)' : '#E3F7EF';
@@ -163,11 +164,11 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   lock: { width: 38, height: 38, borderRadius: 10, backgroundColor: LOCK_BG, alignItems: 'center', justifyContent: 'center' },
   lockIcon: { position: 'absolute' },
-  sealed: { fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
-  muted: { fontSize: 13, lineHeight: 18, color: aurora.textMuted },
+  sealed: { ...inkFace('bodyStrong'), color: colors.text },
+  muted: { ...inkFace('footnote'), color: aurora.textMuted },
   sealLayer: { position: 'absolute', top: 0, left: 0, right: 0 },
   letter: { width: 120, height: 120, alignSelf: 'center', marginTop: -space.md },
-  noteText: { fontSize: 17, lineHeight: 24, letterSpacing: -0.3, color: colors.text },
+  noteText: { ...inkFace('body'), color: colors.text },
   /** The card's padding is space.lg; the edge sits on the card's own border. */
   glow: {
     position: 'absolute',
