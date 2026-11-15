@@ -7,8 +7,8 @@ import { colors, space, systemColors } from '@/theme';
 
 /**
  * Mute, End and Speaker under a call (canvas "CallVoice" / "CallGroup", 2026-10-21): two glass
- * toggles that turn white when on, as iOS does, and the red hang-up between them. The mock has no
- * audio session yet, so mute and speaker only change state; real builds route them to expo-audio.
+ * toggles that turn white when on, as iOS does, and the red hang-up between them. Mute closes the
+ * open mic; Speaker moves their voice between the loudspeaker and the earpiece (`setCallAudio`).
  */
 export function CallControls({
   muted,

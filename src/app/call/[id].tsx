@@ -5,20 +5,22 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { accessToken } from '@/ai/account';
 import { captionMs, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
 import { detectCrisis } from '@/ai/safety';
 import { apiBase, serverSpeak } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
+import { CallRings } from '@/components/call/call-rings';
 import { CallHelpline, LiveCaption } from '@/components/call/live-caption';
 import { useHandsFree } from '@/components/call/use-hands-free';
-import { playOnce, stopNote } from '@/components/chat/voice-player';
+import { playOnce, setCallAudio, stopNote } from '@/components/chat/voice-player';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
 import { planStatus } from '@/economy/plans';
+import { CAPTION_STEP_MS, captionLevels } from '@/lib/call-level';
 import { callClock, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { dropClip, keepSpeech } from '@/lib/voice-files';
@@ -48,6 +50,11 @@ const voiceMaxMs = (text: string) => Math.max(8000, text.length * 120);
  * character answers in `mode: 'call'`; the lines show as captions, with rings round the avatar while
  * they run, until a voice reads them (ElevenLabs, later). A busy model says Not Delivered with a
  * retry, never a stock line. With the model off, the old subtitles run.
+ *
+ * Step 4 (brief 2026-11-15): "Connecting" lasts until their first line, not a fixed pause, and the
+ * clock starts then; the rings follow the real loudness of their voice (or the rhythm of a caption)
+ * and the user's mic, a turning arc shows their answer on its way; Speaker switches speaker and
+ * earpiece; with their voice playing the mic stays open, so talking over them stops it.
  */
 export default function CallScreen() {
   const insets = useSafeAreaInsets();
@@ -73,7 +80,8 @@ export default function CallScreen() {
   const [seconds, setSeconds] = useState(0);
   const [line, setLine] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [speaker, setSpeaker] = useState(false);
+  // Their voice comes from the loudspeaker until Speaker is turned off (then the earpiece).
+  const [speaker, setSpeaker] = useState(true);
   const startedAt = useRef(new Date().toISOString());
   // The time talked is booked once, however the screen closes: hang-up, out of time,
   // or the Android back button / a gesture that leaves without pressing End.
@@ -110,17 +118,42 @@ export default function CallScreen() {
       // Hanging up stops their voice mid-line, and a caption's wait, so their files are dropped.
       sayTurn.current += 1;
       clearTimeout(captionTimer.current);
+      clearInterval(pulseTimer.current);
       endPause.current?.();
       stopNote();
     },
     [],
   );
 
+  // The call's audio session: mic allowed, their voice on the loudspeaker or the earpiece; plain
+  // playback again once it closes.
+  useEffect(() => {
+    void setCallAudio({ allowsRecording: true, playsInSilentMode: true, shouldRouteThroughEarpiece: !speaker });
+  }, [speaker]);
+  useEffect(() => () => void setCallAudio(null), []);
+
+  // Loudness for the avatar (0-1, on the UI thread): theirs and the user's.
+  const their = useSharedValue(0);
+  const mine = useSharedValue(0);
+  const setTheir = (level: number) => their.set(withTiming(level, { duration: 110 }));
+  const pulseTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  /** A caption with no voice moves the rings in the rhythm of its words. */
+  const pulse = (text: string) => {
+    clearInterval(pulseTimer.current);
+    const steps = captionLevels(text);
+    let at = 0;
+    pulseTimer.current = setInterval(() => setTheir(steps.length ? steps[at++ % steps.length] : 0), CAPTION_STEP_MS);
+  };
+  const stopPulse = () => {
+    clearInterval(pulseTimer.current);
+    pulseTimer.current = undefined;
+    setTheir(0);
+  };
+
   // They speak: in their voice when the server has one (ElevenLabs), else as captions timed like
-  // speech; rings round the avatar either way. The mic stays closed while their voice plays, so it
-  // never hears itself; captions alone can be talked over.
-  const [speaking, setSpeaking] = useState(false);
-  const [voicePlaying, setVoicePlaying] = useState(false);
+  // speech; rings round the avatar either way. The mic stays open while their voice plays, behind
+  // an echo gate (`createEchoGate`), so talking over them stops them as captions always could.
+  const voicePlaying = useRef(false);
   const noVoice = useRef(false);
   const sayTurn = useRef(0);
   const endPause = useRef<(() => void) | undefined>(undefined);
@@ -131,8 +164,8 @@ export default function CallScreen() {
     clearTimeout(captionTimer.current);
     endPause.current?.();
     stopNote();
-    setSpeaking(false);
-    setVoicePlaying(false);
+    stopPulse();
+    voicePlaying.current = false;
   };
 
   /** A caption's time on screen when there is no voice; `hush` ends it early. */
@@ -183,19 +216,27 @@ export default function CallScreen() {
           continue;
         }
         if (i === 0) started();
-        setSpeaking(true);
         setCaption({ author: 'them', text: theirs[i].text });
+        // The words' rhythm first; a voice whose loudness the phone can read takes over the rings.
+        pulse(theirs[i].text);
         if (file) {
-          setVoicePlaying(true);
-          await playOnce(file, voiceMaxMs(theirs[i].text));
+          voicePlaying.current = true;
+          let sampled = false;
+          await playOnce(file, voiceMaxMs(theirs[i].text), (level) => {
+            if (!sampled) {
+              sampled = true;
+              clearInterval(pulseTimer.current);
+            }
+            setTheir(level);
+          });
+          voicePlaying.current = false;
           void dropClip(file);
         } else await pause(captionMs(theirs[i].text));
       }
     } finally {
-      // Whatever happened, the mic opens again once they are done.
       if (mine === sayTurn.current) {
-        setSpeaking(false);
-        setVoicePlaying(false);
+        stopPulse();
+        voicePlaying.current = false;
       }
     }
   };
@@ -206,40 +247,55 @@ export default function CallScreen() {
     setWaiting(true);
     setFailed(false);
     const sent = said.current;
+    // An outgoing call is "Connecting" until their first words (or a failure to show with its retry).
+    const connected = () => setState((now) => (now === 'connecting' ? 'active' : now));
     void callReply(character.id, sent, placedBy).then(({ lines: theirs, crisis }) => {
       if (crisis) markCrisis();
       if (!mounted.current || said.current !== sent) return;
       if (!theirs) {
         setWaiting(false);
+        connected();
         return setFailed(true);
       }
       said.current = [...sent, ...theirs.map(({ text }) => ({ author: 'them' as const, text }))];
       // The dots stay until their first line shows (with its voice, when there is one).
-      void play(theirs, () => setWaiting(false));
+      void play(theirs, () => {
+        setWaiting(false);
+        connected();
+      });
     });
   };
 
   // The open mic: the user just talks, and a pause ends their turn. It closes while muted and while
   // their answer is on its way. The words show and the character answers them; words that arrive
   // after the hang-up ask nothing, but a crisis in them still reaches the chat.
-  const mic = useHandsFree(!!live && state === 'active' && !muted && !waiting && !voicePlaying, (words) => {
-    if (detectCrisis(words.text)) markCrisis();
-    if (!mounted.current || booked.current) return;
-    const line: CallLine = { author: 'me', text: words.text, language: words.language };
-    said.current = [...said.current, line];
-    hush();
-    setCaption(line);
-    ask();
-  });
+  const mic = useHandsFree(
+    !!live && state === 'active' && !muted && !waiting,
+    (words) => {
+      if (detectCrisis(words.text)) markCrisis();
+      if (!mounted.current || booked.current) return;
+      const line: CallLine = { author: 'me', text: words.text, language: words.language };
+      said.current = [...said.current, line];
+      hush();
+      setCaption(line);
+      ask();
+    },
+    { theirVoice: () => voicePlaying.current, onLevel: (level) => mine.set(withTiming(level, { duration: 140 })) },
+  );
   const userTalking = mic.phase === 'speaking';
+  const micOpen = mic.phase === 'listening' || userTalking;
 
-  // Talking over their captions stops them, as a voice would stop. Never while their voice plays:
-  // what the mic hears then, as it closes, is their own voice from the speaker.
+  // Talking over them stops them: their captions, and their voice once the echo gate hears the user.
   useEffect(() => {
-    if (userTalking && !voicePlaying) hush();
+    if (userTalking) hush();
     // `hush` reads refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userTalking]);
+
+  // A closed mic leaves the avatar's rim dark.
+  useEffect(() => {
+    if (!micOpen) mine.set(withTiming(0, { duration: 200 }));
+  }, [micOpen, mine]);
 
   // Out of minutes: they stop talking while the sheet is up.
   useEffect(() => {
@@ -247,9 +303,9 @@ export default function CallScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
-  // The character speaks first, once the call is up.
+  // The character speaks first: asked while "Connecting", which lasts until their first line.
   useEffect(() => {
-    if (!live || state !== 'active' || opened.current) return;
+    if (!live || opened.current || (state !== 'connecting' && state !== 'active')) return;
     opened.current = true;
     ask();
     // `ask` reads refs; once per call.
@@ -262,11 +318,19 @@ export default function CallScreen() {
 
   useEffect(() => () => bookRef.current(), []);
 
+  // With the model off nothing is waited for: no made-up "Connecting".
   useEffect(() => {
-    if (state !== 'connecting') return;
-    const timer = setTimeout(() => setState('active'), 1600);
-    return () => clearTimeout(timer);
-  }, [state]);
+    if (state === 'connecting' && !live) setState('active');
+  }, [state, live]);
+
+  // The model-off subtitles move the rings in their rhythm too.
+  useEffect(() => {
+    if (live || state !== 'active' || !lines.length) return;
+    pulse(lines[line]);
+    return () => clearInterval(pulseTimer.current);
+    // `pulse` reads refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, state, line, lines]);
 
   useEffect(() => {
     if (state !== 'active') return;
@@ -376,10 +440,10 @@ export default function CallScreen() {
 
       <View style={styles.head}>
         <View style={styles.avatarWrap}>
-          {state === 'connecting' || speaking ? (
-            <Anim name="calling" size={230} tint={speaking ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.7)'} style={styles.rings} />
-          ) : null}
-          <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.85)" />
+          {state === 'connecting' ? <Anim name="calling" size={230} tint="rgba(255,255,255,0.7)" style={styles.rings} /> : null}
+          <CallRings size={150} their={their} mine={mine} thinking={state === 'active' && !!live && waiting}>
+            <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.85)" />
+          </CallRings>
         </View>
 
         <Txt style={[callGlass.title, styles.name]} lines={2}>

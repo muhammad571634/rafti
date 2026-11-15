@@ -7,7 +7,8 @@ import { accessToken } from '@/ai/account';
 import { serverTranscribe } from '@/ai/server';
 import { VOICE_SECONDS_MAX } from '@/ai/voice-prompt';
 import { OPTIONS, VOICE_DB, VOICE_MOMENTS } from '@/components/chat/use-voice-note';
-import { PLAYBACK_MODE } from '@/components/chat/voice-player';
+import { audioMode } from '@/components/chat/voice-player';
+import { createEchoGate, dbToLevel } from '@/lib/call-level';
 import { dropClip, readClip } from '@/lib/voice-files';
 import { useAppStore } from '@/store/use-app-store';
 import { showAlert } from '@/lib/alert';
@@ -36,7 +37,16 @@ export type ListenPhase = 'off' | 'listening' | 'speaking' | 'sending';
  * app or turning `on` off throws away what was being said. The first time, it asks whether the
  * voice may go to the AI service (App Store 5.1.2(i)), as a voice message does.
  */
-export function useHandsFree(on: boolean, onWords: (words: { text: string; language?: string }) => void) {
+export function useHandsFree(
+  on: boolean,
+  onWords: (words: { text: string; language?: string }) => void,
+  options: {
+    /** Their voice is playing now: the mic stays open, and only talk louder than its echo counts (barge-in). */
+    theirVoice?: () => boolean;
+    /** The mic's loudness (0-1) at every look, for the avatar's rim. */
+    onLevel?: (level: number) => void;
+  } = {},
+) {
   const { t } = useTranslation();
   const allowed = useAppStore((s) => s.settings.voiceToAi);
   const setSetting = useAppStore((s) => s.setSetting);
@@ -66,10 +76,13 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
     });
   };
   const latestOnWords = useRef(onWords);
+  const latestOptions = useRef(options);
+  const gate = useRef(createEchoGate(VOICE_DB));
   // Whether the call wants the mic now, read after each wait in `begin`.
   const wanted = useRef(on);
   useEffect(() => {
     latestOnWords.current = onWords;
+    latestOptions.current = options;
     wanted.current = on;
   });
   const [retryTick, setRetryTick] = useState(0);
@@ -116,17 +129,17 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
     // The call may no longer want the mic (their voice began) while this waited.
     if (!wanted.current) return;
     try {
-      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+      await setAudioModeAsync({ ...audioMode(), allowsRecording: true, playsInSilentMode: true });
       await recorder.prepareToRecordAsync();
     } catch (error) {
       // Another app holds the mic (a phone call): try again in a moment.
-      await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+      await setAudioModeAsync(audioMode()).catch(() => {});
       setTimeout(() => setRetryTick((n) => n + 1), RETRY_MS);
       throw error;
     }
     if (!wanted.current) {
       await recorder.stop().catch(() => {});
-      await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+      await setAudioModeAsync(audioMode()).catch(() => {});
       return;
     }
     recorder.record();
@@ -145,7 +158,7 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
       live.current = false;
       await recorder.stop().catch(() => {});
       const uri = recorder.uri;
-      await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+      await setAudioModeAsync(audioMode()).catch(() => {});
       if (!uri) return go('off');
       if (!keep) {
         void dropClip(uri);
@@ -185,7 +198,9 @@ export function useHandsFree(on: boolean, onWords: (words: { text: string; langu
       if (!live.current || !wanted.current) return;
       const now = Date.now();
       const { metering } = recorder.getStatus();
-      if (typeof metering === 'number' && metering > VOICE_DB) {
+      latestOptions.current.onLevel?.(dbToLevel(metering));
+      // Over their voice, only talk louder than its echo from the speaker counts (`createEchoGate`).
+      if (gate.current.hear(metering, latestOptions.current.theirVoice?.() ?? false, now)) {
         loudRun.current += 1;
         lastLoud.current = now;
         if (phaseRef.current === 'listening' && loudRun.current >= VOICE_MOMENTS) {

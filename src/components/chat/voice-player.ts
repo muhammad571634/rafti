@@ -1,9 +1,20 @@
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
+import { createAudioPlayer, setAudioModeAsync, type AudioMode, type AudioPlayer } from 'expo-audio';
 
+import { rmsLevel } from '@/lib/call-level';
 import { noteUri } from '@/lib/voice-files';
 
 /** Sound that plays with the mute switch on, as a voice message should, and no microphone. */
 export const PLAYBACK_MODE = { allowsRecording: false, playsInSilentMode: true } as const;
+
+/** A call's own audio session while it is open (mic allowed, speaker or earpiece); else plain playback. */
+let callAudio: Partial<AudioMode> | null = null;
+/** The mode every play and record step returns to: the call's while one is open. */
+export const audioMode = (): Partial<AudioMode> => callAudio ?? PLAYBACK_MODE;
+/** Opens (a mode) or closes (null) a call's audio session; Speaker switches the route by calling it again. */
+export function setCallAudio(mode: Partial<AudioMode> | null) {
+  callAudio = mode;
+  return setAudioModeAsync(audioMode()).catch(() => {});
+}
 
 let current: { player: AudioPlayer; done: () => void } | null = null;
 /** A newer press wins over a play still looking for its file. */
@@ -28,7 +39,7 @@ export async function playNote(name: string, done: () => void, options: { from?:
   const mine = turn;
   const uri = await noteUri(name);
   if (!uri) return false;
-  await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+  await setAudioModeAsync(audioMode()).catch(() => {});
   if (mine !== turn) return true;
   const player = createAudioPlayer(uri, { updateInterval: 100 });
   current = { player, done };
@@ -56,12 +67,13 @@ export function seekNote(at: number) {
 
 /**
  * Plays a file once (a call's spoken line) and resolves when it ends, is stopped, cannot play, or
- * runs past `maxMs` (a file that never says it finished).
+ * runs past `maxMs` (a file that never says it finished). `onLevel` hears its loudness (0-1) as it plays,
+ * where the phone can sample it.
  */
-export async function playOnce(uri: string, maxMs: number): Promise<void> {
+export async function playOnce(uri: string, maxMs: number, onLevel?: (level: number) => void): Promise<void> {
   stopNote();
   const mine = turn;
-  await setAudioModeAsync(PLAYBACK_MODE).catch(() => {});
+  await setAudioModeAsync(audioMode()).catch(() => {});
   if (mine !== turn) return;
   await new Promise<void>((resolve) => {
     let player: AudioPlayer;
@@ -83,6 +95,17 @@ export async function playOnce(uri: string, maxMs: number): Promise<void> {
     player.addListener('playbackStatusUpdate', (status) => {
       if (status.didJustFinish && current?.player === player) stopNote();
     });
+    // The loudness for a call's rings; a phone that cannot sample it just plays.
+    if (onLevel) {
+      try {
+        if (player.isAudioSamplingSupported) {
+          player.setAudioSamplingEnabled(true);
+          player.addListener('audioSampleUpdate', (sample) => {
+            if (current?.player === player) onLevel(rmsLevel(sample.channels[0]?.frames ?? []));
+          });
+        }
+      } catch {}
+    }
     player.play();
   });
 }
