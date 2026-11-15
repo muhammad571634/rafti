@@ -1,5 +1,28 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z233. START HERE: session handover (2026-11-15, Claude, Opus 5.5). NEXT: build audit §6.5 reactions in the look the owner names in the first message of the new session
+
+**Where we are.** Fable 5.2's work order (`docs/agent-tasks/design-audit-2026-11-15.md`, 0z213) is done for Steps 1-6 (0z214-0z230). Its section 6 ("waiting for the owner") is now being worked item by item with the owner: §6.4 is done (0z231 onboarding without the notifications scene, 0z232 the first hello from the model); §6.5 reactions has an approved direction and a prototype; nothing else from section 6 is started.
+
+**The owner's working order (keep it):** one section-6 item at a time; finish it, drive it on the A51, report in plain Uzbek, then stop and talk before the next one. After §6.5 the owner wants to think the rest through together before any code: §6.2 (features behind one "More"), §6.3 (a shell per message), and **§6.1 Today last**. Do not start any of these on your own.
+
+**Your first task (§6.5 reactions).** The owner's first message says which look of `docs/prototypes/reactions-ink.html` to build: A tapback (a disc in the reactor's colour: theirs their friend hue with a white glyph, mine peach with the dark peach ink), B line (the glyph in its own hue on a dark chip), C glow (filled glyph on a dark disc with its own light), or a mix. Owner rule: our own drawings, never a platform's emoji (no Apple, Samsung, Fluent / Windows, Noto, Twemoji look) and no mascot stickers on the chat; the mascot stays for brand moments.
+- Keep the six names (`love`, `laugh`, `wow`, `sad`, `hyped`, `thumbs`; `REACTS` in `src/ai/react.ts`, `Message.reaction`), so the model, the server and saved chats need no change.
+- Today they render as PNG stickers: `REACTION_STICKERS` in `@/assets/brand/registry`, drawn by `src/components/chat/reaction-sticker.tsx`, placed by `src/components/chat/message-bubble.tsx` (around `message.reaction`), picked in `src/components/chat/message-menu.tsx`. Read all three before changing anything; keep every handler and `accessibilityLabel`.
+- Build the glyphs once in the kit (e.g. `src/components/ink/reaction-glyph.tsx`, `react-native-svg`, the paths from the prototype), colours as tokens in `src/theme/ink.ts` (no hex in screens). Landing: a Reanimated spring (scale 0.2 -> 1.18 -> 1) and one `haptic` selection; under Reduce Motion it just appears. The pick bar appears at once (owner rule: popups and sheets have no entry animation). Accessibility label per reaction in 14 locales only if no key exists yet (check first).
+- Retire the six sticker PNGs from the chat only when nothing else imports them (grep); do not touch the mascot elsewhere.
+- Done means: tsc, `npm test`, `check:locales` if strings changed; OTA; on the A51 a reaction added, changed and removed on your line and on theirs, two quick taps on the bar, a friend reaction arriving from the model, long German message, largest text (font_scale 1.3, then restore 1.1); a short HANDOFF block; a plain-Uzbek report; then stop for the owner.
+
+**Still to do (owner asks not finished):**
+- §6.5 reactions in code (above).
+- §6.2, §6.3, then §6.1 Today: discuss with the owner first, one by one.
+- The model-written first hello (0z232) has not been seen live: it needs a fresh account (the owner declined wiping the A51; `sigmazam://onboarding?preview=1` walks the flow but creates nothing). Check it on the next fresh install or a second test device.
+- One flaky test: `npm test` failed once (1 of 955) and passed four times after; not identified. If it fails again, read its name before rerunning.
+- Waiting for the next APK: the white Android navigation bar (owner: later; `androidNavigationBar.enforceContrast: false` already in app.json) and Step 3.4 `react-native-keyboard-controller`.
+- Fredoka stays only for the diary's day number (approved diary: ask the owner before changing) and the lucky wheel's SVG numbers.
+- A deep link to the same screen with other params (`store/shell?tab=plans` while the shells tab is open) does not switch the tab; in-app taps do.
+- iOS not checked for any of 0z222-0z232.
+
 ### 0z232. The first hello comes from the model; a reactions prototype (2026-11-15, Claude, Opus 5.5). NEXT: the owner picks a reactions look (A, B, C or a mix) in `docs/prototypes/reactions-ink.html`, then code §6.5
 
 - **Owner**: the plans are Fable 5.2's (audit section 6, 0z213); yes to the second half of §6.4 (first hello from the model) and to a reactions prototype; reactions must be our own, not a platform's emoji (no Windows / Fluent, Noto, Twemoji look).
