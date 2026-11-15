@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z236. Audit §6.2 "More" prototype (2026-11-15, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/more-sheet.html`, then code it; §6.3 and §6.1 (Today, last) still to talk through
+
+- **Owner**: yes to the §6.2 split as proposed (nothing deleted, one step deeper) and to a prototype.
+- **Prototype** `docs/prototypes/more-sheet.html`: the chat's "+" panel keeps its look (60 pt round tiles, 3 columns) with five in front (photo, secret note, diary, date, daily calls) and a grey "More" tile; More opens one sheet (appears at once, scrolls inside, never taller than the screen): Apple's grouped list with coloured icon tiles and chevrons in four groups: play together (truth or dare, quiz, photo booth), story (scene, time skip, lore), listen and watch (radio, streams, board), you (personas). The same sheet is meant to open from a "More" row in Us. Precedent: iOS Messages' "+" (a few apps, then More). German labels toggle as the worst case (wraps, nothing cut). Today's six icons wait for §6.1.
+- **For the code step**: today radio / photo booth / dating / contacts / gifts are reached from Today's widgets, board from Us and Today, streams from the Chats tab, lore / personas / mind from Profile and the friend's settings, scenes and quiz from the chat; truth or dare, quiz, scene, time skip leave `ITEMS` in `src/components/chat/attach-menu.tsx` for the sheet. Group chats hide scenes (`hide`), keep that in the sheet.
+
 ### 0z235. Audit §6.5 reactions in code: the drop (2026-11-15, Claude, Opus 5.5). NEXT: stop and talk with the owner about §6.2 (features behind one "More"), then §6.3, §6.1 Today last; no code before that talk
 
 - **Owner**: picked "3 · Tomchi" (the drop) of `docs/prototypes/reactions-apple.html` ("kodlashga otaver").
