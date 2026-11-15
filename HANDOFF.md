@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z224. Step 5, the friend space on Ink faces (2026-11-15, Claude, Opus 5.5). NEXT: the rest of ink-3 (create character, contacts, groups, personas, lore, scenes, mind, a world's page), then lists and store (ink-4)
+
+- **`inkFace(role)`** (`src/theme/ink.ts`): a type role without its colour, for shared parts whose words take their colour from a `Txt color`, a red row or a picture.
+- **Friend kit** (`2089c80`, `src/components/character/kit.tsx`, used by ten screens incl. Profile-style settings): every font on Ink faces (top titles, face card name in the serif display, quick actions, group titles in the serif, rows, segments, bond / progress cards, footers), every round radius from `inkRadius`. **Friend page** (`character/[id]/index.tsx`): their tagline in the serif, bio / tags / about / story rows in Ink faces. **Memories**: list, meter, legend, locked rows in Ink faces and radii.
+- **Chat settings**: already night and already one danger group at the very bottom with a confirm each (audit §7 asked for this; it was done before). Unchanged.
+- **Checked**: tsc 0, npm test 949/949; OTA `8fd4e574`; on the A51 a friend's settings (Lena) top to bottom: serif name on the photo card, quick actions, bond card, switches, segmented reply style / length, rows, the red group. **Not checked**: the friend page itself, Memories, largest text size.
+
 ### 0z223. Step 5, the rest of the tab family on the Ink kit (2026-11-15, Claude, Opus 5.5). NEXT: Step 5's next family, the friend space (`docs/agent-tasks/ink-3-friend-space.md`: character page, chat settings with one Danger group, memories, diary entry points), then lists and store
 
 - **Today** (`72551b3`): widgets on Ink type roles (new `inkType.figureLarge`, system 34 bold tabular, for the headline number; FitText keeps its step-down sizes), the hero's name in the serif title role, its line and field in Ink roles, the welcome-back bubble in Ink roles. (`df750d7`) The status-bar veil is opaque to the safe-area edge, then fades: no ghost of the hero behind the clock once scrolled (audit §10).
