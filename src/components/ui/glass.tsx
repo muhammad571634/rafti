@@ -251,7 +251,7 @@ export function AddRow({ label, count, locked, onPress }: { label: string; count
 export function LargeTitle({ children }: { children: string }) {
   const styles = useThemed(sheet);
   return (
-    <Txt style={styles.largeTitle} accessibilityRole="header">
+    <Txt style={styles.largeTitle} accessibilityRole="header" android_hyphenationFrequency="full">
       {children}
     </Txt>
   );

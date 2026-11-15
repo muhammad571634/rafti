@@ -2,7 +2,7 @@ import { Text, TextProps } from 'react-native';
 
 import { inkEm, inkType, type InkRole } from '@/theme/ink';
 
-const SERIF: ReadonlySet<InkRole> = new Set(['display', 'title', 'card', 'cardSmall', 'numeral']);
+const SERIF: ReadonlySet<InkRole> = new Set(['display', 'title', 'card', 'cardSmall', 'numeral', 'numeralMid', 'numeralSmall']);
 
 export interface InkTextProps extends TextProps {
   /** A type role from `inkType`; screens never set sizes of their own. */
@@ -24,6 +24,8 @@ export function InkText({ variant = 'body', color, center, lines, style, ...rest
       numberOfLines={lines}
       ellipsizeMode={lines ? 'tail' : undefined}
       maxFontSizeMultiplier={serif ? 1.6 : undefined}
+      // A long word in a big serif line (German 'Mitteilungseinstellungen') breaks with a hyphen, not mid-word.
+      android_hyphenationFrequency={serif ? 'full' : undefined}
       accessibilityRole={variant === 'display' ? 'header' : undefined}
       style={[inkType[variant], color ? { color } : null, center ? { textAlign: 'center' } : null, style]}
       {...rest}
