@@ -258,7 +258,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
     <Screen night background="aurora">
       <View style={styles.top}>
         {index > 1 ? (
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back}>
+          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back} style={styles.roundHit}>
             <AuroraGlass style={styles.round}>
               <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
             </AuroraGlass>
@@ -644,8 +644,10 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   center: { textAlign: 'center' },
   top: { height: 44, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.xs, gap: space.md },
-  side: { width: 40 },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  side: { width: 44 },
+  // 44 pt (HIG minimum); the pressable is round and clips, so Android's press and focus highlight is a circle, not a square.
+  roundHit: { borderRadius: 22, overflow: 'hidden' },
+  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   backIcon: { marginLeft: -2 },
   progress: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
   segment: { width: 28, height: 5, borderRadius: 3, backgroundColor: aurora.glassOn },
