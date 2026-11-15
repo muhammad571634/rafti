@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z225. Step 5, the rest of the friend family and the shared bars on Ink faces (2026-11-15, Claude, Opus 5.5). NEXT: lists and store (ink-4), then features and moments (ink-5); the Txt variants that still use the display face (`typography.ts` display / figure / heroFigure) move with the store
+
+- **Sweep tool** (scratchpad `ink-faces.mjs`, not in the repo): replaces literal `fontSize` / `lineHeight` / `fontWeight` / `fontFamily: fonts.*` / `letterSpacing` in a style object with `...inkFace(role)` by size and weight (30+ display, 26 title, 21 serif card or system figure, 18-20 serif card small / body / bodyStrong, 16-17 body, 14-15 sub, 13 footnote, 12 caption; bold or the playful face picks the strong role). Leaves computed sizes, handwriting and serif italic. One wrong pick found and fixed by hand (the create-character idea field, regular 18 → body).
+- **ink-3 rest** (`bb82d33`, 20 files): create character (quick create and the form kit), contacts, new group, group info, personas, lore (list, book, entry, edit, rows), scenes, mind (and its two sheets, the noted chip), a world's page.
+- **Shared** (`3a6634f`): `LargeTitle` (about 30 screens) is the serif display role; the glass bar's title / rows / buttons, the sheet title, the in-app alert, the segmented control, the feature capsule and Find's circle cards (names in the serif) on Ink faces.
+- **Checked**: tsc 0, npm test 949/949; OTAs `65608988`, `b6c947f7`; on the A51 New character (serif title and question, chips, pills) and the Friends circle page (serif title and names on the cards). **Not checked**: lore, personas, scenes, mind, group screens, largest text size.
+
 ### 0z224. Step 5, the friend space on Ink faces (2026-11-15, Claude, Opus 5.5). NEXT: the rest of ink-3 (create character, contacts, groups, personas, lore, scenes, mind, a world's page), then lists and store (ink-4)
 
 - **`inkFace(role)`** (`src/theme/ink.ts`): a type role without its colour, for shared parts whose words take their colour from a `Txt color`, a red row or a picture.
