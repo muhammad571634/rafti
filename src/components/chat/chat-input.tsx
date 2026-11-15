@@ -3,6 +3,7 @@ import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTi
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
+import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
@@ -26,6 +27,8 @@ const ACTION = 46;
 const LINE = 22;
 /** The field grows with the text up to this many lines, then scrolls. */
 const MAX_LINES = 5;
+const SWAP_IN = ZoomIn.duration(150);
+const SWAP_OUT = ZoomOut.duration(150);
 
 /**
  * On a phone the keyboard's key starts a new line and only the plane sends, as in iOS Messages: a
@@ -165,6 +168,12 @@ export function ChatInput({
   useEffect(() => {
     if (voice.phase === 'idle') setHandsFree(false);
   }, [voice.phase]);
+  // Which button sits in the field now: each swap scales the old one out and the new one in.
+  const actionKey = editing ? 'edit' : onStop && !hasText && !voiceBusy ? 'stop' : hasText ? 'send' : 'mic';
+  const drawn = useRef(false);
+  useEffect(() => {
+    drawn.current = true;
+  }, []);
   const onPhoto = useOnPhoto();
   const surface = [styles.surface, onPhoto && styles.photoSurface];
   const ink = onPhoto ? colors.onMedia : colors.text;
@@ -271,66 +280,71 @@ export function ChatInput({
           />
 
           {/* Inside the field, as in iOS Messages: a quiet mic while empty, the peach paper plane once there is text. */}
-          {editing ? (
-            // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
-            <IconButton
-              icon="checkmark"
-              size={23}
-              color={hasText ? colors.textOnPrimary : colors.textFaint}
-              background={hasText ? colors.primaryFill : colors.surfaceAlt}
-              haptic={hasText}
-              accessibilityLabel={t('chat.saveEdit')}
-              onPress={() => submit()}
-              style={styles.action}
-            />
-          ) : onStop && !hasText && !voiceBusy ? (
-            // Typing a new line brings send back; the reply then answers both.
-            <IconButton
-              icon="stop"
-              size={16}
-              color={colors.textOnPrimary}
-              background={colors.primaryFill}
-              accessibilityLabel={t('a11y.stopReply')}
-              onPress={onStop}
-              style={styles.action}
-            />
-          ) : hasText ? (
-            <PressableScale
-              onPress={() => submit()}
-              onLongPress={onHoldSend ? holdSend : undefined}
-              delayLongPress={400}
-              hitSlop={8}
-              scaleTo={0.88}
-              haptic
-              accessibilityLabel={t('a11y.send')}
-              accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
-              style={[styles.action, styles.send]}>
-              <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
-            </PressableScale>
-          ) : Platform.OS === 'web' || !onVoiceNote ? (
-            <IconButton
-              icon="mic-outline"
-              size={26}
-              color={ink}
-              accessibilityLabel={t('a11y.voiceMessage')}
-              onPress={onVoice}
-              style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
-            />
-          ) : (
-            <HoldMic
-              recording={recording && !handsFree}
-              onTap={recordHandsFree}
-              onHoldStart={() => {
-                setHandsFree(false);
-                voice.start();
-              }}
-              onHoldEnd={voice.finish}
-              onLock={() => setHandsFree(true)}
-              accessibilityLabel={t('a11y.voiceMessage')}
-              accessibilityHint={t('chat.voice.hold')}
-              style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
-            />
-          )}
+          <View style={styles.actionSlot}>
+            {/* One button at a time; a swap is a 150 ms cross-scale (audit 3.5), never on the first draw. */}
+            <Animated.View key={actionKey} entering={drawn.current ? SWAP_IN : undefined} exiting={SWAP_OUT} style={styles.actionFill}>
+              {editing ? (
+                // ✓ sends the change; an emptied field keeps it off, as there is nothing to send.
+                <IconButton
+                  icon="checkmark"
+                  size={23}
+                  color={hasText ? colors.textOnPrimary : colors.textFaint}
+                  background={hasText ? colors.primaryFill : colors.surfaceAlt}
+                  haptic={hasText}
+                  accessibilityLabel={t('chat.saveEdit')}
+                  onPress={() => submit()}
+                  style={styles.action}
+                />
+              ) : onStop && !hasText && !voiceBusy ? (
+                // Typing a new line brings send back; the reply then answers both.
+                <IconButton
+                  icon="stop"
+                  size={16}
+                  color={colors.textOnPrimary}
+                  background={colors.primaryFill}
+                  accessibilityLabel={t('a11y.stopReply')}
+                  onPress={onStop}
+                  style={styles.action}
+                />
+              ) : hasText ? (
+                <PressableScale
+                  onPress={() => submit()}
+                  onLongPress={onHoldSend ? holdSend : undefined}
+                  delayLongPress={400}
+                  hitSlop={8}
+                  scaleTo={0.88}
+                  haptic
+                  accessibilityLabel={t('a11y.send')}
+                  accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
+                  style={[styles.action, styles.send]}>
+                  <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+                </PressableScale>
+              ) : Platform.OS === 'web' || !onVoiceNote ? (
+                <IconButton
+                  icon="mic-outline"
+                  size={26}
+                  color={ink}
+                  accessibilityLabel={t('a11y.voiceMessage')}
+                  onPress={onVoice}
+                  style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
+                />
+              ) : (
+                <HoldMic
+                  recording={recording && !handsFree}
+                  onTap={recordHandsFree}
+                  onHoldStart={() => {
+                    setHandsFree(false);
+                    voice.start();
+                  }}
+                  onHoldEnd={voice.finish}
+                  onLock={() => setHandsFree(true)}
+                  accessibilityLabel={t('a11y.voiceMessage')}
+                  accessibilityHint={t('chat.voice.hold')}
+                  style={[styles.action, onPhoto ? styles.photoMic : styles.mic]}
+                />
+              )}
+            </Animated.View>
+          </View>
 
           {/* Over the empty field while a voice message is made; a hold leaves the mic under the finger uncovered. */}
           {voiceBusy || voice.notice ? (
@@ -413,6 +427,9 @@ const styles = StyleSheet.create({
     // A grown, multi-line field keeps iOS squircle corners; Android ignores it.
     borderCurve: 'continuous',
   },
+  // The action's place: the old and the new button overlap here while they swap.
+  actionSlot: { width: ACTION, height: ACTION, marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth },
+  actionFill: { position: 'absolute', top: 0, left: 0 },
   action: { width: ACTION, height: ACTION, borderRadius: ACTION / 2, marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   send: { backgroundColor: colors.primaryFill },
   // The plane points up and right; nudged so it looks centred in its circle.

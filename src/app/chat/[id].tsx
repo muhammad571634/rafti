@@ -24,6 +24,7 @@ import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
+import { playSend, useReceiveSound } from '@/components/chat/chat-sounds';
 import { SwipeToReply } from '@/components/chat/reply-quote';
 import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
@@ -240,6 +241,8 @@ export default function ChatRoomScreen() {
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
   const { onScroll, follow, jump, away, unseen } = useFollowNewest(listRef, messages?.length ?? 0);
   const newestMine = messages?.at(-1)?.author === 'me';
+  // A soft pop as their line lands while you read (behind the message-sound switch).
+  useReceiveSound(messages);
   useEffect(() => {
     follow(newestMine);
     // A new line or a typing flip, not every render.
@@ -417,14 +420,19 @@ export default function ChatRoomScreen() {
     const result = draftIdea
       ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text)
       : sendText(conversation.id, text, tone, replyTo ?? undefined);
-    if (result === 'sent') setReplyTo(null);
+    if (result === 'sent') {
+      setReplyTo(null);
+      playSend();
+    }
     if (draftIdea && result === 'sent') afterIdea(data.find((m) => m.id === draftIdea.messageId), draftIdea.idea);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
 
   const sendNote = (note: VoiceNote) => {
-    if (sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile, note.language) !== 'noShells') return;
+    const result = sendVoice(conversation.id, note.seconds, note.transcript, note.audioFile, note.language);
+    if (result === 'sent') playSend();
+    if (result !== 'noShells') return;
     outOfShells(shellCosts.voiceMessage);
     if (note.audioFile) void dropNote(note.audioFile);
   };

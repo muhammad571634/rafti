@@ -5,7 +5,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeInDown, useReducedMotion, ZoomIn } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
@@ -74,6 +74,8 @@ const AVATAR = 28;
 /** iOS bubble corners; the tail corner of a run's last bubble is tighter. */
 const CORNER = 19;
 const TAIL = 6;
+/** The heart burst over a loved line. */
+const BURST = 120;
 
 /**
  * Memoised: a long history re-renders only the rows whose message or run position
@@ -111,8 +113,20 @@ export const MessageBubble = memo(function MessageBubble({
     if (!node) return onLongPress(message);
     node.measureInWindow((x, y, width, height) => onLongPress(message, width > 0 ? { x, y, width, height } : undefined));
   };
-  const latest = useRef({ message, onDoubleTap, openHeld });
-  latest.current = { message, onDoubleTap, openHeld };
+  /** The heart that bursts over a line as a double tap loves it (the wired `heartBurst` Lottie). */
+  const [burst, setBurst] = useState(0);
+  const still = useReducedMotion();
+  useEffect(() => {
+    if (!burst) return;
+    const timer = setTimeout(() => setBurst(0), 1300);
+    return () => clearTimeout(timer);
+  }, [burst]);
+  const love = () => {
+    if (!still && message.reaction !== 'love') setBurst(Date.now());
+    onDoubleTap?.(message);
+  };
+  const latest = useRef({ love, openHeld, message });
+  latest.current = { love, openHeld, message };
   // One tap opens the menu (Telegram), once a second tap did not follow; two taps love the line.
   const taps = useMemo(() => {
     const double = Gesture.Tap()
@@ -120,7 +134,7 @@ export const MessageBubble = memo(function MessageBubble({
       .maxDelay(260)
       .runOnJS(true)
       .onEnd((_e, success) => {
-        if (success) latest.current.onDoubleTap?.(latest.current.message);
+        if (success) latest.current.love();
       });
     const single = Gesture.Tap()
       // A hold is the long press's, not a tap.
@@ -179,6 +193,7 @@ export const MessageBubble = memo(function MessageBubble({
       ) : (
         <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={quotePress} />
       )}
+      {burst ? <Anim key={burst} name="heartBurst" size={BURST} loop={false} style={styles.burst} /> : null}
       {pinned ? (
         <View
           style={[styles.pinBadge, mine ? styles.pinMine : styles.pinTheirs]}
@@ -743,6 +758,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     ...shadows.card,
   },
+  burst: { position: 'absolute', top: '50%', left: '50%', marginTop: -BURST / 2, marginLeft: -BURST / 2, zIndex: 2 },
   pinMine: { left: -7 },
   pinTheirs: { right: -7 },
   // A text's tone (`TONE_LOOK`) wears the pin's shape and steps aside for a pin.

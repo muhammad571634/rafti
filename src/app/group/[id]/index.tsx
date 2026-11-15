@@ -21,6 +21,7 @@ import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, usePictur
 import { DayChip } from '@/components/chat/day-chip';
 import type { BubbleAnchor } from '@/components/chat/message-bubble';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
+import { playSend, useReceiveSound } from '@/components/chat/chat-sounds';
 import { SwipeToReply } from '@/components/chat/reply-quote';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { ReplyControls } from '@/components/chat/reply-controls';
@@ -158,6 +159,8 @@ export default function GroupChatScreen() {
   // A new line or typing keeps a reader at the newest end there; your own line always brings you back.
   const { onScroll, follow, jump, away, unseen } = useFollowNewest(listRef, messages?.length ?? 0);
   const newestMine = messages?.at(-1)?.author === 'me';
+  // A soft pop as their line lands while you read (behind the message-sound switch).
+  useReceiveSound(messages);
   useEffect(() => {
     follow(newestMine);
     // A new line or a typing flip, not every render.
@@ -283,7 +286,9 @@ export default function GroupChatScreen() {
   };
 
   const sendNote = (note: VoiceNote) => {
-    if (sendGroupVoice(groupId, note.seconds, note.transcript, note.audioFile) !== 'noShells') return;
+    const result = sendGroupVoice(groupId, note.seconds, note.transcript, note.audioFile);
+    if (result === 'sent') playSend();
+    if (result !== 'noShells') return;
     outOfShells(shellCosts.voiceMessage);
     if (note.audioFile) void dropNote(note.audioFile);
   };
@@ -295,7 +300,10 @@ export default function GroupChatScreen() {
 
   const send = (text: string) => {
     const result = sendGroupText(groupId, text, replyTo ?? undefined);
-    if (result === 'sent') setReplyTo(null);
+    if (result === 'sent') {
+      setReplyTo(null);
+      playSend();
+    }
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
