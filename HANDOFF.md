@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z238. Audit §6.3 proposal: unit economics and three shapes (2026-11-15, Claude, Opus 5.5). NEXT: the owner picks a shape in `docs/pricing-6-3.md` (A today, B free daily messages, recommended, C Whispy-style); no code before that, and no final prices before the paid key and a voice measurement
+
+- **Owner**: asked how the unit economics work for §6.3, what the market does (sent Whispy AI's Sensor Tower page: gems £2.99-£99.99, subscriptions £14.99 / £44.99 a month, £149.99 / £449.99 a year), and said write it up.
+- **Doc** `docs/pricing-6-3.md`: the formula (margin = price × 0.85 − costs; free users one payer carries; break-even conversion), measured inputs from the cost ledger ($0.0019 a message), text-only numbers (break-even conversion 7.2 % today, 3.7 % with a working prompt cache), three shapes side by side, market notes, the recommendation (B, the prompt cache before launch, measure voice, tune the cap on the first cohort) and what B changes in code.
+
 ### 0z237. Audit §6.2 in code: one More sheet (2026-11-15, Claude, Opus 5.5). NEXT: stop and talk with the owner about §6.3 (a shell per message), then §6.1 Today last; no code before that talk
 
 - **Owner**: approved `docs/prototypes/more-sheet.html` as drawn ("Ha, kodla").
