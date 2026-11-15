@@ -315,7 +315,7 @@ export interface Message {
   failed?: boolean;
   /** Rendered as a low-contrast bubble (the echo of what the character heard) */
   muted?: boolean;
-  /** The user's reaction to this message: a Rafti sticker name (see REACTION_STICKERS) */
+  /** The user's reaction to this message: one of `REACTS` (`src/ai/react.ts`) */
   reaction?: string;
   /** The friend's sticker on the user's own message, put there with their reply (`src/ai/react.ts`). */
   theirReaction?: string;

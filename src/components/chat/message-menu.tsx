@@ -5,19 +5,23 @@ import { useTranslation } from 'react-i18next';
 import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { REACTS, type React as ReactionName } from '@/ai/react';
 import { type BubbleAnchor, HeldBubble } from '@/components/chat/message-bubble';
-import { ReactionSticker } from '@/components/chat/reaction-sticker';
+import { ReactionGlyph } from '@/components/ink';
 import { PressableScale, Txt } from '@/components/ui';
+import { haptic } from '@/lib/haptics';
 import { colors, isDark, shadows, space } from '@/theme';
+import { ink, inkReaction } from '@/theme/ink';
 import type { Message } from '@/types';
 
-const REACTIONS = Object.keys(REACTION_STICKERS) as ReactionName[];
+const REACTIONS: readonly ReactionName[] = REACTS;
 /** Their bubbles start past the avatar column of the chat (12 gutter + 28 avatar + 8 gap). */
 const THEIRS_INSET = 36;
 /** The reactions capsule, the menu's rows and the room between the lifted bubble and both. */
 const REACT_H = 62;
 const REACT_W = 6 * 50 + 5 * 2 + 14;
+/** A reaction symbol in the capsule. */
+const GLYPH = 28;
 const MENU_W = 280;
 const ROW_H = 44;
 const GROUP_GAP = 8;
@@ -30,7 +34,7 @@ export interface MessageMenuProps {
   /** Where the held bubble sits: a text line is lifted there, reactions over it, the menu under it. */
   anchor?: BubbleAnchor;
   onClose: () => void;
-  /** The picked sticker, or undefined to take the reaction back. */
+  /** The picked reaction, or undefined to take it back. */
   onReact: (message: Message, reaction: ReactionName | undefined) => void;
   onCopy: (message: Message) => void;
   onReport: (message: Message) => void;
@@ -53,8 +57,7 @@ export interface MessageMenuProps {
 
 /**
  * The long-press menu, as an iOS context menu (approved prototypes `Menu.dc.html`, `MenuMine.dc.html`,
- * `ChatRewind.dc.html`): the chat blurs, the mascot reactions sit in a glass capsule (each moving to
- * its feeling) over Copy / Edit or Report, then the destructive group, Rewind to here and Delete, in
+ * `ChatRewind.dc.html`): the chat blurs, the six reactions (our own symbols, §6.5) sit in a glass capsule over Copy / Edit or Report, then the destructive group, Rewind to here and Delete, in
  * red at the end (HIG Context menus). Items that do not apply are left out, not dimmed. It appears at
  * once; a tap outside closes it.
  */
@@ -103,8 +106,12 @@ export function MessageMenu({
             accessibilityRole="button"
             accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
             accessibilityState={{ selected: on }}
-            onPress={() => onReact(message, on ? undefined : name)}>
-            <ReactionSticker name={name} style={styles.sticker} />
+            onPress={() => {
+              haptic.selection();
+              onReact(message, on ? undefined : name);
+            }}>
+            {/* Each in its own hue; the one you put is on your peach. */}
+            <ReactionGlyph name={name} color={on ? ink.onAccent : inkReaction[name]} size={GLYPH} />
           </PressableScale>
         );
       })}
@@ -228,8 +235,7 @@ const styles = StyleSheet.create({
   },
   reactions: { height: 62, borderRadius: 31, flexDirection: 'row', alignItems: 'center', gap: 2, paddingHorizontal: 7 },
   reaction: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
-  reactionOn: { backgroundColor: colors.primarySoft },
-  sticker: { width: 42, height: 42 },
+  reactionOn: { backgroundColor: ink.accent },
   inset: { marginLeft: THEIRS_INSET },
   at: { position: 'absolute' },
   // The held line, lifted a little off the blur.

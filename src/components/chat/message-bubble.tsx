@@ -5,12 +5,11 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { FadeInDown, useReducedMotion, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
-import { REACTION_STICKERS, type ReactionName } from '@/assets/brand/registry';
+import { cleanReact } from '@/ai/react';
 import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
-import { ReactionSticker } from '@/components/chat/reaction-sticker';
 import { BubbleQuote } from '@/components/chat/reply-quote';
 import { SetupCard } from '@/components/chat/setup-card';
 import { playNote, seekNote, stopNote } from '@/components/chat/voice-player';
@@ -25,7 +24,9 @@ import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
 import { useReveal } from '@/lib/reveal';
 import { barsFor, resampleWave } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, palette, radius, shadows, space, systemColors } from '@/theme';
+import { ReactionBadge } from '@/components/ink';
+import { colors, friendColor, palette, radius, shadows, space, systemColors } from '@/theme';
+import { ink } from '@/theme/ink';
 import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
@@ -214,19 +215,26 @@ export const MessageBubble = memo(function MessageBubble({
           <Ionicons name={TONE_LOOK[message.tone].icon} size={14} color={colors.white} />
         </View>
       ) : null}
-      {message.reaction && message.reaction in REACTION_STICKERS ? (
-        <ReactionSticker
-          name={message.reaction as ReactionName}
-          play="still"
-          // Your own sticker on your line steps to the other corner when theirs is on it.
-          style={[styles.reaction, mine ? (message.theirReaction ? styles.reactionTheirs : styles.reactionMine) : styles.reactionTheirs]}
+      {/* Your reaction (peach) and theirs on your line (their hue): drops pointing at the line that Bounce in, Replace, Disappear (§6.5). */}
+      <ReactionBadge
+        name={message.reaction}
+        fill={ink.accent}
+        glyph={ink.onAccent}
+        point={mine && !message.theirReaction ? 'topRight' : 'topLeft'}
+        // Your own reaction on your line steps to the other corner when theirs is on it.
+        style={[styles.reaction, mine ? (message.theirReaction ? styles.reactionTheirs : styles.reactionMine) : styles.reactionTheirs]}
+      />
+      {mine ? (
+        // Their reaction on what you said (owner, 2026-11-08: alive): it lands as it arrives.
+        <ReactionBadge
+          name={message.theirReaction}
+          fill={friendColor(character.id).fill}
+          glyph={friendColor(character.id).ink}
+          point="topRight"
+          tapOnLand
+          style={[styles.reaction, styles.reactionMine]}
+          accessibilityLabel={cleanReact(message.theirReaction) ? t('chat.theyReacted', { name: t(`chat.reactions.${message.theirReaction}`) }) : undefined}
         />
-      ) : null}
-      {mine && message.theirReaction && message.theirReaction in REACTION_STICKERS ? (
-        // Their sticker on what you said (owner, 2026-11-08: alive): it pops in as it lands.
-        <Animated.View entering={ZoomIn.springify().damping(12)} style={[styles.reaction, styles.reactionMine]} accessible accessibilityLabel={t('chat.theyReacted', { name: t(`chat.reactions.${message.theirReaction}`) })}>
-          <ReactionSticker name={message.theirReaction as ReactionName} play="still" style={styles.reactionFill} />
-        </Animated.View>
       ) : null}
     </>
   );
@@ -815,11 +823,10 @@ const styles = StyleSheet.create({
   fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
   withReaction: { marginBottom: space.lg },
-  // The sticker carries its own white die-cut rim, so it needs no chip behind it.
-  reaction: { position: 'absolute', bottom: -space.lg, width: 30, height: 30 },
-  reactionMine: { left: -space.xs },
-  reactionFill: { width: 30, height: 30 },
-  reactionTheirs: { right: -space.xs },
+  // The drop hangs off the bottom corner (the top corners carry the pin and tone marks).
+  reaction: { position: 'absolute', bottom: -space.lg - 2 },
+  reactionMine: { left: -space.xs - 2 },
+  reactionTheirs: { right: -space.xs - 2 },
   // A pinned line's mark, on the corner away from the tail (canvas `MenuPin.dc.html`).
   pinBadge: {
     position: 'absolute',

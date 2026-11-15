@@ -6,7 +6,7 @@
  */
 import { part, type PromptPart } from './prompt-layout';
 
-/** The chat's six stickers (`REACTION_STICKERS` in `src/assets/brand/registry.ts`, same names). */
+/** The chat's six reactions (drawn by `ReactionGlyph`, `src/components/ink/reaction-glyph.tsx`). */
 export const REACTS = ['love', 'laugh', 'wow', 'sad', 'hyped', 'thumbs'] as const;
 export type React = (typeof REACTS)[number];
 

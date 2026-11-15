@@ -10,3 +10,4 @@ export { InkChip, type InkChipProps } from './ink-chip';
 export { InkEm, InkText, type InkTextProps } from './ink-text';
 export { PillButton, type PillButtonProps, type PillKind } from './pill-button';
 export { Tile, tileTint, type TileProps } from './tile';
+export { REACTION_BADGE_SIZE, ReactionBadge, type ReactionBadgeProps, ReactionGlyph, type ReactionGlyphProps } from './reaction-glyph';

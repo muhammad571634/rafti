@@ -124,3 +124,16 @@ export const inkTints = [
   ['#25294A', '#1F233F'],
   ['#40263A', '#361F31'],
 ] as const satisfies readonly (readonly [string, string])[];
+
+/**
+ * The six chat reactions' own hues (audit 2026-11-15 §6.5, prototype `docs/prototypes/reactions-apple.html`):
+ * each glyph in the pick bar is drawn in its hue. On a message the disc takes the reactor's colour instead.
+ */
+export const inkReaction = {
+  love: '#FF6B81',
+  laugh: '#FFC94D',
+  wow: '#6CC4FF',
+  sad: '#9DB0FF',
+  hyped: '#FF8A3D',
+  thumbs: '#52D9A2',
+} as const;
