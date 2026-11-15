@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z220. Chat feel, part 6: smoothness (2026-11-15, Claude, Opus 5.5). NEXT: brief Step 3.4 (keyboard-controller) with the next APK; else Step 4 (the voice call)
+
+- **Store save throttled** (`8d5a1d5`, `src/lib/throttled-storage.ts`, 4 tests): zustand persist called `setItem` on every `set()` and serialised the whole saved store each time (many a second while a reply streams). Now only the newest value is kept and written once per 600 ms; going to the background flushes at once (the `AppLife` listener next to `replyBatch.flush()`); `removeItem` drops a waiting write. Replaces `createJSONStorage` (same JSON, same key, no migration).
+- **Today** no longer subscribes to every chat's messages: a selector returns the id of the first ready note whose friend is not on a helpline day, so Today re-renders when that answer changes.
+- **Chat**: subscribes only to its own friend's quoted message ids (`useShallow`), not all memories; the inverted FlatList gets `initialNumToRender 14`, `maxToRenderPerBatch 8`, `updateCellsBatchingPeriod 40`, `windowSize 11` and a module-level `keyExtractor`. `renderItem` still depends on `data` (run / day-chip info per index); `MessageBubble` is already `memo`, so cells keep their bubbles.
+- **Checked**: tsc 0, npm test 939/939; OTA `783f0390`; on the A51 Today and Chats open, a fling to the top of Sam's history and back draws every row, and a line sent then the app killed 0.8 s later (home, force-stop) was in Chats' preview on reopen. **Not measured**: frame times (no profiler run); a group chat.
+
 ### 0z219. Chat feel, part 5: a drag down closes a sheet (2026-11-15, Claude, Opus 5.5). NEXT: brief Step 3.8 (smoothness: debounce persistence, Today and the chat select less, list tuning); 3.4 keyboard-controller with the next APK
 
 - **Sheet drag** (`cdd0f43`, `src/components/ui/sheet.tsx`): the grabber and the header row take a vertical drag (pan, 8 pt down, fails sideways); the card follows, the scrim fades; past 110 pt or a flick over 900 it carries on down (160 ms) and closes, else it springs back. Only the top takes it, so lists, wheels and fields inside keep their touches; on `scroll` / `avoidKeyboard` sheets the top now sits above the ScrollView (fixed). Not for `center` cards or `dismissable={false}`. Still appears at once. The Modal has its own `GestureHandlerRootView`.
