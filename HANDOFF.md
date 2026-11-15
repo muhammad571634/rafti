@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z237. Audit §6.2 in code: one More sheet (2026-11-15, Claude, Opus 5.5). NEXT: stop and talk with the owner about §6.3 (a shell per message), then §6.1 Today last; no code before that talk
+
+- **Owner**: approved `docs/prototypes/more-sheet.html` as drawn ("Ha, kodla").
+- **Code** (`cf75d45`, `96ebf33`): `MoreSheet` (`src/components/more-sheet.tsx`, the kit `Sheet` with `scroll`, grouped rows with 32 pt coloured tiles, names in two lines at most). The chat's "+" (`attach-menu.tsx`) is five tiles + More (`AttachKey` 'more'); truth or dare, quiz, scene, time skip run through the chat's own `attach` via `onChatPick`; photo booth, world books, radio, streams, board, personas push their screens. Group chats open it with `hide={['scene']}`. Us has a More row at the end (after Our moments): quiz and scene with the picked friend, truth or dare and time skip hidden there. New `more.*` (title, play, story, watch, you) in 14 locales.
+- **Checked**: tsc 0, npm test 955/955, check:locales, check:content; OTAs `42c31c60`, `646764ed`; on the A51 (English) the "+" panel (More's label was the raw key on the first OTA, fixed), More from the chat, truth or dare opens its wheel, radio opens, Us' More row and its sheet (no truth or dare / time skip), couple quiz from Us. **Not driven**: a group chat's More, German on the phone (the prototype's German pass wraps fine), iOS. Today's six icons wait for §6.1.
+
 ### 0z236. Audit §6.2 "More" prototype (2026-11-15, Claude, Opus 5.5). NEXT: the owner approves or changes `docs/prototypes/more-sheet.html`, then code it; §6.3 and §6.1 (Today, last) still to talk through
 
 - **Owner**: yes to the §6.2 split as proposed (nothing deleted, one step deeper) and to a prototype.
