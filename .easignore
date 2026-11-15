@@ -1,0 +1,71 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+# The server's secrets (server/.env.local is covered above; this guards a plain .env too)
+server/.env
+server/node_modules/
+# Every answer of an eval run (server/src/evals/run.ts); only baseline.json is kept
+server/eval-results/
+# A translator's working files (scripts/content-todo.mjs)
+.content-todo/
+
+# typescript
+*.tsbuildinfo
+
+example
+
+# generated native folders
+/ios
+/android
+modules/*/android/build/
+modules/*/android/.gradle/
+# Nano Banana pictures waiting to be wired in (docs/nano-banana-worlds.md)
+art-new/
+
+# Who is working on what right now (.agents/rules/project-memory.md section 6)
+.agents/now.md
+
+/marketing
+
+
+# EAS only (not in .gitignore): big local folders the build never reads; the archive limit is 2 GB.
+videos/
+.playwright-mcp/
+.agents/
+.claude/
+.vscode/
+docs/
+/image*.png
+art-new/
+scripts/__pycache__/
