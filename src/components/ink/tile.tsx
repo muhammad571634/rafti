@@ -36,7 +36,7 @@ export function Tile({ tint, name, meta, picked, dimmed, onPress, onLongPress, a
       accessibilityState={{ selected: !!picked }}
       style={[styles.wrap, picked && styles.picked]}>
       <LinearGradient colors={tint} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={styles.tile}>
-        <InkText variant="cardSmall" center lines={3} style={dimmed && styles.dimmed} adjustsFontSizeToFit minimumFontScale={0.75}>
+        <InkText variant="cardSmall" center lines={3} style={dimmed && styles.dimmed}>
           {name}
         </InkText>
         {meta ? <View style={styles.meta}>{meta}</View> : null}
