@@ -122,7 +122,6 @@ export default function HomeScreen() {
 
   const user = useAppStore((s) => s.user);
   const conversations = useAppStore((s) => s.conversations);
-  const messages = useAppStore((s) => s.messages);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
@@ -173,18 +172,16 @@ export default function HomeScreen() {
   const namesLine =
     names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${t('home.and')} ${names[names.length - 1]}`;
 
-  // The first ready note whose friend is not on a helpline day; each friend's chat is looked up
-  // once through a map instead of scanning every conversation per note.
-  const note = useMemo(() => {
-    const chatIdOf = new Map<string, string>();
-    for (const c of conversations) if (!chatIdOf.has(c.characterId)) chatIdOf.set(c.characterId, c.id);
-    return notes.find(
-      (n) =>
-        n.status === 'ready' &&
-        charactersById.has(n.characterId) &&
-        !helplineToday(messages[chatIdOf.get(n.characterId) ?? ''] ?? []),
-    );
-  }, [notes, conversations, messages, charactersById]);
+  // The first ready note whose friend is not on a helpline day. Picked in the selector, so Today
+  // re-renders when that answer changes, not on every line of every chat (brief Step 3.8).
+  const noteId = useAppStore((s) =>
+    s.notes.find((n) => {
+      if (n.status !== 'ready' || !s.characters.some((c) => c.id === n.characterId)) return false;
+      const chatId = s.conversations.find((c) => c.characterId === n.characterId)?.id;
+      return !helplineToday((chatId && s.messages[chatId]) || []);
+    })?.id,
+  );
+  const note = useMemo(() => notes.find((n) => n.id === noteId), [notes, noteId]);
   const noteFrom = note ? charactersById.get(note.characterId) : undefined;
   const noteName = noteFrom ? shortName(displayName(noteFrom, relationships[noteFrom.id])) : '';
 

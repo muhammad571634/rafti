@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState as AppLife } from 'react-native';
 import { create } from 'zustand';
-import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
+import { persist, type StateStorage } from 'zustand/middleware';
+import { throttledJSONStorage } from '@/lib/throttled-storage';
 
 import { inviteCodeFor, normalizeInviteCode } from '@/lib/invite';
 import { canPayShare } from '@/lib/share-outcome';
@@ -1029,6 +1030,9 @@ const rebrandStorage: StateStorage = {
 };
 
 type PersistedState = Partial<Pick<AppState, PersistedKeys>>;
+
+/** Saved at most every 600 ms, not on every `set()` (brief 2026-11-15 Step 3.8); going to the background saves at once. */
+const storeStorage = throttledJSONStorage<Pick<AppState, PersistedKeys>>(typeof window === 'undefined' ? noopStorage : rebrandStorage);
 
 /** Wallet fields older versions saved; the migration reads them once and drops them. */
 type LegacyWallet = Wallet & {
@@ -4094,7 +4098,7 @@ export const useAppStore = create<AppState>()(
         }
         return state as AppState;
       },
-      storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : rebrandStorage)),
+      storage: storeStorage,
       // The official cast always comes from code (later: the server), so edits to a
       // seed character reach devices that saved an older copy. User creations are kept.
       merge: (persisted, current) => {
@@ -6911,6 +6915,7 @@ function bubbleLater(run: () => void, ms: number) {
 AppLife.addEventListener('change', (state) => {
   if (state === 'active') return;
   replyBatch.flush();
+  void storeStorage.flush();
   const runs = [...onTheirWay.values()];
   onTheirWay.clear();
   runs.forEach((run) => run());

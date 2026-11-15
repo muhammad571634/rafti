@@ -4,6 +4,7 @@ import { BlurTargetView } from 'expo-blur';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { FadeOut, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -64,7 +65,8 @@ import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
-
+/** Stable, so the list does not get a new key function on every render. */
+const messageKey = (m: Message) => m.id;
 
 export default function ChatRoomScreen() {
   const { id, draft } = useLocalSearchParams<{ id: string; draft?: string }>();
@@ -160,7 +162,6 @@ export default function ChatRoomScreen() {
   const rewindTo = useAppStore((s) => s.rewindTo);
   const continueChat = useAppStore((s) => s.continueChat);
   const skipTime = useAppStore((s) => s.skipTime);
-  const memories = useAppStore((s) => s.memories);
   const pinMessage = useAppStore((s) => s.pinMessage);
   const unpinMessage = useAppStore((s) => s.unpinMessage);
   const endScene = useAppStore((s) => s.endScene);
@@ -272,10 +273,13 @@ export default function ChatRoomScreen() {
   // `ChatRegen.dc.html`). A crisis reply, with the helpline card, is never redone.
   const exchange = useMemo(() => lastExchange(data), [data]);
   // Lines kept word for word in Memories (Story) carry a pin in the chat.
-  const pinnedIds = useMemo(
-    () => new Set(memories.flatMap((m) => (m.quote && m.characterId === conversation?.characterId ? [m.quote.messageId] : []))),
-    [memories, conversation?.characterId],
+  // Only these ids are read, so a memory saved about anyone else does not re-render the chat (Step 3.8).
+  const pinnedList = useAppStore(
+    useShallow((s) =>
+      s.memories.flatMap((m) => (m.quote && m.characterId === conversation?.characterId ? [m.quote.messageId] : [])),
+    ),
   );
+  const pinnedIds = useMemo(() => new Set(pinnedList), [pinnedList]);
   const versions = replyVersions && replyVersions.afterId === exchange?.anchor.id ? replyVersions : undefined;
   const canRedo = !!exchange?.burst.length && !exchange.crisis && !typing;
   const rating = useMemo(() => (exchange ? ratingOf(exchange.burst) : undefined), [exchange]);
@@ -546,7 +550,13 @@ export default function ChatRoomScreen() {
               ref={listRef}
               data={rows}
               inverted
-              keyExtractor={(item) => item.id}
+              keyExtractor={messageKey}
+              // Lines differ in height, so no getItemLayout; smaller batches keep a scroll back through
+              // a long history from stalling the JS thread (Step 3.8).
+              initialNumToRender={14}
+              maxToRenderPerBatch={8}
+              updateCellsBatchingPeriod={40}
+              windowSize={11}
               onScroll={onScroll}
               scrollEventThrottle={100}
               // The keyboard goes with a drag of the chat (iOS follows the finger).
