@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Modal, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import * as Updates from 'expo-updates';
@@ -25,7 +25,6 @@ import {
   UserAvatar,
   useScrolledPast,
 } from '@/components/ui';
-import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
 import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
@@ -89,7 +88,6 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
-  const [hello, setHello] = useState(false);
   // Past the photo and name, the top row shows the name.
   const { scrolled, onScroll } = useScrolledPast(170);
 
@@ -382,8 +380,8 @@ export default function ProfileScreen() {
             />
             {/* The welcome back on Today shows on the next return from the background, as if after two hours away. */}
             <LinkRow icon="hand-left" label={t('profile.welcomeTest')} meta={lastWelcomeCheck()} onPress={() => rewindAwayClock(2 * AWAY_MS)} />
-            {/* The first launch's hello, without clearing the app's data. */}
-            <LinkRow icon="moon" label={t('profile.helloTest')} onPress={() => setHello(true)} />
+            {/* The whole first run (the night onboarding, 0z251) in preview: its last button goes back, the account stays as it is. */}
+            <LinkRow icon="moon" label={t('profile.helloTest')} onPress={() => router.push('/onboarding?preview=1')} />
             <LinkRow icon="heart" label={t('profile.levelUpTest')} onPress={playLevelUp} />
             <LinkRow icon="alarm" label={t('profile.alarmTest')} onPress={ringWake} />
             <LinkRow icon="gift" label={t('profile.checkInTest')} onPress={showCheckIn} />
@@ -504,9 +502,6 @@ export default function ProfileScreen() {
         </View>
       </Sheet>
 
-      <Modal visible={hello} animationType="none" statusBarTranslucent onRequestClose={() => setHello(false)}>
-        <GlassIconOrbit onStart={() => setHello(false)} />
-      </Modal>
     </Screen>
   );
 }
