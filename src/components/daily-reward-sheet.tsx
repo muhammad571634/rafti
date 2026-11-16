@@ -20,6 +20,7 @@ import { LiveMascot, MiniMascot } from '@/components/mascot/live-mascot';
 import { PressableScale, ShellIcon, Txt } from '@/components/ui';
 import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { hourVolume } from '@/lib/night-hour';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, isDark, radius } from '@/theme';
@@ -107,7 +108,7 @@ export function DailyRewardSheet() {
     if (!reward) return;
     // Loaded with the screen, so the note is ready on the landing; it follows the silent switch.
     const player = createAudioPlayer(require('@/assets/sounds/shells-in.wav'));
-    player.volume = 0.7;
+    player.volume = hourVolume(0.7);
     chime.current = player;
     shown.set(withTiming(1, { duration: reduced ? 150 : 220, easing: EASE_OUT }));
     if (!reduced) {

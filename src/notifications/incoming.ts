@@ -3,6 +3,7 @@ import * as Updates from 'expo-updates';
 import { AppState, Platform } from 'react-native';
 
 import i18n from '@/i18n';
+import { hourVolume } from '@/lib/night-hour';
 import type { AppSettings } from '@/types';
 
 import { notificationsModule } from './native';
@@ -72,7 +73,7 @@ function chime() {
   lastSound = now;
   try {
     player ??= createAudioPlayer(require('@/assets/sounds/message.wav'));
-    player.volume = 0.6;
+    player.volume = hourVolume(0.6);
     void player.seekTo(0).then(() => player?.play());
   } catch {
     // No sound here (web); the unread count still says it.

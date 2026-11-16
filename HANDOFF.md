@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z254. Time of day inside the app (audit §8.2.4) (2026-11-16, Claude 1, Opus 5.5). NEXT: the owner tries Find at different hours; Fable's plan has left only the onboarding finish on a fresh account and the Apple zoom (needs an iPhone)
+
+- **Owner**: "start the time-of-day task".
+- **Already there** (checked in code): the hero's light by the hour (`dayLight`), the green dot in waking hours (`awakeAt`), the friend's own good night ("Say Hi & Goodnight", `settings.nightCallTime`), push quiet hours. Today's greeting stays out (owner, 2026-11-16: no words on the picture).
+- **Built** (`src/lib/night-hour.ts`, now app-wide, tests added):
+  - **Quiet hour, 00:00-04:59**: `hourVolume` halves every in-app sound (chat pops, the in-app message chime, the check-in shells, the level-up chime); `haptic.lift` plays Light instead of Medium.
+  - **Friend of the hour leads Find**: `leadFirst` puts morning Sam, afternoon Caleb, evening Milo, night Mia first on Find's top row (taken from the visible cast when the row lacks them; a filter that hides them changes nothing); the hour is re-read on each visit. Same table as the first run's deck (`deckForHour` now uses `leadFirst`).
+  - Not done on purpose: dimmer accents after midnight (a theme-wide colour change is a taste call; the hero's night light already does it on Today).
+- **Checked**: tsc 0, npm test 981/981; OTA to preview; on the A51 at 19:17 Find opens on Milo. The night half-volume is covered by tests (the phone's clock cannot be moved without root).
+
 ### 0z253. Continuity (audit §8.2.3): list rows slide, shell balances roll; zoom transition parked (2026-11-16, Claude 1, Opus 5.5). NEXT: Apple zoom (`Link.AppleZoom`) for widgets -> screens once an iPhone is at hand; 8.2.4 time of day inside the app
 
 - **Owner**: deployed the server (0z248, 0z239; `/health` 200 after); "start the task you proposed (a screen grows out of the tapped row / tile), as a senior, if it comes out well"; then "test it on the phone".

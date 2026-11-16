@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, useScrollToTop } from 'expo-router';
-import { memo, useMemo, useRef, useState } from 'react';
+import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Keyboard,
@@ -37,6 +37,7 @@ import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, Searc
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
+import { leadFirst, partOfDay } from '@/lib/night-hour';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { groupBySeries, type CharacterGroup } from '@/mock';
@@ -131,14 +132,19 @@ export default function FindScreen() {
   );
   const worldHits = useMemo(() => (q ? groups.filter((g) => g.series.toLowerCase().includes(q)) : []), [groups, q]);
 
-  // New releases first; without any, one face from each world keeps the row alive.
+  // The hour, read again on each visit: the friend it belongs to leads the row (audit §8.2.4).
+  const [hour, setHour] = useState(() => new Date().getHours());
+  useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
+  // New releases first; without any, one face from each world keeps the row alive. The friend of the
+  // hour (morning Sam, afternoon Caleb, evening Milo, after midnight Mia) opens it, as on the first run.
   const featured = useMemo(() => {
     const fresh = shown
       .filter((c) => isNewCharacter(c, Date.now()))
       .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!));
     // A character still waiting for their art (docs/worlds-plan.md) has no scene to show here.
-    return (fresh.length > 0 ? fresh : groups.map((g) => g.characters[0])).filter((c) => !!c && !!heroOf(c));
-  }, [shown, groups]);
+    const row = (fresh.length > 0 ? fresh : groups.map((g) => g.characters[0])).filter((c) => !!c && !!heroOf(c));
+    return leadFirst(row, (c) => c.id, partOfDay(hour), shown.filter((c) => !!heroOf(c)));
+  }, [shown, groups, hour]);
   const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
   // Who do you miss? One person per role; the sheet offers friends first, then everyone else.

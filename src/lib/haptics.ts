@@ -1,6 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 
+import { hourVolume } from '@/lib/night-hour';
 import { useAppStore } from '@/store/use-app-store';
 
 /**
@@ -19,8 +20,8 @@ export const haptic = {
   selection: () => play(Haptics.selectionAsync),
   /** A small control was pressed: send, answer, a call button (Impact, light). */
   tap: () => play(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)),
-  /** A menu or a card lifts under a long press (Impact, medium). */
-  lift: () => play(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)),
+  /** A menu or a card lifts under a long press (Impact, medium; light after midnight, §8.2.4). */
+  lift: () => play(() => Haptics.impactAsync(hourVolume(1) < 1 ? Haptics.ImpactFeedbackStyle.Light : Haptics.ImpactFeedbackStyle.Medium)),
   /** A task finished: a purchase, a gift, a level up (Notification, success). */
   success: () => play(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)),
   /** A task failed, such as a wrong invite code (Notification, error). */

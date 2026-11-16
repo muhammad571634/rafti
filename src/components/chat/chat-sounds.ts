@@ -2,6 +2,7 @@ import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useIsFocused } from 'expo-router';
 import { useEffect, useRef } from 'react';
 
+import { hourVolume } from '@/lib/night-hour';
 import { useAppStore } from '@/store/use-app-store';
 import type { Message } from '@/types';
 
@@ -25,7 +26,8 @@ function play(kind: 'send' | 'receive') {
     const player = (players[kind] ??= createAudioPlayer(
       kind === 'send' ? require('@/assets/sounds/send.wav') : require('@/assets/sounds/receive.wav'),
     ));
-    player.volume = VOLUME;
+    // Half as loud after midnight (audit §8.2.4).
+    player.volume = hourVolume(VOLUME);
     void player.seekTo(0).then(() => player.play());
   } catch {
     // No sound here (web, or the player could not load): the chat works the same without it.

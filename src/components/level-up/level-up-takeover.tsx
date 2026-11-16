@@ -25,6 +25,7 @@ import { characterImage } from '@/components/ui/avatar';
 import { PressableScale } from '@/components/ui/pressable-scale';
 import { phrase } from '@/i18n';
 import { haptic } from '@/lib/haptics';
+import { hourVolume } from '@/lib/night-hour';
 import { tierForLevel } from '@/mock/user';
 import type { LevelUpEvent } from '@/store/use-app-store';
 import { fonts, night, palette } from '@/theme';
@@ -132,7 +133,7 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
     }
     // The chime, timed so its top note lands on the close; it follows the phone's silent switch.
     const chime = createAudioPlayer(require('@/assets/sounds/level-up.wav'));
-    chime.volume = 0.8;
+    chime.volume = hourVolume(0.8);
     const timers = [setTimeout(() => chime.play(), SOUND_AT * 1000), setTimeout(() => haptic.success(), CLOSE * 1000)];
     return () => {
       timers.forEach(clearTimeout);
