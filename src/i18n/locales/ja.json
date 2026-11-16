@@ -802,7 +802,7 @@
     "bestValue": "一番お得 · {{percent}}%オフ",
     "popular": "人気",
     "save": "{{percent}}%お得",
-    "saveLower": "{{percent}}%お得",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}}個無料",
     "topUp": "ちょこっとチャージ",
     "per100": "100個あたり{{price}}",

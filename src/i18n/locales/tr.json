@@ -822,7 +822,7 @@
     "bestValue": "En avantajlı · %{{percent}} tasarruf",
     "popular": "En popüler",
     "save": "%{{percent}} tasarruf et",
-    "saveLower": "%{{percent}} tasarruf",
+    "saveLower": "−%{{percent}}",
     "bonusFree": "{{count}} ücretsiz",
     "topUp": "Küçük bir takviye",
     "per100": "{{price}} / 100",

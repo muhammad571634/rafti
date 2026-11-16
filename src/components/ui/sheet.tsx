@@ -129,7 +129,8 @@ export function Sheet({
         ) : (
           <View style={styles.side} />
         )}
-        <Txt style={styles.title} lines={1} adjustsFontSizeToFit minimumFontScale={0.8} accessibilityRole="header">
+        {/* A long title (Russian, German) wraps to a second line instead of shrinking (HIG Typography). */}
+        <Txt style={styles.title} lines={2} accessibilityRole="header">
           {title}
         </Txt>
         {onDone ? (

@@ -802,7 +802,7 @@
     "bestValue": "Giá trị nhất · tiết kiệm {{percent}}%",
     "popular": "Phổ biến nhất",
     "save": "Tiết kiệm {{percent}}%",
-    "saveLower": "tiết kiệm {{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}} miễn phí",
     "topUp": "Nạp thêm một chút",
     "per100": "{{price}} / 100",

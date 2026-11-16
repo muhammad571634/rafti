@@ -802,7 +802,7 @@
     "bestValue": "最超值 · 省下{{percent}}%",
     "popular": "最受歡迎",
     "save": "省下{{percent}}%",
-    "saveLower": "省下{{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "贈送{{count}}個",
     "topUp": "小額補充",
     "per100": "{{price}} / 每100個",

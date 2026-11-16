@@ -802,7 +802,7 @@
     "bestValue": "Paling hemat · hemat {{percent}}%",
     "popular": "Paling populer",
     "save": "Hemat {{percent}}%",
-    "saveLower": "hemat {{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}} gratis",
     "topUp": "Isi ulang kecil",
     "per100": "{{price}} / 100",

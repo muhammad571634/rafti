@@ -408,7 +408,8 @@ export function LinkRow({
       accessibilityLabel={[label, pill, meta].filter(Boolean).join(', ')}
       style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && onPress ? styles.rowPressed : null]}>
       {icon ? <RowIcon icon={icon} fill={fill} /> : null}
-      <Txt style={[styles.rowText, styles.grow]} lines={icon ? 1 : undefined}>
+      {/* Two lines at most, never cut short at one: Russian and German labels run long (HIG: text wraps). */}
+      <Txt style={[styles.rowText, styles.grow]} lines={icon ? 2 : undefined}>
         {label}
       </Txt>
       {pill ? (
@@ -746,7 +747,7 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card, overflow: 'hidden' },
     groupHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 4 },
     groupTitle: { ...inkFace('cardSmall'), color: systemGround.label },
-    row: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18 },
+    row: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingVertical: 8 },
     rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
     rowPressed: { backgroundColor: systemGround.fill },
     // No colour here: Txt's `color` prop (red rows) must win, and ink is its default.

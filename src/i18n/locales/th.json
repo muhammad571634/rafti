@@ -802,7 +802,7 @@
     "bestValue": "คุ้มค่าที่สุด · ประหยัด {{percent}}%",
     "popular": "ยอดนิยม",
     "save": "ประหยัด {{percent}}%",
-    "saveLower": "ประหยัด {{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "ฟรี {{count}} อัน",
     "topUp": "เติมเล็กน้อย",
     "per100": "{{price}} / 100",

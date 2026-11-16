@@ -822,7 +822,7 @@
     "bestValue": "Best value · save {{percent}}%",
     "popular": "Most popular",
     "save": "Save {{percent}}%",
-    "saveLower": "save {{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}} free",
     "topUp": "A little top-up",
     "per100": "{{price}} / 100",

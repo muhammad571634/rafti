@@ -264,7 +264,7 @@ function ShellsTab({
               <IconTile fill={cost.fill}>
                 <SFIcon ios={cost.ios} icon={cost.icon} size={17} color={colors.white} />
               </IconTile>
-              <Txt style={styles.costTitle} lines={1}>
+              <Txt style={styles.costTitle} lines={2}>
                 {t(`store.${cost.key}`, { count: freeMessagesPerDay(wallet.subscription, Date.now()) })}
               </Txt>
               {cost.shells === null ? (
@@ -442,7 +442,8 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: colors.borderStrong,
   },
-  costRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
+  // A long label wraps (Russian "Сообщение сверх 30 бесплатных в день" was cut short).
+  costRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
   costLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   costTitle: { flex: 1, ...inkFace('body'), color: systemGround.label },
   costShells: { flexDirection: 'row', alignItems: 'center', gap: 4 },

@@ -860,7 +860,7 @@
     "bestValue": "Выгодно · скидка {{percent}}%",
     "popular": "Популярный",
     "save": "Скидка {{percent}}%",
-    "saveLower": "скидка {{percent}}%",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}} бесплатно",
     "topUp": "Небольшое пополнение",
     "per100": "{{price}} за 100",

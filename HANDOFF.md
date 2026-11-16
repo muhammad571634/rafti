@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z258. Russian text that did not fit: wrap, never cut; HIG Typography and Writing (2026-11-16, Claude 1, Opus 5.5). NEXT: friends' voice notes, then the server's strict shell count (owner's order)
+
+- **Owner**: take typography, naming and wording from Apple's own pages; Russian words do not fit in many places, e.g. the shells store's cost list ("Сообщение сверх бесплатных" cut short).
+- **HIG read** (JSON pages `typography`, `writing`): iOS text 17 pt default, 11 pt minimum; few words; labels wrap instead of truncating; verbs on buttons; one term list kept consistent.
+- **Fixed**: the store's cost rows wrap to two lines (`src/app/store/shell.tsx`); kit `LinkRow` labels with an icon wrap to two lines instead of one (`src/components/character/kit.tsx`, every settings-like list); `Sheet` titles wrap to two lines instead of shrinking to 80 % (`src/components/ui/sheet.tsx`); the store's "Most popular · save 37%" badge broke into two lines in Russian: `store.saveLower` is now "−37%" in all 14 locales.
+- **Checked on the A51** (Russian): the cost list shows "Сообщение сверх 30 бесплатных в день" whole on two lines; the chat note "Бесплатные закончились · 1 ракушка" fits one line. Roman's avatar looked empty in one of my fast screenshots: the owner confirmed it shows (image still loading).
+- Not swept yet: other screens in Russian (the owner was using the phone).
+
 ### 0z257. Free messages: a once-a-day sheet when they run out, a note at zero (2026-11-16, Claude 1, Opus 5.5). NEXT: Russian strings that do not fit (store's cost list first), Apple HIG typography and writing
 
 - **Owner**: sent ~30 messages; saw "5 left" but no window when the 30 were used. By design (0z239, shape B) a message past the count quietly paid a shell while shells lasted; nothing said so. Owner also checked group More and a reaction on their own line: both work.

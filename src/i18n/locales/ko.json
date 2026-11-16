@@ -802,7 +802,7 @@
     "bestValue": "최고 가성비 · {{percent}}% 절약",
     "popular": "인기",
     "save": "{{percent}}% 할인",
-    "saveLower": "{{percent}}% 절약",
+    "saveLower": "−{{percent}}%",
     "bonusFree": "{{count}}개 무료",
     "topUp": "간편 충전",
     "per100": "100개당 {{price}}",
