@@ -152,7 +152,9 @@ export default function NotificationSettingsScreen() {
               right={
                 <PressableScale scaleTo={0.94} onPress={() => void turnOn()} accessibilityRole="button" style={styles.turnOn}>
                   <Txt style={styles.turnOnText}>
-                    {status === 'undetermined' ? t('notifications.turnOn') : t('notifications.openSettings')}
+                    {/* One short verb either way (it opens the system settings when they were refused): the long
+                        "Open settings" split the row's title in Russian (A51, 2026-11-16). */}
+                    {t('notifications.turnOn')}
                   </Txt>
                 </PressableScale>
               }

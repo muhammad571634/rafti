@@ -385,11 +385,13 @@ const styles = StyleSheet.create({
   ringValue: { marginTop: 2, ...inkFace('figureSmall'), color: systemGround.label },
   ringTotal: { ...inkFace('footnote'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
   ringExtra: { marginTop: 4, ...inkFace('caption'), color: STORE.peachInk },
-  row: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg },
+  row: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowTopLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
-  rowTitle: { flex: 1, ...inkFace('body'), color: systemGround.label },
-  meta: { ...inkFace('sub'), color: systemGround.secondaryLabel },
+  // The title keeps at least half the row, so a word is never split across lines (Russian "Бесплатные
+  // ракушки" broke as "Беспл / атные" beside its count); the count on the right wraps instead.
+  rowTitle: { flex: 1, minWidth: '45%', ...inkFace('body'), color: systemGround.label },
+  meta: { flexShrink: 1, textAlign: 'right', ...inkFace('sub'), color: systemGround.secondaryLabel },
   value: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   valueText: { ...inkFace('bodyStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
   buy: {

@@ -208,7 +208,8 @@ export function IconRow({
         <Ionicons name={icon} size={17} color={colors.white} />
       </View>
       <View style={[styles.iconBody, !last && styles.rowLine]}>
-        <View style={styles.flex}>
+        {/* The title keeps at least half the row, so a button beside it never splits its words. */}
+        <View style={[styles.flex, styles.titleRoom]}>
           <Txt style={styles.rowText} lines={2}>
             {title}
           </Txt>
@@ -289,6 +290,7 @@ const sheet = themed(({ colors }) =>
     rowText: { ...inkFace('body') },
     meta: { color: colors.textSecondary },
     flex: { flex: 1 },
+    titleRoom: { minWidth: '45%' },
     iconRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingLeft: space.lg },
     iconTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
     iconBody: { flex: 1, minHeight: 50, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 14, paddingVertical: 6 },

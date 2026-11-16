@@ -870,7 +870,7 @@
     "paidApple": "Разовая покупка · через App Store",
     "paidGoogle": "Разовая покупка · через Google Play",
     "withPlan": "С тарифом Pro",
-    "starter": "Только для первого набора",
+    "starter": "Только первый набор",
     "starterDetail": "Одноразовая приветственная цена",
     "balanceHint_few": "Хватит примерно на {{count}} сообщения",
     "balanceHint_many": "Хватит примерно на {{count}} сообщений"
