@@ -152,7 +152,6 @@ export default function HomeScreen() {
   // Three rows, or two and an "All chats" row when more wait, so the card never grows past four rows.
   const listed = unread.length > WAITING_ROWS ? unread.slice(0, WAITING_ROWS - 1) : unread;
   const others = unread.slice(listed.length);
-  const unreadMessages = unread.reduce((n, f) => n + f.conversation.unreadCount, 0);
 
   // The first ready note whose friend is not on a helpline day. Picked in the selector, so Today
   // re-renders when that answer changes, not on every line of every chat (brief Step 3.8).
@@ -289,13 +288,8 @@ export default function HomeScreen() {
 
         {waiting ? (
           <>
-            <View style={styles.section}>
-              <InkText variant="card" accessibilityRole="header" lines={2} style={styles.flex}>
-                {t('home.waiting')}
-              </InkText>
-              {unreadMessages > 0 ? <InkText variant="sub">{unreadMessages > 99 ? '99+' : unreadMessages}</InkText> : null}
-            </View>
-            <View style={styles.card}>
+            {/* No title or count over the card (owner, 2026-11-16): the faces and blue counts say it. */}
+            <View style={[styles.card, styles.firstCard]}>
               {listed.map((f, i) => (
                 <WaitingRow
                   key={f.conversation.id}
@@ -701,16 +695,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: ink.pill,
   },
-  // A section's serif title with its count on the trailing side (prototype: "Waiting for you 3").
-  section: {
-    minHeight: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    marginHorizontal: space.lg,
-    marginTop: space.xl,
-    marginBottom: space.md,
-  },
+
   // One card on the night ground, its rows inset like Apple's grouped lists.
   card: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
   firstCard: { marginTop: space.xl },
