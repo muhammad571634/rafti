@@ -35,6 +35,18 @@
         "8083"
       ],
       "port": 8083
+    },
+    {
+      "name": "prototypes",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8790",
+        "--directory",
+        "docs/prototypes"
+      ],
+      "port": 8790
     }
   ]
 }
