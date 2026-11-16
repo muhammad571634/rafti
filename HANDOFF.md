@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z255. Onboarding driven to the end on a fresh state; age gate belt (2026-11-16, Claude 1, Opus 5.5). NEXT: Fable's plan has only the Apple zoom left (needs an iPhone)
+
+- **Owner**: drive the onboarding's real finish on the A51 with the owner's own account ("wipe it, I do not need it"). Done with `pm clear com.sigmazam.app` (local data only; the server copy stays), two launches for the latest OTA. A test emulator was set up first and removed.
+- **Driven on the A51** (Russian, 19:23-19:33, evening): intro "Добрый вечер." with the orbit; age wheel flick, 2010 red, the note "Sigmazam доступен только с 18 лет" and a dimmed Continue; friend deck (Milo leads in the evening, "Выбрать: Milo"); name step with Milo's face, typing dots, then "Привет, Sukut! Наконец-то."; address rows (one tap moves on); gift (mascot, +100, one line); "Поздороваться с Milo" lands in the chat with Milo's opening and "Ну что, Sukut, как прошел день?" and quick replies; Back goes to Today: Milo on the picture with that line, his sealed note, the four default widgets.
+- **Belt on the age gate** (`src/app/onboarding.tsx`, `src/components/onboarding/night-year-wheel.tsx`): Continue reads the wheel's live year (`YearWheelHandle.year()`), `finish` refuses a minor, and the wheel also settles after 220 ms with no year passing and no finger on it (an `adb` fling left the screen's year a step behind the drum for a moment). The owner checked by hand that the real gate already dims and blocks; the belt changes nothing visible. My first report called it a bypass: wrong, it was the synthetic fast swipe.
+- **Checked**: tsc 0, npm test 981/981; OTA to preview.
+
 ### 0z254. Time of day inside the app (audit §8.2.4) (2026-11-16, Claude 1, Opus 5.5). NEXT: the owner tries Find at different hours; Fable's plan has left only the onboarding finish on a fresh account and the Apple zoom (needs an iPhone)
 
 - **Owner**: "start the time-of-day task".

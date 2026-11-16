@@ -32,7 +32,7 @@ import { CountUp, MoonMascot } from '@/components/onboarding/night-gift';
 import { MoonOrbit, NightMoon } from '@/components/onboarding/night-moon';
 import { EASE_IN_OUT, EASE_OUT, type MoonPlace, moonPlaces, slowFor } from '@/components/onboarding/night-motion';
 import { NightSky } from '@/components/onboarding/night-sky';
-import { NightYearWheel } from '@/components/onboarding/night-year-wheel';
+import { NightYearWheel, type YearWheelHandle } from '@/components/onboarding/night-year-wheel';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
 import { Anim, PressableScale, Sheet } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
@@ -133,6 +133,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const [handoff, setHandoff] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [leaving, setLeaving] = useState(false);
   const busy = useRef(false);
+  const wheel = useRef<YearWheelHandle>(null);
   const frontRef = useRef<ComponentRef<typeof View>>(null);
   // The keyboard covers the system bar, so its inset would only lift the button over the field.
   const keyboardUp = useKeyboardVisible();
@@ -195,7 +196,8 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   };
 
   const finish = () => {
-    if (!friend || leaving) return;
+    // The age gate again at the door: nobody under 18 gets a profile, whatever the steps did.
+    if (!friend || leaving || new Date().getFullYear() - year < MIN_AGE) return;
     haptic.tap();
     setLeaving(true);
     setTimeout(() => {
@@ -224,7 +226,17 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
       case 'intro':
         return { label: t('onboarding.start'), onPress: () => go('age') };
       case 'age':
-        return { label: t('onboarding.continue'), disabled: minor, onPress: () => go('friend') };
+        return {
+          label: t('onboarding.continue'),
+          disabled: minor,
+          // The drum's live year decides, not the last one it reported (Android can report late).
+          onPress: () => {
+            const live = wheel.current?.year() ?? year;
+            if (live !== year) setYear(live);
+            if (thisYear - live < MIN_AGE) return haptic.error();
+            go('friend');
+          },
+        };
       case 'friend':
         return { label: t('onboarding.choose', { name: friendName }), onPress: chooseFriend };
       case 'name':
@@ -316,7 +328,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
                 <>
                   <InkText variant="display">{t('onboarding.ageTitle')}</InkText>
                   <View style={styles.wheelRoom}>
-                    <NightYearWheel initial={year} min={MIN_YEAR} max={thisYear} minAge={MIN_AGE} onChange={setYear} />
+                    <NightYearWheel initial={year} min={MIN_YEAR} max={thisYear} minAge={MIN_AGE} onChange={setYear} handle={wheel} />
                   </View>
                   <InkText variant="footnote" center color={minor ? '#FF8A82' : ink.text2} style={styles.note}>
                     {minor ? t('onboarding.ageBlocked') : t('onboarding.ageNote')}

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, type Ref, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import Animated, {
   type SharedValue,
@@ -29,7 +29,17 @@ export interface YearWheelProps {
   /** Years whose holder is under this age show red in the band. */
   minAge: number;
   onChange: (year: number) => void;
+  /** Reads the year in the band right now, wherever the drum is (the age gate checks this, not state). */
+  handle?: Ref<YearWheelHandle>;
 }
+
+export interface YearWheelHandle {
+  /** The year in the band at this moment, even mid-fling or before the drum reported where it stopped. */
+  year: () => number;
+}
+
+/** No scroll event for this long after the last year passed the band: the drum has stopped. */
+const STILL_MS = 220;
 
 /**
  * A drum of years, older on top as the system's date wheel. The native ScrollView gives the momentum
@@ -38,7 +48,7 @@ export interface YearWheelProps {
  * (One animated row per year, ~100 of them, held the A51's main thread at 100 % and froze it, 0z250.)
  * The answer is saved where the drum stops, so the screen never renders mid-fling.
  */
-export const NightYearWheel = memo(function NightYearWheel({ initial, min, max, minAge, onChange }: YearWheelProps) {
+export const NightYearWheel = memo(function NightYearWheel({ initial, min, max, minAge, onChange, handle }: YearWheelProps) {
   const count = max - min + 1;
   const ref = useAnimatedRef<Animated.ScrollView>();
   const pad = ROW * Math.floor(VISIBLE / 2);
@@ -58,20 +68,43 @@ export const NightYearWheel = memo(function NightYearWheel({ initial, min, max, 
     scrollY.set(e.contentOffset.y);
   });
 
-  // A tick per year as it reaches the band (HIG Playing haptics).
-  const tick = () => haptic.selection();
+  const rowAt = (y: number) => Math.max(0, Math.min(count - 1, Math.round(y / ROW)));
+  useImperativeHandle(handle, () => ({ year: () => min + rowAt(scrollY.get()) }));
+
+  // Android's snap often sends no momentum end after a fling (A51, 2026-11-16: the drum stood on 2010
+  // while the screen still held 2005, and Continue let a minor through). So the drum also counts as
+  // stopped once no year has passed the band for STILL_MS and no finger is on it.
+  const dragging = useRef(false);
+  const still = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const settled = useRef<number | null>(null);
+  const waitForStill = () => {
+    if (still.current) clearTimeout(still.current);
+    still.current = setTimeout(() => {
+      if (!dragging.current) settle(scrollY.get());
+    }, STILL_MS);
+  };
+  useEffect(() => () => (still.current ? clearTimeout(still.current) : undefined), []);
+
+  // A tick per year as it reaches the band (HIG Playing haptics); one call per year, never per frame.
+  const passed = () => {
+    haptic.selection();
+    waitForStill();
+  };
   useAnimatedReaction(
     () => Math.round(scrollY.get() / ROW),
     (i, prev) => {
-      if (prev !== null && i !== prev) scheduleOnRN(tick);
+      if (prev !== null && i !== prev) scheduleOnRN(passed);
     },
   );
 
   const settle = (y: number) => {
-    const row = Math.max(0, Math.min(count - 1, Math.round(y / ROW)));
+    const row = rowAt(y);
     // Android's snap can stop a fast fling between two rows (A51): finish the last bit to the row.
     if (Math.abs(y - row * ROW) > 0.5) ref.current?.scrollTo({ y: row * ROW, animated: true });
     const year = min + row;
+    // Reported once per stop: the momentum end and the stillness timer may both say so.
+    if (settled.current === year) return;
+    settled.current = year;
     onChange(year);
     if (max - year < minAge) shake.set(withSequence(withTiming(-7, { duration: 70 }), withTiming(6, { duration: 80 }), withTiming(-3, { duration: 80 }), withTiming(0, { duration: 90 })));
   };
@@ -101,9 +134,15 @@ export const NightYearWheel = memo(function NightYearWheel({ initial, min, max, 
         decelerationRate="fast"
         onScroll={onScroll}
         onMomentumScrollEnd={(e) => settle(e.nativeEvent.contentOffset.y)}
+        onScrollBeginDrag={() => {
+          dragging.current = true;
+          settled.current = null;
+        }}
         onScrollEndDrag={(e) => {
+          dragging.current = false;
           // A slow drag that stops without momentum still lands (iOS sends no momentum end then).
           if (Platform.OS === 'ios' && Math.abs(e.nativeEvent.velocity?.y ?? 0) < 0.05) settle(e.nativeEvent.contentOffset.y);
+          else waitForStill();
         }}
         scrollEventThrottle={16}
         onLayout={place}>
