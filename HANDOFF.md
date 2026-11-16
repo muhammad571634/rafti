@@ -1,5 +1,26 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z259. START HERE: session handover (2026-11-16 evening, Claude 1, Opus 5.5). NEXT: friends' voice notes that speak (owner picked it), then the server's strict shell count
+
+**Where the product stands.** Fable 5.2's design audit (`docs/agent-tasks/design-audit-2026-11-15.md`) is done end to end except the Apple zoom transition (needs an iPhone; Expo Router 58 `Link.AppleZoom`, alpha, ~1 s delay, see 0z253). Today's chain, newest first: Russian text fit + HIG text rule (0z258), once-a-day "free messages used" sheet (0z257), account delete leaves nothing on the server + old server data wiped (0z256), onboarding driven to the end on a fresh state (0z255), time of day in the app (0z254), list rows slide / shell balances roll (0z253), Today: four widgets, no section titles (0z252). Server deployed by the owner today (0z239 + 0z248); migration B11 applied. Nothing waits on a deploy.
+
+**State of the owner's phone (A51) and server.** App data was cleared at 19:23 (`pm clear`), onboarding redone (Milo, name Sukut); the server holds only that account (78bfb609…). Preview APK 1.2.0; OTAs reach it. An OTA now takes 8-19 s to download: on the first launch wait ~20 s before force-stopping, or the old bundle keeps running. The owner often taps the phone while you drive it: check a screenshot before tapping, and stop if screens change on their own.
+
+**Owner's way of working, reconfirmed today.** Reply in short plain Uzbek, no file paths or lists of findings ("don't show me lists; you are the senior backend / RN dev, decide and do it"). Drive every chain on the A51 yourself, worst case first; do not call something a bug from a fast synthetic swipe or a screenshot taken before an image loaded (twice today the owner had to correct me: the age gate, Roman's avatar). Text follows Apple's HIG Typography and Writing and must fit every language, Russian first: wrap, never cut or shrink, never split a word; badges stay one line (rule in `.agents/rules/project-memory.md` §3).
+
+**Task 1, next: friends' voice notes that speak** (owner, 2026-11-15/16: build it now; ElevenLabs and a paid model key come later, so with no key nothing must change for users).
+- Today a friend's voice line (`Message.kind === 'voice'`, author `them`) has no audio: the bubble shows a "text" disc and a tap opens its words (`src/components/chat/message-bubble.tsx`, `chat.voiceText`).
+- Calls already speak: the call reply carries a server signature per line (`voice`), the app sends `{ text, characterId, gender, sig }` to `POST /v1/voice/speak` (`src/ai/session-types.ts` `SpeakRequest`, `src/ai/server.ts`), the server checks the signature (`server/src/speech/sign.ts`) and reads it with ElevenLabs (`server/src/speech/elevenlabs.ts`, config `ELEVENLABS_*`); 503 `noVoice` without a key.
+- Build: the server signs a friend's voice-note line when it writes one (as it does for call lines), the app keeps that signature on the message; on tap it asks `/v1/voice/speak`, saves the mp3 with `keepSpeech` (`src/lib/voice-files.ts`), plays it in the same bubble (waveform, progress), and the next tap plays the saved file. `noVoice` / offline: keep today's words view, no error. Delete chat / delete account must remove the saved files (`forgetNotes`, `forgetAllNotes`). Server tests for signing; app logic tests where pure. Cost: one spoken note ≈ ElevenLabs `pricePer1k` (0.04 $/1k chars default): add a row to `docs/cost-ledger.md`. Needs a server deploy at the end (give the owner both command forms, project memory §5).
+- Check on the A51: with no key the bubble behaves exactly as today; every other chain untouched.
+
+**Task 2: the server's strict shell count** (before `ENFORCE_WALLET` is ever on; `docs/road-to-launch.md` item 4, `docs/scale-plan.md`): the server must count today's free messages (30, plan fair use 200, `src/economy/free-messages.ts`) and plans the same way the app does, charge past them by an idempotent key, and keep the switch off by default.
+
+**Still to do (owner asks not finished):**
+- Apple zoom transition for widgets and Find cards -> their screens, once an iPhone is at hand (not the chat row).
+- Russian sweep of the remaining screens not yet looked at (Us tab sheets, create-character, alarms, diary, dates) with the 0z258 rule.
+- Waits on the owner: paid model key, ElevenLabs grant + `sigmazam.app` domain before any release build or store document, Google Play / Apple accounts and billing, lawyer's read of the terms and privacy policy, 12 testers for 14 days.
+
 ### 0z258. Russian text that did not fit: wrap, never cut; HIG Typography and Writing (2026-11-16, Claude 1, Opus 5.5). NEXT: friends' voice notes, then the server's strict shell count (owner's order)
 
 - **Owner**: take typography, naming and wording from Apple's own pages; Russian words do not fit in many places, e.g. the shells store's cost list ("Сообщение сверх бесплатных" cut short).
