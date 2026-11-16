@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z252. Today: four widgets, no "Widgets" title (2026-11-16, Claude 1, Opus 5.5). NEXT: the owner looks at Today on the phone after the OTA; not driven on the A51 (adb showed no device); the server deploy for 0z248 and 0z239
+
+- **Owner**: Today's widgets back to four as the standard, smaller if Apple's rules call for it; remove the "Widgets" heading in every language (red mark on the screenshot); then sent developer.apple.com/design.
+- **Code**: `TODAY_SLOTS = 4`, `DEFAULT_WIDGETS` calls, diary, date, sleep; `twoWidgets` replaced by `fourWidgets` (the user's own slots first, repeats dropped, then the defaults they lack; tests in `src/lib/today.test.ts`); store v18 runs it for every older save. Today (`src/app/(tabs)/index.tsx`): the grid wraps two to a row; the section title is gone (the `home.widget.gallery` string stays: it is the gallery sheet's title); Done moved under the grid while editing, so starting an edit does not push the widgets down under the finger.
+- **Size** (HIG Widgets, size table read from the JSON endpoint: small family is square, 158 pt on a 390 pt iPhone, 170 on 428, 155 on 375): a widget is never taller than wide (`min(172, half)`), with a 158 pt floor because the contact widget needs ~154 pt; so 172 on wide phones, 161 on 375 pt, 158 on 360 pt Androids.
+- **Checked**: tsc 0, npm test 974/974. Not driven on the A51 (no device on adb): edit mode with four slots, drag between rows, empty slots.
+
 ### 0z251. Onboarding in motion, in code (2026-11-16, Claude, Opus 5.5). NEXT: the owner tries the first run on the phone; the real finish (profile made, chat fading in over the field) is not driven on the A51 (preview mode goes back); the server deploy for 0z248 and 0z239
 
 - **Owner**: "Yes, build it" for `docs/prototypes/onboarding-motion.html` (0z250). Then: Profile's "Play the first hello" still showed the old orbit: it played `GlassIconOrbit` in a modal; it now pushes `/onboarding?preview=1` (the whole new first run, last button goes back), checked on the A51.

@@ -45,6 +45,8 @@ const SUN_LIGHT = systemColors.yellow;
 const WAITING_ROWS = 3;
 /** The gallery shows each widget at its real size, so its words sit as they will on Today. */
 const GALLERY_HEIGHT = WIDGET_HEIGHT;
+/** The shortest a widget on Today gets (HIG Widgets: an iOS small widget is 158 pt on a 390 pt iPhone). */
+const WIDGET_FLOOR = 158;
 /** The wordmark's tallest size; on narrower phones it shrinks to what the row leaves beside your capsule. */
 const LOGO_MAX = 48;
 /** The letters of `sigmazam-logo.png` fill rows 154-351 of 356; this is their middle's height above the art's bottom. */
@@ -60,8 +62,8 @@ const noop = () => {};
 /**
  * The calm Today (design audit 2026-11-15 §6.1, approved prototype `docs/prototypes/today-calm.html`):
  * the friend you talked with last, full bleed to the screen's middle, lit for the hour; "Waiting for
- * you" as one card (each unread chat, then the day's sealed note); at most two widgets, the user's pick;
- * and one More row that opens every other module as a deep-tinted icon, with "Choose widgets" under them.
+ * you" as one card (each unread chat, then the day's sealed note); four widgets in a 2x2 grid with no
+ * title over them (owner, 2026-11-16), the user's pick; and one More row that opens every other module as a deep-tinted icon, with "Choose widgets" under them.
  * Before it was a launcher: a yellow bubble, a note, four widgets and six bright app icons.
  *
  * Edit like the iPhone Home Screen: a long press on a widget or "Choose widgets" makes the widgets
@@ -79,6 +81,10 @@ export default function HomeScreen() {
   useScrollToTop(scrollRef);
   // Two widgets to a row on every phone width; percentages plus a fixed gap overflow on narrow Androids.
   const half = Math.floor((width - space.lg * 2 - space.md) / 2);
+  // Never taller than wide: iOS small widgets are square (HIG Widgets: 158x158 on a 390 pt iPhone), so on
+  // narrow phones the four come down a little instead of standing as tall rectangles. 158 is the floor:
+  // the contact widget (face, name, line, two buttons) needs ~154 pt, so 360 pt Androids stay at 158.
+  const tile = Math.min(WIDGET_HEIGHT, Math.max(half, WIDGET_FLOOR));
   const [galleryWidth, setGalleryWidth] = useState(0);
   /** The picture has scrolled away from under the status bar. */
   const [pastHero, setPastHero] = useState(false);
@@ -99,7 +105,7 @@ export default function HomeScreen() {
   const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
 
-  // Two slots; a save from before the calm Today is cut to two by the store's v17 migration.
+  // Four slots; older saves are filled to four by the store's v18 migration.
   const slots = useMemo(() => {
     const two = stored.slice(0, TODAY_SLOTS);
     return two.length < TODAY_SLOTS ? [...two, ...Array<null>(TODAY_SLOTS - two.length).fill(null)] : two;
@@ -353,20 +359,8 @@ export default function HomeScreen() {
         ) : null}
 
         {anyWidget || editing ? (
-          <View onLayout={(e) => (widgetsY.current = e.nativeEvent.layout.y)}>
-            <View style={styles.section}>
-              <InkText variant="card" accessibilityRole="header" lines={1} style={styles.flex}>
-                {t('home.widget.gallery')}
-              </InkText>
-              {/* Done sits with the widgets it finishes, so it is on screen wherever the edit began. */}
-              {editing ? (
-                <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-                  <InkText variant="bodyStrong" color={ink.onPill}>
-                    {t('home.widget.done')}
-                  </InkText>
-                </PressableScale>
-              ) : null}
-            </View>
+          <View style={styles.widgetBlock} onLayout={(e) => (widgetsY.current = e.nativeEvent.layout.y)}>
+            {/* No title over the widgets (owner, 2026-11-16): they speak for themselves. */}
             <View style={styles.widgets}>
               {slots.map((kind, i) =>
                 kind ? (
@@ -374,6 +368,7 @@ export default function HomeScreen() {
                     key={`${kind}-${i}`}
                     index={i}
                     width={half}
+                    height={tile}
                     kind={kind}
                     editing={editing}
                     onLayout={keepRect}
@@ -390,7 +385,7 @@ export default function HomeScreen() {
                     accessibilityLabel={t('home.widget.addHere')}
                     onPress={() => setGallerySlot(i)}
                     onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
-                    style={[styles.slot, styles.empty, { width: half }]}>
+                    style={[styles.empty, { width: half, height: tile }]}>
                     <SoftGlass style={styles.round}>
                       <Ionicons name="add" size={24} color={ink.text} />
                     </SoftGlass>
@@ -398,6 +393,15 @@ export default function HomeScreen() {
                 ) : null,
               )}
             </View>
+            {/* Done sits under the widgets it finishes: above them it would push the grid down under
+                the finger that just started editing. */}
+            {editing ? (
+              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
+                <InkText variant="bodyStrong" color={ink.onPill}>
+                  {t('home.widget.done')}
+                </InkText>
+              </PressableScale>
+            ) : null}
           </View>
         ) : null}
 
@@ -563,6 +567,7 @@ function SoftGlass({ style, children }: { style?: StyleProp<ViewStyle>; children
 const Slot = memo(function Slot({
   index,
   width,
+  height,
   kind,
   editing,
   onLayout,
@@ -573,6 +578,7 @@ const Slot = memo(function Slot({
 }: {
   index: number;
   width: number;
+  height: number;
   kind: WidgetKind;
   editing: boolean;
   onLayout: (index: number, r: LayoutRectangle) => void;
@@ -633,11 +639,12 @@ const Slot = memo(function Slot({
 
   return (
     <GestureDetector gesture={drag}>
-      <Animated.View style={[styles.slot, { width }, moving]} onLayout={(e) => onLayout(index, e.nativeEvent.layout)}>
+      <Animated.View style={[{ width, height }, moving]} onLayout={(e) => onLayout(index, e.nativeEvent.layout)}>
         {/* In edit mode a long press still has a handler: without one, the finger that just started
             editing would also open the gallery as it lifts (A51 2026-11-05). */}
         <LiveWidget
           kind={kind}
+          height={height}
           onPress={editing ? () => onReplace(index) : undefined}
           onLongPress={
             editing
@@ -684,7 +691,16 @@ const styles = StyleSheet.create({
   photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   softGlass: { backgroundColor: ink.raised },
   round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
-  done: { height: 44, paddingHorizontal: 18, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: ink.pill },
+  done: {
+    alignSelf: 'flex-end',
+    height: 44,
+    marginTop: space.md,
+    marginRight: space.lg,
+    paddingHorizontal: 18,
+    borderRadius: inkRadius.pill,
+    justifyContent: 'center',
+    backgroundColor: ink.pill,
+  },
   // A section's serif title with its count on the trailing side (prototype: "Waiting for you 3").
   section: {
     minHeight: 44,
@@ -723,9 +739,10 @@ const styles = StyleSheet.create({
     backgroundColor: ink.unread,
   },
   noteIcon: { width: FACE, height: FACE, borderRadius: 14, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: SUN_WASH },
-  widgets: { flexDirection: 'row', gap: space.md, paddingHorizontal: space.lg },
-  // The width comes from the screen (`half`), so two always fit.
-  slot: { height: WIDGET_HEIGHT },
+  // Same gap as the other cards' rhythm; no title above, so the grid keeps the section's spacing.
+  widgetBlock: { marginTop: space.xl },
+  // Two to a row: the width comes from the screen (`half`), so two always fit.
+  widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg },
   empty: {
     borderRadius: inkRadius.card,
     borderWidth: 2,

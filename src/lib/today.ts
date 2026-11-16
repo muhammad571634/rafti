@@ -2,11 +2,11 @@ import type { DayLog, WidgetKind } from '@/types';
 
 /**
  * Pure parts of the calm Today (audit 2026-11-15 §6.1, approved prototype `docs/prototypes/today-calm.html`):
- * the friend's presence and the two widget slots.
+ * the friend's presence and the widget slots.
  */
 
-/** Today shows two widgets at most (was four): hero, "waiting for you", two widgets, one More. */
-export const TODAY_SLOTS = 2;
+/** Today shows four widgets in a 2x2 grid, as iOS small widgets (owner, 2026-11-16; was two after §6.1). */
+export const TODAY_SLOTS = 4;
 
 /**
  * The friend's waking hours: they live their day on the user's clock (`src/ai/own-day.ts`), so the
@@ -33,13 +33,12 @@ export function freshDayNote(ownDay: readonly DayLog[] | undefined, today: strin
 }
 
 /**
- * Four slots become two without losing the user's own: their filled slots keep their order and the
- * first two stay; one filled slot keeps an empty one beside it; none filled keeps both empty.
- * Anything else (a bad save) becomes the default pair.
+ * Any saved slots become four: the user's filled slots keep their order (repeats dropped, the first
+ * four stay), then the defaults they do not have yet fill the rest, so every phone shows four widgets.
+ * Anything else (a bad save) becomes the defaults.
  */
-export function twoWidgets(slots: unknown, fallback: readonly WidgetKind[]): (WidgetKind | null)[] {
-  if (!Array.isArray(slots)) return [...fallback];
-  const filled = slots.filter((k): k is WidgetKind => typeof k === 'string' && k.length > 0);
-  const kept = [...new Set(filled)].slice(0, TODAY_SLOTS);
+export function fourWidgets(slots: unknown, defaults: readonly WidgetKind[]): (WidgetKind | null)[] {
+  const filled = Array.isArray(slots) ? slots.filter((k): k is WidgetKind => typeof k === 'string' && k.length > 0) : [];
+  const kept = [...new Set([...filled, ...defaults])].slice(0, TODAY_SLOTS);
   return [...kept, ...Array<null>(TODAY_SLOTS - kept.length).fill(null)];
 }

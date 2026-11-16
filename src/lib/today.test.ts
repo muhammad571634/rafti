@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { awakeAt, freshDayNote, twoWidgets } from './today';
+import { awakeAt, freshDayNote, fourWidgets } from './today';
 
 describe('calm Today', () => {
   it('shows the friend awake only in waking hours', () => {
@@ -34,14 +34,16 @@ describe('calm Today', () => {
     assert.equal(freshDayNote([{ date: '2026-11-16', notes: [{ at: 'bad', text: 'x' }] }], '2026-11-16', now), undefined);
   });
 
-  it('keeps the first two of four widgets in order', () => {
-    const fallback = ['calls', 'diary'] as const;
-    assert.deepEqual(twoWidgets(['calls', 'diary', 'date', 'sleep'], fallback), ['calls', 'diary']);
-    assert.deepEqual(twoWidgets([null, 'radio', null, 'board'], fallback), ['radio', 'board']);
-    assert.deepEqual(twoWidgets([null, null, 'gifts', null], fallback), ['gifts', null]);
-    assert.deepEqual(twoWidgets([null, null, null, null], fallback), [null, null]);
-    assert.deepEqual(twoWidgets(['date', 'date', 'bond'], fallback), ['date', 'bond']);
-    assert.deepEqual(twoWidgets(['photos', null], fallback), ['photos', null]);
-    assert.deepEqual(twoWidgets(undefined, fallback), ['calls', 'diary']);
+  it('fills the saved widgets up to four with the defaults', () => {
+    const defaults = ['calls', 'diary', 'date', 'sleep'] as const;
+    assert.deepEqual(fourWidgets(['calls', 'diary'], defaults), ['calls', 'diary', 'date', 'sleep']);
+    assert.deepEqual(fourWidgets(['radio', 'board'], defaults), ['radio', 'board', 'calls', 'diary']);
+    assert.deepEqual(fourWidgets(['gifts', null], defaults), ['gifts', 'calls', 'diary', 'date']);
+    assert.deepEqual(fourWidgets([null, 'diary'], defaults), ['diary', 'calls', 'date', 'sleep']);
+    assert.deepEqual(fourWidgets(['photos', 'radio', 'board', 'bond'], defaults), ['photos', 'radio', 'board', 'bond']);
+    assert.deepEqual(fourWidgets(['date', 'date', 'bond'], defaults), ['date', 'bond', 'calls', 'diary']);
+    assert.deepEqual(fourWidgets(['a', 'b', 'c', 'd', 'e'], defaults).length, 4);
+    assert.deepEqual(fourWidgets(undefined, defaults), ['calls', 'diary', 'date', 'sleep']);
+    assert.deepEqual(fourWidgets([null, null], defaults), ['calls', 'diary', 'date', 'sleep']);
   });
 });
