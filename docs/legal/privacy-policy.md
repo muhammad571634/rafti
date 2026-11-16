@@ -11,8 +11,8 @@ Gates: the published text is true only when all of these hold. Until then it is 
 
 1. A paid model key. On Google's free tier, prompts may be used to improve Google's products,
    which this text says does not happen (`docs/road-to-launch.md`, "Owner only").
-2. Server logs carry no message content. Today `[reply]` prints the first 50 characters of the
-   reply (`server/src/app.ts`); drop that before strangers use the app.
+2. Server logs carry no message content. Done (checked 2026-11-16): `[reply]`, `[group]` and
+   `[stats]` print counts, models and costs only (`server/src/app.ts`, `server/src/index.ts`).
 3. The deletions promised under "How long we keep it" run on a schedule: reports 12 months after
    they are made, usage records after 13 months. Neither job exists yet.
 4. The owner fills in the brackets: legal name, address, contact email (`sigmazam.app` waits for
@@ -109,7 +109,9 @@ transfer safeguards for the EU and UK.]
 
 - Your account, chats, memories and shells: until you delete your account.
 - Reports: 12 months after they are made, or until you delete your account, whichever comes first.
-- Usage records: 13 months, so we can compare a month with the same month a year before.
+- Usage records: 13 months, so we can compare a month with the same month a year before, or until
+  you delete your account, whichever comes first. Only a daily total of what the AI cost us is kept,
+  with nothing that says whose it was.
 - Our host's server logs are short-lived and hold no message content.
 
 ### Your choices and rights

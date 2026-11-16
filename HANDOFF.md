@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z256. Account delete leaves nothing on the server; old server data wiped (2026-11-16, Claude 1, Opus 5.5). NEXT: nothing for the owner; Fable's plan has only the Apple zoom left
+
+- **Owner**: wipe the old chats from the server completely ("no weight on the server"), and from launch on an account deleted in the app must leave nothing on the server. "Don't show me lists; do it as the senior backend."
+- **Wiped** (SQL on the cloud project): every auth user except the account the A51 made at today's onboarding (78bfb609…, created 14:33 UTC), so their chats, memories, wallets, ledgers and usage went with them by cascade; then the usage rows already orphaned by earlier deletes (`user_id` null). After: 1 user, 0 messages, 0 chats, 0 memories, 0 user characters. No storage buckets or files exist.
+- **Migration B11** (`supabase/migrations/20261116143922_b11_delete_leaves_nothing.sql`, applied by me with `scripts/apply-migration.mjs`, version checked): `usage_events` and `usage_daily` now `on delete cascade` like every other table (they were `set null`), so `DELETE /v1/account` -> `auth.admin.deleteUser` removes everything. Today's budget stays honest: a removed llm row of today adds its cost to `spend_removed(day, cost_usd)` (no user column) and `model_spend_today()` adds it; tested inside a rolled-back transaction (spend unchanged after deleting today's rows). The only FK to `auth.users` that is not cascade is Supabase's own `auth.scim_users`.
+- **Privacy policy** (`docs/legal/privacy-policy.md`): usage records go with the account; the "drop reply text from logs" pre-launch item is done (logs hold counts only).
+- No server code changed, so no deploy.
+
 ### 0z255. Onboarding driven to the end on a fresh state; age gate belt (2026-11-16, Claude 1, Opus 5.5). NEXT: Fable's plan has only the Apple zoom left (needs an iPhone)
 
 - **Owner**: drive the onboarding's real finish on the A51 with the owner's own account ("wipe it, I do not need it"). Done with `pm clear com.sigmazam.app` (local data only; the server copy stays), two launches for the latest OTA. A test emulator was set up first and removed.
