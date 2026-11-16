@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import { createApp, tokenEnds } from './app.ts';
 import { makeDb } from './db/fake.ts';
-import type { WalletState } from './db/types.ts';
+import type { MessageCharge, TakeMessage, WalletState } from './db/types.ts';
 import type { LlmProvider } from './llm/types.ts';
 
 const kai = { id: 'c_kai', name: 'Kai', handle: '@k', bio: 'Swimmer.', category: 'school', accentIndex: 0, voiceReady: false, isOfficial: true, greeting: 'Hey!', tags: ['cheerful'] };
@@ -229,5 +229,113 @@ describe('the reply allowance (replies follow the ledger)', () => {
     const app = createApp(answering, { timeoutMs: 1000, db, enforceWallet: true, limits: { freeRepliesPerDay: 1, callRepliesPerDay: 2 } });
     assert.deepEqual(await statuses(5, () => groupReply(app)), [200, 200, 200, 200, 402]);
     assert.deepEqual(await statuses(3, () => reply(app, { ...body, mode: 'call' })), [200, 200, 402]);
+  });
+});
+
+describe('the server counts messages itself (0z260, take_message)', () => {
+  const group = { ...body, others: [{ id: 'c_hana', name: 'Hana', handle: '@h', bio: 'Reader.', category: 'school', accentIndex: 1, voiceReady: false, isOfficial: true, greeting: 'Hi', tags: [] }] };
+  /** take_message in memory: free first, then a shell, once per key; `charge` false moves nothing. */
+  function counting(opts: { shells: number; freeLimit?: number; failing?: boolean }) {
+    let shells = opts.shells;
+    const keys = new Map<string, { uses: number; shells: number }>();
+    const asked: TakeMessage[] = [];
+    const db = makeDb({
+      walletState: async () => ({ ...state, shells }),
+      spendsToday: async () => 0,
+      takeMessage: async (_user, r) => {
+        asked.push(r);
+        if (opts.failing) throw new Error('down');
+        const limit = opts.freeLimit ?? r.freeLimit;
+        const freeUsed = () => [...keys.values()].filter((k) => k.shells === 0).length;
+        const out = (outcome: MessageCharge['outcome']): MessageCharge => ({ outcome, freeUsed: freeUsed(), freeLimit: limit, wallet: { ...state, shells } });
+        const known = keys.get(r.key);
+        if (known) {
+          if (r.use && known.uses >= r.maxUses) return out('overused');
+          if (r.use) known.uses++;
+          return out('again');
+        }
+        if (r.mayBeFree && freeUsed() < limit) {
+          keys.set(r.key, { uses: r.use ? 1 : 0, shells: 0 });
+          return out('free');
+        }
+        if (shells < r.cost) return out('noShells');
+        if (r.charge) shells -= r.cost;
+        keys.set(r.key, { uses: r.use ? 1 : 0, shells: r.cost });
+        return out('paid');
+      },
+    });
+    return { db, asked, shells: () => shells };
+  }
+  const send = (app: App, key: string, reason = 'chat', json: Record<string, unknown> = body, path = '/v1/chat/reply') =>
+    app.request(path, { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: JSON.stringify({ ...json, pay: { key, reason } }) });
+
+  it('takes today\'s free messages first, then a shell, once per key, and refuses with the wallet when none is left', async () => {
+    const w = counting({ shells: 1, freeLimit: 2 });
+    const app = createApp(answering, { timeoutMs: 1000, db: w.db, enforceWallet: true });
+    const first = await send(app, 'p1');
+    assert.equal(first.status, 200);
+    assert.deepEqual(((await first.json()) as { charge: MessageCharge }).charge, { outcome: 'free', freeUsed: 1, freeLimit: 2, wallet: { ...state, shells: 1 } });
+    assert.equal((await send(app, 'p2')).status, 200);
+    const paid = await send(app, 'p3');
+    assert.equal(((await paid.json()) as { charge: MessageCharge }).charge.outcome, 'paid');
+    assert.equal(w.shells(), 0);
+    // A retry of a paid line is not charged again; a new line with no shells is refused.
+    assert.equal(((await (await send(app, 'p3')).json()) as { charge: MessageCharge }).charge.outcome, 'again');
+    const refused = await send(app, 'p4');
+    assert.equal(refused.status, 402);
+    assert.deepEqual(await refused.json(), { error: 'noShells', wallet: { ...state, shells: 0 }, freeUsed: 2, freeLimit: 2 });
+    // The server's own numbers, never the app's: the price, both day counts, photos never free.
+    assert.deepEqual([w.asked[0].cost, w.asked[0].freeLimit, w.asked[0].planLimit, w.asked[0].mayBeFree, w.asked[0].charge], [1, 30, 200, true, true]);
+    await send(app, 'p5', 'photo');
+    assert.equal(w.asked.at(-1)!.mayBeFree, false);
+    // A reply that reads a photo pays a photo's price, whatever the app named it.
+    await send(app, 'p6', 'chat', { ...body, images: [{ data: '/9j/4AAQ', mimeType: 'image/jpeg' }] });
+    assert.deepEqual([w.asked.at(-1)!.key, w.asked.at(-1)!.reason, w.asked.at(-1)!.mayBeFree], ['p6', 'photo', false]);
+  });
+
+  it('only records while it is not enforced: nothing is refused and the reply carries no charge', async () => {
+    const w = counting({ shells: 0, freeLimit: 1 });
+    const app = createApp(answering, { timeoutMs: 1000, db: w.db });
+    for (const key of ['a', 'b', 'c']) {
+      const res = await send(app, key);
+      assert.equal(res.status, 200);
+      assert.equal(((await res.json()) as { charge?: unknown }).charge, undefined);
+    }
+    assert.ok(w.asked.every((r) => r.charge === false));
+  });
+
+  it('hands a line the database cannot decide to the allowance, and counts an overused key as unkeyed', async () => {
+    const down = counting({ shells: 0, failing: true });
+    const app = createApp(answering, { timeoutMs: 1000, db: down.db, enforceWallet: true, limits: { freeRepliesPerDay: 1 } });
+    assert.deepEqual([(await send(app, 'k')).status, (await send(app, 'k2')).status], [200, 402]);
+    const w = counting({ shells: 5 });
+    const tight = createApp(answering, { timeoutMs: 1000, db: w.db, enforceWallet: true, limits: { freeRepliesPerDay: 0 } });
+    // One key serves a line and two retries; the fourth reply under it falls to the allowance (none left).
+    assert.deepEqual([(await send(tight, 'k')).status, (await send(tight, 'k')).status, (await send(tight, 'k')).status, (await send(tight, 'k')).status], [200, 200, 200, 402]);
+    // A malformed key is no key at all.
+    assert.equal((await send(tight, 'bad key with spaces')).status, 402);
+  });
+
+  it('lets one key cover a group\'s members, and leaves calls to their own count', async () => {
+    const w = counting({ shells: 0, freeLimit: 1 });
+    const app = createApp(answering, { timeoutMs: 1000, db: w.db, enforceWallet: true });
+    const statuses = [];
+    for (let i = 0; i < 4; i++) statuses.push((await send(app, 'g1', 'chat', group, '/v1/chat/group')).status);
+    assert.deepEqual(statuses, [200, 200, 200, 200]);
+    assert.equal(w.asked[0].maxUses, 8);
+    await send(app, 'call-1', 'chat', { ...body, mode: 'call' });
+    assert.equal(w.asked.length, 4);
+  });
+
+  it('decides the app\'s spend mirror of a message the same way while it charges, so nothing is paid twice', async () => {
+    const w = counting({ shells: 3, freeLimit: 0 });
+    const app = createApp(answering, { timeoutMs: 1000, db: w.db, enforceWallet: true });
+    const mirror = (key: string, reason = 'chat') =>
+      app.request('/v1/wallet/spend', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: JSON.stringify({ amount: 1, reason, key }) });
+    assert.equal(((await (await mirror('m1')).json()) as WalletState).shells, 2);
+    // The reply under the same key comes after: decided already, not charged again.
+    assert.equal(((await (await send(app, 'm1')).json()) as { charge: MessageCharge }).charge.outcome, 'again');
+    assert.equal(w.shells(), 2);
+    assert.equal(w.asked[0].use, false);
   });
 });

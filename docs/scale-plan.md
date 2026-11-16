@@ -83,10 +83,26 @@ second) fits one machine, two give room and survive a crash. Memory: go to 1 GB 
 - **Side work per account**: 300 model calls a day outside talking (streams, writes, the memory
   pass, drafts), on top of the 80 first texts.
 
+- **The server counts messages itself** (0z260, road-to-launch item 4; replaces the allowance for
+  everything the user sends). The app now ties the two calls: `payLine` makes one key per line (text,
+  voice, photo, a redo or steer, a group message) and the chat's reply requests carry it as `pay`
+  (`src/economy/pay-keys.ts`, kept 10 minutes so a retry reuses it). The server decides the key once
+  in `take_message` (migration B12, `message_charges`, wallet row locked): already decided is `again`;
+  the app's spend mirror got there first is `paid`; today's free messages (30, a live plan 200, the
+  user's own day from the profile's zone) is `free`; else a shell booked under `spend:<key>`, the
+  mirror's own key, so the two can never both charge. One key serves 3 replies (8 in a group), then
+  it counts as unkeyed. Off: recorded, no shell moves, `[messages] would refuse` once per account a
+  day. On: charged before the model (a retry is free), 402 `noShells` with the wallet; the mirror of a
+  message spend takes the same decision; the reply carries `charge` (wallet, free used) and the app
+  takes it as the truth. Unkeyed replies (a hello, a wake-up talk, an answer to a reach) keep the
+  allowance, now 40 plus the day's other spends (messages left out). One more database call per
+  message (~1 ms of SQL, no model cost). A database that cannot decide lets the line out.
+
 Still open in phase 1:
 
-- The app shows a refused reply as Not delivered (any non-200). When `ENFORCE_WALLET` goes on, read
-  402 `noShells` in `src/ai/server.ts` and open the app's own "no shells" sheet instead.
+- A refused reply (402 `noShells`) shows Not delivered and the server's wallet at once (`whenNoShells`
+  in `src/ai/server.ts`), so the next line opens the app's own paywall. Opening the paywall on the
+  refused line itself waits until `ENFORCE_WALLET` is turned on.
 - Per-machine counts (the allowance, the minute limits) double with two machines. Move the
   allowance's reply count into `daily_usage` if that slack ever matters.
 
@@ -131,4 +147,4 @@ texts tied to the user's own plan or alarm, threads that came out of the chat.
 | `MODEL_MAX_QUEUED` | 240 | Replies that may wait for a slot |
 | `MODEL_BUDGET_USD_PER_DAY` | 0 (off) | The whole service's model spend a UTC day at list price |
 | `LINE_SIGN_KEY` | none (a key per process) | Shared by every machine once there are two |
-| `ENFORCE_WALLET` | off | `1` refuses replies past the allowance; off only counts them |
+| `ENFORCE_WALLET` | off | `1` charges each line the user sends (`take_message`) and refuses unpaid ones and replies past the allowance; off only records them |

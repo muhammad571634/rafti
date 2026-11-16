@@ -3,6 +3,7 @@ import type {
   BootstrapResult,
   CheckInResult,
   GrantRequest,
+  MessageCharge,
   MemoriesState,
   MemorySyncRequest,
   MessageSyncRequest,
@@ -20,6 +21,7 @@ export type {
   BootstrapResult,
   CheckInResult,
   GrantRequest,
+  MessageCharge,
   MemoriesState,
   MemorySyncRequest,
   MessageSyncRequest,
@@ -60,7 +62,10 @@ export interface Db {
    * the sign-in service could not be asked: that says nothing about the token (`accountOf` in app.ts).
    */
   userIdFromToken(token: string): Promise<string | null>;
-  /** How many times the user spent shells since the UTC day began, for the reply allowance (`mayReply` in app.ts). */
+  /**
+   * How many times the user spent shells since the UTC day began, for the reply allowance (`mayReply` in app.ts).
+   * Messages (chat, voice, photo) are left out: the server counts those itself (`takeMessage`).
+   */
   spendsToday?(userId: string): Promise<number>;
   /** A cheap read that fails when the database is away, for `/health`. */
   ping?(): Promise<void>;
@@ -80,6 +85,12 @@ export interface Db {
   walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
   /** A shared card: `amount` free shells for each of the first `perDay` shares of the user's day, then nothing. */
   walletShare(userId: string, rules: { amount: number; perDay: number }): Promise<ShareResult>;
+  /**
+   * Decides one line the user sends (0z260, `take_message` in supabase/migrations/*_b12_message_charges.sql):
+   * today's free messages, then a shell under `spend:<key>`; once per key. `charge` false records the
+   * decision without moving a shell (`ENFORCE_WALLET` off); `use` counts a reply under the key.
+   */
+  takeMessage?(userId: string, request: TakeMessage): Promise<MessageCharge>;
 
   // Plans (0z142): the server holds the subscription and pays its monthly shells (`payPlanShells` in app.ts).
   /** The live subscription (trial, active or grace, before its term ends); null when none. */
@@ -104,6 +115,20 @@ export interface Db {
 
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
   deleteUser(userId: string): Promise<void>;
+}
+
+export interface TakeMessage {
+  key: string;
+  reason: 'chat' | 'voice' | 'photo';
+  cost: number;
+  freeLimit: number;
+  planLimit: number;
+  /** A photo always takes its shell. */
+  mayBeFree: boolean;
+  maxUses: number;
+  use: boolean;
+  charge: boolean;
+  characterId?: string;
 }
 
 /** What one model or voice call cost (backend-plan §1.5, §9: the unit economics come from these rows). */

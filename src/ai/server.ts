@@ -24,9 +24,11 @@ import type {
   MemoriesState,
   MemorySyncRequest,
   MemorySyncResult,
+  MessageCharge,
   MessageSyncRequest,
   MessageSyncResult,
   MessagesPage,
+  PayLine,
   ReportRequest,
   ShareResult,
   SpeakRequest,
@@ -71,11 +73,32 @@ export function apiBase(): string | null {
   return __DEV__ && host ? `http://${host}:${DEV_PORT}` : null;
 }
 
+/** A refusal's news: the server's wallet, and its free count when a line was refused (0z260). */
+export interface NoShells {
+  wallet: WalletState | null;
+  free?: { used: number; limit: number };
+}
+
+let noShellsListener: ((refused: NoShells) => void) | null = null;
+
+/** Hears every 402 `noShells` the server answers with its wallet (a refused reply or spend). */
+export function whenNoShells(listener: (refused: NoShells) => void): void {
+  noShellsListener = listener;
+}
+
 async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T | null> {
   const base = apiBase();
   if (!base) return null;
   try {
     const res = await fetch(`${base}${path}`, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+    if (res.status === 402) {
+      const body = (await res.json().catch(() => null)) as { error?: string; wallet?: WalletState | null; freeUsed?: unknown; freeLimit?: unknown } | null;
+      if (body?.error === 'noShells') {
+        const free = typeof body.freeUsed === 'number' && typeof body.freeLimit === 'number' ? { used: body.freeUsed, limit: body.freeLimit } : undefined;
+        noShellsListener?.({ wallet: body.wallet ?? null, free });
+      }
+      return null;
+    }
     return res.ok ? ((await res.json()) as T) : null;
   } catch {
     return null;
@@ -195,13 +218,15 @@ export const serverMemories = {
 export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; ideas?: string[]; emotion?: Emotion; intensity?: number } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown }>(
+  pay?: PayLine,
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
-      body: JSON.stringify(input),
+      // The line this reply answers, so the server counts it once (0z260).
+      body: JSON.stringify(pay ? { ...input, pay } : input),
     },
     TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
@@ -216,6 +241,7 @@ export async function serverReply(
     lines: kept.map((k) => k.line),
     crisis: reply?.crisis === true,
     photos: reply?.photos,
+    charge: cleanCharge(reply?.charge),
     voice: signs.length ? kept.map((k) => k.sig) : undefined,
     setup: reply?.crisis === true ? undefined : cleanSetup(reply?.setup),
     threads: reply?.crisis === true ? undefined : cleanThreadOps(reply?.threads),
@@ -273,14 +299,28 @@ export async function serverStreamLine(request: StreamLineRequest, accessToken?:
 }
 
 /** One group member's next message in their own voice, or null (off, busy or slow: the caller writes the stand-in). */
-export async function serverGroupReply(input: GroupPromptInput, accessToken?: string | null): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; day?: string[] } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; day?: unknown }>(
+export async function serverGroupReply(
+  input: GroupPromptInput,
+  accessToken?: string | null,
+  pay?: PayLine,
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; day?: string[]; charge?: MessageCharge } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; day?: unknown; charge?: unknown }>(
     '/v1/chat/group',
-    withOptionalToken(accessToken, input),
+    withOptionalToken(accessToken, pay ? { ...input, pay } : input),
     GROUP_REPLY_TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
-  return lines?.length ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day) } : null;
+  return lines?.length
+    ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day), charge: cleanCharge(reply?.charge) }
+    : null;
+}
+
+/** The server's decision on the line a reply answered (0z260), checked: it comes over the network. */
+export function cleanCharge(value: unknown): MessageCharge | undefined {
+  const c = value as Partial<MessageCharge> | null | undefined;
+  const wallet = c?.wallet as Partial<WalletState> | undefined;
+  if (!c || typeof c.freeUsed !== 'number' || typeof c.freeLimit !== 'number' || typeof wallet?.shells !== 'number' || typeof wallet.today !== 'string') return undefined;
+  return c as MessageCharge;
 }
 
 /**

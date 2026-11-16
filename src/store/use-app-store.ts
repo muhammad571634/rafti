@@ -45,7 +45,7 @@ import { accessToken, withAccount } from '@/ai/account';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite } from '@/ai/server';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import { mayReact } from '@/ai/react';
@@ -92,7 +92,7 @@ import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/w
 import { fill as fillVoice } from '@/i18n/voice';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
 import { boardNoteText, messageText } from '@/lib/story-continuity';
-import { REPORT_LIMITS, type WalletState } from '@/ai/session-types';
+import { REPORT_LIMITS, type MessageCharge, type WalletState } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
@@ -212,6 +212,7 @@ import {
   type MinutesKind,
 } from '@/economy/plans';
 import { freeMessagesPerDay, usedToday } from '@/economy/free-messages';
+import { forgetPay, isPayReason, notePay, payFor } from '@/economy/pay-keys';
 import {
   INVITE_REWARD,
   DAILY_CHECK_IN,
@@ -675,7 +676,8 @@ export interface AppState {
   dismissLevelUp: () => void;
 
   /* economy */
-  spendShells: (amount: number, reason?: LedgerReason, characterId?: string) => boolean;
+  /** `key`: the line's pay key (`payLine`), so the server's own count and this spend book it once. */
+  spendShells: (amount: number, reason?: LedgerReason, characterId?: string, key?: string) => boolean;
   /** Uses one of today's free messages (audit §6.3); false once the count is used up, and then a shell pays. */
   takeFreeMessage: () => boolean;
   /** The "free messages used" sheet was seen today: messages now pay a shell without asking again. */
@@ -1577,7 +1579,7 @@ export const useAppStore = create<AppState>()(
       sendGroupText: (groupId, text, replyTo) => {
         const trimmed = text.trim();
         if (!trimmed || !get().groups.some((g) => g.id === groupId)) return 'empty';
-        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat', groupId)) return 'noShells';
         countMessage(set, get);
         noticeGroupAiIfDue(set, get, groupId);
         appendGroupMessage(set, get, groupId, {
@@ -1595,7 +1597,7 @@ export const useAppStore = create<AppState>()(
 
       sendGroupVoice: (groupId, durationSec, transcript, audioFile, levels) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
-        if (!payLine(get, shellCosts.voiceMessage, 'voice')) return 'noShells';
+        if (!payLine(get, shellCosts.voiceMessage, 'voice', groupId)) return 'noShells';
         countMessage(set, get);
         noticeGroupAiIfDue(set, get, groupId);
         appendGroupMessage(set, get, groupId, {
@@ -1615,7 +1617,7 @@ export const useAppStore = create<AppState>()(
 
       sendGroupImage: (groupId, imageUri, aspect) => {
         if (!get().groups.some((g) => g.id === groupId)) return 'empty';
-        if (!get().spendShells(shellCosts.textMessage, 'photo')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'photo', groupId)) return 'noShells';
         countMessage(set, get);
         noticeGroupAiIfDue(set, get, groupId);
         appendGroupMessage(set, get, groupId, {
@@ -1639,7 +1641,7 @@ export const useAppStore = create<AppState>()(
         if (steerBlock(state.messages[groupId], !!state.groupTyping[groupId]?.length)) return 'empty';
         const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
         if (!first) return 'empty';
-        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat', groupId)) return 'noShells';
         countMessage(set, get);
         const lastSpeaker = speakersIn(state, groupId).at(-1);
         appendGroupMessage(set, get, groupId, { id: uid('m'), ...steerMarker(groupId, 'continue') }, { quiet: true });
@@ -1662,7 +1664,7 @@ export const useAppStore = create<AppState>()(
         // Nothing to answer before the first line, and not after a crisis (the one-to-one rules).
         const last = state.messages[groupId]?.at(-1);
         if (!last || last.card === 'helpline') return 'empty';
-        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat', groupId)) return 'noShells';
         countMessage(set, get);
         const lastSpeaker = speakersIn(state, groupId).findLast((id) => id !== characterId);
         writeGroupTurns(set, get, groupId, [
@@ -1685,7 +1687,7 @@ export const useAppStore = create<AppState>()(
         if (words !== undefined && checkSkipTo(words).length) return 'empty';
         const [first, second] = continueSpeakers(group.memberIds, speakersIn(state, groupId));
         if (!first) return 'empty';
-        if (!payLine(get, shellCosts.textMessage, 'chat')) return 'noShells';
+        if (!payLine(get, shellCosts.textMessage, 'chat', groupId)) return 'noShells';
         countMessage(set, get);
         const marker: Message = { id: uid('m'), ...steerMarker(groupId, 'skip', skip, new Date(), words) };
         appendGroupMessage(set, get, groupId, marker, { quiet: true });
@@ -2399,7 +2401,7 @@ export const useAppStore = create<AppState>()(
 
       seeFreeOut: () => set((s) => ({ daily: { ...s.daily, freeOutDay: todayKey() } })),
 
-      spendShells: (amount, reason = 'other', characterId) => {
+      spendShells: (amount, reason = 'other', characterId, key) => {
         get().expireFreeShells();
         const { wallet } = get();
         if (wallet.shells < amount) return false;
@@ -2415,7 +2417,7 @@ export const useAppStore = create<AppState>()(
           ledger: log(s.ledger, -amount, reason, characterId),
         }));
         // With the wallet on the server the spend shows at once and the server's answer settles it.
-        if (serverWalletOn(get)) syncWallet(set, (token) => serverWallet.spend(token, { amount, reason, key: uid('sp'), characterId }));
+        if (serverWalletOn(get)) syncWallet(set, (token) => serverWallet.spend(token, { amount, reason, key: key ?? uid('sp'), characterId }));
         return true;
       },
 
@@ -3132,6 +3134,7 @@ export const useAppStore = create<AppState>()(
         // its message database included.
         void resetMessages();
         resetMemorySync();
+        forgetPay();
         // A new account checks in on its own first day.
         checkedInDay = null;
         useAppStore.setState({ ...useAppStore.getInitialState(), hydrated: true }, true);
@@ -4377,6 +4380,18 @@ let walletCallsOut = 0;
  * Sends one wallet call and takes the server's wallet as the truth once no other call is out. A
  * refused or failed call reads the wallet again, so the balance shown never drifts from the server.
  */
+/**
+ * A reply the server refused for want of shells (402 `noShells`, once `ENFORCE_WALLET` is on) comes
+ * with the server's wallet: it shows at once, so the next line opens the app's own paywall.
+ */
+whenNoShells(({ wallet, free }) => {
+  if (wallet && walletCallsOut === 0) applyServerWallet(useAppStore.setState, wallet);
+  // The server's count says today's free messages are gone: the phone stops calling the next one free.
+  if (wallet && free && free.used >= free.limit && wallet.today === todayKey()) {
+    useAppStore.setState((s) => ({ daily: { ...s.daily, freeDay: wallet.today, freeUsed: Math.max(free.used, usedToday(s.daily.freeDay, s.daily.freeUsed, wallet.today)) } }));
+  }
+});
+
 function syncWallet(set: Setter, run: (accessToken: string) => Promise<WalletState | null>) {
   walletCallsOut++;
   void withAccount(run)
@@ -4523,16 +4538,30 @@ function payPlanShells(set: Setter, get: Getter) {
 /** A message is paid by today's free count, then a shell (audit §6.3; `payLine`). */
 function chargeMessage(get: Getter, cost: number, reason: LedgerReason, conversationId: string) {
   const characterId = get().conversations.find((c) => c.id === conversationId)?.characterId;
-  return payLine(get, cost, reason, characterId);
+  return payLine(get, cost, reason, conversationId, characterId);
 }
 
 /**
  * Pays for a line the user sends (audit §6.3, shape B): a text or a voice line uses today's free count
  * first (a plan's fair use), then a shell; a photo always takes its shell (it costs more to read).
+ * The line gets one key (0z260): the chat's reply request carries it (`payFor`), so the server
+ * decides the same line once, and a shell spent here is mirrored under that key.
  */
-function payLine(get: Getter, cost: number, reason: LedgerReason, characterId?: string) {
-  if ((reason === 'chat' || reason === 'voice') && get().takeFreeMessage()) return true;
-  return get().spendShells(cost, reason, characterId);
+function payLine(get: Getter, cost: number, reason: LedgerReason, chat: string, characterId?: string) {
+  const key = uid('pay');
+  const paid = ((reason === 'chat' || reason === 'voice') && get().takeFreeMessage()) || get().spendShells(cost, reason, characterId, key);
+  if (paid && isPayReason(reason)) notePay(chat, key, reason);
+  return paid;
+}
+
+/**
+ * The server's decision on a line (0z260, while it charges): its wallet and today's free count are
+ * the truth. The wallet waits while other wallet calls are out, as `syncWallet` does.
+ */
+function applyCharge(set: Setter, charge: MessageCharge | undefined) {
+  if (!charge) return;
+  if (walletCallsOut === 0) applyServerWallet(set, charge.wallet);
+  if (charge.wallet.today === todayKey()) set((s) => ({ daily: { ...s.daily, freeDay: charge.wallet.today, freeUsed: charge.freeUsed } }));
 }
 
 /** Books call time in the history, in seconds: what a plan or top-up added, what a call used. */
@@ -6024,12 +6053,15 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // beside the note that a photo could not be read.
       const heard = !cue && !steer && trigger === 'message' ? (toneCue(messages) ?? spokenCue(messages)) : undefined;
       const reply = await accessToken()
-        .then((token) => serverReply({ ...input, ...looking, cue: heard ? [...(looking.cue ?? []), ...heard] : looking.cue }, token))
+        .then((token) => serverReply({ ...input, ...looking, cue: heard ? [...(looking.cue ?? []), ...heard] : looking.cue }, token, payFor(conversationId)))
         .catch(() => null);
       return { reply, photos };
     })().then(({ reply, photos }) => {
       if ((replyEpoch.get(conversationId) ?? 0) !== epoch) return;
       if (!reply) return failReply(set, conversationId, request);
+      applyCharge(set, reply.charge);
+      // Answered: later replies (a wake-up talk, a reach) are not this line's to count.
+      forgetPay(conversationId);
       rememberPhotos(set, conversationId, photos, reply.photos);
       if (reply.day?.length) keepOwnDay(set, character.id, reply.day);
       // Their sticker on what the user just said, before the bubbles land (owner, 2026-11-08: alive).
@@ -6518,13 +6550,14 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
       startGroupTyping(set, groupId, turn.characterId);
       const { photos, ...looking } = await lookAtPhotos(input.messages, input.cue);
       const reply = await accessToken()
-        .then((token) => serverGroupReply({ ...input, ...looking }, token))
+        .then((token) => serverGroupReply({ ...input, ...looking }, token, payFor(groupId)))
         .catch(() => null);
       stopGroupTyping(set, groupId, turn.characterId);
       if (!reply) {
         if (!said.length && !turn.quiet) failGroupTurns(set, groupId, turns);
         return;
       }
+      applyCharge(set, reply.charge);
       if (reply.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
         appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
       }
@@ -6532,8 +6565,10 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
       if (reply.day?.length) keepOwnDay(set, turn.characterId, reply.day);
       said.push(...reply.lines.map((line) => memberText(groupId, turn.characterId, line)));
       scheduleGroupReplies(set, get, groupId, [{ characterId: turn.characterId, lines: reply.lines }]);
-      if (reply.crisis) return;
+      if (reply.crisis) break;
     }
+    // Answered: later lines in the group (a hello, a join) are not this line's to count (0z260).
+    if (said.length) forgetPay(groupId);
   })();
 }
 

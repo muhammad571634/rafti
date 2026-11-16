@@ -51,6 +51,8 @@ import {
 } from '../../src/economy/shells.ts';
 import type { LedgerReason, MemoryItem, PlanId } from '../../src/types/index.ts';
 import { PLANS, shellGrant } from '../../src/economy/plans.ts';
+import { FREE_MESSAGES_PER_DAY, MESSAGE_SHELLS, PLAN_MESSAGES_PER_DAY } from '../../src/economy/free-messages.ts';
+import type { MessageCharge, PayLine, PayReason } from '../../src/ai/session-types.ts';
 import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-prompt.ts';
 import { cleanClip, CLIP_CHARS_MAX, parseTranscript, transcribeLayout } from '../../src/ai/voice-prompt.ts';
 import { chatReply } from './chat-reply.ts';
@@ -159,6 +161,17 @@ const FREE_GRANTS = new Set<LedgerReason>(['ad', 'share']);
 
 const isCount = (value: unknown, max: number): value is number => Number.isInteger(value) && (value as number) >= 1 && (value as number) <= max;
 const isKey = (value: unknown): value is string => typeof value === 'string' && value.length > 0 && value.length <= 100;
+
+/** Lines the user sends that the server counts itself (0z260, `take_message`). */
+const PAY_REASONS = new Set<PayReason>(['chat', 'voice', 'photo']);
+/** Replies one key may serve: a one-to-one line and two retries; each of a group's members and a retry. */
+const PAY_USES = { chat: 3, group: MAX_GROUP_OTHERS * 2 } as const;
+/** A `pay` from the app (`PayLine`), or null when there is none or it is malformed (then the reply is unkeyed). */
+function cleanPay(value: unknown): PayLine | null {
+  const pay = value as Partial<PayLine> | null | undefined;
+  if (!pay || typeof pay !== 'object' || !PAY_REASONS.has(pay.reason as PayReason)) return null;
+  return typeof pay.key === 'string' && /^[\w:-]{1,100}$/.test(pay.key) ? { key: pay.key, reason: pay.reason as PayReason } : null;
+}
 
 /** The most one sync may carry; the phone sends its outbox in batches this size. */
 export const SYNC_LIMITS = MESSAGE_SYNC_LIMITS;
@@ -380,8 +393,9 @@ export function createApp(
     /** Counts each chat reply in the user's local hour (`[hours]` in the log). */
     hours?: TalkHours;
     /**
-     * `ENFORCE_WALLET`: a reply past the account's allowance (`mayReply`) is refused with 402. Off,
-     * the allowance is only counted and a crossing logged, so it can be checked on real traffic first.
+     * `ENFORCE_WALLET`: the server charges what the user sends itself (`payForLine`, 0z260) and a
+     * reply past the account's allowance (`mayReply`) is refused with 402. Off, both are only counted
+     * and a refusal logged, so they can be checked on real traffic first.
      */
     enforceWallet?: boolean;
   },
@@ -398,10 +412,9 @@ export function createApp(
   let photosInFlight = 0;
 
   /**
-   * The reply allowance: the model answers an account as often as it paid for, read from the
-   * ledger. The app spends a shell and asks for the reply as two calls with nothing tying them, so
-   * the server does not charge here (it could charge twice); it counts the day's replies against
-   * the day's spends plus a free share (hellos, a version asked for again, a wake-up talk). A group
+   * The reply allowance, for replies with no `pay` key (every line the user sends carries one since 0z260
+   * and is decided by `payForLine`): the day's unkeyed replies against the day's other spends plus a
+   * free share (a friend's hello, a wake-up talk, an answer to their reach). A group
    * message is one spend and up to four replies; a call is paid in minutes and has its own count.
    * An account that never spends gets the free share and no more, where it had 1,500 a day.
    * The ledger is read only when an account reaches its allowance, and a failed read lets the
@@ -435,6 +448,54 @@ export function createApp(
     if (!within(entry)) return false;
     entry.replies += weight;
     return true;
+  }
+
+  /**
+   * The server's own count of what the user sends (0z260): a keyed line is decided once by
+   * `take_message`, the way the app's `payLine` does it (today's free messages, a plan's fair use,
+   * then a shell under the app's own `spend:<key>`). Charged before the model is asked: a retry under
+   * the same key is not charged again. Off (`ENFORCE_WALLET` unset) the decision is only recorded and
+   * a refusal logged once per account a day; the app's spend mirror keeps paying.
+   * Null: no key (or it served too many replies), so the reply allowance counts it instead.
+   * A database that cannot decide hands the line to the allowance, which lets it out when it cannot read either.
+   */
+  const payLogged = new Map<string, number>();
+  async function payForLine(c: Context, userId: string | null, given: PayLine | null, kind: 'chat' | 'group', photos: number, characterId?: string): Promise<{ refuse?: Response; charge?: MessageCharge } | null> {
+    if (!userId || !given || !db?.takeMessage) return null;
+    // A reply that reads photos is a photo's price whatever the app named it.
+    const pay: PayLine = photos > 0 ? { key: given.key, reason: 'photo' } : given;
+    const charge = !!opts.enforceWallet;
+    let taken: MessageCharge;
+    try {
+      taken = await db.takeMessage(userId, {
+        key: pay.key,
+        reason: pay.reason,
+        cost: MESSAGE_SHELLS,
+        freeLimit: FREE_MESSAGES_PER_DAY,
+        planLimit: PLAN_MESSAGES_PER_DAY,
+        mayBeFree: pay.reason !== 'photo',
+        maxUses: PAY_USES[kind],
+        use: true,
+        charge,
+        characterId,
+      });
+    } catch (error) {
+      // The allowance still counts it (and lets it out itself when the ledger cannot be read either).
+      console.error(`[messages] could not decide: ${String((error as Error).message).slice(0, 80)}`);
+      return null;
+    }
+    if (taken.outcome === 'overused') return null;
+    if (taken.outcome === 'noShells') {
+      const day = Math.floor(Date.now() / DAY_MS);
+      if (payLogged.get(userId) !== day) {
+        if (payLogged.size > 50_000) payLogged.clear();
+        payLogged.set(userId, day);
+        console.info(`[messages] ${charge ? 'refused' : 'would refuse'} ${kind}: free=${taken.freeUsed}/${taken.freeLimit} shells=${taken.wallet.shells}`);
+      }
+      if (charge) return { refuse: c.json({ error: 'noShells', wallet: taken.wallet, freeUsed: taken.freeUsed, freeLimit: taken.freeLimit }, 402) };
+      return {};
+    }
+    return charge ? { charge: taken } : {};
   }
 
   /** Null when the reply may go out; else the 402 to answer with (only while `enforceWallet` is on). */
@@ -730,6 +791,26 @@ export function createApp(
     if (!isCount(body?.amount, MAX_SPEND) || !SPEND_REASONS.has(reason) || !isKey(body?.key)) return c.json({ error: 'badInput' }, 400);
     const { amount, key } = body as { amount: number; key: string };
     const characterId = typeof body?.characterId === 'string' ? body.characterId : undefined;
+    // While the server charges messages (0z260), the app's mirror of one is the same decision as the
+    // reply's, under the same key: whichever comes first decides, the other changes nothing.
+    if (opts.enforceWallet && db?.takeMessage && PAY_REASONS.has(reason as PayReason) && cleanPay({ key, reason })) {
+      return wallet(c, async (userId) => {
+        const taken = await db.takeMessage!(userId, {
+          key,
+          reason: reason as PayReason,
+          cost: MESSAGE_SHELLS,
+          freeLimit: FREE_MESSAGES_PER_DAY,
+          planLimit: PLAN_MESSAGES_PER_DAY,
+          mayBeFree: reason !== 'photo',
+          maxUses: PAY_USES.chat,
+          use: false,
+          charge: true,
+          characterId,
+        });
+        if (taken.outcome === 'noShells') throw new WalletError('noShells');
+        return taken.wallet;
+      });
+    }
     // The app's keys get a prefix, so none can clash with the server's own ("daily:…", "spin:…").
     return wallet(c, (userId) => db!.walletSpend(userId, { amount, reason, key: `spend:${key}`, characterId }));
   });
@@ -985,7 +1066,8 @@ export function createApp(
   app.post('/v1/chat/group', async (c) => {
     if (!provider) return c.json({ error: 'noModel' }, 503);
     const body = await readJson(c);
-    const raw = body as unknown as GroupPromptInput | null;
+    const pay = cleanPay(body?.pay);
+    const raw = (body ? { ...body, pay: undefined } : null) as unknown as GroupPromptInput | null;
     if (!raw?.character?.name || !raw.user || !Array.isArray(raw.messages) || !Array.isArray(raw.others) || !raw.others.length || raw.others.length > MAX_GROUP_OTHERS) {
       return c.json({ error: 'badInput' }, 400);
     }
@@ -1005,8 +1087,12 @@ export function createApp(
       ownDay: cleanOwnDay(raw.ownDay),
     };
     const userId = signedIn(c);
-    const over = await overAllowance(c, await userId, 'group');
-    if (over) return over;
+    const paid = await payForLine(c, await userId, pay, 'group', images?.length ?? 0, input.character.id);
+    if (paid?.refuse) return paid.refuse;
+    if (!paid) {
+      const over = await overAllowance(c, await userId, 'group');
+      if (over) return over;
+    }
     const started = Date.now();
     try {
       const { reply, result, calls, crisis, blocked } = await withPhotos(images, () => chatReply(provider, input, opts.timeoutMs, { mode: 'group', layoutOf: layoutGroupReply }));
@@ -1025,7 +1111,7 @@ export function createApp(
       console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}${blocked ? ` safety=${blocked}` : ''}`);
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: lines, crisis, photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name });
+      return c.json({ messages: lines, crisis, photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
       console.error('[group] failed', error);
@@ -1036,8 +1122,14 @@ export function createApp(
   app.post('/v1/chat/reply', async (c) => {
     if (!provider) return c.json({ error: 'noModel' }, 503);
     let input: ChatPromptInput;
+    let pay: PayLine | null = null;
     try {
-      input = await c.req.json();
+      const json = await c.req.json();
+      if (json && typeof json === 'object') {
+        const { pay: rawPay, ...rest } = json;
+        pay = cleanPay(rawPay);
+        input = rest;
+      } else input = json;
     } catch {
       return c.json({ error: 'badJson' }, 400);
     }
@@ -1064,8 +1156,13 @@ export function createApp(
 
     // Who is asking: the guard above already checked the token, so this is its remembered answer.
     const userId = signedIn(c);
-    const over = await overAllowance(c, await userId, input.mode === 'call' ? 'call' : 'chat');
-    if (over) return over;
+    // A call is paid in minutes and keeps its own count; a keyed line is decided by `take_message`.
+    const paid = input.mode === 'call' ? null : await payForLine(c, await userId, pay, 'chat', images?.length ?? 0, input.character.id);
+    if (paid?.refuse) return paid.refuse;
+    if (!paid) {
+      const over = await overAllowance(c, await userId, input.mode === 'call' ? 'call' : 'chat');
+      if (over) return over;
+    }
 
     const started = Date.now();
     try {
@@ -1117,7 +1214,7 @@ export function createApp(
       const react = crisis || input.mode === 'call' ? undefined : reply.react;
       // `ideas`: one-tap replies in the chat's language (IDEAS_CUE); texting only, never after a crisis.
       const ideas = crisis || (input.mode && input.mode !== 'chat') ? undefined : reply.ideas;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, ideas, voice, model: result.model ?? provider.name, ms });
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, ideas, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

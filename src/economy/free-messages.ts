@@ -12,6 +12,8 @@ import { rollSubscription } from './plans';
 export const FREE_MESSAGES_PER_DAY = 30;
 /** A plan's fair use: far above a heavy day (~150), low enough that a script cannot run up the bill. */
 export const PLAN_MESSAGES_PER_DAY = 200;
+/** A text or voice line past the free count, and a photo always: one shell (the server charges the same). */
+export const MESSAGE_SHELLS = 1;
 /** The chat says how many are left only from here down ("5 left today"). */
 export const SHOW_LEFT_FROM = 5;
 

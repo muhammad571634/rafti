@@ -53,6 +53,29 @@ export interface WalletState {
 }
 
 /**
+ * A line the user sends to the model (0z260): `pay` beside the prompt on `/v1/chat/reply` and
+ * `/v1/chat/group`. The key is the one the app's own spend mirror books (`spend:<key>`), so the
+ * server's count and the app's can never charge the same line twice. A retry and a group's members
+ * reuse it.
+ */
+export interface PayLine {
+  key: string;
+  reason: PayReason;
+}
+
+export type PayReason = 'chat' | 'voice' | 'photo';
+
+/** The server's decision on a `PayLine` (`take_message`); the reply carries it while the server charges. */
+export interface MessageCharge {
+  /** `again`: decided before (a retry); `overused`: the key served too many replies; `noShells`: refused. */
+  outcome: 'free' | 'paid' | 'again' | 'overused' | 'noShells';
+  /** Today's free messages used on the server's count, and how many the day has (30, a plan's 200). */
+  freeUsed: number;
+  freeLimit: number;
+  wallet: WalletState;
+}
+
+/**
  * `POST /v1/wallet/spend`. The app names the amount for now: the goods (dates, notes, replies) are
  * still made on the phone, so a price check on the server would guard nothing yet. Each feature's
  * price moves to the server together with the feature. `key` makes a retry book once.

@@ -9,6 +9,7 @@ import {
   type CheckInResult,
   type Db,
   type LiveSubscription,
+  type MessageCharge,
   type MemoriesState,
   type MessagesPage,
   type ShareResult,
@@ -57,7 +58,7 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
 
     async spendsToday(userId) {
       const dayStart = new Date(Math.floor(Date.now() / 86_400_000) * 86_400_000).toISOString();
-      const { count, error } = await client.from('shell_ledger').select('id', { count: 'exact', head: true }).eq('user_id', userId).lt('delta', 0).neq('reason', 'expired').gte('created_at', dayStart);
+      const { count, error } = await client.from('shell_ledger').select('id', { count: 'exact', head: true }).eq('user_id', userId).lt('delta', 0).not('reason', 'in', '(expired,chat,voice,photo)').gte('created_at', dayStart);
       if (error) throw new Error(`shell_ledger: ${error.message}`);
       return count ?? 0;
     },
@@ -116,6 +117,21 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
 
     walletSpin: (userId, { segments, weights, freeSpins }) =>
       rpc<SpinResult>('wallet_spin', { p_user: userId, p_segments: segments, p_weights: weights, p_free_spins: freeSpins }),
+
+    takeMessage: (userId, r) =>
+      rpc<MessageCharge>('take_message', {
+        p_user: userId,
+        p_key: r.key,
+        p_reason: r.reason,
+        p_cost: r.cost,
+        p_free_limit: r.freeLimit,
+        p_plan_limit: r.planLimit,
+        p_may_be_free: r.mayBeFree,
+        p_max_uses: r.maxUses,
+        p_use: r.use,
+        p_charge: r.charge,
+        p_character_id: r.characterId ?? null,
+      }),
 
     // The day's paid shares are its `share:<day>:<n>` rows. Two shares at once take the same key, and
     // `wallet_credit` books a key once: a race can only pay less, never more than the cap.

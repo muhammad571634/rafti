@@ -18,9 +18,9 @@ export interface ModelLimits {
   /** Model work nobody is talking through (streams, writes, the memory pass, drafts), per account a day. */
   sidePerDay: number;
   /**
-   * The reply allowance (`mayReply` in app.ts): replies a day an account gets beyond the shells it
-   * spent that day (hellos, a version asked for again, a wake-up talk are free), and replies on calls
-   * (paid in minutes, not per message).
+   * The reply allowance (`mayReply` in app.ts): replies a day with no `pay` key an account gets
+   * beyond its other spends that day (hellos, a wake-up talk are free), and replies on calls (paid in
+   * minutes, not per message). Keyed lines are counted by `take_message` instead (0z260).
    */
   freeRepliesPerDay: number;
   callRepliesPerDay: number;
@@ -42,12 +42,11 @@ export const MODEL_LIMITS: ModelLimits = {
   photosInFlight: 16,
   // A heavy day is ~25 memory passes, a stream or two (20-60 lines) and a few writes.
   sidePerDay: 300,
-  // Measured 2026-11-10 over 14 days: an account's replies a day stay within a few of its spends
-  // (91 to 98, 62 to 61, 58 to 62); one early day had 37 replies on 5 spends. That share (40) plus
-  // the day's free messages, which spend no shell (`FREE_MESSAGES_PER_DAY` = 30 in
-  // src/economy/free-messages.ts, audit §6.3). A plan's fair use (200) is not known here until billing
-  // runs on the server; while `ENFORCE_WALLET` is off this only logs.
-  freeRepliesPerDay: 70,
+  // Replies with no `pay` key (0z260): a friend's hello, a wake-up talk, an answer to their reach.
+  // Every line the user sends carries a key and is counted by `take_message` (today's free messages,
+  // a plan's fair use, then a shell), so this share only has to cover those. Measured before keys
+  // (2026-11-10, 14 days): replies a day stayed within a few of the day's spends.
+  freeRepliesPerDay: 40,
   // About half an hour of a call's turns.
   callRepliesPerDay: 300,
 };

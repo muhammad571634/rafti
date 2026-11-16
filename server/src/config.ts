@@ -103,9 +103,11 @@ export const config = {
     budgetUsdPerDay: count(process.env.MODEL_BUDGET_USD_PER_DAY, 0),
   },
   /**
-   * `ENFORCE_WALLET=1`: a reply past the account's allowance (its spends of the day plus a free
-   * share, `mayReply` in app.ts) is refused with 402. Off, the default, it is only counted and a
-   * crossing logged as `[allowance] would refuse`: read those lines on real traffic before turning it on.
+   * `ENFORCE_WALLET=1`: the server charges each line the user sends itself (`payForLine` in app.ts,
+   * `take_message`: today's free messages, then a shell; 0z260) and refuses an unpaid one or a reply
+   * past the unkeyed allowance (`mayReply`) with 402. Off, the default, both are only recorded and a
+   * refusal logged as `[messages] would refuse` / `[allowance] would refuse`: read those lines on real
+   * traffic before turning it on.
    */
   enforceWallet: process.env.ENFORCE_WALLET === '1',
   /**

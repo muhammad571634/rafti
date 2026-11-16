@@ -11,6 +11,7 @@ import type {
 } from '@/types';
 import { DAILY_CHECK_IN, DAILY_CHECK_IN_TOP } from '@/economy/shells';
 import { ALARM_SETUP_SHELLS, PLAN_SETUP_SHELLS } from '@/economy/setup-cost';
+import { MESSAGE_SHELLS } from '@/economy/free-messages';
 
 import { dayKey, daysAgo, hoursAgo, minutesAgo } from './time';
 
@@ -48,8 +49,8 @@ export const STARTER_PACK: ShellPack = { id: 'sh_starter', shells: 300, bonus: 0
  * (src/economy/plans.ts). `photoBooth` stays only to label old history lines.
  */
 export const shellCosts = {
-  textMessage: 1,
-  voiceMessage: 1,
+  textMessage: MESSAGE_SHELLS,
+  voiceMessage: MESSAGE_SHELLS,
   photoBooth: 8,
   secretNote: 3,
   boardNote: 2,
