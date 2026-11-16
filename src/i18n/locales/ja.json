@@ -440,6 +440,11 @@
     },
     "skipNote": "メッセージ1件として数えます。ストーリーのみ進み、実際のリマインダーなどは維持されます。",
     "freeLeft_other": "今日の無料メッセージはあと{{count}}件",
+    "freeNone": "無料分は終了 · 1通につき1シェル",
+    "freeUsedTitle": "今日の無料メッセージを使い切りました",
+    "freeUsedLine": "これからは1通につき1シェルです。無料メッセージは深夜0時に戻ります。",
+    "freeUsedKeep": "話し続ける",
+    "freeUsedShells": "シェルを入手",
     "steerBlocked": {
       "typing": "相手の返信をお待ちください。",
       "waiting": "相手の返事をお待ちください。",

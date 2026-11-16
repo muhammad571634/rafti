@@ -451,6 +451,11 @@
     "skipNote": "Counts as a message. Story time only: your real plans and reminders stay as they are.",
     "freeLeft_one": "{{count}} free message left today",
     "freeLeft_other": "{{count}} free messages left today",
+    "freeNone": "Free messages used · 1 shell each",
+    "freeUsedTitle": "Today's free messages are used",
+    "freeUsedLine": "Each message now costs 1 shell. Free messages come back at midnight.",
+    "freeUsedKeep": "Keep talking",
+    "freeUsedShells": "Get shells",
     "steerBlocked": {
       "typing": "Let them finish first.",
       "waiting": "Let them answer first.",

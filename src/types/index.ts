@@ -1079,6 +1079,8 @@ export interface DailyState {
   /** Today's free messages used (`takeFreeMessage`, audit §6.3): the day they count, and how many. */
   freeDay?: string;
   freeUsed?: number;
+  /** The day the "today's free messages are used" sheet showed: once a day, before the first paid one. */
+  freeOutDay?: string;
   /** The day the "voice minutes used up" note last showed (once a day) */
   voiceNoteDay?: string;
   /** Family's moments written today (`lifeKey`: "2026-10-25:c_kai:lunch"), so each goes once. */

@@ -678,6 +678,8 @@ export interface AppState {
   spendShells: (amount: number, reason?: LedgerReason, characterId?: string) => boolean;
   /** Uses one of today's free messages (audit §6.3); false once the count is used up, and then a shell pays. */
   takeFreeMessage: () => boolean;
+  /** The "free messages used" sheet was seen today: messages now pay a shell without asking again. */
+  seeFreeOut: () => void;
   addShells: (amount: number, reason?: LedgerReason) => void;
   /** Removes yesterday's unspent check-in shells. Safe to call often. */
   expireFreeShells: () => void;
@@ -2394,6 +2396,8 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ daily: { ...s.daily, freeDay: today, freeUsed: used + 1 } }));
         return true;
       },
+
+      seeFreeOut: () => set((s) => ({ daily: { ...s.daily, freeOutDay: todayKey() } })),
 
       spendShells: (amount, reason = 'other', characterId) => {
         get().expireFreeShells();

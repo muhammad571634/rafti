@@ -451,6 +451,11 @@
     "skipNote": "Zählt wie eine Nachricht. Nur Handlungszeit: deine echten Termine bleiben wie sie sind.",
     "freeLeft_one": "Heute noch {{count}} Gratis-Nachricht",
     "freeLeft_other": "Heute noch {{count}} Gratis-Nachrichten",
+    "freeNone": "Gratis aufgebraucht · 1 Muschel",
+    "freeUsedTitle": "Die Gratis-Nachrichten für heute sind aufgebraucht",
+    "freeUsedLine": "Jede Nachricht kostet jetzt 1 Muschel. Um Mitternacht sind sie wieder gratis.",
+    "freeUsedKeep": "Weiterschreiben",
+    "freeUsedShells": "Muscheln holen",
     "steerBlocked": {
       "typing": "Lass sie erst zu Ende tippen.",
       "waiting": "Lass sie erst antworten.",

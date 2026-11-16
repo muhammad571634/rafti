@@ -30,6 +30,7 @@ import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
+import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
@@ -101,6 +102,8 @@ export default function GroupChatScreen() {
   const [paywall, setPaywall] = useState<number | null>(null);
   // The paywall opened for a message (not a photo): it then speaks of today's free messages.
   const [paywallForMessage, setPaywallForMessage] = useState(false);
+  // Today's first paid message asks once (owner, 2026-11-16), as in a one-to-one chat.
+  const freeOut = useFreeOutGate();
   const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
   const [menu, setMenu] = useState<Message | null>(null);
   const [reporting, setReporting] = useState<Message | null>(null);
@@ -300,12 +303,13 @@ export default function GroupChatScreen() {
   };
   const canRecord = () => {
     // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic; read now, not at the last render (midnight).
-    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return true;
+    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return freeOut.allow(shellCosts.voiceMessage);
     outOfShells(shellCosts.voiceMessage);
     return false;
   };
 
   const send = (text: string) => {
+    if (!freeOut.allow(shellCosts.textMessage)) return false;
     const result = sendGroupText(groupId, text, replyTo ?? undefined);
     if (result === 'sent') {
       setReplyTo(null);
@@ -316,11 +320,13 @@ export default function GroupChatScreen() {
   };
 
   const goOn = () => {
+    if (!freeOut.allow(shellCosts.textMessage)) return;
     if (continueGroup(groupId) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
   const skipTo = (skip: TimeSkip, to?: string) => {
     setSkipOpen(false);
+    if (!freeOut.allow(shellCosts.textMessage)) return;
     if (skipGroupTime(groupId, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
@@ -499,6 +505,7 @@ export default function GroupChatScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat message={paywallForMessage} />
+      {freeOut.sheet}
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}

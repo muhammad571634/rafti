@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z257. Free messages: a once-a-day sheet when they run out, a note at zero (2026-11-16, Claude 1, Opus 5.5). NEXT: Russian strings that do not fit (store's cost list first), Apple HIG typography and writing
+
+- **Owner**: sent ~30 messages; saw "5 left" but no window when the 30 were used. By design (0z239, shape B) a message past the count quietly paid a shell while shells lasted; nothing said so. Owner also checked group More and a reaction on their own line: both work.
+- **Code**: `src/components/chat/free-used-sheet.tsx` (`FreeUsedSheet`, `useFreeOutGate`): at today's first paid message (free count 0, not seen today, shells enough; with too few shells the paywall says it instead) the sheet shows the title, the shell balance and one line; Keep talking leaves the typed text in the field, Get shells opens the packs; any close counts as seen (`daily.freeOutDay`, store `seeFreeOut`). Gated in the chat (send, voice, redo, continue, skip, edit) and the group (send, voice, continue, skip). The composer's quiet line now also shows at zero ("Free messages used · 1 shell each", `useFreeGone`). Strings `chat.freeNone`, `chat.freeUsedTitle|Line|Keep|Shells` in 14 locales (text-inserted).
+- **Checked on the A51** (Russian): note above the field at zero; send -> sheet (133 shells); Continue -> "ok" still in the field; send -> delivered, no sheet again. Lesson: a backdrop tap closed it without counting, so it came back at the next message; now any close counts. tsc 0, npm test 981/981, check:locales, check:content; OTAs to preview.
+
 ### 0z256. Account delete leaves nothing on the server; old server data wiped (2026-11-16, Claude 1, Opus 5.5). NEXT: nothing for the owner; Fable's plan has only the Apple zoom left
 
 - **Owner**: wipe the old chats from the server completely ("no weight on the server"), and from launch on an account deleted in the app must leave nothing on the server. "Don't show me lists; do it as the senior backend."

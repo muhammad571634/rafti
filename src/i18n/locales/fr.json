@@ -451,6 +451,11 @@
     "skipNote": "Compte comme un message. Concerne seulement l'histoire : vos vrais rappels restent inchangés.",
     "freeLeft_one": "Encore {{count}} message gratuit aujourd’hui",
     "freeLeft_other": "Encore {{count}} messages gratuits aujourd’hui",
+    "freeNone": "Plus de gratuits · 1 coquillage",
+    "freeUsedTitle": "Les messages gratuits du jour sont épuisés",
+    "freeUsedLine": "Chaque message coûte maintenant 1 coquillage. Les messages gratuits reviennent à minuit.",
+    "freeUsedKeep": "Continuer",
+    "freeUsedShells": "Obtenir des coquillages",
     "steerBlocked": {
       "typing": "Laissez-les d'abord terminer d'écrire.",
       "waiting": "Laissez-les d'abord répondre.",

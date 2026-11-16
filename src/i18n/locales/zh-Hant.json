@@ -440,6 +440,11 @@
     },
     "skipNote": "算作一則訊息。僅適用於故事劇情，真實的提醒與計劃不會變動。",
     "freeLeft_other": "今天還剩 {{count}} 則免費訊息",
+    "freeNone": "免費訊息已用完 · 每則 1 個貝殼",
+    "freeUsedTitle": "今天的免費訊息已用完",
+    "freeUsedLine": "現在每則訊息需要 1 個貝殼。免費訊息會在午夜恢復。",
+    "freeUsedKeep": "繼續聊天",
+    "freeUsedShells": "取得貝殼",
     "steerBlocked": {
       "typing": "請先等待對方說完。",
       "waiting": "請先等待對方回覆。",

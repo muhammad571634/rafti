@@ -11,7 +11,7 @@ import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { hasKeyboardController } from '@/lib/keyboard-native';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { useLeftNote } from '@/lib/use-free-messages';
+import { useFreeGone, useLeftNote } from '@/lib/use-free-messages';
 import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
 import type { MessageTone, ReplyTo } from '@/types';
 
@@ -186,6 +186,7 @@ export function ChatInput({
   }, []);
   const onPhoto = useOnPhoto();
   const leftNote = useLeftNote();
+  const freeGone = useFreeGone();
   const surface = [styles.surface, onPhoto && styles.photoSurface];
   const ink = onPhoto ? colors.onMedia : colors.text;
 
@@ -255,11 +256,12 @@ export function ChatInput({
 
   return (
     <View>
-      {/* The free count's last few (audit §6.3): a quiet line, never on a plan, gone at zero. */}
-      {leftNote !== null ? (
+      {/* The free count's last few (audit §6.3), then at zero that a message costs a shell now
+          (owner, 2026-11-16): a quiet line, never on a plan. */}
+      {leftNote !== null || freeGone ? (
         <View style={styles.left} accessibilityLiveRegion="polite">
           <Txt variant="small" color={onPhoto ? colors.onMediaMuted : colors.textSecondary} center>
-            {t('chat.freeLeft', { count: leftNote })}
+            {leftNote !== null ? t('chat.freeLeft', { count: leftNote }) : t('chat.freeNone')}
           </Txt>
         </View>
       ) : null}

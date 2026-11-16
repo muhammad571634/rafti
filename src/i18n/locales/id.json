@@ -440,6 +440,11 @@
     },
     "skipNote": "Dihitung sebagai satu pesan. Hanya berlaku untuk alur cerita: jadwal dan pengingat aslimu tetap berjalan.",
     "freeLeft_other": "Sisa {{count}} pesan gratis hari ini",
+    "freeNone": "Pesan gratis habis · 1 kerang per pesan",
+    "freeUsedTitle": "Pesan gratis hari ini sudah habis",
+    "freeUsedLine": "Sekarang setiap pesan seharga 1 kerang. Pesan gratis kembali tengah malam nanti.",
+    "freeUsedKeep": "Lanjut ngobrol",
+    "freeUsedShells": "Dapatkan kerang",
     "steerBlocked": {
       "typing": "Biarkan mereka selesai mengetik dulu.",
       "waiting": "Biarkan mereka menjawab dulu.",

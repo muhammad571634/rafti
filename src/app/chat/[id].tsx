@@ -42,6 +42,7 @@ import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, asIdeas, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
+import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
@@ -145,6 +146,8 @@ export default function ChatRoomScreen() {
   const [paywall, setPaywall] = useState<number | null>(null);
   // The paywall opened for a message (not a photo): it then speaks of today's free messages.
   const [paywallForMessage, setPaywallForMessage] = useState(false);
+  // Today's first paid message asks once (owner, 2026-11-16): the free count is used, a shell each now.
+  const freeOut = useFreeOutGate();
   const [menu, setMenu] = useState<Message | null>(null);
   /** Keeping in mind: the thread a noted chip or Why? opened, and the line Why? is about. */
   const [threadOpen, setThreadOpen] = useState<string | null>(null);
@@ -425,6 +428,8 @@ export default function ChatRoomScreen() {
   };
 
   const send = (text: string, tone?: MessageTone) => {
+    // The text stays in the field while the sheet says the free messages are used.
+    if (!freeOut.allow(shellCosts.textMessage)) return false;
     // A changed reply idea still answers the line it came from.
     const draftIdea = ideaDraft;
     setIdeaDraft(null);
@@ -451,13 +456,14 @@ export default function ChatRoomScreen() {
   };
   const canRecord = () => {
     // A voice line uses today's free count first (audit §6.3), so 0 shells does not stop the mic; read now, not at the last render (midnight).
-    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return true;
+    if (freeMessagesLeftNow() > 0 || shells >= shellCosts.voiceMessage) return freeOut.allow(shellCosts.voiceMessage);
     outOfShells(shellCosts.voiceMessage);
     return false;
   };
 
   // A new version and an edit are new replies, so each costs what a message does.
   const redo = (off?: OffReason) => {
+    if (!freeOut.allow(shellCosts.textMessage)) return;
     if (regenerateReply(conversation.id, off) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
@@ -474,15 +480,18 @@ export default function ChatRoomScreen() {
 
   // So are a continue and a time skip: each is one reply of theirs.
   const goOn = () => {
+    if (!freeOut.allow(shellCosts.textMessage)) return;
     if (continueChat(conversation.id) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
   const skipTo = (skip: TimeSkip, to?: string) => {
     setSkipOpen(false);
+    if (!freeOut.allow(shellCosts.textMessage)) return;
     if (skipTime(conversation.id, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
   const saveEdit = (text: string) => {
+    if (!freeOut.allow(shellCosts.textMessage)) return false;
     if (editLastMessage(conversation.id, text) === 'noShells') return outOfShells(shellCosts.textMessage);
     setEditing(null);
     return true;
@@ -763,6 +772,7 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat message={paywallForMessage} />
+      {freeOut.sheet}
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
       <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} />
 

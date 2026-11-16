@@ -451,6 +451,11 @@
     "skipNote": "Conta come un messaggio. Solo per la storia: i tuoi veri promemoria e impegni non cambiano.",
     "freeLeft_one": "Ti resta {{count}} messaggio gratis oggi",
     "freeLeft_other": "Ti restano {{count}} messaggi gratis oggi",
+    "freeNone": "Gratis finiti · 1 conchiglia a messaggio",
+    "freeUsedTitle": "I messaggi gratis di oggi sono finiti",
+    "freeUsedLine": "Ora ogni messaggio costa 1 conchiglia. I messaggi gratis tornano a mezzanotte.",
+    "freeUsedKeep": "Continua a parlare",
+    "freeUsedShells": "Ottieni conchiglie",
     "steerBlocked": {
       "typing": "Lascia che finisca prima di scrivere.",
       "waiting": "Lascia che risponda prima.",

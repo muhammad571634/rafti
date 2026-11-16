@@ -440,6 +440,11 @@
     },
     "skipNote": "메시지 1개로 계산돼요. 대화 속 시간만 흐르며 실제 일정과 알림은 유지됩니다.",
     "freeLeft_other": "오늘 무료 메시지 {{count}}개 남음",
+    "freeNone": "무료 소진 · 메시지당 조개 1개",
+    "freeUsedTitle": "오늘의 무료 메시지를 모두 사용했어요",
+    "freeUsedLine": "이제 메시지 하나에 조개 1개가 들어요. 무료 메시지는 자정에 돌아와요.",
+    "freeUsedKeep": "계속 대화하기",
+    "freeUsedShells": "조개 받기",
     "steerBlocked": {
       "typing": "상대방이 입력을 마칠 때까지 기다려 주세요.",
       "waiting": "상대방의 답장을 기다려 주세요.",

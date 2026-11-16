@@ -451,6 +451,11 @@
     "skipNote": "Cuenta como un mensaje. Solo en la historia: tus planes reales y recordatorios siguen intactos.",
     "freeLeft_one": "Te queda {{count}} mensaje gratis hoy",
     "freeLeft_other": "Te quedan {{count}} mensajes gratis hoy",
+    "freeNone": "Sin mensajes gratis · 1 concha por mensaje",
+    "freeUsedTitle": "Se acabaron los mensajes gratis de hoy",
+    "freeUsedLine": "Ahora cada mensaje cuesta 1 concha. Los mensajes gratis vuelven a medianoche.",
+    "freeUsedKeep": "Seguir hablando",
+    "freeUsedShells": "Conseguir conchas",
     "steerBlocked": {
       "typing": "Deja que termine de escribir primero.",
       "waiting": "Deja que responda primero.",

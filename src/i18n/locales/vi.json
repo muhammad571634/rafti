@@ -440,6 +440,11 @@
     },
     "skipNote": "Tính như một tin nhắn. Chỉ dành cho mạch truyện: kế hoạch và lời nhắc thực tế của bạn vẫn giữ nguyên.",
     "freeLeft_other": "Hôm nay còn {{count}} tin nhắn miễn phí",
+    "freeNone": "Hết tin miễn phí · 1 vỏ sò mỗi tin",
+    "freeUsedTitle": "Đã hết tin nhắn miễn phí hôm nay",
+    "freeUsedLine": "Giờ mỗi tin nhắn tốn 1 vỏ sò. Tin nhắn miễn phí sẽ trở lại lúc nửa đêm.",
+    "freeUsedKeep": "Tiếp tục trò chuyện",
+    "freeUsedShells": "Nhận vỏ sò",
     "steerBlocked": {
       "typing": "Hãy để họ nói xong trước.",
       "waiting": "Hãy để họ trả lời trước.",
