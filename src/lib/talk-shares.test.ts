@@ -9,6 +9,14 @@ const since = Date.parse('2026-11-01T00:00:00.000Z');
 const many = (n: number, extra: Partial<Message> = {}) => Array.from({ length: n }, () => at('2026-11-05T10:00:00.000Z', extra));
 
 describe('who you talked with this month (Us orbs)', () => {
+  it('takes every friend talked with, up to the whole cast of twelve', () => {
+    const twelve = Array.from({ length: 14 }, (_, i) => ({ conversationId: `k${i}`, characterId: `f${i}` }));
+    const shares = talkShares(twelve, Object.fromEntries(twelve.map((c, i) => [c.conversationId, many(i + 1)])), since);
+    assert.equal(shares.length, 12);
+    assert.equal(shares[0].characterId, 'f13');
+    assert.equal(shares.reduce((sum, s) => sum + s.percent, 0), 100);
+  });
+
   const chats = [
     { conversationId: 'a', characterId: 'mia' },
     { conversationId: 'b', characterId: 'clara' },
@@ -17,7 +25,7 @@ describe('who you talked with this month (Us orbs)', () => {
   ];
 
   it('keeps the top three and their percents add up to 100', () => {
-    const shares = talkShares(chats, { a: many(46), b: many(31), c: many(23), d: many(5) }, since);
+    const shares = talkShares(chats, { a: many(46), b: many(31), c: many(23), d: many(5) }, since, 3);
     assert.deepEqual(shares.map((s) => s.characterId), ['mia', 'clara', 'milo']);
     assert.equal(shares.reduce((sum, s) => sum + s.percent, 0), 100);
     assert.deepEqual(shares.map((s) => s.percent), [46, 31, 23]);

@@ -1,41 +1,47 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated';
 
 import { useDayKey } from '@/hooks/use-day-key';
+import { packBubbles, type Bubble } from '@/lib/bubble-pack';
 import { shortName } from '@/lib/format';
 import { monthStart, talkShares, type TalkShare } from '@/lib/talk-shares';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { isDark } from '@/theme';
-import { inkType } from '@/theme/ink';
+import { ink, inkFace, inkRadius, inkType } from '@/theme/ink';
 
 /**
- * One bright pair per place (the Ink canvas, owner 2026-11-13): coral, amber, sky. By rank, not the
- * friend's own hue: friend hues are muted and two friends can draw the same one, and the discs must
- * tell them apart. The calendar's dot for a friend uses the same colour (`talkHue`).
+ * One bright pair per friend, by rank this month (owner, 2026-11-16: every friend, each in a colour of
+ * their own). Not the friend's own hue: friend hues are muted and two friends can draw the same one,
+ * and the bubbles must tell them apart. Apple's system colours on dark, each washed to a lighter stop;
+ * twelve, one for each of the cast. The calendar's dot for a friend uses the same colour (`talkHue`).
  */
 export const TALK_HUES = [
   ['#FF5E62', '#FF9966'],
   ['#F8C13F', '#F08A3C'],
   ['#6E8BFF', '#58C7F3'],
+  ['#30D158', '#86E8A4'],
+  ['#BF5AF2', '#E2A0FF'],
+  ['#FF6EC7', '#FFA6DC'],
+  ['#40C8E0', '#93E6F3'],
+  ['#5E5CE6', '#9C9AFF'],
+  ['#63E6BE', '#B6F4DF'],
+  ['#FF9F0A', '#FFC970'],
+  ['#AC8E68', '#D9C09E'],
+  ['#C8D84A', '#EEF39C'],
 ] as const;
 
-/** Where each disc's centre sits (the canvas layout): the biggest left, the next overlapping it low right, the third high right. */
-const SPOTS = [
-  { x: -55, y: -10 },
-  { x: 46, y: 42 },
-  { x: 80, y: -44 },
-] as const;
-/** A disc's diameter from its share, as on the canvas (46% → 150), never too small for its label, never wider than the middle. */
-const discSize = (percent: number) => Math.round(Math.min(176, Math.max(100, 70 + percent * 1.75)));
-const SWELL_MS = 900;
-const STAGGER_MS = 120;
-// The canvas's swell: a quick rise that overshoots a touch and settles.
+const SWELL_MS = 800;
+const STAGGER_MS = 60;
+// A quick rise that overshoots a touch and settles.
 const SWELL = Easing.bezier(0.2, 1.3, 0.4, 1);
+const MOVE = { damping: 18, stiffness: 160, mass: 1 } as const;
+/** Points between two bubbles, and the smallest a bubble may be: room for a short name and its percent. */
+const GAP = 4;
+const MIN_R = 27;
 
-/** This month's top friends by lines, worked out again when the chats or the day change. */
+/** This month's friends by lines, worked out again when the chats or the day change. */
 export function useTalkShares(): TalkShare[] {
   const conversations = useAppStore((s) => s.conversations);
   const messages = useAppStore((s) => s.messages);
@@ -48,46 +54,44 @@ export function useTalkShares(): TalkShare[] {
   );
 }
 
-/** A friend's colour on the discs, or undefined when they are not among them. */
+/** A friend's colour on the bubbles, or undefined when they are not among them. */
 export function talkHue(shares: readonly TalkShare[], characterId: string | undefined): string | undefined {
   const i = shares.findIndex((s) => s.characterId === characterId);
-  return i >= 0 ? TALK_HUES[i][0] : undefined;
+  return i >= 0 ? TALK_HUES[i % TALK_HUES.length][0] : undefined;
+}
+
+/** The bubbles' box grows a little with the number of friends, so a dozen stay readable. */
+const boxHeight = (count: number) => (count <= 3 ? 172 : count <= 6 ? 210 : count <= 9 ? 240 : 268);
+
+/** "12%", or "<1%" for a friend whose share rounds to nothing. */
+const percentText = (percent: number) => (percent > 0 ? `${percent}%` : '<1%');
+
+/** Dark words on a light bubble, white on a deep one (WCAG relative luminance of its first stop). */
+function inkOn(hex: string): string {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] > 0.3 ? 'rgba(0,0,0,0.86)' : '#FFFFFF';
 }
 
 /**
- * "Who you talked with" in the Ink look (owner, 2026-11-13, from the canvas frame "6 · Us"): the month
- * in serif, then up to three overlapping discs, one per friend, sized by their share of this month's
- * lines, blending where they overlap (screen at night, a little see-through by day), each with its name and whole
- * percent inside (HIG Charts: label the marks directly, no separate legend to match colours against).
- * The discs swell in one after another when the section first appears; reduced motion shows them at
- * once. Hidden until two friends have talked this month.
+ * "Who you talked with" as one card (owner, 2026-11-16): the month in serif, then a bubble for every
+ * friend talked with this month, packed edge to edge in the card (`packBubbles`), each in a colour of
+ * their own and sized by their share of this month's lines, the name and percent inside (HIG Charts:
+ * label the marks directly; no legend, owner 2026-11-16). The bubbles swell in
+ * one after another when the card first appears and glide when the shares change; reduced motion
+ * shows them at once. Hidden until two friends have talked this month.
  */
 export const TalkedWith = memo(function TalkedWith() {
   const { t, i18n } = useTranslation();
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const shares = useTalkShares();
-  const swell = [useSharedValue(0), useSharedValue(0), useSharedValue(0)];
+  const [width, setWidth] = useState(0);
+  const height = boxHeight(shares.length);
 
-  useEffect(() => {
-    if (!shares.length) return;
-    swell.forEach((v, i) => v.set(withDelay(i * STAGGER_MS, withTiming(1, { duration: SWELL_MS, easing: SWELL }))));
-    // Once, when the discs first appear; later changes of the shares just resize them.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shares.length > 0]);
-
-  const layout = useMemo(() => {
-    const discs = shares.map((s, i) => ({ s, i, size: discSize(s.percent), x: SPOTS[i].x, y: SPOTS[i].y }));
-    if (!discs.length) return { discs, height: 0 };
-    // Centre the group: its bounding box, then every disc shifted by the box's middle.
-    const left = Math.min(...discs.map((d) => d.x - d.size / 2));
-    const right = Math.max(...discs.map((d) => d.x + d.size / 2));
-    const top = Math.min(...discs.map((d) => d.y - d.size / 2));
-    const bottom = Math.max(...discs.map((d) => d.y + d.size / 2));
-    const mx = (left + right) / 2;
-    const my = (top + bottom) / 2;
-    return { discs: discs.map((d) => ({ ...d, x: d.x - mx, y: d.y - my })), height: bottom - top };
-  }, [shares]);
+  const bubbles = useMemo(
+    () => packBubbles(shares.map((s) => s.lines), width, height, GAP, MIN_R),
+    [shares, width, height],
+  );
 
   if (shares.length === 0) return null;
 
@@ -97,75 +101,114 @@ export const TalkedWith = memo(function TalkedWith() {
   };
   const month = new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(new Date());
   const monthTitle = month.charAt(0).toLocaleUpperCase(i18n.language) + month.slice(1);
-  const summary = shares.map((s) => `${nameOf(s)} ${s.percent}%`).join(', ');
+  const summary = shares.map((s) => `${nameOf(s)} ${percentText(s.percent)}`).join(', ');
 
   return (
-    <View style={styles.root}>
+    <View style={styles.card}>
       <Text style={styles.month} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
         {monthTitle}
       </Text>
       <Text style={styles.subtitle} maxFontSizeMultiplier={1.3}>
         {t('us.whoTalked')}
       </Text>
-      <View style={[styles.discs, { height: layout.height }]} accessible accessibilityLabel={`${monthTitle}, ${t('us.whoTalked')}: ${summary}`}>
-        {/* Drawn smallest first, so the biggest share sits on top; the labels ride above every disc. */}
-        {[...layout.discs].reverse().map((d) => (
-          <Disc key={d.s.characterId} size={d.size} x={d.x} y={d.y} hue={TALK_HUES[d.i]} swell={swell[d.i]} />
-        ))}
-        {layout.discs.map((d) => (
-          <DiscLabel key={d.s.characterId} size={d.size} x={d.x} y={d.y} swell={swell[d.i]} name={nameOf(d.s)} percent={d.s.percent} />
+      <View
+        style={[styles.box, { height }]}
+        onLayout={(e) => setWidth(Math.round(e.nativeEvent.layout.width))}
+        accessible
+        accessibilityLabel={`${monthTitle}, ${t('us.whoTalked')}: ${summary}`}>
+        {bubbles.map((b, i) => (
+          <TalkBubble key={shares[i].characterId} index={i} bubble={b} hue={TALK_HUES[i % TALK_HUES.length]} name={nameOf(shares[i])} percent={shares[i].percent} />
         ))}
       </View>
     </View>
   );
 });
 
-/** The disc's see-through by day (no blend there); full at night, where screen does the mixing. */
-const DISC_OPACITY = isDark ? 1 : 0.86;
+/**
+ * How a bubble carries its words (owner, 2026-11-16: names and percents inside the bubbles only): the
+ * name at 15 pt when it fits the bubble's middle, else at 12 pt, else only the percent (a very long
+ * name in a small bubble). Widths are estimated per character of the face.
+ */
+type LabelSize = 'big' | 'small' | 'percent';
+function labelSize(name: string, r: number): LabelSize {
+  const room = r * 1.62;
+  if (r >= 36 && name.length * 8.6 <= room) return 'big';
+  if (name.length * 6.9 <= room) return 'small';
+  return 'percent';
+}
 
-function useSwellStyle(swell: SharedValue<number>, opacity = 1) {
-  return useAnimatedStyle(() => {
+const TalkBubble = memo(function TalkBubble({ index, bubble, hue, name, percent }: { index: number; bubble: Bubble; hue: readonly [string, string]; name: string; percent: number }) {
+  const swell = useSharedValue(0);
+  const x = useSharedValue(bubble.x);
+  const y = useSharedValue(bubble.y);
+  const r = useSharedValue(bubble.r);
+
+  useEffect(() => {
+    swell.set(withDelay(index * STAGGER_MS, withTiming(1, { duration: SWELL_MS, easing: SWELL })));
+    // Once, when the bubble first appears; later its place glides (below).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    x.set(withSpring(bubble.x, MOVE));
+    y.set(withSpring(bubble.y, MOVE));
+    r.set(withSpring(bubble.r, MOVE));
+  }, [bubble.x, bubble.y, bubble.r, x, y, r]);
+
+  const style = useAnimatedStyle(() => {
     const p = swell.get();
-    return { opacity: opacity * Math.min(1, p * 1.6), transform: [{ scale: 0.2 + 0.8 * p }] };
+    const d = r.get() * 2;
+    return {
+      width: d,
+      height: d,
+      borderRadius: d / 2,
+      left: x.get() - d / 2,
+      top: y.get() - d / 2,
+      opacity: Math.min(1, p * 1.6),
+      transform: [{ scale: 0.2 + 0.8 * p }],
+    };
   });
-}
 
-function Disc({ size, x, y, hue, swell }: { size: number; x: number; y: number; hue: readonly [string, string]; swell: SharedValue<number> }) {
-  const style = useSwellStyle(swell, DISC_OPACITY);
+  const color = inkOn(hue[0]);
+  const size = labelSize(name, bubble.r);
+  const showName = size !== 'percent';
+  const showPercent = true;
   return (
-    <Animated.View style={[styles.disc, { width: size, height: size, borderRadius: size / 2, marginLeft: x - size / 2, marginTop: y - size / 2 }, style]}>
+    <Animated.View style={[styles.bubble, style]}>
       <LinearGradient colors={hue} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={StyleSheet.absoluteFill} />
+      {showName ? (
+        <Text style={[size === 'big' ? styles.bubbleName : styles.bubbleNameSmall, { color }]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
+          {name}
+        </Text>
+      ) : null}
+      {showPercent ? (
+        <Text style={[size === 'big' ? styles.bubblePercent : styles.bubblePercentAlone, { color }]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
+          {percentText(percent)}
+        </Text>
+      ) : null}
     </Animated.View>
   );
-}
-
-function DiscLabel({ size, x, y, swell, name, percent }: { size: number; x: number; y: number; swell: SharedValue<number>; name: string; percent: number }) {
-  const style = useSwellStyle(swell);
-  return (
-    <Animated.View pointerEvents="none" style={[styles.label, { width: size - 20, marginLeft: x - (size - 20) / 2, marginTop: y - 15 }, style]}>
-      <Text style={styles.labelText} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
-        {name} <Text style={styles.labelPercent}>{`${percent}%`}</Text>
-      </Text>
-    </Animated.View>
-  );
-}
+});
 
 const styles = StyleSheet.create({
-  root: { marginHorizontal: 20, marginTop: 22 },
-  month: inkType.title,
-  subtitle: { ...inkType.sub, marginTop: 2 },
-  discs: { marginTop: 16 },
-  disc: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    overflow: 'hidden',
-    // Screen lights the overlaps on black (the canvas); on the light ground multiply muddied them to
-    // brown on the A51, so by day the discs are just a little see-through.
-    ...(isDark ? { mixBlendMode: 'screen' as const } : null),
+  // The bond card's frame (Us), so the two read as one family.
+  card: {
+    marginHorizontal: 14,
+    marginTop: 14,
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
-  label: { position: 'absolute', left: '50%', top: '50%', height: 30, alignItems: 'center', justifyContent: 'center' },
-  // Dark ink on the bright discs reads in both appearances (WCAG AA on the lightest stop).
-  labelText: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: 'rgba(0,0,0,0.86)', textAlign: 'center', includeFontPadding: false },
-  labelPercent: { fontWeight: '700', fontVariant: ['tabular-nums'] },
+  month: inkType.card,
+  subtitle: { ...inkType.sub, marginTop: 2 },
+  box: { marginTop: 14 },
+  bubble: { position: 'absolute', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  bubbleName: { ...inkFace('subStrong'), textAlign: 'center', includeFontPadding: false },
+  bubbleNameSmall: { ...inkFace('caption'), textAlign: 'center', includeFontPadding: false },
+  bubblePercent: { ...inkFace('subStrong'), fontWeight: '700', fontVariant: ['tabular-nums'], textAlign: 'center', includeFontPadding: false, opacity: 0.86 },
+  bubblePercentAlone: { ...inkFace('caption'), fontWeight: '700', fontVariant: ['tabular-nums'], textAlign: 'center', includeFontPadding: false },
 });

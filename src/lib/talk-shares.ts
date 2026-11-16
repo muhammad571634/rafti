@@ -8,17 +8,20 @@ export interface TalkShare {
   percent: number;
 }
 
+/** As many friends as the cast has (owner, 2026-11-16: every friend talked with, not the top three). */
+export const TALK_TOP = 12;
+
 /**
  * Who you talked with this month (Us, "Who you talked with"): the friends whose one-to-one chats had
  * the most lines since the month began, both sides counted, system lines and failed sends left out.
  * At most `top` friends; their percents add up to exactly 100 (largest remainder). Fewer than two
- * friends with lines give an empty list: one orb at 100% says nothing.
+ * friends with lines give an empty list: one bubble at 100% says nothing.
  */
 export function talkShares(
   chats: readonly { conversationId: string; characterId: string }[],
   messages: Readonly<Record<string, readonly Message[] | undefined>>,
   since: number,
-  top = 3,
+  top = TALK_TOP,
 ): TalkShare[] {
   const counted = chats
     .map(({ conversationId, characterId }) => ({
