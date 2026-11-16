@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z253. Continuity (audit §8.2.3): list rows slide, shell balances roll; zoom transition parked (2026-11-16, Claude 1, Opus 5.5). NEXT: Apple zoom (`Link.AppleZoom`) for widgets -> screens once an iPhone is at hand; 8.2.4 time of day inside the app
+
+- **Owner**: deployed the server (0z248, 0z239; `/health` 200 after); "start the task you proposed (a screen grows out of the tapped row / tile), as a senior, if it comes out well"; then "test it on the phone".
+- **Decision, grow-from-tap**: not built. Expo Router 58 has Apple's zoom transition (`Link.AppleZoom` / `Link.AppleZoomTarget`, iOS 18+, docs `router/advanced/zoom-transition`), but it is alpha, has a known ~1 s open/dismiss delay (expo/expo#42797, react-native-screens), and needs an iPhone to verify; Android has no system equivalent and a screen transition rebuilt in JS is ruled out (expo-animation skill). Reanimated 4.7 shared elements sit behind the static flag `ENABLE_SHARED_ELEMENT_TRANSITIONS` (new APK, experimental). Revisit with an iPhone: widgets and Find cards -> their screens (occasional taps), not the chat row (tens a day, the delay would hurt).
+- **Built instead** (the rest of §8.2.3 that runs on both platforms):
+  - **Rows slide on a reorder**: kit `listReorder` (`src/components/ink/motion.ts`, LinearTransition 240 ms ease-in-out, off under Reduce Motion); Chats is an `Animated.FlatList` with `itemLayoutAnimation`, Today's waiting rows an `Animated.View layout`. Only when the same rows change order (`useReorderOnly`, `src/hooks/use-reorder-only.ts`): a filter, a search or a removed chat swaps at once. A51 lesson: with the slide on for every change, Unread -> All showed new rows in place while Lena slid across them (overlapping text for ~0.25 s).
+  - **Numbers roll**: `useCountingNumber` (`src/hooks/use-counting-number.ts`, pure math `src/lib/count-roll.ts` + tests): first value as is, a later change rolls from what is shown (ease-out quart, 260-700 ms by size), Reduce Motion jumps; screen readers keep the real value. On Gifts' capsule (wheel, check-in) and Dating's shell pill.
+- **Checked**: tsc 0, npm test 977/977; OTAs to preview; on the A51 (screen recordings, frames compared): Unread <-> All now swaps cleanly; a reply from Mia lifted her row from under Lena with a slide, rows settle exactly; Today and Gifts render. **Not seen live**: the roll itself (today's wheel and check-in were used); `LineIn` titles left out (decoration by §8.2's own test).
+
 ### 0z252. Today: four widgets, no "Widgets" title (2026-11-16, Claude 1, Opus 5.5). NEXT: the owner looks at Today on the phone after the OTA; not driven on the A51 (adb showed no device); the server deploy for 0z248 and 0z239
 
 - **Owner**: Today's widgets back to four as the standard, smaller if Apple's rules call for it; remove the "Widgets" heading in every language (red mark on the screenshot); then sent developer.apple.com/design.

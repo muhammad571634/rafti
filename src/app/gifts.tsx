@@ -26,6 +26,7 @@ import {
   Txt,
 } from '@/components/ui';
 import { count } from '@/lib/format';
+import { useCountingNumber } from '@/hooks/use-counting-number';
 import { haptic } from '@/lib/haptics';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
 import { shareText } from '@/lib/share';
@@ -89,6 +90,8 @@ export default function GiftsScreen() {
   // the drop lands the capsule keeps the old balance, then wobbles and shows the new one.
   const [pour, setPour] = useState<{ amount: number; from: Point; wallet: Point & { left: number } } | null>(null);
   const [pending, setPending] = useState(0);
+  // The capsule rolls to the new balance as the wheel's or the check-in's shells land (audit §8.2.3).
+  const shownShells = useCountingNumber(Math.max(0, shells - pending));
   const wobble = useSharedValue(1);
   const scroll = useRef<ScrollViewInstance>(null);
   const scrollY = useRef(0);
@@ -169,7 +172,7 @@ export default function GiftsScreen() {
               <View ref={shellMark}>
                 <ShellIcon size={18} />
               </View>
-              <Txt style={styles.capsuleText}>{count(Math.max(0, shells - pending))}</Txt>
+              <Txt style={styles.capsuleText}>{count(shownShells)}</Txt>
             </View>
           </Animated.View>
         </View>

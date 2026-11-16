@@ -26,8 +26,9 @@ import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { LiveWidget } from '@/components/today/widget-models';
 import { WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, widgetLabel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
+import { useReorderOnly } from '@/hooks/use-reorder-only';
 import { CharacterAvatar, ModuleLine, PressableScale, Screen, Sheet, SymbolTile, UserAvatar, type ModuleKey } from '@/components/ui';
-import { InkText } from '@/components/ink';
+import { InkText, listReorder } from '@/components/ink';
 import { helplineToday } from '@/lib/daily-note';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -152,6 +153,7 @@ export default function HomeScreen() {
   // Three rows, or two and an "All chats" row when more wait, so the card never grows past four rows.
   const listed = unread.length > WAITING_ROWS ? unread.slice(0, WAITING_ROWS - 1) : unread;
   const others = unread.slice(listed.length);
+  const reorderOnly = useReorderOnly(listed.map((f) => f.conversation.id));
 
   // The first ready note whose friend is not on a helpline day. Picked in the selector, so Today
   // re-renders when that answer changes, not on every line of every chat (brief Step 3.8).
@@ -297,6 +299,7 @@ export default function HomeScreen() {
                   character={f.character}
                   name={displayName(f.character, relationships[f.character.id])}
                   first={i === 0}
+                  slide={reorderOnly}
                   onOpen={openChat}
                 />
               ))}
@@ -477,42 +480,48 @@ const WaitingRow = memo(function WaitingRow({
   character,
   name,
   first,
+  slide,
   onOpen,
 }: {
   conversation: Conversation;
   character: Character;
   name: string;
   first: boolean;
+  /** The same rows as before, only reordered: this one may slide to its new place. */
+  slide: boolean;
   onOpen: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const count = conversation.unreadCount;
+  // A friend who writes again moves up the card by sliding, not jumping (§8.2.3).
   return (
-    <PressableScale
-      scaleTo={0.98}
-      accessibilityRole="button"
-      accessibilityLabel={[t('a11y.unreadTab', { label: name, count }), conversation.lastMessagePreview].filter(Boolean).join(', ')}
-      onPress={() => onOpen(conversation.id)}
-      style={styles.row}>
-      <CharacterAvatar character={character} size={FACE} ring ringColor={ink.accent} />
-      <View style={[styles.rowBody, !first && styles.line]}>
-        <View style={styles.flex}>
-          <InkText variant="bodyStrong" lines={1}>
-            {name}
-          </InkText>
-          {conversation.lastMessagePreview ? (
-            <InkText variant="sub" lines={1}>
-              {conversation.lastMessagePreview}
+    <Animated.View layout={slide ? listReorder : undefined}>
+      <PressableScale
+        scaleTo={0.98}
+        accessibilityRole="button"
+        accessibilityLabel={[t('a11y.unreadTab', { label: name, count }), conversation.lastMessagePreview].filter(Boolean).join(', ')}
+        onPress={() => onOpen(conversation.id)}
+        style={styles.row}>
+        <CharacterAvatar character={character} size={FACE} ring ringColor={ink.accent} />
+        <View style={[styles.rowBody, !first && styles.line]}>
+          <View style={styles.flex}>
+            <InkText variant="bodyStrong" lines={1}>
+              {name}
             </InkText>
-          ) : null}
+            {conversation.lastMessagePreview ? (
+              <InkText variant="sub" lines={1}>
+                {conversation.lastMessagePreview}
+              </InkText>
+            ) : null}
+          </View>
+          <View style={styles.count}>
+            <InkText variant="caption" color={colors.white}>
+              {count > 99 ? '99+' : count}
+            </InkText>
+          </View>
         </View>
-        <View style={styles.count}>
-          <InkText variant="caption" color={colors.white}>
-            {count > 99 ? '99+' : count}
-          </InkText>
-        </View>
-      </View>
-    </PressableScale>
+      </PressableScale>
+    </Animated.View>
   );
 });
 

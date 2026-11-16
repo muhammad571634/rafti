@@ -21,8 +21,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatMenu, type ChatMenuTarget } from '@/components/chat/chat-menu';
 import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
-import { InkChip, InkText } from '@/components/ink';
+import { InkChip, InkText, listReorder } from '@/components/ink';
 import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar, SFIcon, Sheet } from '@/components/ui';
+import { useReorderOnly } from '@/hooks/use-reorder-only';
 import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetNotes } from '@/lib/voice-files';
@@ -218,6 +219,7 @@ export default function ChatListScreen() {
         )
       : shown;
   }, [items, needle, filter, grid, searching]);
+  const reorderOnly = useReorderOnly(rows.map((r) => r.id));
 
   // The row that is open now; the next one to open closes it, as in iOS.
   const openRow = useRef<SwipeRowMethods | null>(null);
@@ -379,9 +381,11 @@ export default function ChatListScreen() {
           <>
             {searching ? null : <Filters value={filter} unread={unreadChats} onChange={setFilter} />}
 
-            <FlatList
+            <Animated.FlatList
               ref={listRef}
               data={rows}
+              // A chat lifted by a new line slides to the top (§8.2.3); filters and search swap at once.
+              itemLayoutAnimation={reorderOnly && !searching ? listReorder : undefined}
               keyExtractor={(item) => item.id}
               renderItem={renderItem}
               keyboardShouldPersistTaps="handled"

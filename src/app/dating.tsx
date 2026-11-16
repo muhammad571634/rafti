@@ -19,6 +19,7 @@ import {
   ShellIcon,
   Txt,
 } from '@/components/ui';
+import { useCountingNumber } from '@/hooks/use-counting-number';
 import { haptic } from '@/lib/haptics';
 import { moodOpen, MOOD_LEVEL, themeCost } from '@/lib/date-themes';
 import { shortName } from '@/lib/format';
@@ -43,6 +44,7 @@ export default function DatingScreen() {
   const insets = useSafeAreaInsets();
 
   const shells = useAppStore((s) => s.wallet.shells);
+  const shownShells = useCountingNumber(shells);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const conversations = useAppStore((s) => s.conversations);
@@ -204,7 +206,7 @@ export default function DatingScreen() {
           <View style={[styles.pill, styles.shells]} accessible accessibilityLabel={`${shells}`}>
             <ShellIcon size={18} />
             <InkText variant="subStrong" style={styles.figure}>
-              {String(shells)}
+              {String(shownShells)}
             </InkText>
           </View>
         </View>

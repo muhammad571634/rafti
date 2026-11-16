@@ -4,6 +4,7 @@
  * colours or radii of its own. Extend a part here rather than styling around it in a screen.
  */
 export { GlowCard, type GlowCardProps } from './glow-card';
+export { listReorder } from './motion';
 export { InkScreen, type InkScreenProps } from './ink-screen';
 export { InkSegmented, type InkSegmentedOption, type InkSegmentedProps } from './ink-segmented';
 export { InkChip, type InkChipProps } from './ink-chip';
