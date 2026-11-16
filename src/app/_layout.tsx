@@ -104,7 +104,11 @@ function AppRoot() {
         {/* iOS 26 swipes back from anywhere on a screen (native default, like Telegram). These
             screens swipe sideways themselves (a reply's versions, the diary's pages), both ways,
             so they go back from the edge only, as on iOS 18; the sideways swipe stays theirs. */}
-        <Stack.Screen name="chat/[id]" options={{ fullScreenGestureEnabled: false }} />
+        {/* The first chat after onboarding fades in over the pill that became its message field (`via=welcome`, 0z250). */}
+        <Stack.Screen
+          name="chat/[id]"
+          options={({ route }) => ({ fullScreenGestureEnabled: false, animation: (route.params as { via?: string } | undefined)?.via === 'welcome' ? 'fade' : 'default' })}
+        />
         <Stack.Screen name="group/[id]/index" options={{ fullScreenGestureEnabled: false }} />
         <Stack.Screen name="diary/mine" options={{ fullScreenGestureEnabled: false }} />
       </Stack>

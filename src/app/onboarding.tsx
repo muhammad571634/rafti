@@ -1,112 +1,80 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
-import { useEffect, useMemo, useState } from 'react';
+import { type ComponentRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  BackHandler,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  useWindowDimensions,
-  View,
-  type ViewStyle,
-} from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import Animated, {
-  Easing,
-  Extrapolation,
-  FadeInRight,
+  FadeIn,
+  FadeInDown,
   FadeInUp,
+  FadeOut,
+  FadeOutDown,
+  FadeOutUp,
   interpolate,
-  type SharedValue,
-  useAnimatedReaction,
-  useAnimatedRef,
-  useAnimatedScrollHandler,
+  interpolateColor,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
+  withSpring,
   withTiming,
-  ZoomIn,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
-import { GlassIconOrbit } from '@/components/onboarding/glass-icon-orbit';
-import { AuroraGlass, CharacterAvatar, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
-import { characterImage } from '@/components/ui/avatar';
+import { InkText } from '@/components/ink';
+import { NightDeck } from '@/components/onboarding/night-deck';
+import { CountUp, MoonMascot } from '@/components/onboarding/night-gift';
+import { MoonOrbit, NightMoon } from '@/components/onboarding/night-moon';
+import { EASE_IN_OUT, EASE_OUT, type MoonPlace, moonPlaces, slowFor } from '@/components/onboarding/night-motion';
+import { NightSky } from '@/components/onboarding/night-sky';
+import { NightYearWheel } from '@/components/onboarding/night-year-wheel';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
+import { Anim, PressableScale, Sheet } from '@/components/ui';
+import { characterImage } from '@/components/ui/avatar';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
-import { getSavedLocaleSync, phrase, SUPPORTED_LOCALES } from '@/i18n';
+import { getSavedLocaleSync, SUPPORTED_LOCALES } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { deckForHour, greetingKeys, isQuietHour, partOfDay } from '@/lib/night-hour';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
-import { bottomRoom, night, NightScope, palette, space } from '@/theme';
+import { bottomRoom, night, NightScope, space } from '@/theme';
+import { ink, inkGutter, inkRadius, inkType } from '@/theme/ink';
 import type { Character, Pronouns } from '@/types';
-import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
 
-/** The four people most talk to (docs/cast-2.md §5): two for her, two for him, so the first choice is about taste, not scrolling. */
+/** The four people most talk to (docs/cast-2.md §5): two for her, two for him; the hour picks who leads (`deckForHour`). */
 const PICKS = ['c_milo', 'c_caleb', 'c_mia', 'c_sam'];
 const MIN_AGE = 18;
+const MIN_YEAR = 1930;
 const NAME_MAX = 20;
-const YEAR_ROW = 44;
-const YEAR_VISIBLE = 5;
 const DEFAULT_YEAR = 2000;
-const STAR = 'M.5 0L.62 .38L1 .5L.62 .62L.5 1L.38 .62L0 .5L.38 .38Z';
-// Always dark (appearance B, owner 2026-11-11): onboarding is where you meet your friend, and its
-// first screen was dark already, so the flow never flips from night to day between steps.
-const { colors, aurora, systemColors } = night;
-const VIOLET = '#B9AEFF';
-const NOTE_BG = 'rgba(28,28,30,0.8)';
-const NOTE_BLOCKED = 'rgba(255,69,58,0.18)';
-/** The Store's peach button and the gift's figure, as the Store draws them at night. */
-const STORE = { cta: palette.apricot400, ctaInk: '#3A1A06', peachInk: '#FFB27A' };
-/** The Store's soft card drop at night (`CARD_SHADOW`). */
-const CARD_SHADOW = Platform.select<ViewStyle>({
-  android: { boxShadow: `0px 6px 10px ${aurora.shadow}59` },
-  default: { shadowColor: aurora.shadow, shadowOpacity: 0.35, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
-})!;
-const SMOOTH = Easing.inOut(Easing.ease);
+const HEADER = 44;
+const BUDDY = 68;
 
-// No notifications scene (audit 2026-11-15 §6.4, owner's yes): the friend asks in the chat after the first
-// real exchange (`src/lib/reach-ask.ts`), and "Yes, text me!" opens the system prompt there.
-type Step = 'intro' | 'age' | 'name' | 'gender' | 'meet' | 'gift';
-const STEPS: Step[] = ['intro', 'age', 'name', 'gender', 'meet', 'gift'];
+// Order (audit 2026-11-15 §10): the friend is picked before the name, so that friend greets you by it.
+// No notifications scene (§6.4): the friend asks in the chat after the first real exchange.
+type Step = 'intro' | 'age' | 'friend' | 'name' | 'gender' | 'gift';
+const STEPS: Step[] = ['intro', 'age', 'friend', 'name', 'gender', 'gift'];
+const QUESTIONS = STEPS.length - 1;
 const GENDERS: { value: Pronouns; label: string }[] = [
   { value: 'she', label: 'onboarding.genderShe' },
   { value: 'he', label: 'onboarding.genderHe' },
   { value: 'they', label: 'onboarding.genderThey' },
 ];
-// iOS Contacts' avatar for someone with no photo (the name preview speaks for no one in particular).
-const NO_PHOTO: [string, string] = ['#A5ABB8', '#858A96'];
 
-/**
- * First launch, reworked on Apple's HIG (Onboarding, Privacy, Entering data; 2026-10-29): the first
- * hello ends with Sigmazam's greeting and the one Start button, with no second hello screen. Then a
- * few short things on the aurora, one scene each: birth year (18+), name, first friend from a deck
- * of cards, and a welcome gift. It ends in the first chat, where the new friend has already written.
- */
+/** Developer and preview builds, as in Profile. */
+const SHOW_DEV = __DEV__ || Updates.channel === 'preview';
+
 /**
  * Onboarding is a one-way door: a link to it (`sigmazam://onboarding`) after it is done lands on
  * the tabs instead of starting over. Read once on mount, so finishing here (which sets
  * `onboardedAt` and then navigates on its own) never races this redirect.
  */
-/** Developer and preview builds, as in Profile. */
-const SHOW_DEV = __DEV__ || Updates.channel === 'preview';
-
 export default function OnboardingRoute() {
   // Dev / preview only: `sigmazam://onboarding?preview=1` walks the flow on an onboarded phone; its last
   // button goes back instead of creating a profile, so nothing of the account changes.
@@ -117,85 +85,162 @@ export default function OnboardingRoute() {
   return <OnboardingScreen />;
 }
 
+/**
+ * The first run as one night scene (0z250, `docs/prototypes/onboarding-motion.html`, owner's yes
+ * 2026-11-16): the moon is the progress (a crescent that fills one answer at a time and is full on
+ * the gift), the night tilts up as you go, the picked friend's colour rises on the horizon, the
+ * picked card becomes the face that greets you by name, the mascot climbs out of the full moon, and
+ * the white pill turns into the first chat's message field. The hour sets the greeting, who leads
+ * the deck and how lively the sky is (quiet after midnight).
+ */
 function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const reduce = useReducedMotion();
 
   const characters = useAppStore((s) => s.characters);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
 
-  // In the screen language (the deck's quote, the series chip), again when the Start chip changes it.
+  // The hour of the first launch holds for the whole run (the scene never flips mid-way).
+  const [part] = useState(() => partOfDay(new Date().getHours()));
+  const quiet = isQuietHour(part);
+  const k = slowFor(quiet);
+
+  // In the screen language (the deck's quote and relation), again when the language chip changes it.
   const lang = i18n.language;
   const picks = useMemo(
     () => PICKS.map((id) => characters.find((c) => c.id === id)).filter((c) => c != null).map((c) => localCharacter(c)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [characters, lang],
   );
+  const [order, setOrder] = useState(() => deckForHour(PICKS, part));
+  const cards = useMemo(() => order.map((id) => picks.find((c) => c.id === id)).filter((c): c is Character => c != null), [order, picks]);
+  const friend = cards[0];
+  const friendName = friend ? shortName(friend.name) : '';
+  const hue = friend ? night.friendAccent(friend.id).strong : ink.text;
 
   const [step, setStep] = useState<Step>('intro');
+  const [dir, setDir] = useState<1 | -1>(1);
   // HIG Entering data: what the system already knows is not asked again.
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [name, setName] = useState('');
   const [pronouns, setPronouns] = useState<Pronouns | null>(null);
-  const [friendId, setFriendId] = useState(PICKS[0]);
   const [langOpen, setLangOpen] = useState(false);
-  // The keyboard covers the system bar, so its inset would only lift the button over the name preview.
-  const keyboardUp = useKeyboardVisible();
   // Kept in state: the React Compiler caches a plain read during render, so the ✓ stayed on the launch choice.
   const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
+  const [handoff, setHandoff] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [leaving, setLeaving] = useState(false);
+  const busy = useRef(false);
+  const frontRef = useRef<ComponentRef<typeof View>>(null);
+  // The keyboard covers the system bar, so its inset would only lift the button over the field.
+  const keyboardUp = useKeyboardVisible();
 
-
-  const steps = STEPS;
-  const questions = steps.length - 1;
-  // The intro is 0, the questions 1 and up.
-  const index = steps.indexOf(step);
-  const friendIndex = Math.max(0, picks.findIndex((c) => c.id === friendId));
-  const friend = picks[friendIndex];
-  const friendName = friend ? shortName(friend.name) : '';
+  const index = STEPS.indexOf(step);
   const thisYear = new Date().getFullYear();
   const minor = thisYear - year < MIN_AGE;
   const trimmed = name.trim();
 
-  const next = () => setStep(steps[Math.min(index + 1, steps.length - 1)]);
-  const back = () => setStep(steps[Math.max(index - 1, 1)]);
+  const places = useMemo(() => moonPlaces(width, height, insets.top), [width, height, insets.top]);
+  const moonPlace: MoonPlace = leaving ? 'gone' : step === 'intro' ? 'hero' : step === 'gift' ? 'halo' : 'header';
+  const phase = step === 'intro' ? 0.12 : index / QUESTIONS;
+  const contentTop = insets.top + 8 + HEADER + 16;
+  const buddyTop = contentTop;
 
-  // Android's own Back (the bottom bar's button or the edge swipe) goes where the arrow goes, and from the
-  // first question back to Start; on Start it leaves, as on any first screen. iOS has the arrow only.
+  const go = useCallback(
+    (to: Step, d: 1 | -1 = 1) => {
+      if (busy.current) return;
+      busy.current = true;
+      setDir(d);
+      setStep(to);
+      // One step at a time: a second tap mid-change would skip a scene.
+      setTimeout(() => (busy.current = false), 420);
+    },
+    [],
+  );
+  const back = useCallback(() => {
+    if (handoff || leaving) return;
+    go(STEPS[Math.max(0, index - 1)], -1);
+  }, [go, handoff, leaving, index]);
+
+  // Android's own Back goes where the arrow goes; on the intro it leaves, as on any first screen.
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (step === 'intro') return false;
-      if (step === 'age') setStep('intro');
-      else back();
+      back();
       return true;
     });
     return () => sub.remove();
-  });
+  }, [step, back]);
+
+  // The picked card becomes the face that will greet you: measure it, then fly a copy into the avatar.
+  const chooseFriend = () => {
+    if (!friend || busy.current) return;
+    haptic.tap();
+    const node = frontRef.current;
+    if (!node || reduce) return go('name');
+    node.measureInWindow((x, y, w, h) => {
+      if (w > 0) setHandoff({ x, y, w, h });
+      go('name');
+    });
+  };
 
   // HIG Onboarding: one tap answers; the ✓ shows for a beat, then the next scene.
   const choosePronouns = (value: Pronouns) => {
     haptic.selection();
     setPronouns(value);
-    setTimeout(next, 250);
+    setTimeout(() => go('gift'), 300);
   };
 
   const finish = () => {
-    if (!friend) return;
-    if (preview) return router.canGoBack() ? router.back() : router.replace('/(tabs)');
-    const conversationId = completeOnboarding({
-      name: trimmed,
-      birthYear: year,
-      pronouns: pronouns ?? 'they',
-      characterId: friend.id,
-      // Morning and evening hellos stay on; they reach the phone once the system allows pushes.
-      notifications: true,
-      firstAsk: t('onboarding.firstAsk', { name: trimmed }),
-    });
-    router.replace('/(tabs)');
-    router.push(`/chat/${conversationId}`);
+    if (!friend || leaving) return;
+    haptic.tap();
+    setLeaving(true);
+    setTimeout(() => {
+      if (preview) {
+        if (router.canGoBack()) router.back();
+        else router.replace('/(tabs)');
+        return;
+      }
+      const conversationId = completeOnboarding({
+        name: trimmed,
+        birthYear: year,
+        pronouns: pronouns ?? 'they',
+        characterId: friend.id,
+        // Morning and evening hellos stay on; they reach the phone once the system allows pushes.
+        notifications: true,
+        firstAsk: t('onboarding.firstAsk', { name: trimmed }),
+      });
+      router.replace('/(tabs)');
+      // `via` makes the chat fade in over the morph (its route options), so the field stays where the pill was.
+      router.push({ pathname: '/chat/[id]', params: { id: conversationId, via: 'welcome' } });
+    }, (reduce ? 120 : 520) * k);
   };
+
+  const pill = (() => {
+    switch (step) {
+      case 'intro':
+        return { label: t('onboarding.start'), onPress: () => go('age') };
+      case 'age':
+        return { label: t('onboarding.continue'), disabled: minor, onPress: () => go('friend') };
+      case 'friend':
+        return { label: t('onboarding.choose', { name: friendName }), onPress: chooseFriend };
+      case 'name':
+        return { label: t('onboarding.continue'), disabled: !trimmed, onPress: () => go('gender') };
+      case 'gender':
+        return { label: t('onboarding.continue'), disabled: !pronouns, onPress: () => go('gift') };
+      case 'gift':
+        return { label: t('onboarding.sayHi', { name: friendName }), onPress: finish };
+    }
+  })();
+
+  const enter = reduce
+    ? FadeIn.duration(200)
+    : (dir > 0 ? FadeInUp : FadeInDown).duration(520 * k).delay(160 * k).easing(EASE_OUT);
+  const exit = reduce ? FadeOut.duration(150) : (dir > 0 ? FadeOutUp : FadeOutDown).duration(220).easing(EASE_OUT);
+  const greeting = greetingKeys(part);
 
   const languageSheet = (
     <Sheet visible={langOpen} onClose={() => setLangOpen(false)} title={t('onboarding.language')} scroll>
@@ -211,519 +256,365 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
     </Sheet>
   );
 
-  if (step === 'intro') {
-    // HIG Onboarding: the first screen says what the app is and ends on the one thing to do next.
-    // Native Cook's Glass Icon Orbit, ported with our icons and the mascot (owner, 2026-11-08).
-    return (
-      <NightScope.Provider value>
-        <GlassIconOrbit
-          onStart={next}
-          top={
-            SUPPORTED_LOCALES.length > 1 ? (
-              <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)}>
-                <View style={styles.langDark}>
-                  <Txt style={styles.langDarkText}>{SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}</Txt>
-                  <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.7)" />
-                </View>
-              </PressableScale>
-            ) : null
-          }
-        />
-        {languageSheet}
-      </NightScope.Provider>
-    );
-  }
-
-  const footer = (() => {
-    switch (step) {
-      case 'age':
-        return <Cta label={t('onboarding.continue')} disabled={minor} onPress={next} />;
-      case 'name':
-        return <Cta label={t('onboarding.continue')} disabled={!trimmed} onPress={next} />;
-      case 'gender':
-        // A tap on a row answers and moves on.
-        return null;
-      case 'meet':
-        return (
-          <>
-            <Cta label={t('onboarding.meet', { name: friendName })} onPress={next} />
-            <Txt style={styles.caption}>{t('onboarding.meetNote')}</Txt>
-          </>
-        );
-      case 'gift':
-        return <Cta label={t('onboarding.sayHi', { name: friendName })} onPress={finish} />;
-    }
-  })();
-
   return (
-    <Screen night background="aurora">
-      <View style={styles.top}>
-        {index > 1 ? (
-          <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back} style={styles.roundHit}>
-            <AuroraGlass style={styles.round}>
-              <Ionicons name="chevron-back" size={22} color={colors.text} style={styles.backIcon} />
-            </AuroraGlass>
-          </PressableScale>
-        ) : (
-          <View style={styles.side} />
-        )}
+    <NightScope.Provider value>
+      <View style={styles.root}>
+        <NightSky part={part} step={index} dawn={index >= 2 && !leaving ? hue : null} dim={leaving} />
+        <MoonOrbit visible={step === 'intro'} cx={places.hero.x} cy={places.hero.y} quiet={quiet} />
+        <NightMoon place={moonPlace} places={places} phase={phase} quiet={quiet} />
+        {step === 'gift' && !leaving ? (
+          <Animated.View exiting={FadeOut.duration(300)} style={StyleSheet.absoluteFill} pointerEvents="none">
+            <MoonMascot cx={places.halo.x} cy={places.halo.y} quiet={quiet} hue={hue} />
+          </Animated.View>
+        ) : null}
 
-        <View style={styles.progress} accessible accessibilityLabel={t('onboarding.step', { index, count: questions })}>
-          {Array.from({ length: questions }, (_, i) => (
-            <View key={i} style={[styles.segment, i < index && styles.segmentOn]} />
-          ))}
-        </View>
+        {/* The header: back and the count; the moon between them is the progress. */}
+        {index > 0 && !leaving ? (
+          <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(200)} style={[styles.header, { top: insets.top + 8 }]}>
+            <PressableScale scaleTo={0.92} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back} style={styles.round}>
+              <Ionicons name="chevron-back" size={22} color={ink.text} style={styles.backIcon} />
+            </PressableScale>
+            <InkText variant="footnote" accessibilityLabel={t('onboarding.step', { index, count: QUESTIONS })}>
+              {`${index} / ${QUESTIONS}`}
+            </InkText>
+          </Animated.View>
+        ) : null}
 
-        <View style={styles.side} />
-      </View>
+        {step === 'intro' && SUPPORTED_LOCALES.length > 1 ? (
+          <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(200)} style={[styles.langChipBox, { top: insets.top + 8 }]}>
+            <PressableScale scaleTo={0.96} accessibilityRole="button" accessibilityLabel={t('onboarding.language')} onPress={() => setLangOpen(true)} style={styles.langChip}>
+              <Ionicons name="globe-outline" size={17} color={ink.text} />
+              <InkText variant="subStrong" lines={1}>
+                {SUPPORTED_LOCALES.find((l) => l.code === i18n.language)?.label ?? 'English'}
+              </InkText>
+            </PressableScale>
+          </Animated.View>
+        ) : null}
 
-      <KeyboardAvoidingView style={styles.flex} behavior="padding">
-        <Animated.View key={step} entering={FadeInRight.duration(360)} style={styles.flex}>
-          <ScrollView
-            style={styles.flex}
-            contentContainerStyle={styles.page}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}>
-            {step === 'age' ? (
-              <>
-                <Title title={t('onboarding.ageTitle')} body={t('onboarding.ageBody')} />
-                <View style={styles.wheelWrap}>
-                  {/* Peeks over the card's edge: drawn first, so the card hides the cut. */}
-                  <Animated.View entering={FadeInUp.delay(200).springify().damping(14)} style={styles.peek}>
-                    <Image source={BRAND.peek} style={StyleSheet.absoluteFill} contentFit="contain" />
-                  </Animated.View>
-                  <View style={styles.card}>
-                    <YearWheel value={year} min={1940} max={thisYear} onChange={setYear} />
-                  </View>
+        {friend ? <Buddy friend={friend} show={(step === 'name' || step === 'gender') && !handoff} top={buddyTop} /> : null}
+        {friend && step === 'name' && !handoff ? <Greeting top={buddyTop} name={trimmed} quiet={quiet} /> : null}
+
+        <KeyboardAvoidingView style={styles.flex} behavior="padding">
+          <View style={styles.flex}>
+            <Animated.View
+              key={step}
+              entering={enter}
+              exiting={exit}
+              style={[styles.page, { paddingTop: step === 'name' || step === 'gender' ? contentTop + BUDDY + 22 : contentTop }]}>
+              {step === 'intro' ? (
+                <View style={styles.bottomed}>
+                  <InkText variant="display" center>
+                    {t(greeting.title)}
+                  </InkText>
+                  <InkText variant="sub" center style={styles.introLine}>
+                    {t(greeting.line)}
+                  </InkText>
                 </View>
-                <View style={[styles.note, minor && styles.noteBlocked]}>
-                  <Ionicons name="lock-closed-outline" size={17} color={minor ? systemColors.red : aurora.textMuted} />
-                  <Txt style={[styles.noteText, minor && styles.noteTextBlocked]}>
+              ) : null}
+
+              {step === 'age' ? (
+                <>
+                  <InkText variant="display">{t('onboarding.ageTitle')}</InkText>
+                  <View style={styles.wheelRoom}>
+                    <NightYearWheel initial={year} min={MIN_YEAR} max={thisYear} minAge={MIN_AGE} onChange={setYear} />
+                  </View>
+                  <InkText variant="footnote" center color={minor ? '#FF8A82' : ink.text2} style={styles.note}>
                     {minor ? t('onboarding.ageBlocked') : t('onboarding.ageNote')}
-                  </Txt>
-                </View>
-              </>
-            ) : null}
+                  </InkText>
+                </>
+              ) : null}
 
-            {step === 'name' ? (
-              <>
-                <Title title={t('onboarding.nameTitle')} body={t('onboarding.nameBody')} />
-                <View style={[styles.card, styles.field]}>
-                  <TextInput
-                    value={name}
-                    onChangeText={(v) => setName(v.slice(0, NAME_MAX))}
-                    placeholder={t('onboarding.namePlaceholder')}
-                    placeholderTextColor={colors.textFaint}
-                    autoFocus
-                    autoCapitalize="words"
-                    autoComplete="given-name"
-                    returnKeyType="next"
-                    onSubmitEditing={() => trimmed && next()}
-                    accessibilityLabel={t('onboarding.namePlaceholder')}
-                    style={styles.input}
-                  />
-                  <Txt style={styles.count}>
-                    {name.length}/{NAME_MAX}
-                  </Txt>
-                </View>
-                <View style={styles.preview}>
-                  {/* No friend is picked yet, so no character's face: the system's contact with no photo. */}
-                  <LinearGradient colors={NO_PHOTO} style={styles.noPhoto}>
-                    <Ionicons name="person" size={22} color="#FFFFFF" />
-                  </LinearGradient>
-                  {/* Pops in again when the first letter arrives (and when the field empties). */}
-                  <Animated.View key={trimmed ? 'named' : 'empty'} entering={ZoomIn.springify().damping(14)} style={[styles.card, styles.bubble]}>
-                    <Txt style={styles.bubbleText}>{t('onboarding.namePreview', { name: trimmed || t('onboarding.nameYou') })}</Txt>
-                  </Animated.View>
-                </View>
-              </>
-            ) : null}
+              {step === 'friend' ? (
+                <>
+                  <InkText variant="display">{t('onboarding.meetTitle')}</InkText>
+                  <NightDeck cards={cards} onOrder={setOrder} frontRef={frontRef} />
+                  <InkText variant="footnote" center style={styles.note}>
+                    {t('onboarding.meetNote')}
+                  </InkText>
+                </>
+              ) : null}
 
-            {step === 'gender' ? (
-              <>
-                <Title title={t('onboarding.genderTitle')} body={t('onboarding.genderBody')} />
-                <View style={[styles.card, styles.choices]} accessibilityRole="radiogroup">
-                  {GENDERS.map((g, i) => (
-                    <Pressable
-                      key={g.value}
-                      accessibilityRole="radio"
-                      accessibilityState={{ checked: pronouns === g.value }}
-                      onPress={() => choosePronouns(g.value)}
-                      style={({ pressed }) => [styles.choice, pressed && styles.choicePressed]}>
-                      <View style={[styles.choiceBody, i < GENDERS.length - 1 && styles.choiceLine]}>
-                        <Txt style={styles.choiceText}>{t(g.label)}</Txt>
-                        {pronouns === g.value ? <Ionicons name="checkmark" size={22} color={colors.brandText} /> : null}
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </>
-            ) : null}
-
-            {step === 'meet' ? (
-              <>
-                <Title title={t('onboarding.meetTitle')} body={t('onboarding.meetBody')} />
-                <Deck picks={picks} selected={friendIndex} height={height} onSelect={(i) => setFriendId(picks[i].id)} />
-                <View style={styles.faces} accessibilityRole="radiogroup">
-                  {picks.map((c, i) => {
-                    const on = i === friendIndex;
-                    return (
-                      <Pressable
-                        key={c.id}
-                        onPress={() => setFriendId(c.id)}
-                        accessibilityRole="radio"
-                        accessibilityLabel={c.name}
-                        accessibilityState={{ checked: on }}
-                        style={[styles.face, on && styles.faceOn]}>
-                        <CharacterAvatar character={c} size={40} />
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              </>
-            ) : null}
-
-
-            {step === 'gift' ? (
-              <View style={styles.hello}>
-                <GiftArt height={height} />
-                <Animated.View entering={FadeInUp.delay(550).duration(400)}>
-                  <Txt style={styles.plus}>+{WELCOME_SHELLS}</Txt>
-                </Animated.View>
-                <Animated.View entering={FadeInUp.delay(700).duration(400)} style={styles.giftText}>
-                  <Txt style={[styles.body, styles.center]}>{t('onboarding.giftBody', { count: FREE_MESSAGES_PER_DAY })}</Txt>
-                  <View style={styles.facts}>
-                    <Txt style={[styles.card, styles.fact]}>{t('onboarding.giftDaily')}</Txt>
-                    <Txt style={[styles.card, styles.fact]}>{t('onboarding.giftKeep')}</Txt>
+              {step === 'name' ? (
+                <>
+                  <InkText variant="display">{t('onboarding.nameTitle', { name: friendName })}</InkText>
+                  <View style={styles.field}>
+                    <TextInput
+                      value={name}
+                      onChangeText={(v) => setName(v.slice(0, NAME_MAX))}
+                      placeholder={t('onboarding.namePlaceholder')}
+                      placeholderTextColor={ink.placeholder}
+                      selectionColor={hue}
+                      autoFocus
+                      autoCapitalize="words"
+                      autoComplete="given-name"
+                      returnKeyType="next"
+                      onSubmitEditing={() => trimmed && go('gender')}
+                      accessibilityLabel={t('onboarding.namePlaceholder')}
+                      style={styles.input}
+                    />
+                    {name.length >= 15 ? <InkText variant="footnote" color={ink.text3}>{`${name.length}/${NAME_MAX}`}</InkText> : null}
                   </View>
-                </Animated.View>
-              </View>
+                </>
+              ) : null}
+
+              {step === 'gender' ? (
+                <>
+                  <InkText variant="display">{t('onboarding.genderTitle', { name: friendName })}</InkText>
+                  <View style={styles.rows} accessibilityRole="radiogroup">
+                    {GENDERS.map((g, i) => (
+                      <Pressable
+                        key={g.value}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: pronouns === g.value }}
+                        onPress={() => choosePronouns(g.value)}
+                        style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}>
+                        <View style={[styles.rowBody, i > 0 && styles.rowLine]}>
+                          <InkText variant="body">{t(g.label)}</InkText>
+                          <Radio on={pronouns === g.value} />
+                        </View>
+                      </Pressable>
+                    ))}
+                  </View>
+                </>
+              ) : null}
+
+              {step === 'gift' ? (
+                <GiftWords leaving={leaving} quiet={quiet} line={t('onboarding.gift')} />
+              ) : null}
+            </Animated.View>
+          </View>
+
+          <View style={[styles.footer, { paddingBottom: keyboardUp ? space.sm : bottomRoom(insets.bottom, space.lg) + 6 }]}>
+            <MorphPill label={pill.label} disabled={pill.disabled} onPress={pill.onPress} leaving={leaving} bottomShift={keyboardUp ? 0 : bottomRoom(insets.bottom, space.lg) + 6 - bottomRoom(insets.bottom, space.md)} quiet={quiet} />
+            {step === 'intro' ? (
+              <Animated.View exiting={FadeOut.duration(200)}>
+                <InkText variant="caption" center color={ink.text3} style={styles.legal}>
+                  {t('onboarding.legal')}
+                </InkText>
+              </Animated.View>
             ) : null}
-          </ScrollView>
-        </Animated.View>
+          </View>
+        </KeyboardAvoidingView>
 
-        <View style={[styles.footer, { paddingBottom: keyboardUp ? space.sm : bottomRoom(insets.bottom, space.lg) + 6 }]}>{footer}</View>
-      </KeyboardAvoidingView>
-
-    </Screen>
+        {handoff && friend ? <Handoff from={handoff} to={{ x: inkGutter, y: buddyTop, w: BUDDY, h: BUDDY }} friend={friend} onDone={() => setHandoff(null)} /> : null}
+        {languageSheet}
+      </View>
+    </NightScope.Provider>
   );
 }
 
-/** The Store's peach button. */
-function Cta({ label, disabled, onPress }: { label: string; disabled?: boolean; onPress: () => void }) {
-  return (
-    <PressableScale scaleTo={0.97} disabled={disabled} onPress={onPress} accessibilityRole="button" style={styles.cta}>
-      <Txt style={styles.ctaText} lines={1}>
-        {label}
-      </Txt>
-    </PressableScale>
-  );
-}
+/** The portrait the deck shows, framed for a given shape. */
+const faceSource = (c: Character) => HEROES[c.id] ?? PORTRAITS[c.id] ?? characterImage(c);
 
-function Title({ title, body }: { title: string; body: string }) {
-  return (
-    <View style={styles.titleBlock}>
-      <Txt style={styles.title} accessibilityRole="header">
-        {title}
-      </Txt>
-      <Txt style={styles.body}>{body}</Txt>
-    </View>
-  );
-}
-
-/** A slow float (and a little sway) for a mascot pose; still under Reduce Motion. */
-function useFloat(distance: number) {
-  const reduceMotion = useReducedMotion();
-  const y = useSharedValue(0);
+/** The friend the user picked, on the name and address steps: their face in their colour's ring. */
+function Buddy({ friend, show, top }: { friend: Character; show: boolean; top: number }) {
+  const o = useSharedValue(0);
   useEffect(() => {
-    if (reduceMotion) return;
-    y.value = withRepeat(withSequence(withTiming(-distance, { duration: 1500, easing: SMOOTH }), withTiming(0, { duration: 1500, easing: SMOOTH })), -1);
-  }, [reduceMotion, distance, y]);
-  return useAnimatedStyle(() => ({
-    transform: [{ translateY: y.value }, { rotate: `${-2 + (y.value / -distance) * 4}deg` }],
-  }));
+    // Shown at once when the card lands on it (the hand-off already moved), faded when leaving.
+    o.set(show ? 1 : withTiming(0, { duration: 220 }));
+  }, [show, o]);
+  const style = useAnimatedStyle(() => ({ opacity: o.get() }));
+  const hue = night.friendAccent(friend.id).strong;
+  return (
+    <Animated.View pointerEvents="none" style={[styles.buddy, { top, borderColor: hue }, style]}>
+      {/* The square avatar, drawn around the face (a crop of the scene showed Milo's hoodie, A51). */}
+      <Image source={characterImage(friend) ?? faceSource(friend)} style={styles.buddyImage} contentFit="cover" />
+    </Animated.View>
+  );
 }
 
-/** Gift: Sigmazam hugging a heart, sparks bursting over its head (no shell here: the owner asked, 2026-10-24). */
-function GiftArt({ height }: { height: number }) {
-  const art = Math.round(Math.min(136, Math.max(110, height * 0.16)));
-  const float = useFloat(8);
+/**
+ * The friend answers while you type: typing dots as the letters come, then "Hey {name}! Finally."
+ * once you pause. The first alive moment of the product (audit §10).
+ */
+function Greeting({ top, name, quiet }: { top: number; name: string; quiet: boolean }) {
+  const { t } = useTranslation();
+  const [said, setSaid] = useState(name);
+  useEffect(() => {
+    if (!name) {
+      setSaid('');
+      return;
+    }
+    const id = setTimeout(() => setSaid(name), 700 * slowFor(quiet));
+    return () => clearTimeout(id);
+  }, [name, quiet]);
+  const settled = !!name && said === name;
   return (
-    <View style={[styles.giftArt, { height: art * 1.8 }]}>
-      {Array.from({ length: 8 }, (_, i) => (
-        <GiftSpark key={i} index={i} />
-      ))}
-      <Animated.View style={[{ width: art, height: art / BRAND_ASPECT.love }, float]}>
-        <Image source={BRAND.love} style={StyleSheet.absoluteFill} contentFit="contain" accessibilityLabel="Sigmazam" />
+    <View pointerEvents="none" style={[styles.bubbleRow, { top: top + 6 }]}>
+      <Animated.View entering={FadeInUp.duration(320).delay(200).easing(EASE_OUT)} style={styles.bubble}>
+        {settled ? (
+          <Animated.View key={said} entering={FadeIn.duration(260)}>
+            <InkText variant="body">{t('onboarding.namePreview', { name: said })}</InkText>
+          </Animated.View>
+        ) : (
+          <Anim name="typing" size={34} tint={ink.text2} />
+        )}
       </Animated.View>
     </View>
   );
 }
 
-function GiftSpark({ index }: { index: number }) {
-  const reduceMotion = useReducedMotion();
+/** A radio that fills with a small spring when chosen. */
+function Radio({ on }: { on: boolean }) {
+  const s = useSharedValue(on ? 1 : 0);
+  useEffect(() => {
+    s.set(on ? withSpring(1, { duration: 320, dampingRatio: 0.6 }) : withTiming(0, { duration: 120 }));
+  }, [on, s]);
+  const style = useAnimatedStyle(() => ({ opacity: s.get() > 0.02 ? 1 : 0, transform: [{ scale: 0.6 + 0.4 * s.get() }] }));
+  return (
+    <View style={styles.radio}>
+      <Animated.View style={[styles.radioOn, style]}>
+        <Ionicons name="checkmark" size={15} color={ink.onPill} />
+      </Animated.View>
+    </View>
+  );
+}
+
+/** "+100" and one line under the mascot; they sink away when the chat takes over. */
+function GiftWords({ leaving, quiet, line }: { leaving: boolean; quiet: boolean; line: string }) {
+  const out = useSharedValue(0);
+  useEffect(() => {
+    out.set(withTiming(leaving ? 1 : 0, { duration: 260, easing: EASE_OUT }));
+  }, [leaving, out]);
+  const style = useAnimatedStyle(() => ({ opacity: 1 - out.get(), transform: [{ translateY: out.get() * 18 }] }));
+  return (
+    <Animated.View style={[styles.bottomed, style]}>
+      <CountUp to={WELCOME_SHELLS} quiet={quiet} />
+      <InkText variant="sub" center style={styles.introLine}>
+        {line}
+      </InkText>
+    </Animated.View>
+  );
+}
+
+/**
+ * The one white pill, kept across every step (its words change in place). On "Say hi" its plate
+ * becomes the chat's message field: it slides to the field's place and colour, then the chat
+ * fades in on top of it. The plate is absolute and childless, so animating its edges lays out nothing else.
+ */
+function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { label: string; disabled?: boolean; onPress: () => void; leaving: boolean; bottomShift: number; quiet: boolean }) {
+  const m = useSharedValue(0);
+  useEffect(() => {
+    m.set(withTiming(leaving ? 1 : 0, { duration: 460 * slowFor(quiet), easing: EASE_IN_OUT }));
+  }, [leaving, quiet, m]);
+  const field = night.colors.surface;
+  // The chat's field: the "+" button (54) and a gap (8) take its left side; its edge is 12 from the screen's.
+  const plate = useAnimatedStyle(() => ({
+    left: interpolate(m.get(), [0, 1], [0, 54 + space.sm + space.md - inkGutter]),
+    right: interpolate(m.get(), [0, 1], [0, space.md - inkGutter]),
+    top: interpolate(m.get(), [0, 1], [0, 2 + bottomShift]),
+    bottom: interpolate(m.get(), [0, 1], [0, -bottomShift]),
+    backgroundColor: interpolateColor(m.get(), [0, 1], [ink.pill, field]),
+  }));
+  const words = useAnimatedStyle(() => ({ opacity: 1 - Math.min(1, m.get() * 3) }));
+  return (
+    <View style={[styles.pill, disabled && styles.off]}>
+      <Animated.View style={[styles.plate, plate]} />
+      <PressableScale
+        scaleTo={0.97}
+        disabled={disabled || leaving}
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ disabled: !!disabled }}
+        style={styles.pillHit}>
+        <Animated.View style={words}>
+          <Animated.View key={label} entering={FadeIn.duration(180)}>
+            <InkText variant="bodyStrong" color={ink.onPill} lines={1}>
+              {label}
+            </InkText>
+          </Animated.View>
+        </Animated.View>
+      </PressableScale>
+    </View>
+  );
+}
+
+/** The picked card flying into the avatar: one copy of the photo, its frame eased from card to circle. */
+function Handoff({ from, to, friend, onDone }: { from: { x: number; y: number; w: number; h: number }; to: { x: number; y: number; w: number; h: number }; friend: Character; onDone: () => void }) {
   const p = useSharedValue(0);
   useEffect(() => {
-    if (!reduceMotion) p.value = withDelay(250, withTiming(1, { duration: 900, easing: Easing.out(Easing.cubic) }));
-  }, [reduceMotion, p]);
-  const angle = (index * 45 * Math.PI) / 180;
-  const r = index % 2 ? 92 : 124;
-  const style = useAnimatedStyle(() => ({
-    opacity: p.value < 0.3 ? p.value / 0.3 : 1 - (p.value - 0.3) / 0.7,
-    transform: [{ translateX: Math.cos(angle) * r * p.value }, { translateY: Math.sin(angle) * r * p.value }, { scale: 0.2 + 0.8 * p.value }, { rotate: `${90 * p.value}deg` }],
-  }));
-  return (
-    <Animated.View pointerEvents="none" style={[styles.giftSpark, style]}>
-      <Svg width="100%" height="100%" viewBox="0 0 1 1">
-        <Path d={STAR} fill={index % 3 === 1 ? VIOLET : aurora.tint} />
-      </Svg>
-    </Animated.View>
-  );
-}
-
-/** The four friends as a stack of portrait cards; a tap brings the next one to the front. */
-function Deck({ picks, selected, height, onSelect }: { picks: Character[]; selected: number; height: number; onSelect: (i: number) => void }) {
-  const cardH = Math.round(Math.min(340, Math.max(230, height - 500)));
-  const cardW = Math.round(cardH * 0.794);
-  return (
-    // As wide as the front card, so it sits centred; the cards behind fan out past its right edge.
-    <View style={[styles.deck, { width: cardW, height: cardH + 30 }]}>
-      {picks.map((c, i) => (
-        <DeckCard
-          key={c.id}
-          character={c}
-          depth={(i - selected + picks.length) % picks.length}
-          width={cardW}
-          height={cardH}
-          onPress={() => onSelect((selected + 1) % picks.length)}
-        />
-      ))}
-    </View>
-  );
-}
-
-function DeckCard({ character, depth, width, height, onPress }: { character: Character; depth: number; width: number; height: number; onPress: () => void }) {
-  const d = useSharedValue(depth);
-  useEffect(() => {
-    d.value = withTiming(depth, { duration: 380, easing: Easing.bezier(0.3, 0.7, 0.3, 1) });
-  }, [depth, d]);
-  const style = useAnimatedStyle(() => ({
-    opacity: d.value <= 2 ? 1 : 1 - (d.value - 2),
-    transform: [{ translateX: d.value * 16 }, { translateY: d.value * -8 + 22 }, { rotate: `${d.value * 4}deg` }, { scale: 1 - d.value * 0.05 }],
-  }));
-  return (
-    <Animated.View style={[styles.deckCard, { width, height, zIndex: 10 - depth }, style]}>
-      <Pressable
-        onPress={onPress}
-        disabled={depth !== 0}
-        accessibilityRole="button"
-        accessibilityLabel={`${character.name}, ${character.relation ?? (character.series ? phrase(character.series) : '')}`}
-        style={StyleSheet.absoluteFill}>
-        <Image
-          source={HEROES[character.id] ?? PORTRAITS[character.id] ?? characterImage(character)}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={HEROES[character.id] ? undefined : portraitPosition(character.id, width / height)}
-        />
-        <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.78)']} style={styles.deckShade} />
-        <View style={styles.deckText}>
-          <View style={styles.deckChip}>
-            <Txt style={styles.deckChipText} lines={1}>
-              {character.relation ?? (character.series ? phrase(character.series) : '')}
-            </Txt>
-          </View>
-          <Txt style={styles.deckName} lines={1}>
-            {shortName(character.name)}
-          </Txt>
-          <Txt style={styles.deckLine} lines={3}>
-            {`“${character.greeting}”`}
-          </Txt>
-        </View>
-      </Pressable>
-    </Animated.View>
-  );
-}
-
-/** A snapping column of years, newest on top; the row in the band is the answer. */
-function YearWheel({
-  value,
-  min,
-  max,
-  onChange,
-}: {
-  value: number;
-  min: number;
-  max: number;
-  onChange: (year: number) => void;
-}) {
-  const years = useMemo(() => Array.from({ length: max - min + 1 }, (_, i) => max - i), [min, max]);
-  const ref = useAnimatedRef<Animated.ScrollView>();
-  const pad = YEAR_ROW * Math.floor(YEAR_VISIBLE / 2);
-  // Set once: on Android a new `contentOffset` scrolls there, which yanked the wheel to each year mid-drag.
-  const [startOffset] = useState(() => ({ x: 0, y: years.indexOf(value) * YEAR_ROW }));
-  const scrollY = useSharedValue(startOffset.y);
-
-  // Start on the current answer; `contentOffset` alone is ignored on web.
-  useEffect(() => {
-    const id = setTimeout(() => ref.current?.scrollTo({ y: startOffset.y, animated: false }), 0);
-    return () => clearTimeout(id);
-  }, [ref, startOffset]);
-
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollY.value = e.contentOffset.y;
-  });
-
-  // A tick per year as it reaches the band, as the system's wheels do (HIG Playing haptics).
-  const reach = (i: number) => {
-    haptic.selection();
-    onChange(years[Math.max(0, Math.min(years.length - 1, i))]);
-  };
-  useAnimatedReaction(
-    () => Math.round(scrollY.value / YEAR_ROW),
-    (i, prev) => {
-      if (prev !== null && i !== prev) scheduleOnRN(reach, i);
-    },
-  );
-
-  // The band's bold years ride the scroll on the UI thread, clipped to the band (as UIPickerView draws
-  // it), so the answer never trails the finger.
-  const bandYears = useAnimatedStyle(() => ({ transform: [{ translateY: -scrollY.value }] }));
-
-  return (
-    <View style={styles.wheel}>
-      <Animated.ScrollView
-        ref={ref}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled
-        snapToInterval={YEAR_ROW}
-        decelerationRate="fast"
-        contentContainerStyle={{ paddingVertical: pad }}
-        contentOffset={startOffset}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        accessibilityLabel={String(value)}>
-        {years.map((y, i) => (
-          <WheelYear key={y} year={y} index={i} scrollY={scrollY} onPress={() => ref.current?.scrollTo({ y: i * YEAR_ROW, animated: true })} />
-        ))}
-      </Animated.ScrollView>
-      <View pointerEvents="none" style={[styles.band, styles.bandCover, { top: pad }]}>
-        <View style={[StyleSheet.absoluteFill, styles.bandFill]} />
-        <Animated.View style={bandYears}>
-          {years.map((y) => (
-            <View key={y} style={styles.yearRow}>
-              <Txt style={[styles.year, styles.yearOn]}>{y}</Txt>
-            </View>
-          ))}
-        </Animated.View>
-      </View>
-    </View>
-  );
-}
-
-/** A year outside the band: full size next to it, smaller and fainter further out, following the scroll. */
-function WheelYear({ year, index, scrollY, onPress }: { year: number; index: number; scrollY: SharedValue<number>; onPress: () => void }) {
-  const fade = useAnimatedStyle(() => {
-    const d = Math.abs(scrollY.value / YEAR_ROW - index);
+    p.set(withTiming(1, { duration: 640, easing: EASE_IN_OUT }, (done) => {
+      if (done) scheduleOnRN(onDone);
+    }));
+  }, [p, onDone]);
+  const style = useAnimatedStyle(() => {
+    const v = p.get();
     return {
-      // Half the muted colour reads as the faint one, on the light card and on the dark one.
-      opacity: interpolate(d, [1, 2], [1, 0.5], Extrapolation.CLAMP),
-      transform: [{ scale: interpolate(d, [1, 2], [1, 19 / 21], Extrapolation.CLAMP) }],
+      left: from.x + (to.x - from.x) * v,
+      top: from.y + (to.y - from.y) * v,
+      width: from.w + (to.w - from.w) * v,
+      height: from.h + (to.h - from.h) * v,
+      borderRadius: inkRadius.card + (to.w / 2 - inkRadius.card) * v,
     };
   });
+  // The scene photo gives way to the square avatar on the last stretch, so the landing matches the avatar exactly.
+  const face = useAnimatedStyle(() => ({ opacity: interpolate(p.get(), [0.55, 1], [0, 1], 'clamp') }));
   return (
-    <PressableScale scaleTo={1} style={styles.yearRow} onPress={onPress}>
-      <Animated.View style={fade}>
-        <Txt style={[styles.year, styles.yearSide]}>{year}</Txt>
+    <Animated.View pointerEvents="none" style={[styles.handoff, style]}>
+      <Image source={faceSource(friend)} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={HEROES[friend.id] ? undefined : portraitPosition(friend.id, from.w / from.h)} />
+      <Animated.View style={[StyleSheet.absoluteFill, face]}>
+        <Image source={characterImage(friend) ?? faceSource(friend)} style={StyleSheet.absoluteFill} contentFit="cover" />
       </Animated.View>
-    </PressableScale>
+    </Animated.View>
   );
 }
 
-const PEEK_W = 120;
-
 const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: ink.ground },
   flex: { flex: 1 },
-  center: { textAlign: 'center' },
-  top: { height: 44, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.lg, paddingTop: space.xs, gap: space.md },
-  side: { width: 44 },
-  // 44 pt (HIG minimum); the pressable is round and clips, so Android's press and focus highlight is a circle, not a square.
-  roundHit: { borderRadius: 22, overflow: 'hidden' },
-  round: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  page: { ...StyleSheet.absoluteFill, paddingHorizontal: inkGutter },
+  bottomed: { flex: 1, justifyContent: 'flex-end', paddingBottom: space.xl },
+  introLine: { marginTop: space.sm, fontSize: 17, lineHeight: 22 },
+  header: { position: 'absolute', left: inkGutter, right: inkGutter, height: HEADER, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', zIndex: 5 },
+  round: { width: 44, height: 44, borderRadius: 22, overflow: 'hidden', backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
   backIcon: { marginLeft: -2 },
-  progress: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  segment: { width: 28, height: 5, borderRadius: 3, backgroundColor: aurora.glassOn },
-  segmentOn: { backgroundColor: aurora.tint },
-  lang: { height: 32, flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.md, borderRadius: 16 },
-  langText: { fontSize: 13, fontWeight: '600', color: colors.text },
-  page: { flexGrow: 1, paddingHorizontal: 20, paddingTop: 18, paddingBottom: space.lg },
-  titleBlock: { gap: space.sm },
-  // HIG Typography: Large Title 34/41 bold for the question, Body 17/22 under it.
-  title: { fontSize: 34, lineHeight: 41, fontWeight: '700', letterSpacing: 0.4, color: colors.text },
-  body: { fontSize: 17, lineHeight: 22, color: aurora.textMuted },
-  hello: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  // The language chip on the orbit's black ground (dark glass, white words).
-  langDark: {
-    height: 32,
+  langChipBox: { position: 'absolute', right: inkGutter, zIndex: 5 },
+  langChip: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 10, paddingRight: 14, borderRadius: 18, overflow: 'hidden', backgroundColor: ink.raised },
+  wheelRoom: { flex: 1, minHeight: 0, justifyContent: 'center' },
+  note: { marginTop: space.md, marginBottom: space.sm, paddingHorizontal: space.sm },
+  field: {
+    marginTop: 22,
+    height: 56,
+    borderRadius: inkRadius.field,
+    borderCurve: 'continuous',
+    backgroundColor: ink.raised,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    paddingHorizontal: space.md,
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.25)',
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    paddingHorizontal: space.lg,
+    gap: space.sm,
   },
-  langDarkText: { fontSize: 13, fontWeight: '600', color: '#FFFFFF' },
-  card: { borderRadius: 26, backgroundColor: aurora.card, ...CARD_SHADOW },
-  wheelWrap: { marginTop: 88 },
-  peek: { position: 'absolute', right: 18, top: -82, width: PEEK_W, height: PEEK_W / BRAND_ASPECT.peek },
-  wheel: { height: YEAR_ROW * YEAR_VISIBLE, marginVertical: 5 },
-  band: { position: 'absolute', left: 12, right: 12, height: YEAR_ROW, borderRadius: 12, backgroundColor: systemColors.fill },
-  yearRow: { height: YEAR_ROW, alignItems: 'center', justifyContent: 'center' },
-  bandCover: { overflow: 'hidden', backgroundColor: aurora.card },
-  bandFill: { backgroundColor: systemColors.fill },
-  year: { fontWeight: '500', fontVariant: ['tabular-nums'] },
-  yearOn: { fontWeight: '700', fontSize: 26, color: colors.text },
-  yearSide: { fontSize: 21, color: aurora.textMuted },
-  note: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, marginTop: 14, paddingHorizontal: 14, paddingVertical: 12, borderRadius: 16, backgroundColor: NOTE_BG },
-  noteBlocked: { backgroundColor: NOTE_BLOCKED },
-  noteText: { flex: 1, fontSize: 15, lineHeight: 20, color: aurora.textMuted },
-  noteTextBlocked: { color: systemColors.red },
-  field: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, height: 60, marginTop: 28, paddingHorizontal: 18, borderRadius: 20 },
-  input: { flex: 1, minWidth: 0, fontSize: 20, fontWeight: '600', color: colors.text, paddingVertical: 0 },
-  count: { fontSize: 13, color: aurora.textMuted, fontVariant: ['tabular-nums'] },
-  preview: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm + 2, marginTop: 36 },
-  noPhoto: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  choices: { marginTop: 28, overflow: 'hidden' },
-  choice: { paddingLeft: 20 },
-  choicePressed: { backgroundColor: systemColors.fill },
-  choiceBody: { minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingRight: 20 },
-  choiceLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  choiceText: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  bubble: { flexShrink: 1, paddingHorizontal: 15, paddingVertical: 11, borderRadius: 21, borderBottomLeftRadius: 6, transformOrigin: '0% 100%' },
-  bubbleText: { fontSize: 17, lineHeight: 22, color: colors.text },
-  deck: { alignSelf: 'center', marginTop: space.sm },
-  deckCard: { position: 'absolute', left: 0, top: 0, borderRadius: 28, overflow: 'hidden', backgroundColor: '#222222', shadowColor: '#28143C', shadowOpacity: 0.22, shadowRadius: 17, shadowOffset: { width: 0, height: 14 }, elevation: 8 },
-  deckShade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '58%' },
-  deckText: { position: 'absolute', left: 18, right: 18, bottom: 18, gap: 6 },
-  deckChip: { alignSelf: 'flex-start', height: 22, paddingHorizontal: 9, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.22)', justifyContent: 'center' },
-  deckChipText: { fontSize: 12, fontWeight: '600', color: colors.white },
-  deckName: { fontSize: 26, lineHeight: 30, fontWeight: '800', color: colors.white },
-  deckLine: { fontSize: 15, lineHeight: 20, color: 'rgba(255,255,255,0.92)' },
-  faces: { flexDirection: 'row', justifyContent: 'center', gap: space.md, marginTop: space.md },
-  face: { width: 48, height: 48, borderRadius: 24, borderWidth: 2, borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' },
-  faceOn: { borderColor: aurora.tint },
-  // The pose sits at the bottom of the box; the sparks burst from just above its head.
-  giftArt: { width: 300, alignItems: 'center', justifyContent: 'flex-end' },
-  giftSpark: { position: 'absolute', top: 30, left: 144, width: 12, height: 12 },
-  plus: { fontSize: 46, lineHeight: 52, fontWeight: '800', color: STORE.peachInk, fontVariant: ['tabular-nums'] },
-  giftText: { alignItems: 'center', gap: 14, marginTop: space.xs, maxWidth: 300 },
-  facts: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: space.sm },
-  fact: { overflow: 'hidden', borderRadius: 15, paddingHorizontal: 12, paddingVertical: 6, fontSize: 13, fontWeight: '600', color: aurora.textMuted },
-  footer: { paddingHorizontal: 20, paddingTop: space.sm, gap: space.sm },
-  cta: { height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.lg, backgroundColor: STORE.cta },
-  ctaText: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: STORE.ctaInk },
-  caption: { fontSize: 12, lineHeight: 16, textAlign: 'center', color: aurora.textMuted },
-  // Rows straight on the sheet, no card inside the card.
+  input: { flex: 1, ...inkType.body, paddingVertical: 0 },
+  rows: { marginTop: 22, backgroundColor: ink.card, borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden', borderWidth: StyleSheet.hairlineWidth, borderColor: ink.edge },
+  row: { paddingLeft: 18 },
+  rowPressed: { backgroundColor: 'rgba(255,255,255,0.05)' },
+  rowBody: { minHeight: 56, paddingRight: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rowLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: ink.line },
+  radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: 'rgba(235,235,245,0.35)', alignItems: 'center', justifyContent: 'center' },
+  radioOn: { position: 'absolute', left: -1.5, top: -1.5, width: 24, height: 24, borderRadius: 12, backgroundColor: ink.pill, alignItems: 'center', justifyContent: 'center' },
+  buddy: { position: 'absolute', left: inkGutter, width: BUDDY, height: BUDDY, borderRadius: BUDDY / 2, borderWidth: 2, padding: 2, zIndex: 4 },
+  buddyImage: { flex: 1, borderRadius: BUDDY / 2 },
+  bubbleRow: { position: 'absolute', left: inkGutter + BUDDY + 12, right: inkGutter, flexDirection: 'row', zIndex: 4 },
+  // The friend's side of a chat on the night: a raised bubble with its tail corner toward the face.
+  bubble: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 11,
+    borderRadius: 22,
+    borderBottomLeftRadius: 8,
+    borderCurve: 'continuous',
+    backgroundColor: '#1E1E26',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    flexShrink: 1,
+  },
+  footer: { paddingHorizontal: inkGutter, paddingTop: space.sm },
+  pill: { height: 56 },
+  off: { opacity: 0.4 },
+  plate: { position: 'absolute', borderRadius: 28, borderCurve: 'continuous' },
+  pillHit: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 22 },
+  legal: { marginTop: space.sm },
+  handoff: { position: 'absolute', overflow: 'hidden', zIndex: 20 },
   langGroup: { marginHorizontal: 0, borderRadius: 0, backgroundColor: 'transparent' },
 });
