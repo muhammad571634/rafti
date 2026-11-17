@@ -1,5 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z267. Moment stills prompt fixes + first 8 of 84 Nano Banana stills wired in (Gemini 4 Argon)
+
+- **Prompt fixes (`docs/nano-banana-moment-stills.md`)**: fixed cross-character reference contamination and muddy brushwork from the earlier `art-new/m_*.png` batch. Every prompt now passes ONLY the tight 1:1 close-up avatar (`art-new/c_<name>_avatar.png`), never `c_<name>.png` or a prior mood still, adds a per-character Identity/Hands/Wardrobe table for all 12 cast (graceful feminine hands for women, rings/tape/watch/scar details for men, explicitly no hospital scrubs/stethoscope/tie/pencil outside their scenes), and upgrades the `STYLE` block to clean, luminous stylized 2.5D AI illustration. Old 86 `m_*` files moved to `art-new/prev-stills-backup/`.
+- **Generated & wired (`assets/stills/registry.ts`, `900x1200` JPEG quality 84)**:
+  - `c_milo`: `close_night`, `rain`
+  - `c_jace`: `close_night`, `rain`, `city_lights`
+  - `c_sam`: `close_night`, `rain`
+  - `c_roman`: `close_night`
+  (`m_roman_laughing` was rejected for a 3rd-hand defect and not wired.)
+- **Quota stop**: built-in Nano Banana (`gemini-3.1-flash-image`) hit `429 RESOURCE_EXHAUSTED` after 9 calls (resets at `2026-11-17T21:33:57Z` / `2026-11-18 02:33` local). Checked `GEMINI_KEY_OWNER`, `GEMINI_API_KEY`, `GEMINI_KEY_NEW` — free tier has 0 image quota without billing. Remaining 76 stills (75 ungenerated + `m_roman_laughing` regen) wait for quota reset or a billed key / `gemini.google.com` Chrome automation.
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1014/1014 passing (302 suites).
+
+**Still to do (owner asks not finished):**
+- Generate remaining 76 moment stills in Nano Banana after quota reset (`02:33` local) or via paid key / Chrome, crop to 3:4 (`900x1200`), and wire into `assets/stills/registry.ts`.
+- The rest of 0z266's list below.
+
 ### 0z266. START HERE: "Tide" look from the owner's 7 Dribbble boards, proposal + canvas, waits for the owner's yes (Claude 1, Opus 5.5)
 
 - **Owner** (2026-11-17): 7 Dribbble boards of dark AI-companion apps and a brief: take their design DNA (teal obsidian ground + aurora, glass cards, cyan + coral, mixed italic titles, persona header with trait pills, coral bubbles, cyan voice notes, photo stack, full-bleed character cards, glass chat rows with swipe, bento profile), keep logic and Supabase, audit, propose the system and the order, wait before the first screen.
