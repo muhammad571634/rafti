@@ -114,7 +114,18 @@ coral count) and `trait` (glass) · `CompanionCard` (Find's featured card + rela
 round actions; face on the trailing side, owner rule) · bubble colours + `PhotoStack` + cyan send in the
 composer · `SwipeableChatRow` (Delete, More) · `PillButton` primary -> cyan.
 
-**Icons (owner, 2026-11-17: "the icons are too plain in places, make them like the boards"):** duotone
+**Owner's canvas comments, 2026-11-17 (these override the tables above):** no new colours, Apple iOS rules
+everywhere. Cyan and coral are dropped: the main action stays the white pill / white disc with black glyph,
+the user's bubble and money stay peach (`#FFB37A`, dark words), delete is iOS red `#FF453A`, unread counts iOS
+blue `#0A84FF`, the tab-bar badge red, online green; no gradient avatar rings, no coloured glows (a faint white
+light at most). Filters keep today's look (Chats: the chosen pill outlined in white, the rest grey; Find:
+the grey segmented control). Icons are white only, SF Symbols "hierarchical" style (a white line over a
+20-25 % white fill), never a colour inside; the tab bar is iOS: current tab a filled white glyph in the clear
+lens, the rest grey outlines, no glow. The chat's call button keeps today's plain handset. What stays from
+Tide: the teal ground + faint aurora, glass cards, lit glass round buttons, the layouts (glass chat rows with
+swipe, persona header, companion card, bento profile with the counts inside the cards).
+
+**Icons, first pass (superseded by the comments above):** duotone
 glyphs, a white line over a soft tone fill (cyan for actions, coral for love / the user, red for delete):
 `phosphor-react-native` with `weight="duotone"`, `duotoneColor`, `duotoneOpacity` (already installed, Explore
 uses it), or our own SVG paths drawn the same way. Containers: `RoundIcon` becomes a lit glass orb (top-to-bottom
