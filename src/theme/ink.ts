@@ -40,8 +40,8 @@ export const ink = {
   unread: '#0A84FF',
 } as const;
 
-/** Radii: cards 28, tiles 32, fields 20, sheets 34; everything round is a pill. */
-export const inkRadius = { card: 28, tile: 32, field: 20, sheet: 34, chip: 18, pill: 999 } as const;
+/** Radii: cards 28, tiles 32, fields 20, a list row's own card 20 (Chats), sheets 34; everything round is a pill. */
+export const inkRadius = { card: 28, tile: 32, field: 20, row: 20, sheet: 34, chip: 18, pill: 999 } as const;
 
 /** The side gutter of every Ink screen. */
 export const inkGutter = 20;

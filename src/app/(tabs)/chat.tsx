@@ -674,10 +674,10 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
 }
 
 /**
- * One chat or group as a row of iOS Messages (owner's pick B, 2026-11-09, prototype
- * docs/prototypes/chats-apple.html): a blue dot when unread, the face, the name with the time and a
- * chevron, two lines of the last message, a hairline under the text. Swipe right to mark it read or
- * pin it, left to mute or delete it, hold for the menu; in Edit mode a remove button leads.
+ * One chat or group as its own card (owner, 2026-11-17, from the Tide canvas; was iOS Messages' flat
+ * row, pick B of 2026-11-09): the unread dot inside the card's edge, the face, the name with the time,
+ * one line of the last message. Swipe right to mark it read or pin it, left to mute or delete it, hold
+ * for the menu; in Edit mode a remove button leads.
  * Memoised: a row redraws only when its own chat, typing or level changes.
  */
 const ChatRow = memo(function ChatRow({
@@ -803,7 +803,7 @@ const ChatRow = memo(function ChatRow({
           {item.kind === 'chat' ? (
             <CharacterAvatar character={item.character} size={AVATAR} />
           ) : (
-            <GroupAvatar members={item.members} size={AVATAR} ringColor={ink.ground} />
+            <GroupAvatar members={item.members} size={AVATAR} ringColor={ink.card} />
           )}
 
           <View style={styles.body}>
@@ -820,14 +820,13 @@ const ChatRow = memo(function ChatRow({
               {row.muted ? <Ionicons name="notifications-off" size={13} color={ink.text3} /> : null}
               <View style={styles.spacer} />
               <InkText variant="footnote">{relativeStamp(row.lastMessageAt)}</InkText>
-              <Ionicons name="chevron-forward" size={15} color={ink.text3} />
             </View>
             {typing ? (
               <View style={styles.typing}>
                 <TypingDots color={ink.text2} size={7} />
               </View>
             ) : row.lastMessagePreview ? (
-              <InkText variant="sub" lines={2}>
+              <InkText variant="sub" lines={1}>
                 {row.lastMessagePreview}
               </InkText>
             ) : null}
@@ -969,24 +968,28 @@ const styles = StyleSheet.create({
     borderColor: ink.ground,
   },
   dots: { flexDirection: 'row', alignItems: 'center' },
-  rowWrap: { flexDirection: 'row', alignItems: 'center' },
-  removeCell: { width: 44, paddingLeft: 8, alignItems: 'center', justifyContent: 'center' },
+  // Each chat is its own card (owner, 2026-11-17, from the Tide canvas): the gutter and the gap sit
+  // outside the swipe, so its actions are exactly the card's height and width.
+  rowWrap: { flexDirection: 'row', alignItems: 'center', marginHorizontal: space.lg, marginBottom: 10 },
+  removeCell: { width: 36, marginRight: 4, alignItems: 'center', justifyContent: 'center' },
   swipe: { flex: 1 },
-  // Opaque, so the swipe actions under it never show through a closed row.
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingRight: space.lg, backgroundColor: ink.ground },
+  // Opaque, so the swipe actions under it never show through a closed card.
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingLeft: 4,
+    paddingRight: 14,
+    paddingVertical: 12,
+    borderRadius: inkRadius.row,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    backgroundColor: ink.card,
+  },
   dotColumn: { width: DOT_COLUMN - 12 + 6, marginRight: -6, alignItems: 'flex-end' },
   unreadDot: { width: 11, height: 11, borderRadius: inkRadius.pill, backgroundColor: UNREAD },
-  // The hairline runs under the text only, as in Messages, from the name to the edge.
-  body: {
-    flex: 1,
-    minWidth: 0,
-    gap: 2,
-    paddingVertical: 11,
-    minHeight: AVATAR + 22,
-    justifyContent: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: ink.line,
-  },
+  body: { flex: 1, minWidth: 0, gap: 3, minHeight: AVATAR, justifyContent: 'center' },
   line: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   // The name shrinks first, so the level heart stays right after it and the time stays whole.
   name: { flexShrink: 1 },
