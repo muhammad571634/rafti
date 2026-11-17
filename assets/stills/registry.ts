@@ -5,7 +5,9 @@ import type { MomentStill } from '@/types';
  * `docs/nano-banana-moment-stills.md` (3:4, saved as `art-new/m_<name>_<still>.png`, compressed to
  * `assets/stills/<id>_<still>.jpg`). A mood not drawn yet falls back to the friend's portrait.
  */
-export const STILLS: Record<string, Partial<Record<MomentStill, number>>> = {};
+export const STILLS: Record<string, Partial<Record<MomentStill, number>>> = {
+  c_milo: { close_night: require('./c_milo_close_night.jpg') },
+};
 
 /** Where the eyes sit down a still (the prompts put them at 40 %), for a cover crop of a wide card. */
 export const STILL_EYES_TOP = '38%';
