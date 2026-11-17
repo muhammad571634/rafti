@@ -152,7 +152,7 @@ function MomentCard({
 }) {
   const picture = momentPicture(scene, character, width / stillHeight, art);
   return (
-    <GlowCard hue={hue} onPress={onPress} accessibilityLabel={`${scene.title}. ${action}`} style={[styles.card, { width }]} contentStyle={styles.cardBody}>
+    <GlowCard hue={hue} onPress={onPress} accessibilityLabel={`${scene.title}. ${action}`} style={[styles.card, { width }]} contentStyle={styles.cardBody} lit={false}>
       <Still scene={scene} picture={picture} width={width} height={stillHeight} hue={hue} />
       <View style={styles.words}>
         {/* Never cut (HIG text rule, 0z258): a long card makes the row taller, the cards stretch to it. */}

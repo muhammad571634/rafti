@@ -14,16 +14,18 @@ export interface GlowCardProps {
   style?: StyleProp<ViewStyle>;
   /** Inner layout (padding, gap). */
   contentStyle?: StyleProp<ViewStyle>;
+  /** False when a picture on top carries the hue: the side light would leave a seam where the picture melts into the card. */
+  lit?: boolean;
 }
 
 /**
  * A record as a card lit from one side by its hue (design-ink §1.5): moments, streams, notes. The
  * light is a gradient, never a blur (the A51 cannot afford one).
  */
-export function GlowCard({ hue, children, onPress, onLongPress, accessibilityLabel, style, contentStyle }: GlowCardProps) {
+export function GlowCard({ hue, children, onPress, onLongPress, accessibilityLabel, style, contentStyle, lit = true }: GlowCardProps) {
   const body = (
     <>
-      <LinearGradient colors={[`${hue}52`, `${hue}00`]} start={{ x: 0, y: 0.3 }} end={{ x: 0.8, y: 0.7 }} style={StyleSheet.absoluteFill} />
+      {lit ? <LinearGradient colors={[`${hue}52`, `${hue}00`]} start={{ x: 0, y: 0.3 }} end={{ x: 0.8, y: 0.7 }} style={StyleSheet.absoluteFill} /> : null}
       <View style={[styles.content, contentStyle]}>{children}</View>
     </>
   );
