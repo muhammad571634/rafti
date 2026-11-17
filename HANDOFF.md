@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z265. START HERE: Us month card with pictures (done), onboarding gift from the chosen friend (prototype, waits for the owner) (Claude 1, Opus 5.5)
+
+- **Us, "Who you talked with"** (owner 2026-11-17, from a mockup): each bubble shows the friend's square picture washed in their talk colour with a ring of it (the colour alone for a friend with no picture, e.g. a user-made one without a photo); under the subtitle a yellow "Most talked" mark, the name and "40% of your month" (`us.mostTalked`, `us.ofMonth`, 14 locales). `src/components/us/talked-with.tsx`. OTA `01a1e9eb`; **not yet seen on the A51** (the phone locked with face unlock).
+- **Onboarding step 5, the welcome gift** (owner: the chosen friend gives it, with animation): prototype `docs/prototypes/onboarding-gift.html`: the friend's picture comes into focus and fills the top melting into the night with a glow of their colour, their name, typing dots then "Hey {name}! Finally.", shells fly from them into a +100 chip that counts up and settles with a haptic, then "Say hi" lights up and morphs into the chat field as today. Replaces the moon mascot on that step only. Waits for the owner's yes, then code in `src/app/onboarding.tsx` (`GiftWords`, `MoonMascot` on `gift`).
+
+**Still to do (owner asks not finished):**
+- Owner: approve the gift prototype; then build it and check on the A51 (Russian too).
+- Check the Us card on the A51 (worst case: 12 friends, a friend with no picture, long Russian name).
+- The rest of 0z264's list below.
+
 ### 0z264. START HERE: moment cards are full pictures (Character.AI's shape, owner approved) and share as a 9:16 poster; A and B of 0z263 done (Claude 1, Opus 5.5)
 
 - **Full-picture cards** (owner approved `docs/prototypes/moment-cards.html` 2026-11-17, replacing the still-on-top card below): each card is a 2:3 picture (grows when its words are long, never cuts them), clear glass on top (a "This week" mark in the friend's hue on their own moments, else the scene glyph; Share on the right), a dark foot with the serif title, setting, their line in dark glass (`onMediaBubble`) and Continue in chat as a glass pill. No picture: the scene hue fading into the card with a big glyph. New string `scenes.thisWeek` in all 14.
