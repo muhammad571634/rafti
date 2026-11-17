@@ -108,7 +108,7 @@ describe('the moments write', () => {
     assert.match(text, /Mira/);
     assert.match(text, /"line": the first thing you say/);
     assert.match(text, /Shape: \{"moments":\[\{"title":"","setting":"","role":"","line":"","still":""\}\]\}/);
-    // The six stills, by id, so the card can show the friend in that mood.
+    // The seven stills, by id, so the card can show the friend in that mood.
     for (const still of MOMENT_STILLS) assert.ok(text.includes(still.id));
     assert.match(text, /REPLY LANGUAGE/);
   });
@@ -129,7 +129,7 @@ describe('the moments write', () => {
 
 describe('moment stills', () => {
   const request = { kind: 'moments', week: '2026-W47', input: { character, user } } as WriteRequest & { kind: 'moments' };
-  it('keeps a still the model named when it is one of the six, in any case, and drops any other', () => {
+  it('keeps a still the model named when it is one of the seven, in any case, and drops any other', () => {
     assert.equal(asMomentStill('rain'), 'rain');
     assert.equal(asMomentStill(' Close_Night '), 'close_night');
     assert.equal(asMomentStill('beach'), undefined);
@@ -146,7 +146,7 @@ describe('moment stills', () => {
     assert.ok(!('still' in b));
   });
 
-  it('gives every app scene one of the six', () => {
+  it('gives every app scene one of the seven', () => {
     for (const scene of officialScenes) assert.ok(asMomentStill(scene.still), scene.id);
   });
 });

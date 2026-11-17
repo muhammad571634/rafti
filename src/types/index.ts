@@ -476,8 +476,8 @@ export interface Scene {
   createdAt: string;
 }
 
-/** The six moods every friend's moment stills are drawn in (`src/ai/moment-stills.ts`). */
-export type MomentStill = 'close_night' | 'rain' | 'city_lights' | 'morning' | 'laughing' | 'tension';
+/** The seven moods every friend's moment stills are drawn in (`src/ai/moment-stills.ts`). */
+export type MomentStill = 'close_night' | 'rain' | 'city_lights' | 'morning' | 'laughing' | 'tension' | 'our_place';
 
 /** A scene running in a chat: a copy, so editing or deleting the scene leaves the chat as it was. */
 export interface ActiveScene {
