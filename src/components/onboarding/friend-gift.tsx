@@ -13,21 +13,19 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Path } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { InkText } from '@/components/ink';
-import { Anim } from '@/components/ui';
+import { Anim, ShellIcon } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
 
-import { SHELL } from './night-gift';
 import { EASE_OUT, slowFor } from './night-motion';
 
 /** How much of the screen their picture fills before it melts into the night. */
 const PICTURE_SHARE = 0.64;
 const SHELLS = 8;
-const SHELL_SIZE = 26;
+const SHELL_SIZE = 28;
 /** When each part arrives (ms, slower after midnight): the docs/prototypes/onboarding-gift.html timeline. */
 const AT = { name: 400, bubble: 750, words: 1550, gift: 1800, shells: 1950, count: 2050 } as const;
 const COUNT_MS = 900;
@@ -145,7 +143,7 @@ export const FriendGift = memo(function FriendGift({
           <View style={styles.gift} accessible accessibilityLabel={`+${amount}. ${line}`}>
             <Animated.View style={[styles.chip, { backgroundColor: `${hue}73` }, chipStyle]}>
               <View ref={coin} collapsable={false}>
-                <ShellGlyph size={30} />
+                <ShellIcon size={34} />
               </View>
               <Count to={amount} delay={reduce ? 0 : AT.count * k} duration={reduce ? 0 : COUNT_MS * k} onDone={reduce ? undefined : settle} />
             </Animated.View>
@@ -217,14 +215,6 @@ function Count({ to, delay, duration, onDone }: { to: number; delay: number; dur
   return <InkText variant="figure">{`+${n}`}</InkText>;
 }
 
-function ShellGlyph({ size }: { size: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d={SHELL} stroke={ink.text} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
-
 /** One shell flying from the friend into the gift along an arc, spinning, and gone as it lands. */
 function FlyingShell({ index, from, to, delay, onLand }: { index: number; from: { x: number; y: number }; to: { x: number; y: number }; delay: number; onLand: () => void }) {
   const p = useSharedValue(0);
@@ -256,9 +246,8 @@ function FlyingShell({ index, from, to, delay, onLand }: { index: number; from: 
   });
   return (
     <Animated.View style={[styles.flyer, style]}>
-      <Svg width={SHELL_SIZE} height={SHELL_SIZE} viewBox="0 0 24 24" fill="none">
-        <Path d={SHELL} stroke="#FFE08A" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-      </Svg>
+      {/* The app's own shell, the one the wallet and every price show. */}
+      <ShellIcon size={SHELL_SIZE} />
     </Animated.View>
   );
 }
