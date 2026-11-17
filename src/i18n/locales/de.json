@@ -896,6 +896,7 @@
     "endScene": "Szene beenden",
     "ended": "Szene beendet: {{title}}",
     "start": "{{title}} starten",
+    "continue": "Im Chat fortsetzen",
     "morePlan": "Bis zu {{count}} mit Abo",
     "titleLabel": "Titel",
     "titlePlaceholder": "Titel",

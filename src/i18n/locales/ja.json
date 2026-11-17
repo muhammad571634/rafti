@@ -876,6 +876,7 @@
     "endScene": "シーンを終了",
     "ended": "シーン終了: {{title}}",
     "start": "{{title}}を開始",
+    "continue": "チャットで続ける",
     "morePlan": "プラン加入で最大{{count}}個",
     "titleLabel": "タイトル",
     "titlePlaceholder": "タイトル",

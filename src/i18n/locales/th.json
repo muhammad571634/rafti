@@ -876,6 +876,7 @@
     "endScene": "จบฉาก",
     "ended": "ฉากสิ้นสุดลงแล้ว: {{title}}",
     "start": "เริ่ม {{title}}",
+    "continue": "ไปต่อในแชท",
     "morePlan": "สูงสุด {{count}} ฉากเมื่อสมัครแพ็กเกจ",
     "titleLabel": "ชื่อฉาก",
     "titlePlaceholder": "ชื่อฉาก",

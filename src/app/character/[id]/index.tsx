@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,6 +19,7 @@ import {
   QuickRow,
   profileSheet,
 } from '@/components/character/kit';
+import { FriendMoments } from '@/components/character/moments';
 import { Header, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
 import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -28,11 +30,12 @@ import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
 import { daysBetween, shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { night, space } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
-import type { Character, Relationship } from '@/types';
+import type { Character, Relationship, Scene } from '@/types';
 
 // Always dark (appearance B, owner 2026-11-11): a friend's page is a moment with them.
 const { colors, ground: systemGround, friendAccent } = night;
@@ -59,6 +62,9 @@ export default function CharacterProfileScreen() {
     (s) => s.memories.filter((m) => m.characterId === characterId && isActiveMemory(m)).length,
   );
   const addFriend = useAppStore((s) => s.addFriend);
+  const continueMoment = useAppStore((s) => s.continueMoment);
+  // Two quick taps on a moment start it once.
+  const continuedAt = useRef(0);
   const locale = useAppStore((s) => s.user.locale);
   // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
   const openChatOnce = useOpenChat();
@@ -86,6 +92,17 @@ export default function CharacterProfileScreen() {
     if (locked) return early.add(character);
     const conversationId = conversation?.id ?? addFriend(character.id);
     // Back to that chat when it is under this profile, else on top of it (`useOpenChat`).
+    openChatOnce(conversationId);
+  };
+
+  /** Continue in chat: the moment starts as a scene in the chat with them (a new friend is added by it). */
+  const continueScene = (scene: Scene) => {
+    if (locked) return early.add(character);
+    if (Date.now() - continuedAt.current < 1000) return;
+    const conversationId = continueMoment(character.id, scene.id);
+    if (!conversationId) return;
+    continuedAt.current = Date.now();
+    haptic.success();
     openChatOnce(conversationId);
   };
 
@@ -170,6 +187,8 @@ export default function CharacterProfileScreen() {
             </QuickRow>
           ) : null}
           {!voiceReady ? <Txt style={profileStyles.caption}>{t('characterProfile.voiceTraining')}</Txt> : null}
+
+          <FriendMoments character={character} isFriend={isFriend} onContinue={continueScene} />
 
           <AboutCard character={shown} name={shortName(name)} locale={locale} />
 

@@ -467,6 +467,8 @@ export interface Scene {
   official?: boolean;
   /** A world's entry scene: offered only to that world's cast (`Character.series`). */
   series?: string;
+  /** A moment this friend wrote for the two of them (`src/lib/friend-moments.ts`): offered only with them. */
+  characterId?: string;
   createdAt: string;
 }
 

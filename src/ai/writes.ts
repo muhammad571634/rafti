@@ -1,3 +1,4 @@
+import type { WrittenMoment } from '@/lib/friend-moments';
 import type { DateChoice, DateRound } from '@/mock/dates';
 import type { DateMood, DiaryMood, MemoryItem, Message } from '@/types';
 
@@ -77,12 +78,13 @@ export type WriteRequest = Base &
     | { kind: 'diaryReply'; entry: string }
     | { kind: 'quizPicks'; title: string; questions: readonly QuizItem[] }
     | { kind: 'selfQuiz'; week: string }
+    | { kind: 'moments'; week: string }
     | { kind: 'worldLines'; world: string; questions: readonly (QuizItem & { answer: number })[] }
     | { kind: 'dateRound'; date: DatePlan; soFar: readonly DateStep[] }
   );
 
 export type WriteKind = WriteRequest['kind'];
-export const WRITE_KINDS: readonly WriteKind[] = ['note', 'diary', 'diaryReply', 'quizPicks', 'selfQuiz', 'worldLines', 'dateRound'];
+export const WRITE_KINDS: readonly WriteKind[] = ['note', 'diary', 'diaryReply', 'quizPicks', 'selfQuiz', 'moments', 'worldLines', 'dateRound'];
 
 export interface WriteResults {
   note: { note: string };
@@ -90,6 +92,7 @@ export interface WriteResults {
   diaryReply: { reply: string };
   quizPicks: { picks: QuizPick[] };
   selfQuiz: { questions: SelfQuizItem[] };
+  moments: { moments: WrittenMoment[] };
   worldLines: { intro: string; lines: { right: string; wrong: string }[] };
   dateRound: DateRound;
 }
@@ -108,12 +111,16 @@ export const WRITE_MODE: Record<WriteKind, PromptMode> = {
   diaryReply: 'chat',
   quizPicks: 'game',
   selfQuiz: 'game',
+  // Set-ups for the chat, written about the two of them: the chat's own voice.
+  moments: 'chat',
   worldLines: 'game',
   dateRound: 'date',
 };
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
 const QUIZ_LINES = 'For each one, "same" is what you would say if the user picked your answer, and "differ" what you would say if they picked another: one short line each (max 20 words), in your voice, as if texting them.';
+/** How many moments one answer is asked for (`MOMENTS_COUNT`, src/lib/friend-moments.ts). */
+const MOMENTS_ASKED = 4;
 const numbered = (options: readonly string[]) => options.map((o, i) => `  ${i}. ${o}`);
 
 /** The task of one write, in the turn tier. */
@@ -151,6 +158,18 @@ function taskLines(request: WriteRequest): string[] {
         QUIZ_LINES,
         JSON_ONLY,
         'Shape: {"questions":[{"text":"","options":["","","",""],"answer":0,"same":"","differ":""}]}',
+      ];
+    case 'moments':
+      return [
+        `TASK: Write ${MOMENTS_ASKED} moments the two of you could step into this week (${request.week}): small scenes between you and the user, each a place and a situation that is already happening when it starts.`,
+        '- They come from who you are to each other: your history, what stands between you, your own life and habits, and what you remember about them. Make each one different: one light, one tense or unfinished, one tender, one they would not expect.',
+        '- "title": a few words, like the caption of a film still (max 32 characters, no full stop), starting with a capital letter even if you text in lowercase.',
+        `- "setting": where the two of you are and what is happening right now, in two short sentences (max 220 characters). The USER reads it on a card, so it speaks to them: "you" is always the user, you are "${name.split(' ')[0]}" by name, and "the two of you" is both. Never "I" or "me", and never the user's name.`,
+        '- "role": who the user is in it, only when they are not simply themselves (max 80 characters); else "".',
+        '- "line": the first thing you say to them in it: one short message in your voice (max 140 characters) that puts them in the scene and leaves them something to answer. Spoken words only, no *narration*.',
+        '- Present day and ordinary places. No real people, brands or named real places. Never a scene about harm to anyone.',
+        JSON_ONLY,
+        'Shape: {"moments":[{"title":"","setting":"","role":"","line":""}]}',
       ];
     case 'worldLines':
       return [
@@ -276,6 +295,18 @@ export function parseWrite(request: WriteRequest, raw: string): WriteResults[Wri
       });
       return questions && questions.length >= 3 ? { questions: questions.slice(0, 5) } : null;
     }
+    case 'moments': {
+      // Each is checked alone: one broken moment does not cost the friend the rest of the week's.
+      const moments = (Array.isArray(json.moments) ? json.moments : []).flatMap((v): WrittenMoment[] => {
+        if (!isObject(v)) return [];
+        const title = text(v.title, 40);
+        const setting = text(v.setting, LINE_MAX);
+        const line = text(v.line, 200);
+        const role = text(v.role, 100);
+        return title && setting && line ? [{ title, setting, line, ...(role ? { role } : {}) }] : [];
+      });
+      return moments.length >= 2 ? { moments: moments.slice(0, MOMENTS_ASKED) } : null;
+    }
     case 'worldLines': {
       const intro = text(json.intro, LINE_MAX);
       const lines = allOf(
@@ -349,6 +380,8 @@ export function cleanWrite(body: unknown): WriteRequest | null {
     }
     case 'selfQuiz':
       return { ...base, kind: 'selfQuiz', week: shortText(body.week, 12) };
+    case 'moments':
+      return { ...base, kind: 'moments', week: shortText(body.week, 12) };
     case 'worldLines': {
       const questions = quizItems(body.questions);
       const world = shortText(body.world, 80);

@@ -68,6 +68,7 @@ import {
   planFollowUpCue,
   planRemindCue,
   questCue,
+  sceneOpenCue,
   setupCancelledCue,
   quizDoneCue,
   sayCue,
@@ -100,6 +101,7 @@ import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@
 import { mockSteerLines } from '@/mock/steer';
 import { shortName } from '@/lib/format';
 import { forgetFriend } from '@/lib/forget-friend';
+import { currentMoments, isWrittenMoment, momentScenes, type FriendMoments } from '@/lib/friend-moments';
 import { endedChats, retireCast } from '@/lib/retire-cast';
 import {
   canAddMember,
@@ -115,7 +117,7 @@ import {
   withoutMember,
 } from '@/lib/group-chat';
 import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodAt, moodOpen, themeCost, type ThemeProblem } from '@/lib/date-themes';
-import { checkQuiz, cleanQuiz, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
+import { checkQuiz, cleanQuiz, weekKey, wonWorldQuiz, type QuizDraft, type QuizProblem } from '@/lib/quiz';
 import { checkClip, cleanLines, clipCost, clipDuration, clipsOpenedBy, clipTitle, type ClipProblem } from '@/lib/radio-clips';
 import { capLedger, capMessages, capMoments } from '@/lib/storage-caps';
 import type { MemorySyncState } from '@/lib/memory-sync';
@@ -484,6 +486,8 @@ export interface AppState {
   userQuizzes: UserQuiz[];
   /** Each friend's quiz about themselves, written by the model, kept for its week. */
   selfQuizzes: Record<string, { week: string; questions: SelfQuizItem[] }>;
+  /** Each friend's moments to step into, written by them for the week (`src/lib/friend-moments.ts`, `askFriendMoments`). */
+  friendMoments: Record<string, FriendMoments>;
   /** Worlds whose Photo Booth frame the user won in the world quiz (F29). */
   wonFrames: WorldKey[];
   /** Photo Booth frames the user made (F29). */
@@ -609,6 +613,11 @@ export interface AppState {
   deleteScene: (id: string) => void;
   /** Starts a scene in a one-to-one chat: a scene card, then their first line. Free. */
   startScene: (conversationId: string, sceneId: string) => void;
+  /**
+   * "Continue in chat" on a friend's page: starts the scene in the chat with them, adding them first
+   * when they are new (the scene opens that chat instead of their greeting). The chat's id, or null.
+   */
+  continueMoment: (characterId: string, sceneId: string) => string | null;
   /** Ends the chat's scene; the character goes back to everyday chat. */
   endScene: (conversationId: string) => void;
   /** The user's own world books (`src/lib/lorebook.ts`); the worlds' are `officialLorebooks`. */
@@ -962,6 +971,7 @@ type PersistedKeys =
   | 'dateThemes'
   | 'userQuizzes'
   | 'selfQuizzes'
+  | 'friendMoments'
   | 'wonFrames'
   | 'frames'
   | 'messages'
@@ -1191,6 +1201,7 @@ export const useAppStore = create<AppState>()(
       dateThemes: [],
       userQuizzes: [],
       selfQuizzes: {},
+      friendMoments: {},
       wonFrames: [],
       frames: [],
 
@@ -2013,13 +2024,14 @@ export const useAppStore = create<AppState>()(
 
       startScene: (conversationId, sceneId) => {
         const conversation = get().conversations.find((c) => c.id === conversationId);
-        const scene = [...localized('scenes', officialScenes), ...get().scenes].find((x) => x.id === sceneId);
+        const scene = conversation && sceneFor(get(), conversation.characterId, sceneId);
         if (!conversation || !scene) return;
         // A reply still on its way belongs to the chat before the scene.
         cancelReplies(set, conversationId);
         const now = Date.now();
+        const running = activeScene(scene, new Date(now));
         set((s) => ({
-          conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, scene: activeScene(scene, new Date(now)) } : c)),
+          conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, scene: running } : c)),
         }));
         appendMessage(
           set,
@@ -2028,14 +2040,46 @@ export const useAppStore = create<AppState>()(
           { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'scene', text: scene.title, setting: scene.setting, sceneId: scene.id, createdAt: new Date(now).toISOString() },
           { quiet: true },
         );
-        // Their first line: the scene's own, else one they write (the server asks `buildSceneOpeningPrompt`).
-        appendMessage(
+        const given = scene.opening?.trim();
+        // Their first line is already theirs or the user's: a moment they wrote opens with its own
+        // line, and a scene the user wrote with the line the user gave it.
+        if (given && (isWrittenMoment(scene) || !scene.official)) {
+          appendMessage(set, get, conversationId, { id: uid('m'), conversationId, author: 'them', kind: 'text', text: given, createdAt: new Date(now + 1).toISOString() }, { countUnread: false });
+          return;
+        }
+        // Otherwise they write it now (`sceneOpenCue`); the stock line plays only with the model off.
+        // Dropped when the scene was ended or swapped meanwhile. Busy for good in a chat where nothing
+        // has been said yet: their own greeting, so a chat begun from a moment is never left empty.
+        writeFirst(
           set,
           get,
           conversationId,
-          { id: uid('m'), conversationId, author: 'them', kind: 'text', text: scene.opening?.trim() || mockSceneOpening(scene), createdAt: new Date(now + 1).toISOString() },
-          { countUnread: false },
+          given || mockSceneOpening(scene),
+          undefined,
+          momentRequest(get, conversationId, sceneOpenCue(scene), new Date(now)),
+          'nothing',
+          () => {
+            const state = get();
+            const chat = state.conversations.find((c) => c.id === conversationId);
+            const character = chat && state.characters.find((c) => c.id === chat.characterId);
+            if (!chat || !character || (state.messages[conversationId] ?? []).some((m) => m.kind !== 'system')) return;
+            appendMessage(set, get, conversationId, themText(conversationId, openingFor(state, character, conversationId)), { countUnread: true });
+          },
+          0,
+          () => get().conversations.find((c) => c.id === conversationId)?.scene?.startedAt === running.startedAt,
         );
+      },
+
+      continueMoment: (characterId, sceneId) => {
+        const state = get();
+        if (state.blockedIds.includes(characterId) || !state.characters.some((c) => c.id === characterId) || !sceneFor(state, characterId, sceneId)) return null;
+        const known = state.conversations.find((c) => c.characterId === characterId);
+        // Already playing in their chat: continuing it is opening it, not starting it over.
+        if (known?.scene?.sceneId === sceneId) return known.id;
+        // New here: the scene opens the chat instead of their greeting.
+        const conversationId = known?.id ?? get().addFriend(characterId, { quiet: true });
+        get().startScene(conversationId, sceneId);
+        return conversationId;
       },
 
       endScene: (conversationId) => {
@@ -4163,6 +4207,7 @@ export const useAppStore = create<AppState>()(
         dateThemes: s.dateThemes,
         userQuizzes: s.userQuizzes,
         selfQuizzes: s.selfQuizzes,
+        friendMoments: s.friendMoments,
         wonFrames: s.wonFrames,
         frames: s.frames,
         // Once the on-device database holds the messages (B1.3a) the save leaves them out. Until
@@ -4909,6 +4954,52 @@ export async function askSelfQuiz(characterId: string, week: string): Promise<Se
   if (!written) return null;
   useAppStore.setState((s) => ({ selfQuizzes: { ...s.selfQuizzes, [characterId]: { week, questions: written.questions } } }));
   return written.questions;
+}
+
+/** A scene this friend can play: a moment they wrote, the app's, or the user's own. */
+function sceneFor(state: AppState, characterId: string, sceneId: string): Scene | undefined {
+  return [...(state.friendMoments[characterId]?.scenes ?? []), ...localized('scenes', officialScenes), ...state.scenes].find((scene) => scene.id === sceneId);
+}
+
+/** Moments being written, so a page opened twice asks once; and when one failed, so a busy model is not asked on every open. */
+const momentsAsked = new Map<string, Promise<Scene[] | null>>();
+const momentsFailedAt = new Map<string, number>();
+const MOMENTS_RETRY_MS = 10 * 60_000;
+
+/**
+ * This week's moments with a friend (`src/lib/friend-moments.ts`): the kept ones, else they write
+ * them now, once a week and per app language. Null: not a friend yet (nothing is written for a
+ * stranger), the model is off or busy; the page then offers the app's scenes.
+ */
+export function askFriendMoments(characterId: string): Promise<Scene[] | null> {
+  const state = useAppStore.getState();
+  const week = weekKey(new Date());
+  const lang = i18n.language;
+  const kept = currentMoments(state.friendMoments[characterId], week, lang);
+  if (kept.length) return Promise.resolve(kept);
+  const key = `${characterId}|${week}|${lang}`;
+  const isFriend = () => useAppStore.getState().conversations.some((c) => c.characterId === characterId);
+  if (!modelIsOn() || !isFriend() || Date.now() - (momentsFailedAt.get(key) ?? 0) < MOMENTS_RETRY_MS) return Promise.resolve(null);
+  const running = momentsAsked.get(key);
+  if (running) return running;
+  const base = writeBase(characterId, true);
+  if (!base) return Promise.resolve(null);
+  const asked = writeWithModel({ ...base, kind: 'moments', week })
+    .then((written) => {
+      const scenes = written ? momentScenes(characterId, week, written.moments) : [];
+      if (!scenes.length) {
+        momentsFailedAt.set(key, Date.now());
+        return null;
+      }
+      // Removed meanwhile: nothing is kept for someone who is gone.
+      if (!isFriend()) return null;
+      useAppStore.setState((s) => ({ friendMoments: { ...s.friendMoments, [characterId]: { week, lang, scenes } } }));
+      return scenes;
+    })
+    .catch(() => null)
+    .finally(() => momentsAsked.delete(key));
+  momentsAsked.set(key, asked);
+  return asked;
 }
 
 /** Notes being asked for, so opening the screen twice asks once. */

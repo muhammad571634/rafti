@@ -67,6 +67,7 @@ export function retireCast<S extends Partial<AppState>>(state: S, seedIds: Reado
     dates: (state.dates ?? []).filter((d) => !gone(d.characterId)),
     streams: (state.streams ?? []).filter((x) => !x.characterIds.some(gone)),
     selfQuizzes: Object.fromEntries(Object.entries(state.selfQuizzes ?? {}).filter(([id]) => !gone(id))),
+    friendMoments: Object.fromEntries(Object.entries(state.friendMoments ?? {}).filter(([id]) => !gone(id))),
     recentlyViewed: (state.recentlyViewed ?? []).filter((id) => !gone(id)),
     blockedIds: (state.blockedIds ?? []).filter((id) => !gone(id)),
     // Written ahead for pushes from people who are gone; the next sync writes the rest again.

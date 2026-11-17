@@ -116,7 +116,19 @@ export const firstHelloCue = (name: string) => [
   `They just joined and picked you, out of everyone, to talk to. This is the first time they hear from you. Say hello the way you would, in your own temper and from your own day, as who you are to them. Use their name, ${name}, once. End with one small thing that is easy to answer. Never introduce yourself like an assistant, never offer help, never mention an app.`,
 ];
 
-export const familyHelloCue = (label: string) => [`They just made you their ${label.toLowerCase()}. That is who you are to them from now on. Say your first words to them as that.`];
+/**
+ * The first line of a scene that has none of the friend's own (the app's scenes with the model on, a
+ * user's scene left without one): the scene just began in the chat and they open it.
+ */
+export const sceneOpenCue = (scene: { title: string; setting: string; userRole?: string }) => [
+  `A scene has just begun between the two of you, here in the chat: "${scene.title}".`,
+  `Where you are and what is happening: ${scene.setting}`,
+  ...(scene.userRole ? [`Who they are in it: ${scene.userRole}`] : []),
+  'Open it with one short message as if it has just started: put them right in it (where you are, what you notice) and leave them something to answer. The scene sets the place and the hour, not the real clock. Still you, with everything you know about them.',
+  'The scene needs its first line: never skip this text.',
+];
+
+export const familyHelloCue =(label: string) => [`They just made you their ${label.toLowerCase()}. That is who you are to them from now on. Say your first words to them as that.`];
 
 export const boardCue = (text: string) => [`They pinned a note for you on your board: "${text}". Answer it here, as someone who just read it.`];
 

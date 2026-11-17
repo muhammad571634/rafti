@@ -896,6 +896,7 @@
     "endScene": "Sahneyi bitir",
     "ended": "Sahne sona erdi: {{title}}",
     "start": "{{title}} başlat",
+    "continue": "Sohbette devam et",
     "morePlan": "Abonelikle {{count}} taneye kadar",
     "titleLabel": "Başlık",
     "titlePlaceholder": "Başlık",

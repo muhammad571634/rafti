@@ -16,6 +16,8 @@ bill, the launch key will. Plans and prices live in `src/economy/plans.ts`, the 
 | Memory pass (`[memory]`) | after every 4 user lines and 20 s of quiet (`MEMORY_EVERY`) | 1,800-2,400 | 0 | 240-350 | $0.0008-0.0011 |
 | Moment / first text (`[moment]`) | the friend writes first: plan added, reminder, "how did it go?", alarm set, care, quest, greetings | ~2,900 | 0 | 150-220 | ~$0.0010 |
 | Thread text (touch) | each text the friend planned to send later (up to 4 per thread) | not measured yet | | | ~a moment |
+| A friend's moments for the week (`moments` write, 0z262) | once a week per friend whose page (or the chat's scene list) is opened, per app language; nothing for a stranger | ~3,300 | 0 | ~425 | ~$0.0005 (measured on the free key, 2026-11-17, flash-lite, 2.4-3.3 s) |
+| A scene's first line (`[moment]`, `sceneOpenCue`, 0z262) | each app scene started with the model on (a friend's own moment and a user's scene with its line cost nothing) | ~a moment | | | ~$0.0010 |
 
 On 2026-10-31 a reply was $0.0010-0.0014 and a memory pass ~$0.0005: the prompt grew since (clock,
 plans and alarms together, setup rules and offers, threads). Rough heavy user now: 100 messages a

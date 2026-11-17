@@ -876,6 +876,7 @@
     "endScene": "Akhiri adegan",
     "ended": "Adegan berakhir: {{title}}",
     "start": "Mulai {{title}}",
+    "continue": "Lanjutkan di obrolan",
     "morePlan": "Hingga {{count}} dengan paket",
     "titleLabel": "Judul",
     "titlePlaceholder": "Judul",

@@ -936,6 +936,7 @@
     "endScene": "Закончить сцену",
     "ended": "Сцена завершена: {{title}}",
     "start": "Начать: {{title}}",
+    "continue": "Продолжить в чате",
     "morePlan": "До {{count}} сцен по подписке",
     "titleLabel": "Название",
     "titlePlaceholder": "Название",

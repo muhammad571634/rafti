@@ -5,7 +5,7 @@ import { withoutMember } from './group-chat';
 /**
  * Everything the user had with a friend, gone: chats (and groups they leave; a group left with one
  * member ends), the bond, memories, moments, plans, notes, board, photos, radio, dates, follow-ups,
- * calls and their diary replies (0z181: Block used to leave alarms, threads, calls and diary replies
+ * calls, the week's moments they wrote and their diary replies (0z181: Block used to leave alarms, threads, calls and diary replies
  * behind, so a blocked friend still woke the user). An alarm they woke the user with stays, as a
  * plain alarm: a removed friend must not cost a morning. Used by Block, Remove friend and Delete.
  */
@@ -17,6 +17,7 @@ export function forgetFriend(s: AppState, characterId: string): Partial<AppState
     return rest ? [{ ...g, memberIds: rest }] : [];
   });
   const { [characterId]: _bond, ...relationships } = s.relationships;
+  const { [characterId]: _moments, ...friendMoments } = s.friendMoments ?? {};
   return {
     conversations: s.conversations.filter((c) => !gone.has(c.id)),
     groups,
@@ -24,6 +25,7 @@ export function forgetFriend(s: AppState, characterId: string): Partial<AppState
     typing: Object.fromEntries(Object.entries(s.typing).filter(([id]) => !gone.has(id))),
     activeConversationId: s.activeConversationId && gone.has(s.activeConversationId) ? null : s.activeConversationId,
     relationships,
+    friendMoments,
     memories: s.memories.filter((m) => m.characterId !== characterId),
     moments: s.moments.filter((m) => m.characterId !== characterId),
     schedules: s.schedules.filter((x) => x.characterId !== characterId),

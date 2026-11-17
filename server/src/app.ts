@@ -85,10 +85,10 @@ const TALK_ROUTES = new Set(['/v1/chat/reply', '/v1/chat/group', '/v1/voice/tran
 /** The ledger is read again for an account at its allowance at most this often. */
 const LEDGER_READ_MS = 20_000;
 /**
- * Writes nobody is waiting on (`/v1/ai/write`): a friend's diary page, their weekly quiz, a world
- * quiz's host lines. A date round, a note or an answer to the user's own page is someone waiting.
+ * Writes nobody is waiting on (`/v1/ai/write`): a friend's diary page, their weekly quiz, the week's
+ * moments on their page (it shows the app's scenes meanwhile), a world quiz's host lines. A date round, a note or an answer to the user's own page is someone waiting.
  */
-const SIDE_WRITES = new Set<string>(['diary', 'selfQuiz', 'worldLines']);
+const SIDE_WRITES = new Set<string>(['diary', 'selfQuiz', 'moments', 'worldLines']);
 /** A line read aloud: its text and the character's id. */
 const SPEAK_BODY_MAX_BYTES = SPEAK_CHARS_MAX * 4 + 1000;
 /** A line takes about a second to read out; more than this and the call shows the caption alone. */

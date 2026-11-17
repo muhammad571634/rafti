@@ -1,33 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { GroupLabel } from '@/components/plans/store-look';
+import { sceneLook } from '@/components/scenes/scene-look';
 import { AddRow, GlassBar, InsetGroup, LargeTitle, Screen, SymbolTile, Txt, useScrolledPast } from '@/components/ui';
 import { perkLimit, PERKS, planWouldAllowMore } from '@/economy/perks';
 import { haptic } from '@/lib/haptics';
 import { localized } from '@/i18n/content';
 import { officialScenes } from '@/mock/scenes';
-import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors } from '@/theme';
+import { currentMoments } from '@/lib/friend-moments';
+import { weekKey } from '@/lib/quiz';
+import { askFriendMoments, displayName, useAppStore } from '@/store/use-app-store';
+import { colors, space } from '@/theme';
 import { inkFace } from '@/theme/ink';
 import type { Scene } from '@/types';
-
-type SceneLook = { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string };
-
-/** Each of the app's scenes keeps one glyph and iOS hue, as Settings' rows do (never orange). */
-const SCENE_LOOK: Record<string, SceneLook> = {
-  scene_ferry: { ios: 'ferry.fill', icon: 'boat', fill: systemColors.blue },
-  scene_cabin: { ios: 'snowflake', icon: 'snow', fill: systemColors.cyan },
-  scene_rooftop: { ios: 'building.2.fill', icon: 'business', fill: systemColors.purple },
-  scene_market: { ios: 'takeoutbag.and.cup.and.straw.fill', icon: 'fast-food', fill: systemColors.red },
-  scene_lighthouse: { ios: 'cloud.bolt.rain.fill', icon: 'thunderstorm', fill: systemColors.indigo },
-  scene_train: { ios: 'tram.fill', icon: 'train', fill: systemColors.green },
-};
-const OWN_LOOK: SceneLook = { ios: 'theatermasks.fill', icon: 'film', fill: systemColors.teal };
 
 /**
  * Pick a scene for this chat (Character.AI's Scenes, played inside the one chat with them): the
@@ -36,12 +26,22 @@ const OWN_LOOK: SceneLook = { ios: 'theatermasks.fill', icon: 'film', fill: syst
  */
 export default function ScenesScreen() {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const chatId = Array.isArray(conversationId) ? conversationId[0] : conversationId;
   const conversation = useAppStore((s) => s.conversations.find((c) => c.id === chatId));
   const own = useAppStore((s) => s.scenes);
+  // The moments this friend wrote for the week (their page shows the same ones), asked for here too.
+  const friendId = conversation?.characterId;
+  const friend = useAppStore((s) => s.characters.find((c) => c.id === friendId));
+  const bond = useAppStore((s) => (friendId ? s.relationships[friendId] : undefined));
+  // As they were when the screen opened: a group arriving later would push the rows under the finger.
+  // Still asked for, so the next visit (and their page) has them.
+  const [theirs] = useState(() => (friendId ? currentMoments(useAppStore.getState().friendMoments[friendId], weekKey(new Date()), i18n.language) : []));
+  useEffect(() => {
+    if (friendId) void askFriendMoments(friendId);
+  }, [friendId]);
   const limit = useAppStore((s) => perkLimit('ownScenes', s.wallet.subscription, Date.now()));
   const startScene = useAppStore((s) => s.startScene);
   const endScene = useAppStore((s) => s.endScene);
@@ -97,6 +97,17 @@ export default function ScenesScreen() {
           </InsetGroup>
         ) : null}
 
+        {friend && theirs.length > 0 ? (
+          <>
+            <GroupLabel>{displayName(friend, bond)}</GroupLabel>
+            <InsetGroup>
+              {theirs.map((scene, i) => (
+                <SceneRow key={scene.id} scene={scene} last={i === theirs.length - 1} onPress={() => start(scene)} />
+              ))}
+            </InsetGroup>
+          </>
+        ) : null}
+
         <GroupLabel>{t('scenes.ready')}</GroupLabel>
         <InsetGroup>
           {/* A world's entry scene starts from its world page, with its own host. */}
@@ -133,7 +144,7 @@ export default function ScenesScreen() {
 /** One scene: its glyph, title and set-up; a tap starts it, the pencil (own scenes) edits it. */
 function SceneRow({ scene, last, onPress, onEdit }: { scene: Scene; last?: boolean; onPress: () => void; onEdit?: () => void }) {
   const { t } = useTranslation();
-  const look = SCENE_LOOK[scene.id] ?? OWN_LOOK;
+  const look = sceneLook(scene);
   return (
     <View style={styles.sceneWrap}>
       <Pressable

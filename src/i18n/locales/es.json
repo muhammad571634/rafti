@@ -896,6 +896,7 @@
     "endScene": "Terminar escena",
     "ended": "Escena finalizada: {{title}}",
     "start": "Iniciar {{title}}",
+    "continue": "Continuar en el chat",
     "morePlan": "Hasta {{count}} con un plan",
     "titleLabel": "Título",
     "titlePlaceholder": "Título",
