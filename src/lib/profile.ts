@@ -1,7 +1,11 @@
 import type { User } from '@/types';
 
 export const MAX_INTERESTS = 10;
-export const NAME_MAX = 20;
+/** Room for a full name (owner, 2026-11-17: at 20 a long one was cut mid-word); as a persona's. */
+export const NAME_MAX = 30;
+
+/** What a friend calls them at first, as people do: the first word of their name ("Maximiliana"). */
+export const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? '';
 export const JOB_MAX = 30;
 export const ABOUT_MAX = 150;
 

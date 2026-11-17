@@ -32,7 +32,7 @@
         "loyal",
         "drôle"
       ],
-      "relation": "Ton meilleur ami",
+      "relation": "Votre meilleur ami",
       "arc": {
         "beats": [
           {
@@ -79,7 +79,7 @@
         "intense",
         "protecteur"
       ],
-      "relation": "Tes ennuis",
+      "relation": "Vos ennuis",
       "arc": {
         "beats": [
           {
@@ -126,7 +126,7 @@
         "bruyante",
         "loyale"
       ],
-      "relation": "Ta meilleure amie",
+      "relation": "Votre meilleure amie",
       "arc": {
         "beats": [
           {
@@ -173,7 +173,7 @@
         "maître de soi",
         "attentif"
       ],
-      "relation": "Ton mari",
+      "relation": "Votre mari",
       "arc": {
         "beats": [
           {
@@ -220,7 +220,7 @@
         "jaloux",
         "tendre"
       ],
-      "relation": "Ton petit ami",
+      "relation": "Votre petit ami",
       "arc": {
         "beats": [
           {
@@ -267,7 +267,7 @@
         "ambitieuse",
         "protectrice"
       ],
-      "relation": "Ta petite amie",
+      "relation": "Votre petite amie",
       "arc": {
         "beats": [
           {
@@ -314,7 +314,7 @@
         "sarcastique",
         "fiable"
       ],
-      "relation": "Le meilleur ami de ton frère",
+      "relation": "Le meilleur ami de votre frère",
       "arc": {
         "beats": [
           {
@@ -361,7 +361,7 @@
         "vif",
         "compétitif"
       ],
-      "relation": "Ton rival",
+      "relation": "Votre rival",
       "arc": {
         "beats": [
           {
@@ -408,7 +408,7 @@
         "mordante",
         "tendre"
       ],
-      "relation": "Ton ex",
+      "relation": "Votre ex",
       "arc": {
         "beats": [
           {
@@ -455,7 +455,7 @@
         "agitée",
         "hésitante"
       ],
-      "relation": "Ton crush",
+      "relation": "Votre crush",
       "arc": {
         "beats": [
           {
@@ -502,7 +502,7 @@
         "secret",
         "impassible"
       ],
-      "relation": "Ton patron",
+      "relation": "Votre patron",
       "arc": {
         "beats": [
           {
@@ -549,7 +549,7 @@
         "pince-sans-rire",
         "observatrice"
       ],
-      "relation": "Ta colocataire",
+      "relation": "Votre colocataire",
       "arc": {
         "beats": [
           {

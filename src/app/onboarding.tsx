@@ -42,6 +42,7 @@ import { localCharacter } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { deckForHour, greetingKeys, isQuietHour, partOfDay } from '@/lib/night-hour';
+import { firstName, NAME_MAX } from '@/lib/profile';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, night, NightScope, space } from '@/theme';
 import { ink, inkGutter, inkRadius, inkType } from '@/theme/ink';
@@ -51,7 +52,6 @@ import type { Character, Pronouns } from '@/types';
 const PICKS = ['c_milo', 'c_caleb', 'c_mia', 'c_sam'];
 const MIN_AGE = 18;
 const MIN_YEAR = 1930;
-const NAME_MAX = 20;
 const DEFAULT_YEAR = 2000;
 const HEADER = 44;
 const BUDDY = 68;
@@ -133,6 +133,9 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const [savedLang, setSavedLang] = useState(getSavedLocaleSync);
   const [handoff, setHandoff] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // "Say hi" lights up once the gift has settled (`FriendGift` onReady), so a fast tap cannot skip it.
+  const [giftReady, setGiftReady] = useState(false);
+  const markGiftReady = useCallback(() => setGiftReady(true), []);
   const busy = useRef(false);
   const wheel = useRef<YearWheelHandle>(null);
   const frontRef = useRef<ComponentRef<typeof View>>(null);
@@ -143,6 +146,8 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const thisYear = new Date().getFullYear();
   const minor = thisYear - year < MIN_AGE;
   const trimmed = name.trim();
+  // The friend greets them by their first name, as people do; the profile keeps the whole name.
+  const called = firstName(trimmed);
 
   const places = useMemo(() => moonPlaces(width, height, insets.top), [width, height, insets.top]);
   // On the gift the friend's picture takes the stage; the full moon stays small in the header.
@@ -157,6 +162,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
       if (busy.current) return;
       busy.current = true;
       setDir(d);
+      if (to === 'gift') setGiftReady(false);
       setStep(to);
       // One step at a time: a second tap mid-change would skip a scene.
       setTimeout(() => (busy.current = false), 420);
@@ -200,7 +206,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
 
   const finish = () => {
     // The age gate again at the door: nobody under 18 gets a profile, whatever the steps did.
-    if (!friend || leaving || new Date().getFullYear() - year < MIN_AGE) return;
+    if (!friend || leaving || !giftReady || new Date().getFullYear() - year < MIN_AGE) return;
     haptic.tap();
     setLeaving(true);
     setTimeout(() => {
@@ -216,7 +222,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
         characterId: friend.id,
         // Morning and evening hellos stay on; they reach the phone once the system allows pushes.
         notifications: true,
-        firstAsk: t('onboarding.firstAsk', { name: trimmed }),
+        firstAsk: t('onboarding.firstAsk', { name: called }),
       });
       router.replace('/(tabs)');
       // `via` makes the chat fade in over the morph (its route options), so the field stays where the pill was.
@@ -247,7 +253,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
       case 'gender':
         return { label: t('onboarding.continue'), disabled: !pronouns, onPress: () => go('gift') };
       case 'gift':
-        return { label: t('onboarding.sayHi', { name: friendName }), onPress: finish };
+        return { label: t('onboarding.sayHi', { name: friendName }), disabled: !giftReady, onPress: finish };
     }
   })();
 
@@ -283,7 +289,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
               picture={faceSource(friend) ?? ''}
               position={HEROES[friend.id] ? undefined : portraitPosition(friend.id, width / Math.round(height * 0.64))}
               name={friendName}
-              hello={t('onboarding.namePreview', { name: trimmed })}
+              hello={t('onboarding.namePreview', { name: called })}
               amount={WELCOME_SHELLS}
               line={t('onboarding.gift')}
               hue={hue}
@@ -291,6 +297,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
               leaving={leaving}
               screenHeight={height}
               bottom={footerRoom + space.lg}
+              onReady={markGiftReady}
             />
           </Animated.View>
         ) : null}
@@ -319,7 +326,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
         ) : null}
 
         {friend ? <Buddy friend={friend} show={(step === 'name' || step === 'gender') && !handoff} top={buddyTop} /> : null}
-        {friend && step === 'name' && !handoff ? <Greeting top={buddyTop} name={trimmed} quiet={quiet} /> : null}
+        {friend && step === 'name' && !handoff ? <Greeting top={buddyTop} name={called} quiet={quiet} /> : null}
 
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
@@ -379,7 +386,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
                       accessibilityLabel={t('onboarding.namePlaceholder')}
                       style={styles.input}
                     />
-                    {name.length >= 15 ? <InkText variant="footnote" color={ink.text3}>{`${name.length}/${NAME_MAX}`}</InkText> : null}
+                    {name.length >= NAME_MAX - 5 ?<InkText variant="footnote" color={ink.text3}>{`${name.length}/${NAME_MAX}`}</InkText> : null}
                   </View>
                 </>
               ) : null}

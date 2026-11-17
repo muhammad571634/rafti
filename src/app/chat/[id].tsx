@@ -268,7 +268,8 @@ export default function ChatRoomScreen() {
   const picture = portrait ?? (artWallpaper ? { source: artWallpaper.image } : undefined);
   const onPicture = !!picture;
   const pictureTop = usePictureListTop(onPicture, insets.top + HEADER_ROOM + (alarmRinging || conversation?.scene ? ALARM_ROOM : 0));
-  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
+  // A friend with no picture on the picture ground (a user-made one without a photo) gets the cream.
+  const wallpaper = backgroundsById[backgroundId] ?? backgroundsById[CREAM_BG];
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
   // What the list draws: a scene's end line is left out when a new scene card follows it (`shownLines`).

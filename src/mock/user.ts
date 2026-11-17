@@ -6,7 +6,11 @@ import { dayKeyFromToday, daysAgo } from './time';
  * default; Chat background lists it on its own row above Classic and Art (`portraitOf`).
  */
 export const PORTRAIT_BG = 'bg_portrait';
-/** The default ground of every chat since 2026-11-08 (owner): the four tabs' warm cream. */
+/**
+ * The cream ground (the night's warm dark): every chat's default from 2026-11-08 until 2026-11-17, when
+ * the owner made the friend's picture the default again for new chats; older chats keep what they have.
+ * Also the fallback for a friend with no picture, and a group's ground.
+ */
 export const CREAM_BG = 'bg_cream';
 
 export const currentUser: User = {
@@ -112,7 +116,8 @@ export function newRelationship(characterId: string): Relationship {
     nextLevelAt,
     streakDays: 0,
     anniversary: new Date().toISOString(),
-    backgroundId: CREAM_BG,
+    // A new chat opens on the friend's own picture (owner, 2026-11-17; cream when they have none).
+    backgroundId: PORTRAIT_BG,
     voiceReplies: true,
     messagesFirst: true,
   };

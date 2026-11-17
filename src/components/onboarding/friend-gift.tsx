@@ -36,7 +36,7 @@ const COUNT_MS = 900;
  * screen, melting into the night with a glow of their colour, then drifts slowly; their name, typing
  * dots, then their first words to the user by name; shells fly from them into the gift, which counts
  * up and settles with a haptic. Reduce Motion: all of it at once, no flight. The white pill below
- * stays the onboarding's own (it becomes the chat's field on "Say hi").
+ * stays the onboarding's own (it becomes the chat's field on "Say hi"); it lights up on `onReady`.
  */
 export const FriendGift = memo(function FriendGift({
   picture,
@@ -50,6 +50,7 @@ export const FriendGift = memo(function FriendGift({
   leaving,
   screenHeight,
   bottom,
+  onReady,
 }: {
   picture: ImageSource | number | string;
   position?: ImageContentPosition;
@@ -63,6 +64,8 @@ export const FriendGift = memo(function FriendGift({
   screenHeight: number;
   /** Room the pill takes at the bottom: the words sit just above it. */
   bottom: number;
+  /** Once the gift has counted up and settled (at once under Reduce Motion): "Say hi" lights up then. */
+  onReady?: () => void;
 }) {
   const reduce = useReducedMotion();
   const k = slowFor(quiet);
@@ -86,6 +89,16 @@ export const FriendGift = memo(function FriendGift({
   }));
   const glowStyle = useAnimatedStyle(() => ({ opacity: focus.get() * (1 - out.get()), transform: [{ scaleX: 0.7 + 0.3 * focus.get() }] }));
   const wordsOut = useAnimatedStyle(() => ({ opacity: 1 - out.get(), transform: [{ translateY: out.get() * 18 }] }));
+
+  // "Say hi" waits for the gift (owner, 2026-11-17: a fast tap skipped the whole moment).
+  const ready = useRef(onReady);
+  useEffect(() => {
+    ready.current = onReady;
+  }, [onReady]);
+  useEffect(() => {
+    const id = setTimeout(() => ready.current?.(), reduce ? 0 : (AT.count + COUNT_MS) * k);
+    return () => clearTimeout(id);
+  }, [reduce, k]);
 
   // Their words arrive after the dots.
   const [said, setSaid] = useState(reduce);

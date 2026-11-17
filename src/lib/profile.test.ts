@@ -1,7 +1,16 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { birthdayLabel, monthNames, profileCompletion } from './profile';
+import { birthdayLabel, firstName, monthNames, profileCompletion } from './profile';
+
+describe('firstName', () => {
+  it('takes the first word, so a long name is never greeted cut', () => {
+    assert.equal(firstName('  Maximiliana Alexandrovna Vanderbilt '), 'Maximiliana');
+    assert.equal(firstName('Aziz'), 'Aziz');
+    assert.equal(firstName('Mary-Jane'), 'Mary-Jane');
+    assert.equal(firstName(''), '');
+  });
+});
 
 describe('the birthday reads in the app language (0z156)', () => {
   it('writes month and day the way the language does', () => {
