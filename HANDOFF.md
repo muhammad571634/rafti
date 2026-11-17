@@ -12,7 +12,7 @@
 **Still to do (owner asks not finished):**
 - B: share a moment as a 9:16 poster (0z263 B).
 - Owner's taste call: keep the cards as they are (still on top, words below) or go full-height photo cards like Character.AI's (an HTML prototype first).
-- Owner: draw the test still (Milo `close_night`) from `docs/nano-banana-moment-stills.md`; Claude wires it in, then the batch.
+- Milo `close_night` drawn by the owner (second try; the first came back someone else because his picture was not attached) and wired in (`assets/stills/c_milo_close_night.jpg`, OTA `01a1e9a2`). Not yet seen on the A51 (the phone dropped off adb): it shows on Milo's "Snowed in" and "Sleeper train" cards, and on his own moments once the server asks for `still`. Next for the owner: Milo's other six, then the batch.
 - Owner: one server deploy after B (the `still` ask).
 - The rest of 0z263's list below.
 
