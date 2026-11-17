@@ -2674,7 +2674,8 @@
     "typing": "{{name}} écrit encore… ouvre Sigmazam pour le lire",
     "store": "Gratuit sur l'App Store",
     "badge": "Personnage Sigmazam",
-    "talkTo": "Parle avec {{name}} sur Sigmazam"
+    "talkTo": "Parle avec {{name}} sur Sigmazam",
+    "moment": "Vis ce moment sur Sigmazam"
   },
   "friendRemove": {
     "removeRow": "Retirer {{name}} de mes amis",

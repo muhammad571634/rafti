@@ -2635,7 +2635,8 @@
     "typing": "{{name}} ยังพิมพ์อยู่… เปิด Sigmazam เพื่ออ่านต่อ",
     "store": "ฟรีบน App Store",
     "badge": "ตัวละครจาก Sigmazam",
-    "talkTo": "คุยกับ {{name}} บน Sigmazam"
+    "talkTo": "คุยกับ {{name}} บน Sigmazam",
+    "moment": "ก้าวเข้าสู่ช่วงเวลานี้ใน Sigmazam"
   },
   "friendRemove": {
     "removeRow": "ลบ {{name}} ออกจากเพื่อน",

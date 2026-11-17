@@ -2674,7 +2674,8 @@
     "typing": "{{name}} schreibt noch … öffne Sigmazam, um es zu lesen",
     "store": "Kostenlos im App Store",
     "badge": "Sigmazam-Figur",
-    "talkTo": "Schreib mit {{name}} auf Sigmazam"
+    "talkTo": "Schreib mit {{name}} auf Sigmazam",
+    "moment": "Erlebe diesen Moment in Sigmazam"
   },
   "friendRemove": {
     "removeRow": "{{name}} aus Freunden entfernen",

@@ -2674,7 +2674,8 @@
     "typing": "{{name}} hâlâ yazıyor… okumak için Sigmazam'ı aç",
     "store": "App Store'da ücretsiz",
     "badge": "Sigmazam karakteri",
-    "talkTo": "{{name}} ile Sigmazam'da konuş"
+    "talkTo": "{{name}} ile Sigmazam'da konuş",
+    "moment": "Bu ana Sigmazam'da adım at"
   },
   "friendRemove": {
     "removeRow": "{{name}} arkadaşlardan çıkarılsın",

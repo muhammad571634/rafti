@@ -2,12 +2,12 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
-import { STILL_EYES_TOP, STILLS } from '@/assets/stills/registry';
-import { portraitOf, type Picture } from '@/components/chat/chat-ground';
+import { type Picture } from '@/components/chat/chat-ground';
 import { GlowCard } from '@/components/ink';
+import { MomentShareSheet } from '@/components/share/moment-poster';
 import { sceneLook } from '@/components/scenes/scene-look';
 import { CharacterAvatar, SFIcon, Txt } from '@/components/ui';
 import { localized } from '@/i18n/content';
@@ -21,6 +21,7 @@ import { ink, inkFace, inkRadius, inkType } from '@/theme/ink';
 import type { Character, Scene } from '@/types';
 
 import { useFriendAccent } from './kit';
+import { MOMENT_FACE_AT, momentPicture } from './moment-picture';
 
 const GAP = 12;
 /** How much of the next card shows, so the row reads as a row. */
@@ -30,8 +31,6 @@ const CARD_MAX = 360;
 const STILL = 0.5625;
 /** The words under the still need at least this; the row keeps it while the friend writes, so the page below does not jump. */
 const WORDS_MIN_HEIGHT = 236;
-/** Where their face sits across the still: the middle, as no words lie on it (only the glyph, in a corner). */
-const STILL_FACE_AT = 0.5;
 /** The still melts into the card's ground. */
 const MELT = [/^#[0-9a-f]{6}$/i.test(ink.card) ? `${ink.card}00` : 'rgba(0,0,0,0)', ink.card] as const;
 /** A friend still writing after this long: the app's scenes show, and theirs wait for the next visit. */
@@ -58,6 +57,7 @@ export function FriendMoments({ character, isFriend, onContinue }: { character: 
   const [waiting, setWaiting] = useState(mayAsk);
   // The app's scenes are already on screen: theirs must not swap in under the finger.
   const [late, setLate] = useState(false);
+  const [sharing, setSharing] = useState<Scene | null>(null);
   useEffect(() => {
     if (!mayAsk) return setWaiting(false);
     let alive = true;
@@ -116,10 +116,13 @@ export function FriendMoments({ character, isFriend, onContinue }: { character: 
                 hue={isWrittenMoment(scene) ? (accent?.strong ?? sceneLook(scene).fill) : sceneLook(scene).fill}
                 quote={quotesOpening(scene, modelOn)}
                 action={t('scenes.continue')}
+                shareLabel={t('common.share')}
                 onPress={() => onContinue(scene)}
+                onShare={() => setSharing(scene)}
               />
             ))}
       </ScrollView>
+      <MomentShareSheet scene={sharing} character={character} onClose={() => setSharing(null)} />
     </View>
   );
 }
@@ -138,7 +141,9 @@ function MomentCard({
   hue,
   quote,
   action,
+  shareLabel,
   onPress,
+  onShare,
 }: {
   scene: Scene;
   character: Character;
@@ -148,12 +153,18 @@ function MomentCard({
   hue: string;
   quote: boolean;
   action: string;
+  shareLabel: string;
   onPress: () => void;
+  onShare: () => void;
 }) {
   const picture = momentPicture(scene, character, width / stillHeight, art);
   return (
     <GlowCard hue={hue} onPress={onPress} accessibilityLabel={`${scene.title}. ${action}`} style={[styles.card, { width }]} contentStyle={styles.cardBody} lit={false}>
       <Still scene={scene} picture={picture} width={width} height={stillHeight} hue={hue} />
+      {/* Its own button over the card's: a share, never a Continue (HIG: one action per control). */}
+      <Pressable onPress={onShare} hitSlop={8} accessibilityRole="button" accessibilityLabel={shareLabel} style={({ pressed }) => [styles.glyph, styles.glassLook, styles.share, pressed && styles.pressed]}>
+        <SFIcon ios="square.and.arrow.up" icon="share-outline" size={17} color={colors.onMedia} />
+      </Pressable>
       <View style={styles.words}>
         {/* Never cut (HIG text rule, 0z258): a long card makes the row taller, the cards stretch to it. */}
         <Txt style={styles.cardTitle} maxFontSizeMultiplier={1.3}>
@@ -185,17 +196,6 @@ function MomentCard({
   );
 }
 
-/**
- * A moment's picture: its own, else the friend's drawn still for its mood (on any of their cards: it
- * is them in that moment), else their portrait where `art` asks for it, else none (the glyph).
- */
-function momentPicture(scene: Scene, character: Character, aspect: number, art: boolean): Picture | undefined {
-  if (scene.image) return { source: { uri: scene.image }, position: 'center' };
-  const still = scene.still && STILLS[character.id]?.[scene.still];
-  if (still != null) return { source: still, position: { left: '50%', top: STILL_EYES_TOP } };
-  return art ? portraitOf(character, aspect, STILL_FACE_AT) : undefined;
-}
-
 /** The card's top: the picture melting into the card with the glyph as clear glass on its corner, or the glyph large on its tint. */
 function Still({ scene, picture, width, height, hue }: { scene: Scene; picture?: Picture; width: number; height: number; hue: string }) {
   const look = sceneLook(scene);
@@ -218,11 +218,11 @@ function Still({ scene, picture, width, height, hue }: { scene: Scene; picture?:
         contentPosition={picture.position}
         contentFit="cover"
         transition={150}
-        style={stretch > 1 ? [styles.stretched, { width: width * stretch, left: stretchLeft(width, stretch, STILL_FACE_AT, picture.faceX) }] : StyleSheet.absoluteFill}
+        style={stretch > 1 ? [styles.stretched, { width: width * stretch, left: stretchLeft(width, stretch, MOMENT_FACE_AT, picture.faceX) }] : StyleSheet.absoluteFill}
         accessible={false}
       />
       <LinearGradient colors={MELT} locations={[0.5, 1]} style={StyleSheet.absoluteFill} pointerEvents="none" />
-      <View style={[styles.glyph, styles.glass]}>
+      <View style={[styles.glyph, styles.glassLook, styles.glass]}>
         <SFIcon ios={look.ios} icon={look.icon} size={17} color={colors.onMedia} />
       </View>
     </View>
@@ -265,8 +265,11 @@ const styles = StyleSheet.create({
   stretched: { position: 'absolute', top: 0, bottom: 0 },
   stillGlyph: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center' },
   glyph: { width: 36, height: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
-  // Clear glass on the picture's corner, never an opaque capsule (project memory §3).
-  glass: { position: 'absolute', top: 14, left: 14, backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  // Clear glass on the picture's corners, never an opaque capsule (project memory §3).
+  glass: { position: 'absolute', top: 14, left: 14 },
+  share: { position: 'absolute', top: 14, right: 14 },
+  pressed: { opacity: 0.6 },
+  glassLook: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   cardTitle: inkType.card,
   setting: inkType.sub,
   said: { flexDirection: 'row', alignItems: 'flex-end', gap: 8, marginTop: 4 },

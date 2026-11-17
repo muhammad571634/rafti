@@ -2635,7 +2635,8 @@
     "typing": "{{name}} vẫn đang nhập… mở Sigmazam để đọc tiếp",
     "store": "Miễn phí trên App Store",
     "badge": "Nhân vật trên Sigmazam",
-    "talkTo": "Trò chuyện với {{name}} trên Sigmazam"
+    "talkTo": "Trò chuyện với {{name}} trên Sigmazam",
+    "moment": "Bước vào khoảnh khắc này trên Sigmazam"
   },
   "friendRemove": {
     "removeRow": "Xoá {{name}} khỏi bạn bè",

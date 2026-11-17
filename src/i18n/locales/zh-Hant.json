@@ -2635,7 +2635,8 @@
     "typing": "{{name}}還在輸入… 打開 Sigmazam 看完整內容",
     "store": "App Store 免費下載",
     "badge": "Sigmazam 角色",
-    "talkTo": "在 Sigmazam 和{{name}}聊天"
+    "talkTo": "在 Sigmazam 和{{name}}聊天",
+    "moment": "在 Sigmazam 走進這一刻"
   },
   "friendRemove": {
     "removeRow": "將{{name}}從朋友中移除",

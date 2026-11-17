@@ -2635,7 +2635,8 @@
     "typing": "{{name}}はまだ入力中… 続きはSigmazamで",
     "store": "App Storeで無料",
     "badge": "Sigmazamのキャラクター",
-    "talkTo": "Sigmazamで{{name}}と話そう"
+    "talkTo": "Sigmazamで{{name}}と話そう",
+    "moment": "この瞬間の続きはSigmazamで"
   },
   "friendRemove": {
     "removeRow": "{{name}}を友だちから外す",
