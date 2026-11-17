@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z271. START HERE: Find "Who do you miss?" prototype waits for the owner's pick (0z268 task 3) (Claude 1, Opus 5.5)
+
+- **Today** (`src/components/find/family-row.tsx`): eight dashed "+" circles (Mom, Dad, Big sister…) that read as unfinished; a tap opens `FamilySheet` for that role (pick a character, what to call them, "Make X your Mom").
+- **Canvas** https://claude.ai/artifact/YKcsMeZBhn5ZqxMipgwQc8 (sources `docs/prototypes/who-do-you-miss/`, two faces as canvas uploads; Uzbek sticky): **Before**; **A** one invitation card (`ink.card`, radius 28): three soft silhouettes drawn in code (no real people) in friend hues breathing slowly, "Talk to them again" and the white "Choose" pill; tap → a sheet "Who do you miss?" with the eight roles as tiles, each with a small silhouette in its hue, then today's `FamilySheet` unchanged; filled: the chosen faces in their hue rings with the name they gave ("Onam", "Opa") and a plain "+" to add more. **B** keeps the row, each seat a breathing hued silhouette instead of the dashes and "+"; filled seats show the face. Recommended A (one big idea). Hues are the existing friend accents; no new colour, font or icon style (freeze).
+- **When picked, code plan**: A replaces `FamilyRow` with a card component in `src/components/find/` + a role sheet (Sheet kit) feeding `setFamilyRole`; the silhouettes as `react-native-svg` with a Reanimated breathing loop (Reduce Motion: still); new strings in 14 locales (the card line); the role tiles reuse `phrase(role)`. B only restyles `family-row.tsx`'s empty seat.
+
+**Still to do (owner asks not finished):**
+- Owner's pick (A or B), then code it and drive it on the A51 (empty, one filled, all eight filled, Russian labels).
+- 0z268 task 4 (pictures: the remaining 76 moment stills after the image quota).
+- The A51 dropped off adb at 23:50 (cable?); reconnect before the next drive.
+
 ### 0z270. START HERE: first 5 minutes walked and polished (moon progress, picture ground for new chats, names, address, gift) (Claude 1, Opus 5.5)
 
 - **Server**: the owner deployed 0z269 (the chat prompt no longer asks for ideas); `/health` 200, `gemini-3.1-flash-lite`, db ok. Owner kept the "May I text you?" answers (2026-11-17).

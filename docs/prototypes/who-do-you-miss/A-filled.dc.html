@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invitation card filled</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:440px;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif;overflow:hidden;position:relative}
+.feat{position:absolute;left:20px;top:-150px;width:262px;height:240px;border-radius:28px;background:linear-gradient(180deg,#3a2a20,#1a1410)}
+.sec{position:absolute;left:20px;font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:22px;line-height:28px;letter-spacing:-.25px}
+.card{position:absolute;left:20px;top:166px;width:350px;height:148px;box-sizing:border-box;border-radius:28px;background:#16161E;border:.5px solid rgba(255,255,255,.08);overflow:hidden;display:flex;align-items:center;gap:18px;padding:0 20px}
+.glow{position:absolute;left:-40px;top:-60px;width:260px;height:260px;background:radial-gradient(circle at 50% 50%,rgba(232,116,156,.18),rgba(168,147,240,.08) 45%,rgba(9,9,13,0) 70%)}
+.who{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;padding:0;color:#fff;font:inherit;width:72px}
+.ring{width:64px;height:64px;border-radius:32px;border:3px solid;padding:2px;box-sizing:border-box}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.name{font-size:13px;line-height:16px;font-weight:600}
+.role{font-size:12px;line-height:15px;color:rgba(235,235,245,.62);margin-top:-6px}
+.add{width:64px;height:64px;border-radius:32px;background:rgba(118,118,128,.24);display:flex;align-items:center;justify-content:center}
+.tag{position:absolute;top:110px;right:16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#09090D;background:#FFC497;border-radius:10px;padding:3px 8px}
+</style>
+</helmet>
+<div class="ph">
+  <div class="feat"></div>
+  <div class="sec" style="top:124px">Who do you miss?</div>
+  <div class="card">
+    <div class="glow"></div>
+    <button class="who" aria-label="Onam, your Mom">
+      <div class="ring" style="border-color:#E8749C"><img src="/_blob/87e8c4655373b5c2fcfeb54bac36daf9" alt=""></div>
+      <div class="name">Onam</div>
+      <div class="role">Mom</div>
+    </button>
+    <button class="who" aria-label="Opa, your Big sister">
+      <div class="ring" style="border-color:#A893F0"><img src="/_blob/fc4936998c5c98ec0086163f86314e52" alt=""></div>
+      <div class="name">Opa</div>
+      <div class="role">Big sister</div>
+    </button>
+    <button class="who" aria-label="Add someone you miss">
+      <div class="add"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></div>
+      <div class="name" style="visibility:hidden">.</div>
+      <div class="role" style="visibility:hidden">.</div>
+    </button>
+  </div>
+  <div class="sec" style="top:350px">Relationships</div>
+  <div class="tag">A · filled</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
