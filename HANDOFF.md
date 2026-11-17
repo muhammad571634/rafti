@@ -1,16 +1,20 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z270. START HERE: server deployed; 0z268 task 2 "first 5 minutes" walked on the A51, nothing broken (Claude 1, Opus 5.5)
+### 0z270. START HERE: first 5 minutes walked and polished (moon progress, picture ground for new chats, names, address, gift) (Claude 1, Opus 5.5)
 
 - **Server**: the owner deployed 0z269 (the chat prompt no longer asks for ideas); `/health` 200, `gemini-3.1-flash-lite`, db ok. Owner kept the "May I text you?" answers (2026-11-17).
 - **Walked** (owner: "use my profile fully"; Expo Go not wanted): `sigmazam://onboarding?preview=1` in English and in Russian (language switched back to English after), plus a real first chat with a friend the owner did not have (Jace Navarro, added from Find search → Say hi).
   - Intro → age (the drum stops at 18+; 2005 fine) → friend (four faces; two quick taps do not move the row) → name (a 30-letter name is cut at 20 mid-word and greeted so: "Hey Maximiliana Alexandr!") → gender (one tap answers and moves on after 300 ms) → gift (Milo fills the top, "Hey Aziz! Finally.", shells fly into +100, Say hi). Russian: every title and pill fits, nothing cut (friend title takes three lines and still clears the card).
   - First chat: their first line is there at once (no wait), under it only Share; no chips now (0z269), so the line must invite an answer (Jace's opening does).
-- **No code changed**: nothing broken or code-only worth fixing.
-- **For the owner (product, one short list)**: (1) every new chat opens on the flat warm "cream" ground (`#1A1613`, owner 2026-11-08), not the friend's picture; a new user sees the picture only if they find Chat background (Milo's chat has it because it was picked). The owner said leave the ground; asked once whether new chats should start on the picture. (2) Russian mixes "вы" in the questions with "Твой лучший друг" on the friend's tag. (3) A name longer than 20 letters is cut mid-word in the greeting. (4) Say hi works before the gift plays, so a fast tap skips the moment.
+- **Found and then fixed on the owner's word** (same night; `73e0a18`, `035c0d3`, `8ddff07`; OTAs `01a1eabf` and two after; tsc 0, `npm test` 1016/1016, `check:locales` / `check:content` pass):
+  1. **New chats open on the friend's picture** (owner: "Ha, rasm bilan"): `newRelationship` → `PORTRAIT_BG`; a friend with no picture falls back to the cream (`chat/[id].tsx` wallpaper). Older chats keep what they have (cream since the v15 migration). Seen: Sam Okafor added from Find opens on her picture.
+  2. **One form of address**: Russian relation tags drop the informal possessive ("Лучший друг", "Ходячая беда", "Бывшая"…), French ones take "votre" like the onboarding questions (`src/i18n/content/{ru,fr}.json`). The Russian bios still speak "ты" as the characters' world does.
+  3. **Long names**: `NAME_MAX` 30 in `src/lib/profile.ts` (onboarding and Edit profile share it); the friend greets by `firstName` (tested): "Hey Maximiliana! Finally." while the profile keeps the whole name.
+  4. **Say hi waits for the gift**: `FriendGift` `onReady` after the count settles (at once under Reduce Motion); the pill is grey until then and `finish` checks it.
+  5. **No step numbers** (owner: "raqamlarni olib tashla, oy orqali ko'rsat"): the "2 / 5" is gone (an invisible spot still says the step to screen readers); the header moon is a touch bigger (`s` 0.25), a light ring round it fills with each answer and the moon brightens for a beat at every step; the moon now draws above the gift's picture, so the last step shows the full moon with a full ring. Seen on the A51 at steps 1, 2, 4 and the gift.
 
 **Still to do (owner asks not finished):**
-- Owner's answer on (1)-(4) above, if any.
+- Nothing open from this list.
 - 0z268 task 3 (Find's "Who do you miss?": prototype a living invitation) and task 4 (pictures: the remaining 76 moment stills after the image quota).
 
 ### 0z269. START HERE: chat calm built (owner's pick A) and no ready replies in the chat; one server deploy waits for the owner (Claude 1, Opus 5.5)
