@@ -119,7 +119,8 @@ export const FriendGift = memo(function FriendGift({
   };
 
   return (
-    <View ref={root} pointerEvents="none" style={StyleSheet.absoluteFill} collapsable={false}>
+    // On the night's own ground: the sky's dawn below the picture left a hard line where the picture ended (A51).
+    <View ref={root} pointerEvents="none" style={styles.root} collapsable={false}>
       <View style={[styles.picture, { height: pictureHeight }]}>
         <Animated.View style={[StyleSheet.absoluteFill, pictureStyle]}>
           <Image source={typeof picture === 'string' ? { uri: picture } : picture} contentFit="cover" contentPosition={position ?? 'top'} style={StyleSheet.absoluteFill} accessible={false} />
@@ -263,6 +264,7 @@ function FlyingShell({ index, from, to, delay, onLand }: { index: number; from: 
 }
 
 const styles = StyleSheet.create({
+  root: { ...StyleSheet.absoluteFill, backgroundColor: ink.ground },
   picture: { position: 'absolute', left: 0, right: 0, top: 0, overflow: 'hidden' },
   glow: { position: 'absolute', left: -40, right: -40, height: 300 },
   words: { position: 'absolute', left: inkGutter, right: inkGutter, gap: 14 },
