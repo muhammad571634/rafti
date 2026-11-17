@@ -114,6 +114,19 @@ coral count) and `trait` (glass) · `CompanionCard` (Find's featured card + rela
 round actions; face on the trailing side, owner rule) · bubble colours + `PhotoStack` + cyan send in the
 composer · `SwipeableChatRow` (Delete, More) · `PillButton` primary -> cyan.
 
+**Icons (owner, 2026-11-17: "the icons are too plain in places, make them like the boards"):** duotone
+glyphs, a white line over a soft tone fill (cyan for actions, coral for love / the user, red for delete):
+`phosphor-react-native` with `weight="duotone"`, `duotoneColor`, `duotoneOpacity` (already installed, Explore
+uses it), or our own SVG paths drawn the same way. Containers: `RoundIcon` becomes a lit glass orb (top-to-bottom
+white 17 % -> 4 % gradient, 14 % rim, a 1 pt highlight along the top, soft drop below); the one main action per
+screen sits in a gradient disc (cyan, or coral for Say hi) with a faint ring and glow; settings tiles get a
+two-stop gradient and an inner highlight. Tab bar: inactive glyphs duotone at 55 % white, the current tab a
+filled cyan gradient glyph with a glow (on Android the glow is a radial gradient behind it, no shadow). Shapes stay
+SF-Symbols-like (owner rule); no 3D clay icons.
+
+**Profile (owner comment on the canvas):** no separate stats row; the counts live in the bento cards (Friends
+with a stack of faces, Memories with a few glints); the message count is dropped.
+
 ## 6. Migration order (each step one commit, OTA, driven on the A51 worst case: Russian, long names, 12 friends, empty)
 
 0. **Tokens + kit.** Every screen already on the kit turns Tide at once (ground, aurora, cyan, coral).
