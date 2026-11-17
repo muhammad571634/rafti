@@ -130,17 +130,18 @@ function MomentCard({
       <View style={styles.glyph}>
         <SFIcon ios={look.ios} icon={look.icon} size={17} color={hue} />
       </View>
-      <Txt style={styles.cardTitle} lines={2} maxFontSizeMultiplier={1.3}>
+      {/* Never cut (HIG text rule, 0z258): a long card makes the row taller, the cards stretch to it. */}
+      <Txt style={styles.cardTitle} maxFontSizeMultiplier={1.3}>
         {scene.title}
       </Txt>
-      <Txt style={styles.setting} lines={quote ? 3 : 6} maxFontSizeMultiplier={1.3}>
+      <Txt style={styles.setting} maxFontSizeMultiplier={1.3}>
         {scene.setting}
       </Txt>
       {quote ? (
         <View style={styles.said}>
           <CharacterAvatar character={character} size={28} />
           <View style={styles.bubble}>
-            <Txt style={styles.line} lines={4} maxFontSizeMultiplier={1.3}>
+            <Txt style={styles.line} maxFontSizeMultiplier={1.3}>
               {scene.opening}
             </Txt>
           </View>

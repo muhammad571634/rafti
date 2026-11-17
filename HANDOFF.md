@@ -8,12 +8,13 @@
 - **Continue in chat**: `continueMoment` adds a new friend quietly (the scene opens the chat instead of their greeting), starts the scene in the one chat with them, or just opens the chat when that scene already runs; two quick taps start it once. First line: their own moment opens with its line, a user's scene with the user's line; an app scene with the model on now gets a line written by the model (`sceneOpenCue`, first-text `moment`), never the stock line (it used to always play the stock line, against model-first); busy for good in a chat with nothing in it: their own greeting. Dropped if the scene was ended or swapped meanwhile.
 - **Cleanup**: Remove / Block / Delete forget the friend's moments (`forgetFriend`), retired cast too (`retireCast`). Scene look shared (`src/components/scenes/scene-look.ts`). New string `scenes.continue` in all 14.
 - **Checked**: tsc 0, npm test 1004/1004 (new `friend-moments.test.ts`: scenes from the write, rules, week/language, feed order, quotes, the write's prompt, parse, cue), server tests 115/115, check:locales. On the A51 (Turkish, OTA `801570dd`): the row shows (app scenes, as the server has no `moments` yet), snap and swipe, Continue on a running scene opens the chat, End then a new scene with a double tap: one scene card, "typing…", Milo's own first line in his voice using the user's name and the book. Not checked: the friend's own moments on the phone (server), a stranger's page (stopped: the owner was using the phone).
-- **Owner step**: deploy the server (code pushed). Without it the page shows the app's scenes and nothing breaks.
+- **Live** (owner deployed 2026-11-17 16:40, machine v59, after flyctl was blocked by Smart App Control, see project memory §5): Milo's page on the A51 shows his own moments in Turkish ("Gece yarısı stüdyo baskını", his line under it); Continue in chat drops the scene card and his written line, no model call. Card text is no longer cut with "…" (title, setting and line wrap; the row takes the tallest card).
+- **Owner step** (done): deploy the server. Without it the page showed the app's scenes and nothing broke.
   - Chat box: `! C:/Users/joray/.fly/bin/flyctl.exe deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
   - Terminal: `& "C:\Users\joray\.fly\bin\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
 
 **Still to do (owner asks not finished):**
-- After the deploy: open a friend's page on the A51, see their own moments (Russian too), continue one, check the line; a stranger's page and adding a friend through a moment.
+- A stranger's page and adding a friend through a moment, and the moments in Russian, on the A51 (not driven yet).
 - Friends' voice notes that speak (Task 1 of 0z259), paused by the owner until they say go.
 - Apple zoom transition for widgets and Find cards -> their screens, once an iPhone is at hand (not the chat row).
 - Russian sweep of the remaining screens not yet looked at (Us tab sheets, create-character, alarms, diary, dates) with the 0z258 rule.
