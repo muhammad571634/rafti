@@ -282,7 +282,6 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
       <View style={styles.root}>
         <NightSky part={part} step={index} dawn={index >= 2 && !leaving ? hue : null} dim={leaving} />
         <MoonOrbit visible={step === 'intro'} cx={places.hero.x} cy={places.hero.y} quiet={quiet} />
-        <NightMoon place={moonPlace} places={places} phase={phase} quiet={quiet} />
         {step === 'gift' && friend ? (
           <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(300)} style={StyleSheet.absoluteFill} pointerEvents="none">
             <FriendGift
@@ -301,6 +300,8 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
             />
           </Animated.View>
         ) : null}
+        {/* Over the gift's picture: the full moon with its full ring is the "done" at the last step. */}
+        <NightMoon place={moonPlace} places={places} phase={phase} quiet={quiet} />
 
         {/* The header: back on the left; the moon and its ring in the middle are the progress (no numbers, owner 2026-11-17). */}
         {index > 0 && !leaving ? (
