@@ -1,5 +1,38 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z268. START HERE: the design plan the owner agreed to (2026-11-17 night): freeze the look, then the chat screen first (Claude 1, Opus 5.5, handover)
+
+**Why.** The owner asked: are we doing the right things, where does the app still not pull or not feel simple, what makes it more beautiful. Answer given and **agreed by the owner, every point**:
+- Direction is right: one night look across the app, strong character art (Today's hero pulls), the new Chats cards and Find's big cards are clean.
+- Two things hold the app back. (1) The look changed 5-6 times in a month (aurora, grouped iOS, playful, Ink, night only, Tide); each change costs days and leaves seams between screens. (2) The screen people spend almost all their time in, the chat, is the noisiest one; time went to secondary screens (Profile, colours, icons) instead.
+
+**Standing for this period (owner, 2026-11-17): design freeze until ~2026-12-08.** No new look, palette, font or icon style. Ink night + Apple iOS rules as built (white icons, white main action, peach for money and the user's side, iOS red / blue / green only for delete / unread counts / online; owner's canvas comments in `docs/design-tide.md`). The Tide canvas is parked: only the Chats cards were taken. Polish only; any new visual idea goes to the owner as a prototype.
+
+**Work order.** One task at a time. Each: prototype when users would notice a change -> owner's yes -> code -> `npx tsc --noEmit`, `npm test` (+ `npm run check:locales` for strings, 14 locales) -> commit (name paths) -> push -> OTA -> drive the worst case on the A51 -> HANDOFF note + `docs/flows.md`.
+
+0. **Close out 0z266 (no prototype needed).** Drive the Chats cards on the A51: swipe left and right (actions appear under the card at its size, invisible when closed), Edit mode (the red remove button beside the card), a group row (`GroupAvatar` ring now `ink.card`), a typing row, the pinned faces above the cards, a long Russian name and preview. Fix what breaks.
+
+1. **Chat screen: calm it down** (biggest effect; the product's first job is the conversation). Prototype first (`docs/prototypes/chat-calm.html`, before / after on the same real thread), then code. Seen on the A51 tonight (Milo, Russian scenes): in one screen three "Scene ended: …" lines, two scene cards with long italic settings, and five controls under the newest reply; the conversation itself gets lost. Put these in the prototype:
+   - **Scenes** (`src/components/chat/message-bubble.tsx:180-181`: `SceneCard`, and `SystemLine` for `sceneEnd`): drop a scene's end line when the next item is a new scene card (the new card already says it); a scene card shows its title and one line of the setting, a tap opens the rest; a lone end line stays one quiet line. Only rendering changes: the scene messages stay in the store (the model and memory read them).
+   - **Controls under the newest reply** (`src/components/chat/reply-controls.tsx`: thumbs up / down, redo, ‹ 2/3 ›, continue, Share): make them quieter, e.g. redo + Share visible, the votes and continue in the long-press menu or after a swipe. Constraint: the owner wants Share colourful and visible (2026-10-30, it earns shells); keep it. The owner picks in the prototype.
+   - **Chat ground**: on the A51 the chat read as a flat warm brown next to the obsidian of every other screen. The 1:1 default ground is the friend's portrait, dimmed (`src/components/chat/chat-ground.tsx`); `playfulNightGround` `#1A1613` (`src/theme/colors.ts`) is used by groups. Find out what the A51 actually shows and why it reads flat; the prototype shows the picture reading as a picture, or the night ground; the owner picks. The user's own wallpaper from the background picker stays.
+   - **Keep** (owner rules): the bubbles' look, typing dots, voice waves, existing animations, popups appear at once, the reactions bar.
+   - Before redoing anything from the 2026-11-15 audit §3 (time to first word, jump to newest, reply / quote, keyboard), check on the phone what is already live (0z259 says that audit is done).
+
+2. **The first 5 minutes** (install -> first chat; whether people stay is decided here). Walk it as a new person on the A51 through `sigmazam://onboarding?preview=1`. Never `pm clear` the owner's phone without asking (it wipes their account state). Note every friction (waits, unclear words, an empty first chat, extra steps, Russian text that does not fit); fix code-only ones yourself, bring product changes to the owner as one short list.
+
+3. **Find, "Who do you miss?"** (`src/app/(tabs)/find.tsx:285`, `FamilyRow`): the dashed empty circles (Mom, Dad, Big sister…) read as unfinished. Prototype a living invitation (e.g. one card "bring back someone you miss" with soft silhouettes drawn in code; no real people) -> owner -> code.
+
+4. **Pictures** (the biggest pull; Character.AI's lesson): Gemini generates the moment stills (0z267: 8 of 84 wired in `assets/stills/registry.ts`, the rest after the image quota). Make sure each batch ships in an OTA and look at the moment cards on the A51 (Milo, Jace, Sam, Roman first). The owner will say when their own pictures arrive; wire them the same way.
+
+5. After that: polish only, inside the freeze.
+
+**Phone tips from tonight.** `adb shell screencap` hung on the A51; `adb exec-out screencap -p > file` from Git Bash with `timeout 20` worked. The owner often uses the phone while you drive it: screenshot before every tap; if screens change on their own, stop and say so.
+
+**Still to do (owner asks not finished):**
+- Tasks 0-4 above, in order.
+- The rest of 0z267's and 0z266's lists below.
+
 ### 0z267. Moment stills prompt fixes + first 8 of 84 Nano Banana stills wired in (Gemini 4 Argon)
 
 - **Prompt fixes (`docs/nano-banana-moment-stills.md`)**: fixed cross-character reference contamination and muddy brushwork from the earlier `art-new/m_*.png` batch. Every prompt now passes ONLY the tight 1:1 close-up avatar (`art-new/c_<name>_avatar.png`), never `c_<name>.png` or a prior mood still, adds a per-character Identity/Hands/Wardrobe table for all 12 cast (graceful feminine hands for women, rings/tape/watch/scar details for men, explicitly no hospital scrubs/stethoscope/tie/pencil outside their scenes), and upgrades the `STYLE` block to clean, luminous stylized 2.5D AI illustration. Old 86 `m_*` files moved to `art-new/prev-stills-backup/`.
