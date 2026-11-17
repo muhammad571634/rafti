@@ -877,6 +877,7 @@
     "ended": "상황극 종료됨: {{title}}",
     "start": "{{title}} 시작",
     "continue": "대화에서 이어가기",
+    "thisWeek": "이번 주",
     "morePlan": "구독 시 최대 {{count}}개",
     "titleLabel": "제목",
     "titlePlaceholder": "제목",

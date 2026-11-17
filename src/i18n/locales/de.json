@@ -897,6 +897,7 @@
     "ended": "Szene beendet: {{title}}",
     "start": "{{title}} starten",
     "continue": "Im Chat fortsetzen",
+    "thisWeek": "Diese Woche",
     "morePlan": "Bis zu {{count}} mit Abo",
     "titleLabel": "Titel",
     "titlePlaceholder": "Titel",

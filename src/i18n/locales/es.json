@@ -897,6 +897,7 @@
     "ended": "Escena finalizada: {{title}}",
     "start": "Iniciar {{title}}",
     "continue": "Continuar en el chat",
+    "thisWeek": "Esta semana",
     "morePlan": "Hasta {{count}} con un plan",
     "titleLabel": "Título",
     "titlePlaceholder": "Título",

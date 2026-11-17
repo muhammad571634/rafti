@@ -897,6 +897,7 @@
     "ended": "Scène terminée : {{title}}",
     "start": "Lancer {{title}}",
     "continue": "Continuer la discussion",
+    "thisWeek": "Cette semaine",
     "morePlan": "Jusqu'à {{count}} avec un abonnement",
     "titleLabel": "Titre",
     "titlePlaceholder": "Titre",

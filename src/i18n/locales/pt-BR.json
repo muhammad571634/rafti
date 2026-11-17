@@ -897,6 +897,7 @@
     "ended": "Cena encerrada: {{title}}",
     "start": "Começar {{title}}",
     "continue": "Continuar na conversa",
+    "thisWeek": "Esta semana",
     "morePlan": "Até {{count}} com um plano",
     "titleLabel": "Título",
     "titlePlaceholder": "Título",

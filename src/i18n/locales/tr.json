@@ -897,6 +897,7 @@
     "ended": "Sahne sona erdi: {{title}}",
     "start": "{{title}} başlat",
     "continue": "Sohbette devam et",
+    "thisWeek": "Bu hafta",
     "morePlan": "Abonelikle {{count}} taneye kadar",
     "titleLabel": "Başlık",
     "titlePlaceholder": "Başlık",

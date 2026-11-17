@@ -937,6 +937,7 @@
     "ended": "Сцена завершена: {{title}}",
     "start": "Начать: {{title}}",
     "continue": "Продолжить в чате",
+    "thisWeek": "На этой неделе",
     "morePlan": "До {{count}} сцен по подписке",
     "titleLabel": "Название",
     "titlePlaceholder": "Название",

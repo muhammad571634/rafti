@@ -877,6 +877,7 @@
     "ended": "場景已結束：{{title}}",
     "start": "開啟{{title}}",
     "continue": "在對話中繼續",
+    "thisWeek": "本週",
     "morePlan": "升級方案最高可保留{{count}}個",
     "titleLabel": "標題",
     "titlePlaceholder": "場景標題",

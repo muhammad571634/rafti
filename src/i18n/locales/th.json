@@ -877,6 +877,7 @@
     "ended": "ฉากสิ้นสุดลงแล้ว: {{title}}",
     "start": "เริ่ม {{title}}",
     "continue": "ไปต่อในแชท",
+    "thisWeek": "สัปดาห์นี้",
     "morePlan": "สูงสุด {{count}} ฉากเมื่อสมัครแพ็กเกจ",
     "titleLabel": "ชื่อฉาก",
     "titlePlaceholder": "ชื่อฉาก",
