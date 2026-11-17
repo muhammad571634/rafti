@@ -11,7 +11,7 @@ import { ink } from '@/theme/ink';
 import { EASE_OUT, slowFor } from './night-motion';
 
 const STAR = 'M.5 0L.62 .38L1 .5L.62 .62L.5 1L.38 .62L0 .5L.38 .38Z';
-const SHELL = 'M12 20.5c-4.6 0-8.2-3.4-8.2-8.3C3.8 7.4 7.4 4 12 4s8.2 3.4 8.2 8.2c0 4.9-3.6 8.3-8.2 8.3zM12 20.5V7.5M12 20.5 8 8.6M12 20.5l4-11.9M12 20.5 5 12.2M12 20.5l7-8.3';
+export const SHELL = 'M12 20.5c-4.6 0-8.2-3.4-8.2-8.3C3.8 7.4 7.4 4 12 4s8.2 3.4 8.2 8.2c0 4.9-3.6 8.3-8.2 8.3zM12 20.5V7.5M12 20.5 8 8.6M12 20.5l4-11.9M12 20.5 5 12.2M12 20.5l7-8.3';
 /** The visible disc of the moon in its halo place (MOON_SIZE 140 × scale 1.5 × the disc's 0.92). */
 export const HALO_DISC = 193;
 

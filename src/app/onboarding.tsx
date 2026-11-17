@@ -28,7 +28,7 @@ import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
 import { InkText } from '@/components/ink';
 import { NightDeck } from '@/components/onboarding/night-deck';
-import { CountUp, MoonMascot } from '@/components/onboarding/night-gift';
+import { FriendGift } from '@/components/onboarding/friend-gift';
 import { MoonOrbit, NightMoon } from '@/components/onboarding/night-moon';
 import { EASE_IN_OUT, EASE_OUT, type MoonPlace, moonPlaces, slowFor } from '@/components/onboarding/night-motion';
 import { NightSky } from '@/components/onboarding/night-sky';
@@ -89,8 +89,9 @@ export default function OnboardingRoute() {
  * The first run as one night scene (0z250, `docs/prototypes/onboarding-motion.html`, owner's yes
  * 2026-11-16): the moon is the progress (a crescent that fills one answer at a time and is full on
  * the gift), the night tilts up as you go, the picked friend's colour rises on the horizon, the
- * picked card becomes the face that greets you by name, the mascot climbs out of the full moon, and
- * the white pill turns into the first chat's message field. The hour sets the greeting, who leads
+ * picked card becomes the face that greets you by name, that friend gives the welcome gift (their
+ * picture fills the last step, `FriendGift`, owner 2026-11-17), and the white pill turns into the
+ * first chat's message field. The hour sets the greeting, who leads
  * the deck and how lively the sky is (quiet after midnight).
  */
 function OnboardingScreen({ preview = false }: { preview?: boolean }) {
@@ -144,7 +145,9 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
   const trimmed = name.trim();
 
   const places = useMemo(() => moonPlaces(width, height, insets.top), [width, height, insets.top]);
-  const moonPlace: MoonPlace = leaving ? 'gone' : step === 'intro' ? 'hero' : step === 'gift' ? 'halo' : 'header';
+  // On the gift the friend's picture takes the stage; the full moon stays small in the header.
+  const moonPlace: MoonPlace = leaving ? 'gone' : step === 'intro' ? 'hero' : 'header';
+  const footerRoom = space.sm + 56 + bottomRoom(insets.bottom, space.lg) + 6;
   const phase = step === 'intro' ? 0.12 : index / QUESTIONS;
   const contentTop = insets.top + 8 + HEADER + 16;
   const buddyTop = contentTop;
@@ -274,9 +277,21 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
         <NightSky part={part} step={index} dawn={index >= 2 && !leaving ? hue : null} dim={leaving} />
         <MoonOrbit visible={step === 'intro'} cx={places.hero.x} cy={places.hero.y} quiet={quiet} />
         <NightMoon place={moonPlace} places={places} phase={phase} quiet={quiet} />
-        {step === 'gift' && !leaving ? (
-          <Animated.View exiting={FadeOut.duration(300)} style={StyleSheet.absoluteFill} pointerEvents="none">
-            <MoonMascot cx={places.halo.x} cy={places.halo.y} quiet={quiet} hue={hue} />
+        {step === 'gift' && friend ? (
+          <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(300)} style={StyleSheet.absoluteFill} pointerEvents="none">
+            <FriendGift
+              picture={faceSource(friend) ?? ''}
+              position={HEROES[friend.id] ? undefined : portraitPosition(friend.id, width / Math.round(height * 0.64))}
+              name={friendName}
+              hello={t('onboarding.namePreview', { name: trimmed })}
+              amount={WELCOME_SHELLS}
+              line={t('onboarding.gift')}
+              hue={hue}
+              quiet={quiet}
+              leaving={leaving}
+              screenHeight={height}
+              bottom={footerRoom + space.lg}
+            />
           </Animated.View>
         ) : null}
 
@@ -390,9 +405,6 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
                 </>
               ) : null}
 
-              {step === 'gift' ? (
-                <GiftWords leaving={leaving} quiet={quiet} line={t('onboarding.gift')} />
-              ) : null}
             </Animated.View>
           </View>
 
@@ -479,23 +491,6 @@ function Radio({ on }: { on: boolean }) {
         <Ionicons name="checkmark" size={15} color={ink.onPill} />
       </Animated.View>
     </View>
-  );
-}
-
-/** "+100" and one line under the mascot; they sink away when the chat takes over. */
-function GiftWords({ leaving, quiet, line }: { leaving: boolean; quiet: boolean; line: string }) {
-  const out = useSharedValue(0);
-  useEffect(() => {
-    out.set(withTiming(leaving ? 1 : 0, { duration: 260, easing: EASE_OUT }));
-  }, [leaving, out]);
-  const style = useAnimatedStyle(() => ({ opacity: 1 - out.get(), transform: [{ translateY: out.get() * 18 }] }));
-  return (
-    <Animated.View style={[styles.bottomed, style]}>
-      <CountUp to={WELCOME_SHELLS} quiet={quiet} />
-      <InkText variant="sub" center style={styles.introLine}>
-        {line}
-      </InkText>
-    </Animated.View>
   );
 }
 
