@@ -5,10 +5,12 @@ import Animated, {
   cancelAnimation,
   Easing,
   type SharedValue,
+  useAnimatedProps,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withRepeat,
+  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
@@ -28,10 +30,18 @@ export interface NightMoonProps {
 const M = MOON_SIZE;
 /** The dark side slides off the disc as the phase grows (the SVG prototype's shade circle, in pixels). */
 const shadeX = (phase: number) => -28 - 129 * phase;
+/** The progress ring round the moon in the header (in the moon's own units; the header scales it). */
+const RING_R = M * 0.6;
+const RING_W = M * 0.07;
+const RING_LEN = 2 * Math.PI * RING_R;
+const RING_BOX = Math.ceil((RING_R + RING_W) * 2);
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 /**
  * The moon: a lit disc whose dark side slides away one answer at a time, and that travels between
- * the intro's centre, the header (where it is the progress) and the gift's halo. Transforms only.
+ * the intro's centre, the header (where it is the progress) and the gift's halo. In the header a
+ * light ring round it fills with the phase and the moon brightens for a beat at each step, so the
+ * way to the end reads without numbers (owner, 2026-11-17). Transforms only.
  */
 export const NightMoon = memo(function NightMoon({ place, places, phase, quiet }: NightMoonProps) {
   const reduce = useReducedMotion();
@@ -56,6 +66,20 @@ export const NightMoon = memo(function NightMoon({ place, places, phase, quiet }
     shade.set(withTiming(shadeX(phase), { duration: reduce ? 0 : 900 * slowFor(quiet), easing: EASE_OUT }));
   }, [phase, reduce, quiet, shade]);
 
+  // The ring: shown in the header only, filling with the phase; each new step lights the moon a beat.
+  const inHeader = place === 'header';
+  const fill = useSharedValue(inHeader ? phase : 0);
+  const ringO = useSharedValue(inHeader ? 1 : 0);
+  useEffect(() => {
+    fill.set(withTiming(phase, { duration: reduce ? 0 : 900 * slowFor(quiet), easing: EASE_OUT }));
+    if (inHeader && !reduce) glow.set(withSequence(withTiming(1, { duration: 220 }), withTiming(0.5, { duration: 700 })));
+  }, [phase, inHeader, reduce, quiet, fill, glow]);
+  useEffect(() => {
+    ringO.set(withTiming(inHeader ? 1 : 0, { duration: reduce ? 0 : 400, easing: EASE_OUT }));
+  }, [inHeader, reduce, ringO]);
+  const ringStyle = useAnimatedStyle(() => ({ opacity: ringO.get() }));
+  const ringProps = useAnimatedProps(() => ({ strokeDashoffset: RING_LEN * (1 - fill.get()) }));
+
   const body = useAnimatedStyle(() => ({
     opacity: o.get(),
     transform: [{ translateX: x.get() - M / 2 }, { translateY: y.get() - M / 2 }, { scale: s.get() }],
@@ -75,6 +99,24 @@ export const NightMoon = memo(function NightMoon({ place, places, phase, quiet }
             </RadialGradient>
           </Defs>
           <Circle cx={M * 1.1} cy={M * 1.1} r={M * 1.1} fill="url(#moonGlow)" />
+        </Svg>
+      </Animated.View>
+      <Animated.View style={[styles.ring, ringStyle]}>
+        <Svg width={RING_BOX} height={RING_BOX}>
+          <Circle cx={RING_BOX / 2} cy={RING_BOX / 2} r={RING_R} stroke="rgba(255,244,225,0.16)" strokeWidth={RING_W} fill="none" />
+          <AnimatedCircle
+            cx={RING_BOX / 2}
+            cy={RING_BOX / 2}
+            r={RING_R}
+            stroke="#FFF4E1"
+            strokeWidth={RING_W}
+            strokeLinecap="round"
+            strokeDasharray={`${RING_LEN} ${RING_LEN}`}
+            fill="none"
+            rotation={-90}
+            origin={`${RING_BOX / 2}, ${RING_BOX / 2}`}
+            animatedProps={ringProps}
+          />
         </Svg>
       </Animated.View>
       {/* The disc clips its own dark side; filled from the first frame (Android drops the corners of a view that gains its fill later). */}
@@ -160,6 +202,7 @@ function OrbitIcon({ index, d, color, angle, r, a, cx, cy }: { index: number; d:
 const styles = StyleSheet.create({
   moon: { position: 'absolute', left: 0, top: 0, width: M, height: M },
   glow: { position: 'absolute', left: -M * 0.6, top: -M * 0.6 },
+  ring: { position: 'absolute', left: M / 2 - RING_BOX / 2, top: M / 2 - RING_BOX / 2 },
   disc: { position: 'absolute', left: M * 0.04, top: M * 0.04, width: M * 0.92, height: M * 0.92, borderRadius: M * 0.46, overflow: 'hidden', backgroundColor: '#F1E6D3' },
   crater: { position: 'absolute', borderRadius: 99, backgroundColor: 'rgba(0,0,0,0.05)' },
   // A touch lighter than the sky: the dark side's earthshine.

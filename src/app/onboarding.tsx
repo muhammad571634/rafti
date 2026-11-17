@@ -302,15 +302,14 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
           </Animated.View>
         ) : null}
 
-        {/* The header: back and the count; the moon between them is the progress. */}
+        {/* The header: back on the left; the moon and its ring in the middle are the progress (no numbers, owner 2026-11-17). */}
         {index > 0 && !leaving ? (
           <Animated.View entering={FadeIn.duration(260)} exiting={FadeOut.duration(200)} style={[styles.header, { top: insets.top + 8 }]}>
             <PressableScale scaleTo={0.92} accessibilityRole="button" accessibilityLabel={t('a11y.back')} onPress={back} style={styles.round}>
               <Ionicons name="chevron-back" size={22} color={ink.text} style={styles.backIcon} />
             </PressableScale>
-            <InkText variant="footnote" accessibilityLabel={t('onboarding.step', { index, count: QUESTIONS })}>
-              {`${index} / ${QUESTIONS}`}
-            </InkText>
+            {/* Screen readers still hear "Step 2 of 5" where the numbers were. */}
+            <View accessible accessibilityLabel={t('onboarding.step', { index, count: QUESTIONS })} style={styles.stepSpot} />
           </Animated.View>
         ) : null}
 
@@ -582,6 +581,8 @@ const styles = StyleSheet.create({
   introLine: { marginTop: space.sm, fontSize: 17, lineHeight: 22 },
   header: { position: 'absolute', left: inkGutter, right: inkGutter, height: HEADER, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', zIndex: 5 },
   round: { width: 44, height: 44, borderRadius: 22, overflow: 'hidden', backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
+  // Holds the back button's mirror place, so the moon stays centred; it only speaks the step.
+  stepSpot: { width: 44, height: 44 },
   backIcon: { marginLeft: -2 },
   langChipBox: { position: 'absolute', right: inkGutter, zIndex: 5 },
   langChip: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 10, paddingRight: 14, borderRadius: 18, overflow: 'hidden', backgroundColor: ink.raised },

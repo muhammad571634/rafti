@@ -21,7 +21,8 @@ export function moonPlaces(width: number, height: number, top: number) {
   const x = width / 2;
   return {
     hero: { x, y: Math.round(height * 0.36), s: 1 },
-    header: { x, y: top + 30, s: 0.2 },
+    // A touch bigger than before, with its progress ring round it: the header's only progress (no "2 / 5").
+    header: { x, y: top + 30, s: 0.25 },
     halo: { x, y: Math.round(height * 0.37), s: 1.5 },
     gone: { x, y: Math.round(height * 0.37), s: 0.6 },
   } satisfies Record<MoonPlace, { x: number; y: number; s: number }>;
