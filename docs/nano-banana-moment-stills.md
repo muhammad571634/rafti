@@ -47,9 +47,11 @@ logos or brands (project memory §4).
 
 ## How to draw
 
-1. Open the Gemini chat where you drew the character (or a new chat with `art-new/c_<name>.png` attached), so the
-   face stays the same.
-2. Paste the mood's prompt below, with the name filled in.
+1. **Attach the character's picture** (`art-new/c_<name>.png`) to the message, or write in the Gemini chat where you
+   drew them. Without it Gemini invents a different person: the first test (2026-11-17) came back a fine picture of
+   someone who is not Milo (lighter skin, no earring, another face).
+2. Paste the mood's prompt below, and in its `SUBJECT:` line paste that character's SUBJECT line from
+   `docs/nano-banana-cast-2.md`, so the face holds even if the picture is missed.
 3. Save it as `art-new/m_<name>_<mood>.png`, for example `art-new/m_milo_close_night.png`.
 4. Tell Claude. Claude crops, compresses and wires it in (`assets/stills/registry.ts`).
 
@@ -62,13 +64,20 @@ the eyes about 40 % from the top (the card shows a wide band around them).
 
 **The viewer line in every prompt** (`THE VIEWER:`) puts the user in the frame without a face; keep it.
 
+**Users of every gender, one set of pictures.** The user is only ever a hand, a sleeve or a shoulder, so one drawing
+works for everyone; the line asks for a plain hand (medium size, short clean nails, no rings, no polish, no hair, a
+plain dark sleeve) that reads as neither a man's nor a woman's. The characters keep their own gender; the user picks
+who they talk to. If a mood ever needs more of the user's body, it is drawn twice and picked by the user's pronouns
+(`User.pronouns`), never guessed; none of the seven needs it now.
+
 ---
 
 ### close_night (THE TEST, with Milo)
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: Late at night, very close. They lie on their side facing the camera, as if on the pillow next to the viewer, or lean in across a small table; one hand comes toward the lens, almost touching.
-THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeting theirs; no face, nothing that says man or woman.
+THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeting theirs; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: A soft, unguarded look straight into the lens, a small private smile, as if they just said something they mean.
 LIGHT: One warm low lamp from the side, deep shadows, a catchlight in the eyes; the room falls into soft dark blur.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
@@ -78,9 +87,10 @@ AVOID: photorealism, anime, posed portrait, nudity, text, logos, brand names, wa
 
 ### rain
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: Rain at night. They stand close to the viewer under a dripping awning or by a rain-streaked window, hair and jacket wet, as if they came back to say something.
-THE VIEWER: the edge of the viewer's shoulder and wet sleeve, out of focus in the foreground; no face, nothing that says man or woman.
+THE VIEWER: the edge of the viewer's shoulder and wet sleeve, out of focus in the foreground; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes on the viewer, lips slightly parted, the words not out yet; longing held back.
 LIGHT: Cool blue night with one warm light behind them (a doorway or a street lamp), raindrops catching it.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
@@ -90,9 +100,10 @@ AVOID: photorealism, anime, posed portrait, text, logos, brand names, watermark,
 
 ### city_lights
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: Out in the city at night. They walk a step ahead, turn back over their shoulder to the viewer and reach a hand back toward the lens, as if saying "come on".
-THE VIEWER: the viewer's hand at the bottom of the frame, about to take theirs; no face, nothing that says man or woman.
+THE VIEWER: the viewer's hand at the bottom of the frame, about to take theirs; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: A grin full of mischief, eyes alive, inviting.
 LIGHT: Neon and street lights blurred into big soft bokeh behind them, a pink-and-teal glow on their face.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field, a little motion in the background.
@@ -102,9 +113,10 @@ AVOID: photorealism, anime, posed portrait, readable signs, text, logos, brand n
 
 ### morning
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: Early morning at home. Hair messy from sleep, in a soft old t-shirt or jumper, they hold a warm mug out toward the viewer.
-THE VIEWER: the viewer's hands at the bottom edge, reaching for the mug; no face, nothing that says man or woman.
+THE VIEWER: the viewer's hands at the bottom edge, reaching for the mug; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: A sleepy, crooked smile, eyes half-closed against the sun, easy and fond.
 LIGHT: Golden low sun through a window behind them, light in their hair, steam from the mug catching it.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
@@ -114,9 +126,10 @@ AVOID: photorealism, anime, posed portrait, nudity, text, logos, brand names, wa
 
 ### laughing
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: At a party or a rooftop at night. Caught mid-laugh at something the viewer just said, head tipped, one hand half over the mouth, eyes still on the viewer.
-THE VIEWER: the viewer's shoulder and a raised glass of water out of focus in the foreground; no face, nothing that says man or woman.
+THE VIEWER: the viewer's shoulder and a raised glass of water out of focus in the foreground; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: A real, helpless laugh, crinkled eyes, open and warm.
 LIGHT: Warm fairy lights and a soft golden glow, the crowd and city a dark blur behind.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
@@ -126,9 +139,10 @@ AVOID: photorealism, anime, posed portrait, drinks with labels, text, logos, bra
 
 ### tension
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: A charged moment in a doorway or a narrow hallway. They stand very close, one hand on the door frame, neither leaving nor coming in, after something sharp was said.
-THE VIEWER: the viewer's shoulder, dark and out of focus, filling one front corner, very close; no face, nothing that says man or woman.
+THE VIEWER: the viewer's shoulder, dark and out of focus, filling one front corner, very close; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Jaw set, brow low but not angry, holding the viewer's gaze; hurt and wanting under the control.
 LIGHT: One hard light from the side, half the face in shadow, a cool dark around them.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
@@ -139,9 +153,10 @@ AVOID: photorealism, anime, posed portrait, weapons, blood, violence, text, logo
 ### our_place
 Fill in PLACE from the table (each one comes from that character's story, `src/mock/character-stories.ts`).
 ```
-Using the same person from this image (same face, hair, build and painting style), create a new vertical 3:4 picture.
+Using the same person from the attached image (same face, skin tone, hair, build and painting style), create a new vertical 3:4 picture.
+SUBJECT: (paste this character's SUBJECT line from docs/nano-banana-cast-2.md)
 MOMENT: Back at PLACE, the place from their story with the viewer. They are already there when the viewer arrives and look up, caught in the middle of something.
-THE VIEWER: the viewer's shoulder or hand out of focus in the foreground, close; no face, nothing that says man or woman.
+THE VIEWER: the viewer's shoulder or hand out of focus in the foreground, close; no face; a plain hand of medium size, short clean nails, no rings or polish, a plain dark sleeve, nothing that says man or woman.
 EXPRESSION: One clear feeling from their story with the viewer, held a little back, eyes on the lens.
 LIGHT: The light that place would really have at night or dusk, one strong source, warm against cool.
 COMPOSITION: vertical 3:4, the face large and in the middle of the width, the eyes about 40% from the top, the viewer's point of view, 35mm phone-camera feel, shallow depth of field.
