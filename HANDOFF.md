@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z266. START HERE: "Tide" look from the owner's 7 Dribbble boards, proposal + canvas, waits for the owner's yes (Claude 1, Opus 5.5)
+
+- **Owner** (2026-11-17): 7 Dribbble boards of dark AI-companion apps and a brief: take their design DNA (teal obsidian ground + aurora, glass cards, cyan + coral, mixed italic titles, persona header with trait pills, coral bubbles, cyan voice notes, photo stack, full-bleed character cards, glass chat rows with swipe, bento profile), keep logic and Supabase, audit, propose the system and the order, wait before the first screen.
+- **Done**: audit (A51 drive of Today, Chats, Find, a chat + code), proposal `docs/design-tide.md` (what already matches, what differs, feasibility on the A51, tokens table, kit, order of work), canvas https://claude.ai/artifact/V8FohgqgTLfyZoAN3raPbZ (tokens sheet, Chats, Chat, Find, Profile with our cast art). No code; everything needed is in APK 1.2.0, so it ships by OTA.
+- **Next, after the owner's yes**: step 0 (tokens in `src/theme/ink.ts` + kit), then Chats, Chat, Find, Profile, one commit and an OTA each (doc §6).
+
+**Still to do (owner asks not finished):**
+- Owner: approve or correct the Tide canvas.
+- The rest of 0z265's list below.
+
 ### 0z265. START HERE: Us month card with pictures (done), onboarding gift from the chosen friend (prototype, waits for the owner) (Claude 1, Opus 5.5)
 
 - **Us, "Who you talked with"** (owner 2026-11-17, from a mockup): each bubble shows the friend's square picture washed in their talk colour with a ring of it (the colour alone for a friend with no picture, e.g. a user-made one without a photo); under the subtitle a yellow "Most talked" mark, the name and "40% of your month" (`us.mostTalked`, `us.ofMonth`, 14 locales). `src/components/us/talked-with.tsx`. OTA `01a1e9eb`; seen on the A51 (Milo 54 %, Mia 39 %, ten bubbles with pictures).
