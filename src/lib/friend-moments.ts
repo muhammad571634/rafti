@@ -1,5 +1,6 @@
-import type { Scene } from '@/types';
+import type { MomentStill, Scene } from '@/types';
 
+import { asMomentStill } from '../ai/moment-stills';
 import { checkScene, SCENE_OPENING_MAX, SCENE_ROLE_MAX, SCENE_SETTING_MAX, SCENE_TITLE_MAX } from './scenes';
 
 /**
@@ -26,6 +27,8 @@ export interface WrittenMoment {
   role?: string;
   /** The first thing the friend says in it: shown on the card, and their first line in the chat. */
   line: string;
+  /** Which of their drawn stills fits it (`src/ai/moment-stills.ts`). */
+  still?: MomentStill;
 }
 
 /** A friend's moments of one week, as the phone keeps them. */
@@ -63,12 +66,14 @@ export function momentScenes(characterId: string, week: string, written: readonl
     };
     if (!input.opening || checkScene(input, 0, 1).length) continue;
     if (scenes.some((s) => s.title.toLowerCase() === input.title.toLowerCase())) continue;
+    const still = asMomentStill(moment.still);
     scenes.push({
       id: momentSceneId(characterId, week, scenes.length),
       title: input.title,
       setting: input.setting,
       ...(input.userRole ? { userRole: input.userRole } : {}),
       opening: input.opening,
+      ...(still ? { still } : {}),
       characterId,
       createdAt,
     });

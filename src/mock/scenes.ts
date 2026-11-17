@@ -13,6 +13,7 @@ const WORLD_SCENES: Scene[] = [];
 const ANY_FRIEND: Scene[] = [
   {
     id: 'scene_ferry',
+    still: 'city_lights',
     title: 'Night ferry',
     setting: 'The last ferry of the night crosses a calm, dark sea. The deck is empty except for the two of you, and the city lights fade behind.',
     userRole: 'A traveller who almost missed the boat.',
@@ -22,6 +23,7 @@ const ANY_FRIEND: Scene[] = [
   },
   {
     id: 'scene_cabin',
+    still: 'close_night',
     title: 'Snowed in',
     setting: "A mountain cabin, a storm outside, and the power just went out. There's a fire, a stack of blankets and nowhere to go until morning.",
     opening: "Well. Candles, a fire and no signal. Guess you're stuck with me.",
@@ -30,6 +32,7 @@ const ANY_FRIEND: Scene[] = [
   },
   {
     id: 'scene_rooftop',
+    still: 'laughing',
     title: 'Rooftop after the party',
     setting: "The party downstairs is still loud. Up on the roof it's quiet: warm air, fairy lights and the whole city below.",
     opening: 'You found my hiding spot. Sit, there is room for two.',
@@ -38,6 +41,7 @@ const ANY_FRIEND: Scene[] = [
   },
   {
     id: 'scene_market',
+    still: 'city_lights',
     title: 'Lost at the night market',
     setting: "A night market in a city neither of you knows: lanterns, food stalls, music, and you've both lost the group.",
     opening: "Okay, don't panic. We're lost, but we're lost together. Dumplings first?",
@@ -46,6 +50,7 @@ const ANY_FRIEND: Scene[] = [
   },
   {
     id: 'scene_lighthouse',
+    still: 'rain',
     title: 'Storm at the lighthouse',
     setting: 'A lighthouse on a cliff in a storm. The lamp has to stay lit until dawn, and the keeper left the two of you in charge.',
     opening: "Hand me that lantern. We've got a long night ahead.",
@@ -54,6 +59,7 @@ const ANY_FRIEND: Scene[] = [
   },
   {
     id: 'scene_train',
+    still: 'close_night',
     title: 'Sleeper train',
     setting: 'An overnight train rolls through the countryside. Your seats face each other and the cabin lights are low.',
     opening: "Six hours till the next station. Tell me something you've never told anyone.",

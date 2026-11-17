@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z264. START HERE: moment cards have pictures (A of 0z263 done in code); next B, the share poster (Claude 1, Opus 5.5)
+
+- **Cards**: each moment card on a friend's page now has a 16:9 film still on top melting into the card, the glyph as clear glass on its corner, all words below on the card (never on the picture, never cut). Picture order (`momentPicture`, `src/components/character/moments.tsx`): `Scene.image` (uri, for later), else the friend's drawn still for the moment's mood, else their portrait on their own moments and on a stranger's page (the shop window), else the glyph large on its tint (the app's and the user's scenes, so a friend's row is not one face four times). Ghost cards keep the same shape while they write.
+- **Still library** (owner 2026-11-17: they draw the pictures in Nano Banana, emotional and pulling, logic after Character.AI): moments are new every week, so nobody draws each one. Every friend gets the same six moods (`src/ai/moment-stills.ts`: close_night, rain, city_lights, morning, laughing, tension); the `moments` write now asks the model for `"still"` per moment (parsed with `asMomentStill`, unknown dropped), each app scene carries one (`src/mock/scenes.ts`). Drawn stills go in `assets/stills/registry.ts` (empty now: every card falls back as above). Prompts and the "why it pulls" rules: `docs/nano-banana-moment-stills.md` (Character.AI's structure only, none of its pictures). Test first: Milo `close_night`, then a batch (72 in all, 6 per friend).
+- **Server**: `writes.ts` is shared, so the `still` ask reaches the model only after the next deploy (batch it with B). Until then moments come without a still: their portrait shows. No new cost beyond ~40 prompt tokens and ~8 output tokens per moments write (once a week per friend).
+- **Checked**: tsc 0, npm test 1007/1007 (still parse, scene carry, app scenes), server 115/115. Phone: owner said the A51 runs the APK, never check through Expo Go: OTA then look.
+
+**Still to do (owner asks not finished):**
+- B: share a moment as a 9:16 poster (0z263 B).
+- Owner: draw the test still (Milo `close_night`) from `docs/nano-banana-moment-stills.md`; Claude wires it in, then the batch.
+- Owner: one server deploy after B (the `still` ask).
+- The rest of 0z263's list below.
+
 ### 0z263. START HERE: two upgrades to the friend-page moments (0z262), approved by the owner 2026-11-17: (A) pictures on the moment cards, (B) share a moment as a 9:16 poster. Do A, then B, nothing else first (Claude 1, Opus 5.5, handover)
 
 **Why** (owner + Character.AI study on the A51, 2026-11-17): Character.AI's moments are user posts, mostly AI images / videos (sometimes one quoted line with the character's avatar), in a TikTok-like vertical feed with reactions and share; "Continue this moment in chat" plays a full-screen ad first, then opens a chat. Their draw for young adults is the **picture**; their weak sides: strangers' noise (memes), ads everywhere, the moment is not personal. Ours (0z262) is already personal (the friend writes them from your history and memories), plays inside your one chat (bond + memory carry on), no ads, 14 languages. Missing: the picture, and sharing (Character.AI's free marketing). The owner wants Sigmazam marketed this way to 18+ young adults.

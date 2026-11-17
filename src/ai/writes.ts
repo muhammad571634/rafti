@@ -3,6 +3,7 @@ import type { DateChoice, DateRound } from '@/mock/dates';
 import type { DateMood, DiaryMood, MemoryItem, Message } from '@/types';
 
 import { factLines, pinnedLines } from './chat-prompt';
+import { asMomentStill, momentStillLine } from './moment-stills';
 import { personaParts, type PersonaInput } from './content-prompts';
 import type { PromptMode } from './modes';
 import { cleanDayNotes, cleanOwnDay, DAY_NOTES_MAX, ownDayParts, type OwnDay } from './own-day';
@@ -167,9 +168,10 @@ function taskLines(request: WriteRequest): string[] {
         `- "setting": where the two of you are and what is happening right now, in two short sentences (max 220 characters). The USER reads it on a card, so it speaks to them: "you" is always the user, you are "${name.split(' ')[0]}" by name, and "the two of you" is both. Never "I" or "me", and never the user's name.`,
         '- "role": who the user is in it, only when they are not simply themselves (max 80 characters); else "".',
         '- "line": the first thing you say to them in it: one short message in your voice (max 140 characters) that puts them in the scene and leaves them something to answer. Spoken words only, no *narration*.',
+        momentStillLine(),
         '- Present day and ordinary places. No real people, brands or named real places. Never a scene about harm to anyone.',
         JSON_ONLY,
-        'Shape: {"moments":[{"title":"","setting":"","role":"","line":""}]}',
+        'Shape: {"moments":[{"title":"","setting":"","role":"","line":"","still":""}]}',
       ];
     case 'worldLines':
       return [
@@ -303,7 +305,8 @@ export function parseWrite(request: WriteRequest, raw: string): WriteResults[Wri
         const setting = text(v.setting, LINE_MAX);
         const line = text(v.line, 200);
         const role = text(v.role, 100);
-        return title && setting && line ? [{ title, setting, line, ...(role ? { role } : {}) }] : [];
+        const still = asMomentStill(v.still);
+        return title && setting && line ? [{ title, setting, line, ...(role ? { role } : {}), ...(still ? { still } : {}) }] : [];
       });
       return moments.length >= 2 ? { moments: moments.slice(0, MOMENTS_ASKED) } : null;
     }

@@ -469,8 +469,15 @@ export interface Scene {
   series?: string;
   /** A moment this friend wrote for the two of them (`src/lib/friend-moments.ts`): offered only with them. */
   characterId?: string;
+  /** Its own film still (a uri); the moment card shows it before the friend's art. */
+  image?: string;
+  /** Which of the friend's drawn stills fits it (`src/ai/moment-stills.ts`). */
+  still?: MomentStill;
   createdAt: string;
 }
+
+/** The six moods every friend's moment stills are drawn in (`src/ai/moment-stills.ts`). */
+export type MomentStill = 'close_night' | 'rain' | 'city_lights' | 'morning' | 'laughing' | 'tension';
 
 /** A scene running in a chat: a copy, so editing or deleting the scene leaves the chat as it was. */
 export interface ActiveScene {

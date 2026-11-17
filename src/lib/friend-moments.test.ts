@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { sceneOpenCue } from '../ai/moment-prompt';
+import { asMomentStill, MOMENT_STILLS } from '../ai/moment-stills';
 import { cleanWrite, parseWrite, WRITE_KINDS, writeParts, type WriteRequest } from '../ai/writes';
 import { officialScenes } from '../mock/scenes';
 import type { Character, Scene, User } from '@/types';
@@ -106,7 +107,9 @@ describe('the moments write', () => {
     assert.match(text, new RegExp(`Write ${MOMENTS_COUNT} moments`));
     assert.match(text, /Mira/);
     assert.match(text, /"line": the first thing you say/);
-    assert.match(text, /Shape: \{"moments":\[\{"title":"","setting":"","role":"","line":""\}\]\}/);
+    assert.match(text, /Shape: \{"moments":\[\{"title":"","setting":"","role":"","line":"","still":""\}\]\}/);
+    // The six stills, by id, so the card can show the friend in that mood.
+    for (const still of MOMENT_STILLS) assert.ok(text.includes(still.id));
     assert.match(text, /REPLY LANGUAGE/);
   });
 
@@ -121,6 +124,30 @@ describe('the moments write', () => {
     assert.equal(parseWrite(request, JSON.stringify({ moments: [moment(1)] })), null);
     assert.equal(parseWrite(request, '{"moments":"none"}'), null);
     assert.equal(parseWrite(request, JSON.stringify({ moments: [1, 2, 3, 4, 5, 6, 7].map((n) => moment(n)) }))?.moments.length, MOMENTS_COUNT);
+  });
+});
+
+describe('moment stills', () => {
+  const request = { kind: 'moments', week: '2026-W47', input: { character, user } } as WriteRequest & { kind: 'moments' };
+  it('keeps a still the model named when it is one of the six, in any case, and drops any other', () => {
+    assert.equal(asMomentStill('rain'), 'rain');
+    assert.equal(asMomentStill(' Close_Night '), 'close_night');
+    assert.equal(asMomentStill('beach'), undefined);
+    assert.equal(asMomentStill(3), undefined);
+    const raw = JSON.stringify({ moments: [moment(1, { still: 'TENSION' as never }), moment(2, { still: 'sunset' as never })] });
+    const parsed = parseWrite(request, raw);
+    assert.equal(parsed?.moments[0].still, 'tension');
+    assert.ok(parsed && !('still' in parsed.moments[1]));
+  });
+
+  it('carries the still onto the scene, and leaves it off when there is none', () => {
+    const [a, b] = momentScenes('c_ex', '2026-W47', [moment(1, { still: 'morning' }), moment(2)], now);
+    assert.equal(a.still, 'morning');
+    assert.ok(!('still' in b));
+  });
+
+  it('gives every app scene one of the six', () => {
+    for (const scene of officialScenes) assert.ok(asMomentStill(scene.still), scene.id);
   });
 });
 
