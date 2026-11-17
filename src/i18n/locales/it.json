@@ -1583,6 +1583,8 @@
     "title": "Noi",
     "talkedWith": "Con chi hai parlato · {{month}}",
     "whoTalked": "Con chi hai parlato",
+    "mostTalked": "Più sentito",
+    "ofMonth": "{{percent}} del tuo mese",
     "yourDays": "I tuoi giorni",
     "showMore": "Mostra altri {{count}}",
     "level": "Livello {{level}}",

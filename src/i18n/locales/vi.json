@@ -1556,6 +1556,8 @@
     "title": "Chúng ta",
     "talkedWith": "Bạn đã trò chuyện với ai · {{month}}",
     "whoTalked": "Bạn đã trò chuyện với ai",
+    "mostTalked": "Trò chuyện nhiều nhất",
+    "ofMonth": "{{percent}} tháng của bạn",
     "yourDays": "Những ngày của bạn",
     "showMore": "Xem thêm {{count}}",
     "level": "Cấp {{level}}",

@@ -1583,6 +1583,8 @@
     "title": "Biz",
     "talkedWith": "Kiminle konuştun · {{month}}",
     "whoTalked": "Kiminle konuştun",
+    "mostTalked": "En çok konuşulan",
+    "ofMonth": "ayının {{percent}}",
     "yourDays": "Günlerin",
     "showMore": "{{count}} tane daha göster",
     "level": "Seviye {{level}}",

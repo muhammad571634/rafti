@@ -1556,6 +1556,8 @@
     "title": "เรา",
     "talkedWith": "คนที่คุณคุยด้วย · {{month}}",
     "whoTalked": "คนที่คุณคุยด้วย",
+    "mostTalked": "คุยมากที่สุด",
+    "ofMonth": "{{percent}} ของเดือนนี้",
     "yourDays": "วันของคุณ",
     "showMore": "ดูเพิ่มอีก {{count}}",
     "level": "เลเวล {{level}}",

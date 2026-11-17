@@ -1637,6 +1637,8 @@
     "title": "Мы",
     "talkedWith": "С кем вы общались · {{month}}",
     "whoTalked": "С кем вы общались",
+    "mostTalked": "Чаще всех",
+    "ofMonth": "{{percent}} твоего месяца",
     "yourDays": "Ваши дни",
     "showMore": "Показать ещё {{count}}",
     "level": "Уровень {{level}}",

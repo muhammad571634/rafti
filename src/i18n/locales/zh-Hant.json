@@ -1556,6 +1556,8 @@
     "title": "我們",
     "talkedWith": "你和誰聊過 · {{month}}",
     "whoTalked": "你和誰聊過",
+    "mostTalked": "聊最多",
+    "ofMonth": "本月的 {{percent}}",
     "yourDays": "你的日子",
     "showMore": "再顯示 {{count}} 個",
     "level": "等級 {{level}}",

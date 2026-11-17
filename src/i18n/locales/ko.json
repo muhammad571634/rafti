@@ -1556,6 +1556,8 @@
     "title": "우리",
     "talkedWith": "대화한 사람 · {{month}}",
     "whoTalked": "대화한 사람",
+    "mostTalked": "가장 많이 대화",
+    "ofMonth": "이번 달의 {{percent}}",
     "yourDays": "나의 하루들",
     "showMore": "{{count}}개 더 보기",
     "level": "레벨 {{level}}",

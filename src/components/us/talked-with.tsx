@@ -1,15 +1,19 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated';
 
+import { characterImage, SFIcon } from '@/components/ui';
 import { useDayKey } from '@/hooks/use-day-key';
 import { packBubbles, type Bubble } from '@/lib/bubble-pack';
 import { shortName } from '@/lib/format';
 import { monthStart, talkShares, type TalkShare } from '@/lib/talk-shares';
 import { displayName, useAppStore } from '@/store/use-app-store';
+import { colors } from '@/theme';
 import { ink, inkFace, inkRadius, inkType } from '@/theme/ink';
+import type { Character } from '@/types';
 
 /**
  * One bright pair per friend, by rank this month (owner, 2026-11-16: every friend, each in a colour of
@@ -40,6 +44,11 @@ const MOVE = { damping: 18, stiffness: 160, mass: 1 } as const;
 /** Points between two bubbles, and the smallest a bubble may be: room for a short name and its percent. */
 const GAP = 4;
 const MIN_R = 27;
+/** The ring of their colour round a bubble with a picture. */
+const RING = 2.5;
+/** The month's leader mark: Apple's yellow with dark words (7:1). */
+const TOP_FILL = TALK_HUES[1][0];
+const TOP_INK = 'rgba(0,0,0,0.86)';
 
 /** This month's friends by lines, worked out again when the chats or the day change. */
 export function useTalkShares(): TalkShare[] {
@@ -95,10 +104,12 @@ export const TalkedWith = memo(function TalkedWith() {
 
   if (shares.length === 0) return null;
 
+  const characterOf = (s: TalkShare): Character | undefined => characters.find((x) => x.id === s.characterId);
   const nameOf = (s: TalkShare) => {
-    const c = characters.find((x) => x.id === s.characterId);
+    const c = characterOf(s);
     return c ? shortName(displayName(c, relationships[c.id])) : '';
   };
+  const top = shares[0];
   const month = new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(new Date());
   const monthTitle = month.charAt(0).toLocaleUpperCase(i18n.language) + month.slice(1);
   const summary = shares.map((s) => `${nameOf(s)} ${percentText(s.percent)}`).join(', ');
@@ -111,13 +122,37 @@ export const TalkedWith = memo(function TalkedWith() {
       <Text style={styles.subtitle} maxFontSizeMultiplier={1.3}>
         {t('us.whoTalked')}
       </Text>
+      {/* Who led the month, in words (owner, 2026-11-17): the mark in one line, the name and share wrap when long. */}
+      <View style={styles.top}>
+        <View style={styles.topMark}>
+          <SFIcon ios="star.fill" icon="star" size={13} color={TOP_INK} />
+          <Text style={styles.topMarkText} numberOfLines={1} maxFontSizeMultiplier={1.2}>
+            {t('us.mostTalked')}
+          </Text>
+        </View>
+        <Text style={styles.topLine} maxFontSizeMultiplier={1.3}>
+          <Text style={styles.topName}>{nameOf(top)}</Text>
+          {` · ${t('us.ofMonth', { percent: percentText(top.percent) })}`}
+        </Text>
+      </View>
       <View
         style={[styles.box, { height }]}
         onLayout={(e) => setWidth(Math.round(e.nativeEvent.layout.width))}
         accessible
         accessibilityLabel={`${monthTitle}, ${t('us.whoTalked')}: ${summary}`}>
         {bubbles.map((b, i) => (
-          <TalkBubble key={shares[i].characterId} index={i} bubble={b} hue={TALK_HUES[i % TALK_HUES.length]} name={nameOf(shares[i])} percent={shares[i].percent} />
+          <TalkBubble
+            key={shares[i].characterId}
+            index={i}
+            bubble={b}
+            hue={TALK_HUES[i % TALK_HUES.length]}
+            name={nameOf(shares[i])}
+            percent={shares[i].percent}
+            image={(() => {
+              const c = characterOf(shares[i]);
+              return c ? characterImage(c) : undefined;
+            })()}
+          />
         ))}
       </View>
     </View>
@@ -137,7 +172,25 @@ function labelSize(name: string, r: number): LabelSize {
   return 'percent';
 }
 
-const TalkBubble = memo(function TalkBubble({ index, bubble, hue, name, percent }: { index: number; bubble: Bubble; hue: readonly [string, string]; name: string; percent: number }) {
+/**
+ * One friend's bubble: their picture washed in their colour with a ring of it (owner, 2026-11-17), or
+ * the colour alone for a friend with no picture (a user-made one without a photo).
+ */
+const TalkBubble = memo(function TalkBubble({
+  index,
+  bubble,
+  hue,
+  name,
+  percent,
+  image,
+}: {
+  index: number;
+  bubble: Bubble;
+  hue: readonly [string, string];
+  name: string;
+  percent: number;
+  image?: string | number;
+}) {
   const swell = useSharedValue(0);
   const x = useSharedValue(bubble.x);
   const y = useSharedValue(bubble.y);
@@ -168,20 +221,28 @@ const TalkBubble = memo(function TalkBubble({ index, bubble, hue, name, percent 
     };
   });
 
-  const color = inkOn(hue[0]);
+  // White words with a shadow on a picture; on the bare colour, the ink that reads on it.
+  const color = image != null ? colors.onMedia : inkOn(hue[0]);
   const size = labelSize(name, bubble.r);
   const showName = size !== 'percent';
   const showPercent = true;
   return (
-    <Animated.View style={[styles.bubble, style]}>
-      <LinearGradient colors={hue} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={StyleSheet.absoluteFill} />
+    <Animated.View style={[styles.bubble, image != null && { borderColor: hue[0], borderWidth: RING }, style]}>
+      {image != null ? (
+        <>
+          <Image source={typeof image === 'string' ? { uri: image } : image} contentFit="cover" contentPosition="top" style={StyleSheet.absoluteFill} accessible={false} />
+          <LinearGradient colors={[`${hue[0]}40`, `${hue[1]}26`, 'rgba(0,0,0,0.5)']} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
+        </>
+      ) : (
+        <LinearGradient colors={hue} start={{ x: 0.15, y: 0 }} end={{ x: 0.85, y: 1 }} style={StyleSheet.absoluteFill} />
+      )}
       {showName ? (
-        <Text style={[size === 'big' ? styles.bubbleName : styles.bubbleNameSmall, { color }]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
+        <Text style={[size === 'big' ? styles.bubbleName : styles.bubbleNameSmall, { color }, image != null && styles.onPhoto]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
           {name}
         </Text>
       ) : null}
       {showPercent ? (
-        <Text style={[size === 'big' ? styles.bubblePercent : styles.bubblePercentAlone, { color }]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
+        <Text style={[size === 'big' ? styles.bubblePercent : styles.bubblePercentAlone, { color }, image != null && styles.onPhoto]} numberOfLines={1} maxFontSizeMultiplier={1.1}>
           {percentText(percent)}
         </Text>
       ) : null}
@@ -206,6 +267,12 @@ const styles = StyleSheet.create({
   month: inkType.card,
   subtitle: { ...inkType.sub, marginTop: 2 },
   box: { marginTop: 14 },
+  top: { marginTop: 12, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: 10, rowGap: 6 },
+  topMark: { flexDirection: 'row', alignItems: 'center', gap: 5, height: 28, paddingHorizontal: 10, borderRadius: inkRadius.pill, backgroundColor: TOP_FILL },
+  topMarkText: { ...inkFace('subStrong'), fontSize: 14, color: TOP_INK },
+  topLine: { ...inkType.sub, flexShrink: 1 },
+  topName: { ...inkFace('bodyStrong'), color: ink.text },
+  onPhoto: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
   bubble: { position: 'absolute', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   bubbleName: { ...inkFace('subStrong'), textAlign: 'center', includeFontPadding: false },
   bubbleNameSmall: { ...inkFace('caption'), textAlign: 'center', includeFontPadding: false },
