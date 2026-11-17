@@ -29,8 +29,10 @@ const CARD_MAX = 360;
 /** A card is a tall picture (2:3, Character.AI's moments); a card with long words grows taller, never cuts them. */
 const CARD_RATIO = 1.5;
 /** Dark under the glass on top, clear over the face, dark under the words (white words on a picture, HIG legibility). */
-const SCRIM = ['rgba(0,0,0,0.3)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.62)', 'rgba(0,0,0,0.9)'] as const;
-const SCRIM_AT = [0, 0.2, 0.36, 0.6, 1] as const;
+const SCRIM = ['rgba(0,0,0,0.3)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.72)', 'rgba(0,0,0,0.92)'] as const;
+const SCRIM_AT = [0, 0.16, 0.3, 0.5, 1] as const;
+/** The top of a card stays picture, never words: long words (Russian, German) make the card taller instead (A51 2026-11-17). */
+const PICTURE_SHARE = 0.42;
 /** A friend still writing after this long: the app's scenes show, and theirs wait for the next visit. */
 const WAIT_MS = 12_000;
 
@@ -206,6 +208,7 @@ function MomentCard({
         </Pressable>
       </View>
 
+      <View style={{ height: Math.round(height * PICTURE_SHARE) }} />
       <View style={styles.words}>
         <Txt style={styles.cardTitle} maxFontSizeMultiplier={1.3}>
           {scene.title}
@@ -274,7 +277,7 @@ const styles = StyleSheet.create({
   badgeText: { ...inkFace('bodyStrong'), fontSize: 13, lineHeight: 17, color: colors.onMedia, flexShrink: 1 },
   words: { padding: 18, gap: 10 },
   cardTitle: { ...inkType.card, fontSize: 24, lineHeight: 29, color: colors.onMedia, ...shadow(6) },
-  setting: { ...inkType.sub, color: colors.onMediaMuted, ...shadow(4) },
+  setting: { ...inkType.sub, color: colors.onMediaSoft, ...shadow(4) },
   said: { flexDirection: 'row', alignItems: 'flex-end', gap: 8, marginTop: 2 },
   // Their line on a picture: dark glass under white words (as the Today card does).
   bubble: { flexShrink: 1, paddingHorizontal: 14, paddingVertical: 10, borderRadius: inkRadius.chip, borderBottomLeftRadius: 6, borderCurve: 'continuous', backgroundColor: colors.onMediaBubble },
