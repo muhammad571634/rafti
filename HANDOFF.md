@@ -9,7 +9,8 @@
 - **User-made characters** (owner asked): same moods and card. Now: their own photo (`avatarUri`) cropped on their moments, else the glyph. Later, with an image key (`PORTRAITS_AVAILABLE`): we draw their stills from the looks text / app-drawn portrait, never from an uploaded photo (could be a real person), lazily on Continue, one a day, seven max, priced like a portrait; plan in the doc's last section. Cost goes in `docs/cost-ledger.md` when built.
 - **Card seam fixed**: `GlowCard lit={false}` (the side glow left a line where the still melts in). Seen on the A51 APK (Russian, Milo's "Утренний кофе" with his portrait on top) before the fix; the fix went out as an OTA.
 - **Server**: `writes.ts` is shared, so the `still` ask reaches the model only after the next deploy (batch it with B). Until then moments come without a still: their portrait shows. No new cost beyond ~40 prompt tokens and ~8 output tokens per moments write (once a week per friend).
-- **Checked**: tsc 0, npm test 1007/1007 (still parse, scene carry, app scenes), server 115/115. Phone: owner said the A51 runs the APK, never check through Expo Go: OTA then look.
+- **Checked on the A51 APK** (Russian, OTA `01a1e9de`): full-picture cards ("На этой неделе" mark, Share glass, Milo's face clear above long Russian words after the top-42% fix), Share opens the poster (Milo's face, name, mood, badge, his picture with title and line, "Войди в этот момент в Sigmazam", band, +5 shells; nothing of the user). Not checked: posting it to another app (shells), a stranger's page, the app-scene tint card on the phone.
+- **Checked**: tsc 0, npm test 1014/1014 (still parse, scene carry, app scenes, posterWords), server 115/115, check:locales. Phone: owner said the A51 runs the APK, never check through Expo Go: OTA then look.
 
 **Still to do (owner asks not finished):**
 - Owner: the stills from ChatGPT Image (they say when ready); Claude wires them in (`assets/stills/registry.ts`).
