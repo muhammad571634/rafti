@@ -1,5 +1,18 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z270. START HERE: server deployed; 0z268 task 2 "first 5 minutes" walked on the A51, nothing broken (Claude 1, Opus 5.5)
+
+- **Server**: the owner deployed 0z269 (the chat prompt no longer asks for ideas); `/health` 200, `gemini-3.1-flash-lite`, db ok. Owner kept the "May I text you?" answers (2026-11-17).
+- **Walked** (owner: "use my profile fully"; Expo Go not wanted): `sigmazam://onboarding?preview=1` in English and in Russian (language switched back to English after), plus a real first chat with a friend the owner did not have (Jace Navarro, added from Find search → Say hi).
+  - Intro → age (the drum stops at 18+; 2005 fine) → friend (four faces; two quick taps do not move the row) → name (a 30-letter name is cut at 20 mid-word and greeted so: "Hey Maximiliana Alexandr!") → gender (one tap answers and moves on after 300 ms) → gift (Milo fills the top, "Hey Aziz! Finally.", shells fly into +100, Say hi). Russian: every title and pill fits, nothing cut (friend title takes three lines and still clears the card).
+  - First chat: their first line is there at once (no wait), under it only Share; no chips now (0z269), so the line must invite an answer (Jace's opening does).
+- **No code changed**: nothing broken or code-only worth fixing.
+- **For the owner (product, one short list)**: (1) every new chat opens on the flat warm "cream" ground (`#1A1613`, owner 2026-11-08), not the friend's picture; a new user sees the picture only if they find Chat background (Milo's chat has it because it was picked). The owner said leave the ground; asked once whether new chats should start on the picture. (2) Russian mixes "вы" in the questions with "Твой лучший друг" on the friend's tag. (3) A name longer than 20 letters is cut mid-word in the greeting. (4) Say hi works before the gift plays, so a fast tap skips the moment.
+
+**Still to do (owner asks not finished):**
+- Owner's answer on (1)-(4) above, if any.
+- 0z268 task 3 (Find's "Who do you miss?": prototype a living invitation) and task 4 (pictures: the remaining 76 moment stills after the image quota).
+
 ### 0z269. START HERE: chat calm built (owner's pick A) and no ready replies in the chat; one server deploy waits for the owner (Claude 1, Opus 5.5)
 
 **Built tonight (after the prototype below):**
