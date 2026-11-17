@@ -1,7 +1,8 @@
 # "Tide": the look from the owner's Dribbble boards (proposal, waits for the owner's yes)
 
-Status: **PROPOSAL, 2026-11-17 (Claude 1, Opus 5.5).** Nothing in `src/` is changed. Code starts only after
-the owner approves the canvas (project rule: prototype first).
+Status: **PROPOSAL, 2026-11-17 (Claude 1, Opus 5.5).** Owner's decision the same evening: take **only** the
+separate-card rows of the Chats list now (built, `ChatRow` in `src/app/(tabs)/chat.tsx`, OTA `01a1ea54`); the rest
+of this file waits until the owner asks for it.
 
 **Canvas (5 artboards, our own cast art): https://claude.ai/artifact/V8FohgqgTLfyZoAN3raPbZ**
 Tokens sheet, Chats, Chat, Find, Profile.

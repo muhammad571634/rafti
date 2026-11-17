@@ -4,10 +4,12 @@
 
 - **Owner** (2026-11-17): 7 Dribbble boards of dark AI-companion apps and a brief: take their design DNA (teal obsidian ground + aurora, glass cards, cyan + coral, mixed italic titles, persona header with trait pills, coral bubbles, cyan voice notes, photo stack, full-bleed character cards, glass chat rows with swipe, bento profile), keep logic and Supabase, audit, propose the system and the order, wait before the first screen.
 - **Done**: audit (A51 drive of Today, Chats, Find, a chat + code), proposal `docs/design-tide.md` (what already matches, what differs, feasibility on the A51, tokens table, kit, order of work), canvas https://claude.ai/artifact/V8FohgqgTLfyZoAN3raPbZ (tokens sheet, Chats, Chat, Find, Profile with our cast art). No code; everything needed is in APK 1.2.0, so it ships by OTA.
-- **Next, after the owner's yes**: step 0 (tokens in `src/theme/ink.ts` + kit), then Chats, Chat, Find, Profile, one commit and an OTA each (doc §6).
+- **Owner's canvas comments, same evening**: no new colours anywhere (Apple iOS rules: white icons, the white main action, peach stays for money and the user's bubble, iOS red / blue / green only for delete / unread counts / online), today's filters and today's call icon stay, the send button sits inside the field as in Messages, Profile's counts moved into the bento cards. Canvas and `docs/design-tide.md` updated.
+- **Owner's decision (built)**: of the whole canvas, take only the separate-card rows of the Chats list now; touch nothing else. `src/app/(tabs)/chat.tsx` `ChatRow`: each row is a card (`inkRadius.row` 20, `ink.card`, hairline `ink.edge`, 10 pt apart, in the screen gutter), the peach unread dot inside the card's edge, one line of the last message, no chevron; the gutter and gap sit outside `SwipeRow`, so the swipe actions are the card's exact size and stay invisible while it is closed. OTA `01a1ea54`; seen on the A51 (English UI, Turkish / Russian previews): cards, hearts, times, the dot on Mia and Asher. Not driven on the phone: swipe both ways, Edit mode, a group row, a long Russian name (the owner was using the phone; one of my taps may have landed in Milo's message menu while they had it open). tsc 0, npm test 1014/1014.
+- **Not taken now** (owner): the teal ground, persona header, Find card, bento profile, new icons. The canvas keeps them for later.
 
 **Still to do (owner asks not finished):**
-- Owner: approve or correct the Tide canvas.
+- Drive the Chats cards' worst case on the A51: swipe left / right, Edit mode, a group row, a long Russian name.
 - The rest of 0z265's list below.
 
 ### 0z265. START HERE: Us month card with pictures (done), onboarding gift from the chosen friend (prototype, waits for the owner) (Claude 1, Opus 5.5)
