@@ -399,9 +399,10 @@ export default function ChatRoomScreen() {
   // System lines (the AI notice at a session's start) do not count as their last line.
   const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
   // Before the user's first message, a created character's own first lines (quick create's
-  // starters, D70) stand in for the test chips.
+  // starters, D70) stand in for the test chips. They answer their greeting, so not in a chat that a
+  // scene opened instead (a moment from their page, 0z262): there they would answer nothing on screen.
   const shownChar = character ? localCharacter(character) : null;
-  const starters = shownChar?.starters?.length && !data.some((m) => m.author === 'me') ? shownChar.starters : null;
+  const starters = shownChar?.starters?.length && !data.some((m) => m.author === 'me' || m.card === 'scene') ? shownChar.starters : null;
   const suggestions =
     last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !shownIdeas(last, data) && !typing
       ? starters
