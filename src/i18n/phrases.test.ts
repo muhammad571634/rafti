@@ -5,7 +5,7 @@ import { describe, it } from 'node:test';
 
 import { FAMILY_LABELS } from '../lib/kin';
 import { INTEREST_OPTIONS } from '../lib/profile';
-import { allReachKeys, everydayIdeas, ideasFor } from '../lib/reply-ideas';
+import { allReachKeys, ideasFor } from '../lib/reply-ideas';
 import { characters } from '../mock/characters';
 import { TIERS } from '../mock/user';
 import { WORLDS } from '../mock/worlds';
@@ -13,15 +13,10 @@ import { WORLDS } from '../mock/worlds';
 const dir = join(import.meta.dirname, 'locales');
 const phrasesOf = (file: string): Record<string, string> => JSON.parse(readFileSync(join(dir, file), 'utf8')).phrases ?? {};
 
-/** Every reply idea the app can show, from every table and the everyday pool. */
+/** Every reply idea the app can show (a push's buttons, the "May I text you?" answers), from every table. */
 function allIdeas() {
   const reaches = [...allReachKeys(), 'ask', 'lead', 'quest', 'pause:break', 'pause:night'];
-  const everyday = [
-    ...everydayIdeas('Do you like rain?', 'a'),
-    ...everydayIdeas('What did you eat?', 'a'),
-    ...Array.from({ length: 64 }, (_, i) => everydayIdeas('I saw a cat today.', `seed${i}`)).flat(),
-  ];
-  return [...reaches.flatMap(ideasFor), ...everyday];
+  return reaches.flatMap(ideasFor);
 }
 
 describe('phrases: the English words kept as data, in every screen language', () => {

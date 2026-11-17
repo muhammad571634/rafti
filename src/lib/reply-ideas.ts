@@ -1,5 +1,4 @@
 import type { KinGroup, LifeMomentKey } from './kin';
-import { hashSeed } from './seeded';
 import type { CareKind, IdeaIntent, Message, ReplyIdea, TouchPhase } from '@/types';
 
 /**
@@ -296,27 +295,4 @@ export function shownIdeas(message: Message, messages: readonly Message[], now =
   if (now - Date.parse(message.createdAt) > IDEA_TTL_MS) return null;
   const newest = messages.findLast(isLine);
   return newest?.id === message.id ? message.ideas : null;
-}
-
-const YES_NO = /^(do|did|does|are|is|was|were|have|has|had|can|could|will|would|should|want|wanna|shall|may)\b/i;
-const OPEN = /^(what|how|why|where|when|who|which)\b/i;
-
-const POOL = ['Tell me more', 'Really?', 'Haha', 'And then?', 'That’s sweet', 'Go on', 'I missed you', 'Same here'];
-
-const plain = (label: string): ReplyIdea => ({ label, text: label });
-
-/**
- * Ideas under an everyday line until the server's model writes them: an answer when they asked a
- * yes-or-no question, a way in when they asked an open one, else two reactions from a pool.
- */
-export function everydayIdeas(text: string | undefined, seed: string): ReplyIdea[] {
-  const line = (text ?? '').trim();
-  const question = line.split(/(?<=[.!?…])\s+/).filter((part) => part.endsWith('?')).pop();
-  if (question && YES_NO.test(question)) return [plain('Yes 🙂'), plain('Not really'), plain('Why do you ask?')];
-  if (question && OPEN.test(question)) return [plain('Let me think…'), plain('You first!'), plain('Long story 😅')];
-  const hash = hashSeed(seed);
-  const first = hash % POOL.length;
-  // Unsigned shift: a signed one turns a large hash negative and can pick the first chip again.
-  const second = (first + 1 + ((hash >>> 4) % (POOL.length - 1))) % POOL.length;
-  return [plain(POOL[first]), plain(POOL[second])];
 }

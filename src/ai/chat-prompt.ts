@@ -20,7 +20,7 @@ import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
-import { ideasCue, REPLY_SHAPE } from './reply-style';
+import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
 import { threadParts } from './thread-prompt';
@@ -237,8 +237,6 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
-    // One-tap replies: texting only, and never under a crisis (the helpline card leads).
-    part('ideas', 'turn', !input.crisis && (!input.mode || input.mode === 'chat') ? ideasCue(input.messages) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
     part('shape', 'turn', [REPLY_SHAPE]),
   ];

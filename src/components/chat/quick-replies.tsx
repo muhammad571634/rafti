@@ -9,24 +9,11 @@ import { colors, palette, radius, space } from '@/theme';
 import type { ReplyIdea } from '@/types';
 
 /**
- * Quick replies under the friend's line (the morning chain, reply ideas): a tap sends the idea's
- * line; a long press puts it in the field to change first (Character.AI's edit before send).
- * Outlined pills on the user's side, where the answer will land (iOS suggested replies).
+ * The answers under "May I text you?", the one choice the chat still offers as buttons: the owner
+ * (2026-11-17) took every ready reply out so the user writes, and this Yes is the only way to allow
+ * their pushes. A tap sends the answer's line. Outlined pills on the user's side (iOS suggested replies).
  */
-export function QuickReplies({
-  ideas,
-  onPick,
-  onEdit,
-  written,
-}: {
-  ideas: ReplyIdea[];
-  onPick: (idea: ReplyIdea) => void;
-  onEdit?: (idea: ReplyIdea) => void;
-  /** The model's own words in the chat's language: shown as they are, not through `phrase`. */
-  written?: boolean;
-}) {
-  const shown = (text: string) => (written ? text : phrase(text));
-  const { t } = useTranslation();
+export function QuickReplies({ ideas, onPick }: { ideas: ReplyIdea[]; onPick: (idea: ReplyIdea) => void }) {
   const onPhoto = useOnPhoto();
   return (
     // One row that scrolls sideways when it does not fit: wrapping cut the last pill off on Android.
@@ -40,14 +27,12 @@ export function QuickReplies({
           <PressableScale
             key={idea.label}
             onPress={() => onPick(idea)}
-            onLongPress={onEdit ? () => onEdit(idea) : undefined}
             scaleTo={0.95}
             style={[styles.chip, onPhoto && styles.photoChip]}
             accessibilityRole="button"
-            accessibilityLabel={shown(idea.text)}
-            accessibilityHint={onEdit ? t('chat.ideaEditHint') : undefined}>
+            accessibilityLabel={phrase(idea.text)}>
             <Txt style={styles.chipText} color={onPhoto ? palette.apricot300 : colors.brandText} lines={1}>
-              {shown(idea.label)}
+              {phrase(idea.label)}
             </Txt>
           </PressableScale>
         ))}
@@ -55,9 +40,6 @@ export function QuickReplies({
     </View>
   );
 }
-
-/** Plain chips (the morning chain, a character's starters) as ideas that send their own words. */
-export const asIdeas = (chips: readonly string[]): ReplyIdea[] => chips.map((chip) => ({ label: chip, text: chip }));
 
 /** The peach bar while the wake-up alarm rings in this chat: a real reply turns it off. */
 export function AlarmBar() {

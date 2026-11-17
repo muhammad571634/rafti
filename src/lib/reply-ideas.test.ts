@@ -5,7 +5,6 @@ import { detectCare, saysBetter } from './care';
 import {
   allReachKeys,
   careReach,
-  everydayIdeas,
   helloReach,
   IDEA_TTL_MS,
   ideaCategory,
@@ -87,15 +86,6 @@ describe('reply ideas', () => {
     assert.equal(shownIdeas(asked, [asked, line('notice', 'them', 3, { kind: 'system' })], now), ideas);
     assert.equal(shownIdeas(asked, [asked], Date.parse(at(0)) + IDEA_TTL_MS + 1), null);
     assert.equal(shownIdeas(line('plain', 'them', 0), [line('plain', 'them', 0)], now), null);
-  });
-
-  it('answer a question when they asked one, else react', () => {
-    assert.deepEqual(everydayIdeas('Do you want to go swimming tomorrow?', 'a').map((i) => i.label), ['Yes 🙂', 'Not really', 'Why do you ask?']);
-    assert.equal(everydayIdeas('Haha. What did you eat today?', 'a')[1].label, 'You first!');
-    const react = everydayIdeas('I saw a cat today.', 'm1');
-    assert.equal(react.length, 2);
-    assert.notEqual(react[0].label, react[1].label);
-    assert.deepEqual(everydayIdeas('I saw a cat today.', 'm1'), react);
   });
 });
 

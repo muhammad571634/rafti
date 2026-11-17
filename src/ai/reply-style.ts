@@ -1,5 +1,5 @@
 import type { ReplyPrefs } from '@/lib/reply-engine';
-import type { Emotion, Message, SetupOffer } from '@/types';
+import type { Emotion, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
@@ -61,32 +61,9 @@ export const REPLY_SHAPE =
   'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +
   'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
-/**
- * The chat's one-tap replies (0z176): written by the model with the reply, in the chat's language,
- * so a Turkish or Uzbek chat never shows English chips ("Same here"). Texting only (not a call,
- * bedtime or a group). About a dozen output tokens a reply (docs/cost-ledger.md).
- */
-export const IDEAS_CUE =
-  'IDEAS: also give "ideas": two short replies (two to six words each) they could send next with one tap, in the language they write in and in their own voice, each answering this reply of yours (a question you asked, a thing you said). Never a stock line that would fit any chat. Leave it [] when nothing fits.';
-
-/** How many of your recent lines' one-tap replies the cue names, so new ones are not the same again. */
-const IDEAS_SEEN_LINES = 3;
-
-/**
- * `IDEAS_CUE`, and the ideas your last lines already carried: the model does not see its old ideas
- * (they are not in the history), so on the A51 (0z179) "I'll be there, I promise." / "Can't wait to
- * see you." came back under four replies in a row, through a kiss.
- */
-export function ideasCue(messages: readonly Pick<Message, 'author' | 'chips' | 'chipsWritten'>[]): string[] {
-  // The last few lines of theirs first, then the ones that carried ideas: never days-old ones.
-  const seen = messages
-    .filter((m) => m.author === 'them')
-    .slice(-IDEAS_SEEN_LINES)
-    .filter((m) => m.chipsWritten && m.chips?.length)
-    .flatMap((m) => m.chips ?? []);
-  const said = [...new Set(seen)].map((idea) => `"${idea}"`).join(', ');
-  return said ? [`${IDEAS_CUE} Your last replies already offered ${said}: give new ones that answer this reply, never these again.`] : [IDEAS_CUE];
-}
+// The chat's one-tap replies (0z176) are gone (owner, 2026-11-17: the user writes, a live
+// conversation): the prompt no longer asks for "ideas". An older server's reply may still carry them,
+// so the parse below keeps reading the field; nothing draws it.
 
 /** How many one-tap replies the chat shows, and how long one may be. */
 export const IDEAS_MAX = 2;

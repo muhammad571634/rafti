@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { cleanIdeas, enforceStyle, IDEAS_CUE, ideasCue, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
+import { cleanIdeas, enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -127,20 +127,10 @@ describe('one-tap replies written with the reply (0z176)', () => {
     assert.equal(parseModelReply('{"messages":["Hi"]}').ideas, undefined);
   });
 
-  it('asks for them when texting, never on a call', () => {
-    const ideasOf = (extra: { mode?: 'chat' | 'call'; crisis?: boolean }) => chatParts({ character, user, messages: [], ...extra }).find((p) => p.name === 'ideas')?.text ?? '';
-    assert.equal(ideasOf({}), IDEAS_CUE);
-    assert.equal(ideasOf({ mode: 'chat' }), IDEAS_CUE);
-    assert.equal(ideasOf({ mode: 'call' }), '');
-    assert.equal(ideasOf({ crisis: true }), '');
-  });
-
-  it('names the ideas its last lines already offered, so they are not the same again (0z179)', () => {
-    const them = (chips?: string[], chipsWritten = true) => ({ author: 'them' as const, chips, chipsWritten });
-    const cue = ideasCue([them(['Old one']), { author: 'me' as const }, them(["I'll be there, I promise.", 'Can’t wait to see you.']), them(["I'll be there, I promise.", 'Stay here with me.'])]).join(' ');
-    assert.match(cue, /already offered "Old one", "I'll be there, I promise\.", "Can’t wait to see you\.", "Stay here with me\.": give new ones/);
-    // Stock chips (not the model's) and a chat with none: the plain cue.
-    assert.deepEqual(ideasCue([them(['Same here'], false)]), [IDEAS_CUE]);
-    assert.deepEqual(ideasCue([]), [IDEAS_CUE]);
+  it('never asks for them: the user writes their own replies (owner, 2026-11-17)', () => {
+    for (const mode of [undefined, 'chat', 'call'] as const) {
+      const parts = chatParts({ character, user, messages: [], ...(mode ? { mode } : {}) });
+      assert.equal(parts.some((p) => p.name === 'ideas' || /"ideas"/.test(p.text)), false);
+    }
   });
 });

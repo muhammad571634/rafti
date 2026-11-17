@@ -10,7 +10,6 @@ import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform,
 import Animated, { FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { apiBase } from '@/ai/server';
 import { ChatInput, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { composerKeyboardOffset } from '@/components/chat/chat-input';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
@@ -40,7 +39,7 @@ import { useFollowNewest } from '@/components/chat/follow-newest';
 import { JumpToNewest } from '@/components/chat/jump-to-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
-import { AlarmBar, asIdeas, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
+import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -48,8 +47,6 @@ import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { CharacterAvatar, Header, Screen, Txt } from '@/components/ui';
 import { usePickPhoto } from '@/components/chat/use-pick-photo';
-import { phrase } from '@/i18n';
-import { localCharacter } from '@/i18n/content';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
 import { canRewindTo, lastExchange, laterCount, laterNotes, shareLines } from '@/lib/chat-turns';
@@ -57,7 +54,7 @@ import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
 import { isAskReach } from '@/lib/reach-ask';
-import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
+import { shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { shownLines } from '@/lib/scenes';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
@@ -94,8 +91,6 @@ export default function ChatRoomScreen() {
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
   const withCalls = useAppStore((s) => callsIncluded(s.wallet));
   const animations = useAppStore((s) => s.settings.chatAnimation);
-  // As the store decides who writes (`modelOn`): the switch and a server to ask.
-  const realAi = useAppStore((s) => s.settings.realAi) && !!apiBase();
   const missedToday = useAppStore((s) =>
     s.calls.some(
       (c) => c.characterId === conversation?.characterId && c.missed && dayKey(c.startedAt) === todayKey(),
@@ -103,7 +98,6 @@ export default function ChatRoomScreen() {
   );
 
   const sendText = useAppStore((s) => s.sendText);
-  const pickChip = useAppStore((s) => s.pickChip);
   const answerIdea = useAppStore((s) => s.answerIdea);
   const noteNotifyOff = useAppStore((s) => s.noteNotifyOff);
   /**
@@ -122,8 +116,6 @@ export default function ChatRoomScreen() {
     },
     [conversationId, noteNotifyOff],
   );
-  /** A long-pressed reply idea waiting in the field to be changed, and the line it answers. */
-  const [ideaDraft, setIdeaDraft] = useState<{ messageId: string; idea: ReplyIdea; at: number } | null>(null);
   // The wake-up alarm rings until a real reply here (the morning chain).
   const alarmRinging = useAppStore((s) => s.wake?.state === 'ringing' && s.wake.conversationId === conversationId);
   const sendVoice = useAppStore((s) => s.sendVoice);
@@ -380,43 +372,22 @@ export default function ChatRoomScreen() {
             )}
           </View>
           {item.noted && item.author === 'me' ? <NotedChip noted={item.noted} onPress={setThreadOpen} /> : null}
-          {item.chips?.length && conversationId && (!item.chipsWritten || item.id === newestLineId) ? (
-            <QuickReplies ideas={asIdeas(item.chips)} written={item.chipsWritten} onPick={(idea) => pickChip(conversationId, item.id, idea.text)} />
-          ) : conversationId && shownIdeas(item, data) ? (
-            // A line they wrote first: answering it is free (`answerIdea`).
+          {/* No ready replies in the chat (owner, 2026-11-17: the user writes, a live conversation). The
+              one exception is "May I text you?": its Yes is the only way to allow their pushes. */}
+          {conversationId && isAskReach(item.reach) && shownIdeas(item, data) ? (
             <QuickReplies
               ideas={item.ideas!}
               onPick={(idea) => {
                 answerIdea(conversationId, item.id, idea);
                 afterIdea(item, idea);
               }}
-              onEdit={(idea) => setIdeaDraft({ messageId: item.id, idea, at: Date.now() })}
             />
           ) : null}
         </View>
       );
     },
-    [character, animations, openedAt, data, shown, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
+    [character, animations, openedAt, data, shown, lastMine, flash, callBack, openMenu, toggleLove, conversationId, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
   );
-
-  // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
-  // System lines (the AI notice at a session's start) do not count as their last line.
-  const last = data.findLast((m) => m.kind !== 'system' && m.kind !== 'call' && !m.card);
-  // Before the user's first message, a created character's own first lines (quick create's
-  // starters, D70) stand in for the test chips. They answer their greeting, so not in a chat that a
-  // scene opened instead (a moment from their page, 0z262): there they would answer nothing on screen.
-  const shownChar = character ? localCharacter(character) : null;
-  const starters = shownChar?.starters?.length && !data.some((m) => m.author === 'me' || m.card === 'scene') ? shownChar.starters : null;
-  const suggestions =
-    last && last.author === 'them' && last.kind === 'text' && !last.card && !last.chips?.length && !shownIdeas(last, data) && !typing
-      ? starters
-        ? asIdeas(starters)
-        : // With the model on, its own ideas (in the chat's language) or none: the stock English
-          // chips are for the stand-in only (0z176: "Same here" under an Uzbek chat).
-          realAi
-          ? null
-          : everydayIdeas(last.text, last.id)
-      : null;
 
   if (!conversation || !character) {
     return (
@@ -435,19 +406,13 @@ export default function ChatRoomScreen() {
   const send = (text: string, tone?: MessageTone) => {
     // The text stays in the field while the sheet says the free messages are used.
     if (!freeOut.allow(shellCosts.textMessage)) return false;
-    // A changed reply idea still answers the line it came from.
-    const draftIdea = ideaDraft;
-    setIdeaDraft(null);
     // The composer stays live under the tone menu: a plain send closes it too.
     setToneOpen(false);
-    const result = draftIdea
-      ? answerIdea(conversation.id, draftIdea.messageId, draftIdea.idea, text)
-      : sendText(conversation.id, text, tone, replyTo ?? undefined);
+    const result = sendText(conversation.id, text, tone, replyTo ?? undefined);
     if (result === 'sent') {
       setReplyTo(null);
       playSend();
     }
-    if (draftIdea && result === 'sent') afterIdea(data.find((m) => m.id === draftIdea.messageId), draftIdea.idea);
     if (result === 'noShells') return outOfShells(shellCosts.textMessage);
     return result === 'sent';
   };
@@ -624,13 +589,6 @@ export default function ChatRoomScreen() {
                       shareReward={reward}
                     />
                   ) : null}
-                  {suggestions ? (
-                    <QuickReplies
-                      ideas={suggestions}
-                      onPick={(idea) => send(phrase(idea.text))}
-                      onEdit={(idea) => setIdeaDraft(last ? { messageId: last.id, idea, at: Date.now() } : null)}
-                    />
-                  ) : null}
                   {typing ? <TypingRow characters={[character]} /> : null}
                 </>
               }
@@ -687,15 +645,10 @@ export default function ChatRoomScreen() {
             draftId={conversationId}
             placeholder={t('chat.inputPlaceholder', { name })}
             onSend={send}
-            // An answer to a reply idea is worded by the idea; a tone would go unheard.
-            onHoldSend={
-              ideaDraft
-                ? undefined
-                : (sendIt) => {
-                    sendToned.current = sendIt;
-                    setToneOpen(true);
-                  }
-            }
+            onHoldSend={(sendIt) => {
+              sendToned.current = sendIt;
+              setToneOpen(true);
+            }}
             onAttach={() => {
               if (!attachOpen) Keyboard.dismiss();
               setAttachOpen(!attachOpen);
@@ -706,7 +659,6 @@ export default function ChatRoomScreen() {
             onVoiceNote={sendNote}
             canRecord={canRecord}
             initialValue={typeof draft === 'string' ? draft : undefined}
-            fill={ideaDraft ? { text: phrase(ideaDraft.idea.text), at: ideaDraft.at } : undefined}
             editing={editing ? { id: editing.id, text: editing.text ?? '', onSave: saveEdit, onCancel: cancelEdit } : undefined}
             replying={replyTo ? { quote: replyTo, title: replyTo.author === 'me' ? you : name, onCancel: cancelReply } : undefined}
             onStop={typing && conversationId ? () => stopReply(conversationId) : undefined}
