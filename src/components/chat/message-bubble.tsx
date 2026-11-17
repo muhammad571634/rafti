@@ -26,7 +26,7 @@ import { barsFor, resampleWave } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
 import { ReactionBadge } from '@/components/ink';
 import { colors, friendColor, palette, radius, shadows, space, systemColors } from '@/theme';
-import { ink } from '@/theme/ink';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
@@ -646,20 +646,40 @@ function SkipLine({ text }: { text: string }) {
   );
 }
 
-/** Where a scene starts in the chat: its title and set-up, centred like the chat's own notes. */
+/**
+ * Where a scene starts in the chat, kept quiet (owner's "chat calm" pick, 0z269): a small capsule
+ * with its title and the first line of its set-up; a tap opens the whole set-up, another closes it.
+ */
 function SceneCard({ title, setting }: { title: string; setting?: string }) {
   const onPhoto = useOnPhoto();
+  const [open, setOpen] = useState(false);
+  const body = setting?.trim();
+  const soft = onPhoto ? colors.onMediaMuted : colors.textSecondary;
+  const chevron = <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={13} color={soft} />;
   return (
     <View style={styles.system} accessibilityRole="header">
-      <View style={styles.sceneHead}>
-        <Ionicons name="film-outline" size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
-        <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{title}</Txt>
-      </View>
-      {setting ? (
-        <Txt style={[styles.systemText, styles.sceneSetting, onPhoto && styles.photoSystem]} center>
-          {setting}
-        </Txt>
-      ) : null}
+      <PressableScale
+        scaleTo={0.97}
+        disabled={!body}
+        onPress={() => setOpen((was) => !was)}
+        accessibilityRole="button"
+        accessibilityLabel={body ? `${title}. ${body}` : title}
+        accessibilityState={body ? { expanded: open } : undefined}
+        style={[styles.sceneCard, onPhoto ? styles.sceneOnPhoto : styles.scenePlain]}>
+        <View style={styles.sceneHead}>
+          <Ionicons name="film-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+          <Txt style={[styles.sceneTitle, onPhoto && styles.sceneTitlePhoto]}>{title}</Txt>
+        </View>
+        {body ? (
+          // Closed: one line and a chevron beside it; open: the whole set-up, the chevron under it.
+          <View style={open ? styles.sceneBodyOpen : styles.sceneBody}>
+            <Txt style={[styles.sceneSetting, { color: soft }]} center lines={open ? undefined : 1}>
+              {body}
+            </Txt>
+            {chevron}
+          </View>
+        ) : null}
+      </PressableScale>
     </View>
   );
 }
@@ -935,7 +955,25 @@ const styles = StyleSheet.create({
   boardPin: { marginTop: 2 },
   boardText: { flexShrink: 1, fontSize: 15, lineHeight: 20, color: '#2B2350' },
   sceneHead: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  sceneSetting: { marginTop: 2, fontStyle: 'italic' },
+  sceneCard: {
+    maxWidth: 300,
+    alignItems: 'center',
+    gap: 2,
+    paddingHorizontal: 14,
+    paddingTop: space.sm,
+    paddingBottom: 9,
+    borderRadius: inkRadius.chip,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  // A quiet dark glass on the picture, lighter than a bubble's, so it reads as a note, not a line.
+  sceneOnPhoto: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaRim },
+  scenePlain: { backgroundColor: colors.surfaceAlt, borderColor: colors.borderStrong },
+  sceneTitle: { flexShrink: 1, fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.text, textAlign: 'center' },
+  sceneTitlePhoto: { color: colors.onMediaSoft },
+  sceneBody: { flexDirection: 'row', alignItems: 'center', gap: space.xs, maxWidth: '100%' },
+  sceneBodyOpen: { alignItems: 'center', gap: 2 },
+  sceneSetting: { flexShrink: 1, fontSize: 13, lineHeight: 18, fontStyle: 'italic' },
   weekCard: {
     alignSelf: 'stretch',
     alignItems: 'center',

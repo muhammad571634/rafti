@@ -4,9 +4,9 @@ import { describe, it } from 'node:test';
 import { buildSceneOpeningPrompt } from '../ai/content-prompts';
 import { buildCharacterPrompt } from '../ai/rules';
 import { officialScenes } from '../mock/scenes';
-import type { Character, User } from '@/types';
+import type { Character, Message, User } from '@/types';
 
-import { activeScene, checkScene, mockSceneOpening, sceneLines } from './scenes';
+import { activeScene, checkScene, mockSceneOpening, sceneLines, shownLines } from './scenes';
 
 const ferry = officialScenes[0];
 
@@ -57,5 +57,32 @@ describe('scenes in the prompt', () => {
 
   it('gives the same mock first line for the same scene', () => {
     assert.equal(mockSceneOpening({ id: 's1', title: 'Cabin' }), mockSceneOpening({ id: 's1', title: 'Cabin' }));
+  });
+});
+
+describe('shownLines', () => {
+  const line = (id: string, card?: Message['card']): Message => ({
+    id,
+    conversationId: 'c',
+    author: 'them',
+    kind: card ? 'system' : 'text',
+    ...(card ? { card } : {}),
+    text: id,
+    createdAt: '2026-11-17T19:00:00.000Z',
+  });
+
+  it('leaves out an end line that a new scene card follows', () => {
+    const chat = [line('a'), line('end1', 'sceneEnd'), line('scene2', 'scene'), line('b')];
+    assert.deepEqual(shownLines(chat).map((m) => m.id), ['a', 'scene2', 'b']);
+  });
+
+  it('keeps a lone end line and one followed by words', () => {
+    const chat = [line('scene1', 'scene'), line('a'), line('end1', 'sceneEnd'), line('b'), line('end2', 'sceneEnd')];
+    assert.deepEqual(shownLines(chat).map((m) => m.id), ['scene1', 'a', 'end1', 'b', 'end2']);
+  });
+
+  it('gives the same array back when nothing is left out', () => {
+    const chat = [line('a'), line('end1', 'sceneEnd')];
+    assert.equal(shownLines(chat), chat);
   });
 });

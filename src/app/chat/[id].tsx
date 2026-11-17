@@ -59,6 +59,7 @@ import { reachReason } from '@/lib/mind';
 import { isAskReach } from '@/lib/reach-ask';
 import { everydayIdeas, shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
+import { shownLines } from '@/lib/scenes';
 import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
@@ -223,7 +224,8 @@ export default function ChatRoomScreen() {
   const goToMessage = useCallback(
     (id: string) => {
       if (!conversationId) return;
-      const lines = useAppStore.getState().messages[conversationId] ?? [];
+      // The list's own lines (a scene's end line before a new scene is not drawn), so the index matches.
+      const lines = shownLines(useAppStore.getState().messages[conversationId] ?? []);
       const at = lines.findIndex((m) => m.id === id);
       if (at < 0) return;
       // The list runs newest first.
@@ -277,8 +279,10 @@ export default function ChatRoomScreen() {
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
+  // What the list draws: a scene's end line is left out when a new scene card follows it (`shownLines`).
+  const shown = useMemo(() => shownLines(data), [data]);
   // Newest first for the inverted list: the chat opens on its latest line with nothing to scroll (iOS Messages).
-  const rows = useMemo(() => [...data].reverse(), [data]);
+  const rows = useMemo(() => [...shown].reverse(), [shown]);
 
   // Their newest reply: ↻ under it, then ‹ › and a swipe once there are versions (canvas
   // `ChatRegen.dc.html`). A crisis reply, with the helpline card, is never redone.
@@ -335,7 +339,7 @@ export default function ChatRoomScreen() {
   const renderItem = useCallback(
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
-      const run = runOf(data, data.length - 1 - index);
+      const run = runOf(shown, shown.length - 1 - index);
       const bubble = (
         <MessageBubble
           message={item}
@@ -392,7 +396,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
+    [character, animations, openedAt, data, shown, newestLineId, lastMine, flash, callBack, openMenu, toggleLove, conversationId, pickChip, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
   );
 
   // Reply ideas under their last plain line (`everydayIdeas`) unless it carries its own.
@@ -609,17 +613,15 @@ export default function ChatRoomScreen() {
               // The header of an inverted list sits under the newest line.
               ListHeaderComponent={
                 <>
-                  {canRedo || !block ? (
+                  {/* Only ↻ and Share under it (owner's pick A, 0z269): Continue and 👎 are in its long-press menu. */}
+                  {canRedo || (!block && shared) ? (
                     <ReplyControls
                       count={versions?.versions.length ?? 1}
                       index={versions?.index ?? 0}
                       onStep={stepVersion}
                       onRedo={canRedo ? () => redo() : undefined}
-                      onContinue={block ? undefined : goOn}
                       onShare={shared ? () => setSharing(true) : undefined}
                       shareReward={reward}
-                      rating={rating}
-                      onRate={canRedo ? rate : undefined}
                     />
                   ) : null}
                   {suggestions ? (
@@ -866,6 +868,24 @@ export default function ChatRoomScreen() {
               }
             : undefined
         }
+        // Their newest reply leads its menu with what used to sit under it (owner's pick A, 0z269).
+        onContinue={
+          menu && menu.author === 'them' && !block && (burstIds.has(menu.id) || menu.id === newestLineId)
+            ? () => {
+                setMenu(null);
+                goOn();
+              }
+            : undefined
+        }
+        onRateDown={
+          menu && canRedo && burstIds.has(menu.id)
+            ? () => {
+                setMenu(null);
+                rate('down');
+              }
+            : undefined
+        }
+        ratedDown={rating === 'down'}
       />
 
       <WhySheet

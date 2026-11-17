@@ -51,13 +51,20 @@ export interface MessageMenuProps {
   pinned?: boolean;
   /** Given only for their lines written first (a reach key): Why? says what started it. */
   onWhy?: (message: Message) => void;
+  /** Given only on their newest reply while they may go on: Continue (», `src/lib/chat-steer.ts`). */
+  onContinue?: () => void;
+  /** Given only on their newest reply that can be voted on: Bad reply (👎; 👍 is any happy reaction). */
+  onRateDown?: () => void;
+  /** Their newest reply already has a 👎: the item's thumb is filled and a tap takes it back. */
+  ratedDown?: boolean;
   /** The chat's BlurTargetView: what the menu blurs on Android. */
   blurTarget: RefObject<ViewInstance | null>;
 }
 
 /**
  * The long-press menu, as an iOS context menu (approved prototypes `Menu.dc.html`, `MenuMine.dc.html`,
- * `ChatRewind.dc.html`): the chat blurs, the six reactions (our own symbols, §6.5) sit in a glass capsule over Copy / Edit or Report, then the destructive group, Rewind to here and Delete, in
+ * `ChatRewind.dc.html`): the chat blurs, the six reactions (our own symbols, §6.5) sit in a glass capsule over
+ * Continue and Bad reply (their newest reply only, 0z269), then Copy / Edit or Report, then the destructive group, Rewind to here and Delete, in
  * red at the end (HIG Context menus). Items that do not apply are left out, not dimmed. It appears at
  * once; a tap outside closes it.
  */
@@ -75,6 +82,9 @@ export function MessageMenu({
   onPin,
   pinned,
   onWhy,
+  onContinue,
+  onRateDown,
+  ratedDown,
   blurTarget,
 }: MessageMenuProps) {
   const { t } = useTranslation();
@@ -93,6 +103,15 @@ export function MessageMenu({
   const why = !mine && onWhy ? { key: 'why', label: t('why.menu'), icon: 'help-circle-outline' as const, onPress: () => onWhy(message) } : null;
   const report = mine ? null : { key: 'report', label: t('safety.report'), icon: 'flag-outline' as const, onPress: () => onReport(message) };
   const firstGroup = (mine ? [reply, copy, edit, pin] : [reply, copy, why, pin, report]).filter((row) => row !== null);
+  // Their newest reply (owner's "chat calm" pick A, 0z269): what used to sit under it, Continue and 👎, leads the menu.
+  const steer = mine
+    ? []
+    : [
+        onContinue ? { key: 'continue', label: t('chat.continue'), icon: 'play-forward-outline' as const, onPress: onContinue } : null,
+        onRateDown
+          ? { key: 'rateDown', label: t('chat.rateDown'), icon: ratedDown ? ('thumbs-down' as const) : ('thumbs-down-outline' as const), onPress: onRateDown }
+          : null,
+      ].filter((row) => row !== null);
 
   const reactions = (
     <View style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
@@ -119,6 +138,10 @@ export function MessageMenu({
   );
   const menu = (
     <View style={styles.menu} accessibilityRole="menu">
+      {steer.map((row, i) => (
+        <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < steer.length - 1} />
+      ))}
+      {steer.length ? <View style={styles.gap} /> : null}
       {/* First group: yours Reply, Copy, Edit, Pin; theirs Reply, Copy, Why? (a line they wrote first), Pin, Report. */}
       {firstGroup.map((row, i) => (
         <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
@@ -134,7 +157,7 @@ export function MessageMenu({
   const lifted = anchor && message.kind === 'text' && message.text ? anchor : undefined;
   let layout: { top: number; bubbleH: number; side: number; reactSide: number; menuSide: number } | null = null;
   if (lifted) {
-    const menuH = (firstGroup.length + (onRewind ? 2 : 1)) * ROW_H + GROUP_GAP;
+    const menuH = (steer.length + firstGroup.length + (onRewind ? 2 : 1)) * ROW_H + GROUP_GAP * (steer.length ? 2 : 1);
     const room = screen.height - insets.top - insets.bottom - EDGE * 2;
     const bubbleH = Math.max(ROW_H, Math.min(lifted.height, room - REACT_H - menuH - GAP * 2));
     const stackH = REACT_H + GAP + bubbleH + GAP + menuH;

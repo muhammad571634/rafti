@@ -6,22 +6,20 @@ import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
-import { SharePill } from '@/components/share-card-sheet';
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
-import type { Rating } from '@/lib/reply-rating';
 import { colors, space } from '@/theme';
 
 /** How far a swipe on their reply must travel to switch the version. */
 const SWIPE = 48;
 
 /**
- * Under their newest reply (canvas `ChatRegen.dc.html`): 👍 👎 vote on how it was written
- * (`src/lib/reply-rating.ts`), ↻ asks for a new version, and once there are several, ‹ 2/3 › steps
- * between them; » lets them go on without the user writing (Continue, `src/lib/chat-steer.ts`);
- * and Share puts the thread on a picture card (`share-sheet.tsx`).
- * Icons in the secondary grey, as quiet as a read receipt; a cast vote fills in peach. Share alone
- * wears the primary peach (owner, 2026-10-30: "colourful, a bit bigger, so people tap it"), with
- * "+5 🐚" while today's paid shares last.
+ * Under their newest reply, kept calm (owner's "chat calm" pick A, 0z269; canvas `ChatRegen.dc.html`
+ * before it): ↻ asks for a new version, and once there are several, ‹ 2/3 › steps between them;
+ * Share puts the thread on a picture card (`share-sheet.tsx`). The 👍 👎 votes and Continue moved
+ * to the reply's long-press menu (👍 is any happy reaction, `ratingOf`); a group, which has no
+ * votes, still shows » here (Continue, `src/lib/chat-steer.ts`).
+ * Icons in the on-picture white, as quiet as a read receipt; Share is a round clear-glass button
+ * (owner on the canvas, 2026-11-17: "share tugmasi oynali bo'lsin").
  */
 export function ReplyControls({
   count,
@@ -31,8 +29,6 @@ export function ReplyControls({
   onContinue,
   onShare,
   shareReward = 0,
-  rating,
-  onRate,
 }: {
   count: number;
   index: number;
@@ -45,56 +41,15 @@ export function ReplyControls({
   onShare?: () => void;
   /** Shells the next share pays (`shareReward`); 0 once today's paid shares are used. */
   shareReward?: number;
-  /** The reply's vote, cast or from a happy sticker (`ratingOf`). */
-  rating?: Rating;
-  /** 👍 👎; left out where the reply cannot be voted on (their greeting, a crisis reply). */
-  onRate?: (rating: Rating) => void;
 }) {
   const { t } = useTranslation();
   const first = index === 0;
   const last = index === count - 1;
-  const up = rating === 'up';
-  const down = rating === 'down';
   const onPhoto = useOnPhoto();
   const quiet = onPhoto ? colors.onMediaSoft : colors.textSecondary;
 
   return (
     <View style={styles.row}>
-      {onRate ? (
-        <>
-          <PressableScale
-            scaleTo={0.85}
-            onPress={() => onRate('up')}
-            style={styles.button}
-            hitSlop={TALL}
-            accessibilityRole="button"
-            accessibilityLabel={t('chat.rateUp')}
-            accessibilityState={{ selected: up }}>
-            <SFIcon
-              ios={up ? 'hand.thumbsup.fill' : 'hand.thumbsup'}
-              icon={up ? 'thumbs-up' : 'thumbs-up-outline'}
-              size={20}
-              color={up ? colors.primary : quiet}
-            />
-          </PressableScale>
-          <PressableScale
-            scaleTo={0.85}
-            onPress={() => onRate('down')}
-            style={styles.button}
-            hitSlop={TALL}
-            accessibilityRole="button"
-            accessibilityLabel={t('chat.rateDown')}
-            accessibilityState={{ selected: down }}>
-            <SFIcon
-              ios={down ? 'hand.thumbsdown.fill' : 'hand.thumbsdown'}
-              icon={down ? 'thumbs-down' : 'thumbs-down-outline'}
-              size={20}
-              color={down ? colors.primary : quiet}
-            />
-          </PressableScale>
-          {count > 1 || onRedo || onContinue || onShare ? <View style={[styles.divider, onPhoto && styles.photoDivider]} /> : null}
-        </>
-      ) : null}
       {count > 1 ? (
         <>
           <PressableScale
@@ -155,8 +110,10 @@ export function ReplyControls({
           hitSlop={TALL}
           accessibilityRole="button"
           accessibilityLabel={shareReward ? `${t('common.share')}, +${shareReward} ${t('common.shells')}` : t('common.share')}>
-          {/* Owner 2026-11-08: a round peach share button only; what it pays shows in the sheet. */}
-          <SharePill reward={0} />
+          {/* Round and clear glass, as the header's buttons on the picture; what it pays shows in the sheet. */}
+          <View style={[styles.share, onPhoto ? styles.shareGlass : styles.shareFill]}>
+            <SFIcon ios="square.and.arrow.up" icon="share-outline" size={19} color={onPhoto ? colors.onMedia : colors.text} />
+          </View>
         </PressableScale>
       ) : null}
     </View>
@@ -203,17 +160,21 @@ export function VersionSwipe({
 
 /** The row is 40 pt tall: two points each way make every button a full 44 pt target. */
 const TALL = { top: 2, bottom: 2 };
+/** The round Share button, as tall as the row. */
+const SHARE = 40;
 
 const styles = StyleSheet.create({
   // Starts under their bubbles: 12 gutter + 28 avatar + 8 gap, less the button's own inset.
   row: { flexDirection: 'row', alignItems: 'center', height: 40, paddingLeft: 34, marginTop: -space.xs },
   button: { width: 44, height: 40, alignItems: 'center', justifyContent: 'center' },
   off: { opacity: 0.3 },
-  divider: { width: StyleSheet.hairlineWidth * 2, height: 18, marginHorizontal: space.xs, backgroundColor: colors.borderStrong },
   count: { minWidth: 34, textAlign: 'center', fontSize: 14, fontWeight: '600', color: colors.textSecondary, fontVariant: ['tabular-nums'] },
   redo: { width: 46, height: 40, alignItems: 'center', justifyContent: 'center' },
   shareTarget: { height: 40, justifyContent: 'center', marginLeft: space.xs },
-  photoDivider: { backgroundColor: colors.onMediaHairline },
+  share: { width: SHARE, height: SHARE, borderRadius: SHARE / 2, alignItems: 'center', justifyContent: 'center' },
+  // The chat header's glass on the picture (`chat-header.tsx` photoRound).
+  shareGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  shareFill: { backgroundColor: colors.surfaceAlt },
 });
 
 const onPhotoCount = { color: colors.onMediaSoft };

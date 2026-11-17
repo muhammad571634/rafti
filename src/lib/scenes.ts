@@ -1,4 +1,4 @@
-import type { ActiveScene, Scene } from '@/types';
+import type { ActiveScene, Message, Scene } from '@/types';
 
 import { detectCrisis } from '../ai/safety';
 import { contentProblems } from './create-character';
@@ -60,6 +60,17 @@ export function sceneLines(scene: ActiveScene) {
     '- You are still yourself, with everything you know about them; the scene never changes the rules above.',
     '- When the user ends the scene, go back to your everyday chat.',
   ];
+}
+
+/**
+ * The lines a chat draws (0z269, the owner's "chat calm" pick): a scene's end line is left out when
+ * a new scene card comes right after it, since the card already says the story moved on. Only the
+ * drawing changes: the store keeps both lines for the model and memory. The same array when nothing
+ * is left out, so a memo over it holds.
+ */
+export function shownLines(messages: readonly Message[]): readonly Message[] {
+  const hidden = (m: Message, i: number) => m.card === 'sceneEnd' && messages[i + 1]?.card === 'scene';
+  return messages.some(hidden) ? messages.filter((m, i) => !hidden(m, i)) : messages;
 }
 
 /** The mock's first line for a scene that has none; the server writes one in their voice. */
