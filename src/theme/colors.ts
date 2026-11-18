@@ -21,6 +21,11 @@ export const palette = {
   apricot800: '#A8531F',
   /** Text and icons on a peach fill: white would vanish on it. */
   peachInk: '#6A2F0C',
+  /**
+   * The one peach fill at night (owner 2026-11-18: "peach stays, but it must not glare"): the same
+   * hue with less saturation and light, flat, so a button on the dark ground no longer shines.
+   */
+  apricotCalm: '#EBAD84',
 
   // Mint — Rafti's scarf: Secret Note, level-up moments
   mint50: '#EEFBF8',
@@ -198,7 +203,8 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   textSecondary: '#AEAEB2',
   textMuted: '#8E8E93',
   textFaint: '#636366',
-  primary: palette.apricot300,
+  primary: palette.apricotCalm,
+  primaryFill: palette.apricotCalm,
   primarySoft: '#3B2A26',
   primarySofter: '#2E2422',
   brandText: palette.apricot300,
@@ -243,7 +249,8 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   textSecondary: '#A8A8B8',
   textMuted: '#8A8A9C',
   textFaint: '#606072',
-  primary: palette.apricot300,
+  primary: palette.apricotCalm,
+  primaryFill: palette.apricotCalm,
   primarySoft: '#3B2A26',
   primarySofter: '#2E2422',
   brandText: palette.apricot300,
@@ -444,7 +451,7 @@ export const storeColors = isDark
       greyTag: systemColors.fill,
       proColumn: 'rgba(166,75,214,0.16)',
       proInk: '#D9A6F5',
-      cta: palette.apricot400,
+      cta: palette.apricotCalm,
       ctaInk: '#3A1A06',
       barLine: 'rgba(255,255,255,0.14)',
     }
@@ -469,8 +476,8 @@ export const storeColors = isDark
 
 /** Gradients used on hero surfaces (expo-linear-gradient `colors` prop). */
 export const gradients = {
-  /** The primary button: peach, lighter at the top. */
-  primary: [palette.apricot200, palette.apricot300] as const,
+  /** The primary button: one flat peach (a lighter top read as a shine, owner 2026-11-18). */
+  primary: isDark ? ([palette.apricotCalm, palette.apricotCalm] as const) : ([palette.apricot300, palette.apricot300] as const),
   /**
    * A call's ground under the friend's blurred picture: cinematic obsidian, the same in both themes
    * (owner's brief, 2026-11-11: calls are always dark). It was a pale sky.

@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type GestureResponderEvent, Modal, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
@@ -23,21 +24,21 @@ import { haptic } from '@/lib/haptics';
 import { hourVolume } from '@/lib/night-hour';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, isDark, radius } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { radius } from '@/theme';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 
 const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
 
-/** The moment's own ground: warm yellow, a shade deeper at night. Text on it is always ink. */
-const YELLOW = isDark ? '#E9B820' : '#FFD43B';
-const INK = '#1F1A17';
-const INK_SOFT = 'rgba(31,26,23,0.62)';
-const GLASS = 'rgba(255,255,255,0.62)';
-const CHIP = isDark ? 'rgba(255,255,255,0.08)' : '#F4EFE8';
-const CHIP_TODAY = isDark ? 'rgba(255,212,59,0.16)' : '#FFF6D6';
-const CHIP_DONE = isDark ? 'rgba(48,209,88,0.20)' : '#E3F7EF';
-const DONE_EDGE = '#1E9E78';
+/**
+ * The moment on the app's night ground (owner 2026-11-18: "restyle it to the app's look, the mascot
+ * stays"): the warm yellow that was the whole screen is now only a low glow from the top.
+ */
+const GLOW = ['rgba(233,184,32,0.22)', 'rgba(233,184,32,0.07)', 'rgba(233,184,32,0)'] as const;
+const CHIP = 'rgba(255,255,255,0.08)';
+const CHIP_TODAY = 'rgba(255,212,59,0.14)';
+const CHIP_DONE = 'rgba(48,209,88,0.20)';
+const DONE_EDGE = '#30D158';
 
 const MASCOT = 236;
 /** The mascot art is 212:240 of its width; its paws (the bottom ~40 units) rest half over the card's top edge. */
@@ -60,8 +61,8 @@ type Point = { x: number; y: number };
 
 /**
  * The day's check-in shells, a full-screen moment on Today only (never over a chat or another tab).
- * Design approved by the owner on the prototype (2026-11-07, 0z122, design-style §10): the whole
- * screen warm yellow, the day and the prize in big rounded type, our living mascot (drawn in code)
+ * Design approved by the owner on the prototype (2026-11-07, 0z122, design-style §10), moved to the
+ * night ground with a warm glow on 2026-11-18: the day and the prize in big rounded type, our living mascot (drawn in code)
  * peeking over a white card that holds the week. Its eyes follow the finger; Collect flies five
  * shells from today's day into the wallet pill, which swells per landing while its number counts
  * up; on the last, a kalimba note, a success haptic, the mascot laughs and hops, today turns mint
@@ -246,6 +247,7 @@ export function DailyRewardSheet() {
         onResponderRelease={() => {
           if (!busy.current) look(0, 0);
         }}>
+        <LinearGradient pointerEvents="none" colors={GLOW} locations={[0, 0.45, 1]} style={styles.glow} />
         <View style={[styles.top, { paddingTop: insets.top + 8 }]}>
           <Animated.View style={[styles.wallet, walletStyle]} accessible accessibilityLabel={t('plans.shells', { count: wallet })}>
             <View ref={shellMark}>
@@ -255,7 +257,7 @@ export function DailyRewardSheet() {
           </Animated.View>
           <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('common.close')} onPress={close} hitSlop={8}>
             <View style={styles.round}>
-              <Ionicons name="close" size={22} color={INK} />
+              <Ionicons name="close" size={22} color={ink.text} />
             </View>
           </PressableScale>
         </View>
@@ -405,49 +407,49 @@ function FlyingShell({ index, from, to }: { index: number; from: Point; to: Poin
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1, backgroundColor: YELLOW },
+  fill: { flex: 1, backgroundColor: ink.ground },
+  glow: { position: 'absolute', left: 0, right: 0, top: 0, height: '62%' },
   flex: { flex: 1 },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 18 },
-  wallet: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 14, borderRadius: inkRadius.pill, backgroundColor: GLASS },
-  walletText: { ...inkFace('bodyStrong'), color: INK, fontVariant: ['tabular-nums'] },
-  round: { width: 40, height: 40, borderRadius: inkRadius.pill, backgroundColor: GLASS, alignItems: 'center', justifyContent: 'center' },
+  wallet: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 7, paddingLeft: 10, paddingRight: 14, borderRadius: inkRadius.pill, backgroundColor: ink.raised },
+  walletText: { ...inkFace('bodyStrong'), color: ink.text, fontVariant: ['tabular-nums'] },
+  round: { width: 40, height: 40, borderRadius: inkRadius.pill, backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
   heading: { alignItems: 'center', marginTop: 18, paddingHorizontal: 24 },
-  date: { ...inkFace('subStrong'), color: INK_SOFT },
-  day: { marginTop: 4, ...inkFace('display'), color: INK, textAlign: 'center' },
+  date: { ...inkFace('subStrong'), color: ink.text2 },
+  day: { marginTop: 4, ...inkFace('display'), color: ink.text, textAlign: 'center' },
   prize: { marginTop: 2, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  prizeText: { ...inkFace('display'), color: INK },
+  prizeText: { ...inkFace('display'), color: ink.text },
   stage: { paddingHorizontal: 10, position: 'relative' },
   // The paws rest on the card's top edge.
   mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2 },
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: ink.card,
     borderRadius: inkRadius.sheet,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     paddingTop: 26,
     paddingHorizontal: 18,
     paddingBottom: 18,
-    shadowColor: '#785000',
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 10 },
-    // No Android elevation: it lifts the card above the later-drawn mascot and hides its paws (A51).
+    // No shadow or Android elevation: elevation lifts the card above the later-drawn mascot and hides its paws (A51).
   },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 },
-  cardTitle: { ...inkFace('bodyStrong'), color: colors.text },
-  cardCount: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  cardTitle: { ...inkFace('bodyStrong'), color: ink.text },
+  cardCount: { ...inkFace('caption'), color: ink.text2, fontVariant: ['tabular-nums'] },
   week: { flexDirection: 'row', gap: 6 },
   dayCol: { flex: 1, alignItems: 'center', gap: 6 },
-  dayNum: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  dayNum: { ...inkFace('caption'), color: ink.text2, fontVariant: ['tabular-nums'] },
   chip: { width: '100%', aspectRatio: 1 / 1.15, borderRadius: radius.md, backgroundColor: CHIP, alignItems: 'center', justifyContent: 'center' },
-  chipToday: { backgroundColor: CHIP_TODAY, borderWidth: 2.5, borderColor: isDark ? colors.text : INK },
+  chipToday: { backgroundColor: CHIP_TODAY, borderWidth: 2.5, borderColor: ink.text },
   chipDone: { backgroundColor: CHIP_DONE, borderWidth: 2.5, borderColor: DONE_EDGE },
-  chipAmount: { ...inkFace('subStrong'), color: colors.text },
+  chipAmount: { ...inkFace('subStrong'), color: ink.text },
   chipFace: { position: 'absolute' },
-  ring: { width: 16, height: 16, borderRadius: inkRadius.pill, borderWidth: 2, borderColor: colors.border },
-  surprise: { position: 'absolute', bottom: 4, ...inkFace('caption'), color: colors.textSecondary },
-  rule: { marginTop: 12, marginBottom: 14, ...inkFace('footnote'), color: colors.textSecondary, textAlign: 'center' },
-  cta: { height: 54, borderRadius: inkRadius.pill, backgroundColor: colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  ring: { width: 16, height: 16, borderRadius: inkRadius.pill, borderWidth: 2, borderColor: ink.line },
+  surprise: { position: 'absolute', bottom: 4, ...inkFace('caption'), color: ink.text2 },
+  rule: { marginTop: 12, marginBottom: 14, ...inkFace('footnote'), color: ink.text2, textAlign: 'center' },
+  cta: { height: 54, borderRadius: inkRadius.pill, backgroundColor: ink.accent, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   ctaOff: { opacity: 0.55 },
   ctaPressed: { transform: [{ scale: 0.97 }] },
-  ctaText: { ...inkFace('bodyStrong'), color: colors.textOnPrimary },
+  ctaText: { ...inkFace('bodyStrong'), color: ink.onAccent },
   flying: { position: 'absolute', left: 0, top: 0, width: SHELL, height: SHELL },
 });

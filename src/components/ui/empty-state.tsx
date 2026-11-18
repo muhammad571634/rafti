@@ -9,6 +9,9 @@ import { Button } from './button';
 import { SFIcon } from './symbol';
 import { Txt } from './text';
 
+/** A search that found nothing: iOS's magnifying glass (ContentUnavailableView.search). */
+export const NO_RESULTS = { ios: 'magnifyingglass', icon: 'search' } as const satisfies EmptyStateProps['symbol'];
+
 export interface EmptyStateProps {
   title: string;
   hint?: string;

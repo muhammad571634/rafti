@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle } from 'react-native-svg';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { NightFace, NightRound, untilText } from '@/components/alarms/night-kit';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
@@ -27,8 +28,8 @@ const STROKE = 10;
 
 /**
  * Bedtime, the night's own screen (owner-approved prototype 0z170,
- * https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c): the mascot asleep on the moon with the
- * friend who whispers, who as a row of faces, the sleep timer as a big number with -/+, the next
+ * https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c): the friend who whispers inside the dot field
+ * (their picture in its middle since 2026-11-18), who as a row of faces, the sleep timer as a big number with -/+, the next
  * wake-up as a card (tap: the alarms; none: set one), one big button. While the friend whispers, a
  * ring empties around the rocking moon with the countdown, Stop and Pause. Whispers are Pro only
  * (backend-plan §15.10) and never use voice-reply minutes; alarms open for every plan. Colours come
@@ -126,7 +127,10 @@ export default function BedtimeScreen() {
           {/* The LED dot field breathes inside the timer ring while the friend whispers, in place of the
               sleeping mascot (owner, 2026-11-11: "the dark prototype's animation, more alive, wavy"). */}
           <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
-            <DotMatrix size={Math.round(ringSize * 0.8)} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={paused ? 0.2 : 0.9} active={!paused} />
+            <View style={{ width: Math.round(ringSize * 0.8), height: Math.round(ringSize * 0.8) }}>
+              <DotMatrix size={Math.round(ringSize * 0.8)} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={paused ? 0.2 : 0.9} active={!paused} />
+              {reader ? <DreamFace character={reader} size={Math.round(ringSize * 0.8 * FACE_SHARE)} /> : null}
+            </View>
           </TimerRing>
 
           <Txt style={styles.countdown} accessibilityLabel={t('bedtime.remaining', { time: callClock(left ?? 0) })}>
@@ -174,11 +178,7 @@ export default function BedtimeScreen() {
               <View style={{ width: artSize, height: artSize }}>
                 {/* The dot field at rest, slower and softer than while whispering. */}
                 <DotMatrix size={artSize} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={0.45} />
-                {reader ? (
-                  <View style={styles.badge}>
-                    <CharacterAvatar character={reader} size={58} />
-                  </View>
-                ) : null}
+                {reader ? <DreamFace character={reader} size={Math.round(artSize * FACE_SHARE)} /> : null}
               </View>
               <Txt style={styles.heroTitle} center lines={2}>
                 {reader ? t('bedtime.sleepWith', { name }) : t('bedtime.noVoices')}
@@ -309,6 +309,34 @@ function useNextWake(alarms: Alarm[], characters: Character[]) {
 const NIGHT_DOTS = '#A78BFA';
 const NIGHT_DOTS_EDGE = '#FFB88A';
 
+/** How much of the dot field the friend's picture fills: the dots stay a halo round it. */
+const FACE_SHARE = 0.5;
+
+/**
+ * The chosen friend inside the dot field (owner, 2026-11-18: no mascot; the friend's picture in the
+ * animation): their photo in the middle, its rim melting into the night so the dots seem to come
+ * out of it. Picking another friend fades the new face in.
+ */
+function DreamFace({ character, size }: { character: Character; size: number }) {
+  const half = size / 2;
+  return (
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.dream]}>
+      <Animated.View key={character.id} entering={FadeIn.duration(260)} style={{ width: size, height: size }}>
+        <CharacterAvatar character={character} size={size} />
+        <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
+          <Defs>
+            <RadialGradient id="dreamMelt" cx="50%" cy="50%" r="50%">
+              <Stop offset="0.6" stopColor={night.bg} stopOpacity={0} />
+              <Stop offset="1" stopColor={night.bg} stopOpacity={0.9} />
+            </RadialGradient>
+          </Defs>
+          <Circle cx={half} cy={half} r={half} fill="url(#dreamMelt)" />
+        </Svg>
+      </Animated.View>
+    </View>
+  );
+}
+
 /** The iOS Timer ring: it empties as the time runs out, the rocking moon inside. */
 function TimerRing({ size, share, children }: { size: number; share: number; children: React.ReactNode }) {
   const r = (size - STROKE) / 2;
@@ -343,7 +371,7 @@ const styles = StyleSheet.create({
   proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: inkRadius.pill, backgroundColor: night.primarySofter },
   proText: { ...inkFace('subStrong'), color: night.brandText },
   hero: { alignItems: 'center', gap: space.lg, marginTop: space.xs },
-  badge: { position: 'absolute', right: -10, bottom: -10, padding: 3, borderRadius: inkRadius.pill, backgroundColor: night.primary },
+  dream: { alignItems: 'center', justifyContent: 'center' },
   heroTitle: { marginHorizontal: space.lg, ...inkFace('title'), color: night.text },
   faces: { flexGrow: 1, justifyContent: 'center', gap: space.md, paddingHorizontal: space.lg },
   timerCard: {

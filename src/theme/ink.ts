@@ -33,8 +33,8 @@ export const ink = {
   /** The one filled pill per screen, and the words on it. */
   pill: '#FFFFFF',
   onPill: '#000000',
-  /** The user's side and money: the brand's peach. */
-  accent: palette.apricot400,
+  /** The user's side and money: the brand's peach, the calm night tone (no glare). */
+  accent: palette.apricotCalm,
   onAccent: '#3A1A06',
   danger: '#FF453A',
   unread: '#0A84FF',

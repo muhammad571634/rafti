@@ -34,7 +34,7 @@ import { MissCard, RoleSheet } from '@/components/find/miss-card';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { InkSegmented, InkText, tileTint } from '@/components/ink';
-import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar } from '@/components/ui';
+import { CharacterAvatar, EmptyState, GlassButton, NO_RESULTS, PressableScale, Screen, SearchBar } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
@@ -237,6 +237,7 @@ export default function FindScreen() {
 
       {q && results.length === 0 && worldHits.length === 0 ? (
         <EmptyState
+          symbol={NO_RESULTS}
           title={t('find.noResults')}
           actionLabel={t('find.createCharacter')}
           onAction={() => router.push('/create-character')}

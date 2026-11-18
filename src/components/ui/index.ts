@@ -8,7 +8,7 @@ export { Card } from './card';
 export { Chip } from './chip';
 export { CountBadge } from './count-badge';
 export { Divider } from './divider';
-export { EmptyState } from './empty-state';
+export { EmptyState, NO_RESULTS } from './empty-state';
 export { Icon3D, ShellIcon } from './icon-3d';
 export type { IconName } from './icon-3d';
 export { IconButton } from './icon-button';

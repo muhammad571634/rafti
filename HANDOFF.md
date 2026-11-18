@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z278. START HERE: no-mascot build, part 2 done (OTA below), not yet seen on the A51 (2026-11-18, Claude 1, Opus 5.5)
+- **Built** (the 0z277 "still to do" list, owner's word on the 0z276 canvas):
+  1. **Calm peach** (5): one flat night peach `palette.apricotCalm` `#EBAD84` (same hue, less saturation and light) for `nightColors.primary` / `primaryFill`, `sleepColors.primary` / `primaryFill`, `ink.accent`, the store `cta`; `gradients.primary` is flat (the lighter top read as a shine) and `Button` primary no longer draws a gradient. Text on it stays the dark brown ink. No other peach glow / shadow was found.
+  2. **Bedtime** (6): `DreamFace` puts the chosen friend's photo in the middle of the dot field (half its width, rim melting into the night with a radial fade; a new pick fades in 260 ms) at rest and inside the whisper timer ring; the corner badge is gone. Dot animation unchanged.
+  3. **Daily check-in** (4): `daily-reward-sheet.tsx` on `ink.ground` with a low warm yellow glow from the top (was the whole screen yellow), white text, `ink.raised` glass, the week in an `ink.card` with a hairline edge (no brown shadow), Collect in `ink.accent`. Mascot, flight, sound and timings unchanged.
+  4. **Search empties**: `NO_RESULTS` (magnifyingglass / search) in `EmptyState` for Find, a world's search and chat search; the Chats list search shows the glass above its line.
+  5. **First-run Chats**: the empty list shows `FriendFaces` (Milo / Sam / Jace on a new account) instead of the bubbles symbol.
+- **Checked**: tsc 0, `npm test` 1023/1023. **Not driven on the A51**: wireless adb refused both known ports and `adb mdns services` saw nothing (Wireless debugging off or the phone away).
+- **Still to do (owner asks)**: drive 0z277 + 0z278 on the A51 (Today initials in glass, Unread / Groups empties, first-run Chats faces, Bedtime friend at rest and whispering, check-in on a fresh day, Find / chat search with no hits, the peach on Message / Wake me / Collect / Start); `ShellIcon` 3D → line glyph (ask the owner before starting).
+
 ### 0z277. START HERE: no-mascot build, part 1 done (OTA `d0c08225`, not yet seen on the A51); usage limit hit mid-task (2026-11-18, Claude 1, Opus 5.5)
 - **Owner's word on the 0z276 canvas**: (1) Today/Profile initials liked; the profile entry on Today must be clear glass so it does not spoil the friend's picture; (3) find a solution for every empty screen (Unread and others); (4) the daily check-in screen keeps its mascot (no friend picture there), its screen may be restyled to the app's look; (5) the primary colour stays peach but must not glare / shine; (6) Bedtime and the alarm editor keep their current animation; in Bedtime put the chosen friend's picture inside the animation.
 - **Done**: `UserAvatar` → initials (`userInitials`, iOS grey; `glass` on Today); Today's mascot logo removed; `FriendFaces` (recent friends, else Milo/Sam/Jace) replaces the mascot in `EmptyState`; Chats Unread / Groups empties: faces + title + one pill (chat with the last friend / new group). tsc 0, tests 1023/1023.

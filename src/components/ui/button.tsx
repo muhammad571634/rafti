@@ -1,14 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { gradients, radius, space, themed, useThemed, useTokens } from '@/theme';
+import { radius, space, themed, useThemed, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 /**
- * `primary` is the one soft peach action on a screen (a light top-to-bottom peach with
- * ink-brown text, owner's pick 2026-10-15); `secondary` is the quiet white button beside it.
+ * `primary` is the one soft peach action on a screen: a flat calm peach with ink-brown text (the
+ * old lighter top read as a shine, owner 2026-11-18); `secondary` is the quiet button beside it.
  */
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'soft' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -61,7 +60,6 @@ export function Button({
         full && styles.full,
         style,
       ]}>
-      {variant === 'primary' ? <LinearGradient colors={gradients.primary} style={StyleSheet.absoluteFill} /> : null}
       <View style={styles.row}>
         {loading ? (
           <ActivityIndicator size="small" color={fg} />

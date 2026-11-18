@@ -9,7 +9,7 @@ import { InkSegmented } from '@/components/ink';
 import { FeatureBar, RoundButton } from '@/components/feature/feature-kit';
 import { CircleCard } from '@/components/find/circle-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, SearchBar, SFIcon, Txt } from '@/components/ui';
+import { Button, CharacterAvatar, EmptyState, LargeTitle, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon, Txt } from '@/components/ui';
 import { isReleased } from '@/economy/early-access';
 import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
@@ -160,7 +160,7 @@ export default function WorldScreen() {
         />
 
         {shown.length === 0 ? (
-          <EmptyState title={t('find.noResults')} />
+          <EmptyState symbol={NO_RESULTS} title={t('find.noResults')} />
         ) : (
           <View style={styles.cards}>
             {shown.map((c) => (

@@ -379,8 +379,8 @@ export default function ChatListScreen() {
         )}
 
         {items.length === 0 ? (
+          // No chat yet: the faces of friends to meet stand there, not a symbol (owner, 2026-11-18).
           <EmptyState
-            symbol={{ ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' }}
             title={t('chatList.empty')}
             hint={t('chatList.emptyHint')}
             actionLabel={t('common.findSomeone')}
@@ -439,9 +439,12 @@ export default function ChatListScreen() {
               ListHeaderComponentStyle={styles.listTop}
               ListEmptyComponent={
                 needle ? (
-                  <InkText variant="sub" center style={styles.noResults}>
-                    {t('chatList.noResults', { query: query.trim() })}
-                  </InkText>
+                  <View style={styles.noResults}>
+                    <SFIcon ios="magnifyingglass" icon="search" size={44} color={ink.text3} />
+                    <InkText variant="sub" center>
+                      {t('chatList.noResults', { query: query.trim() })}
+                    </InkText>
+                  </View>
                 ) : filter !== 'all' && !searching ? (
                   // Your friends' faces, one line and one way on (owner, 2026-11-18: no mascot, empty screens too).
                   <View style={styles.caughtUp}>
@@ -1034,7 +1037,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   actionInner: { alignItems: 'center', gap: 3 },
-  noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
+  noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg, alignItems: 'center', gap: space.md },
   caughtUp: {
     marginHorizontal: space.lg,
     paddingVertical: space.xxl,

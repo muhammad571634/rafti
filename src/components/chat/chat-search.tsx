@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
+import { EmptyState, NO_RESULTS, PressableScale, Screen, Txt } from '@/components/ui';
 import { searchMessages } from '@/lib/chat-search';
 import { relativeStamp } from '@/lib/format';
 import { colors, fonts, space, systemGround } from '@/theme';
@@ -65,7 +65,7 @@ export function ChatSearch({
       </View>
 
       {results.length === 0 ? (
-        needle.length >= 2 ? <EmptyState compact title={t('search.empty')} /> : null
+        needle.length >= 2 ? <EmptyState compact symbol={NO_RESULTS} title={t('search.empty')} /> : null
       ) : (
         <FlatList
           data={results}
