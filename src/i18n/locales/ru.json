@@ -479,6 +479,13 @@
     "freeUsedLine": "Теперь одно сообщение стоит 1 ракушку. Бесплатные вернутся в полночь.",
     "freeUsedKeep": "Продолжить",
     "freeUsedShells": "Получить ракушки",
+    "thought": "Мысли: {{name}}",
+    "thoughtTitle": "{{name}} думает",
+    "thoughtRead": "Мысли прочитаны",
+    "thoughtPayTitle": "Прочитать мысли: {{name}}?",
+    "thoughtReadIt": "Прочитать",
+    "thoughtLater": "Не сейчас",
+    "thoughtFreeAgain": "Завтра снова бесплатно",
     "steerBlocked": {
       "typing": "Дайте им сначала договорить.",
       "waiting": "Дайте им сначала ответить.",

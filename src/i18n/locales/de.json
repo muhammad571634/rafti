@@ -459,6 +459,13 @@
     "freeUsedLine": "Jede Nachricht kostet jetzt 1 Muschel. Um Mitternacht sind sie wieder gratis.",
     "freeUsedKeep": "Weiterschreiben",
     "freeUsedShells": "Muscheln holen",
+    "thought": "Gedanke von {{name}}",
+    "thoughtTitle": "{{name}} denkt",
+    "thoughtRead": "Gedanke gelesen",
+    "thoughtPayTitle": "Gedanken von {{name}} lesen?",
+    "thoughtReadIt": "Lesen",
+    "thoughtLater": "Nicht jetzt",
+    "thoughtFreeAgain": "Morgen wieder gratis",
     "steerBlocked": {
       "typing": "Lass sie erst zu Ende tippen.",
       "waiting": "Lass sie erst antworten.",

@@ -9,6 +9,7 @@ import type { MemoryPassRequest, MemoryPassResult } from './memory-pass';
 import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
 import { cleanDayNotes } from './own-day';
 import { cleanReact, type React } from './react';
+import { cleanThought } from './inner-thought';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
@@ -219,8 +220,8 @@ export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
   pay?: PayLine,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -249,6 +250,8 @@ export async function serverReply(
     day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day),
     // A sticker the friend put on the user's latest message (owner, 2026-11-08).
     react: reply?.crisis === true ? undefined : cleanReact(reply?.react),
+    // What they really think and did not say (owner, 2026-11-18), hidden until the user opens it.
+    thought: reply?.crisis === true ? undefined : cleanThought(reply?.thought),
     // One-tap replies in the chat's language (0z176), checked again: they come over the network.
     ideas: reply?.crisis === true ? undefined : cleanIdeas(reply?.ideas),
     // How the friend feels after this reply, in the model's own reading (0z141): it carries into the next one.

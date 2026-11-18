@@ -459,6 +459,13 @@
     "freeUsedLine": "Ahora cada mensaje cuesta 1 concha. Los mensajes gratis vuelven a medianoche.",
     "freeUsedKeep": "Seguir hablando",
     "freeUsedShells": "Conseguir conchas",
+    "thought": "Lo que piensa {{name}}",
+    "thoughtTitle": "{{name}} piensa",
+    "thoughtRead": "Pensamiento leído",
+    "thoughtPayTitle": "¿Leer lo que piensa {{name}}?",
+    "thoughtReadIt": "Leer",
+    "thoughtLater": "Ahora no",
+    "thoughtFreeAgain": "Gratis otra vez mañana",
     "steerBlocked": {
       "typing": "Deja que termine de escribir primero.",
       "waiting": "Deja que responda primero.",

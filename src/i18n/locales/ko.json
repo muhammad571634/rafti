@@ -448,6 +448,13 @@
     "freeUsedLine": "이제 메시지 하나에 조개 1개가 들어요. 무료 메시지는 자정에 돌아와요.",
     "freeUsedKeep": "계속 대화하기",
     "freeUsedShells": "조개 받기",
+    "thought": "{{name}}의 속마음",
+    "thoughtTitle": "{{name}}의 속마음",
+    "thoughtRead": "속마음을 봤어요",
+    "thoughtPayTitle": "{{name}}의 속마음을 볼까요?",
+    "thoughtReadIt": "보기",
+    "thoughtLater": "나중에",
+    "thoughtFreeAgain": "내일 다시 무료",
     "steerBlocked": {
       "typing": "상대방이 입력을 마칠 때까지 기다려 주세요.",
       "waiting": "상대방의 답장을 기다려 주세요.",

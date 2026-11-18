@@ -459,6 +459,13 @@
     "freeUsedLine": "Ora ogni messaggio costa 1 conchiglia. I messaggi gratis tornano a mezzanotte.",
     "freeUsedKeep": "Continua a parlare",
     "freeUsedShells": "Ottieni conchiglie",
+    "thought": "Il pensiero di {{name}}",
+    "thoughtTitle": "{{name}} pensa",
+    "thoughtRead": "Pensiero letto",
+    "thoughtPayTitle": "Leggere il pensiero di {{name}}?",
+    "thoughtReadIt": "Leggi",
+    "thoughtLater": "Non ora",
+    "thoughtFreeAgain": "Di nuovo gratis domani",
     "steerBlocked": {
       "typing": "Lascia che finisca prima di scrivere.",
       "waiting": "Lascia che risponda prima.",

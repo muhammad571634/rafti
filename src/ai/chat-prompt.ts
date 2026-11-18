@@ -20,6 +20,7 @@ import { seeingLines, type ChatImage } from './photo-prompt';
 import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
+import { thoughtParts } from './inner-thought';
 import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
@@ -234,6 +235,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     part('setupRules', 'global', input.mode === 'call' ? [] : SETUP_RULES_LINES),
     // A sticker on their latest message now and then (owner, 2026-11-08: alive); none on a call.
     ...reactParts(input.mode === 'call'),
+    // What they really think behind the reply, hidden until the user opens it (owner, 2026-11-18); none on a call.
+    ...thoughtParts(input.mode === 'call', input.messages),
     part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),

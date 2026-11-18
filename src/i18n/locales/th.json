@@ -448,6 +448,13 @@
     "freeUsedLine": "ตอนนี้ข้อความละ 1 เปลือกหอย ข้อความฟรีจะกลับมาตอนเที่ยงคืน",
     "freeUsedKeep": "คุยต่อ",
     "freeUsedShells": "รับเปลือกหอย",
+    "thought": "ความคิดของ {{name}}",
+    "thoughtTitle": "{{name}} คิดว่า",
+    "thoughtRead": "อ่านความคิดแล้ว",
+    "thoughtPayTitle": "อ่านความคิดของ {{name}} ไหม?",
+    "thoughtReadIt": "อ่าน",
+    "thoughtLater": "ไว้ก่อน",
+    "thoughtFreeAgain": "พรุ่งนี้ฟรีอีกครั้ง",
     "steerBlocked": {
       "typing": "รอให้พวกเขาพูดจบก่อนนะ",
       "waiting": "รอให้พวกเขาตอบก่อนนะ",

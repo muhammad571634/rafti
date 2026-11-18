@@ -1214,7 +1214,9 @@ export function createApp(
       const react = crisis || input.mode === 'call' ? undefined : reply.react;
       // `ideas`: one-tap replies in the chat's language (IDEAS_CUE); texting only, never after a crisis.
       const ideas = crisis || (input.mode && input.mode !== 'chat') ? undefined : reply.ideas;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, ideas, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
+      // `thought`: what the friend really thinks, hidden under the reply until the user opens it; never on a call or after a crisis.
+      const thought = crisis || input.mode === 'call' ? undefined : reply.thought;
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, thought, ideas, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

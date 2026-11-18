@@ -459,6 +459,13 @@
     "freeUsedLine": "Chaque message coûte maintenant 1 coquillage. Les messages gratuits reviennent à minuit.",
     "freeUsedKeep": "Continuer",
     "freeUsedShells": "Obtenir des coquillages",
+    "thought": "La pensée de {{name}}",
+    "thoughtTitle": "{{name}} pense",
+    "thoughtRead": "Pensée lue",
+    "thoughtPayTitle": "Lire la pensée de {{name}} ?",
+    "thoughtReadIt": "Lire",
+    "thoughtLater": "Pas maintenant",
+    "thoughtFreeAgain": "Gratuit à nouveau demain",
     "steerBlocked": {
       "typing": "Laissez-les d'abord terminer d'écrire.",
       "waiting": "Laissez-les d'abord répondre.",

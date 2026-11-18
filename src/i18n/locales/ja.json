@@ -448,6 +448,13 @@
     "freeUsedLine": "これからは1通につき1シェルです。無料メッセージは深夜0時に戻ります。",
     "freeUsedKeep": "話し続ける",
     "freeUsedShells": "シェルを入手",
+    "thought": "{{name}}の本音",
+    "thoughtTitle": "{{name}}の本音",
+    "thoughtRead": "本音を読んだ",
+    "thoughtPayTitle": "{{name}}の本音を読む？",
+    "thoughtReadIt": "読む",
+    "thoughtLater": "今はいい",
+    "thoughtFreeAgain": "明日また無料",
     "steerBlocked": {
       "typing": "相手の返信をお待ちください。",
       "waiting": "相手の返事をお待ちください。",

@@ -4,6 +4,7 @@ import type { Emotion, SetupOffer } from '@/types';
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
 import { cleanDayNotes } from './own-day';
+import { cleanThought } from './inner-thought';
 import { cleanReact, type React } from './react';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
@@ -98,6 +99,8 @@ export interface ModelReply {
   day?: string[];
   /** A sticker it put on the user's latest message (`src/ai/react.ts`). */
   react?: React;
+  /** What it really thinks and did not say, hidden until the user opens it (`src/ai/inner-thought.ts`). */
+  thought?: string;
   /** One-tap replies the user could send next (`IDEAS_CUE`). */
   ideas?: string[];
 }
@@ -122,7 +125,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; ideas?: unknown };
+      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -132,6 +135,7 @@ export function parseModelReply(raw: string): ModelReply {
         const threads = cleanThreadOps(data.threads);
         const day = cleanDayNotes(data.day);
         const react = cleanReact(data.react);
+        const thought = cleanThought(data.thought);
         const ideas = cleanIdeas(data.ideas);
         return {
           bubbles,
@@ -144,6 +148,7 @@ export function parseModelReply(raw: string): ModelReply {
           ...(hasThreadOps(threads) ? { threads } : {}),
           ...(day.length ? { day } : {}),
           ...(react ? { react } : {}),
+          ...(thought ? { thought } : {}),
           ...(ideas.length ? { ideas } : {}),
         };
       }

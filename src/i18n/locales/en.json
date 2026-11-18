@@ -459,6 +459,13 @@
     "freeUsedLine": "Each message now costs 1 shell. Free messages come back at midnight.",
     "freeUsedKeep": "Keep talking",
     "freeUsedShells": "Get shells",
+    "thought": "{{name}}'s thought",
+    "thoughtTitle": "{{name}} thinks",
+    "thoughtRead": "Thought read",
+    "thoughtPayTitle": "Read {{name}}'s thought?",
+    "thoughtReadIt": "Read",
+    "thoughtLater": "Not now",
+    "thoughtFreeAgain": "Free again tomorrow",
     "steerBlocked": {
       "typing": "Let them finish first.",
       "waiting": "Let them answer first.",

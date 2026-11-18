@@ -448,6 +448,13 @@
     "freeUsedLine": "Sekarang setiap pesan seharga 1 kerang. Pesan gratis kembali tengah malam nanti.",
     "freeUsedKeep": "Lanjut ngobrol",
     "freeUsedShells": "Dapatkan kerang",
+    "thought": "Pikiran {{name}}",
+    "thoughtTitle": "{{name}} berpikir",
+    "thoughtRead": "Pikiran dibaca",
+    "thoughtPayTitle": "Baca pikiran {{name}}?",
+    "thoughtReadIt": "Baca",
+    "thoughtLater": "Nanti saja",
+    "thoughtFreeAgain": "Gratis lagi besok",
     "steerBlocked": {
       "typing": "Biarkan mereka selesai mengetik dulu.",
       "waiting": "Biarkan mereka menjawab dulu.",

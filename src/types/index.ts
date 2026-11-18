@@ -319,6 +319,10 @@ export interface Message {
   reaction?: string;
   /** The friend's sticker on the user's own message, put there with their reply (`src/ai/react.ts`). */
   theirReaction?: string;
+  /** What they really thought and did not say, on the last bubble of their reply; hidden until opened (`src/ai/inner-thought.ts`). */
+  thought?: string;
+  /** The user opened `thought`: the next reply may notice it (`openedThought`). */
+  thoughtRead?: boolean;
   /** 👍 👎 on their reply, kept on its first line; the friend never sees it (`src/lib/reply-rating.ts`). */
   rating?: 'up' | 'down';
   /** Why a reply was marked down (`OffReason`). */
@@ -1090,6 +1094,9 @@ export interface DailyState {
   freeUsed?: number;
   /** The day the "today's free messages are used" sheet showed: once a day, before the first paid one. */
   freeOutDay?: string;
+  /** Inner thoughts opened free today (`src/economy/thoughts.ts`): the day they count, and how many. */
+  thoughtDay?: string;
+  thoughtsUsed?: number;
   /** The day the "voice minutes used up" note last showed (once a day) */
   voiceNoteDay?: string;
   /** Family's moments written today (`lifeKey`: "2026-10-25:c_kai:lunch"), so each goes once. */

@@ -459,6 +459,13 @@
     "freeUsedLine": "Artık her mesaj 1 kabuk. Ücretsiz mesajlar gece yarısı geri gelir.",
     "freeUsedKeep": "Konuşmaya devam et",
     "freeUsedShells": "Kabuk al",
+    "thought": "{{name}} ne düşünüyor",
+    "thoughtTitle": "{{name}} düşünüyor",
+    "thoughtRead": "Düşünce okundu",
+    "thoughtPayTitle": "{{name}} ne düşünüyor, okunsun mu?",
+    "thoughtReadIt": "Oku",
+    "thoughtLater": "Şimdi değil",
+    "thoughtFreeAgain": "Yarın yine ücretsiz",
     "steerBlocked": {
       "typing": "Önce konuşmalarını bitirmelerine izin ver.",
       "waiting": "Önce cevap vermelerine izin ver.",

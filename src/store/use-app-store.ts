@@ -214,6 +214,7 @@ import {
   type MinutesKind,
 } from '@/economy/plans';
 import { freeMessagesPerDay, usedToday } from '@/economy/free-messages';
+import { THOUGHT_SHELLS, thoughtsLeft } from '@/economy/thoughts';
 import { forgetPay, isPayReason, notePay, payFor } from '@/economy/pay-keys';
 import {
   INVITE_REWARD,
@@ -689,6 +690,11 @@ export interface AppState {
   spendShells: (amount: number, reason?: LedgerReason, characterId?: string, key?: string) => boolean;
   /** Uses one of today's free messages (audit §6.3); false once the count is used up, and then a shell pays. */
   takeFreeMessage: () => boolean;
+  /**
+   * Opens a friend's inner thought (owner, 2026-11-18): free while today's count lasts, then with `pay`
+   * for `THOUGHT_SHELLS`. 'pay' asks the screen to offer that; 'noShells' when there are too few.
+   */
+  openThought: (conversationId: string, messageId: string, pay?: boolean) => 'open' | 'pay' | 'noShells' | 'none';
   /** The "free messages used" sheet was seen today: messages now pay a shell without asking again. */
   seeFreeOut: () => void;
   addShells: (amount: number, reason?: LedgerReason) => void;
@@ -2444,6 +2450,28 @@ export const useAppStore = create<AppState>()(
       },
 
       seeFreeOut: () => set((s) => ({ daily: { ...s.daily, freeOutDay: todayKey() } })),
+
+      openThought: (conversationId, messageId, pay = false) => {
+        const state = get();
+        const message = state.messages[conversationId]?.find((m) => m.id === messageId);
+        if (!message?.thought) return 'none';
+        if (message.thoughtRead) return 'open';
+        const today = todayKey();
+        const left = thoughtsLeft(state.wallet.subscription, state.daily.thoughtDay, state.daily.thoughtsUsed, today, Date.now());
+        if (left > 0) {
+          const used = state.daily.thoughtDay === today ? (state.daily.thoughtsUsed ?? 0) : 0;
+          set((s) => ({ daily: { ...s.daily, thoughtDay: today, thoughtsUsed: used + 1 } }));
+        } else {
+          if (!pay) return 'pay';
+          const characterId = state.conversations.find((c) => c.id === conversationId)?.characterId;
+          // Booked as chat: the thought is part of their reply (the server's spend reasons stay as they are).
+          if (!get().spendShells(THOUGHT_SHELLS, 'chat', characterId)) return 'noShells';
+        }
+        set((s) => ({
+          messages: { ...s.messages, [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === messageId ? { ...m, thoughtRead: true } : m)) },
+        }));
+        return 'open';
+      },
 
       spendShells: (amount, reason = 'other', characterId, key) => {
         get().expireFreeShells();
@@ -6005,7 +6033,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
 
   // `setup`: an alarm or plan they offered to set up; its card goes under the reply's last bubble.
   // `felt`: the model's own reading of how the friend feels after this reply (0z141); the stand-in's guess otherwise.
-  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[]) => {
+  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[], thought?: string) => {
     const lines = enforceStyle(written, replyPrefs(bond).style);
     // The model's one-tap replies, in the chat's language, as chips: a tap sends them as a message
     // would. A care check-in's own ideas and the turn's own chips come first.
@@ -6059,6 +6087,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
           ...(last && !chips?.length && offeredChips ? { chipsWritten: true } : {}),
           emotion: mood?.emotion,
           ...(last && reach && ideas?.length ? { reach, ideas } : {}),
+          // What they really think, on the reply's last bubble, hidden until opened (owner, 2026-11-18).
+          ...(last && thought ? { thought } : {}),
         };
         // It shows word by word, as a streamed reply would (`src/lib/reveal.ts`).
         markFresh(message.id);
@@ -6160,7 +6190,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       if (reply.react && trigger === 'message' && avoid == null && !steer) markTheirReaction(set, conversationId, reply.react);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
-      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas);
+      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought);
       // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
       if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
         applyModelThreads(set, get, conversationId, character.id, reply.threads);

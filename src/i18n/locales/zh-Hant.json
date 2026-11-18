@@ -448,6 +448,13 @@
     "freeUsedLine": "現在每則訊息需要 1 個貝殼。免費訊息會在午夜恢復。",
     "freeUsedKeep": "繼續聊天",
     "freeUsedShells": "取得貝殼",
+    "thought": "{{name}}的心聲",
+    "thoughtTitle": "{{name}}心裡想",
+    "thoughtRead": "已讀心聲",
+    "thoughtPayTitle": "要看{{name}}的心聲嗎？",
+    "thoughtReadIt": "看看",
+    "thoughtLater": "先不要",
+    "thoughtFreeAgain": "明天再次免費",
     "steerBlocked": {
       "typing": "請先等待對方說完。",
       "waiting": "請先等待對方回覆。",

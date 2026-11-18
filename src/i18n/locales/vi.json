@@ -448,6 +448,13 @@
     "freeUsedLine": "Giờ mỗi tin nhắn tốn 1 vỏ sò. Tin nhắn miễn phí sẽ trở lại lúc nửa đêm.",
     "freeUsedKeep": "Tiếp tục trò chuyện",
     "freeUsedShells": "Nhận vỏ sò",
+    "thought": "Suy nghĩ của {{name}}",
+    "thoughtTitle": "{{name}} nghĩ",
+    "thoughtRead": "Đã đọc suy nghĩ",
+    "thoughtPayTitle": "Đọc suy nghĩ của {{name}}?",
+    "thoughtReadIt": "Đọc",
+    "thoughtLater": "Để sau",
+    "thoughtFreeAgain": "Ngày mai lại miễn phí",
     "steerBlocked": {
       "typing": "Hãy để họ nói xong trước.",
       "waiting": "Hãy để họ trả lời trước.",

@@ -27,6 +27,7 @@ import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
 import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
+import { ThoughtCard, ThoughtMark, ThoughtSheet } from '@/components/chat/thought';
 import { playSend, useReceiveSound } from '@/components/chat/chat-sounds';
 import { SwipeToReply } from '@/components/chat/reply-quote';
 import { ShareSheet } from '@/components/chat/share-sheet';
@@ -61,7 +62,7 @@ import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
-import { nightColors as colors, shadows, space } from '@/theme';
+import { nightColors as colors, friendAccent, shadows, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
@@ -296,6 +297,24 @@ export default function ChatRoomScreen() {
   const shared = useMemo(() => (typing ? null : shareLines(data)), [data, typing]);
   const reward = useAppStore((s) => shareReward(s.daily, character ? `chat:${character.id}` : undefined));
   const [sharing, setSharing] = useState(false);
+  // Their newest reply's inner thought (owner's pick A, 2026-11-18): the cloud under it, the words under
+  // the reply once opened, a sheet when today's free ones are used.
+  const thoughtLine = useMemo(() => (typing ? undefined : exchange?.burst.findLast((m) => !!m.thought)), [exchange, typing]);
+  const [thoughtOpenId, setThoughtOpenId] = useState<string | null>(null);
+  const [thoughtPayId, setThoughtPayId] = useState<string | null>(null);
+  const openThought = useAppStore((s) => s.openThought);
+  const tapThought = useCallback(
+    (messageId: string, pay = false) => {
+      if (!conversationId) return;
+      if (!pay && thoughtOpenId === messageId) return setThoughtOpenId(null);
+      const result = openThought(conversationId, messageId, pay);
+      if (result === 'open') {
+        setThoughtPayId(null);
+        setThoughtOpenId(messageId);
+      } else if (result === 'pay') setThoughtPayId(messageId);
+    },
+    [conversationId, openThought, thoughtOpenId],
+  );
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
@@ -579,7 +598,13 @@ export default function ChatRoomScreen() {
               // The header of an inverted list sits under the newest line.
               ListHeaderComponent={
                 <>
-                  {/* Only ↻ and Share under it (owner's pick A, 0z269): Continue and 👎 are in its long-press menu. */}
+                  {/* Their thought under the reply: open, or a quiet mark once read and closed. */}
+                  {thoughtLine?.thought && thoughtOpenId === thoughtLine.id ? (
+                    <ThoughtCard characterId={character.id} name={name} text={thoughtLine.thought} onClose={() => setThoughtOpenId(null)} />
+                  ) : thoughtLine?.thoughtRead ? (
+                    <ThoughtMark characterId={character.id} onPress={() => tapThought(thoughtLine.id)} />
+                  ) : null}
+                  {/* ↻, the thought cloud and Share under it (owner's picks A, 0z269 and 2026-11-18): Continue and 👎 are in its long-press menu. */}
                   {canRedo || (!block && shared) ? (
                     <ReplyControls
                       count={versions?.versions.length ?? 1}
@@ -588,6 +613,10 @@ export default function ChatRoomScreen() {
                       onRedo={canRedo ? () => redo() : undefined}
                       onShare={shared ? () => setSharing(true) : undefined}
                       shareReward={reward}
+                      onThought={thoughtLine ? () => tapThought(thoughtLine.id) : undefined}
+                      thought={thoughtLine && thoughtOpenId === thoughtLine.id ? 'open' : thoughtLine?.thoughtRead ? 'read' : 'new'}
+                      thoughtLabel={t('chat.thought', { name })}
+                      thoughtAccent={friendAccent(character.id).strong}
                     />
                   ) : null}
                   {typing ? <TypingRow characters={[character]} /> : null}
@@ -728,6 +757,13 @@ export default function ChatRoomScreen() {
       />
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} chat message={paywallForMessage} />
+      <ThoughtSheet
+        visible={!!thoughtPayId}
+        characterId={character.id}
+        name={name}
+        onRead={() => thoughtPayId && tapThought(thoughtPayId, true)}
+        onClose={() => setThoughtPayId(null)}
+      />
       {freeOut.sheet}
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
       <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} />

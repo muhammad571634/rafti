@@ -6,6 +6,7 @@ import Animated, { type SharedValue, useAnimatedStyle, withSpring } from 'react-
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
+import { ThoughtGlyph } from '@/components/chat/thought';
 import { PressableScale, SFIcon, Txt } from '@/components/ui';
 import { colors, space } from '@/theme';
 
@@ -29,6 +30,10 @@ export function ReplyControls({
   onContinue,
   onShare,
   shareReward = 0,
+  onThought,
+  thought = 'new',
+  thoughtLabel,
+  thoughtAccent,
 }: {
   count: number;
   index: number;
@@ -41,6 +46,13 @@ export function ReplyControls({
   onShare?: () => void;
   /** Shells the next share pays (`shareReward`); 0 once today's paid shares are used. */
   shareReward?: number;
+  /** The thought cloud (owner's pick A, 2026-11-18); left out when their reply came without a thought. */
+  onThought?: () => void;
+  /** `new`: not read yet (a dot in their accent); `open`: showing under the reply. */
+  thought?: 'new' | 'read' | 'open';
+  thoughtLabel?: string;
+  /** The friend's accent (`friendAccent`): the dot, and the cloud while it is open. */
+  thoughtAccent?: string;
 }) {
   const { t } = useTranslation();
   const first = index === 0;
@@ -87,6 +99,23 @@ export function ReplyControls({
           accessibilityRole="button"
           accessibilityLabel={t('chat.newReply')}>
           <SFIcon ios="arrow.clockwise" icon="refresh" size={21} color={quiet} />
+        </PressableScale>
+      ) : null}
+      {onThought ? (
+        <PressableScale
+          scaleTo={0.92}
+          haptic
+          onPress={onThought}
+          style={styles.shareTarget}
+          hitSlop={TALL}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: thought === 'open' }}
+          accessibilityLabel={thoughtLabel}>
+          {/* Clear glass like Share; a dot in their accent while it is unread. */}
+          <View style={[styles.share, onPhoto ? styles.shareGlass : styles.shareFill, thought === 'open' && thoughtAccent ? { borderColor: thoughtAccent, borderWidth: 1 } : null]}>
+            <ThoughtGlyph size={21} color={thought === 'open' && thoughtAccent ? thoughtAccent : onPhoto ? colors.onMedia : colors.text} />
+            {thought === 'new' && thoughtAccent ? <View style={[styles.dot, { backgroundColor: thoughtAccent }]} /> : null}
+          </View>
         </PressableScale>
       ) : null}
       {onContinue ? (
@@ -175,6 +204,7 @@ const styles = StyleSheet.create({
   // The chat header's glass on the picture (`chat-header.tsx` photoRound).
   shareGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
   shareFill: { backgroundColor: colors.surfaceAlt },
+  dot: { position: 'absolute', top: 7, right: 7, width: 8, height: 8, borderRadius: 4, borderWidth: 1.5, borderColor: colors.black },
 });
 
 const onPhotoCount = { color: colors.onMediaSoft };
