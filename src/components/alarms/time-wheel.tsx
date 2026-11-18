@@ -210,6 +210,9 @@ function Column({
       style={{ width, height: ITEM * VISIBLE }}
       contentContainerStyle={{ paddingVertical: PAD }}
       showsVerticalScrollIndicator={false}
+      // The wheel sits inside the editor's own vertical scroll: on Android the page took every drag
+      // and the wheel never turned (A51, 2026-11-18) until the inner scroll may claim it.
+      nestedScrollEnabled
       snapToInterval={ITEM}
       decelerationRate="normal"
       scrollEventThrottle={16}
