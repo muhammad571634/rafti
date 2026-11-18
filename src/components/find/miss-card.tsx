@@ -135,9 +135,12 @@ export function MissCard({ seats, onOpen, onAdd }: { seats: FamilySeat[]; onOpen
             <InkText variant="subStrong" center lines={1}>
               {who.name}
             </InkText>
-            <InkText variant="caption" center lines={2} wordSafe>
-              {phrase(role)}
-            </InkText>
+            {/* "Mom" called Mom: the role once, not twice (seen on the A51, 0z280). */}
+            {sameWord(who.name, phrase(role)) ? null : (
+              <InkText variant="caption" center lines={2} wordSafe>
+                {phrase(role)}
+              </InkText>
+            )}
           </PressableScale>
         ))}
         {free ? (
@@ -227,3 +230,8 @@ const styles = StyleSheet.create({
   tileFace: { width: 40, height: 40, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden' },
   tileLabel: { flexShrink: 1 },
 });
+
+/** The same word whatever the case or spacing ("Mom" and "mom "). */
+function sameWord(a: string, b: string) {
+  return a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
+}

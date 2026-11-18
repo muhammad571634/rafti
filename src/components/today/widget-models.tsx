@@ -134,8 +134,10 @@ function useCallsModel(): WidgetModel {
       label: label('calls'),
       faces: [],
       title: caller ? nameOf(caller) : label('calls'),
+      // The word alone: with its time the line was cut in German and Russian (A51, 0z280); the red
+      // dot says it too, and Call history keeps the time.
       line: missedAt
-        ? `${t('chat.callMissed')} · ${relativeStamp(missedAt)}`
+        ? t('chat.callMissed')
         : callMinutes > 0
           ? t('home.widget.minutesLeft', { count: callMinutes })
           : t('home.widget.hearVoice'),

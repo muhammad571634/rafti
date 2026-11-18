@@ -325,10 +325,8 @@ export function DailyRewardSheet() {
                           </Animated.View>
                         </>
                       ) : (
-                        <>
-                          <View style={styles.ring} />
-                          {isSurpriseDay(day) ? <Txt style={styles.surprise}>+{base}</Txt> : null}
-                        </>
+                        // A big day shows its prize in place of the ring: both did not fit a short chip (A51).
+                        isSurpriseDay(day) ? <Txt style={styles.surprise}>+{base}</Txt> : <View style={styles.ring} />
                       )}
                     </View>
                   </RiseIn>
@@ -445,7 +443,7 @@ const styles = StyleSheet.create({
   chipAmount: { ...inkFace('subStrong'), color: ink.text },
   chipFace: { position: 'absolute' },
   ring: { width: 16, height: 16, borderRadius: inkRadius.pill, borderWidth: 2, borderColor: ink.line },
-  surprise: { position: 'absolute', bottom: 4, ...inkFace('caption'), color: ink.text2 },
+  surprise: { ...inkFace('subStrong'), color: ink.text2 },
   rule: { marginTop: 12, marginBottom: 14, ...inkFace('footnote'), color: ink.text2, textAlign: 'center' },
   cta: { height: 54, borderRadius: inkRadius.pill, backgroundColor: ink.accent, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   ctaOff: { opacity: 0.55 },
