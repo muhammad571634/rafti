@@ -69,7 +69,12 @@ export function Sheet({
   const { colors } = useTokens();
   const insets = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
-  const scrolls = avoidKeyboard || scroll;
+  // Every bottom sheet is capped to the screen and scrolls once its content is taller (owner,
+  // 2026-11-08: a sheet is never taller than the screen). `scroll` / `avoidKeyboard` scroll always; the
+  // rest scroll only when they overflow, so a wheel or a drag inside a short sheet keeps its touches.
+  const scrolls = !center;
+  const [overflow, setOverflow] = useState({ box: 0, content: 0 });
+  const scrollable = !!(avoidKeyboard || scroll) || overflow.content > overflow.box + 1;
   // iOS tucks the card into the home-indicator room; Android's nav bar is solid, so the card stands
   // above it. The keyboard covers either, and the card then sits just over the keys.
   const keyboardUp = useKeyboardVisible();
@@ -211,6 +216,12 @@ export function Sheet({
                 bounces={false}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
+                scrollEnabled={scrollable}
+                onLayout={(e) => {
+                  const box = e.nativeEvent.layout.height;
+                  setOverflow((o) => (Math.abs(o.box - box) < 1 ? o : { ...o, box }));
+                }}
+                onContentSizeChange={(_, content) => setOverflow((o) => (Math.abs(o.content - content) < 1 ? o : { ...o, content }))}
                 style={styles.scrollBox}
                 contentContainerStyle={styles.scroll}>
                 {children}
