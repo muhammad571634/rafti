@@ -1,19 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  type ScrollViewInstance,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
-} from 'react-native';
+import { Pressable, StyleSheet, View, type AccessibilityActionEvent } from 'react-native';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  type SharedValue,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
-import { Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors } from '@/theme';
+import { colors, type as typeScale } from '@/theme';
 
 const ITEM = 36;
 const VISIBLE = 5;
@@ -120,6 +120,12 @@ export function TimeWheel({
   );
 }
 
+/**
+ * One column (owner, 2026-11-18: "the minute wheel must be light and smooth"). The scroll runs on the UI
+ * thread: rows fade and shrink with their distance from the band frame by frame, as a UIPickerView
+ * does, and each new row under the band ticks. The screen hears the value only once the wheel has come
+ * to rest, so nothing re-renders mid-flick; a value changed from outside (the − / + buttons) moves it.
+ */
 function Column({
   label,
   values,
@@ -137,76 +143,116 @@ function Column({
   align: 'flex-start' | 'flex-end' | 'center';
   tone?: WheelTone;
 }) {
-  const ref = useRef<ScrollViewInstance>(null);
-  const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // The row under the band while scrolling: each new one ticks, as a UIPickerView does.
-  const ticked = useRef(index);
+  const ref = useAnimatedRef<Animated.ScrollView>();
+  const y = useSharedValue(index * ITEM);
+  const row = useSharedValue(index);
+  const last = values.length - 1;
+  // What the wheel itself settled on last, so a change from outside is told apart from its own.
+  const settled = useRef(index);
+  const latest = useRef({ index, onChange });
+  latest.current = { index, onChange };
 
-  // Starts on the chosen value; later changes come from the user's own scrolling.
+  // Starts on the chosen value.
   useEffect(() => {
     const id = setTimeout(() => ref.current?.scrollTo({ y: index * ITEM, animated: false }), 0);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const at = (y: number) => Math.max(0, Math.min(values.length - 1, Math.round(y / ITEM)));
+  // The − / + buttons (or anything else) changed the value: roll the wheel there.
+  useEffect(() => {
+    if (index === settled.current) return;
+    settled.current = index;
+    ref.current?.scrollTo({ y: index * ITEM, animated: true });
+  }, [index, ref]);
 
-  const settle = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const next = at(e.nativeEvent.contentOffset.y);
+  const tick = useCallback(() => haptic.selection(), []);
+  const commit = useCallback(
+    (offset: number) => {
+      const next = Math.max(0, Math.min(last, Math.round(offset / ITEM)));
+      settled.current = next;
+      if (next !== latest.current.index) latest.current.onChange(next);
+    },
+    [last],
+  );
+
+  const onScroll = useAnimatedScrollHandler(
+    {
+      onScroll: (e) => {
+        y.value = e.contentOffset.y;
+        const now = Math.max(0, Math.min(last, Math.round(e.contentOffset.y / ITEM)));
+        if (now !== row.value) {
+          row.value = now;
+          scheduleOnRN(tick);
+        }
+      },
+      // A drag let go without a flick stops here; a flick settles when its momentum ends.
+      onEndDrag: (e) => {
+        if (Math.abs(e.velocity?.y ?? 0) < 0.05) scheduleOnRN(commit, e.contentOffset.y);
+      },
+      onMomentumEnd: (e) => {
+        scheduleOnRN(commit, e.contentOffset.y);
+      },
+    },
+    [last, tick, commit],
+  );
+
+  const step = (to: number) => {
+    const next = Math.max(0, Math.min(last, to));
+    ref.current?.scrollTo({ y: next * ITEM, animated: true });
+    settled.current = next;
     if (next !== index) onChange(next);
   };
 
-  // The web has no momentum events: snap a moment after the last scroll.
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = e.nativeEvent.contentOffset.y;
-    const row = at(y);
-    if (row !== ticked.current) {
-      ticked.current = row;
-      haptic.selection();
-    }
-    if (Platform.OS !== 'web') return;
-    if (settleTimer.current) clearTimeout(settleTimer.current);
-    settleTimer.current = setTimeout(() => {
-      const next = at(y);
-      ref.current?.scrollTo({ y: next * ITEM, animated: true });
-      if (next !== index) onChange(next);
-    }, 120);
-  };
-
   return (
-    <ScrollView
+    <Animated.ScrollView
       ref={ref}
       style={{ width, height: ITEM * VISIBLE }}
       contentContainerStyle={{ paddingVertical: PAD }}
       showsVerticalScrollIndicator={false}
       snapToInterval={ITEM}
-      decelerationRate="fast"
+      decelerationRate="normal"
       scrollEventThrottle={16}
       onScroll={onScroll}
-      onMomentumScrollEnd={settle}
-      onScrollEndDrag={settle}
-      accessibilityLabel={`${label}: ${values[index]}`}>
-      {values.map((value, i) => {
-        const distance = Math.abs(i - index);
-        return (
-          <Pressable
-            key={value}
-            style={[styles.item, { alignItems: align }]}
-            onPress={() => {
-              ref.current?.scrollTo({ y: i * ITEM, animated: true });
-              onChange(i);
-            }}>
-            <Txt
-              style={[
-                styles.value,
-                { color: distance === 0 ? tone.text : distance === 1 ? tone.near : tone.far },
-              ]}>
-              {value}
-            </Txt>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
+      accessibilityRole="adjustable"
+      accessibilityLabel={label}
+      accessibilityValue={{ text: values[index] }}
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      onAccessibilityAction={(e: AccessibilityActionEvent) => step(index + (e.nativeEvent.actionName === 'increment' ? 1 : -1))}>
+      {values.map((value, i) => (
+        <WheelRow key={value} value={value} at={i} y={y} align={align} tone={tone} onPress={() => step(i)} />
+      ))}
+    </Animated.ScrollView>
+  );
+}
+
+/** A row that fades and shrinks with its distance from the band, on the UI thread. */
+function WheelRow({
+  value,
+  at,
+  y,
+  align,
+  tone,
+  onPress,
+}: {
+  value: string;
+  at: number;
+  y: SharedValue<number>;
+  align: 'flex-start' | 'flex-end' | 'center';
+  tone: WheelTone;
+  onPress: () => void;
+}) {
+  const look = useAnimatedStyle(() => {
+    const distance = Math.abs(y.value / ITEM - at);
+    return {
+      opacity: interpolate(distance, [0, 1, 2, 3], [1, 0.55, 0.3, 0.15], Extrapolation.CLAMP),
+      transform: [{ scale: interpolate(distance, [0, 2], [1, 0.88], Extrapolation.CLAMP) }],
+    };
+  });
+  return (
+    <Pressable style={[styles.item, { alignItems: align }]} onPress={onPress} accessible={false}>
+      <Animated.Text style={[typeScale.body, styles.value, { color: tone.text }, look]}>{value}</Animated.Text>
+    </Pressable>
   );
 }
 

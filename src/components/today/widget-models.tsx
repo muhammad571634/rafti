@@ -194,7 +194,8 @@ function useDiaryModel(): WidgetModel {
       ...(fresh.length
         ? { figure: String(fresh.length), unit: t('home.widget.newPages', { count: fresh.length }), line: writers.map(nameOf).join(', ') }
         : lastWriter && lastPage
-          ? { quote: lastPage.body[0], line: `${t('home.widget.pageOf', { name: nameOf(lastWriter) })} · ${pageDay(lastPage.date)}` }
+          ? // Who and when; "Страница Milo · Сегодня" ran past the half-width tile in Russian (A51), and the face already says it is their page.
+            { quote: lastPage.body[0], line: `${nameOf(lastWriter)} · ${pageDay(lastPage.date)}` }
           : { title: label('diary'), line: t('home.widget.writeToday') }),
       onPress: () =>
         openPage
