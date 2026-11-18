@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { type RefObject, useEffect } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -90,6 +90,8 @@ export function MessageMenu({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const screen = useWindowDimensions();
+  // The menu's real height once drawn: a row that wraps (Russian, German) makes it taller than the estimate.
+  const [menuDrawn, setMenuDrawn] = useState(0);
   useBackToClose(!!message, onClose);
   if (!message) return null;
   const mine = message.author === 'me';
@@ -137,7 +139,13 @@ export function MessageMenu({
     </View>
   );
   const menu = (
-    <View style={styles.menu} accessibilityRole="menu">
+    <View
+      style={styles.menu}
+      accessibilityRole="menu"
+      onLayout={(e) => {
+        const h = Math.ceil(e.nativeEvent.layout.height);
+        if (Math.abs(h - menuDrawn) > 1) setMenuDrawn(h);
+      }}>
       {steer.map((row, i) => (
         <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < steer.length - 1} />
       ))}
@@ -157,7 +165,7 @@ export function MessageMenu({
   const lifted = anchor && message.kind === 'text' && message.text ? anchor : undefined;
   let layout: { top: number; bubbleH: number; side: number; reactSide: number; menuSide: number } | null = null;
   if (lifted) {
-    const menuH = (steer.length + firstGroup.length + (onRewind ? 2 : 1)) * ROW_H + GROUP_GAP * (steer.length ? 2 : 1);
+    const menuH = Math.max(menuDrawn, (steer.length + firstGroup.length + (onRewind ? 2 : 1)) * ROW_H + GROUP_GAP * (steer.length ? 2 : 1));
     const room = screen.height - insets.top - insets.bottom - EDGE * 2;
     const bubbleH = Math.max(ROW_H, Math.min(lifted.height, room - REACT_H - menuH - GAP * 2));
     const stackH = REACT_H + GAP + bubbleH + GAP + menuH;
