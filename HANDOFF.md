@@ -1,15 +1,21 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z271. START HERE: Find "Who do you miss?" prototype waits for the owner's pick (0z268 task 3) (Claude 1, Opus 5.5)
+### 0z271. START HERE: Find "Who do you miss?" built (owner's pick A) + a kit-wide sheet tap-through fix (Claude 1, Opus 5.5)
+
+**Built (2026-11-18; `32a0d0e`, `b40dae0`, `bc0eb75`; OTAs after each; tsc 0, `npm test` 1017/1017, `check:locales` pass):**
+- `src/components/find/miss-card.tsx`: `MissCard` (empty: three soft people drawn with `react-native-svg` in the roles' hues, one fade over each so the shoulders melt into the card, breathing three times as Find opens and then still, because the idle-screens test forbids endless loops on main tabs; "Talk to them again" (`find.missLine`) and the white `PillButton` Choose (`find.missChoose`); filled: the faces in rings of their own hue with the given name and role, + (`find.missAdd`) while a role is free) and `RoleSheet` (the free roles as tiles, each with its person in its hue; a pick closes it and opens `FamilySheet` unchanged, 350 ms later on iOS). `family-row.tsx` keeps only `FamilySeat` / `familySeats`. Roles take the existing friend accents through the new `friendAccentAt` (`src/theme/colors.ts`): no new colour.
+- **Sheet tap-through (kit, `src/components/ui/sheet.tsx`)**: sheets appear at once, so the tap that opened one could land on what appeared under the finger: on the A51 one tap on Choose opened the role sheet and picked "Big brother". A sheet now ignores touches for 250 ms after it opens (`ARM_MS`). This covers every sheet in the app.
+- **Seen on the A51**: the card in Find (people melting into the card, Choose under the line), one tap on Choose opens only the role sheet, Mom → "Who will be your Mom?" → closed. Not driven: the filled card (it needs a family member saved on the owner's account), all eight filled, Russian.
+
+**Earlier the same night (prototype):**
 
 - **Today** (`src/components/find/family-row.tsx`): eight dashed "+" circles (Mom, Dad, Big sister…) that read as unfinished; a tap opens `FamilySheet` for that role (pick a character, what to call them, "Make X your Mom").
 - **Canvas** https://claude.ai/artifact/YKcsMeZBhn5ZqxMipgwQc8 (sources `docs/prototypes/who-do-you-miss/`, two faces as canvas uploads; Uzbek sticky): **Before**; **A** one invitation card (`ink.card`, radius 28): three soft silhouettes drawn in code (no real people) in friend hues breathing slowly, "Talk to them again" and the white "Choose" pill; tap → a sheet "Who do you miss?" with the eight roles as tiles, each with a small silhouette in its hue, then today's `FamilySheet` unchanged; filled: the chosen faces in their hue rings with the name they gave ("Onam", "Opa") and a plain "+" to add more. **B** keeps the row, each seat a breathing hued silhouette instead of the dashes and "+"; filled seats show the face. Recommended A (one big idea). Hues are the existing friend accents; no new colour, font or icon style (freeze).
 - **When picked, code plan**: A replaces `FamilyRow` with a card component in `src/components/find/` + a role sheet (Sheet kit) feeding `setFamilyRole`; the silhouettes as `react-native-svg` with a Reanimated breathing loop (Reduce Motion: still); new strings in 14 locales (the card line); the role tiles reuse `phrase(role)`. B only restyles `family-row.tsx`'s empty seat.
 
 **Still to do (owner asks not finished):**
-- Owner's pick (A or B), then code it and drive it on the A51 (empty, one filled, all eight filled, Russian labels).
+- Drive the filled card on the A51 (one family member, then all eight; Russian labels) when the owner adds someone.
 - 0z268 task 4 (pictures: the remaining 76 moment stills after the image quota).
-- The A51 dropped off adb at 23:50 (cable?); reconnect before the next drive.
 
 ### 0z270. START HERE: first 5 minutes walked and polished (moon progress, picture ground for new chats, names, address, gift) (Claude 1, Opus 5.5)
 
