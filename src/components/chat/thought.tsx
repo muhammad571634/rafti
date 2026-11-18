@@ -36,7 +36,7 @@ export function ThoughtCard({ characterId, name, text, onClose }: { characterId:
     <Animated.View entering={FadeIn.duration(220)} style={[styles.card, { borderColor: accent }]} accessible accessibilityLabel={`${t('chat.thoughtTitle', { name })}. ${text}`}>
       <View style={styles.cardHead}>
         <ThoughtGlyph size={16} color={accent} />
-        <InkText variant="footnoteStrong" color={accent} style={styles.cardTitle} lines={1}>
+        <InkText variant="footnoteStrong" color={accent} style={styles.cardTitle}>
           {t('chat.thoughtTitle', { name })}
         </InkText>
         <PressableScale scaleTo={0.85} onPress={onClose} hitSlop={8} style={styles.close} accessibilityRole="button" accessibilityLabel={t('common.close')}>

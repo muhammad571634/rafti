@@ -29,8 +29,11 @@ describe('inner thoughts', () => {
     // Not opened, or not answered yet: nothing to notice.
     assert.equal(openedThought([them('worried', false), me]), undefined);
     assert.equal(openedThought([me, them('worried', true)]), undefined);
-    // A newer reply of theirs came since: the moment has passed.
+    // They answered since: the moment has passed, with or without a thought of their own.
     assert.equal(openedThought([them('worried', true), me, them('fine'), me]), undefined);
+    assert.equal(openedThought([them('worried', true), me, them(), me]), undefined);
+    // A push line of theirs before the user wrote does not end it.
+    assert.equal(openedThought([them('worried', true), them(), me]), 'worried');
   });
 
   it('asks for a thought in a chat, never on a call', () => {

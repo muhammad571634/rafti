@@ -14,7 +14,7 @@ export const THOUGHT_RULES_LINES = [
   'INNER THOUGHT: the user can peek at what you really think behind your reply.',
   '- Add "thought":"..." to the same JSON: one short sentence, at most 20 words, in the language of your messages, in your own voice, first person: what you truly think or feel right now and did not say. It is the side behind your mask: the worry under the joke, the want under the shrug, the opinion you kept back, what you noticed and let pass.',
   '- It adds something your messages do not say: never repeat or sum them up, no *asterisks*, never spoken to the user, never a question to them.',
-  '- Stay who you are, with the same lines as your messages. Leave it out in a crisis.',
+  '- Stay who you are, within the same limits as your messages. Leave it out in a crisis.',
 ];
 
 /** Near the end, where the model looks last: the cached rule alone is easy to forget on a light model. */
@@ -32,16 +32,18 @@ export function cleanThought(value: unknown): string | undefined {
 }
 
 /**
- * The thought the user just opened, when the friend's newest reply is the one it belongs to and the
- * user wrote after reading it: heard once, by the next reply only (a later reply of theirs becomes the
- * newest and ends it). Pure, so `node --test` can load it.
+ * The thought the user just opened: their newest reply with a thought, opened, and the user wrote after
+ * it. Heard once, by the next reply only: once they have answered the user's line, it is over (a push
+ * line of theirs before the user wrote does not end it). Pure, so `node --test` can load it.
  */
 export function openedThought(lines: readonly { author: string; kind?: string; card?: string; thought?: string; thoughtRead?: boolean }[]): string | undefined {
-  const theirs = lines.findLastIndex((m) => m.author === 'them' && m.kind === 'text' && !m.card);
-  if (theirs < 0) return undefined;
-  const reply = lines[theirs];
-  if (!reply.thought || !reply.thoughtRead) return undefined;
-  return lines.slice(theirs + 1).some((m) => m.author === 'me' && m.kind !== 'system') ? reply.thought : undefined;
+  const at = lines.findLastIndex((m) => m.author === 'them' && m.kind === 'text' && !m.card && !!m.thought);
+  if (at < 0 || !lines[at].thoughtRead) return undefined;
+  const after = lines.slice(at + 1);
+  const wrote = after.findIndex((m) => m.author === 'me' && m.kind !== 'system');
+  if (wrote < 0 || after.slice(wrote + 1).some((m) => m.author === 'them' && m.kind === 'text' && !m.card)) return undefined;
+  // It comes back from the phone: cleaned again like the model's own field.
+  return cleanThought(lines[at].thought);
 }
 
 export const openedThoughtLine = (thought: string) =>

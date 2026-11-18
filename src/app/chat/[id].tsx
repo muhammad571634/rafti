@@ -312,8 +312,13 @@ export default function ChatRoomScreen() {
         setThoughtPayId(null);
         setThoughtOpenId(messageId);
       } else if (result === 'pay') setThoughtPayId(messageId);
+      else if (result === 'noShells') {
+        // Free shells can burn at midnight while the sheet is open: the packs, not a dead button.
+        setThoughtPayId(null);
+        router.push('/store/shell?tab=shells');
+      }
     },
-    [conversationId, openThought, thoughtOpenId],
+    [conversationId, openThought, thoughtOpenId, router],
   );
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
