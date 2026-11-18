@@ -1,0 +1,27 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-18T18:30:00Z" },
+  "title": "Inner thoughts",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "A: a third button under the newest reply", "radius": 40 },
+    "Corner.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "B: a small cloud on the bubble", "radius": 40 },
+    "Open.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "Tapped: the thought opens under the bubble", "radius": 40 },
+    "Paid.dc.html": { "x": 470, "y": 964, "w": 390, "h": 844, "title": "Free ones used: a small sheet", "radius": 40 },
+    "Noticed.dc.html": { "x": 940, "y": 964, "w": 390, "h": 844, "title": "Later: Milo notices you read it", "radius": 40 }
+  },
+  "order": ["Main.dc.html", "Corner.dc.html", "Open.dc.html", "Paid.dc.html", "Noticed.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Inner thoughts", "kind": "title1", "maxW": 1330 },
+    "how": {
+      "x": -560,
+      "y": 0,
+      "w": 480,
+      "size": "m",
+      "fill": "blue",
+      "text": "Ichki o'ylar: do'st aslida nima o'ylayapti\n\n1. Belgi qayerda turadi — tanlang:\nA: eng yangi javob ostida uchinchi tugma (↻, bulutcha, Share). Topish oson, lekin tinchlantirgan qatorimizga bitta tugma qo'shiladi.\nB: pufakchaning burchagida kichkina bulutcha. Qator o'zgarmaydi, lekin kichikroq va ko'zga kamroq tashlanadi.\n\n2. Bossangiz: fikr pufakcha ostida Miloning o'z rangida, yotiq harflarda ochiladi. Bu uning \"niqobi\" ortidagi gap: aytgani bilan o'ylagani farq qiladi.\n\n3. Bepullari tugasa (masalan kuniga 3 ta): kichkina oyna, chig'anoq bilan ochish yoki \"Keyin\". Bu qism ixtiyoriy, hozir pul masalasini qo'yib tursak ham bo'ladi.\n\n4. Keyinroq Milo sezishi mumkin: \"o'ylarimni o'qidingmi?\" Ixtiyoriy.\n\nO'zgarmaydi: pufakchalar, yozish nuqtalari, ovoz to'lqini, fon rasmi, reaksiyalar. Suhbat matni namuna uchun, ilovada fikrni AI javob bilan birga yozadi."
+    }
+  },
+  "designSystems": []
+}

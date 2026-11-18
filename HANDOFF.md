@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z272. Inner thoughts prototype, waits for the owner's pick (2026-11-18, Claude 1, Opus 5.5). NEXT: owner picks A or B on the canvas, then code
+- **Why**: the owner asked what to take from Whispy AI (iOS, gems per message, "Inner Thoughts", 3 reply suggestions, affinity bar, daily tasks; text only, no voice; reviews complain it forgets and costs too much). Structure only, never its text or art. The owner picked inner thoughts to start.
+- **Canvas** https://claude.ai/artifact/8VYyKpSxRWoDXHj1oKrTQ3 (sources `docs/prototypes/inner-thoughts/`, Milo's pictures copied from the chat-calm canvas; Uzbek sticky). **A**: a third clear-glass button (thought cloud with a small accent dot) between ↻ and Share under the newest reply. **B**: the row stays two buttons, a small cloud sits on the newest bubble's top corner. **Open**: the thought opens under the bubble in the friend's accent (italic, "Milo thinks", close ×; "2 left today"). **Paid** (optional, money parked by the owner today): a sheet "Read Milo's thought?", balance, "Read · 2", Not now, "3 free again tomorrow". **Noticed** (optional): a "Thought read" mark, and the friend may notice next turn ("did you just read my mind?").
+- **Code plan when picked**: the thought is a short `thought` field the reply already writes (no extra call; ~20-30 output tokens, cost ledger row), saved on the message, hidden until tapped; one rule in the shared prompt tier for every character and language, drawn from the Cast 2.0 `mask` (what they show vs what they think); same content lines as replies; a read is noted in the next turn so the friend can notice. Friend accent via `friendAccent`, no new colour (freeze). New strings in 14 locales.
+- **Owner today**: money teaching and simplifying money are not wanted now (do not raise them); janestreet/agent_skills removed from every agent.
+
 ### 0z271. START HERE: Find "Who do you miss?" built (owner's pick A) + a kit-wide sheet tap-through fix (Claude 1, Opus 5.5)
 
 **Built (2026-11-18; `32a0d0e`, `b40dae0`, `bc0eb75`; OTAs after each; tsc 0, `npm test` 1017/1017, `check:locales` pass):**
