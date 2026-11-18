@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Daily gift after</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:844px;position:relative;overflow:hidden;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif}
+.bg{position:absolute;left:0;top:0;width:390px;height:430px;object-fit:cover;object-position:62% 18%;opacity:.55}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.sheet{position:absolute;left:8px;right:8px;bottom:24px;border-radius:38px;background:#1C1C22;border:.5px solid rgba(255,255,255,.12);padding:8px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.grab{width:36px;height:5px;border-radius:3px;background:rgba(255,255,255,.3)}
+.face{margin-top:8px;width:84px;height:84px;border-radius:42px;object-fit:cover;border:3px solid #E8749C}
+.say{max-width:290px;padding:10px 14px;border-radius:18px;border-top-left-radius:6px;background:rgba(232,116,156,.16);border:1px solid rgba(232,116,156,.5);font-size:16px;line-height:22px;text-align:center}
+.h{margin:0;font-family:'Source Serif 4',Georgia,serif;font-weight:700;font-size:24px;line-height:29px;text-align:center}
+.days{align-self:stretch;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.d{height:64px;border-radius:14px;background:rgba(118,118,128,.24);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:rgba(235,235,245,.62)}
+.d.got{background:rgba(255,196,151,.14);color:#FFC497}
+.d.now{background:#FFC497;color:#3A1A06}
+.n{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.btn{align-self:stretch;height:56px;border-radius:28px;background:#FFC497;color:#3A1A06;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;border:0}
+.tag{position:absolute;top:44px;right:16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#09090D;background:#FFC497;border-radius:10px;padding:3px 8px}
+</style>
+</helmet>
+<div class="ph">
+  <img class="bg" src="/_blob/299054fdef497813150e3f83d83231aa" alt="">
+  <div class="dim"></div>
+  <div class="tag">After</div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <img class="face" src="/_blob/7e2854d78c6ffcd34944463d54d471a6" alt="Sam">
+    <div class="say">ты снова здесь. держи, это тебе на сегодня</div>
+    <h2 class="h">День 3</h2>
+    <div class="days">
+      <div class="d got"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span class="n">30</span></div>
+      <div class="d got"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span class="n">30</span></div>
+      <div class="d now"><span>3</span><span class="n">35</span></div>
+      <div class="d"><span>4</span><span class="n">35</span></div>
+      <div class="d"><span>5</span><span class="n">40</span></div>
+      <div class="d"><span>6</span><span class="n">40</span></div>
+      <div class="d"><span>7</span><span class="n">?</span></div>
+    </div>
+    <button class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20C6 20 3 15 3 11a9 9 0 0 1 18 0c0 4-3 9-9 9z"></path><path d="M12 20V6M8 19.2 7 8M16 19.2 17 8"></path></svg>Забрать 35</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
