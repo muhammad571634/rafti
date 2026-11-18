@@ -595,7 +595,8 @@ export const signature = {
   radio: look(systemColors.purple, isDark ? '#DA8FFF' : '#8944AB', isDark ? ['#B05CF0', '#6A2BB0'] : ['#C77DFF', '#8E3FD6']),
   board: look(systemColors.cyan, isDark ? '#70D7FF' : '#0071A4', isDark ? ['#4FC3F7', '#1A6FA0'] : ['#5AC8FA', '#1E9BD7']),
   photo: look(systemColors.blue, isDark ? '#409CFF' : '#0062CC', isDark ? ['#3D8BFF', '#1550B8'] : ['#4FA3FF', '#0A6CFF']),
-  shells: { hero: isDark ? (['#FFC497', '#F79E63'] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#3A1A06' },
+  // Flat calm peach at night (owner 2026-11-18: the gradient was the brightest peach left on screen).
+  shells: { hero: isDark ? ([palette.apricotCalm, palette.apricotCalm] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#3A1A06' },
 };
 
 /**
