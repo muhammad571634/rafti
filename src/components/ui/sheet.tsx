@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { Extrapolation, interpolate, ReduceMotion, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
@@ -41,6 +41,8 @@ const CORNER = 38;
 /** A drag down this far, or a flick, closes the sheet; anything less springs it back. */
 const CLOSE_AT = 110;
 const FLICK = 900;
+/** How long a sheet that just appeared ignores touches (the opening tap's tail). */
+const ARM_MS = 250;
 const BACK = { damping: 26, stiffness: 320, reduceMotion: ReduceMotion.System };
 
 /**
@@ -84,6 +86,16 @@ export function Sheet({
   useEffect(() => {
     if (visible) drop.value = 0;
   }, [visible, drop]);
+
+  // A sheet appears at once, so the tap that opened it can land on whatever appears under the finger
+  // (A51, 0z271: Choose on Find opened the role sheet and picked "Big brother" in one tap). Touches
+  // wait a beat after it opens.
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!visible) return setArmed(false);
+    const id = setTimeout(() => setArmed(true), ARM_MS);
+    return () => clearTimeout(id);
+  }, [visible]);
   const latestClose = useRef(onClose);
   latestClose.current = onClose;
   const draggable = !center && dismissable;
@@ -165,7 +177,7 @@ export function Sheet({
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
       {/* A Modal is its own window on Android: gestures inside it need their own root. */}
-      <GestureHandlerRootView style={styles.fill}>
+      <GestureHandlerRootView style={styles.fill} pointerEvents={armed ? 'auto' : 'none'}>
         <Animated.View style={[StyleSheet.absoluteFill, fading]}>
           <Pressable style={[StyleSheet.absoluteFill, styles.scrim]} onPress={dismissable ? onClose : undefined} />
         </Animated.View>
