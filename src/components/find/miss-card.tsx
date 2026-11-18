@@ -64,9 +64,11 @@ function Silhouette({ hue, width, head = 12, delay = 0, breathe = true }: { hue:
     <Animated.View style={[styles.person, style]}>
       <Svg width={width} height={width * 1.25} viewBox="0 0 60 75">
         <Defs>
-          <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={hue} stopOpacity={1} />
-            <Stop offset="1" stopColor={hue} stopOpacity={0.14} />
+          {/* One fade over the whole person (head solid, shoulders melting into the card): no hard bottom edge. */}
+          <LinearGradient id={id} x1="0" y1="0" x2="0" y2="75" gradientUnits="userSpaceOnUse">
+            <Stop offset="0" stopColor={hue} stopOpacity={0.95} />
+            <Stop offset="0.5" stopColor={hue} stopOpacity={0.7} />
+            <Stop offset="1" stopColor={hue} stopOpacity={0} />
           </LinearGradient>
         </Defs>
         <Circle cx={30} cy={21} r={head} fill={`url(#${id})`} />
@@ -109,7 +111,7 @@ export function MissCard({ seats, onOpen, onAdd }: { seats: FamilySeat[]; onOpen
         </View>
         <View style={styles.side}>
           <InkText variant="card">{t('find.missLine')}</InkText>
-          <PillButton label={t('find.missChoose')} onPress={onAdd} size="md" full={false} accessibilityLabel={`${t('find.missTitle')} ${t('find.missChoose')}`} />
+          <PillButton label={t('find.missChoose')} onPress={onAdd} size="md" full={false} style={styles.choose} accessibilityLabel={`${t('find.missTitle')} ${t('find.missChoose')}`} />
         </View>
       </View>
     );
@@ -202,6 +204,8 @@ const styles = StyleSheet.create({
   folkOne: { position: 'absolute', bottom: 0 },
   person: { transformOrigin: 'bottom' },
   side: { flex: 1, minWidth: 0, alignItems: 'flex-start', gap: space.md },
+  // Left under the line, not centred in the column.
+  choose: { alignSelf: 'flex-start' },
   faces: { paddingHorizontal: space.lg, gap: space.md, alignItems: 'flex-start' },
   seat: { width: 76, alignItems: 'center', gap: 4 },
   ring: { padding: GAP, borderWidth: RING, borderRadius: inkRadius.pill, marginBottom: 2 },
