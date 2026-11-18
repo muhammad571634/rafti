@@ -3,7 +3,7 @@ import { useRouter, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Divider, Icon3D, moduleTile, PressableScale, Sheet, ShellBadge, SymbolTile, Txt } from '@/components/ui';
+import { Divider, moduleTile, PressableScale, Sheet, ShellBadge, ShellIcon, SymbolTile, Txt } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
 import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import {
@@ -96,7 +96,7 @@ export function PaywallSheet({
   return (
     <Sheet visible={need != null} onClose={onClose}>
       <View style={styles.head}>
-        <Icon3D name="shell" size={52} />
+        <ShellIcon size={52} />
         <View style={styles.flex}>
           <Txt variant="h3">{t('paywall.title')}</Txt>
           <ShellBadge count={wallet.shells} style={styles.balance} />

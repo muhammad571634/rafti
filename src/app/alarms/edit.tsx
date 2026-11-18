@@ -414,7 +414,7 @@ export default function AlarmEditScreen() {
             </Txt>
             {cost ? (
               <View style={styles.price}>
-                <ShellIcon size={15} />
+                <ShellIcon size={15} tintColor={night.textOnPrimary} />
                 <Txt style={styles.priceText}>{cost}</Txt>
               </View>
             ) : null}

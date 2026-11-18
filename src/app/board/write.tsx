@@ -97,7 +97,7 @@ export default function BoardWriteScreen() {
           <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
             {t('board.post')}
           </Txt>
-          <ShellIcon size={15} />
+          <ShellIcon size={15} tintColor={ready ? colors.textOnPrimary : colors.textFaint} />
           <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
             {shellCosts.boardNote}
           </Txt>

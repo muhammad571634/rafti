@@ -344,7 +344,7 @@ export function DailyRewardSheet() {
               onPress={collect}
               style={({ pressed }) => [styles.cta, (flight || got) && styles.ctaOff, pressed && styles.ctaPressed]}>
               <Txt style={styles.ctaText}>{t('dailyReward.collectAmount', { count: amount })}</Txt>
-              <ShellIcon size={22} />
+              <ShellIcon size={22} tintColor={ink.onAccent} />
             </Pressable>
           </View>
 

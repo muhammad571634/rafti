@@ -219,7 +219,7 @@ export function PlanSheet({
         </InkText>
         {cost ? (
           <View style={styles.cost}>
-            <ShellIcon size={15} />
+            <ShellIcon size={15} tintColor={ink.onAccent} />
             <InkText variant="subStrong" color={ink.onAccent} style={styles.tabular}>
               {cost}
             </InkText>

@@ -163,7 +163,7 @@ export function SharePill({
       {label ? <Txt style={styles.pillLabel}>{label}</Txt> : null}
       {reward && label ? <RewardChip amount={amount ? reward : undefined} /> : null}
       {reward && !label && amount ? <Txt style={styles.pillAmount}>{`+${reward}`}</Txt> : null}
-      {reward && !label ? <ShellIcon size={15} /> : null}
+      {reward && !label ? <ShellIcon size={15} tintColor={colors.textOnPrimary} /> : null}
     </LinearGradient>
   );
 }

@@ -226,7 +226,7 @@ function ShellsTab({
         {header}
 
         <HeroCard look={signature.shells} style={styles.balance}>
-          <ShellIcon size={44} />
+          <ShellIcon size={44} tintColor={signature.shells.heroInk} />
           {/* The figure over its word, both kept clear of the Free pill: side by side, "11 655
               ракушек" ran under it (A51, 2026-11-11). */}
           <View style={styles.balanceAmount}>
@@ -371,7 +371,7 @@ function ShellStack({ count }: { count: number }) {
   return (
     <View style={styles.stack} importantForAccessibility="no-hide-descendants">
       {layout.map((pos, i) => (
-        <ShellIcon key={i} size={28} style={[styles.stackShell, pos]} />
+        <ShellIcon key={i} size={28} backing={systemGround.card} style={[styles.stackShell, pos]} />
       ))}
     </View>
   );

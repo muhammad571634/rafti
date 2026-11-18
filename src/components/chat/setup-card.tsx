@@ -110,7 +110,7 @@ export function SetupCard({ message }: { message: Message }) {
               right={
                 cost ? (
                   <View style={styles.price} accessibilityLabel={`${cost} ${t('common.shells')}`}>
-                    <ShellIcon size={14} />
+                    <ShellIcon size={14} tintColor={colors.textOnPrimary} />
                     <Txt variant="smallStrong" color={colors.textOnPrimary}>
                       {cost}
                     </Txt>
