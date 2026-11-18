@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z273. START HERE: 76 ready Nano Banana prompts for the moment stills; the owner draws them (2026-11-18, Claude 1, Opus 5.5). NEXT: wire the stills the owner saves
+- **Owner**: draws the remaining stills themself in Nano Banana and asked for ready prompts, where to get them and the reference steps.
+- **Doc** `docs/nano-banana-stills-ready.md` (built by `node scripts/build-still-prompts.mjs .` from `docs/nano-banana-moment-stills.md` + `assets/stills/registry.ts`; rebuild after either changes): Uzbek steps (new chat per picture, attach only `art-new/c_<id>_avatar.png`, save as `art-new/m_<id>_<mood>.png`), then 76 filled English prompts in order Milo, Jace, Sam, Roman, the rest; per-character bans moved from the hands cell into AVOID.
+- **When the owner says the pictures are ready**: crop/compress each `art-new/m_<id>_<mood>.png` to `assets/stills/c_<id>_<mood>.jpg` (900x1200, 3:4), add it to `STILLS` in `assets/stills/registry.ts`, rebuild the doc, OTA, look at the moment cards on the A51 APK.
+
 ### 0z272b. START HERE: Inner thoughts built (owner's pick A, every board), deployed by the owner and tested by the owner on the phone: "hammasi okey" (2026-11-18, Claude 1, Opus 5.5). NEXT: 0z268 task 4 (pictures)
 - **Whispy ideas left**: reply suggestions clash with the owner's 0z269 rule (no ready replies in the chat: the user writes), so not offered; a closeness bar and daily tasks stay ideas until the owner asks.
 - **Owner**: "A variantini tanladim … barchasini quraver" (sheet, Milo notices, open state, all of it).
