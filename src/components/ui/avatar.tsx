@@ -8,7 +8,6 @@ import { AVATARS } from '@/assets/avatars/registry';
 import { avatarGradients, colors, palette, radius } from '@/theme';
 import type { Character, User } from '@/types';
 
-import { Mascot } from './mascot';
 import { Txt } from './text';
 
 export interface AvatarProps {
@@ -116,21 +115,37 @@ export function CharacterAvatar({
   );
 }
 
-/** You: your photo, or Rafti's sticker face for new accounts. */
-export function UserAvatar({ user, size = 32, style }: { user: User; size?: number; style?: StyleProp<ViewStyle> }) {
-  if (user.avatarUri) return <Avatar source={user.avatarUri} name={user.displayName} size={size} style={style} />;
+/** Your initials, as iOS Contacts draws them: first and last word, whole letters in any script, "?" when empty. */
+export function userInitials(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  const first = (w?: string) => (w ? (Array.from(w)[0] ?? '') : '');
+  const picked = words.length > 1 ? [words[0], words[words.length - 1]] : words;
+  return picked.map(first).join('').toLocaleUpperCase() || '?';
+}
 
+/**
+ * You: your photo, or your initials (owner, 2026-11-18: no mascot for the user; iOS Contacts' grey
+ * monogram). `glass` draws the monogram in clear glass for a photo ground (Today's hero), so the
+ * friend's picture shows through.
+ */
+export function UserAvatar({ user, size = 32, glass, style }: { user: User; size?: number; glass?: boolean; style?: StyleProp<ViewStyle> }) {
+  if (user.avatarUri) return <Avatar source={user.avatarUri} name={user.displayName} size={size} style={style} />;
+  const letters = userInitials(user.displayName);
   return (
     <View
-      style={[
-        styles.userFallback,
-        { width: size, height: size, borderRadius: size / 2 },
-        style,
-      ]}>
-      <Mascot size={size * 0.86} />
+      accessible
+      accessibilityLabel={user.displayName}
+      style={[styles.userFallback, glass && styles.userGlass, { width: size, height: size, borderRadius: size / 2 }, style]}>
+      {glass ? null : <LinearGradient colors={MONOGRAM} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />}
+      <Txt variant="title" color={colors.white} style={{ fontSize: size * (letters.length > 1 ? 0.38 : 0.44), lineHeight: size * 0.52, fontWeight: '600' }}>
+        {letters}
+      </Txt>
     </View>
   );
 }
+
+/** iOS Contacts' monogram grey, top to bottom. */
+const MONOGRAM = ['#A2A2AA', '#6E6E76'] as const;
 
 const styles = StyleSheet.create({
   clip: {
@@ -156,8 +171,12 @@ const styles = StyleSheet.create({
   userFallback: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: palette.apricot50,
-    borderWidth: 1,
-    borderColor: palette.apricot200,
+    overflow: 'hidden',
+  },
+  // Clear glass over a photo, as the chat header's round buttons.
+  userGlass: {
+    backgroundColor: colors.onMediaGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.onMediaHairline,
   },
 });

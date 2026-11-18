@@ -20,7 +20,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriendOf, heroTopHeight, TodayHero } from '@/components/today-hero';
-import { FoldingLogo } from '@/components/today/folding-logo';
 import { TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { LiveWidget } from '@/components/today/widget-models';
@@ -54,8 +53,6 @@ const LOGO_MAX = 48;
 const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
 /** Your capsule's height; the logo's glass capsule matches it. */
 const CAPSULE = 40;
-/** The wordmark art's height inside its capsule: the lone mascot fills the circle as your face fills yours, the word reads at ~19 pt. */
-const LOGO_IN_CAPSULE = 34;
 /** A waiting face and the gap after it: the separators start where the words do (iOS inset rows). */
 const FACE = 44;
 const noop = () => {};
@@ -223,25 +220,22 @@ export default function HomeScreen() {
   // the picture here (owner, 2026-11-16: the hour shows in its light, your name is in your profile).
   const bar = (
     <View style={styles.bar}>
-      {/* Only the mascot, in the same glass as your face; a tap unfolds "Sigmazam" for ten
-          seconds, so the friend's picture stays clear (owner, 2026-11-04). */}
-      <View style={styles.logo}>
-        <FoldingLogo
-          height={CAPSULE}
-          artHeight={LOGO_IN_CAPSULE}
-          label="Sigmazam"
-          Glass={Glass}
-        />
-      </View>
+      {/* No mascot on Today (owner, 2026-11-18): the friend's picture is the face of the screen. */}
+      <View style={styles.logo} />
       <PressableScale
         scaleTo={0.92}
         hitSlop={hitSlop}
         accessibilityRole="button"
         accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
         onPress={() => router.push('/profile')}>
-        <Glass style={styles.me}>
-          <UserAvatar user={user} size={34} />
-        </Glass>
+        {/* Your photo in its glass ring, or your initials in clear glass, so the friend's picture shows through. */}
+        {user.avatarUri ? (
+          <Glass style={styles.me}>
+            <UserAvatar user={user} size={34} />
+          </Glass>
+        ) : (
+          <UserAvatar user={user} size={CAPSULE} glass />
+        )}
       </PressableScale>
     </View>
   );

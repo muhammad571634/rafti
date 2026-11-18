@@ -4,8 +4,8 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { space, useTokens } from '@/theme';
 
+import { FriendFaces } from '../friend-faces';
 import { Button } from './button';
-import { BrandArt } from './mascot';
 import { SFIcon } from './symbol';
 import { Txt } from './text';
 
@@ -17,7 +17,8 @@ export interface EmptyStateProps {
   compact?: boolean;
   /**
    * What is missing, as a large grey SF Symbol (an Ionicon off iPhone), the way iOS's
-   * ContentUnavailableView draws it; without one the mascot stands in.
+   * ContentUnavailableView draws it; without one your friends' faces stand there (owner,
+   * 2026-11-18: no mascot in the app).
    */
   symbol?: { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap };
 }
@@ -36,7 +37,7 @@ export function EmptyState({
       {symbol ? (
         <SFIcon ios={symbol.ios} icon={symbol.icon} size={compact ? 44 : 56} color={colors.textMuted} />
       ) : (
-        <BrandArt name="empty" width={compact ? 82 : 111} bob />
+        <FriendFaces size={compact ? 48 : 64} />
       )}
       <Txt variant="title" center style={styles.title}>
         {title}

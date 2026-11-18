@@ -21,7 +21,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatMenu, type ChatMenuTarget } from '@/components/chat/chat-menu';
 import { SwipeRow, type SwipeRowMethods } from '@/components/chat/swipe-row';
 import { GroupAvatar } from '@/components/group-avatar';
-import { InkChip, InkText, listReorder } from '@/components/ink';
+import { FriendFaces } from '@/components/friend-faces';
+import { InkChip, InkText, listReorder, PillButton } from '@/components/ink';
 import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SearchBar, SFIcon, Sheet } from '@/components/ui';
 import { useReorderOnly } from '@/hooks/use-reorder-only';
 import { useTabBlurTarget } from '@/hooks/use-tab-blur-target';
@@ -186,6 +187,14 @@ export default function ChatListScreen() {
       return new Date(rowOf(b).lastMessageAt).getTime() - new Date(rowOf(a).lastMessageAt).getTime();
     });
   }, [conversations, groups, characters, relationships]);
+  // The friend you talked with last: "All caught up" offers their chat.
+  const lastChat = useMemo(
+    () =>
+      items
+        .filter((item): item is Extract<ChatItem, { kind: 'chat' }> => item.kind === 'chat')
+        .sort((a, b) => Date.parse(b.conversation.lastMessageAt) - Date.parse(a.conversation.lastMessageAt))[0],
+    [items],
+  );
 
   // Nothing left to edit: leave Edit mode so the button does not linger as "Done".
   useEffect(() => {
@@ -434,9 +443,24 @@ export default function ChatListScreen() {
                     {t('chatList.noResults', { query: query.trim() })}
                   </InkText>
                 ) : filter !== 'all' && !searching ? (
+                  // Your friends' faces, one line and one way on (owner, 2026-11-18: no mascot, empty screens too).
                   <View style={styles.caughtUp}>
-                    <Ionicons name={filter === 'unread' ? 'checkmark' : 'people-outline'} size={28} color={ink.text2} />
-                    <InkText variant="subStrong">{filter === 'unread' ? t('chatList.caughtUp') : t('chatList.noGroups')}</InkText>
+                    <FriendFaces size={56} />
+                    <InkText variant="card" center>
+                      {filter === 'unread' ? t('chatList.caughtUp') : t('chatList.noGroups')}
+                    </InkText>
+                    {filter === 'unread' && lastChat ? (
+                      <PillButton
+                        kind="accent"
+                        size="md"
+                        full={false}
+                        icon="chatbubble"
+                        label={t('diary.chatWith', { name: shortName(lastChat.name) })}
+                        onPress={() => router.push(`/chat/${lastChat.id}`)}
+                      />
+                    ) : filter === 'groups' ? (
+                      <PillButton kind="accent" size="md" full={false} icon="people" label={t('group.newGroup')} onPress={() => startWith('/group/new')} />
+                    ) : null}
                   </View>
                 ) : undefined
               }
@@ -1012,13 +1036,12 @@ const styles = StyleSheet.create({
   actionInner: { alignItems: 'center', gap: 3 },
   noResults: { paddingTop: space.xxl, paddingHorizontal: space.lg },
   caughtUp: {
-    height: 120,
     marginHorizontal: space.lg,
-    borderRadius: inkRadius.card,
-    backgroundColor: ink.card,
+    paddingVertical: space.xxl,
+    paddingHorizontal: space.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: space.md,
   },
   // The pencil's sheet: three tiles in deep Ink tints.
   ways: { gap: 10 },
