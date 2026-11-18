@@ -3,7 +3,7 @@
 ### 0z279. START HERE: the shell mark is a line glyph (owner's yes, 2026-11-18, Claude 1, Opus 5.5)
 - **Built** (`962a0e16`, OTA `01a1efb0`): `ShellIcon` (`src/components/ui/icon-3d.tsx`) draws the approved no-mascot Profile board's scallop (body + three ribs) in react-native-svg, `ink.accent` stroke, heavier line at small sizes (2.2 up to 18 pt, 1.9 to 30, 1.6 above); `tintColor` repaints, new `backing` fills the body so the store's stacked marks read as a pile. Dark ink on peach: alarm editor CTA, board Post, setup card, plan sheet, check-in Collect, share pill, the shells hero card (`signature.shells.heroInk`). The paywall sheet's 52 pt 3D shell goes through `ShellIcon` too. The `shell` PNG stays in `ICONS` (unused by screens now).
 - **Seen on the A51** (English): Profile's Shells card, the store's hero (dark glyph on the peach card) and the pack stacks (1-3 marks overlapping cleanly). tsc 0, tests 1023/1023.
-- **Noted, not changed**: the store's shells hero card is still a peach gradient (`signature.shells.hero`), the brightest peach left on screen; flatten it to `apricotCalm` if the owner finds it glares too.
+- **Shells hero flattened** (owner's yes; `6901bd17`, OTA `01a1efbc`): `signature.shells.hero` at night is `apricotCalm` on both stops; seen on the A51, it now matches the buy button.
 - **Still to do**: the 0z278 list (check-in on a fresh day, Bedtime whispering, first-run Chats, Find no hits, Groups empty).
 
 ### 0z278. START HERE: no-mascot build, part 2 done (OTA below), not yet seen on the A51 (2026-11-18, Claude 1, Opus 5.5)
