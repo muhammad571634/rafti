@@ -29,7 +29,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
-import { FamilyRow, familySeats } from '@/components/find/family-row';
+import { familySeats } from '@/components/find/family-row';
+import { MissCard, RoleSheet } from '@/components/find/miss-card';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { InkSegmented, InkText, tileTint } from '@/components/ink';
@@ -107,6 +108,8 @@ export default function FindScreen() {
   const relationships = useAppStore((s) => s.relationships);
   const makeFamily = useAppStore((s) => s.makeFamily);
   const [familyRole, setFamilyRole] = useState<FamilyLabel | null>(null);
+  // "Choose" on the Who do you miss? card: which role first (`RoleSheet`), then who (`FamilySheet`).
+  const [rolesOpen, setRolesOpen] = useState(false);
 
   const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
@@ -283,7 +286,7 @@ export default function FindScreen() {
               </ScrollView>
 
               <Section title={t('find.missTitle')} />
-              <FamilyRow seats={seats} onOpen={openFamily} onChoose={setFamilyRole} />
+              <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
 
               <Section title={t('find.worlds')} count={groups.length} />
               <View style={styles.folders}>
@@ -318,6 +321,16 @@ export default function FindScreen() {
         </ScrollView>
       )}
       {early.sheet}
+      <RoleSheet
+        visible={rolesOpen}
+        roles={seats.filter((s) => !s.who).map((s) => s.role)}
+        onClose={() => setRolesOpen(false)}
+        onPick={(role) => {
+          setRolesOpen(false);
+          // One sheet at a time: iOS cannot show the next while the last one is still leaving.
+          setTimeout(() => setFamilyRole(role), Platform.OS === 'ios' ? 350 : 0);
+        }}
+      />
       <FamilySheet
         role={familyRole}
         friends={kinFriends}

@@ -722,6 +722,9 @@ const friendAccents = isDark ? friendAccentsNight : friendAccentsDay;
 /** A character's accent, from the same hue as `friendColor`, on every screen of their own space. */
 export const friendAccent = (characterId: string): Accent => friendAccents[friendHueIndex(characterId, friendAccents.length)];
 
+/** One of the same accents by place (0-7), for things that are not a character: Find's family roles. */
+export const friendAccentAt = (index: number): Accent => friendAccents[((index % friendAccents.length) + friendAccents.length) % friendAccents.length];
+
 /**
  * Today's widgets in the playful skin (four-tab prototype): each module's own light tint with ink
  * on it, deep tints with white in dark mode. Hues follow `moduleFills`, so a widget, its tile and
