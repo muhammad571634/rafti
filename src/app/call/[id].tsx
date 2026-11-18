@@ -506,6 +506,7 @@ export default function CallScreen() {
       <OutOfMinutesSheet
         visible={state === 'out' || (state === 'empty' && member)}
         name={state === 'out' ? shortName(name) : undefined}
+        gender={character?.gender}
         talked={state === 'out' ? minutes.planTotal - minutes.plan + seconds : undefined}
         onAdded={resume}
         onNoShells={() => leaveFor('/store/shell?tab=shells')}

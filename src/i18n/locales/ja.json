@@ -99,7 +99,7 @@
       "wakeUp": "目覚まし",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "目覚ましを設定",
-      "sealed": "未開封 · タップして開く",
+      "sealed": "未開封",
       "bond": "絆",
       "toNext": "{{name}} · 次のレベルまであと{{count}}",
       "oneFree": "無料1回",

@@ -200,7 +200,7 @@ export default function QuizScreen() {
             </View>
             <View style={styles.selfBody}>
               <Txt style={styles.selfTitle}>{t('quizHome.selfTitle', { name })}</Txt>
-              <Txt style={styles.selfText}>{t('quizHome.selfBody', { name })}</Txt>
+              <Txt style={styles.selfText}>{t('quizHome.selfBody', { name, context: character?.gender })}</Txt>
               <View style={styles.cta}>
                 <Txt style={styles.ctaText} lines={1}>
                   {t('quizHome.selfPlay', { name })}

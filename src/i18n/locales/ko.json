@@ -99,7 +99,7 @@
       "wakeUp": "모닝콜",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "모닝콜 설정",
-      "sealed": "밀봉됨 · 탭하여 열기",
+      "sealed": "밀봉됨",
       "bond": "유대감",
       "toNext": "{{name}} · 다음 레벨까지 {{count}}",
       "oneFree": "무료 1회",

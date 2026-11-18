@@ -93,7 +93,7 @@ export function WhySheet({
   const openable = thread && (reason.source === 'thread' || reason.source === 'quest' || reason.source === 'lead');
 
   return (
-    <Sheet visible onClose={onClose} title={t('why.title', { name })}>
+    <Sheet visible onClose={onClose} title={t('why.title', { name, context: character.gender })}>
       <View style={styles.group}>
         <View style={styles.head}>
           <View style={[styles.tile, { backgroundColor: look.fill }]}>

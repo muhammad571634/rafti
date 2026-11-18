@@ -204,7 +204,11 @@ for (const locale of localesToCheck) {
       }
     }
 
-    if (!isValidPlural) {
+    // A gendered form of an English key (i18next context: `t(key, { context: character.gender })`),
+    // for languages whose verbs agree with the character ("написал" / "написала").
+    const gendered = /_(male|female)$/.test(key) && enStandardKeys.has(key.replace(/_(male|female)$/, ''));
+
+    if (!isValidPlural && !gendered) {
       localeErrors.push(`Extra unknown key: "${key}"`);
     }
   }

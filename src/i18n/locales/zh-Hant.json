@@ -99,7 +99,7 @@
       "wakeUp": "叫醒",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "設定叫醒",
-      "sealed": "已封存 · 輕點打開",
+      "sealed": "已封存",
       "bond": "羈絆",
       "toNext": "{{name}} · 距離下一級還差{{count}}",
       "oneFree": "免費1次",

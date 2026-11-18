@@ -7,6 +7,7 @@ import { callClock } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, palette, space } from '@/theme';
+import type { CharacterGender } from '@/types';
 
 import { planDate, planTime } from './copy';
 
@@ -17,6 +18,7 @@ import { planDate, planTime } from './copy';
 export function OutOfMinutesSheet({
   visible,
   name,
+  gender,
   talked,
   onAdded,
   onNoShells,
@@ -26,6 +28,8 @@ export function OutOfMinutesSheet({
   visible: boolean;
   /** Who was on the call; with `talked`, the sheet says they said goodnight. */
   name?: string;
+  /** Their gender, so the goodnight line agrees ("пожелал / пожелала"). */
+  gender?: CharacterGender;
   /** Seconds of calls this period, counting the call that just ran out. */
   talked?: number;
   onAdded: () => void;
@@ -57,7 +61,7 @@ export function OutOfMinutesSheet({
           <Txt variant="h3">{t('plans.outTitle')}</Txt>
           {name && talked != null ? (
             <Txt variant="body" color={colors.textSecondary}>
-              {t('plans.outSaidBye', { name, time: callClock(talked) })}
+              {t('plans.outSaidBye', { name, time: callClock(talked), context: gender })}
             </Txt>
           ) : null}
         </View>

@@ -101,7 +101,7 @@
       "wakeUp": "Uyanma",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "Uyanma saati ayarla",
-      "sealed": "Mühürlü · açmak için dokun",
+      "sealed": "Mühürlü",
       "bond": "Bağ",
       "toNext": "{{name}} · sonraki seviyeye {{count}}",
       "oneFree": "1 ücretsiz",

@@ -126,7 +126,7 @@ export function MissCard({ seats, onOpen, onAdd }: { seats: FamilySeat[]; onOpen
             key={role}
             scaleTo={0.94}
             accessibilityRole="button"
-            accessibilityLabel={t('find.yourRole', { name: who.name, role: phrase(role) })}
+            accessibilityLabel={t('find.yourRole', { name: who.name, role: phrase(role), context: who.character.gender })}
             onPress={() => onOpen(who.character)}
             style={styles.seat}>
             <View style={[styles.ring, { borderColor: friendColor(who.character.id).fill }]}>

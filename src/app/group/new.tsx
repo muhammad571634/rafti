@@ -140,7 +140,7 @@ export default function NewGroupScreen() {
                   picked={on}
                   locked={full && !on}
                   last={i === friends.length - 1}
-                  accessibilityLabel={on ? t('group.picked', { name: friend.name }) : friend.name}
+                  accessibilityLabel={on ? t('group.picked', { name: friend.name, context: friend.character.gender }) : friend.name}
                   onPress={() => toggle(friend.character.id)}
                 />
               );

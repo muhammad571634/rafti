@@ -99,7 +99,7 @@
       "wakeUp": "Bangunkan",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "Atur alarm bangun",
-      "sealed": "Tersegel · ketuk untuk buka",
+      "sealed": "Tersegel",
       "bond": "Ikatan",
       "toNext": "{{name}} · {{count}} menuju level berikutnya",
       "oneFree": "1 gratis",

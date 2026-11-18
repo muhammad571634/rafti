@@ -65,7 +65,8 @@ export default function NotificationsScreen() {
     return character ? shortName(displayName(character, relationships[character.id])) : '';
   };
 
-  const text = (item: InboxItem) => t(`notifications.inbox.${item.kind}`, { name: nameOf(item.characterId), ...item.params });
+  const text = (item: InboxItem) =>
+    t(`notifications.inbox.${item.kind}`, { name: nameOf(item.characterId), context: characters.find((c) => c.id === item.characterId)?.gender, ...item.params });
 
   const when = (item: InboxItem) => {
     if (item.allDay) return t('common.today');

@@ -101,7 +101,7 @@
       "wakeUp": "Despertador",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "Poner una alarma",
-      "sealed": "Sellado · toca para abrir",
+      "sealed": "Sellado",
       "bond": "Vínculo",
       "toNext": "{{name}} · {{count}} para el siguiente nivel",
       "oneFree": "1 gratis",

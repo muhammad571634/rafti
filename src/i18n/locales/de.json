@@ -101,7 +101,7 @@
       "wakeUp": "Wecker",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "Wecker stellen",
-      "sealed": "Versiegelt · zum Öffnen tippen",
+      "sealed": "Versiegelt",
       "bond": "Band",
       "toNext": "{{name}} · {{count}} bis nächste Stufe",
       "oneFree": "1 gratis",

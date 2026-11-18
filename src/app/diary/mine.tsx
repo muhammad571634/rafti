@@ -27,7 +27,7 @@ import { dateFromKey } from '@/mock';
 import { confirmAction } from '@/lib/confirm';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
-import type { DiaryEntry } from '@/types';
+import type { CharacterGender, DiaryEntry } from '@/types';
 
 const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
   happy: '\u{1F60A}',
@@ -147,6 +147,7 @@ export default function MyDiaryScreen() {
                   key={`${entry.id}-${depth}`}
                   entry={entry}
                   sharedWith={characters.find((c) => c.id === entry.sharedWithCharacterId)?.name}
+                  sharedGender={characters.find((c) => c.id === entry.sharedWithCharacterId)?.gender}
                   width={cardWidth}
                   depth={depth}
                   onOpen={() => setOpen(entry)}
@@ -197,7 +198,7 @@ export default function MyDiaryScreen() {
                 <View style={styles.replyHead}>
                   <CharacterAvatar character={replyAuthor} size={26} />
                   <Txt variant="smallStrong" style={styles.flex}>
-                    {t('diary.replyTitle', { name: replyAuthor.name })}
+                    {t('diary.replyTitle', { name: replyAuthor.name, context: replyAuthor.gender })}
                   </Txt>
                   <Txt variant="tiny" color={colors.textFaint}>
                     {relativeStamp(open.reply.createdAt)}
@@ -260,6 +261,7 @@ export default function MyDiaryScreen() {
 function DiaryCard({
   entry,
   sharedWith,
+  sharedGender,
   width,
   depth,
   onOpen,
@@ -268,6 +270,8 @@ function DiaryCard({
   entry: DiaryEntry;
   /** Name of the character the page was shared with, if any. */
   sharedWith?: string;
+  /** Their gender, so "написал / написала" agrees (i18next context). */
+  sharedGender?: CharacterGender;
   width: number;
   depth: number;
   onOpen: () => void;
@@ -346,7 +350,7 @@ function DiaryCard({
                   />
                   <Txt variant="small" color={colors.textSecondary}>
                     {entry.reply
-                      ? t('diary.replyTitle', { name: sharedWith })
+                      ? t('diary.replyTitle', { name: sharedWith, context: sharedGender })
                       : t('diary.waitingFor', { name: sharedWith })}
                   </Txt>
                 </View>

@@ -236,7 +236,8 @@ function MenuRow({
       accessibilityRole="menuitem"
       accessibilityLabel={label}
       style={({ pressed }) => [styles.row, line && styles.rowLine, pressed && styles.rowPressed]}>
-      <Txt style={styles.rowText} color={tint} lines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+      {/* A long label (Russian "Закрепить в Воспоминаниях") wraps to a second line, never shrinks (HIG Typography, owner 2026-11-16). */}
+      <Txt style={styles.rowText} color={tint} lines={2}>
         {label}
       </Txt>
       <Ionicons name={icon} size={19} color={tint} />
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.glassLine,
   },
-  row: { height: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: space.lg },
+  row: { minHeight: ROW_H, paddingVertical: space.xs + 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: space.lg },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
   rowPressed: { backgroundColor: colors.glassActive },
   // One line: a long label ("Закрепить в Воспоминаниях") shrinks a little rather than wrap.

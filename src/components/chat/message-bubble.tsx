@@ -842,11 +842,12 @@ const styles = StyleSheet.create({
   wide: { maxWidth: '100%' },
   fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
-  withReaction: { marginBottom: space.lg },
-  // The drop hangs off the bottom corner (the top corners carry the pin and tone marks).
-  reaction: { position: 'absolute', bottom: -space.lg - 2 },
-  reactionMine: { left: -space.xs - 2 },
-  reactionTheirs: { right: -space.xs - 2 },
+  withReaction: { marginBottom: space.xl + 2 },
+  // The drop hangs off the bottom corner (the top corners carry the pin and tone marks). It overlaps
+  // only the bubble's bottom padding: on a two-letter line ("Ok", A51 2026-11-18) it covered the words.
+  reaction: { position: 'absolute', bottom: -space.xl - 4 },
+  reactionMine: { left: -space.sm - 2 },
+  reactionTheirs: { right: -space.sm - 2 },
   // A pinned line's mark, on the corner away from the tail (canvas `MenuPin.dc.html`).
   pinBadge: {
     position: 'absolute',

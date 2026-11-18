@@ -170,9 +170,11 @@ export default function DiaryScreen() {
         : t('diary.lineMineEmpty');
     }
     const name = firstName(card.character);
-    if (card.onDay) return day === today ? t('diary.lineNewToday', { name }) : t('diary.lineOnDay', { name });
+    // The verb agrees with the friend where the language needs it ("написал / написала").
+    const context = card.character.gender;
+    if (card.onDay) return day === today ? t('diary.lineNewToday', { name, context }) : t('diary.lineOnDay', { name, context });
     if (card.last) return t('diary.lineLast', { date: shortDate(card.last.date) });
-    return day === today ? t('diary.lineLockedToday', { name }) : t('diary.lineLockedDay', { name });
+    return day === today ? t('diary.lineLockedToday', { name, context }) : t('diary.lineLockedDay', { name, context });
   };
 
   const cta = (card: Card) => {

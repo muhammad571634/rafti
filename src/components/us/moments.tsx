@@ -94,7 +94,7 @@ export function useMomentContent(character: Character | undefined, relationship:
         case 'board':
           return { title: item.post?.text || t('us.publishKind.board'), sub: item.post?.reply ? said(item.post.reply) : undefined };
         case 'diary':
-          return { title: item.entry?.title || t('us.publishKind.diary'), sub: t('diary.replyTitle', { name }) };
+          return { title: item.entry?.title || t('us.publishKind.diary'), sub: t('diary.replyTitle', { name, context: character?.gender }) };
         case 'dating': {
           const date = item.date;
           // A map place by its name in the screen language, as "Our dates" captions it; the user's own date by its title.

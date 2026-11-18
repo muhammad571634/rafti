@@ -44,6 +44,8 @@ export default function MemoriesScreen() {
   const memories = useAppStore((s) => s.memories);
   const wallet = useAppStore((s) => s.wallet);
   const name = useAppStore((s) => s.characters.find((c) => c.id === characterId)?.name ?? '');
+  // "Что {{name}} рассказал / рассказала": the verb agrees with the friend (i18next context).
+  const gender = useAppStore((s) => s.characters.find((c) => c.id === characterId)?.gender);
   const addMemory = useAppStore((s) => s.addMemory);
   const togglePin = useAppStore((s) => s.toggleMemoryPin);
   const deleteMemory = useAppStore((s) => s.deleteMemory);
@@ -145,7 +147,7 @@ export default function MemoriesScreen() {
           }
           renderItem={({ item: group }) => (
             <View>
-              <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short })}</Txt>
+              <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short, context: gender })}</Txt>
               {group.items.map((memory, index) => (
                 <MemoryRow
                   key={memory.id}

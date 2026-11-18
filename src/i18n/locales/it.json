@@ -101,7 +101,7 @@
       "wakeUp": "Sveglia",
       "wakeWith": "{{label}} · {{name}}",
       "setWake": "Imposta una sveglia",
-      "sealed": "Sigillato · tocca per aprire",
+      "sealed": "Sigillato",
       "bond": "Legame",
       "toNext": "{{name}} · {{count}} al livello successivo",
       "oneFree": "1 gratis",
