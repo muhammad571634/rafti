@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z274. START HERE: polish pass 1 (worst case on the A51 in Russian), five fixes seen on the phone (2026-11-18, Claude 1, Opus 5.5). NEXT: polish pass 2 (screens not walked yet, below)
+- **Owner**: picked "Sayqal berish" (polish inside the design freeze); pictures paused until they draw them.
+- **Phone**: USB kept dropping (Windows lost the device); now **wireless adb**: `adb connect 192.168.1.3:39943` (paired today; the port changes when Wireless debugging is turned off and on: read it on the phone's Wireless debugging screen). App language was English by the owner's choice; switched to Russian for the pass and back to English at the end.
+- **Fixed and seen on the A51 (OTAs `c28a9d77`, `6c43611e`, `d0f7fc8a`)**:
+  1. `Sheet` kit: every bottom sheet is capped to the screen and scrolls when its content is taller (before, only `scroll` / `avoidKeyboard` sheets were capped); short sheets keep their touches (scroll turns on only on overflow). Chat More sheet checked.
+  2. Today's sealed note: "Sealed · tap to open" was cut with "…" in Russian; now "Sealed" in all 14 (the chevron says it opens).
+  3. A friend's reaction on a two-letter line ("Ok") covered the words: the drop hangs lower / further out (`message-bubble.tsx` `reaction*`).
+  4. Hold menu: rows wrap to two lines instead of shrinking ("Закрепить в Воспоминаниях"), and the menu places itself by its drawn height so a wrapped row never pushes it off the screen.
+  5. Russian "написал(а)" about a character: 12 keys get `_male` / `_female` forms, picked by i18next `context: character.gender` at every call site (diary, Us moments, notifications inbox, quiz, memories, new group, call minutes, why sheet, Find); `check:locales` accepts gendered keys. Other gendered languages can add the same suffixes later.
+- **Held up** (walked, nothing to fix): Today widgets and edit mode, More sheet, Chats list, chat + panel and More sheet, inner thoughts card / mark, Us top and moments, Find (filled "Who do you miss?" with Mom, role sheet), Milo's page (scenes, actions), Profile, New group with quick taps (3 max, the 4th locked, no jump).
+- **Pass 2, not walked yet**: diary, dates, alarms / sleep, store and plan picker, settings sub-screens, notifications inbox, group chat, call screen, create-character, onboarding (fresh state), German on the A51, an empty account. Also `adjustsFontSizeToFit` on labels (tab bar, Find titles, character kit titles, create kit title, store CTA, button / chip kit) shrinks on Android without a floor: review each against the no-shrink rule.
+
 ### 0z273. START HERE: 76 ready Nano Banana prompts for the moment stills; the owner draws them (2026-11-18, Claude 1, Opus 5.5). NEXT: wire the stills the owner saves
 - **Owner**: draws the remaining stills themself in Nano Banana and asked for ready prompts, where to get them and the reference steps.
 - **Doc** `docs/nano-banana-stills-ready.md` (built by `node scripts/build-still-prompts.mjs .` from `docs/nano-banana-moment-stills.md` + `assets/stills/registry.ts`; rebuild after either changes): Uzbek steps (new chat per picture, attach only `art-new/c_<id>_avatar.png`, save as `art-new/m_<id>_<mood>.png`), then 76 filled English prompts in order Milo, Jace, Sam, Roman, the rest; per-character bans moved from the hands cell into AVOID.
