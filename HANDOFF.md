@@ -1,5 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z275. START HERE: polish pass 2, the alarm time wheel made smooth (owner's ask) + diary tile (2026-11-18, Claude 1, Opus 5.5). NEXT: pass 3 (list below)
+- **Owner, mid-pass**: "the minute-by-minute time picker does not work well; make it light and smooth".
+- **Cause, seen on the A51**: the wheel sits inside the alarm editor's vertical scroll and on Android the page took every drag (a flick on the minutes scrolled the page); the colours only moved after the wheel stopped; − / + changed the time but the wheel stayed put; every row change re-rendered the editor mid-flick.
+- **Fix** (`src/components/alarms/time-wheel.tsx`, OTAs `b54e2279`, `2f0360f6`): `nestedScrollEnabled`; a Reanimated scroll handler (rows fade / shrink by distance from the band on the UI thread, a selection haptic per row); the editor hears the value only when the wheel rests (momentum end, or a drag let go without a flick); an outside change rolls the wheel there; each column is `adjustable` for VoiceOver / TalkBack. **Seen on the A51**: a flick on the minutes turns only the wheel and lands on the band (07:07, header and "in 10 h 58 min" follow); + moves the wheel to 07:15.
+- **Diary tile on Today**: "Страница Milo · Сегодня" was cut; now "Milo · Today" (`widget-models.tsx`; `home.widget.pageOf` is unused now).
+- **Walked, held up (Russian)**: Milo's diary (approved), Dates and its 12-friend picker, Bedtime, the alarm editor, notifications inbox (gendered lines read right: "Milo звонил", "Mom написала"), the shell store. App language back to English.
+- **Noted, not changed**: the store's action-cost list has no line for inner thoughts (3 free a day, then 2 shells): the owner parked money talk today, so add it with the next money pass.
+- **Pass 3, not walked yet**: group chat, the call screen, create-character, onboarding on a fresh state, German, an empty account; and the `adjustsFontSizeToFit` labels listed in 0z274.
+
 ### 0z274. START HERE: polish pass 1 (worst case on the A51 in Russian), five fixes seen on the phone (2026-11-18, Claude 1, Opus 5.5). NEXT: polish pass 2 (screens not walked yet, below)
 - **Owner**: picked "Sayqal berish" (polish inside the design freeze); pictures paused until they draw them.
 - **Phone**: USB kept dropping (Windows lost the device); now **wireless adb**: `adb connect 192.168.1.3:39943` (paired today; the port changes when Wireless debugging is turned off and on: read it on the phone's Wireless debugging screen). App language was English by the owner's choice; switched to Russian for the pass and back to English at the end.
