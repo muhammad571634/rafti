@@ -107,7 +107,7 @@ function StoryCard({ item, width, stats, trending, onPress }: { item: StoryTempl
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
   return (
-    <PressableScale scaleTo={0.97} accessibilityRole="button" accessibilityLabel={`${card.name}. ${card.tagline ?? ''}`} onPress={onPress} style={[styles.card, { width }]}>
+    <PressableScale scaleTo={0.97} accessibilityRole="button" accessibilityLabel={`${card.name}. ${item.hook}`} onPress={onPress} style={[styles.card, { width }]}>
       <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.face}>
         <InkText variant="numeralSmall" color="rgba(255,255,255,0.92)" maxFontSizeMultiplier={1}>
           {card.name.slice(0, 1)}
@@ -119,7 +119,7 @@ function StoryCard({ item, width, stats, trending, onPress }: { item: StoryTempl
           {card.name}
         </InkText>
         <InkText variant="footnote" color={ink.text2} lines={3}>
-          {card.relation}
+          {item.hook}
         </InkText>
         <View style={styles.tags}>
           {(card.tags ?? []).slice(0, 2).map((tag) => (
@@ -163,7 +163,7 @@ export function StorySheet({ template, stats, onClose }: { template: StoryTempla
           <View style={styles.head}>
             <Avatar name={card.name} accentIndex={card.accentIndex ?? 0} size={64} />
             <View style={styles.grow}>
-              <InkText variant="bodyStrong">{card.relation}</InkText>
+              <InkText variant="bodyStrong">{template?.hook}</InkText>
               <InkText variant="footnote" color={ink.text3}>
                 {(stats?.chats ?? 0) >= NEW_BELOW ? t('community.chats', { count: stats?.chats ?? 0 }) : t('stories.new')}
                 {(stats?.owns ?? 0) >= NEW_BELOW ? ` · ${t('stories.owns', { count: stats?.owns ?? 0 })}` : ''}

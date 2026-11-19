@@ -324,10 +324,11 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
 
   // Keep the unfinished new character as it is typed (Android may close the app behind the user).
   useEffect(() => {
-    if (editing || phase !== 'form') return;
+    // A story template opened and left untouched is not an unfinished character of theirs.
+    if (editing || phase !== 'form' || (template && sameForm(form, initial))) return;
     const timer = setTimeout(() => void saveCreation(form), SAVE_AFTER_MS);
     return () => clearTimeout(timer);
-  }, [editing, form, phase]);
+  }, [editing, form, phase, template, initial]);
 
   const scroll = useRef<ScrollViewInstance>(null);
   const sectionY = useRef<Partial<Record<CreateSection, number>>>({});
