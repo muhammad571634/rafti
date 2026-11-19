@@ -1,14 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Keyboard,
   Platform,
-  Pressable,
   ScrollView,
   type ScrollViewInstance,
   StyleSheet,
@@ -16,76 +13,54 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import Animated, {
-  interpolate,
-  ReduceMotion,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  type SharedValue,
-} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { portraitPosition } from '@/components/chat/chat-ground';
+import { CinemaFeatureCard } from '@/components/find/cinema-feature-card';
+import { CircleTile } from '@/components/find/circle-tile';
 import { familySeats } from '@/components/find/family-row';
-import { MissCard, RoleSheet } from '@/components/find/miss-card';
 import { FamilySheet } from '@/components/find/family-sheet';
+import { MissCard, RoleSheet } from '@/components/find/miss-card';
+import { InkSegmented, InkText } from '@/components/ink';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { InkSegmented, InkText, tileTint } from '@/components/ink';
-import { CharacterAvatar, EmptyState, GlassButton, NO_RESULTS, PressableScale, Screen, SearchBar } from '@/components/ui';
+import { CharacterAvatar, EmptyState, GlassButton, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
-import { familyOf, type FamilyLabel } from '@/lib/kin';
-import { leadFirst, partOfDay } from '@/lib/night-hour';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
+import { shortName } from '@/lib/format';
+import { familyOf, type FamilyLabel } from '@/lib/kin';
+import { leadFirst, partOfDay } from '@/lib/night-hour';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, friendColor, space, TAB_BAR_HEIGHT } from '@/theme';
+import { space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
 import type { Character, CharacterGender } from '@/types';
 
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
-/** Under the words on a scene: clear on the face, dark at the foot. */
-const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)'] as const;
-/** "Say hi" is 40 pt tall; this makes its tap area HIG's 44 pt. */
-const SAY_HI_SLOP = { top: 2, bottom: 2, left: 4, right: 4 };
-const SAY_HI_H = 40;
 /** The page never grows past a phone's width (tablets, web), so cards keep their shape. */
 const MAX_WIDTH = 520;
-const WHITE = '#FFFFFF';
-/** The press that fans a folder's cards: lively, settles fast, still under Reduce Motion. */
-const FAN = { damping: 14, stiffness: 260, mass: 0.7, reduceMotion: ReduceMotion.System };
 
 const heroOf = (c: Character) => HEROES[c.id] ?? PORTRAITS[c.id] ?? characterImage(c);
-const imageOf = (c: Character) => {
-  const src = characterImage(c);
-  return typeof src === 'string' ? { uri: src } : src;
-};
 
 /**
- * Discovery on Apple's white ground (design-style §10, the approved four-tab prototype), built as iOS's
- * search tab landing page (HIG Search fields: a search field on top, suggestions and categories
- * before typing): the big rounded title with the apricot create button, the search field, Everyone /
- * Him / Her, a paging row of new characters as big scene cards, the family seats, the worlds as
- * coloured folders with three faces peeking out (a press fans them out), and "Talk now" for friends
- * who can take a call. Tapping the field turns the screen into search: recently viewed faces and
- * recent searches before typing, results while typing, the best match on top, then the rest.
+ * Discovery on the Ink Night ground (approved Ink+ prototype): airy header with collapsible
+ * search button + create button, Everyone / Him / Her segmented control, snap-scrolling Cinema
+ * Story Cards with Cast 2.0 opening hooks, the living "Who do you miss?" card, sleek 2x2 tinted
+ * Circle tiles, and dark-glass Voice Pills for friends who can take a call.
  */
 export default function FindScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
-  // tabPress on the current tab too).
   const scrollRef = useRef<ScrollViewInstance>(null);
   useScrollToTop(scrollRef);
+
   const allCharacters = useAppStore((s) => s.characters);
   const blockedIds = useAppStore((s) => s.blockedIds);
   // A character before its release day is hidden from everyone.
@@ -111,6 +86,13 @@ export default function FindScreen() {
   // "Choose" on the Who do you miss? card: which role first (`RoleSheet`), then who (`FamilySheet`).
   const [rolesOpen, setRolesOpen] = useState(false);
 
+  // Focus the search field automatically whenever the user opens search from the header lens.
+  useEffect(() => {
+    if (!searching) return;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [searching]);
+
   const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
   const shown = useMemo(
@@ -122,14 +104,18 @@ export default function FindScreen() {
   const results = useMemo(
     () =>
       q
-        ? shown.filter(
-            (c) =>
+        ? shown.filter((c) => {
+            const loc = localCharacter(c);
+            return (
               c.name.toLowerCase().includes(q) ||
               c.handle.toLowerCase().includes(q) ||
               c.series?.toLowerCase().includes(q) ||
+              loc.relation?.toLowerCase().includes(q) ||
+              loc.greeting?.toLowerCase().includes(q) ||
               c.tags.some((tag) => tag.includes(q)) ||
-              localCharacter(c).tags.some((tag) => tag.toLowerCase().includes(q)),
-          )
+              loc.tags.some((tag) => tag.toLowerCase().includes(q))
+            );
+          })
         : [],
     [shown, q],
   );
@@ -138,13 +124,11 @@ export default function FindScreen() {
   // The hour, read again on each visit: the friend it belongs to leads the row (audit §8.2.4).
   const [hour, setHour] = useState(() => new Date().getHours());
   useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
-  // New releases first; without any, one face from each world keeps the row alive. The friend of the
-  // hour (morning Sam, afternoon Caleb, evening Milo, after midnight Mia) opens it, as on the first run.
+  // New releases first; without any, one face from each circle keeps the row alive.
   const featured = useMemo(() => {
     const fresh = shown
       .filter((c) => isNewCharacter(c, Date.now()))
       .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!));
-    // A character still waiting for their art (docs/worlds-plan.md) has no scene to show here.
     const row = (fresh.length > 0 ? fresh : groups.map((g) => g.characters[0])).filter((c) => !!c && !!heroOf(c));
     return leadFirst(row, (c) => c.id, partOfDay(hour), shown.filter((c) => !!heroOf(c)));
   }, [shown, groups, hour]);
@@ -170,25 +154,34 @@ export default function FindScreen() {
     [recentlyViewed, characters],
   );
 
-  const open = (c: Character) => {
-    rememberViewed(c.id);
-    if (q) rememberSearch(query);
-    router.push(`/character/${c.id}`);
-  };
+  const open = useCallback(
+    (c: Character) => {
+      rememberViewed(c.id);
+      if (q) rememberSearch(query);
+      router.push(`/character/${c.id}`);
+    },
+    [rememberViewed, rememberSearch, q, query, router],
+  );
   const closeSearch = () => {
     setQuery('');
     setSearching(false);
     Keyboard.dismiss();
   };
-  const sayHi = (c: Character) => {
-    const chat = chatOf.get(c.id);
-    if (chat) router.push(`/chat/${chat}`);
-    else early.add(c);
-  };
-  const openWorld = (g: CharacterGroup) => {
-    if (q) rememberSearch(query);
-    router.push({ pathname: '/world/[series]', params: { series: g.series } });
-  };
+  const sayHi = useCallback(
+    (c: Character) => {
+      const chat = chatOf.get(c.id);
+      if (chat) router.push(`/chat/${chat}`);
+      else early.add(c);
+    },
+    [chatOf, router, early],
+  );
+  const openWorld = useCallback(
+    (g: CharacterGroup) => {
+      if (q) rememberSearch(query);
+      router.push({ pathname: '/world/[series]', params: { series: g.series } });
+    },
+    [q, query, rememberSearch, router],
+  );
 
   const openFamily = (c: Character) => {
     const chat = chatOf.get(c.id);
@@ -202,37 +195,39 @@ export default function FindScreen() {
   };
 
   const page = Math.min(width, MAX_WIDTH);
-  // A new character's card leaves the next one peeking, so the row reads as a row.
-  const featureWidth = Math.round(Math.min(page * 0.74, 300));
-  const featureHeight = Math.round(featureWidth * 1.24);
-  const folderWidth = Math.floor((page - space.lg * 2 - space.md) / 2);
+  // A featured card leaves the next one peeking, so the horizontal carousel reads immediately.
+  const featureWidth = Math.round(Math.min(page * 0.78, 304));
+  const featureHeight = Math.round(featureWidth * 1.26);
+  const tileWidth = Math.floor((page - space.lg * 2 - space.md) / 2);
 
   return (
     <Screen background={ink.ground}>
-      {searching ? null : (
+      {searching ? (
+        <View style={styles.searchRow}>
+          <SearchBar
+            tone="light"
+            inputRef={inputRef}
+            value={query}
+            onChangeText={setQuery}
+            onFocus={() => setSearching(true)}
+            onSubmit={() => rememberSearch(query)}
+            placeholder={t('find.searchPlaceholder')}
+            style={styles.search}
+          />
+          <GlassButton icon="close" accessibilityLabel={t('find.closeSearch')} onPress={closeSearch} />
+        </View>
+      ) : (
         <View style={styles.head}>
           <InkText variant="display" style={styles.title}>
             {t('find.title')}
           </InkText>
-          <GlassButton icon="add" accessibilityLabel={t('a11y.createCharacter')} onPress={() => router.push('/create-character')} />
+          <View style={styles.headActions}>
+            <GlassButton icon="search" accessibilityLabel={t('common.search')} onPress={() => setSearching(true)} />
+            <GlassButton icon="add" accessibilityLabel={t('a11y.createCharacter')} onPress={() => router.push('/create-character')} />
+          </View>
         </View>
       )}
 
-      <View style={styles.searchRow}>
-        <SearchBar
-          tone="light"
-          inputRef={inputRef}
-          value={query}
-          onChangeText={setQuery}
-          onFocus={() => setSearching(true)}
-          onSubmit={() => rememberSearch(query)}
-          placeholder={t('find.searchPlaceholder')}
-          style={styles.search}
-        />
-        {searching ? (
-          <GlassButton icon="close" accessibilityLabel={t('find.closeSearch')} onPress={closeSearch} />
-        ) : null}
-      </View>
       <WhoSwitch value={who} onChange={setWho} />
 
       {q && results.length === 0 && worldHits.length === 0 ? (
@@ -267,51 +262,61 @@ export default function FindScreen() {
             />
           ) : (
             <>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={featureWidth + space.md}
-                decelerationRate="fast"
-                contentContainerStyle={styles.featuredRow}>
-                {featured.map((c) => (
-                  <Feature
-                    key={c.id}
-                    character={c}
-                    width={featureWidth}
-                    height={featureHeight}
-                    isNew={!!early.fresh(c)}
-                    onOpen={() => open(c)}
-                    onSayHi={() => sayHi(c)}
-                  />
-                ))}
-              </ScrollView>
+              {featured.length > 0 ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  snapToInterval={featureWidth + space.md}
+                  decelerationRate="fast"
+                  contentContainerStyle={styles.featuredRow}>
+                  {featured.map((c) => (
+                    <CinemaFeatureCard
+                      key={c.id}
+                      character={c}
+                      width={featureWidth}
+                      height={featureHeight}
+                      isNew={!!early.fresh(c)}
+                      onOpen={() => open(c)}
+                      onSayHi={() => sayHi(c)}
+                    />
+                  ))}
+                </ScrollView>
+              ) : null}
 
-              <Section title={t('find.missTitle')} />
+              <Section title={t('find.missTitle')} first={featured.length === 0} />
               <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
 
-              <Section title={t('find.worlds')} count={groups.length} />
-              <View style={styles.folders}>
-                {groups.map((g, i) => (
-                  <WorldFolder key={g.series} group={g} index={i} width={folderWidth} onOpen={openWorld} />
-                ))}
-              </View>
+              {groups.length > 0 ? (
+                <>
+                  <Section title={t('find.worlds')} count={groups.length} />
+                  <View style={styles.circles}>
+                    {groups.map((g, i) => (
+                      <CircleTile key={g.series} group={g} index={i} width={tileWidth} onOpen={openWorld} />
+                    ))}
+                  </View>
+                </>
+              ) : null}
 
               {callable.length > 0 ? (
                 <>
-                  <Section title={t('find.talkNow')} />
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.faces}>
+                  <Section title={t('find.talkNow')} count={callable.length} />
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.voiceRow}>
                     {callable.map((c) => (
                       <PressableScale
                         key={c.id}
-                        scaleTo={0.94}
+                        scaleTo={0.95}
                         accessibilityRole="button"
-                        accessibilityLabel={c.name}
+                        accessibilityLabel={`${c.name}, ${t('find.canCall')}`}
                         onPress={() => open(c)}
-                        style={styles.face}>
-                        <CharacterAvatar character={c} size={72} ring ringColor={WHITE} verified badge="call" />
-                        <InkText variant="caption" color={ink.text} lines={1}>
-                          {c.name.split(' ')[0]}
+                        style={styles.voicePill}>
+                        <View style={styles.voiceAvatarWrap}>
+                          <CharacterAvatar character={c} size={36} />
+                          <View style={styles.voiceDot} pointerEvents="none" />
+                        </View>
+                        <InkText variant="subStrong" color={ink.text} lines={1}>
+                          {shortName(c.name)}
                         </InkText>
+                        <SFIcon ios="phone.fill" icon="call-outline" size={14} color={ink.text2} />
                       </PressableScale>
                     ))}
                   </ScrollView>
@@ -347,14 +352,18 @@ export default function FindScreen() {
   );
 }
 
-/** A section's heading in the serif, with an optional count on the right. */
+/** A section's heading in the serif, with an optional tabular count on the right. */
 function Section({ title, count, first }: { title: string; count?: number; first?: boolean }) {
   return (
     <View style={[styles.sectionRow, first && styles.sectionRowFirst]}>
       <InkText variant="card" accessibilityRole="header" style={styles.section}>
         {title}
       </InkText>
-      {count != null ? <InkText variant="footnote">{count}</InkText> : null}
+      {count != null ? (
+        <InkText variant="footnote" color={ink.text3} style={styles.tabular}>
+          {count}
+        </InkText>
+      ) : null}
     </View>
   );
 }
@@ -363,203 +372,6 @@ function Section({ title, count, first }: { title: string; count?: number; first
 function WhoSwitch({ value, onChange }: { value: Who; onChange: (who: Who) => void }) {
   const { t } = useTranslation();
   return <InkSegmented options={WHO.map((option) => ({ value: option, label: t(`find.who.${option}`) }))} value={value} onChange={onChange} style={styles.who} />;
-}
-
-/**
- * One new character: their scene as a tall card, a tilted "New" sticker, the name big and the world
- * under it, and a clear glass "Say hi" the picture shows through (the owner's pick; a frosted
- * capsule was tried and reverted, D95).
- */
-function Feature({
-  character,
-  width,
-  height,
-  isNew,
-  onOpen,
-  onSayHi,
-}: {
-  character: Character;
-  width: number;
-  height: number;
-  isNew: boolean;
-  onOpen: () => void;
-  onSayHi: () => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <View style={[styles.feature, { width, height }]}>
-      <PressableScale
-        scaleTo={0.98}
-        accessibilityRole="button"
-        accessibilityLabel={character.name}
-        onPress={onOpen}
-        style={StyleSheet.absoluteFill}>
-        <Image
-          source={heroOf(character)}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={HEROES[character.id] ? undefined : portraitPosition(character.id, width / height)}
-          transition={150}
-        />
-        <LinearGradient colors={SCRIM} style={styles.featureScrim} />
-        {isNew ? (
-          <View style={styles.newSticker}>
-            <InkText variant="caption" color={colors.onMedia}>
-              {t('find.newBadge')}
-            </InkText>
-          </View>
-        ) : null}
-        <View style={styles.featureFoot}>
-          <InkText variant="title" color={colors.onMedia} lines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
-            {character.name}
-          </InkText>
-          {character.series ? (
-            <InkText variant="footnote" color={colors.onMediaMuted} lines={1} style={styles.featureWorld}>
-              {phrase(character.series)}
-            </InkText>
-          ) : null}
-        </View>
-      </PressableScale>
-      {/* A sibling, not a child: a button inside a button is invalid on web. Clear glass: on iOS a light
-          blur behind it keeps the words readable on a bright picture, which still shows through. */}
-      <PressableScale
-        scaleTo={0.92}
-        accessibilityRole="button"
-        accessibilityLabel={`${t('find.sayHi')}, ${character.name}`}
-        onPress={onSayHi}
-        hitSlop={SAY_HI_SLOP}
-        style={styles.sayHi}>
-        {Platform.OS === 'ios' ? <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} /> : null}
-        <Ionicons name="hand-left" size={16} color={WHITE} />
-        <InkText variant="subStrong" color={colors.onMedia}>
-          {t('find.sayHi')}
-        </InkText>
-      </PressableScale>
-    </View>
-  );
-}
-
-/** Where the three faces sit in a folder (share of its width / height) and how far a press fans them. */
-const CARDS = [
-  { left: 0.06, top: 0.1, rotate: -9, fanX: -0.08, fanY: -0.16, fanRotate: -16 },
-  { left: 0.27, top: 0.02, rotate: 1, fanX: 0, fanY: -0.24, fanRotate: 1 },
-  { left: 0.48, top: 0.09, rotate: 10, fanX: 0.08, fanY: -0.16, fanRotate: 16 },
-] as const;
-/** The middle face is drawn last, on top of the other two. */
-const DRAW_ORDER = [0, 2, 1] as const;
-
-/**
- * A world as a folder in a deep Ink tint (design-audit §8.1): a back panel with its tab, three of its
- * people as cards peeking out, and the front with the world's name in the serif and its head count. A press fans the cards up and out, a release
- * settles them; the tap opens the world. Memoised: Find re-renders on every keystroke of a search.
- */
-const WorldFolder = memo(function WorldFolder({
-  group,
-  index,
-  width,
-  onOpen,
-}: {
-  group: CharacterGroup;
-  index: number;
-  width: number;
-  onOpen: (group: CharacterGroup) => void;
-}) {
-  const { t } = useTranslation();
-  const [front, back] = tileTint(index);
-  const height = Math.round(width * 0.92);
-  const card = Math.round(width * 0.46);
-  const fan = useSharedValue(0);
-  const name = phrase(group.series);
-  const faces = group.characters.slice(0, 3);
-  const press = useAnimatedStyle(() => ({ transform: [{ scale: 1 - fan.value * 0.03 }] }));
-
-  return (
-    <Pressable
-      onPress={() => onOpen(group)}
-      onPressIn={() => {
-        fan.value = withSpring(1, FAN);
-      }}
-      onPressOut={() => {
-        fan.value = withSpring(0, FAN);
-      }}
-      accessibilityRole="button"
-      accessibilityLabel={t('find.openWorld', { world: name })}>
-      <Animated.View style={[{ width, height }, press]}>
-        <View style={[styles.folderBack, { backgroundColor: back, top: height * 0.14 }]}>
-          <View style={[styles.folderTab, { backgroundColor: back, width: width * 0.46 }]} />
-        </View>
-        {DRAW_ORDER.map((i) =>
-          faces[i] ? (
-            <FolderCard key={faces[i].id} character={faces[i]} index={i} size={card} width={width} height={height} fan={fan} />
-          ) : null,
-        )}
-        <View style={[styles.folderFront, { backgroundColor: front, height: height * 0.52 }]}>
-          {/* The name sits on a fixed pocket under the faces: one line that shrinks, never rising over the photos. */}
-          <InkText variant="cardSmall" lines={1} adjustsFontSizeToFit minimumFontScale={0.6} maxFontSizeMultiplier={1.3}>
-            {name}
-          </InkText>
-          {/* How many people live there, with the glyph the world page uses. */}
-          <View style={styles.folderCount}>
-            <Ionicons name="person" size={11} color={ink.text2} />
-            <InkText variant="caption">{group.characters.length}</InkText>
-          </View>
-        </View>
-      </Animated.View>
-    </Pressable>
-  );
-});
-
-function FolderCard({
-  character,
-  index,
-  size,
-  width,
-  height,
-  fan,
-}: {
-  character: Character;
-  index: number;
-  size: number;
-  width: number;
-  height: number;
-  fan: SharedValue<number>;
-}) {
-  const spot = CARDS[index];
-  // A creation's photo can be gone from the phone: fall back to its initial, as avatars do.
-  const [broken, setBroken] = useState(false);
-  const source = broken ? undefined : imageOf(character);
-  const hue = friendColor(character.id);
-  const cardHeight = Math.round((size * 4) / 3);
-  const move = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: fan.value * spot.fanX * width },
-      { translateY: fan.value * spot.fanY * cardHeight },
-      { rotate: `${interpolate(fan.value, [0, 1], [spot.rotate, spot.fanRotate])}deg` },
-    ],
-  }));
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={[styles.folderCard, { left: spot.left * width, top: spot.top * height, width: size, height: cardHeight }, move]}>
-      {source ? (
-        <Image
-          source={source}
-          style={styles.folderImage}
-          contentFit="cover"
-          transition={120}
-          recyclingKey={character.id}
-          onError={() => setBroken(true)}
-        />
-      ) : (
-        // A creation without a picture yet: its initial on the friend's own hue, never a blank card.
-        <View style={[styles.folderImage, styles.folderInitial, { backgroundColor: hue.fill }]}>
-          <InkText variant="title" color={hue.ink} maxFontSizeMultiplier={1}>
-            {character.name.trim().charAt(0).toUpperCase() || '?'}
-          </InkText>
-        </View>
-      )}
-    </Animated.View>
-  );
 }
 
 /** Search results, best match first (HIG: "provide the most relevant search results first"). */
@@ -590,7 +402,7 @@ function Results({
               accessibilityLabel={top.name}
               onPress={() => onOpen(top)}
               style={styles.topOpen}>
-              <CharacterAvatar character={top} size={72} />
+              <CharacterAvatar character={top} size={68} />
               <View style={styles.flex}>
                 <InkText variant="cardSmall" lines={1}>
                   {top.name}
@@ -696,9 +508,9 @@ function Recent({
                 accessibilityLabel={c.name}
                 onPress={() => onOpen(c)}
                 style={styles.viewedItem}>
-                <CharacterAvatar character={c} size={68} ring ringColor={WHITE} />
+                <CharacterAvatar character={c} size={64} ring ringColor={ink.edge} />
                 <InkText variant="caption" color={ink.text} lines={1}>
-                  {c.name.split(' ')[0]}
+                  {shortName(c.name)}
                 </InkText>
               </PressableScale>
             ))}
@@ -751,28 +563,25 @@ function WorldLine({ series }: { series: string }) {
   );
 }
 
-/** A soft shadow on iOS only: Android elevation would lift a card over what is drawn after it. */
-const softShadow = Platform.select({
-  ios: { shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 7, shadowOffset: { width: 0, height: 5 } },
-  default: {},
-});
-
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
+  tabular: { fontVariant: ['tabular-nums'] },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: space.sm,
     paddingHorizontal: space.lg,
     paddingTop: space.sm,
   },
+  headActions: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   title: { flexShrink: 1 },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
     marginHorizontal: space.lg,
-    marginTop: space.md,
+    marginTop: space.sm,
   },
   search: { flex: 1, minWidth: 0, height: 44, borderRadius: inkRadius.pill },
   who: { marginHorizontal: space.lg, marginTop: space.md },
@@ -788,79 +597,47 @@ const styles = StyleSheet.create({
   sectionRowFirst: { marginTop: 0 },
   section: { flexShrink: 1 },
   featuredRow: { paddingHorizontal: space.lg, gap: space.md },
-  feature: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: ink.card },
-  featureScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
-  // "New" in clear glass on the picture, as the Say hi button.
-  newSticker: {
-    position: 'absolute',
-    top: 14,
-    left: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: inkRadius.pill,
-    backgroundColor: colors.onMediaGlass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-  },
-  featureFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 16 + SAY_HI_H + 10 },
-  featureWorld: { marginTop: 2 },
-  // Clear glass on a photo (HIG: the clear variant is for components over rich media).
-  sayHi: {
-    position: 'absolute',
-    left: space.lg,
-    bottom: 16,
-    height: SAY_HI_H,
-    paddingHorizontal: 16,
-    borderRadius: inkRadius.pill,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: colors.onMediaGlass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-  },
-  // Worlds: two folders a row; the gap above each lets the fanned cards rise without hitting the row above.
-  folders: {
+  circles: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    columnGap: space.md,
-    rowGap: 28,
-    paddingTop: 10,
+    gap: space.md,
     paddingHorizontal: space.lg,
   },
-  folderBack: { position: 'absolute', left: 0, right: 0, bottom: 0, borderRadius: inkRadius.chip, borderTopLeftRadius: 0 },
-  folderTab: { position: 'absolute', left: 0, top: -12, height: 22, borderTopLeftRadius: 12, borderTopRightRadius: 14 },
-  folderCard: {
-    position: 'absolute',
-    borderRadius: 11,
-    borderWidth: 3,
-    borderColor: WHITE,
+  voiceRow: { paddingHorizontal: space.lg, gap: 10 },
+  voicePill: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingLeft: 6,
+    paddingRight: 14,
+    paddingVertical: 6,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
     backgroundColor: ink.card,
-    ...softShadow,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
-  folderImage: { flex: 1, borderRadius: 8 },
-  folderInitial: { alignItems: 'center', justifyContent: 'center' },
-  folderFront: {
+  voiceAvatarWrap: { position: 'relative' },
+  voiceDot: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: inkRadius.chip,
-    paddingHorizontal: 12,
-    paddingBottom: 10,
-    justifyContent: 'flex-end',
-    gap: 2,
+    right: -1,
+    bottom: -1,
+    width: 11,
+    height: 11,
+    borderRadius: inkRadius.pill,
+    backgroundColor: systemColors.green,
+    borderWidth: 2,
+    borderColor: ink.card,
   },
-  folderCount: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  faces: { paddingHorizontal: space.lg, gap: space.lg },
-  face: { width: 76, alignItems: 'center', gap: 6 },
   topHit: {
     marginHorizontal: space.lg,
     padding: 14,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
@@ -878,6 +655,8 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     overflow: 'hidden',
   },
   row: {
