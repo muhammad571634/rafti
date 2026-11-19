@@ -6,6 +6,7 @@
 - **version_kept** (0z285): writing on after browsing a reply's versions logs which one of how many (`analytics-diff.ts`).
 - **Seen on the A51** (OTA `7af13f32`): Milo's chat rewound to "come over to the bar" (confirm "Rewind? 4 later messages go to Branches"), More showed Branches, the sheet listed "You: cant go out tonight…, 4 messages, Nov 19 12:31", Switch brought all four back (voice note and reaction too). The non-red change went out after that check.
 - **Checked**: tsc 0, `npm test` 1062/1062, `check:locales`.
+- **Analytics fix**: lines a branch brings back (older than 2 min) no longer count as `message_sent` / `next_shown` (seen on the switch at 12:32). A bubble missing after the test was the owner's own delete, not a loss.
 
 ### 0z284. START HERE: a visit the friend promises is kept in the story, PolyBuzz's way (owner's yes, 2026-11-19, Claude 1, Opus 5.5). NEXT: owner deploys the server
 - **Owner**: "ha tuzatish kerak, polybuzz kabi qilib qo'y" on the 0z283 note (Milo told a scared user "I'm coming over" and nothing followed).

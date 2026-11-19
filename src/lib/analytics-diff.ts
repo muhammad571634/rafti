@@ -18,6 +18,7 @@ interface WatchedMessage {
   rating?: 'up' | 'down';
   card?: string;
   next?: string;
+  createdAt?: string;
 }
 
 /** The part of the store this reads (structural, so the store's own type fits). */
@@ -41,8 +42,10 @@ export type Tracked = { [N in EventName]: { name: N; props?: PropsOf<N> } }[Even
 const TAIL = 30;
 /** More new lines of yours than this in one change is a restore or an import, not typing. */
 const BURST = 3;
+/** A line older than this that appears is coming back (a branch switched in, a restore), not new. */
+const BACK_MS = 2 * 60_000;
 
-export function eventsFromChange(prev: WatchedState, next: WatchedState): Tracked[] {
+export function eventsFromChange(prev: WatchedState, next: WatchedState, now = Date.now()): Tracked[] {
   const out: Tracked[] = [];
 
   if (prev.messages !== next.messages) {
@@ -59,6 +62,7 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState): Tracke
       const sent: Tracked[] = [];
       for (const m of list.slice(-TAIL)) {
         const was = old.get(m.id);
+        if (!was && m.createdAt && now - Date.parse(m.createdAt) > BACK_MS) continue;
         if (!was) {
           if (m.author === 'me' && !m.card && m.kind !== 'system' && m.kind !== 'call') {
             sent.push({ name: 'message_sent', props: { kind: m.kind, group, ...(character ? { character } : {}) } });

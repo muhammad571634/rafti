@@ -55,6 +55,12 @@ describe('eventsFromChange', () => {
     assert.deepEqual(names(base, { ...base, messages: { conv_kai: [...page, ...(base.messages.conv_kai ?? [])] } }), []);
   });
 
+  it('does not count lines a branch brings back', () => {
+    const old = new Date(Date.now() - 3_600_000).toISOString();
+    const back = { ...base, messages: { conv_kai: [...(base.messages.conv_kai ?? []), { id: 'b1', author: 'me' as const, kind: 'text', createdAt: old }, { id: 'b2', author: 'them' as const, kind: 'text', next: 'quiz', createdAt: old }] } };
+    assert.deepEqual(names(base, back), []);
+  });
+
   it('sees a failed reply and a rating, once each', () => {
     const sent = { ...base, messages: { conv_kai: [{ id: 'm1', author: 'them' as const, kind: 'text' }, { id: 'm2', author: 'me' as const, kind: 'text' }] } };
     const failed = { ...sent, messages: { conv_kai: [{ id: 'm1', author: 'them' as const, kind: 'text', rating: 'up' as const }, { id: 'm2', author: 'me' as const, kind: 'text', failed: true }] } };
