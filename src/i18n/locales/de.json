@@ -1178,6 +1178,8 @@
     "openingPlaceholder": "*blickt lächelnd vom Tresen auf*",
     "quirk": "Eigenart",
     "quirkPlaceholder": "Eine kleine Marotte, die sie menschlich macht",
+    "scenario": "Szene",
+    "scenarioPlaceholder": "Wo ihr seid und was passiert, wenn der Chat beginnt",
     "height": "Größe",
     "heightPlaceholder": "cm",
     "backstory": "Hintergrund",

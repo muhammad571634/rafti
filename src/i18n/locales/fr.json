@@ -1178,6 +1178,8 @@
     "openingPlaceholder": "*lève les yeux du comptoir en souriant*",
     "quirk": "Manie",
     "quirkPlaceholder": "Une petite habitude qui les rend vivants",
+    "scenario": "Scène",
+    "scenarioPlaceholder": "Où vous êtes et ce qui se passe quand la discussion commence",
     "height": "Taille",
     "heightPlaceholder": "cm",
     "backstory": "Passé",

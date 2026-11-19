@@ -1152,6 +1152,8 @@
     "openingPlaceholder": "*從櫃檯抬起頭，唇角帶著溫和的笑意*",
     "quirk": "獨特小習慣",
     "quirkPlaceholder": "一個讓角色更加鮮活生動的微小習慣",
+    "scenario": "場景",
+    "scenarioPlaceholder": "聊天開始時，你們在哪裡、正在發生什麼",
     "height": "身高",
     "heightPlaceholder": "公分",
     "backstory": "身世背景",

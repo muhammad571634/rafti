@@ -1152,6 +1152,8 @@
     "openingPlaceholder": "*カウンターから顔を上げ、優しく微笑みかける*",
     "quirk": "口癖や癖",
     "quirkPlaceholder": "人間らしさを感じさせるちょっとした習慣",
+    "scenario": "シーン",
+    "scenarioPlaceholder": "チャットが始まるとき、二人はどこで何が起きているか",
     "height": "身長",
     "heightPlaceholder": "cm",
     "backstory": "生い立ち",

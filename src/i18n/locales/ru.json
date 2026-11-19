@@ -1242,6 +1242,8 @@
     "openingPlaceholder": "*поднимает взгляд от стойки и мягко улыбается*",
     "quirk": "Изюминка",
     "quirkPlaceholder": "Маленькая привычка, которая делает их живыми",
+    "scenario": "Сцена",
+    "scenarioPlaceholder": "Где вы и что происходит, когда начинается чат",
     "height": "Рост",
     "heightPlaceholder": "см",
     "backstory": "Предыстория",

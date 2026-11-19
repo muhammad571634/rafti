@@ -1178,6 +1178,8 @@
     "openingPlaceholder": "*levanta la mirada sonriendo desde el mostrador*",
     "quirk": "Peculiaridad",
     "quirkPlaceholder": "Un pequeño hábito que lo haga sentir real",
+    "scenario": "Escena",
+    "scenarioPlaceholder": "Dónde estáis y qué pasa cuando empieza el chat",
     "height": "Estatura",
     "heightPlaceholder": "cm",
     "backstory": "Historia previa",

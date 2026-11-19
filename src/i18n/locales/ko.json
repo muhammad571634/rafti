@@ -1152,6 +1152,8 @@
     "openingPlaceholder": "*카운터에서 고개를 들며 미소를 짓는다*",
     "quirk": "말투나 버릇",
     "quirkPlaceholder": "사람다운 느낌을 주는 사소한 습관",
+    "scenario": "장면",
+    "scenarioPlaceholder": "채팅이 시작될 때 두 사람이 어디에 있고 무슨 일이 일어나는지",
     "height": "키",
     "heightPlaceholder": "cm",
     "backstory": "배경 이야기",
