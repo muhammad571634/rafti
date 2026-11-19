@@ -1696,7 +1696,12 @@
       "call": "Cuộc gọi",
       "quiz": "Quiz cặp đôi",
       "arc": "Chương mới"
-    }
+    },
+    "withFriend": "cùng {{name}}",
+    "metOn": "Từ {{date}}",
+    "messageFriend": "Nhắn {{name}}",
+    "monthCircle": "Vòng tròn {{month}}",
+    "mostWith": "Nhiều nhất {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Hồ sơ",

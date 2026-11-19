@@ -1696,7 +1696,12 @@
       "call": "통화",
       "quiz": "커플 퀴즈",
       "arc": "새 챕터"
-    }
+    },
+    "withFriend": "{{name}}와 함께",
+    "metOn": "{{date}}부터",
+    "messageFriend": "{{name}}에게 메시지",
+    "monthCircle": "{{month}} 대화 서클",
+    "mostWith": "최다 {{name}} · {{percent}}"
   },
   "profile": {
     "title": "프로필",

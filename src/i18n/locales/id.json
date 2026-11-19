@@ -1696,7 +1696,12 @@
       "call": "Panggilan",
       "quiz": "Kuis pasangan",
       "arc": "Bab baru"
-    }
+    },
+    "withFriend": "bersama {{name}}",
+    "metOn": "Sejak {{date}}",
+    "messageFriend": "Pesan ke {{name}}",
+    "monthCircle": "Lingkaran {{month}}",
+    "mostWith": "Terbanyak {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Profil",

@@ -1727,7 +1727,12 @@
       "call": "Appel",
       "quiz": "Quiz de couple",
       "arc": "Nouveau chapitre"
-    }
+    },
+    "withFriend": "avec {{name}}",
+    "metOn": "Depuis {{date}}",
+    "messageFriend": "Écrire à {{name}}",
+    "monthCircle": "Cercle · {{month}}",
+    "mostWith": "Surtout {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Profil",

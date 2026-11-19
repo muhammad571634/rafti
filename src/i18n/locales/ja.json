@@ -1696,7 +1696,12 @@
       "call": "通話",
       "quiz": "カップルクイズ",
       "arc": "新しい章"
-    }
+    },
+    "withFriend": "{{name}}と",
+    "metOn": "{{date}}〜",
+    "messageFriend": "{{name}}にメッセージ",
+    "monthCircle": "{{month}}のつながり",
+    "mostWith": "最多 {{name}} · {{percent}}"
   },
   "profile": {
     "title": "プロフィール",

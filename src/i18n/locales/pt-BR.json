@@ -1727,7 +1727,12 @@
       "call": "Chamada",
       "quiz": "Quiz de casal",
       "arc": "Novo capítulo"
-    }
+    },
+    "withFriend": "com {{name}}",
+    "metOn": "Desde {{date}}",
+    "messageFriend": "Mensagem para {{name}}",
+    "monthCircle": "Círculo · {{month}}",
+    "mostWith": "Mais com {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Perfil",

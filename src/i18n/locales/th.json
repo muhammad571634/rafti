@@ -1696,7 +1696,12 @@
       "call": "โทร",
       "quiz": "ควิซคู่รัก",
       "arc": "บทใหม่"
-    }
+    },
+    "withFriend": "กับ {{name}}",
+    "metOn": "ตั้งแต่ {{date}}",
+    "messageFriend": "แชทกับ {{name}}",
+    "monthCircle": "วงสนทนา {{month}}",
+    "mostWith": "มากสุด {{name}} · {{percent}}"
   },
   "profile": {
     "title": "โปรไฟล์",

@@ -23,6 +23,17 @@ export const ink = {
   line: 'rgba(84,84,88,0.6)',
   /** The faint rim that keeps a card's edge on the ground. */
   edge: 'rgba(255,255,255,0.08)',
+  /** Clear dark glass over photography (hero actions, voice pills, header buttons on photos). */
+  photoGlass: 'rgba(20,20,26,0.48)',
+  photoGlassRim: 'rgba(255,255,255,0.26)',
+  /** Floating metadata badge over photography (level, mood). */
+  photoBadge: 'rgba(9,9,13,0.52)',
+  photoBadgeRim: 'rgba(255,255,255,0.16)',
+  /** Subtle progress bar track on cards and over photos. */
+  hairlineFill: 'rgba(255,255,255,0.12)',
+  /** Calm night rose pill for bond streaks. */
+  streakFill: 'rgba(255,140,192,0.16)',
+  streakText: '#FFA8D0',
   text: '#FFFFFF',
   /** Secondary text: 6.4:1 on the ground (polish §2; Apple's 0.6 read too faint on the A51). */
   text2: 'rgba(235,235,245,0.62)',
@@ -102,6 +113,13 @@ export const inkType = StyleSheet.create({
   footnoteStrong: system(13, 17, '600', ink.text2),
   /** Capsules, icon labels (Caption 1). */
   caption: system(12, 16, '600', ink.text2),
+  /** Editorial serif italic line: a friend's quote in a moment, an opening hook, a voice caption. */
+  quote: {
+    fontFamily: fonts.serifItalic,
+    fontSize: 15,
+    lineHeight: 21,
+    color: 'rgba(255,255,255,0.74)',
+  },
 });
 
 export type InkRole = keyof typeof inkType;

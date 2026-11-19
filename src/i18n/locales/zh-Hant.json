@@ -1696,7 +1696,12 @@
       "call": "通話",
       "quiz": "情侶測驗",
       "arc": "新篇章"
-    }
+    },
+    "withFriend": "與{{name}}",
+    "metOn": "相識於 {{date}}",
+    "messageFriend": "傳訊給{{name}}",
+    "monthCircle": "{{month}}互動圈",
+    "mostWith": "最常聊 {{name}} · {{percent}}"
   },
   "profile": {
     "title": "個人檔案",

@@ -1801,7 +1801,12 @@
       "call": "Звонок",
       "quiz": "Тест для пары",
       "arc": "Новая глава"
-    }
+    },
+    "withFriend": "с {{name}}",
+    "metOn": "С {{date}}",
+    "messageFriend": "Написать {{name}}",
+    "monthCircle": "Круг · {{month}}",
+    "mostWith": "Больше с {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Профиль",

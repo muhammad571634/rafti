@@ -1,30 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type StyleProp, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { PressableScale, Txt } from '@/components/ui';
+import { InkText } from '@/components/ink';
+import { PressableScale } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
-import { colors, radius, space } from '@/theme';
-import { ink, inkRadius, inkType } from '@/theme/ink';
+import { colors, radius, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 export interface PlanCalendarProps {
   /** Selected day key */
   value: string;
   onChange: (key: string) => void;
   today: string;
-  /** Days with plans */
+  /** Days with plans or one-time wake-ups */
   marked: ReadonlySet<string>;
-  /** Days you talked with this friend: a dot in their colour. */
+  /** Days you talked with this friend: a filled dot in their colour. */
   talked?: ReadonlySet<string>;
-  /** The friend's colour for the talked dot (their disc's colour), else a neutral grey. */
+  /** The friend's colour for the talked dot, else a neutral grey. */
   talkColor?: string;
-  /** The section's serif title ("Your days"); without it the month leads the row. */
+  /** The section's serif title ("Your days") drawn inside the card header. */
   title?: string;
-  /** A peach "+" beside the month; Us moved it to its header, so it is optional. */
+  /** Optional peach "+" beside the month controls. */
   onAdd?: () => void;
+  /** Optional inline footer rendered below a hairline inside the same card (selected day's plans). */
+  footer?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -32,21 +35,19 @@ export interface PlanCalendarProps {
 const GROW = LinearTransition.duration(260);
 
 /**
- * "Your days" as the owner's reference (2026-11-13, an iOS calendar): the month and year with ‹ ›
- * on one line, the weekday letters, then the week as tall capsules, each day's dots on top and its
- * number below, the picked day's number in a filled circle and today's in the brand colour. Tapping
- * the month opens the whole month in the same capsules (and folds it back); ‹ › step a week, or a
- * month while it is open. Dots (HIG Color: shape as well as colour): a filled dot in the friend's
- * colour for a day you talked, a ring for a plan or a wake-up (grey once it has passed).
+ * Unified Week / Month & Plans card on Us (approved Ink+ prototype): starts as a quiet 1-row
+ * week strip so the screen breathes, expands into the full month grid when the month pill is
+ * tapped, keeps ‹ › stepping for both modes, and optionally hosts the picked day's plans inline
+ * under a hairline separator inside the same calm Ink card.
  */
-export function PlanCalendar({ value, onChange, today, marked, talked, talkColor, title, onAdd, style }: PlanCalendarProps) {
+export function PlanCalendar({ value, onChange, today, marked, talked, talkColor, title, onAdd, footer, style }: PlanCalendarProps) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   /** The day the closed view's week is built round; the arrows move it a week at a time. */
   const [anchor, setAnchor] = useState(value);
   const [month, setMonth] = useState(() => startOfMonth(dateFromKey(value)));
 
-  // Picking a day elsewhere (the plan sheet, a moment) brings its week and month in.
+  // Picking a day elsewhere (the plan sheet, a moment, a deep link) brings its week and month in.
   useEffect(() => {
     setAnchor(value);
     const target = startOfMonth(dateFromKey(value));
@@ -56,6 +57,8 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
   const cells = useMemo(() => (open ? monthCells(month) : weekCells(dateFromKey(anchor))), [open, month, anchor]);
   const weekdays = useMemo(() => weekdayNames(i18n.language, 'narrow'), [i18n.language]);
   const shown = open ? month : startOfMonth(dateFromKey(anchor));
+  const monthLabel = shown.toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' });
+  const monthLabelFull = shown.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
 
   const step = (delta: number) => {
     if (open) return setMonth((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
@@ -71,133 +74,230 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
 
   return (
     <View style={[styles.root, style]}>
-      {title ? (
-        <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-          {title}
-        </Text>
-      ) : null}
       <View style={styles.card}>
         <View style={styles.head}>
-          <PressableScale
-            style={styles.toggle}
-            scaleTo={0.97}
-            accessibilityRole="button"
-            accessibilityState={{ expanded: open }}
-            accessibilityLabel={`${shown.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}, ${t(open ? 'us.calendarLess' : 'us.calendarMore')}`}
-            onPress={toggle}>
-            <Txt style={styles.month} lines={1} maxFontSizeMultiplier={1.3}>
-              {shown.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
-            </Txt>
-            <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={14} color={ink.text2} />
-          </PressableScale>
-          <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.prevMonth')} onPress={() => step(-1)}>
-            <Ionicons name="chevron-back" size={18} color={ink.text} />
-          </PressableScale>
-          <PressableScale style={styles.nav} scaleTo={0.88} accessibilityLabel={t('diary.nextMonth')} onPress={() => step(1)}>
-            <Ionicons name="chevron-forward" size={18} color={ink.text} />
-          </PressableScale>
-          {onAdd ? (
-            <PressableScale style={styles.add} scaleTo={0.88} hitSlop={6} accessibilityLabel={t('us.add')} onPress={onAdd}>
-              <Ionicons name="add" size={20} color={colors.textOnPrimary} />
-            </PressableScale>
+          {title ? (
+            <InkText variant="cardSmall" accessibilityRole="header" lines={1} style={styles.title}>
+              {title}
+            </InkText>
           ) : null}
-        </View>
 
-        <View style={styles.row}>
-          {weekdays.map((d, i) => (
-            <Txt key={i} center style={[styles.cell, styles.weekday]} maxFontSizeMultiplier={1.2}>
-              {d}
-            </Txt>
-          ))}
-        </View>
+          <View style={[styles.controls, !title && styles.controlsSpread]}>
+            <PressableScale
+              style={styles.monthPill}
+              scaleTo={0.95}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: open }}
+              accessibilityLabel={`${monthLabelFull}, ${t(open ? 'us.calendarLess' : 'us.calendarMore')}`}
+              onPress={toggle}>
+              <InkText variant="caption" color={ink.text} lines={1} style={styles.monthText}>
+                {monthLabel}
+              </InkText>
+              <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={12} color={ink.text2} />
+            </PressableScale>
 
-        <Animated.View layout={GROW} style={styles.grid}>
-          {cells.map(({ key, inMonth }) => {
-            const selected = inMonth && key === value;
-            const isToday = key === today;
-            const plan = inMonth && marked.has(key);
-            const spoke = inMonth && !!talked?.has(key);
-            return (
-              <PressableScale
-                key={key}
-                style={styles.cell}
-                scaleTo={0.92}
-                disabled={!inMonth}
-                accessibilityLabel={dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
-                accessibilityState={{ selected, disabled: !inMonth }}
-                onPress={() => onChange(key)}>
-                <View style={[styles.capsule, !inMonth && styles.capsuleOut]}>
-                  {/* The dot row keeps its height when empty, so every number sits on one line. */}
-                  <View style={styles.dots}>
-                    {spoke ? <View style={[styles.dot, { backgroundColor: talkColor ?? ink.text2 }]} /> : null}
-                    {plan ? <View style={[styles.dot, key < today ? styles.dotPast : styles.dotPlan]} /> : null}
-                  </View>
-                  {/* Never flattened, and filled from the start: Android drops the corners of a view that
-                      gains its fill later, so the picked day showed as a square (A51, 2026-11-16). */}
-                  <View collapsable={false} style={[styles.num, selected && styles.numOn]}>
-                    <Txt
-                      style={[styles.numText, isToday && !selected && styles.numToday, selected && styles.numTextOn]}
-                      color={!inMonth ? ink.text3 : undefined}
-                      maxFontSizeMultiplier={1.2}>
-                      {dateFromKey(key).getDate()}
-                    </Txt>
-                  </View>
-                </View>
+            <View style={styles.arrows}>
+              <PressableScale style={styles.nav} scaleTo={0.88} hitSlop={7} accessibilityLabel={t('diary.prevMonth')} onPress={() => step(-1)}>
+                <Ionicons name="chevron-back" size={15} color={ink.text} />
               </PressableScale>
-            );
-          })}
+              <PressableScale style={styles.nav} scaleTo={0.88} hitSlop={7} accessibilityLabel={t('diary.nextMonth')} onPress={() => step(1)}>
+                <Ionicons name="chevron-forward" size={15} color={ink.text} />
+              </PressableScale>
+              {onAdd ? (
+                <PressableScale style={styles.add} scaleTo={0.88} hitSlop={6} accessibilityLabel={t('us.add')} onPress={onAdd}>
+                  <Ionicons name="add" size={18} color={colors.textOnPrimary} />
+                </PressableScale>
+              ) : null}
+            </View>
+          </View>
+        </View>
+
+        <Animated.View layout={GROW}>
+          {open ? (
+            <View style={styles.monthWrap}>
+              <View style={styles.weekdayRow}>
+                {weekdays.map((d, i) => (
+                  <InkText key={i} variant="caption" color={ink.text3} center style={[styles.cell, styles.weekday]}>
+                    {d}
+                  </InkText>
+                ))}
+              </View>
+              <View style={styles.monthGrid}>
+                {cells.map(({ key, inMonth }) => {
+                  const selected = inMonth && key === value;
+                  const isToday = key === today;
+                  const plan = inMonth && marked.has(key);
+                  const spoke = inMonth && !!talked?.has(key);
+                  return (
+                    <PressableScale
+                      key={key}
+                      style={styles.cell}
+                      scaleTo={0.92}
+                      disabled={!inMonth}
+                      accessibilityLabel={dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
+                      accessibilityState={{ selected, disabled: !inMonth }}
+                      onPress={() => onChange(key)}>
+                      {/* Never flattened so Android preserves rounded corners when selected fill toggles. */}
+                      <View collapsable={false} style={[styles.monthCircle, selected && styles.selectedFill]}>
+                        <InkText
+                          variant={selected || isToday ? 'subStrong' : 'sub'}
+                          color={!inMonth ? ink.text3 : selected ? ink.onAccent : isToday ? ink.accent : ink.text}
+                          style={styles.tabular}>
+                          {dateFromKey(key).getDate()}
+                        </InkText>
+                      </View>
+                      <View style={styles.dots}>
+                        {spoke ? <View style={[styles.dot, { backgroundColor: talkColor ?? ink.text2 }]} /> : null}
+                        {plan ? <View style={[styles.dotPlan, key < today && styles.dotPast]} /> : null}
+                      </View>
+                    </PressableScale>
+                  );
+                })}
+              </View>
+            </View>
+          ) : (
+            <View style={styles.weekRow}>
+              {cells.map(({ key }, i) => {
+                const selected = key === value;
+                const isToday = key === today;
+                const plan = marked.has(key);
+                const spoke = !!talked?.has(key);
+                return (
+                  <PressableScale
+                    key={key}
+                    style={styles.weekCell}
+                    scaleTo={0.93}
+                    accessibilityLabel={dateFromKey(key).toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
+                    accessibilityState={{ selected }}
+                    onPress={() => onChange(key)}>
+                    <View collapsable={false} style={[styles.weekPill, selected && styles.selectedFill]}>
+                      <InkText
+                        variant="caption"
+                        color={selected ? ink.onAccent : ink.text3}
+                        style={[styles.weekday, selected && styles.weekDayOn]}>
+                        {weekdays[i % weekdays.length]}
+                      </InkText>
+                      <InkText
+                        variant="subStrong"
+                        color={selected ? ink.onAccent : isToday ? ink.accent : ink.text}
+                        style={styles.tabular}>
+                        {dateFromKey(key).getDate()}
+                      </InkText>
+                      <View style={styles.dots}>
+                        {spoke ? <View style={[styles.dot, { backgroundColor: selected ? ink.onAccent : (talkColor ?? ink.text2) }]} /> : null}
+                        {plan ? (
+                          <View
+                            style={[
+                              styles.dotPlan,
+                              selected ? styles.dotPlanOn : key < today ? styles.dotPast : undefined,
+                            ]}
+                          />
+                        ) : null}
+                      </View>
+                    </View>
+                  </PressableScale>
+                );
+              })}
+            </View>
+          )}
         </Animated.View>
+
+        {footer ? <View style={styles.footer}>{footer}</View> : null}
       </View>
     </View>
   );
 }
 
-const NUM = 28;
-
 const styles = StyleSheet.create({
-  root: { marginHorizontal: 14, marginTop: 26 },
-  title: { ...inkType.card, marginHorizontal: 6, marginBottom: 10 },
-  // The reference's white card on the grouped ground.
+  root: { marginHorizontal: 14, marginTop: 16 },
   card: {
-    paddingTop: 4,
-    paddingBottom: 10,
-    paddingHorizontal: 8,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: ink.card,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.edge,
+    overflow: 'hidden',
   },
-  head: { flexDirection: 'row', alignItems: 'center', gap: 2, paddingLeft: 10, paddingRight: 2 },
-  toggle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
-  month: { ...inkType.bodyStrong, flexShrink: 1, textTransform: 'capitalize' },
-  // A round grey button each, 44 pt to tap, as the reference's ‹ ›.
-  nav: { width: 36, height: 36, margin: 4, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
-  add: { width: 32, height: 32, marginLeft: space.xs, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primaryFill },
-  row: { flexDirection: 'row', marginTop: 2, marginBottom: 4 },
-  weekday: { ...inkType.caption, textTransform: 'uppercase' },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 6 },
-  // A hair under a seventh: seven exact sevenths can round past the row and drop Sunday to the next line (seen on the A51).
-  cell: { width: '14.28%', alignItems: 'center' },
-  capsule: {
-    width: '82%',
-    height: 54,
-    paddingTop: 7,
-    paddingBottom: 3,
-    borderRadius: inkRadius.chip,
-    borderCurve: 'continuous',
+  head: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+  },
+  title: { flex: 1, minWidth: 0 },
+  controls: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  controlsSpread: { flex: 1, justifyContent: 'space-between' },
+  monthPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    minHeight: 30,
+    paddingHorizontal: 10,
+    borderRadius: inkRadius.pill,
     backgroundColor: ink.raised,
   },
-  capsuleOut: { backgroundColor: 'transparent' },
-  dots: { height: 7, flexDirection: 'row', alignItems: 'center', gap: 3 },
-  dot: { width: 6, height: 6, borderRadius: inkRadius.pill },
-  dotPlan: { borderWidth: 1.5, borderColor: colors.primary },
-  dotPast: { borderWidth: 1.5, borderColor: ink.text3 },
-  num: { width: NUM, height: NUM, borderRadius: NUM / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' },
-  numOn: { backgroundColor: colors.primaryFill },
-  numText: { ...inkType.sub, color: ink.text, fontVariant: ['tabular-nums'] },
-  numToday: { ...inkType.subStrong, color: ink.accent },
-  numTextOn: { ...inkType.subStrong, color: ink.onAccent },
+  monthText: { textTransform: 'capitalize' },
+  arrows: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  nav: {
+    width: 30,
+    height: 30,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+  },
+  add: {
+    width: 30,
+    height: 30,
+    marginLeft: space.xs,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primaryFill,
+  },
+  weekRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingBottom: 12,
+    gap: 2,
+  },
+  weekCell: { flex: 1 },
+  weekPill: {
+    paddingVertical: 8,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'transparent',
+  },
+  weekDayOn: { opacity: 0.78 },
+  monthWrap: { paddingHorizontal: 10, paddingBottom: 12 },
+  weekdayRow: { flexDirection: 'row', marginBottom: 6 },
+  weekday: { textTransform: 'uppercase' },
+  monthGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 4 },
+  // A hair under a seventh: seven exact sevenths can round past the row and drop Sunday (A51).
+  cell: { width: '14.28%', alignItems: 'center' },
+  monthCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  selectedFill: { backgroundColor: ink.accent },
+  tabular: { fontVariant: ['tabular-nums'] },
+  dots: { height: 6, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3, marginTop: 1 },
+  dot: { width: 5, height: 5, borderRadius: inkRadius.pill },
+  dotPlan: { width: 5.5, height: 5.5, borderRadius: inkRadius.pill, borderWidth: 1.5, borderColor: systemColors.pink },
+  dotPlanOn: { borderColor: ink.onAccent },
+  dotPast: { borderColor: ink.text3 },
+  footer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
 });

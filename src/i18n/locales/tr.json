@@ -1727,7 +1727,12 @@
       "call": "Arama",
       "quiz": "Çift testi",
       "arc": "Yeni bölüm"
-    }
+    },
+    "withFriend": "{{name}} ile",
+    "metOn": "{{date}} beri",
+    "messageFriend": "{{name}} ile yazış",
+    "monthCircle": "{{month}} çevresi",
+    "mostWith": "En çok {{name}} · {{percent}}"
   },
   "profile": {
     "title": "Profil",
