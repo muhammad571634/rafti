@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { Avatar, PressableScale, Sheet } from '@/components/ui';
 import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { track } from '@/lib/analytics';
-import type { CommunityItem } from '@/lib/community';
+import { knownCommunityCharacter, type CommunityItem } from '@/lib/community';
 import { useAppStore } from '@/store/use-app-store';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
 
@@ -30,17 +30,21 @@ export function CommunityShelf({ title }: { title: (text: string) => React.React
   const { t } = useTranslation();
   const [items, setItems] = useState<CommunityItem[]>([]);
   const [open, setOpen] = useState<CommunityItem | null>(null);
-  useEffect(() => {
-    let alive = true;
-    void withAccount((token) => serverCommunity.list(token, 'popular'))
-      .catch(() => null)
-      .then((result) => {
-        if (alive && result?.items) setItems(result.items);
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
+  // Read again each time Find comes into view: the tab stays mounted, so a character the user just
+  // shared (or one hidden by reports) would otherwise wait for the next app start.
+  useFocusEffect(
+    useCallback(() => {
+      let alive = true;
+      void withAccount((token) => serverCommunity.list(token, 'popular'))
+        .catch(() => null)
+        .then((result) => {
+          if (alive && result?.items) setItems(result.items);
+        });
+      return () => {
+        alive = false;
+      };
+    }, []),
+  );
   if (!items.length) return null;
   return (
     <>
@@ -79,6 +83,8 @@ export function CommunitySheet({ item, onClose }: { item: CommunityItem | null; 
   const router = useRouter();
   const addCommunityCharacter = useAppStore((s) => s.addCommunityCharacter);
   const reportCommunity = useAppStore((s) => s.reportCommunity);
+  // The user's own share: Say hi opens their original, and there is nothing to report.
+  const own = useAppStore((s) => !!item && knownCommunityCharacter(s.characters, item.id)?.communityId === item.id);
   const [reporting, setReporting] = useState(false);
   const [reported, setReported] = useState(false);
   useEffect(() => {
@@ -144,7 +150,7 @@ export function CommunitySheet({ item, onClose }: { item: CommunityItem | null; 
             <InkText variant="sub">{card.greeting.replace(/\{\{user\}\}/g, t('community.you')).replace(/\{\{char\}\}/g, card.name)}</InkText>
           </View>
           <PillButton label={t('community.sayHi')} onPress={sayHi} />
-          {reported ? (
+          {own ? null : reported ? (
             <InkText variant="footnote" color={ink.text3} center>
               {t('community.reported')}
             </InkText>

@@ -50,7 +50,7 @@ import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
 import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite, serverCommunity } from '@/ai/server';
-import { cardOf, type CommunityItem } from '@/lib/community';
+import { cardOf, knownCommunityCharacter, type CommunityItem } from '@/lib/community';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import { mayReact } from '@/ai/react';
@@ -2464,7 +2464,7 @@ export const useAppStore = create<AppState>()(
       },
 
       addCommunityCharacter: (item) => {
-        const known = get().characters.find((c) => c.fromCommunity === item.id);
+        const known = knownCommunityCharacter(get().characters, item.id);
         if (known) {
           const conversationId = get().conversations.find((c) => c.characterId === known.id)?.id ?? get().addFriend(known.id);
           return { characterId: known.id, conversationId };

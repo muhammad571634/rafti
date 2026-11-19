@@ -64,6 +64,14 @@ export interface CommunityItem {
   createdAt: string;
 }
 
+/**
+ * The character in the user's list that a community item already is: their own share (the
+ * original, never a copy of it) or a copy they added before. Say hi opens it instead of adding one.
+ */
+export function knownCommunityCharacter<T extends Pick<Character, 'communityId' | 'fromCommunity'>>(characters: T[], communityId: string): T | undefined {
+  return characters.find((c) => c.communityId === communityId) ?? characters.find((c) => c.fromCommunity === communityId);
+}
+
 const NAME_MAX = 36;
 const SHORT_MAX = 60;
 const LIST_MAX = 8;
