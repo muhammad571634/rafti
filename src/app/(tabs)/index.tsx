@@ -35,7 +35,7 @@ import { TODAY_SLOTS } from '@/lib/today';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
 import { useFirstSteps } from '@/hooks/use-first-steps';
-import { colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { colors, hitSlop, night, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 import type { Character, Conversation, WidgetKind } from '@/types';
 
@@ -317,7 +317,7 @@ export default function HomeScreen() {
                       {t('home.allChats')}
                     </InkText>
                     <View style={styles.count}>
-                      <InkText variant="caption" color={colors.white}>
+                      <InkText variant="caption" color={ink.onAccent}>
                         +{others.length}
                       </InkText>
                     </View>
@@ -499,7 +499,7 @@ const WaitingRow = memo(function WaitingRow({
         accessibilityLabel={[t('a11y.unreadTab', { label: name, count }), conversation.lastMessagePreview].filter(Boolean).join(', ')}
         onPress={() => onOpen(conversation.id)}
         style={styles.row}>
-        <CharacterAvatar character={character} size={FACE} ring ringColor={ink.accent} />
+        <CharacterAvatar character={character} size={FACE} ring ringColor={night.friendAccent(character.id).strong} />
         <View style={[styles.rowBody, !first && styles.line]}>
           <View style={styles.flex}>
             <InkText variant="bodyStrong" lines={1}>
@@ -512,7 +512,7 @@ const WaitingRow = memo(function WaitingRow({
             ) : null}
           </View>
           <View style={styles.count}>
-            <InkText variant="caption" color={colors.white}>
+            <InkText variant="caption" color={ink.onAccent}>
               {count > 99 ? '99+' : count}
             </InkText>
           </View>
@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
   // Your face in a glass circle, as iOS account buttons are (your name is in your profile).
   me: { width: CAPSULE, height: CAPSULE, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
-  photoGlass: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  photoGlass: { backgroundColor: ink.photoGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: ink.photoGlassRim },
   softGlass: { backgroundColor: ink.raised },
   round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   done: {
@@ -703,7 +703,15 @@ const styles = StyleSheet.create({
   },
 
   // One card on the night ground, its rows inset like Apple's grouped lists.
-  card: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
+  card: {
+    marginHorizontal: space.lg,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
   firstCard: { marginTop: space.xl },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: space.lg, minHeight: 64 },
   // The words and what trails them; its top edge is the separator, so it starts after the face.
@@ -727,7 +735,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.unread,
+    backgroundColor: ink.accent,
   },
   noteIcon: { width: FACE, height: FACE, borderRadius: 14, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: SUN_WASH },
   // Same gap as the other cards' rhythm; no title above, so the grid keeps the section's spacing.
@@ -759,7 +767,16 @@ const styles = StyleSheet.create({
   },
   solo: { paddingRight: space.lg, paddingVertical: 10, minHeight: 72 },
   moreRow: { marginTop: space.md, minHeight: 60, paddingRight: space.lg },
-  moreIcon: { width: 36, height: 36, borderRadius: 11, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
+  moreIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.hairlineFill,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
   badge: {
     minWidth: 22,
     height: 22,

@@ -320,7 +320,7 @@ export function TodayHero({
           {/* How many of their messages wait, as the app icon's badge says it: a number, no words. */}
           {conversation.unreadCount > 0 ? (
             <View style={styles.unread}>
-              <InkText variant="caption" color={colors.white}>
+              <InkText variant="caption" color={ink.onAccent}>
                 {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
               </InkText>
             </View>
@@ -366,8 +366,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 6,
     borderCurve: 'continuous',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-    backgroundColor: colors.onMediaBubble,
+    borderColor: ink.photoGlassRim,
+    backgroundColor: ink.photoGlass,
   },
   unread: {
     position: 'absolute',
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.unread,
+    backgroundColor: ink.accent,
   },
   // A round frosted glass glyph, 44 pt (HIG: touch target), where the "Message" field was.
   reply: {
@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.onMediaRim,
-    backgroundColor: colors.onMediaFrost,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+    backgroundColor: ink.photoGlass,
   },
 });

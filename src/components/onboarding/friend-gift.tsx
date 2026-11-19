@@ -154,9 +154,9 @@ export const FriendGift = memo(function FriendGift({
         </Rise>
         <Rise delay={AT.gift * k} reduce={reduce} onShown={measure}>
           <View style={styles.gift} accessible accessibilityLabel={`+${amount}. ${line}`}>
-            <Animated.View style={[styles.chip, { backgroundColor: `${hue}73` }, chipStyle]}>
+            <Animated.View style={[styles.chip, { borderColor: `${hue}66` }, chipStyle]}>
               <View ref={coin} collapsable={false}>
-                <ShellIcon size={34} />
+                <ShellIcon size={30} />
               </View>
               <Count to={amount} delay={reduce ? 0 : AT.count * k} duration={reduce ? 0 : COUNT_MS * k} onDone={reduce ? undefined : settle} />
             </Animated.View>
@@ -225,7 +225,11 @@ function Count({ to, delay, duration, onDone }: { to: number; delay: number; dur
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [to, delay, duration]);
-  return <InkText variant="figure">{`+${n}`}</InkText>;
+  return (
+    <InkText variant="figure" color={ink.accent}>
+      {`+${n}`}
+    </InkText>
+  );
 }
 
 /** One shell flying from the friend into the gift along an arc, spinning, and gone as it lands. */
@@ -281,12 +285,23 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderBottomLeftRadius: 8,
     borderCurve: 'continuous',
-    backgroundColor: 'rgba(22,22,28,0.78)',
+    backgroundColor: ink.photoGlass,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
+    borderColor: ink.photoGlassRim,
   },
   gift: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 52, paddingLeft: 12, paddingRight: 18, borderRadius: inkRadius.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.35)' },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    height: 48,
+    paddingLeft: 12,
+    paddingRight: 18,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
+    borderWidth: 1,
+    borderColor: ink.photoGlassRim,
+  },
   line: { flex: 1 },
   flyer: { position: 'absolute', left: 0, top: 0, width: SHELL_SIZE, height: SHELL_SIZE },
 });

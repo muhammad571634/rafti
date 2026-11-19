@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { type ComponentRef, memo, type RefObject, useEffect, useState } from 'react';
@@ -16,7 +17,7 @@ import { phrase } from '@/i18n';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { night } from '@/theme';
-import { ink, inkEm, inkRadius } from '@/theme/ink';
+import { ink, inkEm, inkRadius, inkType } from '@/theme/ink';
 import type { Character } from '@/types';
 
 import { EASE_OUT } from './night-motion';
@@ -79,6 +80,7 @@ export const NightDeck = memo(function NightDeck({ cards, onOrder, frontRef }: N
       <View style={styles.faces} accessibilityRole="radiogroup">
         {[...cards].sort((a, b) => a.id.localeCompare(b.id)).map((c) => {
           const on = c.id === ids[0];
+          const ring = night.friendAccent(c.id).strong;
           return (
             <Pressable
               key={c.id}
@@ -87,7 +89,7 @@ export const NightDeck = memo(function NightDeck({ cards, onOrder, frontRef }: N
               accessibilityRole="radio"
               accessibilityLabel={`${shortName(c.name)}, ${relationOf(c)}`}
               accessibilityState={{ checked: on }}
-              style={[styles.face, on && styles.faceOn]}>
+              style={[styles.face, on && [styles.faceOn, { borderColor: ring }]]}>
               <CharacterAvatar character={c} size={44} />
             </Pressable>
           );
@@ -149,23 +151,39 @@ function DeckCard({ character, slot, width, height, onThrown, frontRef }: { char
             contentFit="cover"
             contentPosition={HEROES[character.id] ? undefined : portraitPosition(character.id, width / height)}
           />
-          <LinearGradient colors={['rgba(5,5,8,0)', 'rgba(5,5,8,0.55)', 'rgba(5,5,8,0.92)']} locations={[0.38, 0.62, 1]} style={StyleSheet.absoluteFill} />
-          <View style={styles.text}>
+          <LinearGradient
+            colors={['rgba(9,9,13,0.22)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.42)', 'rgba(9,9,13,0.94)']}
+            locations={[0, 0.28, 0.58, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.topRow}>
             <View style={styles.chip}>
-              <InkText variant="sub" lines={1} style={inkEm(hue)}>
+              <InkText variant="caption" lines={1} style={inkEm(hue)}>
                 {relationOf(character)}
               </InkText>
             </View>
+          </View>
+          <View style={styles.text}>
             <InkText variant={small ? 'card' : 'title'} lines={1} style={styles.name}>
               {shortName(character.name)}
             </InkText>
             {small ? null : (
-              <InkText variant="sub" color="rgba(255,255,255,0.82)" lines={3} style={styles.quote}>
+              <InkText variant="sub" color="rgba(255,255,255,0.85)" lines={3} style={styles.quote}>
                 {`“${character.greeting}”`}
               </InkText>
             )}
           </View>
         </View>
+        {front ? (
+          <Pressable
+            onPress={onThrown}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={shortName(character.name)}
+            style={({ pressed }) => [styles.nextBtn, pressed && styles.nextBtnPressed]}>
+            <Ionicons name="chevron-forward" size={16} color={ink.text} />
+          </Pressable>
+        ) : null}
       </Animated.View>
     </GestureDetector>
   );
@@ -182,21 +200,36 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: ink.card,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: ink.photoGlassRim,
   },
-  text: { position: 'absolute', left: 20, right: 20, bottom: 20 },
+  topRow: { position: 'absolute', top: 14, left: 14, right: 56, flexDirection: 'row', alignItems: 'center' },
+  nextBtn: {
+    position: 'absolute',
+    top: 14,
+    right: 14,
+    width: 34,
+    height: 34,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextBtnPressed: { opacity: 0.72, transform: [{ scale: 0.94 }] },
+  text: { position: 'absolute', left: 18, right: 18, bottom: 18 },
   chip: {
     alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: inkRadius.chip,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.22)',
+    borderColor: ink.photoGlassRim,
   },
-  name: { marginTop: 8 },
-  quote: { marginTop: 4 },
+  name: { marginTop: 0 },
+  quote: { ...inkType.quote, marginTop: 5 },
   faces: { flexDirection: 'row', justifyContent: 'center', gap: 14, marginTop: 14 },
   face: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'transparent' },
-  faceOn: { borderColor: ink.text, transform: [{ scale: 1.06 }] },
+  faceOn: { transform: [{ scale: 1.06 }] },
 });

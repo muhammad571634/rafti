@@ -8,7 +8,7 @@ import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 import { InkText } from '@/components/ink';
 import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, type ModuleKey } from '@/components/ui';
 import { colors, isDark, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
-import { inkRadius, inkType } from '@/theme/ink';
+import { ink as inkTokens, inkRadius, inkType } from '@/theme/ink';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -160,7 +160,7 @@ export function WidgetView({
     <View style={model.pill ? styles.abovePill : undefined}>
       {model.quote ? (
         // The thing itself, whole where it fits: a step smaller before it is cut, never tiny.
-        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={[inkType.subStrong, styles.quote]} color={ink} />
+        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={[inkType.quote, styles.quote]} color={ink} />
       ) : (
         <>
           {model.figure ? (
@@ -284,7 +284,7 @@ export function WidgetView({
       style={[
         styles.card,
         !onPhoto && { backgroundColor: glass ? 'transparent' : tint },
-        glass && { borderWidth: 1, borderColor: glass.rim },
+        glass && { borderWidth: StyleSheet.hairlineWidth, borderColor: glass.rim },
         pinned && styles.pinned,
         { height },
       ]}>
@@ -439,14 +439,14 @@ const styles = StyleSheet.create({
   // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
   // stays, no colour added inside).
   track: {
-    height: 8,
+    height: 6,
     borderRadius: inkRadius.pill,
     marginTop: 8,
     marginBottom: 6,
-    backgroundColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.7)',
+    backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.7)',
     overflow: 'hidden',
   },
-  bar: { height: 8, borderRadius: inkRadius.pill, backgroundColor: colors.text },
+  bar: { height: 6, borderRadius: inkRadius.pill, backgroundColor: inkTokens.accent },
   person: { flex: 1, alignItems: 'center', paddingTop: 0 },
   personName: { marginTop: 6 },
   // A soft white circle on the tint (the prototype's buttons), a faint one on a deep tint.
