@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z291. Smooth year wheel (owner: "g'ildirak tekis ishlamaydi, tuzat", 2026-11-19, Claude 1, Opus 5.5). DONE in code, OTA `1a96f55d`; feel it on the next onboarding or age confirm
+- **Why it stuttered**: `NightYearWheel`'s nine recycled rows re-rendered their year through the JS thread at every wrap (`scheduleOnRN(setIndex)`) with one hidden row of slack; on a fast fling the JS thread fell behind (late or jumping numbers), on any phone under load, not only the A51.
+- **Fix** (`src/components/onboarding/night-year-wheel.tsx`): each row holds every year it can stand for in a short column mounted once and moves it inside its clip on the UI thread; nothing renders while the drum turns. The look is unchanged. The under-18 note keeps room for two lines (onboarding and `age-confirm-sheet.tsx`), so the red note no longer resizes the wheel's room mid-turn.
+- **Checked**: tsc 0, `npm test` 1082/1082. Not yet felt on the A51: the wheel shows only in onboarding or while the age is unclear (the owner's account is confirmed).
+
 ### 0z290. Structured narration inside the bubble — Variant A (owner's pick "A pufakcha ichida" on prototype, docs/polybuzz-core.md §5.7, 2026-11-19, Gemini 4 Neon). DONE (commit `3c23a81f`, OTA `9317c496`, seen on the A51). NEXT: owner deploys the server for structured `parts` wire format
 - **What**: Narration/actions are now a first-class part of the reply (`Message.parts: { kind: 'speech' | 'action', text: string }[]`) instead of relying solely on `*asterisk*` regex parsing. Inside each chat bubble (Variant A, approved prototype), stage directions render in their own quiet italic block (`inkFace('sub')`, `ink.text2` / `colors.onMediaMuted` on photo) with a subtle 2 pt rounded `ink.accent` left bar, cleanly stacked above/between crisp 17 pt spoken text; single-word mid-sentence `*emphasis*` on legacy text stays inline.
 - **How**:
