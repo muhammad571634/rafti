@@ -1226,8 +1226,6 @@
     "create": "Create · {{count}} shells",
     "creating": "Cloning voice...",
     "tooLarge": "{{name}} is over 10MB",
-    "imageTooLarge": "That picture is over 2MB",
-    "photoRights": "I made this image or may use it, and it is not a real person",
     "age": "Age",
     "gender": "Gender",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Give them a name",
       "photo": "Add a photo or describe their looks",
-      "photoRights": "Confirm the photo is yours to use",
       "age": "Characters are adults: age 18 or more",
       "voice": "Pick a voice",
       "samples": "Add at least 3 voice clips",
@@ -1369,6 +1366,9 @@
       "startOver": "Start over",
       "addPhoto": "Add photo",
       "changePhoto": "Change photo",
+      "choosePhoto": "Choose photo",
+      "takePhoto": "Take photo",
+      "removePhoto": "Remove photo",
       "firstMessage": "First message",
       "more": "More details",
       "ownVoice": "Their own voice",

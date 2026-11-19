@@ -1226,8 +1226,6 @@
     "create": "Erstellen · {{count}} Muscheln",
     "creating": "Klone Stimme...",
     "tooLarge": "{{name}} ist über 10 MB groß",
-    "imageTooLarge": "Dieses Bild ist über 2 MB groß",
-    "photoRights": "Ich habe dieses Bild erstellt oder darf es nutzen, und es ist keine reale Person",
     "age": "Alter",
     "gender": "Geschlecht",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Gib einen Namen an",
       "photo": "Füge ein Bild hinzu oder beschreibe das Aussehen",
-      "photoRights": "Bestätige deine Bildrechte",
       "age": "Figuren sind erwachsen: ab 18 Jahren",
       "voice": "Wähle eine Stimme",
       "samples": "Lade mindestens 3 Stimmclips hoch",
@@ -1369,6 +1366,9 @@
       "startOver": "Neu anfangen",
       "addPhoto": "Foto hinzufügen",
       "changePhoto": "Foto ändern",
+      "choosePhoto": "Foto auswählen",
+      "takePhoto": "Foto aufnehmen",
+      "removePhoto": "Foto entfernen",
       "firstMessage": "Erste Nachricht",
       "more": "Mehr Details",
       "ownVoice": "Eigene Stimme",

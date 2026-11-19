@@ -1199,8 +1199,6 @@
     "create": "Tạo · {{count}} vỏ sò",
     "creating": "Đang nhân bản giọng nói...",
     "tooLarge": "{{name}} vượt quá 10MB",
-    "imageTooLarge": "Bức ảnh đó vượt quá 2MB",
-    "photoRights": "Tôi đã tạo bức ảnh này hoặc có quyền sử dụng, và nó không phải người thật",
     "age": "Tuổi",
     "gender": "Giới tính",
     "traitNames": {
@@ -1258,7 +1256,6 @@
     "problems": {
       "name": "Hãy đặt tên cho họ",
       "photo": "Thêm ảnh hoặc mô tả ngoại hình của họ",
-      "photoRights": "Xác nhận bạn có quyền sử dụng ảnh này",
       "age": "Nhân vật phải là người trưởng thành: từ 18 tuổi trở lên",
       "voice": "Chọn một giọng nói",
       "samples": "Thêm ít nhất 3 đoạn âm thanh mẫu",
@@ -1342,6 +1339,9 @@
       "startOver": "Làm lại từ đầu",
       "addPhoto": "Thêm ảnh",
       "changePhoto": "Đổi ảnh",
+      "choosePhoto": "Chọn ảnh",
+      "takePhoto": "Chụp ảnh",
+      "removePhoto": "Xóa ảnh",
       "firstMessage": "Tin nhắn đầu tiên",
       "more": "Thêm chi tiết",
       "ownVoice": "Giọng riêng",

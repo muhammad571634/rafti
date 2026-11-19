@@ -1199,8 +1199,6 @@
     "create": "만들기 · {{count}} 조개",
     "creating": "목소리 복제 중...",
     "tooLarge": "{{name}}의 크기가 10MB를 초과합니다",
-    "imageTooLarge": "이미지가 2MB를 초과합니다",
-    "photoRights": "직접 만든 이미지이거나 사용 권한이 있으며, 실존 인물이 아닙니다",
     "age": "나이",
     "gender": "성별",
     "traitNames": {
@@ -1258,7 +1256,6 @@
     "problems": {
       "name": "캐릭터 이름을 입력하세요",
       "photo": "사진을 추가하거나 외모를 설명하세요",
-      "photoRights": "사진 사용 권한을 확인해 주세요",
       "age": "캐릭터는 성인(18세 이상)이어야 합니다",
       "voice": "목소리를 선택해 주세요",
       "samples": "음성 클립을 3개 이상 추가하세요",
@@ -1342,6 +1339,9 @@
       "startOver": "처음부터",
       "addPhoto": "사진 추가",
       "changePhoto": "사진 변경",
+      "choosePhoto": "사진 선택",
+      "takePhoto": "사진 찍기",
+      "removePhoto": "사진 삭제",
       "firstMessage": "첫 메시지",
       "more": "세부 정보",
       "ownVoice": "본인 목소리",

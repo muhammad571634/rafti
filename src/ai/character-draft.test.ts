@@ -277,11 +277,11 @@ describe('the mock provider', () => {
 });
 
 describe('checkCreation with quick-create fields', () => {
-  const base = { name: 'Mira', age: '27', bio: 'Keeps a lighthouse.', greeting: 'Hi.', photoRights: false, voice: { kind: 'preset', preset: 'warm' } as const, voiceConsent: false };
+  const base = { name: 'Mira', age: '27', bio: 'Keeps a lighthouse.', greeting: 'Hi.', voice: { kind: 'preset', preset: 'warm' } as const, voiceConsent: false };
   it('lets their looks stand in for a photo', () => {
     assert.deepEqual(checkCreation({ ...base, hasPhoto: false }), ['photo']);
     assert.deepEqual(checkCreation({ ...base, hasPhoto: false, look: 'Auburn hair.' }), []);
-    assert.deepEqual(checkCreation({ ...base, hasPhoto: true, look: 'Auburn hair.' }), ['photoRights']);
+    assert.deepEqual(checkCreation({ ...base, hasPhoto: true }), []);
   });
 
   it('checks the other texts too', () => {

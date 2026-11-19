@@ -1199,8 +1199,6 @@
     "create": "Buat · {{count}} kerang",
     "creating": "Mengkloning suara...",
     "tooLarge": "{{name}} lebih dari 10MB",
-    "imageTooLarge": "Foto itu lebih dari 2MB",
-    "photoRights": "Saya membuat gambar ini atau memiliki hak pakai, dan ini bukan orang sungguhan",
     "age": "Usia",
     "gender": "Gender",
     "traitNames": {
@@ -1258,7 +1256,6 @@
     "problems": {
       "name": "Beri mereka nama",
       "photo": "Tambahkan foto atau jelaskan penampilannya",
-      "photoRights": "Konfirmasikan bahwa foto tersebut berhak kamu gunakan",
       "age": "Karakter harus dewasa: usia 18 tahun ke atas",
       "voice": "Pilih suara",
       "samples": "Tambahkan setidaknya 3 klip suara",
@@ -1342,6 +1339,9 @@
       "startOver": "Mulai ulang",
       "addPhoto": "Tambah foto",
       "changePhoto": "Ganti foto",
+      "choosePhoto": "Pilih foto",
+      "takePhoto": "Ambil foto",
+      "removePhoto": "Hapus foto",
       "firstMessage": "Pesan pertama",
       "more": "Detail lainnya",
       "ownVoice": "Suaranya sendiri",

@@ -1199,8 +1199,6 @@
     "create": "建立 · {{count}}個貝殼",
     "creating": "語音複製中...",
     "tooLarge": "{{name}}已超過10MB限制",
-    "imageTooLarge": "相片大小已超過2MB限制",
-    "photoRights": "我親自創作此圖像或擁有合法使用權，且其非真實人物",
     "age": "年齡",
     "gender": "性別",
     "traitNames": {
@@ -1258,7 +1256,6 @@
     "problems": {
       "name": "請賦予角色姓名",
       "photo": "請上傳照片或描述其外貌",
-      "photoRights": "請確認你擁有該相片的使用權限",
       "age": "角色必須為年滿18歲之成年人",
       "voice": "請選擇一種音色",
       "samples": "請至少上傳3段語音樣本",
@@ -1342,6 +1339,9 @@
       "startOver": "重新開始",
       "addPhoto": "新增照片",
       "changePhoto": "更換照片",
+      "choosePhoto": "選擇照片",
+      "takePhoto": "拍照",
+      "removePhoto": "移除照片",
       "firstMessage": "第一則訊息",
       "more": "更多細節",
       "ownVoice": "自己的聲音",

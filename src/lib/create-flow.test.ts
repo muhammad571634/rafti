@@ -4,7 +4,6 @@ import { describe, it } from 'node:test';
 import { type CreateForm, firstProblemSection, hasContent, problemsBySection, readSavedCreation, sameForm, sectionOf } from './create-flow';
 
 const empty: CreateForm = {
-  photoRights: false,
   name: '',
   tagline: '',
   age: '',
@@ -31,7 +30,7 @@ const empty: CreateForm = {
 describe('the create chain (0z149)', () => {
   it('sends each problem to the card that fixes it', () => {
     assert.equal(sectionOf('name'), 'who');
-    assert.equal(sectionOf('photoRights'), 'who');
+    assert.equal(sectionOf('photo'), 'who');
     assert.equal(sectionOf('voiceConsent'), 'voice');
     assert.equal(sectionOf('explicit'), 'personality');
   });

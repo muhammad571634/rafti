@@ -1226,8 +1226,6 @@
     "create": "Crear · {{count}} conchas",
     "creating": "Clonando voz...",
     "tooLarge": "{{name}} supera los 10MB",
-    "imageTooLarge": "Esa imagen supera los 2MB",
-    "photoRights": "Creé esta imagen o tengo permiso para usarla, y no es una persona real",
     "age": "Edad",
     "gender": "Género",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Ponle un nombre",
       "photo": "Agrega una foto o describe su aspecto",
-      "photoRights": "Confirma que puedes usar esta foto",
       "age": "Los personajes deben ser adultos: 18 años o más",
       "voice": "Elige una voz",
       "samples": "Agrega al menos 3 muestras de voz",
@@ -1369,6 +1366,9 @@
       "startOver": "Empezar de nuevo",
       "addPhoto": "Añadir foto",
       "changePhoto": "Cambiar foto",
+      "choosePhoto": "Elegir foto",
+      "takePhoto": "Hacer foto",
+      "removePhoto": "Quitar foto",
       "firstMessage": "Primer mensaje",
       "more": "Más detalles",
       "ownVoice": "Su propia voz",

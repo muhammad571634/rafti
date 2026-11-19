@@ -1226,8 +1226,6 @@
     "create": "Créer · {{count}} coquillages",
     "creating": "Clonage vocal...",
     "tooLarge": "{{name}} dépasse 10 Mo",
-    "imageTooLarge": "Cette image dépasse 2 Mo",
-    "photoRights": "J'ai créé cette image ou j'ai le droit de l'utiliser, et ce n'est pas une personne réelle",
     "age": "Âge",
     "gender": "Genre",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Donnez-leur un nom",
       "photo": "Ajoutez une photo ou décrivez leur apparence",
-      "photoRights": "Confirmez que vous avez le droit d'utiliser cette photo",
       "age": "Les personnages sont adultes : 18 ans ou plus",
       "voice": "Choisissez une voix",
       "samples": "Ajoutez au moins 3 extraits vocaux",
@@ -1369,6 +1366,9 @@
       "startOver": "Recommencer",
       "addPhoto": "Ajouter une photo",
       "changePhoto": "Changer la photo",
+      "choosePhoto": "Choisir une photo",
+      "takePhoto": "Prendre une photo",
+      "removePhoto": "Supprimer la photo",
       "firstMessage": "Premier message",
       "more": "Plus de détails",
       "ownVoice": "Sa propre voix",

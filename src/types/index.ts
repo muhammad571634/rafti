@@ -16,6 +16,8 @@ export interface Character {
   series?: string;
   /** Picked from the gallery; bundled seed art is looked up by `id` in assets/avatars. */
   avatarUri?: string;
+  /** `avatarUri` is a picture we drew for them (Create's Draw), not one from the phone: it may go on a poster or a shared card. */
+  pictureDrawn?: boolean;
   /** Index into `avatarGradients` for the placeholder avatar */
   accentIndex: number;
   /** Voice model finished training -> green check on the card */

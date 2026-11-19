@@ -1199,8 +1199,6 @@
     "create": "作成 · {{count}}シェル",
     "creating": "ボイスクローン中...",
     "tooLarge": "{{name}}が10MBを超えています",
-    "imageTooLarge": "画像が2MBを超えています",
-    "photoRights": "この画像を作成したか使用権があり、実在の人物ではありません",
     "age": "年齢",
     "gender": "性別",
     "traitNames": {
@@ -1258,7 +1256,6 @@
     "problems": {
       "name": "名前を入力してください",
       "photo": "写真を追加するか外見を入力してください",
-      "photoRights": "写真の使用権を確認してください",
       "age": "キャラクターは成人（18歳以上）である必要があります",
       "voice": "ボイスを選択してください",
       "samples": "音声クリップを3個以上追加してください",
@@ -1342,6 +1339,9 @@
       "startOver": "最初から",
       "addPhoto": "写真を追加",
       "changePhoto": "写真を変更",
+      "choosePhoto": "写真を選ぶ",
+      "takePhoto": "写真を撮る",
+      "removePhoto": "写真を削除",
       "firstMessage": "最初のメッセージ",
       "more": "詳しい設定",
       "ownVoice": "本人の声",

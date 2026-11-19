@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
 import { BrandArt, CharacterAvatar, SFIcon, Txt } from '@/components/ui';
+import { posterCharacter } from '@/lib/poster-picture';
 import { fonts } from '@/theme';
 import type { Character } from '@/types';
 
@@ -55,7 +56,7 @@ export function PosterFrame({ character, name, mood, children }: { character: Ch
 
       <View style={styles.head}>
         <View style={styles.faceRing}>
-          <CharacterAvatar character={character} size={70} />
+          <CharacterAvatar character={posterCharacter(character)} size={70} />
           <View style={styles.online} />
         </View>
         <View style={styles.headText}>

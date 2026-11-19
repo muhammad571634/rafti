@@ -1226,8 +1226,6 @@
     "create": "Oluştur · {{count}} kabuk",
     "creating": "Ses klonlanıyor...",
     "tooLarge": "{{name}} 10MB üzerinde",
-    "imageTooLarge": "Bu resim 2MB üzerinde",
-    "photoRights": "Bu resmi ben oluşturdum veya kullanma hakkım var ve gerçek bir kişi değildir",
     "age": "Yaş",
     "gender": "Cinsiyet",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Onlara bir ad ver",
       "photo": "Bir fotoğraf ekle veya görünüşlerini tarif et",
-      "photoRights": "Fotoğrafı kullanma hakkın olduğunu onayla",
       "age": "Karakterler yetişkindir: 18 yaş veya üzeri",
       "voice": "Bir ses seç",
       "samples": "En az 3 ses klibi ekle",
@@ -1369,6 +1366,9 @@
       "startOver": "Baştan başla",
       "addPhoto": "Fotoğraf ekle",
       "changePhoto": "Fotoğrafı değiştir",
+      "choosePhoto": "Fotoğraf seç",
+      "takePhoto": "Fotoğraf çek",
+      "removePhoto": "Fotoğrafı kaldır",
       "firstMessage": "İlk mesaj",
       "more": "Daha fazla ayrıntı",
       "ownVoice": "Kendi sesi",

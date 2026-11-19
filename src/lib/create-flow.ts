@@ -19,7 +19,6 @@ export function sectionOf(problem: CreationProblem): CreateSection {
     case 'name':
     case 'age':
     case 'photo':
-    case 'photoRights':
       return 'who';
     case 'voice':
     case 'samples':
@@ -51,7 +50,6 @@ export function firstProblemSection(problems: readonly CreationProblem[]): Creat
 /** Everything the form holds, as plain values: what is kept between visits and compared for changes. */
 export interface CreateForm {
   imageUri?: string;
-  photoRights: boolean;
   name: string;
   tagline: string;
   gender?: CharacterGender;

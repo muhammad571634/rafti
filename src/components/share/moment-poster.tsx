@@ -13,6 +13,7 @@ import { posterWords, userNames } from '@/lib/moment-poster';
 import { stretchLeft } from '@/lib/portrait-focus';
 import { currentMood, temperamentFor } from '@/lib/reply-engine';
 import { displayName, useAppStore } from '@/store/use-app-store';
+import { posterCharacter } from '@/lib/poster-picture';
 import { colors, fonts } from '@/theme';
 import { ink } from '@/theme/ink';
 import type { Character, Scene } from '@/types';
@@ -32,7 +33,7 @@ const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'] as const;
 export function MomentPoster({ scene, character, name, mood, names }: { scene: Scene; character: Character; name: string; mood: string; names: readonly string[] }) {
   const { t } = useTranslation();
   const words = posterWords(scene, names);
-  const picture = momentPicture(scene, character, BODY_W / BODY_H, true);
+  const picture = momentPicture(scene, posterCharacter(character), BODY_W / BODY_H, true);
   const look = sceneLook(scene);
   const stretch = picture?.stretch ?? 1;
 

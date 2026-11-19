@@ -110,8 +110,6 @@ export interface CreationInput {
   look?: string;
   /** Every other text they carry (tagline, openings, sample dialog, first lines), checked the same way. */
   more?: string[];
-  /** "I made this image or have the right to use it, and it is not a real person." */
-  photoRights: boolean;
   voice: VoiceChoice | null;
   /** Without a photo the picture is drawn from their looks, so the looks are needed; false while nothing draws (0z149). */
   needsPicture?: boolean;
@@ -123,7 +121,6 @@ export type CreationProblem =
   | 'name'
   | 'age'
   | 'photo'
-  | 'photoRights'
   | 'voice'
   | 'samples'
   | 'voiceConsent'
@@ -161,8 +158,9 @@ export function checkCreation(input: CreationInput): CreationProblem[] {
   const text = [input.name, input.bio, input.greeting, input.look ?? '', ...(input.more ?? [])].join(' ');
 
   if (!input.name.trim()) problems.push('name');
+  // Any picture from the phone is the user's own business (owner, 2026-11-19): it stays on the phone,
+  // is never shared, posted or sent to a model (docs/agent-tasks/creator-ecosystem.md).
   if (!input.hasPhoto && input.needsPicture !== false && !input.look?.trim()) problems.push('photo');
-  else if (input.hasPhoto && !input.photoRights) problems.push('photoRights');
   if (!Number.isInteger(age) || age < MIN_AGE || age > 120) problems.push('age');
   if (!input.voice) problems.push('voice');
   else if (input.voice.kind === 'clone') {

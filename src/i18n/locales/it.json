@@ -1226,8 +1226,6 @@
     "create": "Crea · {{count}} conchiglie",
     "creating": "Clonazione voce in corso...",
     "tooLarge": "{{name}} supera i 10MB",
-    "imageTooLarge": "L'immagine supera i 2MB",
-    "photoRights": "Ho creato questa immagine o ho il permesso di usarla, e non è una persona reale",
     "age": "Età",
     "gender": "Genere",
     "traitNames": {
@@ -1285,7 +1283,6 @@
     "problems": {
       "name": "Dai loro un nome",
       "photo": "Aggiungi una foto o descrivi il loro aspetto",
-      "photoRights": "Conferma che la foto è tua da usare",
       "age": "I personaggi devono essere adulti: almeno 18 anni",
       "voice": "Scegli una voce",
       "samples": "Aggiungi almeno 3 campioni vocali",
@@ -1369,6 +1366,9 @@
       "startOver": "Ricomincia",
       "addPhoto": "Aggiungi foto",
       "changePhoto": "Cambia foto",
+      "choosePhoto": "Scegli foto",
+      "takePhoto": "Scatta foto",
+      "removePhoto": "Rimuovi foto",
       "firstMessage": "Primo messaggio",
       "more": "Altri dettagli",
       "ownVoice": "La sua voce",

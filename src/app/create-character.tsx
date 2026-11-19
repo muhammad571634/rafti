@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, KeyboardAvoidingView, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 
 import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
@@ -16,7 +16,7 @@ import { coachGreeting } from '@/lib/greeting-coach';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { PressableScale, Screen, Toggle, Txt } from '@/components/ui';
+import { ListRow, PressableScale, Screen, Sheet, Toggle, Txt } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { clearCreation, loadCreation, saveCreation } from '@/lib/create-draft-storage';
@@ -57,10 +57,10 @@ import { avatarGradients, colors, fonts, space, systemColors, systemGround } fro
 import { inkFace } from '@/theme/ink';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
+import { keepCharacterPicture } from '@/lib/character-picture';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 /** How long typing waits before the unfinished character is kept on the phone. */
 const SAVE_AFTER_MS = 600;
 const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.68)'] as const;
@@ -84,7 +84,6 @@ const cleanList = (list: string[]) => {
 
 /** A blank new character. */
 const BLANK: CreateForm = {
-  photoRights: false,
   name: '',
   tagline: '',
   age: '',
@@ -120,7 +119,6 @@ const BLANK: CreateForm = {
 function formOf(c: Character): CreateForm {
   return {
     imageUri: c.avatarUri,
-    photoRights: !!c.avatarUri,
     name: c.name,
     tagline: c.tagline ?? '',
     gender: c.gender,
@@ -267,6 +265,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const [busy, setBusy] = useState<DraftField | null>(null);
   const asked = useRef<Partial<Record<DraftField, number>>>({});
   const [error, setError] = useState<string | null>(null);
+  const [photoMenu, setPhotoMenu] = useState(false);
   /** After the first Create tap, each card shows what it still needs. */
   const [checked, setChecked] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -321,7 +320,6 @@ function CharacterForm({ editing }: { editing?: Character }) {
     hasPhoto: !!form.imageUri,
     look: form.look,
     more: [form.tagline, form.opening, form.quirk, form.scenario, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes, form.relation, form.mask],
-    photoRights: form.photoRights,
     voice,
     voiceConsent: true,
     needsPicture: PORTRAITS_AVAILABLE,
@@ -478,14 +476,28 @@ function CharacterForm({ editing }: { editing?: Character }) {
     set(patch);
   };
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.9, allowsEditing: true, aspect: [4, 5] });
+  /**
+   * Their picture from the gallery or the camera: any picture (owner, 2026-11-19), cropped 4:5, made
+   * smaller and kept in the app's own folder. It stays on this phone (creator-ecosystem.md §0).
+   */
+  const pickImage = async (from: 'library' | 'camera') => {
+    setPhotoMenu(false);
+    const options: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.9, allowsEditing: true, aspect: [4, 5], exif: false };
+    if (from === 'camera') {
+      const allowed = await ImagePicker.requestCameraPermissionsAsync();
+      if (!allowed.granted) {
+        return showAlert(t('photoBooth.cameraOff'), undefined, [
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('notifications.openSettings'), onPress: () => void Linking.openSettings() },
+        ]);
+      }
+    }
+    const result = from === 'camera' ? await ImagePicker.launchCameraAsync(options) : await ImagePicker.launchImageLibraryAsync(options);
     const asset = result.canceled ? undefined : result.assets[0];
     if (!asset) return;
-    if ((asset.fileSize ?? 0) > MAX_IMAGE_BYTES) return setError(t('createCharacter.imageTooLarge'));
     setError(null);
-    // A new picture needs its own rights check.
-    set({ imageUri: asset.uri, photoRights: false });
+    const kept = await keepCharacterPicture(asset.uri);
+    if (alive.current) set({ imageUri: kept });
   };
 
   /** Character.AI's "insert a chat": the latest lines of your chat with them join the sample dialog. */
@@ -661,7 +673,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
           <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
             {/* Their picture and name, as Find shows a character: tap to choose a photo. */}
             <View onLayout={at('who')}>
-              <PressableScale onPress={() => void pickImage()} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={styles.hero}>
+              <PressableScale onPress={() => setPhotoMenu(true)} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={styles.hero}>
                 {form.imageUri ? (
                   <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
                 ) : (
@@ -706,12 +718,6 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 ))}
               </ChipGroup>
               <Field label={label('look')} value={form.look} onChange={(look) => set({ look })} placeholder={label('lookPlaceholder')} max={LOOK_MAX} multiline rows={2} action={sparkle('look', label('look'))} />
-              {form.imageUri ? (
-                <View style={styles.toggleRow}>
-                  <Txt style={[styles.toggleText, styles.flex]}>{label('photoRights')}</Txt>
-                  <Toggle value={form.photoRights} onChange={(photoRights) => set({ photoRights })} onColor={systemColors.green} accessibilityLabel={label('photoRights')} />
-                </View>
-              ) : null}
             </Card>
 
             <Card title={label('personality')} problem={problemText('personality')} onLayout={at('personality')}>
@@ -887,6 +893,20 @@ function CharacterForm({ editing }: { editing?: Character }) {
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
+      <Sheet visible={photoMenu} onClose={() => setPhotoMenu(false)} title={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}>
+        <ListRow title={label('flow.choosePhoto')} left={<Ionicons name="images-outline" size={22} color={colors.text} />} onPress={() => void pickImage('library')} />
+        <ListRow title={label('flow.takePhoto')} left={<Ionicons name="camera-outline" size={22} color={colors.text} />} onPress={() => void pickImage('camera')} />
+        {form.imageUri ? (
+          <ListRow
+            title={label('flow.removePhoto')}
+            left={<Ionicons name="trash-outline" size={22} color={systemColors.red} />}
+            onPress={() => {
+              setPhotoMenu(false);
+              set({ imageUri: undefined });
+            }}
+          />
+        ) : null}
+      </Sheet>
     </Screen>
   );
 }
