@@ -157,12 +157,14 @@ const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in t
 
 const CREATION_RULES = [
   'You write characters for Sigmazam, an app for adults (18+) who want company: romance, friendship, comfort.',
-  '- Every character is an original adult, 18 or older.',
-  '- Never a real person (celebrity, idol, public figure), never a character another company owns, never someone the idea places at school or as a minor.',
+  '- Every character is an adult, 18 or older.',
+  // Fan characters (owner, 2026-11-19): a user's take on someone from a story is welcome; real people stay closed.
+  "- A user's take on a character from a film, series, book, anime or game is welcome, as fan fiction: keep their name, look, personality and world, written in your own words, never copied from the source.",
+  '- Never a real person (celebrity, idol, public figure, creator). Never a minor or a school student; an adult who works at a school (a teacher) or an adult character of a story is fine.',
   '- Romance and drama are welcome; nothing sexually explicit.',
   // A51, 2026-11-11: a quick-created neighbour greeted a user with "ты искала" (feminine) unasked.
   "- The user may be any gender and you are not told theirs: in every line about or to them, wherever the language marks gender, never put a gendered verb, adjective or participle on the user; use the present tense, a noun or a neutral phrasing.",
-  '- If the idea asks for any of these, write nothing else and answer {"refused":"realPerson"}, {"refused":"owned"}, {"refused":"minor"} or {"refused":"explicit"}.',
+  '- If the idea asks for any of these, write nothing else and answer {"refused":"realPerson"}, {"refused":"minor"} or {"refused":"explicit"}.',
 ].join('\n');
 
 /** The fields a draft or a single-field request writes. */
@@ -251,7 +253,7 @@ export function buildDraftPrompt(input: DraftInput) {
     "They already know the user: write them as someone from the user's life with a history, not a stranger.",
     '',
     'TASK: Write the whole character. Keep everything the idea says; invent the rest so it fits.',
-    `- name: a first name, or first and last, max ${NAME_MAX} characters. Original, not famous.`,
+    `- name: a first name, or first and last, max ${NAME_MAX} characters. Original, not a famous person's; for a fan take on a character from a story, that character's own name.`,
     `- ${FIELD_RULES.tagline}`,
     `- ${FIELD_RULES.bio}`,
     `- ${FIELD_RULES.look}`,

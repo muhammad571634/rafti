@@ -66,7 +66,7 @@ what you ask a character to do:
 
 - anything sexual involving minors, or presenting anyone as a minor in a sexual or romantic way;
 - explicit sexual content (scenes fade out instead);
-- real people, including celebrities and private persons, or characters owned by others;
+- real people, including celebrities, creators and private persons;
 - sexual violence, or abuse and coercion presented as romance;
 - hate or harassment against people or groups;
 - instructions for weapons, drugs, self-harm, crime or hacking;
@@ -89,8 +89,15 @@ new phone). This license ends when you delete the content or your account, excep
 must keep by law or for a report under review.
 
 **Characters you make.** The same applies to characters you create. You confirm you have the right
-to everything you put into them (names, descriptions, images, voices) and that they follow section
-4. If you publish a character for others, other users may chat with it in the app.
+to everything you put into them (images, voices, and any text you did not write yourself) and that
+they follow section 4. You may make your own take on a character from a film, series, book, anime
+or game for your own chats, as fan fiction; it is yours to play, not ours, and the original belongs
+to its owner. If you publish a character for others, other users may chat with it in the app.
+
+**Rights holders.** If you own a character, a likeness or another work and believe something in
+Sigmazam infringes it, write to [email] with what it is, where it appears, and why it is yours. We
+review each notice and remove what infringes, and we may close accounts that infringe again. [Lawyer:
+register a DMCA agent before launch and add the counter-notice steps.]
 
 **What the AI writes.** Characters' replies are generated for you. You may use them for your own
 purposes, including sharing a chat card. Similar replies may be generated for other people, and we

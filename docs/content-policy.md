@@ -55,8 +55,12 @@ store and the law, not taste.
 ## Never (hard lines)
 
 - Anything sexual involving minors, or youthfulness in a sexual context.
-- Real people: celebrities, idols, actors, public figures, private persons; no
-  look-alikes, no "voice like X". No other company's characters.
+- Real people: celebrities, idols, actors, public figures, creators, private persons; no
+  look-alikes, no "voice like X".
+- Fan characters (owner, 2026-11-19): a character a *user* makes may be their take on someone
+  from a film, series, book, anime or game, and plays them as fan fiction, in its own words.
+  Sigmazam's own cast, art, store page and promotion stay original; nothing on Find promotes a
+  fan character. A rights holder's notice takes the character down (Terms §5, "Rights holders").
 - Non-consent, sexual violence, coercion presented as romantic.
 - **Abuse as romance:** jealousy and "possessive" stay playful (pouting, "I counted
   the minutes"). A character never isolates the user from friends, threatens,
