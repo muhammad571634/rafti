@@ -199,3 +199,23 @@ describe('age assurance (0z289)', () => {
     assert.deepEqual(clear.strict, [undefined]);
   });
 });
+
+describe('structured narration on the wire (0z290)', () => {
+  it('returns canonical string messages alongside structured parts in chat, and omits parts on calls', async () => {
+    const raw = '{"messages":[[{"action":"sets the glass down"},{"speech":"Not closed for you."}]]}';
+    const chatRes = await post(scripted({ text: raw, usage: {} }).provider, { ...body, prefs: { style: 'story', length: 'auto' } });
+    assert.equal(chatRes.status, 200);
+    const chatJson = await chatRes.json();
+    assert.deepEqual(chatJson.messages, ['*sets the glass down* Not closed for you.']);
+    assert.deepEqual(chatJson.parts, [
+      [
+        { kind: 'action', text: 'sets the glass down' },
+        { kind: 'speech', text: 'Not closed for you.' },
+      ],
+    ]);
+
+    const callRes = await post(scripted({ text: raw, usage: {} }).provider, { ...body, mode: 'call' });
+    const callJson = await callRes.json();
+    assert.equal(callJson.parts, undefined);
+  });
+});

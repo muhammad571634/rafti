@@ -302,6 +302,8 @@ export interface Message {
   author: MessageAuthor;
   kind: MessageKind;
   text?: string;
+  /** Structured narration and speech blocks of this bubble (`0z290`): voice reads only `speech`, the bubble renders `action` in its own block. */
+  parts?: { kind: 'speech' | 'action'; text: string }[];
   /** The tone the user sent this text in; the model hears it for this reply. */
   tone?: MessageTone;
   /** The line this one answers (swipe or Reply in the menu): a copy, so it outlives the original (`src/lib/reply-quote.ts`). */

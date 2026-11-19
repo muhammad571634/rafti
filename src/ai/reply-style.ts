@@ -1,7 +1,7 @@
 import type { ReplyPrefs } from '@/lib/reply-engine';
 import type { Emotion, NextKind, SetupOffer } from '@/types';
 
-import { speechOnly } from '../lib/reply-engine/narration';
+import { cleanActionText, cleanSegments, messageSpeech, partsToText, segments, speechFromParts, speechOnly, type Segment } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
 import { cleanDayNotes } from './own-day';
 import { cleanThought } from './inner-thought';
@@ -17,8 +17,8 @@ import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
  *   change only when the user changes them.
  * - `turnLines`: this turn's mood and plan (`planReply`), last, after the history and any
  *   `steerCue`, as they change every turn. They are hints: the model has the last word.
- * The model answers in `REPLY_SHAPE`; `parseModelReply` reads it and `enforceStyle` holds Talk to
- * its promise of no narration.
+ * The model answers in `REPLY_SHAPE`; `parseModelReply` reads it and `enforceStyle` /
+ * `enforceStyleBubbles` hold Talk to its promise of no narration.
  */
 
 export const EMOTIONS: readonly Emotion[] = ['calm', 'happy', 'playful', 'shy', 'tender', 'worried', 'sad', 'annoyed'];
@@ -26,11 +26,11 @@ export const EMOTIONS: readonly Emotion[] = ['calm', 'happy', 'playful', 'shy', 
 const STYLE_GUIDE: Record<ReplyPrefs['style'], string> = {
   talk: 'Talk: text like a real person on their phone. Spoken lines only: no narration, no asterisks.',
   mix:
-    'Mixed: mostly dialogue, like texting, with at most one short action or feeling in *asterisks* ' +
-    'when it says more than words (e.g. *laughs into the pillow*).',
+    'Mixed: mostly dialogue, like texting, with at most one short action or feeling (in an "action" part or *asterisks*) ' +
+    'when it says more than words (e.g. laughs into the pillow).',
   story:
-    'Story: immersive roleplay prose. Narrate your actions, the place and your feelings in *asterisks*, ' +
-    'weave dialogue between them, and move the scene on a little every turn. ' +
+    'Story: immersive roleplay prose. Narrate your actions, the place and your feelings (in "action" parts or *asterisks*), ' +
+    'weave spoken dialogue between them, and move the scene on a little every turn. ' +
     'Never narrate what the user does, thinks or says: only yourself and the world.',
 };
 
@@ -65,6 +65,22 @@ export const REPLY_SHAPE =
   'never for their past ("when I was 15"), a character, the story or someone else. ' +
   'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
+/**
+ * Structured narration (0z290): asked only on Mixed / Story text chats (never Talk, Call or Bedtime).
+ * Separating actions from spoken dialogue lets voice skip narration with zero regex guesses and lets
+ * the bubble style each action in its own quiet block (Variant A).
+ */
+export const STRUCTURED_NARRATION_SHAPE =
+  'When a bubble has narration (actions, feelings, scene), write that bubble as a list of parts: ' +
+  '[{"action":"..."},{"speech":"..."}] (plain prose inside action with no asterisks; speech is only what you say out loud). ' +
+  'Plain speech-only bubbles stay strings.';
+
+/** Reply JSON shape for a given chat mode and reply style: adds structured narration only where narration is allowed. */
+export function replyShape(mode?: string, style?: ReplyPrefs['style']): string {
+  if (mode === 'call' || mode === 'bedtime' || style === 'talk') return REPLY_SHAPE;
+  return `${REPLY_SHAPE} ${STRUCTURED_NARRATION_SHAPE}`;
+}
+
 // The chat's one-tap replies (0z176) are gone (owner, 2026-11-17: the user writes, a live
 // conversation): the prompt no longer asks for "ideas". An older server's reply may still carry them,
 // so the parse below keeps reading the field; nothing draws it.
@@ -86,6 +102,11 @@ export function cleanIdeas(raw: unknown): string[] {
 
 export interface ModelReply {
   bubbles: string[];
+  /**
+   * Structured narration & speech parts per bubble (`0z290`), parallel to `bubbles`. Present when
+   * the model answered with structured parts so voice skips narration without asterisk guesswork.
+   */
+  parts?: Segment[][];
   /** The language the model said it writes in (its "language"): for the log only, a short name. */
   language?: string;
   emotion?: Emotion;
@@ -112,6 +133,92 @@ export interface ModelReply {
   next?: NextKind;
 }
 
+/** One bubble ready for delivery: canonical text plus optional structured parts when narration is present. */
+export interface ReplyBubble {
+  text: string;
+  parts?: Segment[];
+}
+
+/** Splits any *asterisks* a model slipped inside a speech field into proper action/speech segments. */
+function splitSpeechField(text: string): Segment[] {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+  return trimmed.includes('*') ? segments(trimmed) : [{ kind: 'speech', text: trimmed }];
+}
+
+/** Reads one part entry (`{"action":"..."}`, `{"speech":"..."}`, `{"action":"...","speech":"..."}`, `{"kind","text"}` or string). */
+function readPartEntry(entry: unknown): Segment[] {
+  if (typeof entry === 'string') return splitSpeechField(entry);
+  if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return [];
+  const obj = entry as Record<string, unknown>;
+  const out: Segment[] = [];
+  const kind = obj.kind ?? obj.type;
+  if ((kind === 'action' || kind === 'narration') && typeof obj.text === 'string') {
+    const cleaned = cleanActionText(obj.text);
+    if (cleaned) out.push({ kind: 'action', text: cleaned });
+    return out;
+  }
+  if ((kind === 'speech' || kind === 'dialogue') && typeof obj.text === 'string') {
+    return splitSpeechField(obj.text);
+  }
+  const action = typeof obj.action === 'string' ? obj.action : typeof obj.narration === 'string' ? obj.narration : undefined;
+  const speech = typeof obj.speech === 'string' ? obj.speech : typeof obj.dialogue === 'string' ? obj.dialogue : undefined;
+  if (action) {
+    const cleaned = cleanActionText(action);
+    if (cleaned) out.push({ kind: 'action', text: cleaned });
+  }
+  if (speech) out.push(...splitSpeechField(speech));
+  return out;
+}
+
+/** True when a plain object holds only an action part or only a speech part (catches a flattened `"messages":[{"action":...},{"speech":...}]`). */
+function partObjectRole(item: unknown): 'action' | 'speech' | 'both' | null {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+  const obj = item as Record<string, unknown>;
+  const kind = obj.kind ?? obj.type;
+  if ((kind === 'action' || kind === 'narration') && typeof obj.text === 'string') return 'action';
+  if ((kind === 'speech' || kind === 'dialogue') && typeof obj.text === 'string') return 'speech';
+  const hasAction = typeof obj.action === 'string' || typeof obj.narration === 'string';
+  const hasSpeech = typeof obj.speech === 'string' || typeof obj.dialogue === 'string';
+  if (hasAction && hasSpeech) return 'both';
+  if (hasAction) return 'action';
+  if (hasSpeech) return 'speech';
+  return null;
+}
+
+function parseMessageList(raw: unknown): { bubbles: string[]; parts?: Segment[][] } {
+  if (!Array.isArray(raw)) return { bubbles: [] };
+  // If a light model forgot the outer bracket and wrote `[{"action":"..."},{"speech":"..."}]` directly,
+  // group the alternating single-role part objects back into one bubble instead of splitting the action out.
+  const roles = raw.map(partObjectRole);
+  const flattenedSingleBubble =
+    raw.length > 1 &&
+    roles.every((r) => r === 'action' || r === 'speech') &&
+    roles.includes('action') &&
+    roles.includes('speech');
+  const items = flattenedSingleBubble ? [raw] : raw;
+
+  const parsed: { text: string; parts?: Segment[]; structured: boolean }[] = [];
+  for (const item of items) {
+    if (typeof item === 'string') {
+      const text = item.trim();
+      if (!text) continue;
+      parsed.push({ text, parts: cleanSegments(segments(text)), structured: false });
+      continue;
+    }
+    const rawParts = Array.isArray(item) ? item.flatMap(readPartEntry) : readPartEntry(item);
+    const cleaned = cleanSegments(rawParts);
+    if (!cleaned?.length) continue;
+    const text = partsToText(cleaned);
+    if (!text) continue;
+    parsed.push({ text, parts: cleaned, structured: true });
+  }
+  const bubbles = parsed.map((p) => p.text);
+  const hadStructured = parsed.some((p) => p.structured);
+  const parts = hadStructured && parsed.every((p) => p.parts?.length) ? parsed.map((p) => p.parts!) : undefined;
+  return { bubbles, ...(parts ? { parts } : {}) };
+}
+
 /**
  * JSON.parse, and once more with the light model's usual slip mended: a list split into several
  * (`"messages":["a"],["b"]`). Seen twice in the eval (0z179), once with `"crisis":true`, which the
@@ -133,9 +240,7 @@ export function parseModelReply(raw: string): ModelReply {
   if (json) {
     try {
       const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; minor?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; next?: unknown };
-      const bubbles = Array.isArray(data.messages)
-        ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
-        : [];
+      const { bubbles, parts } = parseMessageList(data.messages);
       if (bubbles.length) {
         const photos = cleanPhotoNotes(data.photos);
         const setup = cleanSetup(data.setup);
@@ -147,6 +252,7 @@ export function parseModelReply(raw: string): ModelReply {
         const next = cleanNext(data.next);
         return {
           bubbles,
+          ...(parts ? { parts } : {}),
           ...(typeof data.language === 'string' && data.language.trim() ? { language: data.language.trim().slice(0, 24) } : {}),
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
           intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
@@ -220,4 +326,95 @@ export function splitBubbles(bubbles: readonly string[]): string[] {
   }
   if (out.length <= BUBBLES_MAX) return out;
   return [...out.slice(0, BUBBLES_MAX - 1), out.slice(BUBBLES_MAX - 1).join(' ')];
+}
+
+function toReplyBubble(parts: readonly Segment[]): ReplyBubble | null {
+  const cleaned = cleanSegments(parts);
+  if (!cleaned?.length) return null;
+  const text = partsToText(cleaned);
+  if (!text) return null;
+  return cleaned.some((p) => p.kind === 'action') ? { text, parts: cleaned } : { text };
+}
+
+/** Splits an over-long structured Mixed bubble at speech sentence boundaries without breaking an action segment. */
+function splitStructuredBubble(parts: readonly Segment[]): ReplyBubble[] {
+  const whole = toReplyBubble(parts);
+  if (!whole) return [];
+  if (widthOf(whole.text) <= BUBBLE_MAX_CHARS) return [whole];
+
+  const chunks: Segment[] = [];
+  for (const part of parts) {
+    if (part.kind === 'action') {
+      chunks.push(part);
+    } else {
+      const sentences = (part.text.match(SENTENCE) ?? [part.text]).map((s) => s.trim()).filter(Boolean);
+      for (const s of sentences) chunks.push({ kind: 'speech', text: s });
+    }
+  }
+
+  const groups: Segment[][] = [];
+  let current: Segment[] = [];
+  for (const chunk of chunks) {
+    const next = [...current, chunk];
+    const currentText = partsToText(current);
+    const nextText = partsToText(next);
+    // Keep a leading action paired with the speech that follows it instead of stranding a lone action bubble.
+    const onlyAction = current.length > 0 && current.every((c) => c.kind === 'action') && chunk.kind === 'speech';
+    if (current.length && widthOf(nextText) > BUBBLE_MAX_CHARS && !onlyAction && widthOf(currentText) >= 24) {
+      groups.push(current);
+      current = [chunk];
+    } else {
+      current = next;
+    }
+  }
+  if (current.length) groups.push(current);
+
+  return groups.map(toReplyBubble).filter((b): b is ReplyBubble => b !== null);
+}
+
+/**
+ * Style enforcement with structured parts (`0z290`): Talk strips all action parts cleanly without
+ * relying on asterisks, Story keeps multi-beat structured bubbles whole, and Mixed splits long
+ * texting bubbles while keeping every bubble's `parts` aligned with its `text`.
+ */
+export function enforceStyleBubbles(
+  bubbles: readonly string[],
+  parts: readonly (readonly Segment[] | undefined)[] | undefined,
+  style: ReplyPrefs['style'],
+): ReplyBubble[] {
+  if (style === 'talk') {
+    const spoken = bubbles
+      .map((line, i) => {
+        const p = parts?.[i];
+        return p?.length ? speechFromParts(p) : speechOnly(line);
+      })
+      .filter(Boolean);
+    return splitBubbles(spoken).map((text) => ({ text }));
+  }
+
+  const out: ReplyBubble[] = [];
+  for (let i = 0; i < bubbles.length; i++) {
+    const p = parts?.[i]?.length ? cleanSegments(parts[i]) : undefined;
+    if (style === 'story') {
+      const bubble = p ? toReplyBubble(p) : bubbles[i].trim() ? { text: bubbles[i].trim() } : null;
+      if (bubble) out.push(bubble);
+      continue;
+    }
+    if (p) {
+      out.push(...splitStructuredBubble(p));
+    } else {
+      for (const text of splitBubbles([bubbles[i]])) out.push({ text });
+    }
+  }
+
+  if (style === 'story' || out.length <= BUBBLES_MAX) return out;
+  const tail = out.slice(BUBBLES_MAX - 1);
+  const mergedParts = tail.flatMap((b) => b.parts ?? cleanSegments(segments(b.text)) ?? []);
+  const merged = toReplyBubble(mergedParts) ?? { text: tail.map((b) => b.text).join(' ') };
+  return [...out.slice(0, BUBBLES_MAX - 1), merged];
+}
+
+/** Only what the character says aloud across a reply burst (for voice notes and previews). */
+export function bubblesSpeech(bubbles: readonly ReplyBubble[]): string {
+  return bubbles.map(messageSpeech).filter(Boolean).join(' ').trim();
 }

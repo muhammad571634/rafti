@@ -36,11 +36,11 @@ import {
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupInvokeCue, groupSkipCue, steerBlock, steerMarker, TWIST_MAX, type SteerKind } from '@/lib/chat-steer';
-import { bubbleTimes, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
+import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
-import { enforceStyle } from '@/ai/reply-style';
+import { bubblesSpeech, enforceStyleBubbles } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import { nextChoices } from '@/ai/next-moment';
 import { dropBranchLines, loadBranchLines, saveBranchLines } from '@/lib/branch-files';
@@ -4830,7 +4830,7 @@ export function previewFor(message: Message) {
     default:
       // What they said, without the *narration* that would run into it ("grins Okay, that…");
       // a line that is only narration shows it as plain words.
-      return speechOnly(message.text ?? '') || plainText(message.text ?? '');
+      return messageSpeech(message) || plainText(message.text ?? '');
   }
 }
 
@@ -6139,8 +6139,9 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
 
   // `setup`: an alarm or plan they offered to set up; its card goes under the reply's last bubble.
   // `felt`: the model's own reading of how the friend feels after this reply (0z141); the stand-in's guess otherwise.
-  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[], thought?: string, next?: NextKind) => {
-    const lines = enforceStyle(written, replyPrefs(bond).style);
+  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[], thought?: string, next?: NextKind, writtenParts?: (Segment[] | undefined)[]) => {
+    const bubbles = enforceStyleBubbles(written, writtenParts, replyPrefs(bond).style);
+    const lines = bubbles.map((b) => b.text);
     // The model's one-tap replies, in the chat's language, as chips: a tap sends them as a message
     // would. A care check-in's own ideas and the turn's own chips come first.
     const offeredChips = !(reach && ideas?.length) && !chips?.length && offered?.length ? offered : undefined;
@@ -6151,7 +6152,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
     const mood: Mood | undefined = felt ? { ...felt, at: new Date().toISOString() } : turn?.plan.mood;
 
     // The voice note says only what is spoken: narration stays on the screen.
-    const said = speechOnly(lines.join(' '));
+    const said = bubblesSpeech(bubbles);
     // Roughly how long the burst takes to say out loud.
     const voiceSec = Math.max(3, Math.round(said.split(/\s+/).length / 2.6));
     // Voice replies come with a plan and use its minutes; without minutes the reply is text.
@@ -6189,6 +6190,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
         }
         const message: Message = {
           ...themText(conversationId, line),
+          ...(bubbles[i]?.parts?.length ? { parts: bubbles[i].parts } : {}),
           chips: last ? (chips ?? offeredChips) : undefined,
           ...(last && !chips?.length && offeredChips ? { chipsWritten: true } : {}),
           emotion: mood?.emotion,
@@ -6302,7 +6304,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
       if (reply.minor) raiseAgeDoubt(set, get, conversationId, false);
-      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought, reply.next);
+      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought, reply.next, reply.parts);
       // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
       if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
         applyModelThreads(set, get, conversationId, character.id, reply.threads);

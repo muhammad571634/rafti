@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 
 import { chatParts } from './chat-prompt';
 import { joinParts } from './prompt-layout';
-import { cleanIdeas, enforceStyle, parseModelReply, REPLY_SHAPE, replyStyleLines, splitBubbles } from './reply-style';
+import { bubblesSpeech, cleanIdeas, enforceStyle, enforceStyleBubbles, parseModelReply, REPLY_SHAPE, replyShape, replyStyleLines, splitBubbles, STRUCTURED_NARRATION_SHAPE } from './reply-style';
 import { buildCharacterPrompt, buildGroupPrompt } from './rules';
 import { CRISIS_CUE } from './safety';
 
@@ -132,5 +132,76 @@ describe('one-tap replies written with the reply (0z176)', () => {
       const parts = chatParts({ character, user, messages: [], ...(mode ? { mode } : {}) });
       assert.equal(parts.some((p) => p.name === 'ideas' || /"ideas"/.test(p.text)), false);
     }
+  });
+});
+
+describe('structured narration in the reply (0z290)', () => {
+  it('asks for structured parts only on Mixed and Story chats, never Talk, Call or Bedtime', () => {
+    assert.ok(replyShape('chat', 'story').includes(STRUCTURED_NARRATION_SHAPE));
+    assert.ok(replyShape('chat', 'mix').includes(STRUCTURED_NARRATION_SHAPE));
+    assert.equal(replyShape('chat', 'talk'), REPLY_SHAPE);
+    assert.equal(replyShape('call', 'story'), REPLY_SHAPE);
+    assert.equal(replyShape('bedtime', 'story'), REPLY_SHAPE);
+  });
+
+  it('parses structured part arrays, single objects and flattened part lists alongside plain strings', () => {
+    const nested = parseModelReply(
+      '{"emotion":"tender","messages":[[{"action":"*sets the glass down*"},{"speech":"Not closed for you."},{"action":"hands you a towel"},{"speech":"Still cold?"}],"Tea is on."]}',
+    );
+    assert.deepEqual(nested.bubbles, ['*sets the glass down* Not closed for you. *hands you a towel* Still cold?', 'Tea is on.']);
+    assert.deepEqual(nested.parts, [
+      [
+        { kind: 'action', text: 'sets the glass down' },
+        { kind: 'speech', text: 'Not closed for you.' },
+        { kind: 'action', text: 'hands you a towel' },
+        { kind: 'speech', text: 'Still cold?' },
+      ],
+      [{ kind: 'speech', text: 'Tea is on.' }],
+    ]);
+
+    // Light model drops the outer bracket on a single narrated bubble.
+    const flat = parseModelReply('{"messages":[{"action":"laughs softly"},{"speech":"Come in."}]}');
+    assert.deepEqual(flat.bubbles, ['*laughs softly* Come in.']);
+    assert.deepEqual(flat.parts, [
+      [
+        { kind: 'action', text: 'laughs softly' },
+        { kind: 'speech', text: 'Come in.' },
+      ],
+    ]);
+
+    // Single object with both action and speech keys.
+    const single = parseModelReply('{"messages":[{"action":"smiles","speech":"Hey there."}]}');
+    assert.deepEqual(single.bubbles, ['*smiles* Hey there.']);
+    assert.deepEqual(single.parts, [
+      [
+        { kind: 'action', text: 'smiles' },
+        { kind: 'speech', text: 'Hey there.' },
+      ],
+    ]);
+  });
+
+  it('strips structured actions on Talk, keeps Story whole, and splits long Mixed bubbles without losing parts', () => {
+    const parts = [
+      [
+        { kind: 'action' as const, text: '(sets the glass down and smiles)' },
+        { kind: 'speech' as const, text: 'Not closed for you. Come in right now before you catch a cold. I just put the kettle on for tea. Sit by the heater while I grab a dry towel for you.' },
+      ],
+    ];
+    const bubbles = ['*(sets the glass down and smiles)* Not closed for you. Come in right now before you catch a cold. I just put the kettle on for tea. Sit by the heater while I grab a dry towel for you.'];
+
+    const talk = enforceStyleBubbles(bubbles, parts, 'talk');
+    assert.ok(talk.every((b) => !b.parts && !b.text.includes('glass')));
+    assert.ok(bubblesSpeech(talk).startsWith('Not closed for you.'));
+
+    const story = enforceStyleBubbles(bubbles, parts, 'story');
+    assert.equal(story.length, 1);
+    assert.equal(story[0].parts?.[0].kind, 'action');
+    assert.equal(bubblesSpeech(story).includes('glass'), false);
+
+    const mix = enforceStyleBubbles(bubbles, parts, 'mix');
+    assert.ok(mix.length >= 2);
+    assert.equal(mix[0].parts?.[0].kind, 'action');
+    assert.equal(mix[0].parts?.[1].kind, 'speech');
+    assert.equal(bubblesSpeech(mix).includes('glass'), false);
   });
 });

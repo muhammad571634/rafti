@@ -22,7 +22,7 @@ import { FACE_AT, portraitOf, sceneFocus, stretchLeft } from '@/components/chat/
 import { InkText } from '@/components/ink';
 import { Anim, characterImage, PressableScale } from '@/components/ui';
 import { useDayKey } from '@/hooks/use-day-key';
-import { plainText, speechOnly } from '@/lib/reply-engine';
+import { messageSpeech, plainText } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
 import { awakeAt, freshDayNote } from '@/lib/today';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -158,7 +158,7 @@ export function waitingLine(messages: readonly Message[] | undefined): { text: s
   if (!line?.text) return undefined;
   if (list.slice(Math.max(0, at - BEFORE)).some((m) => m.card === 'helpline')) return undefined;
   // "*smiles* ..." says nothing aloud: then the narration, without its asterisks.
-  const said = speechOnly(line.text);
+  const said = messageSpeech(line);
   const text = /[\p{L}\p{N}]/u.test(said) ? said : plainText(line.text);
   return text ? { text, at: line.createdAt } : undefined;
 }

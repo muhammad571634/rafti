@@ -14,6 +14,7 @@ import { cleanNext } from './next-moment';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
+import { cleanSegments, type Segment } from '@/lib/reply-engine/narration';
 import type { CharacterArc, Emotion, NextKind, PlanId } from '@/types';
 import type { EventBatch } from '@/lib/analytics-events';
 import type { SetupOffer } from '@/types';
@@ -240,8 +241,8 @@ export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
   pay?: PayLine,
-): Promise<{ lines: string[]; crisis: boolean; minor?: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; minor?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
+): Promise<{ lines: string[]; parts?: (Segment[] | undefined)[]; crisis: boolean; minor?: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
+  const reply = await call<{ messages?: string[]; parts?: unknown; crisis?: boolean; minor?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -252,14 +253,21 @@ export async function serverReply(
     TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
   // On a call the server signs each line it may read aloud (`voice`, one per message); the
-  // signatures stay paired with their lines.
+  // signatures and optional structured narration `parts` stay paired with their lines.
   const signs = Array.isArray(reply?.voice) ? reply.voice : [];
+  const rawParts = Array.isArray(reply?.parts) ? reply.parts : [];
   const kept = (reply?.messages ?? [])
-    .map((line, i) => ({ line, sig: typeof signs[i] === 'string' ? (signs[i] as string) : undefined }))
+    .map((line, i) => ({
+      line,
+      sig: typeof signs[i] === 'string' ? (signs[i] as string) : undefined,
+      parts: rawParts.length ? cleanSegments(rawParts[i]) : undefined,
+    }))
     .filter(({ line }) => typeof line === 'string' && line.trim());
   if (!kept.length) return null;
+  const hasParts = kept.some((k) => !!k.parts?.length);
   return {
     lines: kept.map((k) => k.line),
+    ...(hasParts ? { parts: kept.map((k) => k.parts) } : {}),
     crisis: reply?.crisis === true,
     // The model read the user as under 18: the app turns careful (src/lib/age-check.ts).
     ...(reply?.minor === true ? { minor: true } : {}),

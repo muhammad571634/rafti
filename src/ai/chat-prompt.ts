@@ -22,7 +22,7 @@ import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
 import { thoughtParts } from './inner-thought';
 import { nextParts } from './next-moment';
-import { REPLY_SHAPE } from './reply-style';
+import { replyShape } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
 import { threadParts } from './thread-prompt';
@@ -246,7 +246,7 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),
-    part('shape', 'turn', [REPLY_SHAPE]),
+    part('shape', 'turn', [replyShape(input.mode, input.prefs?.style)]),
   ];
 }
 

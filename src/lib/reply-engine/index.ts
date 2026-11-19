@@ -24,7 +24,21 @@ export function planReply(ctx: TurnContext) {
 
 export { bubbleTimes, chatRhythm, DEFAULT_REPLY_PREFS, memoryQuote, pace, replyPrefs } from './flow';
 export { currentMood, temperamentFor } from './mood';
-export { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
-export type { Segment } from './narration';
+export {
+  blockWords,
+  bubbleBlocks,
+  cleanActionText,
+  cleanSegments,
+  cutBlocks,
+  cutSegments,
+  messageSpeech,
+  partsToText,
+  plainText,
+  segments,
+  segmentWords,
+  speechFromParts,
+  speechOnly,
+} from './narration';
+export type { BubbleBlock, Segment } from './narration';
 export { readMessage } from './read';
 export type { Move, ReplyPrefs, TurnContext, TurnPlan, TurnTrigger } from './types';

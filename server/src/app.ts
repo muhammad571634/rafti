@@ -1277,7 +1277,9 @@ export function createApp(
       // `next`: a moment the reply invites the user to (0z283); only one the turn opened, texting only, never after a crisis.
       const next = crisis || (input.mode && input.mode !== 'chat') ? undefined : cleanNext(reply.next, input.next ?? []);
       // `minor`: the model read the user as under 18; the app turns careful for every character (src/lib/age-check.ts).
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, ...(reply.minor ? { minor: true } : {}), photos: reply.photos, setup, threads, day, react, thought, ideas, next, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
+      // `parts`: structured narration/speech parts parallel to `messages` (0z290); omitted on calls and older-format replies.
+      const parts = input.mode === 'call' ? undefined : reply.parts;
+      return c.json({ messages: reply.bubbles, ...(parts ? { parts } : {}), emotion: reply.emotion, intensity: reply.intensity, crisis, ...(reply.minor ? { minor: true } : {}), photos: reply.photos, setup, threads, day, react, thought, ideas, next, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

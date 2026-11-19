@@ -21,14 +21,14 @@ import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components
 import { planDate } from '@/components/plans/copy';
 import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
-import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
+import { blockWords, bubbleBlocks, cutBlocks, plainText } from '@/lib/reply-engine';
 import { ageDoubt } from '@/lib/age-check';
 import { useReveal } from '@/lib/reveal';
 import { barsFor, resampleWave } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
 import { ReactionBadge } from '@/components/ink';
 import { colors, friendColor, palette, radius, shadows, space, systemColors } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 import type { Character, Message, WeekStats } from '@/types';
 
 export interface MessageBubbleProps {
@@ -345,11 +345,15 @@ function TextBubble({
 }) {
   const onPhoto = useOnPhoto();
   const muted = message.muted;
-  const parts = useMemo(() => segments(message.text ?? ''), [message.text]);
-  const total = useMemo(() => segmentWords(parts), [parts]);
+  const blocks = useMemo(() => bubbleBlocks(message), [message.parts, message.text]);
+  const total = useMemo(() => blockWords(blocks), [blocks]);
   // A line that just arrived shows word by word (`src/lib/reveal.ts`); any other shows whole.
   const shown = useReveal(message.id, total);
   const revealing = shown < total;
+  const visible = revealing ? cutBlocks(blocks, shown) : blocks;
+  const hasActionBlock = blocks.some((b) => b.kind === 'action');
+  const speechColor = muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : onPhoto ? colors.onMedia : colors.bubbleOtherText;
+  const actionStyle = mine ? styles.actionMine : onPhoto ? styles.photoAction : styles.actionTheirs;
 
   return (
     <View
@@ -362,22 +366,55 @@ function TextBubble({
         muted && styles.bubbleMuted,
       ]}>
       {message.replyTo && quoteTitle ? <BubbleQuote quote={message.replyTo} title={quoteTitle} onPress={onQuotePress} /> : null}
-      <Txt
-        style={styles.text}
-        color={muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : onPhoto ? colors.onMedia : colors.bubbleOtherText}
-        // A screen reader hears the whole line at once, not each word as it lands.
-        accessibilityLabel={revealing ? message.text : undefined}>
-        {/* *Narration* (Mixed and Story replies) reads as an aside: italic and quieter than speech. */}
-        {(revealing ? cutSegments(parts, shown) : parts).map((part, i) =>
-          part.kind === 'action' ? (
-            <Txt key={i} style={[styles.text, styles.action, mine ? styles.actionMine : onPhoto ? styles.photoAction : styles.actionTheirs]}>
-              {part.text}
-            </Txt>
-          ) : (
-            part.text
-          ),
-        )}
-      </Txt>
+      {hasActionBlock ? (
+        <View
+          style={styles.blockStack}
+          // A screen reader hears the whole line at once, not each word as it lands.
+          accessible={revealing}
+          accessibilityLabel={revealing ? plainText(message.text ?? '') : undefined}>
+          {/* Variant A (0z290): narration in its own quiet barred block inside the bubble, spoken lines below in full ink. */}
+          {visible.map((block, i) =>
+            block.kind === 'action' ? (
+              <View key={i} style={styles.actionBlock}>
+                <View style={[styles.actionBar, mine ? styles.actionBarMine : styles.actionBarTheirs]} />
+                <Txt style={[styles.actionBlockText, actionStyle]}>{block.text}</Txt>
+              </View>
+            ) : (
+              <Txt key={i} style={styles.text} color={speechColor}>
+                {block.segments.map((part, j) =>
+                  part.kind === 'action' ? (
+                    <Txt key={j} style={[styles.text, styles.action, actionStyle]}>
+                      {part.text}
+                    </Txt>
+                  ) : (
+                    part.text
+                  ),
+                )}
+              </Txt>
+            ),
+          )}
+        </View>
+      ) : (
+        <Txt
+          style={styles.text}
+          color={speechColor}
+          // A screen reader hears the whole line at once, not each word as it lands.
+          accessibilityLabel={revealing ? plainText(message.text ?? '') : undefined}>
+          {visible.flatMap((block, i) =>
+            block.kind === 'speech'
+              ? block.segments.map((part, j) =>
+                  part.kind === 'action' ? (
+                    <Txt key={`${i}-${j}`} style={[styles.text, styles.action, actionStyle]}>
+                      {part.text}
+                    </Txt>
+                  ) : (
+                    part.text
+                  ),
+                )
+              : [],
+          )}
+        </Txt>
+      )}
     </View>
   );
 }
@@ -920,8 +957,14 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
   },
   text: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
+  blockStack: { gap: space.sm },
+  actionBlock: { flexDirection: 'row', alignItems: 'stretch', gap: space.sm },
+  actionBar: { width: 2, borderRadius: 1, marginVertical: 2 },
+  actionBarTheirs: { backgroundColor: ink.accent, opacity: 0.55 },
+  actionBarMine: { backgroundColor: colors.bubbleSelfText, opacity: 0.4 },
+  actionBlockText: { flexShrink: 1, ...inkFace('sub'), fontStyle: 'italic' },
   action: { fontStyle: 'italic' },
-  actionTheirs: { color: colors.textSecondary },
+  actionTheirs: { color: ink.text2 },
   actionMine: { color: colors.bubbleSelfText, opacity: 0.8 },
   bubbleMine: { backgroundColor: colors.bubbleSelf },
   // White on the cream with a faint rim, so it holds on a white or light wallpaper too.

@@ -7,7 +7,7 @@ import type { Character, MemoryItem, Message, Relationship } from '@/types';
 import { bubbleTimes, chatRhythm, FIRST_BUBBLE_MIN_MS, pace, planTurn, replyPrefs } from './flow';
 import { planReply } from './index';
 import { currentMood, feel, temperamentFor } from './mood';
-import { cutSegments, plainText, segments, segmentWords, speechOnly } from './narration';
+import { blockWords, bubbleBlocks, cleanSegments, cutBlocks, cutSegments, messageSpeech, partsToText, plainText, segments, segmentWords, speechFromParts, speechOnly } from './narration';
 import { readMessage } from './read';
 import type { TurnContext } from './types';
 
@@ -247,5 +247,80 @@ describe('cutSegments (a reply revealed word by word)', () => {
 
   it('shows nothing for zero words', () => {
     assert.deepEqual(cutSegments(parts, 0), []);
+  });
+});
+
+describe('structured narration blocks (Variant A, 0z290)', () => {
+  it('cleans parts, merges adjacent same-kind parts and strips stray asterisks inside actions', () => {
+    const cleaned = cleanSegments([
+      { kind: 'action', text: '*sets the glass down*' },
+      { kind: 'action', text: 'looks out at the rain' },
+      { kind: 'speech', text: '  Not closed for you.  ' },
+      { kind: 'speech', text: 'Come in.' },
+    ]);
+    assert.deepEqual(cleaned, [
+      { kind: 'action', text: 'sets the glass down looks out at the rain' },
+      { kind: 'speech', text: 'Not closed for you. Come in.' },
+    ]);
+    assert.equal(partsToText(cleaned!), '*sets the glass down looks out at the rain* Not closed for you. Come in.');
+  });
+
+  it('skips structured action parts in speech even when written with parentheses', () => {
+    const msg = {
+      text: '*(laughs softly)* Come in.',
+      parts: [
+        { kind: 'action' as const, text: '(laughs softly)' },
+        { kind: 'speech' as const, text: 'Come in.' },
+      ],
+    };
+    assert.equal(speechFromParts(msg.parts), 'Come in.');
+    assert.equal(messageSpeech(msg), 'Come in.');
+  });
+
+  it('builds stacked bubble blocks for structured and legacy narration while keeping mid-sentence *emphasis* inline', () => {
+    assert.deepEqual(
+      bubbleBlocks({
+        parts: [
+          { kind: 'action', text: 'hands you a dry towel' },
+          { kind: 'speech', text: 'Left your umbrella again?' },
+        ],
+      }),
+      [
+        { kind: 'action', text: 'hands you a dry towel' },
+        { kind: 'speech', segments: [{ kind: 'speech', text: 'Left your umbrella again?' }] },
+      ],
+    );
+    // Legacy text trims leading space on speech after a stage direction.
+    assert.deepEqual(bubbleBlocks({ text: '*leans in* You came. *smiles*' }), [
+      { kind: 'action', text: 'leans in' },
+      { kind: 'speech', segments: [{ kind: 'speech', text: 'You came.' }] },
+      { kind: 'action', text: 'smiles' },
+    ]);
+    // Single-word emphasis mid-sentence stays inline instead of splitting the sentence.
+    assert.deepEqual(bubbleBlocks({ text: 'Wait, you *actually* came?' }), [
+      {
+        kind: 'speech',
+        segments: [
+          { kind: 'speech', text: 'Wait, you ' },
+          { kind: 'action', text: 'actually' },
+          { kind: 'speech', text: ' came?' },
+        ],
+      },
+    ]);
+  });
+
+  it('reveals stacked blocks word by word', () => {
+    const blocks = bubbleBlocks({
+      parts: [
+        { kind: 'action', text: 'leans in' },
+        { kind: 'speech', text: 'You came.' },
+      ],
+    });
+    assert.equal(blockWords(blocks), 4);
+    assert.deepEqual(cutBlocks(blocks, 1), [{ kind: 'action', text: 'leans' }]);
+    assert.deepEqual(cutBlocks(blocks, 3), [
+      { kind: 'action', text: 'leans in' },
+      { kind: 'speech', segments: [{ kind: 'speech', text: 'You ' }] },
+    ]);
   });
 });
