@@ -34,6 +34,7 @@ import { haptic } from '@/lib/haptics';
 import { TODAY_SLOTS } from '@/lib/today';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
+import { useFirstSteps } from '@/hooks/use-first-steps';
 import { colors, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 import type { Character, Conversation, WidgetKind } from '@/types';
@@ -102,6 +103,8 @@ export default function HomeScreen() {
   const today = useDayKey();
   const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
+  // A first step done and not yet paid lights the gift dot too (0z294).
+  const stepWaiting = useFirstSteps().ready;
 
   // Four slots; older saves are filled to four by the store's v18 migration.
   const slots = useMemo(() => {
@@ -172,7 +175,7 @@ export default function HomeScreen() {
     [slots],
   );
   // A gift waiting marks Gifts in More, and More itself, unless the Gifts widget shows it.
-  const giftBadge = (spinReady || giftWaiting) && !covered.has('gifts');
+  const giftBadge = (spinReady || giftWaiting || stepWaiting) && !covered.has('gifts');
   const firstEmpty = slots.indexOf(null);
   const anyWidget = firstEmpty < 0 || slots.some(Boolean);
 

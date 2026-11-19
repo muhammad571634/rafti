@@ -865,6 +865,17 @@
     "starterDetail": "1回限りの特別歓迎価格"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "はじめの一歩",
+      "friends": "3人の友だちと話す",
+      "create": "自分のキャラクターを作る",
+      "deep": "じっくり話す",
+      "plan": "一緒に予定を立てる",
+      "notify": "相手から連絡をもらう",
+      "claim": "受け取る",
+      "go": "開く",
+      "done": "完了"
+    },
     "title": "無料ギフト",
     "day": "{{count}}日目",
     "wheel": "ルーレット",
@@ -1858,7 +1869,7 @@
       "voiceClone": "キャラクターボイス",
       "portrait": "キャラクター立ち絵",
       "stream": "配信",
-      "quest": "日常クエスト",
+      "quest": "クエスト",
       "other": "その他",
       "someone": "友達",
       "trial": "Pro無料体験",

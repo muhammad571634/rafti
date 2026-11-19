@@ -886,6 +886,17 @@
     "starterDetail": "Prix d'accueil unique"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Premiers pas",
+      "friends": "Parle à 3 amis",
+      "create": "Crée ton propre personnage",
+      "deep": "Aie une vraie conversation",
+      "plan": "Prévoyez quelque chose ensemble",
+      "notify": "Laisse-les t’écrire en premier",
+      "claim": "Récupérer",
+      "go": "Aller",
+      "done": "Fait"
+    },
     "title": "Cadeaux gratuits",
     "day": "Jour {{count}}",
     "wheel": "Roue de la chance",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Voix du personnage",
       "portrait": "Portrait du personnage",
       "stream": "Direct",
-      "quest": "Quête dans la vraie vie",
+      "quest": "Quête",
       "other": "Autre",
       "someone": "un ami",
       "trial": "Essai gratuit Pro",

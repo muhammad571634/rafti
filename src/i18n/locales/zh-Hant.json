@@ -865,6 +865,17 @@
     "starterDetail": "僅此一次的專屬見面優惠"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "第一步",
+      "friends": "和 3 位朋友聊天",
+      "create": "創建你自己的角色",
+      "deep": "好好聊一次",
+      "plan": "一起安排計畫",
+      "notify": "讓他們先傳訊息給你",
+      "claim": "領取",
+      "go": "前往",
+      "done": "已完成"
+    },
     "title": "免費禮物",
     "day": "第{{count}}天",
     "wheel": "幸運轉盤",
@@ -1858,7 +1869,7 @@
       "voiceClone": "角色專屬語音複製",
       "portrait": "角色精美立繪解鎖",
       "stream": "觀看連麥直播",
-      "quest": "日常現實小任務",
+      "quest": "日常探索",
       "other": "其餘項目",
       "someone": "一位好友",
       "trial": "Pro會員免費體驗",

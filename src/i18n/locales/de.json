@@ -886,6 +886,17 @@
     "starterDetail": "Einmaliger Willkommenspreis"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Erste Schritte",
+      "friends": "Schreib mit 3 Freunden",
+      "create": "Erstelle deinen eigenen Charakter",
+      "deep": "Führe ein echtes Gespräch",
+      "plan": "Plant etwas zusammen",
+      "notify": "Lass sie dir zuerst schreiben",
+      "claim": "Abholen",
+      "go": "Los",
+      "done": "Erledigt"
+    },
     "title": "Gratis-Geschenke",
     "day": "Tag {{count}}",
     "wheel": "Glücksrad",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Figurenstimme",
       "portrait": "Figurenbild",
       "stream": "Stream",
-      "quest": "Reallife-Quest",
+      "quest": "Quest",
       "other": "Sonstiges",
       "someone": "ein Freund",
       "trial": "Pro-Testphase",

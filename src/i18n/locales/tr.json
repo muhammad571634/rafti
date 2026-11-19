@@ -886,6 +886,17 @@
     "starterDetail": "Tek seferlik karşılama fiyatı"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "İlk adımlar",
+      "friends": "3 arkadaşla konuş",
+      "create": "Kendi karakterini oluştur",
+      "deep": "Gerçek bir sohbet et",
+      "plan": "Birlikte bir plan yapın",
+      "notify": "Önce onlar yazsın",
+      "claim": "Al",
+      "go": "Git",
+      "done": "Tamam"
+    },
     "title": "Ücretsiz hediyeler",
     "day": "{{count}}. Gün",
     "wheel": "Şans çarkı",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Karakter sesi",
       "portrait": "Karakter portresi",
       "stream": "Yayın",
-      "quest": "Gerçek hayat görevi",
+      "quest": "Görev",
       "other": "Diğer",
       "someone": "bir arkadaş",
       "trial": "Pro ücretsiz deneme",

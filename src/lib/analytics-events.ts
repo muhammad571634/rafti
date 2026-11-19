@@ -44,6 +44,8 @@ export const EVENTS = {
   push_open: ['kind'],
   level_up: ['character', 'level'],
   check_in: ['day'],
+  /** A first step paid (0z294): which one. */
+  first_step: ['kind'],
   /** Their reply invited the user to a moment (a call, a date, a game: `src/ai/next-moment.ts`). */
   next_shown: ['kind', 'character'],
   /** The user tapped that invitation's button. */

@@ -54,6 +54,7 @@ import {
 } from '../../src/economy/shells.ts';
 import type { LedgerReason, MemoryItem, PlanId, TimeSkip } from '../../src/types/index.ts';
 import { PLANS, shellGrant } from '../../src/economy/plans.ts';
+import { firstStepReward } from '../../src/economy/first-steps.ts';
 import { FREE_MESSAGES_PER_DAY, MESSAGE_SHELLS, PLAN_MESSAGES_PER_DAY } from '../../src/economy/free-messages.ts';
 import type { MessageCharge, PayLine, PayReason } from '../../src/ai/session-types.ts';
 import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-prompt.ts';
@@ -857,6 +858,16 @@ export function createApp(
 
   // A shared card pays the first few shares of the user's day; the cap lives here, not on the phone.
   app.post('/v1/wallet/share', (c) => wallet(c, (userId) => db!.walletShare(userId, { amount: SHARE_REWARD, perDay: PAID_SHARES_PER_DAY })));
+
+  // First steps (0z294): the reward comes from the shared table and the ledger key `first:<step>` pays
+  // each step once per account, so a claimed step costs at most its own row, on every server.
+  app.post('/v1/wallet/first-step', async (c) => {
+    const body = await readJson(c);
+    const step = typeof body?.step === 'string' ? body.step : '';
+    const amount = firstStepReward(step);
+    if (!amount) return c.json({ error: 'badInput' }, 400);
+    return wallet(c, (userId) => db!.walletCredit(userId, { amount, reason: 'quest', key: `first:${step}`, free: false }));
+  });
 
   // Earnings whose rules are not on the server yet (purchases until RevenueCat, quests, invites):
   // the test server takes the app's word when DEV_GRANTS=1; anywhere else this is off.

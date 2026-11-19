@@ -886,6 +886,17 @@
     "starterDetail": "Precio especial de bienvenida"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Primeros pasos",
+      "friends": "Habla con 3 amigos",
+      "create": "Crea tu propio personaje",
+      "deep": "Ten una charla de verdad",
+      "plan": "Planead algo juntos",
+      "notify": "Deja que te escriban primero",
+      "claim": "Reclamar",
+      "go": "Ir",
+      "done": "Hecho"
+    },
     "title": "Regalos gratis",
     "day": "Día {{count}}",
     "wheel": "Rueda de la suerte",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Voz de personaje",
       "portrait": "Retrato de personaje",
       "stream": "Transmisión",
-      "quest": "Misión en la vida real",
+      "quest": "Misión",
       "other": "Otro",
       "someone": "un amigo",
       "trial": "Prueba gratis de Pro",

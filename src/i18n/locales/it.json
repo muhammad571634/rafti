@@ -886,6 +886,17 @@
     "starterDetail": "Un prezzo di benvenuto unico"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Primi passi",
+      "friends": "Parla con 3 amici",
+      "create": "Crea il tuo personaggio",
+      "deep": "Fai una vera chiacchierata",
+      "plan": "Organizzate qualcosa insieme",
+      "notify": "Lascia che ti scrivano per primi",
+      "claim": "Riscatta",
+      "go": "Vai",
+      "done": "Fatto"
+    },
     "title": "Regali gratuiti",
     "day": "Giorno {{count}}",
     "wheel": "Ruota della fortuna",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Voce del personaggio",
       "portrait": "Ritratto del personaggio",
       "stream": "Diretta",
-      "quest": "Missione nella vita reale",
+      "quest": "Missione",
       "other": "Altro",
       "someone": "un amico",
       "trial": "Prova gratuita di Pro",

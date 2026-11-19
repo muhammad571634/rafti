@@ -478,6 +478,15 @@ describe('the wallet API', () => {
     assert.deepEqual(rules, [{ amount: SHARE_REWARD, perDay: PAID_SHARES_PER_DAY }]);
   });
 
+  it('pays a first step from the shared table once per account, on every server (0z294)', async () => {
+    const credits: unknown[] = [];
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ walletCredit: async (_user, request) => (credits.push(request), state) }) });
+    assert.equal((await call(app, '/v1/wallet/first-step', { step: 'create' })).status, 200);
+    assert.equal((await call(app, '/v1/wallet/first-step', { step: 'shells' })).status, 400);
+    assert.equal((await call(app, '/v1/wallet/first-step', {})).status, 400);
+    assert.deepEqual(credits, [{ amount: 30, reason: 'quest', key: 'first:create', free: false }]);
+  });
+
   it('takes grants only on a test server that allows them; ads and shares burn, purchases stay', async () => {
     const grants: unknown[] = [];
     const db = makeDb({ walletCredit: async (_user, request) => (grants.push(request), state) });

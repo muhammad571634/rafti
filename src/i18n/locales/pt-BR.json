@@ -886,6 +886,17 @@
     "starterDetail": "Preço especial de boas-vindas"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Primeiros passos",
+      "friends": "Converse com 3 amigos",
+      "create": "Crie seu próprio personagem",
+      "deep": "Tenha uma conversa de verdade",
+      "plan": "Planejem algo juntos",
+      "notify": "Deixe que mandem mensagem primeiro",
+      "claim": "Resgatar",
+      "go": "Ir",
+      "done": "Feito"
+    },
     "title": "Presentes grátis",
     "day": "Dia {{count}}",
     "wheel": "Roda da sorte",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Voz do personagem",
       "portrait": "Retrato do personagem",
       "stream": "Transmissão",
-      "quest": "Missão na vida real",
+      "quest": "Missão",
       "other": "Outro",
       "someone": "um amigo",
       "trial": "Teste grátis do Pro",

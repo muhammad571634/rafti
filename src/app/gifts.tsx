@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { Linking, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
@@ -25,7 +25,11 @@ import {
   Sheet,
   Txt,
 } from '@/components/ui';
+import { FIRST_STEPS, DEEP_CHAT_LINES, FRIENDS_TO_MEET, type FirstStepKey } from '@/economy/first-steps';
+import { useFirstSteps } from '@/hooks/use-first-steps';
+import { track } from '@/lib/analytics';
 import { count } from '@/lib/format';
+import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useCountingNumber } from '@/hooks/use-counting-number';
 import { haptic } from '@/lib/haptics';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
@@ -44,6 +48,15 @@ import { colors, hitSlop, isDark, palette, radius, signature, space, systemColor
 import { inkFace, inkRadius } from '@/theme/ink';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
+
+/** First steps' tiles (0z294): iOS system colours, one per step. */
+const STEP_TILES: Record<FirstStepKey, TileLook> = {
+  friends: { fill: systemColors.blue, ios: 'person.2.fill', icon: 'people' },
+  create: { fill: systemColors.purple, ios: 'sparkles', icon: 'sparkles' },
+  deep: { fill: systemColors.green, ios: 'bubble.left.and.bubble.right.fill', icon: 'chatbubbles' },
+  plan: { fill: systemColors.orange, ios: 'calendar.badge.plus', icon: 'calendar' },
+  notify: { fill: systemColors.red, ios: 'bell.fill', icon: 'notifications' },
+};
 
 const ROW_ICON = 34;
 const WAY_ICON = 36;
@@ -77,6 +90,13 @@ export default function GiftsScreen() {
   const { spin: spinParam } = useLocalSearchParams<{ spin?: string }>();
   const user = useAppStore((s) => s.user);
   const redeemInvite = useAppStore((s) => s.redeemInvite);
+  const claimFirstStep = useAppStore((s) => s.claimFirstStep);
+  // The phone's own answer on pushes: the planner's record lags a sync behind a fresh yes.
+  const [pushOn, setPushOn] = useState<boolean | undefined>(undefined);
+  useEffect(() => {
+    void pushesAllowed().then(setPushOn);
+  }, []);
+  const steps = useFirstSteps(pushOn);
 
   const [reward, setReward] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
@@ -146,6 +166,35 @@ export default function GiftsScreen() {
     setCodeInput('');
     setRedeemError(null);
     setAccepted(true);
+  };
+
+  // A step not done yet takes the user where it is done; notifications ask the phone (its settings once it said no).
+  const goToStep = async (key: FirstStepKey) => {
+    switch (key) {
+      case 'friends':
+        return router.push('/(tabs)/find');
+      case 'create':
+        return router.push('/create-character');
+      case 'deep':
+        return router.push('/(tabs)/chat');
+      case 'plan':
+        return router.push('/(tabs)/us');
+      case 'notify': {
+        if ((await pushPermission()) === 'denied') return void Linking.openSettings();
+        await requestPushPermission();
+        setPushOn(await pushesAllowed());
+      }
+    }
+  };
+  const claimStep = (key: FirstStepKey) => {
+    if (!claimFirstStep(key)) return;
+    haptic.success();
+    track('first_step', { kind: key });
+  };
+  // The counted steps show how far they are ("2/3"); every step shows what it pays.
+  const stepLine = (key: FirstStepKey, reward: number) => {
+    const far = key === 'friends' ? `${steps.progress.friends}/${FRIENDS_TO_MEET} · ` : key === 'deep' ? `${steps.progress.deep}/${DEEP_CHAT_LINES} · ` : '';
+    return steps.states[key] === 'claimed' ? undefined : `${far}+${reward}`;
   };
 
   const today = todayKey();
@@ -229,6 +278,40 @@ export default function GiftsScreen() {
             })}
           </View>
         </HeroCard>
+
+        {/* First steps (0z294): what a new user does first, each paid once; gone when all are paid. */}
+        {steps.open ? (
+          <>
+            <View style={styles.labelRow}>
+              <GroupLabel>{t('gifts.firstSteps.title')}</GroupLabel>
+            </View>
+            <View style={featureStyles.card}>
+              {FIRST_STEPS.map((step, i) => {
+                const state = steps.states[step.key];
+                return (
+                  <WayRow
+                    key={step.key}
+                    tile={STEP_TILES[step.key]}
+                    title={t(`gifts.firstSteps.${step.key}`)}
+                    subtitle={stepLine(step.key, step.reward)}
+                    action={
+                      state === 'claimed' ? (
+                        <View accessible accessibilityLabel={t('gifts.firstSteps.done')} style={styles.stepDone}>
+                          <Ionicons name="checkmark-circle" size={26} color={systemColors.green} />
+                        </View>
+                      ) : state === 'ready' ? (
+                        <TintCapsule look={signature.gifts} label={t('gifts.firstSteps.claim')} onPress={() => claimStep(step.key)} />
+                      ) : (
+                        <TintCapsule look={signature.gifts} label={t('gifts.firstSteps.go')} onPress={() => void goToStep(step.key)} />
+                      )
+                    }
+                    line={i < FIRST_STEPS.length - 1}
+                  />
+                );
+              })}
+            </View>
+          </>
+        ) : null}
 
         <View style={styles.labelRow}>
           <GroupLabel>{t('gifts.wheel')}</GroupLabel>
@@ -423,6 +506,7 @@ const PEEK_ROOM = 60;
 const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
 
 const styles = StyleSheet.create({
+  stepDone: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   mascotGlow: {
     position: 'absolute',
     top: -GLOW * 0.7,

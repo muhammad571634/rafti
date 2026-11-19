@@ -865,6 +865,17 @@
     "starterDetail": "Harga sambutan satu kali"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Langkah pertama",
+      "friends": "Ngobrol dengan 3 teman",
+      "create": "Buat karaktermu sendiri",
+      "deep": "Ngobrol sungguhan",
+      "plan": "Rencanakan sesuatu bersama",
+      "notify": "Biarkan mereka mengirim pesan duluan",
+      "claim": "Ambil",
+      "go": "Mulai",
+      "done": "Selesai"
+    },
     "title": "Hadiah gratis",
     "day": "Hari {{count}}",
     "wheel": "Roda keberuntungan",
@@ -1858,7 +1869,7 @@
       "voiceClone": "Suara karakter",
       "portrait": "Foto karakter",
       "stream": "Siaran",
-      "quest": "Misi dunia nyata",
+      "quest": "Misi",
       "other": "Lainnya",
       "someone": "seorang teman",
       "trial": "Uji coba gratis Pro",

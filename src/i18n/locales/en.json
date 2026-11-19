@@ -886,6 +886,17 @@
     "starterDetail": "A one-time welcome price"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "First steps",
+      "friends": "Talk to 3 friends",
+      "create": "Make your own character",
+      "deep": "Have a real talk",
+      "plan": "Plan something together",
+      "notify": "Let them text you first",
+      "claim": "Claim",
+      "go": "Go",
+      "done": "Done"
+    },
     "title": "Free gifts",
     "day": "Day {{count}}",
     "wheel": "Lucky wheel",
@@ -1891,7 +1902,7 @@
       "voiceClone": "Character voice",
       "portrait": "Character picture",
       "stream": "Stream",
-      "quest": "Real-life quest",
+      "quest": "Quest",
       "other": "Other",
       "someone": "a friend",
       "trial": "Pro free trial",

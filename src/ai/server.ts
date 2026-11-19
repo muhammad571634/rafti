@@ -145,6 +145,8 @@ export const serverWallet = {
   spend: (accessToken: string, request: SpendRequest) => call<WalletState>('/v1/wallet/spend', post(accessToken, request), 8000),
   grant: (accessToken: string, request: GrantRequest) => call<WalletState>('/v1/wallet/grant', post(accessToken, request), 8000),
   checkIn: (accessToken: string) => call<CheckInResult>('/v1/wallet/check-in', post(accessToken, {}), 8000),
+  /** A first step's shells (0z294): the server pays its own table once per account. */
+  firstStep: (accessToken: string, step: string) => call<WalletState>('/v1/wallet/first-step', post(accessToken, { step }), 8000),
   spin: (accessToken: string) => call<SpinResult>('/v1/wallet/spin', post(accessToken, {}), 8000),
   share: (accessToken: string) => call<ShareResult>('/v1/wallet/share', post(accessToken, {}), 8000),
   /**

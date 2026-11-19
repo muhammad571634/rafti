@@ -865,6 +865,17 @@
     "starterDetail": "1회 한정 웰컴 특가"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "첫걸음",
+      "friends": "친구 3명과 대화하기",
+      "create": "나만의 캐릭터 만들기",
+      "deep": "진짜 대화 나누기",
+      "plan": "함께 계획 세우기",
+      "notify": "먼저 연락받기",
+      "claim": "받기",
+      "go": "이동",
+      "done": "완료"
+    },
     "title": "무료 선물",
     "day": "{{count}}일차",
     "wheel": "행운의 룰렛",
@@ -1858,7 +1869,7 @@
       "voiceClone": "캐릭터 목소리 복제",
       "portrait": "캐릭터 일러스트",
       "stream": "방송",
-      "quest": "일상 퀘스트",
+      "quest": "퀘스트",
       "other": "기타",
       "someone": "친구",
       "trial": "Pro 무료 체험",

@@ -104,6 +104,7 @@ import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { ageDoubt, confirmedAge, withAgeDoubt, type AgeDoubt } from '@/lib/age-check';
+import { firstStepReward, type FirstStepKey } from '@/economy/first-steps';
 import { shortName } from '@/lib/format';
 import { forgetFriend } from '@/lib/forget-friend';
 import { currentMoments, isWrittenMoment, momentScenes, type FriendMoments } from '@/lib/friend-moments';
@@ -554,6 +555,8 @@ export interface AppState {
    * moment, or `to`, the user's own words (`skip: 'own'`). Costs what a message does.
    */
   skipTime: (conversationId: string, skip: TimeSkip, to?: string) => SendResult;
+  /** Pays a first step that is done (`src/economy/first-steps.ts`); the screen checks it is done. False when already paid. */
+  claimFirstStep: (step: FirstStepKey) => boolean;
   /** Confirms the user's age from the year wheel (`src/lib/age-check.ts`); returns the doubt left (null: cleared). */
   confirmAge: (year: number) => AgeDoubt | null;
   /** A twist (docs/polybuzz-core.md §5.5): something unexpected happens, in the user's words or the friend's pick. */
@@ -1651,6 +1654,25 @@ export const useAppStore = create<AppState>()(
 
       skipTime: (conversationId, skip, to) => steerChat(set, get, conversationId, 'skip', skip, to),
       twist: (conversationId, to) => steerChat(set, get, conversationId, 'twist', undefined, to),
+      claimFirstStep: (step) => {
+        const amount = firstStepReward(step);
+        if (!amount || get().daily.firstSteps?.[step]) return false;
+        set((s) => ({
+          wallet: { ...s.wallet, shells: s.wallet.shells + amount },
+          ledger: log(s.ledger, amount, 'quest'),
+          daily: { ...s.daily, firstSteps: { ...s.daily.firstSteps, [step]: todayKey() } },
+        }));
+        // The server pays from its own table, once per account; its wallet then replaces the local count.
+        // Unpaid (offline, an older server), the step opens again, so the shells are never lost.
+        if (serverWalletOn(get)) {
+          syncWallet(set, async (token) => {
+            const wallet = await serverWallet.firstStep(token, step);
+            if (!wallet) set((s) => ({ daily: { ...s.daily, firstSteps: omitKey(s.daily.firstSteps ?? {}, step) } }));
+            return wallet;
+          });
+        }
+        return true;
+      },
       confirmAge: (year) => {
         set((s) => ({ user: confirmedAge(s.user, year) }));
         return ageDoubt(get().user);

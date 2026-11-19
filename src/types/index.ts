@@ -1118,6 +1118,8 @@ export interface DailyState {
   sharesPaid?: number;
   /** Which cards paid on `shareDay` (`chat:<id>`, `bond:<id>`): each pays once a day. */
   sharePaidKeys?: string[];
+  /** First steps already paid, with the day (`src/economy/first-steps.ts`). */
+  firstSteps?: Partial<Record<'friends' | 'create' | 'deep' | 'plan' | 'notify', string>>;
   /** Messages sent today, for the members' fair-use limit */
   messagesDay?: string;
   messagesSent?: number;

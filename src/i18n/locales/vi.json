@@ -865,6 +865,17 @@
     "starterDetail": "Mức giá chào mừng một lần duy nhất"
   },
   "gifts": {
+    "firstSteps": {
+      "title": "Những bước đầu",
+      "friends": "Trò chuyện với 3 người bạn",
+      "create": "Tạo nhân vật của riêng bạn",
+      "deep": "Trò chuyện thật lòng",
+      "plan": "Cùng lên kế hoạch",
+      "notify": "Để họ nhắn cho bạn trước",
+      "claim": "Nhận",
+      "go": "Đi",
+      "done": "Xong"
+    },
     "title": "Quà tặng miễn phí",
     "day": "Ngày {{count}}",
     "wheel": "Vòng quay may mắn",
@@ -1858,7 +1869,7 @@
       "voiceClone": "Giọng nhân vật",
       "portrait": "Ảnh nhân vật",
       "stream": "Buổi phát",
-      "quest": "Nhiệm vụ đời thực",
+      "quest": "Nhiệm vụ",
       "other": "Khác",
       "someone": "một người bạn",
       "trial": "Dùng thử Pro miễn phí",
