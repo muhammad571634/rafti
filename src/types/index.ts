@@ -362,7 +362,7 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'notifyOff' | 'week' | 'setup' | 'board';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'twist' | 'notifyOff' | 'week' | 'setup' | 'board';
   /** setup cards: the alarm or plan the friend offered to set up; one tap makes it (`answerSetup`). */
   setup?: SetupOffer;
   /** A `scene` card: which scene began, so a world's entry scene plays once. */
@@ -375,7 +375,7 @@ export interface Message {
   setting?: string;
   /** skip markers: how far the story moved on (`src/lib/chat-steer.ts`). */
   skip?: TimeSkip;
-  /** An own skip: where the story moves to, in the user's words ("After the concert"). */
+  /** An own skip: where the story moves to, in the user's words ("After the concert"); a twist marker: the twist in their words, if they wrote one. */
   skipTo?: string;
   /** Quick replies under the friend's line (the morning chain); gone once one is tapped. */
   chips?: string[];

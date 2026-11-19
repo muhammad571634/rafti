@@ -378,6 +378,7 @@
       "scene": "Cena",
       "timeSkip": "Avanço no tempo",
       "branches": "Ramos",
+      "twist": "Reviravolta",
       "voice": "Voz",
       "photo": "Foto",
       "gift": "Presente",
@@ -473,6 +474,17 @@
       "explicit": "Mantenha o conteúdo dentro das nossas regras"
     },
     "skipNote": "Conta como uma mensagem. Apenas tempo da história: seus planos e lembretes reais continuam normais.",
+    "twistLead": "Algo inesperado acontece e a história muda.",
+    "twistSurprise": "Me surpreenda",
+    "twistSurpriseHint": "Uma reviravolta que combina com a história",
+    "twistOwnPlaceholder": "Ou escreva: A luz acaba",
+    "twistOwnSend": "Enviar esta reviravolta",
+    "twistProblem": {
+      "empty": "Escreva o que acontece",
+      "crisis": "Isso não pode ser uma reviravolta. Se estiver passando por algo difícil, eles estão aqui para conversar.",
+      "minors": "Reviravoltas não podem envolver menores ou personagens em idade escolar",
+      "explicit": "Mantenha o conteúdo dentro das nossas regras"
+    },
     "freeLeft_one": "Resta {{count}} mensagem grátis hoje",
     "freeLeft_other": "Restam {{count}} mensagens grátis hoje",
     "freeNone": "Sem mensagens grátis · 1 concha por mensagem",

@@ -8,7 +8,7 @@ import { moduleTile, PressableScale, Txt } from '@/components/ui';
 // Only chats open it, and a chat is always dark (appearance B): the night tokens in both themes.
 import { bottomRoom, nightColors as colors, moduleFills, space } from '@/theme';
 
-export type AttachKey = 'scene' | 'timeSkip' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary' | 'more' | 'branches';
+export type AttachKey = 'scene' | 'timeSkip' | 'twist' | 'photo' | 'secretNote' | 'quiz' | 'truthOrDare' | 'date' | 'dailyCalls' | 'diary' | 'more' | 'branches';
 
 /** More is no module: Apple's grey fill, as iOS's own More rows. */
 const MORE_FILL = 'rgba(118,118,128,0.36)';

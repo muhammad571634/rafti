@@ -378,6 +378,7 @@
       "scene": "Scène",
       "timeSkip": "Saut dans le temps",
       "branches": "Branches",
+      "twist": "Rebondissement",
       "voice": "Message vocal",
       "photo": "Photo",
       "gift": "Cadeau",
@@ -473,6 +474,17 @@
       "explicit": "Respectez nos règles de contenu"
     },
     "skipNote": "Compte comme un message. Concerne seulement l'histoire : vos vrais rappels restent inchangés.",
+    "twistLead": "Quelque chose d'inattendu arrive et l'histoire bascule.",
+    "twistSurprise": "Surprends-moi",
+    "twistSurpriseHint": "Un rebondissement qui colle à l'histoire",
+    "twistOwnPlaceholder": "Ou écrivez-le : La lumière s'éteint",
+    "twistOwnSend": "Envoyer ce rebondissement",
+    "twistProblem": {
+      "empty": "Écrivez ce qui se passe",
+      "crisis": "Ceci ne peut pas être un rebondissement. Si vous traversez un moment difficile, ils sont là pour vous écouter.",
+      "minors": "Les rebondissements ne peuvent pas concerner des mineurs ou des écoliers",
+      "explicit": "Respectez nos règles de contenu"
+    },
     "freeLeft_one": "Encore {{count}} message gratuit aujourd’hui",
     "freeLeft_other": "Encore {{count}} messages gratuits aujourd’hui",
     "freeNone": "Plus de gratuits · 1 coquillage",

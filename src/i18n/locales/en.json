@@ -378,6 +378,7 @@
       "scene": "Scene",
       "timeSkip": "Time skip",
       "branches": "Branches",
+      "twist": "Twist",
       "voice": "Voice",
       "photo": "Photo",
       "gift": "Gift",
@@ -473,6 +474,17 @@
       "explicit": "Keep it within our content rules"
     },
     "skipNote": "Counts as a message. Story time only: your real plans and reminders stay as they are.",
+    "twistLead": "Something unexpected happens and the story turns.",
+    "twistSurprise": "Surprise me",
+    "twistSurpriseHint": "A twist that fits the story",
+    "twistOwnPlaceholder": "Or write it: The lights go out",
+    "twistOwnSend": "Send this twist",
+    "twistProblem": {
+      "empty": "Write what happens",
+      "crisis": "This can't be a twist. If you're going through something, they're here to talk.",
+      "minors": "Twists can't involve minors or school-age characters",
+      "explicit": "Keep it within our content rules"
+    },
     "freeLeft_one": "{{count}} free message left today",
     "freeLeft_other": "{{count}} free messages left today",
     "freeNone": "Free messages used · 1 shell each",

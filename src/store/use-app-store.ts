@@ -35,7 +35,7 @@ import {
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
-import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupInvokeCue, groupSkipCue, steerBlock, steerMarker } from '@/lib/chat-steer';
+import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, groupInvokeCue, groupSkipCue, steerBlock, steerMarker, TWIST_MAX, type SteerKind } from '@/lib/chat-steer';
 import { bubbleTimes, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
@@ -553,6 +553,8 @@ export interface AppState {
    * moment, or `to`, the user's own words (`skip: 'own'`). Costs what a message does.
    */
   skipTime: (conversationId: string, skip: TimeSkip, to?: string) => SendResult;
+  /** A twist (docs/polybuzz-core.md §5.5): something unexpected happens, in the user's words or the friend's pick. */
+  twist: (conversationId: string, to?: string) => SendResult;
 
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
@@ -1503,16 +1505,16 @@ export const useAppStore = create<AppState>()(
         // server gets them as `redo`, the mock avoids their lines).
         const anchor = exchange.anchor;
         const avoid = versions.flat().flatMap((m) => (m.kind === 'text' && m.text ? [m.text] : []));
-        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}`, chatGender(get(), conversationId)) : undefined;
+        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as SteerKind, anchor.skip, `${anchor.id}:${next.length}`, chatGender(get(), conversationId)) : undefined;
         for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
-          steer = mockSteerLines(anchor.card as 'continue' | 'skip', anchor.skip, `${anchor.id}:${next.length}:${tries}`, chatGender(get(), conversationId));
+          steer = mockSteerLines(anchor.card as SteerKind, anchor.skip, `${anchor.id}:${next.length}:${tries}`, chatGender(get(), conversationId));
         }
         scheduleReply(set, get, conversationId, {
           lines: steer,
           gain: 0,
           avoid,
           off,
-          steer: isSteer(anchor) ? { kind: anchor.card as 'continue' | 'skip', skip: anchor.skip, to: anchor.skipTo } : undefined,
+          steer: isSteer(anchor) ? { kind: anchor.card as SteerKind, skip: anchor.skip, to: anchor.skipTo } : undefined,
         });
         return 'sent';
       },
@@ -1637,6 +1639,7 @@ export const useAppStore = create<AppState>()(
       continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
 
       skipTime: (conversationId, skip, to) => steerChat(set, get, conversationId, 'skip', skip, to),
+      twist: (conversationId, to) => steerChat(set, get, conversationId, 'twist', undefined, to),
 
       /* ── group chats ──────────────────────────────────────────────────── */
 
@@ -5913,19 +5916,20 @@ function answerText(
 }
 
 /**
- * A continue or a time skip (`src/lib/chat-steer.ts`): a marker that is the user's turn, then
+ * A continue, a time skip or a twist (`src/lib/chat-steer.ts`): a marker that is the user's turn, then
  * their reply to it. Charged as a message; it adds no closeness (the user wrote nothing) and
  * leaves the streak alone. The server answers with the chat's prompt and `steerCue`.
  */
-function steerChat(set: Setter, get: Getter, conversationId: string, kind: 'continue' | 'skip', skip?: TimeSkip, to?: string): SendResult {
+function steerChat(set: Setter, get: Getter, conversationId: string, kind: SteerKind, skip?: TimeSkip, to?: string): SendResult {
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return 'empty';
   if (steerBlock(state.messages[conversationId], !!state.typing[conversationId])) return 'empty';
   // A scene's skip needs a running scene; an own skip needs words that keep the content rules.
   if (kind === 'skip' && skip === 'scene' && !conversation.scene) return 'empty';
-  const words = kind === 'skip' && skip === 'own' ? cleanSkipTo(to ?? '') : undefined;
-  if (words !== undefined && checkSkipTo(words).length) return 'empty';
+  // A twist's own words are optional (none: the friend picks one); when written they keep the content rules too.
+  const words = kind === 'skip' && skip === 'own' ? cleanSkipTo(to ?? '') : kind === 'twist' && to?.trim() ? cleanSkipTo(to, TWIST_MAX) : undefined;
+  if (words !== undefined && checkSkipTo(words, kind === 'twist' ? TWIST_MAX : undefined).length) return 'empty';
   if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
   countMessage(set, get);
   const marker: Message = { id: uid('m'), ...steerMarker(conversationId, kind, skip, new Date(), words) };
@@ -5957,8 +5961,8 @@ interface ReplyRequest {
   off?: OffReason;
   /** `silence`: the one text they send when you go quiet (`nudgeAfterMs`). */
   trigger?: TurnTrigger;
-  /** A continue or a time skip: the model answers it from `steerCue`, `lines` are only its stand-in. */
-  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** A continue, a time skip or a twist: the model answers it from `steerCue`, `lines` are only its stand-in. */
+  steer?: { kind: SteerKind; skip?: TimeSkip; to?: string };
   /** A game's turn: the model answers it from this cue, `lines` are only its stand-in. */
   cue?: readonly string[];
   /** A photo they sent: the model looks at it (`unseenPhotos`), `lines` are only its stand-in. */

@@ -39,7 +39,7 @@ export function theirReplies(messages: readonly Message[], max = REPEAT_WINDOW):
   for (const message of messages) {
     const text = messageText(message);
     if (text === null) continue;
-    if (message.author === 'me' || message.card === 'skip') {
+    if (message.author === 'me' || message.card === 'skip' || message.card === 'twist') {
       open = false;
       continue;
     }

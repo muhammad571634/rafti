@@ -372,6 +372,7 @@
       "scene": "상황극",
       "timeSkip": "시간 건너뛰기",
       "branches": "분기",
+      "twist": "반전",
       "voice": "음성",
       "photo": "사진",
       "gift": "선물",
@@ -462,6 +463,17 @@
       "explicit": "콘텐츠 가이드라인을 준수해 주세요"
     },
     "skipNote": "메시지 1개로 계산돼요. 대화 속 시간만 흐르며 실제 일정과 알림은 유지됩니다.",
+    "twistLead": "예상치 못한 일이 일어나 이야기가 바뀝니다.",
+    "twistSurprise": "놀라게 해줘",
+    "twistSurpriseHint": "이야기에 어울리는 반전",
+    "twistOwnPlaceholder": "예: 갑자기 불이 꺼진다",
+    "twistOwnSend": "이 반전 보내기",
+    "twistProblem": {
+      "empty": "일어날 일을 적어주세요",
+      "crisis": "이 내용은 반전으로 설정할 수 없습니다. 힘든 일이 있으시다면 언제든 이야기해 주세요.",
+      "minors": "반전에 미성년자나 학생 관련 내용을 포함할 수 없습니다",
+      "explicit": "콘텐츠 가이드라인을 준수해 주세요"
+    },
     "freeLeft_other": "오늘 무료 메시지 {{count}}개 남음",
     "freeNone": "무료 소진 · 메시지당 조개 1개",
     "freeUsedTitle": "오늘의 무료 메시지를 모두 사용했어요",

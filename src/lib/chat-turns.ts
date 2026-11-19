@@ -19,8 +19,8 @@ export const MAX_REPLY_VERSIONS = 5;
 /** A line you or they wrote: not a call row, a system line or a card. */
 const isLine = (m: Message) => m.kind !== 'system' && m.kind !== 'call' && !m.card;
 
-/** A continue or a time skip: the user's turn without words (`src/lib/chat-steer.ts`). */
-export const isSteer = (m: Message) => m.card === 'continue' || m.card === 'skip';
+/** A continue, a time skip or a twist: the user's turn without words (`src/lib/chat-steer.ts`). */
+export const isSteer = (m: Message) => m.card === 'continue' || m.card === 'skip' || m.card === 'twist';
 
 /** Where a turn starts: a line of yours, or a continue or a skip. */
 export const isTurn =(m: Message) => (m.author === 'me' && isLine(m)) || isSteer(m);

@@ -372,6 +372,7 @@
       "scene": "Bối cảnh",
       "timeSkip": "Nhảy thời gian",
       "branches": "Nhánh",
+      "twist": "Bước ngoặt",
       "voice": "Giọng nói",
       "photo": "Ảnh",
       "gift": "Quà tặng",
@@ -462,6 +463,17 @@
       "explicit": "Giữ nội dung trong quy tắc của chúng tôi"
     },
     "skipNote": "Tính như một tin nhắn. Chỉ dành cho mạch truyện: kế hoạch và lời nhắc thực tế của bạn vẫn giữ nguyên.",
+    "twistLead": "Một điều bất ngờ xảy ra và câu chuyện rẽ hướng.",
+    "twistSurprise": "Làm tôi bất ngờ",
+    "twistSurpriseHint": "Một bước ngoặt hợp với câu chuyện",
+    "twistOwnPlaceholder": "Hoặc tự viết: Đèn bỗng tắt",
+    "twistOwnSend": "Gửi bước ngoặt này",
+    "twistProblem": {
+      "empty": "Hãy viết điều sẽ xảy ra",
+      "crisis": "Đây không thể là một bước ngoặt. Nếu bạn đang gặp khó khăn, họ luôn ở đây để lắng nghe.",
+      "minors": "Bước ngoặt không thể liên quan đến trẻ vị thành niên hoặc nhân vật trong độ tuổi đi học",
+      "explicit": "Giữ nội dung trong quy tắc của chúng tôi"
+    },
     "freeLeft_other": "Hôm nay còn {{count}} tin nhắn miễn phí",
     "freeNone": "Hết tin miễn phí · 1 vỏ sò mỗi tin",
     "freeUsedTitle": "Đã hết tin nhắn miễn phí hôm nay",

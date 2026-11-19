@@ -9,11 +9,11 @@ import { systemColors } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
 
 /** What plays inside a chat: the chat's own handler runs it (a sheet there, or a screen with its friend). */
-export type MoreChatKey = 'truthOrDare' | 'quiz' | 'scene' | 'timeSkip' | 'branches';
+export type MoreChatKey = 'truthOrDare' | 'quiz' | 'scene' | 'timeSkip' | 'twist' | 'branches';
 type MoreAppKey = 'photoBooth' | 'lore' | 'radio' | 'streams' | 'board' | 'personas';
 export type MoreKey = MoreChatKey | MoreAppKey;
 
-const CHAT_KEYS: readonly MoreKey[] = ['truthOrDare', 'quiz', 'scene', 'timeSkip', 'branches'];
+const CHAT_KEYS: readonly MoreKey[] = ['truthOrDare', 'quiz', 'scene', 'timeSkip', 'twist', 'branches'];
 
 /** The four groups (audit 2026-11-15 §6.2, approved prototype `docs/prototypes/more-sheet.html`). */
 const GROUPS: { title: 'play' | 'story' | 'watch' | 'you'; items: { key: MoreKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] }[] = [
@@ -30,6 +30,8 @@ const GROUPS: { title: 'play' | 'story' | 'watch' | 'you'; items: { key: MoreKey
     items: [
       { key: 'scene', icon: 'film', fill: systemColors.teal },
       { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
+      // Something unexpected turns the story (docs/polybuzz-core.md §5.5).
+      { key: 'twist', icon: 'shuffle', fill: systemColors.orange },
       // The later lines rewinds kept (0z286); a chat with none hides the row (`hide`).
       { key: 'branches', icon: 'git-branch', fill: systemColors.green },
       { key: 'lore', icon: 'library', fill: systemColors.brown },
@@ -52,6 +54,7 @@ const LABEL: Record<MoreKey, string> = {
   quiz: 'chat.attachments.quiz',
   scene: 'chat.attachments.scene',
   timeSkip: 'chat.attachments.timeSkip',
+  twist: 'chat.attachments.twist',
   branches: 'chat.attachments.branches',
   photoBooth: 'photoBooth.title',
   lore: 'lore.title',
@@ -64,7 +67,7 @@ const LABEL: Record<MoreKey, string> = {
 export interface MoreSheetProps {
   visible: boolean;
   onClose: () => void;
-  /** A chat runs its own: truth or dare, the quiz, a scene, a time skip. Without it, those rows are left out. */
+  /** A chat runs its own: truth or dare, the quiz, a scene, a time skip, a twist. Without it, those rows are left out. */
   onChatPick?: (key: MoreChatKey) => void;
   /** Rows this place has no use for (a group has no scenes). */
   hide?: readonly MoreKey[];

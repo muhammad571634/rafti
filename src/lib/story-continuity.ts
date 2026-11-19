@@ -167,8 +167,8 @@ export const boardNoteText = (text?: string) => (text?.trim() ? `[Pinned for you
 
 /** What the model may see of a message; app-only rows return null. Local URIs never leave. */
 export function messageText(message: Message): string | null {
-  // A time skip is part of the story: later replies must know the time moved on.
-  if (message.card === 'skip') return historyText(message);
+  // A time skip or a twist is part of the story: later replies must know what moved on.
+  if (message.card === 'skip' || message.card === 'twist') return historyText(message);
   // A note the user pinned for them on the board: theirs to answer and remember (0z138).
   if (message.card === 'board') return boardNoteText(message.text);
   // An alarm or plan set up, changed or cancelled on Us or in Alarms (0z139).

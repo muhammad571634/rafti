@@ -372,6 +372,7 @@
       "scene": "場景",
       "timeSkip": "時間跳轉",
       "branches": "分支",
+      "twist": "劇情轉折",
       "voice": "語音",
       "photo": "照片",
       "gift": "禮物",
@@ -462,6 +463,17 @@
       "explicit": "請遵守社群內容規範"
     },
     "skipNote": "算作一則訊息。僅適用於故事劇情，真實的提醒與計劃不會變動。",
+    "twistLead": "發生意想不到的事，故事隨之轉向。",
+    "twistSurprise": "給我驚喜",
+    "twistSurpriseHint": "符合故事的轉折",
+    "twistOwnPlaceholder": "例如：燈突然熄滅",
+    "twistOwnSend": "送出這個轉折",
+    "twistProblem": {
+      "empty": "請描述會發生什麼",
+      "crisis": "此內容無法用於劇情轉折。如果你遇到了困難，我們隨時傾聽。",
+      "minors": "劇情轉折不得涉及未成年人或學生角色",
+      "explicit": "請遵守社群內容規範"
+    },
     "freeLeft_other": "今天還剩 {{count}} 則免費訊息",
     "freeNone": "免費訊息已用完 · 每則 1 個貝殼",
     "freeUsedTitle": "今天的免費訊息已用完",

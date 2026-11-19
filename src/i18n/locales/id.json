@@ -372,6 +372,7 @@
       "scene": "Adegan",
       "timeSkip": "Lompatan waktu",
       "branches": "Cabang",
+      "twist": "Kejutan",
       "voice": "Suara",
       "photo": "Foto",
       "gift": "Hadiah",
@@ -462,6 +463,17 @@
       "explicit": "Harap tetap patuhi aturan konten kami"
     },
     "skipNote": "Dihitung sebagai satu pesan. Hanya berlaku untuk alur cerita: jadwal dan pengingat aslimu tetap berjalan.",
+    "twistLead": "Sesuatu yang tak terduga terjadi dan cerita berbelok.",
+    "twistSurprise": "Kejutkan aku",
+    "twistSurpriseHint": "Kejutan yang cocok dengan cerita",
+    "twistOwnPlaceholder": "Atau tulis: Lampu tiba-tiba padam",
+    "twistOwnSend": "Kirim kejutan ini",
+    "twistProblem": {
+      "empty": "Tulis apa yang terjadi",
+      "crisis": "Ini tidak bisa dijadikan kejutan. Jika kamu sedang mengalami masa sulit, mereka ada di sini untuk mendengarkan.",
+      "minors": "Kejutan tidak boleh melibatkan anak di bawah umur atau usia sekolah",
+      "explicit": "Harap tetap patuhi aturan konten kami"
+    },
     "freeLeft_other": "Sisa {{count}} pesan gratis hari ini",
     "freeNone": "Pesan gratis habis · 1 kerang per pesan",
     "freeUsedTitle": "Pesan gratis hari ini sudah habis",

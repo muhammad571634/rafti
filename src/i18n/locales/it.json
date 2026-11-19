@@ -378,6 +378,7 @@
       "scene": "Scena",
       "timeSkip": "Salto temporale",
       "branches": "Rami",
+      "twist": "Colpo di scena",
       "voice": "Voce",
       "photo": "Foto",
       "gift": "Regalo",
@@ -473,6 +474,17 @@
       "explicit": "Rispetta le regole sui contenuti"
     },
     "skipNote": "Conta come un messaggio. Solo per la storia: i tuoi veri promemoria e impegni non cambiano.",
+    "twistLead": "Succede qualcosa di inaspettato e la storia cambia direzione.",
+    "twistSurprise": "Sorprendimi",
+    "twistSurpriseHint": "Un colpo di scena adatto alla storia",
+    "twistOwnPlaceholder": "Oppure scrivi tu: Salta la luce",
+    "twistOwnSend": "Invia questo colpo di scena",
+    "twistProblem": {
+      "empty": "Scrivi cosa succede",
+      "crisis": "Non può essere un colpo di scena. Se stai attraversando un momento difficile, sono qui per parlare.",
+      "minors": "I colpi di scena non possono coinvolgere minori o personaggi in età scolare",
+      "explicit": "Rispetta le regole sui contenuti"
+    },
     "freeLeft_one": "Ti resta {{count}} messaggio gratis oggi",
     "freeLeft_other": "Ti restano {{count}} messaggi gratis oggi",
     "freeNone": "Gratis finiti · 1 conchiglia a messaggio",

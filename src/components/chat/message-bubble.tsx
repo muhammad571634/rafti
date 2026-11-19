@@ -182,6 +182,8 @@ export const MessageBubble = memo(function MessageBubble({
   // A continue is the user's turn without words: nothing to show, their lines follow.
   if (message.card === 'continue') return null;
   if (message.card === 'skip') return <SkipLine text={message.skip === 'own' && message.skipTo ? message.skipTo : t(`chat.skip.${message.skip ?? 'later'}`)} />;
+  // A twist: their words, or just "Twist" when the friend picked it.
+  if (message.card === 'twist') return <SkipLine icon="shuffle" text={message.skipTo?.trim() || t('chat.attachments.twist')} />;
   if (message.kind === 'system') return <SystemLine text={message.text ?? ''} />;
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
@@ -634,12 +636,12 @@ function BoardNoteLine({ text }: { text: string }) {
 }
 
 /** Where the story moved on (a time skip): the new time, centred like the chat's own notes. */
-function SkipLine({ text }: { text: string }) {
+function SkipLine({ text, icon = 'time-outline' }: { text: string; icon?: keyof typeof Ionicons.glyphMap }) {
   const onPhoto = useOnPhoto();
   return (
     <View style={styles.system} accessibilityRole="header">
       <View style={styles.sceneHead}>
-        <Ionicons name="time-outline" size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+        <Ionicons name={icon} size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
         <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{text}</Txt>
       </View>
     </View>

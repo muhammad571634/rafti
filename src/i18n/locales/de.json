@@ -378,6 +378,7 @@
       "scene": "Szene",
       "timeSkip": "Zeitsprung",
       "branches": "Verzweigungen",
+      "twist": "Wendung",
       "voice": "Sprachnachricht",
       "photo": "Foto",
       "gift": "Geschenk",
@@ -473,6 +474,17 @@
       "explicit": "Halte dich an unsere Inhaltsregeln"
     },
     "skipNote": "Zählt wie eine Nachricht. Nur Handlungszeit: deine echten Termine bleiben wie sie sind.",
+    "twistLead": "Etwas Unerwartetes passiert, und die Geschichte dreht sich.",
+    "twistSurprise": "Überrasch mich",
+    "twistSurpriseHint": "Eine Wendung, die zur Geschichte passt",
+    "twistOwnPlaceholder": "Oder schreibe es: Das Licht geht aus",
+    "twistOwnSend": "Diese Wendung senden",
+    "twistProblem": {
+      "empty": "Schreibe, was passiert",
+      "crisis": "Dies kann keine Wendung sein. Wenn du eine schwere Zeit durchmachst, sind sie für dich da.",
+      "minors": "Wendungen dürfen keine Minderjährigen oder Schulkinder betreffen",
+      "explicit": "Halte dich an unsere Inhaltsregeln"
+    },
     "freeLeft_one": "Heute noch {{count}} Gratis-Nachricht",
     "freeLeft_other": "Heute noch {{count}} Gratis-Nachrichten",
     "freeNone": "Gratis aufgebraucht · 1 Muschel",

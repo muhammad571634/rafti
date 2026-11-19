@@ -116,7 +116,7 @@ export function chatTurns(messages: readonly Message[]): HistoryTurn[] {
     }
     const text = messageText(message);
     if (text === null) continue;
-    add(message.author === 'me' || message.card === 'skip' ? 'user' : 'assistant', withReplyCue(message, text));
+    add(message.author === 'me' || message.card === 'skip' || message.card === 'twist' ? 'user' : 'assistant', withReplyCue(message, text));
   }
   return turns;
 }
@@ -148,8 +148,8 @@ export interface ChatPromptInput {
   messages: readonly Message[];
   /** Memories this message brings up (`buildStoryContinuityContext`); pinned ones are already in. */
   memories?: readonly (MemoryNote & { pinned?: boolean })[];
-  /** A continue or a time skip in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
-  steer?: { kind: 'continue' | 'skip'; skip?: TimeSkip; to?: string };
+  /** A continue, a time skip or a twist in place of a message (src/lib/chat-steer.ts); `to` is an own skip's words. */
+  steer?: { kind: 'continue' | 'skip' | 'twist'; skip?: TimeSkip; to?: string };
   /** What this turn is for, when it is not simply answering the user (a game's turn). */
   cue?: readonly string[];
   /** ↻: what earlier versions of this reply said; the new one takes another angle (`redoCue`). */

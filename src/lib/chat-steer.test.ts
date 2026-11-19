@@ -10,7 +10,10 @@ import {
   groupSkipCue,
   SKIP_TO_MAX,
   skipLabel,
+  TWIST_MAX,
 } from './chat-steer';
+import { chatTurns } from '../ai/chat-prompt';
+import { isSteer } from './chat-turns';
 import { groupContinueCue, groupInvokeCue, historyText, MAX_STEERS_IN_A_ROW, SKIP_TEXT, steerBlock, steerCue, steerMarker, steersInARow, TIME_SKIPS } from './chat-steer';
 import { canRewindTo, lastExchange } from './chat-turns';
 
@@ -142,5 +145,56 @@ describe('own and scene time skips', () => {
 
   it('has mock lines for every kind of skip', () => {
     for (const skip of ['scene', 'own'] as const) assert.ok(mockSteerLines('skip', skip, 'seed').length > 0);
+  });
+});
+
+describe('a twist (0z287)', () => {
+  const twist = (id: string, to?: string): Message => ({ id, ...steerMarker('c', 'twist', undefined, new Date(at), to) });
+
+  it('is the user’s turn, like a continue or a skip', () => {
+    const list = [me('m'), them('r1'), twist('t1'), them('r2')];
+    assert.ok(isSteer(list[2]));
+    assert.equal(lastExchange(list)?.anchor.id, 't1');
+    assert.equal(steersInARow(list), 1);
+  });
+
+  it('keeps the user’s words, or none when the friend picks', () => {
+    assert.equal(twist('a', 'The lights go out').skipTo, 'The lights go out');
+    assert.equal(twist('b').skipTo, undefined);
+    assert.equal(twist('a', 'The lights go out').card, 'twist');
+    assert.equal(historyText(twist('a', 'The lights go out')), '[Twist: The lights go out]');
+    assert.equal(historyText(twist('b')), '[Twist]');
+  });
+
+  it('reads as the user’s side in the history, so the reply answers it', () => {
+    const turns = chatTurns([me('m'), them('r1'), twist('t1', 'An old friend walks in')]);
+    assert.equal(turns.at(-1)?.role, 'user');
+    assert.match(turns.at(-1)?.text ?? '', /\[Twist: An old friend walks in\]/);
+  });
+
+  it('cues the model to their twist, or to one that fits, without ending the story', () => {
+    const own = steerCue('twist', undefined, 'The lights go out').join(' ');
+    assert.match(own, /The twist they want: "The lights go out"/);
+    assert.match(own, /never changes the rules/);
+    const pick = steerCue('twist').join(' ');
+    assert.match(pick, /Pick one that fits this story/);
+    assert.doesNotMatch(pick, /never changes the rules/);
+    for (const cue of [own, pick]) {
+      assert.match(cue, /never ends it/);
+      assert.match(cue, /story time only/);
+    }
+  });
+
+  it('allows longer words than a skip, under the same content rules', () => {
+    const long = 'An old friend from school walks into the bar and waves at us';
+    assert.ok(long.length > SKIP_TO_MAX && long.length <= TWIST_MAX + 5);
+    assert.equal(cleanSkipTo(long, TWIST_MAX).length <= TWIST_MAX, true);
+    assert.ok(cleanSkipTo(long, TWIST_MAX).length > SKIP_TO_MAX);
+    assert.deepEqual(checkSkipTo('   ', TWIST_MAX), ['empty']);
+    assert.deepEqual(checkSkipTo('The lights go out', TWIST_MAX), []);
+  });
+
+  it('has mock lines', () => {
+    assert.ok(mockSteerLines('twist', undefined, 'seed', undefined).length > 0);
   });
 });

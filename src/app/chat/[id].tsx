@@ -33,6 +33,7 @@ import { SwipeToReply } from '@/components/chat/reply-quote';
 import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
+import { TwistSheet } from '@/components/chat/twist-sheet';
 import { ToneMenu } from '@/components/chat/tone-menu';
 import type { VoiceNote } from '@/components/chat/use-voice-note';
 import { dropNote } from '@/lib/voice-files';
@@ -140,6 +141,7 @@ export default function ChatRoomScreen() {
   const [truthOpen, setTruthOpen] = useState(false);
   const [callsOpen, setCallsOpen] = useState(false);
   const [skipOpen, setSkipOpen] = useState(false);
+  const [twistOpen, setTwistOpen] = useState(false);
   const [paywall, setPaywall] = useState<number | null>(null);
   // The paywall opened for a message (not a photo): it then speaks of today's free messages.
   const [paywallForMessage, setPaywallForMessage] = useState(false);
@@ -174,6 +176,7 @@ export default function ChatRoomScreen() {
   const rewindTo = useAppStore((s) => s.rewindTo);
   const continueChat = useAppStore((s) => s.continueChat);
   const skipTime = useAppStore((s) => s.skipTime);
+  const twist = useAppStore((s) => s.twist);
   const pinMessage = useAppStore((s) => s.pinMessage);
   const unpinMessage = useAppStore((s) => s.unpinMessage);
   const endScene = useAppStore((s) => s.endScene);
@@ -498,6 +501,12 @@ export default function ChatRoomScreen() {
     if (skipTime(conversation.id, skip, to) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
+  const twistTo = (to?: string) => {
+    setTwistOpen(false);
+    if (!freeOut.allow(shellCosts.textMessage)) return;
+    if (twist(conversation.id, to) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
   const saveEdit = (text: string) => {
     if (!freeOut.allow(shellCosts.textMessage)) return false;
     if (editLastMessage(conversation.id, text) === 'noShells') return outOfShells(shellCosts.textMessage);
@@ -526,6 +535,8 @@ export default function ChatRoomScreen() {
         return router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: conversation.id } });
       case 'timeSkip':
         return setSkipOpen(true);
+      case 'twist':
+        return setTwistOpen(true);
       case 'photo':
         return pickPhoto((uri, aspect) => {
           if (sendImage(conversation.id, uri, aspect) === 'noShells') outOfShells(shellCosts.textMessage, false);
@@ -793,6 +804,7 @@ export default function ChatRoomScreen() {
       />
       {freeOut.sheet}
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
+      <TwistSheet visible={twistOpen} block={block} onClose={() => setTwistOpen(false)} onPick={twistTo} />
       <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} hide={branchCount ? [] : ['branches']} />
       <BranchesSheet conversationId={conversation.id} theirName={name} visible={branchesOpen} onClose={() => setBranchesOpen(false)} />
 

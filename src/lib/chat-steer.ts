@@ -5,7 +5,7 @@ import { isSteer, lastExchange } from './chat-turns';
 import { contentProblems } from './create-character';
 
 /**
- * Continue and time skip (Character.AI teardown item 5): the user moves a chat on without
+ * Continue, time skip and twist (Character.AI teardown item 5, PolyBuzz core §5.5): the user moves a chat on without
  * writing. Continue asks them to go on; a time skip moves the story forward and they pick up from
  * there: by one of four spans, to the running scene's next moment, or to where the user says
  * ("After the concert"). Each leaves a marker (`card: 'continue' | 'skip'`) that counts as the
@@ -23,6 +23,12 @@ export const MAX_STEERS_IN_A_ROW = 3;
 /** How long an own skip may be: a moment in the story, not a scene of its own. */
 export const SKIP_TO_MAX = 40;
 
+/** How long a twist in the user's words may be: one thing that happens ("Their ex walks into the bar"). */
+export const TWIST_MAX = 60;
+
+/** The three ways to move a chat on without writing: go on, a time skip, a twist. */
+export type SteerKind = 'continue' | 'skip' | 'twist';
+
 /** How a skip reads to the model, in the history and in the cue (the app shows its own words). */
 export const SKIP_TEXT: Record<Exclude<TimeSkip, 'own'>, string> = {
   later: 'A little later',
@@ -36,8 +42,8 @@ export const SKIP_TEXT: Record<Exclude<TimeSkip, 'own'>, string> = {
 export const skipLabel = (skip: TimeSkip | undefined, to?: string) =>
   skip === 'own' && to?.trim() ? to.trim() : SKIP_TEXT[skip && skip !== 'own' ? skip : 'later'];
 
-/** An own skip as it is kept: single spaces, at most `SKIP_TO_MAX` characters. */
-export const cleanSkipTo = (text: string) => text.replace(/\s+/g, ' ').trim().slice(0, SKIP_TO_MAX).trim();
+/** An own skip (or a twist, with `TWIST_MAX`) as it is kept: single spaces, at most `max` characters. */
+export const cleanSkipTo = (text: string, max = SKIP_TO_MAX) => text.replace(/\s+/g, ' ').trim().slice(0, max).trim();
 
 export type SkipToProblem = 'empty' | 'crisis' | 'minors' | 'explicit';
 
@@ -45,8 +51,8 @@ export type SkipToProblem = 'empty' | 'crisis' | 'minors' | 'explicit';
  * Checks an own skip before it goes out: it needs words, and it keeps the content rules. A crisis
  * is never skipped past: the chat answers it with care instead.
  */
-export function checkSkipTo(text: string): SkipToProblem[] {
-  const words = cleanSkipTo(text);
+export function checkSkipTo(text: string, max = SKIP_TO_MAX): SkipToProblem[] {
+  const words = cleanSkipTo(text, max);
   if (!words) return ['empty'];
   return [...(detectCrisis(words) ? (['crisis'] as const) : []), ...contentProblems(words)];
 }
@@ -82,10 +88,10 @@ export function steerBlock(messages: readonly Message[] | undefined, typing: boo
   return null;
 }
 
-/** The marker a continue or a skip leaves in the chat (`to`: an own skip's words); the store gives it an id. */
+/** The marker a steer leaves in the chat (`to`: an own skip's or a twist's words); the store gives it an id. */
 export const steerMarker = (
   conversationId: string,
-  kind: 'continue' | 'skip',
+  kind: SteerKind,
   skip?: TimeSkip,
   now = new Date(),
   to?: string,
@@ -95,7 +101,7 @@ export const steerMarker = (
   kind: 'system',
   card: kind,
   ...(kind === 'skip' ? { skip: skip ?? 'later' } : {}),
-  ...(kind === 'skip' && skip === 'own' && to ? { skipTo: to } : {}),
+  ...((kind === 'skip' && skip === 'own') || kind === 'twist' ? (to ? { skipTo: to } : {}) : {}),
   createdAt: now.toISOString(),
 });
 
@@ -115,7 +121,8 @@ const skipHead = (skip: TimeSkip | undefined, to?: string) =>
  * reminders and real events the user told them about have not happened because of it. A scene's
  * skip keeps the scene and jumps to what happens next in it.
  */
-export function steerCue(kind: 'continue' | 'skip', skip?: TimeSkip, to?: string): string[] {
+export function steerCue(kind: SteerKind, skip?: TimeSkip, to?: string): string[] {
+  if (kind === 'twist') return twistCue(to);
   if (kind === 'continue') {
     return [
       'NEXT: The user tapped Continue: they want you to go on without writing anything.',
@@ -139,6 +146,27 @@ export function steerCue(kind: 'continue' | 'skip', skip?: TimeSkip, to?: string
     '- If a scene is running, it moves forward with the skip and you stay in it.',
     '- 1-3 short messages, in your voice.',
     ...(skip === 'own' ? [OWN_WORDS] : []),
+  ];
+}
+
+/**
+ * A twist (docs/polybuzz-core.md §5.5): something unexpected happens now and turns the story, the
+ * user's own idea or one the character picks to fit this story and who they are to the user. It
+ * turns the story, never ends it: no harm to the user or their real people, no end to the bond, and
+ * real plans stay as they are.
+ */
+function twistCue(to?: string): string[] {
+  const words = to?.trim();
+  return [
+    'NEXT: The user asked for a twist: something unexpected happens right now and turns the story.',
+    words
+      ? `- The twist they want: "${words}". Make it happen, your way.`
+      : '- Pick one that fits this story, this place and who you are to them: someone shows up, a secret slips out, a plan falls apart, a message arrives, a surprise is revealed, something goes wrong (or right) at the worst moment. Not the same kind as the last twist.',
+    '- Show it happening in a line, then react to it as yourself and talk to them; leave them room to answer.',
+    '- It turns the story, never ends it: nobody in the user’s real life is hurt, you do not leave them or end what you have.',
+    STORY_TIME,
+    '- 1-3 short messages, in your voice.',
+    ...(words ? [OWN_WORDS] : []),
   ];
 }
 
@@ -192,5 +220,6 @@ export const gameAskCue = (kind: 'truth' | 'dare') => [
   '- One short message. Keep it within the rules above.',
 ];
 
-/** A marker as the chat history shows it to the model: a skip says how far or where to; a continue says nothing. */
-export const historyText = (m: Message) => (m.card === 'skip' ? `[Time skip: ${skipLabel(m.skip, m.skipTo)}]` : null);
+/** A marker as the chat history shows it to the model: a skip says how far or where to, a twist what it was; a continue says nothing. */
+export const historyText = (m: Message) =>
+  m.card === 'skip' ? `[Time skip: ${skipLabel(m.skip, m.skipTo)}]` : m.card === 'twist' ? (m.skipTo?.trim() ? `[Twist: ${m.skipTo.trim()}]` : '[Twist]') : null;

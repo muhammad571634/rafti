@@ -426,7 +426,7 @@ export default function UsScreen() {
         visible={moreOpen}
         onClose={() => setMoreOpen(false)}
         // From a friend's page the quiz and a scene are with that friend; truth or dare and a time skip play inside the chat.
-        hide={friendChatId ? ['truthOrDare', 'timeSkip'] : ['truthOrDare', 'timeSkip', 'scene']}
+        hide={friendChatId ? ['truthOrDare', 'timeSkip', 'twist'] : ['truthOrDare', 'timeSkip', 'twist', 'scene']}
         onChatPick={(key) => {
           if (key === 'quiz') router.push({ pathname: '/quiz/[characterId]', params: { characterId: character.id } });
           else if (key === 'scene' && friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });

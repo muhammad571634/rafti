@@ -372,6 +372,7 @@
       "scene": "シーン",
       "timeSkip": "タイムスキップ",
       "branches": "分岐",
+      "twist": "急展開",
       "voice": "ボイス",
       "photo": "写真",
       "gift": "ギフト",
@@ -462,6 +463,17 @@
       "explicit": "コンテンツガイドラインを守ってください"
     },
     "skipNote": "メッセージ1件として数えます。ストーリーのみ進み、実際のリマインダーなどは維持されます。",
+    "twistLead": "思いがけないことが起きて、物語が動きます。",
+    "twistSurprise": "おまかせ",
+    "twistSurpriseHint": "物語に合った急展開",
+    "twistOwnPlaceholder": "例: 突然、明かりが消える",
+    "twistOwnSend": "この展開を送る",
+    "twistProblem": {
+      "empty": "起きることを入力してください",
+      "crisis": "これは急展開には設定できません。辛いときはいつでも話を聞きます。",
+      "minors": "急展開に未成年や就学年齢の描写を含めることはできません",
+      "explicit": "コンテンツガイドラインを守ってください"
+    },
     "freeLeft_other": "今日の無料メッセージはあと{{count}}件",
     "freeNone": "無料分は終了 · 1通につき1シェル",
     "freeUsedTitle": "今日の無料メッセージを使い切りました",

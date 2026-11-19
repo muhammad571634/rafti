@@ -378,6 +378,7 @@
       "scene": "Escena",
       "timeSkip": "Salto de tiempo",
       "branches": "Ramas",
+      "twist": "Giro",
       "voice": "Voz",
       "photo": "Foto",
       "gift": "Regalo",
@@ -473,6 +474,17 @@
       "explicit": "Mantén el contenido dentro de nuestras reglas"
     },
     "skipNote": "Cuenta como un mensaje. Solo en la historia: tus planes reales y recordatorios siguen intactos.",
+    "twistLead": "Pasa algo inesperado y la historia cambia.",
+    "twistSurprise": "Sorpréndeme",
+    "twistSurpriseHint": "Un giro que encaje con la historia",
+    "twistOwnPlaceholder": "O escríbelo: Se va la luz",
+    "twistOwnSend": "Enviar este giro",
+    "twistProblem": {
+      "empty": "Escribe qué pasa",
+      "crisis": "Esto no puede ser un giro. Si estás pasando por un momento difícil, están aquí para hablar.",
+      "minors": "Los giros no pueden involucrar a menores o personajes en edad escolar",
+      "explicit": "Mantén el contenido dentro de nuestras reglas"
+    },
     "freeLeft_one": "Te queda {{count}} mensaje gratis hoy",
     "freeLeft_other": "Te quedan {{count}} mensajes gratis hoy",
     "freeNone": "Sin mensajes gratis · 1 concha por mensaje",
