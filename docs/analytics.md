@@ -26,7 +26,7 @@ company's SDK, no ad id (privacy policy "App activity").
    props. A new event name needs no server change (any `^[a-z][a-z0-9_]{1,39}$` is taken).
 4. **The server** (`/v1/events` in `server/src/app.ts`): signed-in accounts only, 600 batches a day,
    a batch sent twice is kept once (`unique (user_id, client_id)`), bad events dropped and counted.
-5. **The database** (`supabase/migrations/*_b13_app_events.sql`): `public.app_events`, service role
+5. **The database** (`supabase/migrations/20261119061420_b13_app_events.sql`, applied 2026-11-19): `public.app_events`, service role
    only, cascades with the account, purged after 13 months.
 
 ## Reading the numbers
@@ -41,7 +41,7 @@ Views in the `analytics` schema (Supabase SQL editor, or the MCP's read-only SQL
 | `analytics.first_day` | per cohort, on day one: onboarded, sent 1 / 5 / 20 messages, saw the shells sheet |
 | `analytics.onboarding` | accounts reaching each onboarding step (30 days): where people stop |
 | `analytics.paywall` | the shells sheet by why and where it opened; plans started by plan |
-| `analytics.screens` | screen views and users per screen (30 days) |
+| `analytics.screens` | screen views and users per screen (30 days); `/` is Today (the tabs' index) |
 | `analytics.experiments` | per experiment arm: users and how many came back the next day |
 
 Example: `select * from analytics.retention where channel = 'production' order by cohort desc limit 14;`
