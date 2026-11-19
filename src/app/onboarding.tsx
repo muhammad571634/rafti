@@ -593,7 +593,8 @@ const styles = StyleSheet.create({
   langChipBox: { position: 'absolute', right: inkGutter, zIndex: 5 },
   langChip: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 10, paddingRight: 14, borderRadius: 18, overflow: 'hidden', backgroundColor: ink.raised },
   wheelRoom: { flex: 1, minHeight: 0, justifyContent: 'center' },
-  note: { marginTop: space.md, marginBottom: space.sm, paddingHorizontal: space.sm },
+  // Two lines always: the red under-18 note never shrinks the wheel's room and shifts the drum mid-turn.
+  note: { marginTop: space.md, marginBottom: space.sm, paddingHorizontal: space.sm, minHeight: 36 },
   field: {
     marginTop: 22,
     height: 56,

@@ -1,5 +1,5 @@
 import { memo, type Ref, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   type SharedValue,
   useAnimatedReaction,
@@ -158,17 +158,19 @@ function slotIndex(k: number, centre: number) {
   return k + SLOTS * Math.round((centre - k) / SLOTS);
 }
 
-/** One recycled row: placed and bent on the UI thread, its text changed only while hidden at the edge. */
+/**
+ * One recycled row, all on the UI thread (0z290): it holds every year it can stand for (its index, +9,
+ * +18…) in a short column mounted once, and shows the right one by moving that column inside its own
+ * clip. No React update while the drum turns: the old row re-rendered its text through the JS thread at
+ * each wrap, which the A51 could not keep up with on a fast fling (late or jumping numbers).
+ */
 const WheelSlot = memo(function WheelSlot({ slot, scrollY, min, count, blockedFrom }: { slot: number; scrollY: SharedValue<number>; min: number; count: number; blockedFrom: number }) {
-  const [index, setIndex] = useState(() => slotIndex(slot, scrollY.get() / ROW));
-  useAnimatedReaction(
-    () => slotIndex(slot, scrollY.get() / ROW),
-    (i, prev) => {
-      if (i !== prev) scheduleOnRN(setIndex, i);
-    },
-  );
-  const year = min + index;
-  const blocked = year >= blockedFrom;
+  const indices = useMemo(() => {
+    const list: number[] = [];
+    for (let i = slot; i < count; i += SLOTS) list.push(i);
+    return list;
+  }, [slot, count]);
+  const anyBlocked = indices.some((i) => min + i >= blockedFrom);
   const style = useAnimatedStyle(() => {
     const c = scrollY.get() / ROW;
     const i = slotIndex(slot, c);
@@ -183,13 +185,34 @@ const WheelSlot = memo(function WheelSlot({ slot, scrollY, min, count, blockedFr
       transform: [{ perspective: 600 }, { translateY: bent }, { rotateX: `${-d * 17}deg` }, { scale }],
     };
   });
+  // Which of its years the row shows: the column moves by whole rows, never mid-way.
+  const column = useAnimatedStyle(() => ({ transform: [{ translateY: -Math.round((slotIndex(slot, scrollY.get() / ROW) - slot) / SLOTS) * ROW }] }));
   // The red only for a year under the age line, settled in the band.
-  const inBand = useAnimatedStyle(() => ({ opacity: blocked && Math.abs(slotIndex(slot, scrollY.get() / ROW) - scrollY.get() / ROW) < 0.5 ? 1 : 0 }));
-  if (index < 0 || index > count - 1) return null;
+  const inBand = useAnimatedStyle(() => {
+    const c = scrollY.get() / ROW;
+    const i = slotIndex(slot, c);
+    return { opacity: min + i >= blockedFrom && Math.abs(i - c) < 0.5 ? 1 : 0 };
+  });
   return (
     <Animated.View style={[styles.slot, style]}>
-      <Animated.Text style={styles.year}>{year}</Animated.Text>
-      {blocked ? <Animated.Text style={[styles.year, styles.red, inBand]}>{year}</Animated.Text> : null}
+      <Animated.View style={column}>
+        {indices.map((i) => (
+          <Text key={i} style={styles.year}>
+            {min + i}
+          </Text>
+        ))}
+      </Animated.View>
+      {anyBlocked ? (
+        <Animated.View style={[StyleSheet.absoluteFill, inBand]}>
+          <Animated.View style={column}>
+            {indices.map((i) => (
+              <Text key={i} style={[styles.year, min + i >= blockedFrom ? styles.red : styles.clear]}>
+                {min + i}
+              </Text>
+            ))}
+          </Animated.View>
+        </Animated.View>
+      ) : null}
     </Animated.View>
   );
 });
@@ -198,7 +221,8 @@ const styles = StyleSheet.create({
   hidden: { opacity: 0 },
   wheel: { height: ROW * VISIBLE, alignSelf: 'stretch', overflow: 'hidden' },
   band: { position: 'absolute', left: 0, right: 0, height: ROW, borderRadius: inkRadius.field, borderCurve: 'continuous', backgroundColor: ink.raised },
-  slot: { position: 'absolute', left: 0, right: 0, top: 0, height: ROW, justifyContent: 'center' },
+  slot: { position: 'absolute', left: 0, right: 0, top: 0, height: ROW, overflow: 'hidden' },
   year: { ...inkType.numeralSmall, fontSize: 56, lineHeight: ROW, height: ROW, textAlign: 'center', includeFontPadding: false },
-  red: { position: 'absolute', left: 0, right: 0, top: 0, color: BLOCKED },
+  red: { color: BLOCKED },
+  clear: { color: 'transparent' },
 });

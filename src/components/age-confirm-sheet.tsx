@@ -68,5 +68,6 @@ export function AgeConfirmSheet({ visible, onClose }: { visible: boolean; onClos
 
 const styles = StyleSheet.create({
   wheel: { height: 300, justifyContent: 'center' },
-  note: { marginTop: 12, marginBottom: 16 },
+  // Room for two lines always: the red under-18 note never makes the sheet jump or start to scroll under the wheel.
+  note: { marginTop: 12, marginBottom: 16, minHeight: 36 },
 });
