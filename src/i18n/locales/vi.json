@@ -323,6 +323,13 @@
     "joinedLine": "{{name}} đã tham gia nhóm",
     "removedLine": "Bạn đã xóa {{name}} khỏi nhóm"
   },
+  "ageCheck": {
+    "title": "Sigmazam dành cho người lớn",
+    "confirmed": "Đã xác nhận tuổi",
+    "confirm": "Xác nhận tuổi",
+    "confirmTitle": "Xác nhận tuổi của bạn",
+    "locked": "Các nhân vật sẽ chỉ trò chuyện như bạn bè. Sigmazam dành cho người lớn."
+  },
   "chat": {
     "jumpToNewest": "Đến tin nhắn mới nhất",
     "branches": {

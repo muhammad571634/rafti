@@ -5,6 +5,7 @@ import { userLines } from '../../src/ai/reply-language.ts';
 import { parseModelReply, type ModelReply } from '../../src/ai/reply-style.ts';
 import { imageCue } from '../../src/ai/photo-prompt.ts';
 import { detectCrisis, VEILED_MESSAGE, VEILED_NEUTRAL } from '../../src/ai/safety.ts';
+import { ageUnclear } from '../../src/lib/age-check.ts';
 import type { Message } from '../../src/types/index.ts';
 import type { LlmProvider, LlmResult } from './llm/types.ts';
 
@@ -64,10 +65,14 @@ export async function chatReply<I extends ChatPromptInput>(
   // In a crisis, drop an own skip/twist so `CRISIS_CUE` leads instead of steering past it.
   const firstInput = caught ? { ...input, crisis: true, ...(input.steer?.to ? { steer: undefined } : {}) } : input;
   const layout = layoutOf(firstInput);
-  const first = await provider.complete(layout, { timeoutMs });
+  // Age unclear (src/lib/age-check.ts): the provider's filter runs stricter as well as the prompt.
+  const strict = ageUnclear(input.user);
+  const first = await provider.complete(layout, { timeoutMs, ...(strict ? { strict } : {}) });
   const calls: ChatCall[] = [{ mode, layout, result: first }];
   let reply = parseModelReply(first.text);
   let result = first;
+  // "Under 18" holds whichever draft goes out: a second try for repetition must not drop it.
+  let minor = reply.minor === true;
   // The first draft's own crisis flag; a stopped draft has none, so the second try may still raise it.
   const flagged = caught || reply.crisis === true;
 
@@ -99,9 +104,10 @@ export async function chatReply<I extends ChatPromptInput>(
   if (retry) {
     const again = layoutOf(retry.input);
     try {
-      const second = await provider.complete(again, { timeoutMs: left });
+      const second = await provider.complete(again, { timeoutMs: left, ...(strict ? { strict } : {}) });
       calls.push({ mode: retry.mode, layout: again, result: second });
       const redone = parseModelReply(second.text);
+      minor ||= redone.minor === true;
       const better = repeat ? (findRepeat(redone.bubbles, input.messages, input.redo)?.score ?? 0) < repeat.score : true;
       if (redone.bubbles.length && better) {
         reply = redone;
@@ -113,7 +119,7 @@ export async function chatReply<I extends ChatPromptInput>(
   }
   // The helpline card follows the draft that went out too: a stopped first draft could not raise it.
   const crisis = flagged || reply.crisis === true;
-  return { reply, result, calls, repeat, crisis, ...(blocked ? { blocked } : {}) };
+  return { reply: minor ? { ...reply, minor } : reply, result, calls, repeat, crisis, ...(blocked ? { blocked } : {}) };
 }
 
 /** How many of the user's latest messages a stopped prompt veils: the filter reads the whole chat. */

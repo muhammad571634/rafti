@@ -362,7 +362,7 @@ export interface Message {
    * A system line drawn by the chat instead of a bubble: the helpline card after a
    * crisis message, the "AI character" notice, or the note that voice minutes ran out.
    */
-  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'twist' | 'notifyOff' | 'week' | 'setup' | 'board';
+  card?: 'helpline' | 'aiNotice' | 'voiceQuota' | 'scene' | 'sceneEnd' | 'continue' | 'skip' | 'twist' | 'ageCheck' | 'notifyOff' | 'week' | 'setup' | 'board';
   /** setup cards: the alarm or plan the friend offered to set up; one tap makes it (`answerSetup`). */
   setup?: SetupOffer;
   /** A `scene` card: which scene began, so a world's entry scene plays once. */
@@ -1072,6 +1072,11 @@ export interface User {
   about?: string;
   /** Year of the last birthday the characters already celebrated. */
   birthdayWishedYear?: number;
+  /**
+   * Their age is in doubt (`src/lib/age-check.ts`): since `at` a chat said they may be under 18; `locked`
+   * once they confirmed a year under 18. Every character stays careful until it is cleared.
+   */
+  ageCheck?: { at: string; locked?: boolean };
 }
 
 export type Pronouns = 'she' | 'he' | 'they';

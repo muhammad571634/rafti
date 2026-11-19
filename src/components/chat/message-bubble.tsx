@@ -8,6 +8,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { HELPLINE_URL } from '@/ai/safety';
+import { AgeConfirmSheet } from '@/components/age-confirm-sheet';
 import { cleanReact } from '@/ai/react';
 import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
 import { BubbleQuote } from '@/components/chat/reply-quote';
@@ -21,6 +22,7 @@ import { planDate } from '@/components/plans/copy';
 import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
 import { clockTime, duration as fmtDuration } from '@/lib/format';
 import { cutSegments, segments, segmentWords } from '@/lib/reply-engine';
+import { ageDoubt } from '@/lib/age-check';
 import { useReveal } from '@/lib/reveal';
 import { barsFor, resampleWave } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
@@ -170,6 +172,7 @@ export const MessageBubble = memo(function MessageBubble({
   const column = named || (!mine && !!time);
 
   if (message.card === 'helpline') return <HelplineCard />;
+  if (message.card === 'ageCheck') return <AgeCheckCard />;
   // Only groups still get the line; a one-to-one chat's header says "AI character" (2026-10-30).
   if (message.card === 'aiNotice') return aiNoticeText ? <AiNotice text={aiNoticeText} /> : null;
   if (message.card === 'voiceQuota') return <VoiceQuotaNote until={message.until} />;
@@ -781,6 +784,33 @@ function HelplineCard() {
           onPress={() => void Linking.openURL(HELPLINE_URL)}
         />
       </View>
+    </View>
+  );
+}
+
+/**
+ * Where a chat said the user may be under 18 (src/lib/age-check.ts): every character is careful now;
+ * Confirm age opens the year wheel. Once confirmed it says so; a year under 18 keeps it for good.
+ */
+function AgeCheckCard() {
+  const { t } = useTranslation();
+  const doubt = useAppStore((s) => ageDoubt(s.user));
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.system}>
+      <View style={styles.helpline}>
+        <Txt variant="title" center>
+          {doubt ? t('ageCheck.title') : t('ageCheck.confirmed')}
+        </Txt>
+        {doubt === 'locked' ? (
+          <Txt center style={styles.systemText}>
+            {t('ageCheck.locked')}
+          </Txt>
+        ) : doubt ? (
+          <Button label={t('ageCheck.confirm')} variant="secondary" size="sm" onPress={() => setOpen(true)} />
+        ) : null}
+      </View>
+      <AgeConfirmSheet visible={open} onClose={() => setOpen(false)} />
     </View>
   );
 }

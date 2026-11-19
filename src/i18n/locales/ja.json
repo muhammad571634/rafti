@@ -323,6 +323,13 @@
     "joinedLine": "{{name}}が参加しました",
     "removedLine": "{{name}}をグループから外しました"
   },
+  "ageCheck": {
+    "title": "Sigmazamは大人向けです",
+    "confirmed": "年齢を確認しました",
+    "confirm": "年齢を確認",
+    "confirmTitle": "年齢の確認",
+    "locked": "キャラクターは友だちとして接します。Sigmazamは大人向けです。"
+  },
   "chat": {
     "jumpToNewest": "最新のメッセージへ",
     "branches": {

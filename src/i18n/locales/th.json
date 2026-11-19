@@ -323,6 +323,13 @@
     "joinedLine": "{{name}} เข้าร่วมกลุ่มแล้ว",
     "removedLine": "คุณนำ {{name}} ออกจากกลุ่มแล้ว"
   },
+  "ageCheck": {
+    "title": "Sigmazam สำหรับผู้ใหญ่",
+    "confirmed": "ยืนยันอายุแล้ว",
+    "confirm": "ยืนยันอายุ",
+    "confirmTitle": "ยืนยันอายุของคุณ",
+    "locked": "ตัวละครจะคุยแบบเพื่อนต่อไป Sigmazam สำหรับผู้ใหญ่"
+  },
   "chat": {
     "jumpToNewest": "ไปที่ข้อความล่าสุด",
     "branches": {

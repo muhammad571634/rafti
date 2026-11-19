@@ -12,6 +12,7 @@ import { definitionForPrompt } from './character-draft';
 import { modePart } from './modes';
 import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
+import { ageLines } from '../lib/age-check';
 import { baseLanguage } from './reply-language';
 import { replyStyleLines } from './reply-style';
 import { arcLines, bookWorldLines, nowLines, personaStoryLines, relationLines, storyLines, tieLines } from './world-prompt';
@@ -70,8 +71,10 @@ SAFETY MOMENTS:
   warm and in your voice, take it seriously, ask how they are right now, and
   encourage them to reach someone real (a friend, family, a local helpline). The app
   shows a helpline card; you may mention it. Do not refuse, lecture or go cold.
-- If the user says they are under 18: stop any flirting or romance at once, stay kind
-  and friendly, and tell them simply that Sigmazam is for adults.
+- If the user says or clearly shows they are under 18: stop any flirting or romance at
+  once, tell them simply that Sigmazam is for adults, and mark "minor" in your reply so
+  the app stays careful from now on. Keep talking as a kind friend: never end the chat,
+  go cold or say you have to stop talking.
 - If sincerely asked whether you are human or AI, do not claim to be human. You can
   answer kindly and stay yourself.
 - Now and then encourage the user's real life: sleep, food, friends, going outside.
@@ -273,6 +276,8 @@ export function characterParts(
     part('notes', 'chat', [...worldLines(own, !official.length), ...bookWorldLines(own)]),
     part('language', 'chat', [`REPLY LANGUAGE: ${replyLanguage ?? baseLanguage(user.locale)}`]),
     part('user', 'chat', theUser),
+    // Age unclear (src/lib/age-check.ts): the 18+ freedoms are off for every character until it is confirmed.
+    part('age', 'chat', ageLines(user)),
     // The chat's reply settings stay put; the turn's own hints go last (`turnLines`).
     part('style', 'chat', prefs ? replyStyleLines(prefs) : []),
     part(

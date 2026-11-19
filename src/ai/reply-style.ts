@@ -57,10 +57,12 @@ export function replyStyleLines(prefs: ReplyPrefs) {
  * server acts on it.
  */
 export const REPLY_SHAPE =
-  `Reply with JSON only: {"crisis":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"language":"the language of their latest message, named","messages":[""]}. ` +
+  `Reply with JSON only: {"crisis":false,"minor":false,"emotion":"${EMOTIONS.join('|')}","intensity":0-1,"language":"the language of their latest message, named","messages":[""]}. ` +
   '"crisis" is true when the user themself seems at real risk: wanting to die or to hurt themselves, its warning signs ' +
   '(saying goodbye, giving their things away, feeling like a burden or done with everything), or in danger now; ' +
   'never for a joke, a figure of speech ("this is killing me") or your story\'s fiction. ' +
+  '"minor" is true only when the user says or clearly shows they themself are under 18 now (their age, their school year); ' +
+  'never for their past ("when I was 15"), a character, the story or someone else. ' +
   'Each string is one chat bubble, written in that language; narration in *asterisks*.';
 
 // The chat's one-tap replies (0z176) are gone (owner, 2026-11-17: the user writes, a live
@@ -90,6 +92,8 @@ export interface ModelReply {
   intensity?: number;
   /** The model marked the user as possibly in danger. */
   crisis?: boolean;
+  /** The model read the user as under 18 (`src/lib/age-check.ts`). */
+  minor?: boolean;
   /** One line about each photo it was shown (`src/ai/photo-prompt.ts`). */
   photos?: string[];
   /** An alarm or a plan the user asked it to set up (`src/ai/setup-prompt.ts`). */
@@ -128,7 +132,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; next?: unknown };
+      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; minor?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; next?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -147,6 +151,7 @@ export function parseModelReply(raw: string): ModelReply {
           emotion: EMOTIONS.includes(data.emotion as Emotion) ? (data.emotion as Emotion) : undefined,
           intensity: typeof data.intensity === 'number' ? Math.min(1, Math.max(0, data.intensity)) : undefined,
           ...(data.crisis === true ? { crisis: true } : {}),
+          ...(data.minor === true ? { minor: true } : {}),
           ...(photos ? { photos } : {}),
           ...(setup ? { setup } : {}),
           ...(hasThreadOps(threads) ? { threads } : {}),

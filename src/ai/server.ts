@@ -240,8 +240,8 @@ export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
   pay?: PayLine,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; minor?: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; minor?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -261,6 +261,8 @@ export async function serverReply(
   return {
     lines: kept.map((k) => k.line),
     crisis: reply?.crisis === true,
+    // The model read the user as under 18: the app turns careful (src/lib/age-check.ts).
+    ...(reply?.minor === true ? { minor: true } : {}),
     photos: reply?.photos,
     charge: cleanCharge(reply?.charge),
     voice: signs.length ? kept.map((k) => k.sig) : undefined,
@@ -328,15 +330,15 @@ export async function serverGroupReply(
   input: GroupPromptInput,
   accessToken?: string | null,
   pay?: PayLine,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; day?: string[]; charge?: MessageCharge } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; day?: unknown; charge?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; minor?: boolean; photos?: string[]; day?: string[]; charge?: MessageCharge } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; minor?: boolean; photos?: string[]; day?: unknown; charge?: unknown }>(
     '/v1/chat/group',
     withOptionalToken(accessToken, pay ? { ...input, pay } : input),
     GROUP_REPLY_TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
   );
   const lines = reply?.messages?.filter((line) => typeof line === 'string' && line.trim());
   return lines?.length
-    ? { lines, crisis: reply?.crisis === true, photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day), charge: cleanCharge(reply?.charge) }
+    ? { lines, crisis: reply?.crisis === true, ...(reply?.minor === true ? { minor: true } : {}), photos: reply?.photos, day: reply?.crisis === true ? undefined : cleanDayNotes(reply?.day), charge: cleanCharge(reply?.charge) }
     : null;
 }
 

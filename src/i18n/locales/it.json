@@ -328,6 +328,13 @@
     "joinedLine": "Nuovo membro: {{name}}",
     "removedLine": "Hai rimosso {{name}}"
   },
+  "ageCheck": {
+    "title": "Sigmazam è per adulti",
+    "confirmed": "Età confermata",
+    "confirm": "Conferma età",
+    "confirmTitle": "Conferma la tua età",
+    "locked": "I personaggi restano amichevoli. Sigmazam è per adulti."
+  },
   "chat": {
     "jumpToNewest": "Vai ai messaggi più recenti",
     "branches": {

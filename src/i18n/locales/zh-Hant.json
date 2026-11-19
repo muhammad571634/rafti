@@ -323,6 +323,13 @@
     "joinedLine": "{{name}}加入了群組",
     "removedLine": "你將{{name}}移出群組"
   },
+  "ageCheck": {
+    "title": "Sigmazam 僅限成人使用",
+    "confirmed": "已確認年齡",
+    "confirm": "確認年齡",
+    "confirmTitle": "確認你的年齡",
+    "locked": "角色會以朋友的方式相處。Sigmazam 僅限成人使用。"
+  },
   "chat": {
     "jumpToNewest": "前往最新訊息",
     "branches": {

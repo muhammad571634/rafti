@@ -103,6 +103,7 @@ import { writeMockReply } from '@/mock/reply-writer';
 import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
 import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
+import { ageDoubt, confirmedAge, withAgeDoubt, type AgeDoubt } from '@/lib/age-check';
 import { shortName } from '@/lib/format';
 import { forgetFriend } from '@/lib/forget-friend';
 import { currentMoments, isWrittenMoment, momentScenes, type FriendMoments } from '@/lib/friend-moments';
@@ -553,6 +554,8 @@ export interface AppState {
    * moment, or `to`, the user's own words (`skip: 'own'`). Costs what a message does.
    */
   skipTime: (conversationId: string, skip: TimeSkip, to?: string) => SendResult;
+  /** Confirms the user's age from the year wheel (`src/lib/age-check.ts`); returns the doubt left (null: cleared). */
+  confirmAge: (year: number) => AgeDoubt | null;
   /** A twist (docs/polybuzz-core.md §5.5): something unexpected happens, in the user's words or the friend's pick. */
   twist: (conversationId: string, to?: string) => SendResult;
 
@@ -1648,6 +1651,10 @@ export const useAppStore = create<AppState>()(
 
       skipTime: (conversationId, skip, to) => steerChat(set, get, conversationId, 'skip', skip, to),
       twist: (conversationId, to) => steerChat(set, get, conversationId, 'twist', undefined, to),
+      confirmAge: (year) => {
+        set((s) => ({ user: confirmedAge(s.user, year) }));
+        return ageDoubt(get().user);
+      },
 
       /* ── group chats ──────────────────────────────────────────────────── */
 
@@ -5436,6 +5443,18 @@ const themText = (conversationId: string, text: string): Message => ({
 });
 
 /** The helpline card after a crisis message (src/ai/safety.ts): one tap to local helplines. */
+/**
+ * The model read the user as under 18 (`src/lib/age-check.ts`): every character turns careful from
+ * the next reply on, and this chat gets the age card once, with Confirm age.
+ */
+function raiseAgeDoubt(set: Setter, get: Getter, chatId: string, inGroup: boolean) {
+  if (get().user.ageCheck) return;
+  set((s) => ({ user: withAgeDoubt(s.user) }));
+  const card: Message = { id: uid('m'), conversationId: chatId, author: 'them', kind: 'system', card: 'ageCheck', createdAt: new Date().toISOString() };
+  if (inGroup) appendGroupMessage(set, get, chatId, card, { quiet: true });
+  else appendMessage(set, get, chatId, card, { quiet: true });
+}
+
 function appendHelplineCard(set: Setter, get: Getter, conversationId: string) {
   appendMessage(set, get, conversationId, {
     id: uid('m'),
@@ -6282,6 +6301,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       if (reply.react && trigger === 'message' && avoid == null && !steer) markTheirReaction(set, conversationId, reply.react);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
+      if (reply.minor) raiseAgeDoubt(set, get, conversationId, false);
       deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought, reply.next);
       // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
       if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
@@ -6794,6 +6814,7 @@ function writeGroupTurns(set: Setter, get: Getter, groupId: string, turns: Group
       if (reply.crisis && !(get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) {
         appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
       }
+      if (reply.minor) raiseAgeDoubt(set, get, groupId, true);
       rememberPhotos(set, groupId, photos, reply.photos);
       if (reply.day?.length) keepOwnDay(set, turn.characterId, reply.day);
       said.push(...reply.lines.map((line) => memberText(groupId, turn.characterId, line)));

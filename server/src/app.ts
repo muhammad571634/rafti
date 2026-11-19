@@ -1164,7 +1164,7 @@ export function createApp(
       console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}${blocked ? ` safety=${blocked}` : ''}`);
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
-      return c.json({ messages: lines, crisis, photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name, charge: paid?.charge });
+      return c.json({ messages: lines, crisis, ...(reply.minor ? { minor: true } : {}), photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
       console.error('[group] failed', error);
@@ -1276,7 +1276,8 @@ export function createApp(
       const thought = crisis || input.mode === 'call' ? undefined : reply.thought;
       // `next`: a moment the reply invites the user to (0z283); only one the turn opened, texting only, never after a crisis.
       const next = crisis || (input.mode && input.mode !== 'chat') ? undefined : cleanNext(reply.next, input.next ?? []);
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, thought, ideas, next, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
+      // `minor`: the model read the user as under 18; the app turns careful for every character (src/lib/age-check.ts).
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, ...(reply.minor ? { minor: true } : {}), photos: reply.photos, setup, threads, day, react, thought, ideas, next, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);

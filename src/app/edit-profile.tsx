@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AgeConfirmSheet } from '@/components/age-confirm-sheet';
 import { Group, LinkRow, ProgressCard, TitleTop } from '@/components/character/kit';
 import { BirthdaySheet, InterestsSheet, OptionSheet, TextFieldSheet } from '@/components/profile/field-sheets';
 import { PressableScale, Screen, Txt, UserAvatar } from '@/components/ui';
@@ -18,6 +19,7 @@ import {
   profileCompletion,
 } from '@/lib/profile';
 import { phrase } from '@/i18n';
+import { ageDoubt } from '@/lib/age-check';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
@@ -50,6 +52,9 @@ export default function EditProfileScreen() {
   const updateProfile = useAppStore((s) => s.updateProfile);
 
   const [open, setOpen] = useState<Field | null>(null);
+  const [ageOpen, setAgeOpen] = useState(false);
+  const doubt = ageDoubt(user);
+  const confirmable = doubt === 'chat' || doubt === 'noYear';
   const [photoError, setPhotoError] = useState(false);
   const close = () => setOpen(null);
 
@@ -107,8 +112,12 @@ export default function EditProfileScreen() {
             meta={birthdayLabel(user.birthday, i18n.language)}
             onPress={() => setOpen('birthday')}
           />
-          {/* The 18+ answer from onboarding; read-only. */}
-          {user.birthYear ? <LinkRow icon="calendar" fill={FILL.born} label={t('editProfile.born')} meta={String(user.birthYear)} /> : null}
+          {/* The 18+ answer from onboarding, read-only; while the age is unclear (src/lib/age-check.ts) a tap confirms it. */}
+          {confirmable ? (
+            <LinkRow icon="calendar" fill={FILL.born} label={t('editProfile.born')} meta={t('ageCheck.confirm')} onPress={() => setAgeOpen(true)} />
+          ) : user.birthYear ? (
+            <LinkRow icon="calendar" fill={FILL.born} label={t('editProfile.born')} meta={String(user.birthYear)} />
+          ) : null}
           <LinkRow icon="briefcase" fill={FILL.job} label={t('editProfile.job')} meta={user.job} onPress={() => setOpen('job')} last />
         </Group>
 
@@ -173,6 +182,7 @@ export default function EditProfileScreen() {
         onPick={(pronouns) => updateProfile({ pronouns })}
         onClose={close}
       />
+      <AgeConfirmSheet visible={ageOpen} onClose={() => setAgeOpen(false)} />
       <BirthdaySheet
         visible={open === 'birthday'}
         value={user.birthday}

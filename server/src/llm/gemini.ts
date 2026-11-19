@@ -20,6 +20,17 @@ export const SAFETY_SETTINGS: SafetySetting[] = [
   { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.OFF },
 ];
 
+/**
+ * While the user's age is unclear (`src/lib/age-check.ts`): sexual content stops at a low risk and
+ * danger at a medium one, on top of the careful prompt. Harassment stays off (a tsundere's teasing).
+ */
+export const STRICT_SAFETY_SETTINGS: SafetySetting[] = [
+  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
+  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.OFF },
+];
+
 /** Finish reasons that mean the filter, not the model, ended the answer. */
 const STOPPED: readonly string[] = [FinishReason.SAFETY, FinishReason.PROHIBITED_CONTENT, FinishReason.BLOCKLIST, FinishReason.SPII];
 
@@ -44,7 +55,7 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
   const ai = new GoogleGenAI({ apiKey });
   return {
     name: `gemini:${models[0]}`,
-    async complete(layout, { timeoutMs, temperature: callTemperature }) {
+    async complete(layout, { timeoutMs, temperature: callTemperature, strict }) {
       const deadline = Date.now() + timeoutMs;
       let last: unknown;
       // Round twice: a model that just said "high demand" is often free again a moment later.
@@ -60,7 +71,7 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
               systemInstruction: layout.system.map((block) => block.text).join('\n\n'),
               responseMimeType: 'application/json',
               temperature: callTemperature ?? temperature,
-              safetySettings: SAFETY_SETTINGS,
+              safetySettings: strict ? STRICT_SAFETY_SETTINGS : SAFETY_SETTINGS,
               // One model may not take the whole wait: the first gets half, each next a quarter.
               // Whole milliseconds: a fraction throws before the call is made.
               abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(5000, timeoutMs / (i === 0 ? 2 : 4))))),

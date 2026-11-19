@@ -10,8 +10,9 @@ export interface LlmProvider {
    * `temperature`: the provider's own when missing (0.9, for the characters); low for work that must be exact (the memory pass).
    * `priority`: 'side' for work nobody is waiting on (a line written ahead, a stream, the memory pass); it
    * gives way first when the service is full or the day's budget runs low (`llm/gate.ts`). Talking by default.
+   * `strict`: the user's age is unclear (`src/lib/age-check.ts`): the provider's own filter runs at its careful setting.
    */
-  complete(layout: PromptLayout, opts: { timeoutMs: number; temperature?: number; priority?: 'talk' | 'side' }): Promise<LlmResult>;
+  complete(layout: PromptLayout, opts: { timeoutMs: number; temperature?: number; priority?: 'talk' | 'side'; strict?: boolean }): Promise<LlmResult>;
 }
 
 export interface LlmResult {

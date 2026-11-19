@@ -342,6 +342,13 @@
     "joinedLine": "{{name}} теперь в группе",
     "removedLine": "Вы удалили {{name}} из группы"
   },
+  "ageCheck": {
+    "title": "Sigmazam — для взрослых",
+    "confirmed": "Возраст подтверждён",
+    "confirm": "Подтвердить возраст",
+    "confirmTitle": "Подтвердите возраст",
+    "locked": "Персонажи останутся дружелюбными. Sigmazam — для взрослых."
+  },
   "chat": {
     "jumpToNewest": "К новым сообщениям",
     "branches": {

@@ -328,6 +328,13 @@
     "joinedLine": "{{name}} gruba katıldı",
     "removedLine": "{{name}} gruptan çıkarıldı"
   },
+  "ageCheck": {
+    "title": "Sigmazam yetişkinler içindir",
+    "confirmed": "Yaş onaylandı",
+    "confirm": "Yaşı onayla",
+    "confirmTitle": "Yaşını onayla",
+    "locked": "Karakterler arkadaşça kalır. Sigmazam yetişkinler içindir."
+  },
   "chat": {
     "jumpToNewest": "En yeni mesajlara git",
     "branches": {

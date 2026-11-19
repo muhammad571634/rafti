@@ -323,6 +323,13 @@
     "joinedLine": "{{name}} bergabung",
     "removedLine": "Kamu mengeluarkan {{name}}"
   },
+  "ageCheck": {
+    "title": "Sigmazam untuk orang dewasa",
+    "confirmed": "Usia dikonfirmasi",
+    "confirm": "Konfirmasi usia",
+    "confirmTitle": "Konfirmasi usiamu",
+    "locked": "Karakter tetap bersikap sebagai teman. Sigmazam untuk orang dewasa."
+  },
   "chat": {
     "jumpToNewest": "Ke pesan terbaru",
     "branches": {

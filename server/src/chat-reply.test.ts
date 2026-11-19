@@ -164,3 +164,38 @@ describe('the output check (the provider’s safety filter)', () => {
     assert.equal((await crisis.json()).ideas, undefined);
   });
 });
+
+describe('age assurance (0z289)', () => {
+  /** Keeps whether each call asked for the provider's strict filter. */
+  function watching(...answers: LlmResult[]) {
+    const strict: (boolean | undefined)[] = [];
+    const provider: LlmProvider = {
+      name: 'fake',
+      async complete(_layout, opts) {
+        strict.push(opts.strict);
+        return answers[Math.min(strict.length - 1, answers.length - 1)];
+      },
+    };
+    return { provider, strict };
+  }
+
+  it('passes the model’s minor flag to the app', async () => {
+    const { provider } = watching({ text: '{"minor":true,"messages":["Sigmazam is for adults, but I’m still glad you’re here."]}', usage: {} });
+    const json = await (await post(provider)).json();
+    assert.equal(json.minor, true);
+  });
+
+  it('sends no flag when the model gave none', async () => {
+    const { provider } = watching({ text: '{"messages":["hey"]}', usage: {} });
+    assert.equal((await (await post(provider)).json()).minor, undefined);
+  });
+
+  it('runs the strict filter and the careful prompt while the age is unclear, never for a confirmed adult', async () => {
+    const doubted = watching({ text: '{"messages":["hey"]}', usage: {} });
+    await post(doubted.provider, { ...body, user: { ...body.user, birthYear: 1998, onboardedAt: '2026-11-01T00:00:00Z', ageCheck: { at: '2026-11-19T00:00:00Z' } } });
+    assert.deepEqual(doubted.strict, [true]);
+    const clear = watching({ text: '{"messages":["hey"]}', usage: {} });
+    await post(clear.provider, { ...body, user: { ...body.user, birthYear: 1998, onboardedAt: '2026-11-01T00:00:00Z' } });
+    assert.deepEqual(clear.strict, [undefined]);
+  });
+});
