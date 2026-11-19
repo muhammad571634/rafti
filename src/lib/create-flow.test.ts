@@ -14,6 +14,7 @@ const empty: CreateForm = {
   bio: '',
   look: '',
   quirk: '',
+  scenario: '',
   greeting: '',
   opening: '',
   greetings: [],

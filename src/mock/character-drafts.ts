@@ -216,6 +216,7 @@ export function mockDraft(input: DraftInput, genderParam?: CharacterGender): Cha
     greeting: fill(voices[0].greeting, {}, gender),
     opening: fill(pickSeeded(v.openings, `${seed}|opening`), {}, gender),
     quirk: fill(pickSeeded(v.quirks, `${seed}|quirk`), {}, gender),
+    scenario: '',
     // The other sparks' openings first, then other moods, so there are always three more.
     greetings: [...voices.slice(1), ...SPARKS.map((spark) => ({ ...v.voices[spark], style: SPARK_STYLE[spark] })).filter((voice) => !voices.some((item) => item.greeting === voice.greeting))]
       .slice(0, MORE_GREETINGS_MAX)
@@ -278,6 +279,9 @@ export function mockFieldReply(field: DraftField, character: FieldContext, attem
       return JSON.stringify({ value: fill(at(v.openings, (line) => line === character.opening), {}, gender) });
     case 'quirk':
       return JSON.stringify({ value: fill(at(v.quirks, (line) => line === character.quirk), {}, gender) });
+    // The model writes the start scene; with it off there is none to make up.
+    case 'scenario':
+      return JSON.stringify({ value: '' });
     case 'greeting':
       return JSON.stringify({ value: fill(at(voices.map((item) => item.greeting), (line) => line === character.greeting), {}, gender) });
     case 'greetings': {

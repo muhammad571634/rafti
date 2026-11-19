@@ -24,6 +24,7 @@ import {
   TAGLINE_MAX,
   OPENING_MAX,
   QUIRK_MAX,
+  SCENARIO_MAX,
   HEIGHT_MAX,
   HEIGHT_MIN,
   THING_MAX,
@@ -111,6 +112,8 @@ export interface CharacterDraft {
   opening: string;
   /** One small endearing flaw; may be empty. */
   quirk: string;
+  /** How their story with the user begins (0z296); may be empty. */
+  scenario: string;
   greetings: string[];
   definition: string;
   starters: string[];
@@ -175,6 +178,7 @@ export type DraftField =
   | 'greeting'
   | 'opening'
   | 'quirk'
+  | 'scenario'
   | 'greetings'
   | 'dialog'
   | 'starters'
@@ -196,6 +200,7 @@ const BASE_RULES = {
   greeting: `greeting: their first message to the user, in character, setting the scene, max ${GREETING_MAX} characters. {{user}} stands for the user's name.`,
   opening: `opening: a short physical action before the greeting, in *asterisks*, third person, what they are doing as the user arrives (*looks up from the counter, smiling*), max ${OPENING_MAX} characters.`,
   quirk: `quirk: one small, endearing flaw or habit that makes them human (forgets their own lunch, hums when focused); kind and healthy, never jealous, possessive or controlling. Max ${QUIRK_MAX} characters.`,
+  scenario: `scenario: how their story with the user begins, the scene as the chat opens: where they are, what just happened, what is in the air; second person for the user, 1-3 sentences, {{user}} for the user's name, max ${SCENARIO_MAX} characters.`,
   greetings: `greetings: ${MORE_GREETINGS_MAX} more first messages, each a different mood or moment, max ${GREETING_MAX} characters each.`,
   dialog:
     'dialog: 4-6 short lines of them talking with someone else (not the user), "from" is "char" or "other". It shows their voice, words and rhythm; no facts about the user.',
@@ -226,6 +231,7 @@ const FIELD_SHAPES: Record<DraftField, string> = {
   greeting: '{"value":""}',
   opening: '{"value":""}',
   quirk: '{"value":""}',
+  scenario: '{"value":""}',
   greetings: '{"values":[]}',
   dialog: '{"dialog":[{"from":"char","text":""}]}',
   starters: '{"values":[]}',
@@ -263,6 +269,7 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${FIELD_RULES.greeting}`,
     `- ${FIELD_RULES.opening}`,
     `- ${FIELD_RULES.quirk}`,
+    `- ${FIELD_RULES.scenario}`,
     `- ${FIELD_RULES.greetings}`,
     `- ${FIELD_RULES.dialog}`,
     `- ${FIELD_RULES.starters}`,
@@ -277,7 +284,7 @@ export function buildDraftPrompt(input: DraftInput) {
     `- ${RELATION_RULES.exception}`,
     `- ${RELATION_RULES.arc}`,
     JSON_ONLY,
-    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[],"opinions":[],"relation":"","history":"","mask":"","exception":"","arc":{"secret":"","beats":[{"title":"","beat":""},{"title":"","beat":""},{"title":"","beat":""}]}}',
+    'Shape: {"name":"","tagline":"","bio":"","look":"","age":24,"heightCm":170,"gender":"female","speakingStyle":"","role":"","voicePreset":"","tags":[],"greeting":"","opening":"","quirk":"","scenario":"","greetings":[],"dialog":[{"from":"char","text":""}],"starters":[],"backstory":"","likes":[],"dislikes":[],"opinions":[],"relation":"","history":"","mask":"","exception":"","arc":{"secret":"","beats":[{"title":"","beat":""},{"title":"","beat":""},{"title":"","beat":""}]}}',
   ].join('\n');
 }
 
@@ -294,6 +301,7 @@ export function buildFieldPrompt(field: DraftField, character: Partial<Character
     character.tags?.length && `Personality: ${character.tags.join(', ')}`,
     character.greeting && `First message: ${character.greeting}`,
     character.quirk && `Quirk: ${character.quirk}`,
+    character.scenario && `How the story begins: ${character.scenario}`,
     character.backstory && `Story: ${character.backstory}`,
     character.likes?.length && `Loves: ${character.likes.join(', ')}`,
     character.dislikes?.length && `Can't stand: ${character.dislikes.join(', ')}`,
@@ -357,6 +365,7 @@ export function parseDraft(raw: string): DraftResult {
     greeting,
     opening: actionOf(text(data.opening)),
     quirk: clip(text(data.quirk), QUIRK_MAX),
+    scenario: clip(text(data.scenario), SCENARIO_MAX),
     greetings: lines(data.greetings, GREETING_MAX, MORE_GREETINGS_MAX).filter((g) => g !== greeting),
     definition: definitionFromDialog(data.dialog),
     starters: lines(data.starters, STARTER_MAX, STARTERS_MAX),
@@ -382,6 +391,7 @@ export function parseDraft(raw: string): DraftResult {
       draft.greeting,
       draft.opening,
       draft.quirk,
+      draft.scenario,
       ...draft.greetings,
       draft.definition,
       ...draft.starters,
@@ -439,6 +449,9 @@ export function parseField(field: DraftField, raw: string): string | string[] | 
       break;
     case 'quirk':
       value = clip(text(data.value), QUIRK_MAX);
+      break;
+    case 'scenario':
+      value = clip(text(data.value), SCENARIO_MAX);
       break;
     case 'greetings':
       value = lines(data.values, GREETING_MAX, MORE_GREETINGS_MAX);

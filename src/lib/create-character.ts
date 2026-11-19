@@ -18,6 +18,8 @@ export const MAX_SAMPLES = 5;
 export const TAGLINE_MAX = 50;
 export const OPENING_MAX = 90;
 export const QUIRK_MAX = 120;
+/** A start scene: a few sentences of where and what (0z296). */
+export const SCENARIO_MAX = 300;
 export const LOOK_MAX = 300;
 /** Sample dialog; the start matters most, the end is cut first when the prompt runs short. */
 export const DEFINITION_MAX = 3200;

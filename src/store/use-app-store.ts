@@ -1372,7 +1372,7 @@ export const useAppStore = create<AppState>()(
           replyVersions: omitKey(s.replyVersions, conversationId),
           messages: {
             ...s.messages,
-            [conversationId]: greeting ? [{ id: uid('m'), conversationId, author: 'them', kind: 'text', text: greeting, createdAt: now }] : [],
+            [conversationId]: character && greeting ? startMessages(s, character, conversationId, greeting, now) : [],
           },
           conversations: s.conversations.map((c) =>
             c.id === conversationId ? { ...c, lastMessagePreview: plainText(greeting), lastMessageAt: greeting ? now : c.lastMessageAt, unreadCount: 0 } : c,
@@ -2027,9 +2027,7 @@ export const useAppStore = create<AppState>()(
           ],
           messages: {
             ...s.messages,
-            [conversationId]: greeting
-              ? [{ id: uid('m'), conversationId, author: 'them', kind: 'text', text: greeting, createdAt: now }]
-              : [],
+            [conversationId]: character && greeting ? startMessages(s, character, conversationId, greeting, now) : [],
           },
           relationships: s.relationships[characterId]
             ? s.relationships
@@ -7320,6 +7318,19 @@ function cancelReplies(set: Setter, conversationId: string) {
  * the name of the user's default persona where the creator wrote {{user}}; the main greeting comes
  * after their opening action unless the chat is plain texting.
  */
+/**
+ * A new or cleared chat's first rows: the creator's start scene as a scene card (0z296), when they
+ * wrote one, then the greeting. The scene stays in their persona for the model (`characterParts`).
+ */
+function startMessages(state: AppState, character: Character, conversationId: string, greeting: string, now: string): Message[] {
+  const greet: Message = { id: uid('m'), conversationId, author: 'them', kind: 'text', text: greeting, createdAt: now };
+  const scenario = character.scenario?.trim();
+  if (!scenario) return [greet];
+  const setting = fillNames(scenario, { char: character.name, user: defaultPersona(state).name });
+  const card: Message = { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'scene', text: character.tagline?.trim() || character.name, setting, createdAt: now };
+  return [card, greet];
+}
+
 function openingFor(state: AppState, character: Character, seed: string) {
   const local = localCharacter(character);
   const style = replyPrefs(state.relationships[character.id]).style;

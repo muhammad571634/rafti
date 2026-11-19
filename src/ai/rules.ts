@@ -8,7 +8,7 @@ import { temperLines, temperOf } from '../lib/temper';
 import { loreLines, worldLines } from '../lib/lorebook';
 import { sceneLines } from '../lib/scenes';
 
-import { definitionForPrompt } from './character-draft';
+import { definitionForPrompt, fillNames } from './character-draft';
 import { modePart } from './modes';
 import type { PromptPart } from './prompt-layout';
 import { joinParts, part } from './prompt-layout';
@@ -239,6 +239,8 @@ export function characterParts(
     `Personality: ${character.tags.join(', ')}`,
     ...(character.quirk ? [`Something endearing about you (show it now and then, never announce it): ${character.quirk}`] : []),
     `How you first greeted them: "${character.greeting}"`,
+    // A creator's start scene (0z296): the chat opened in it, so the story knows where it began.
+    ...(character.scenario?.trim() ? [`How your story with them began (the scene as your chat opened): ${fillNames(character.scenario.trim(), { char: character.name, user: persona?.name ?? user.displayName })}`] : []),
     // Fan characters are open for user-made characters only (owner, 2026-11-19; FAN CHARACTERS in the rules).
     ...(character.isOfficial
       ? []

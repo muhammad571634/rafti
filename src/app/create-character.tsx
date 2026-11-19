@@ -37,6 +37,7 @@ import {
   NAME_MAX,
   OPENING_MAX,
   QUIRK_MAX,
+  SCENARIO_MAX,
   reviewAfterEdit,
   ROLES,
   STARTER_MAX,
@@ -98,6 +99,7 @@ const BLANK: CreateForm = {
   bio: '',
   look: '',
   quirk: '',
+  scenario: '',
   greeting: '',
   opening: '',
   greetings: [],
@@ -134,6 +136,7 @@ function formOf(c: Character): CreateForm {
     bio: c.bio,
     look: c.look ?? '',
     quirk: c.quirk ?? '',
+    scenario: c.scenario ?? '',
     greeting: c.greeting,
     opening: c.opening ?? '',
     greetings: c.greetings ?? [],
@@ -169,6 +172,7 @@ const fromDraft = (form: CreateForm, d: CharacterDraft): CreateForm => ({
   bio: d.bio,
   look: d.look,
   quirk: d.quirk,
+  scenario: d.scenario,
   greeting: d.greeting,
   opening: d.opening,
   greetings: d.greetings,
@@ -316,7 +320,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
     greeting: form.greeting,
     hasPhoto: !!form.imageUri,
     look: form.look,
-    more: [form.tagline, form.opening, form.quirk, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes, form.relation, form.mask],
+    more: [form.tagline, form.opening, form.quirk, form.scenario, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes, form.relation, form.mask],
     photoRights: form.photoRights,
     voice,
     voiceConsent: true,
@@ -411,6 +415,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         look: form.look,
         greeting: form.greeting,
         quirk: form.quirk,
+        scenario: form.scenario,
         backstory: form.backstory,
         role: form.role,
         speakingStyle: form.style,
@@ -455,6 +460,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 ? { opening: text }
                 : field === 'quirk'
                   ? { quirk: text }
+                  : field === 'scenario'
+                  ? { scenario: text }
                   : field === 'greetings'
                     ? { greetings: list }
                     : field === 'starters'
@@ -510,6 +517,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       greeting: form.greeting.trim() || t('createCharacter.defaultGreeting', { name: clean }),
       opening: actionOf(form.opening) || undefined,
       quirk: form.quirk.trim() || undefined,
+      scenario: form.scenario.trim() || undefined,
       greetings: cleanList(form.greetings),
       definition: form.definition.trim() || undefined,
       starters: cleanList(form.starters),
@@ -556,6 +564,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
         next.bio !== editing.bio ||
         next.greeting !== editing.greeting ||
         next.opening !== editing.opening ||
+        next.scenario !== editing.scenario ||
         !same(next.greetings, editing.greetings) ||
         !same(next.starters, editing.starters) ||
         next.backstory !== editing.backstory ||
@@ -730,6 +739,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
             </Card>
 
             <Card title={label('flow.firstMessage')} right={sparkle('greeting', label('greeting'))} onLayout={at('first')}>
+              {/* Where the story begins: a scene card opens a new chat with it (0z296). */}
+              <Field label={label('scenario')} value={form.scenario} onChange={(scenario) => set({ scenario })} placeholder={label('scenarioPlaceholder')} max={SCENARIO_MAX} multiline rows={2} action={sparkle('scenario', label('scenario'))} />
               <Field label={label('greeting')} hideLabel value={form.greeting} onChange={(greeting) => set({ greeting })} placeholder={label('greetingPlaceholder')} max={GREETING_MAX} multiline rows={3} />
               {/* How strong the first message is, and the one thing to add (0z295). */}
               <GreetingMeter result={coachGreeting({ greeting: form.greeting, opening: form.opening })} />

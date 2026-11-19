@@ -62,6 +62,8 @@ export interface CreateForm {
   bio: string;
   look: string;
   quirk: string;
+  /** How their story with the user begins (0z296). */
+  scenario: string;
   greeting: string;
   opening: string;
   greetings: string[];

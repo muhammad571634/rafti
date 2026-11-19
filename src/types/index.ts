@@ -34,6 +34,12 @@ export interface Character {
    * chats and left out in Talk ones (`withOpening`).
    */
   opening?: string;
+  /**
+   * How their story with the user begins (0z296, a user-made character's scenario): where they are and
+   * what is happening as the chat opens, {{user}} for the user. It opens a new chat as a scene card and
+   * stays in their persona, so the model always knows the start.
+   */
+  scenario?: string;
   /** One small, endearing flaw the model plays ("Forgets his own lunch, never yours"). */
   quirk?: string;
   /** What they look like, in words; their picture is drawn from it. */
