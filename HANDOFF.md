@@ -6,7 +6,7 @@
 - **Ranked for us** (§4): newcomer path + visible 7-day ladder; fan characters (owner's decision); community library; create quality coach; scene card at start; prompt tightening; named reply styles after the paid key.
 - **Still to do**: owner's answer on fan characters / real people (§6).
 
-### 0z292. Dark Android navigation bar & night native splash — Preview APK 1.3.0 (owner asked to fix the white Android 3-button nav bar, 2026-11-19, Gemini 4 Neon). Building & installing APK 1.3.0 on the A51
+### 0z292. Dark Android navigation bar & night native splash — Preview APK 1.3.0 (owner asked to fix the white Android 3-button nav bar, 2026-11-19, Gemini 4 Neon). BUILT (EAS `ec2cfac4`, APK 1.3.0 ready; phone untouched per owner's "telni ochma")
 - **Root cause (verified via A51 `dumpsys window` + Expo 58 source)**: It was never the phone's replaced screen. Two real bugs caused the bright white 3-button nav bar on Android 13 (SDK 33, phone in Light Mode `Night mode: no`):
   1. `app.json` had `"androidNavigationBar": { "enforceContrast": false }` (`0z153`), which Expo SDK 58's `@expo/config-plugins/build/android/SystemBars.js` explicitly ignores (`deprecated and has no effect. Use the expo-navigation-bar plugin configuration instead.`), so `android:enforceNavigationBarContrast` was never written into APK 1.2.0's `styles.xml`.
   2. React Native's `WindowUtil.kt` (`enableEdgeToEdge`) defaulted `enforceNavigationBarContrast = true` and saw `UiModeUtils.isDarkMode(context) == false`, setting `apr=LIGHT_NAVIGATION_BARS` (dark grey icons) + a white contrast scrim behind the 3 buttons.
@@ -15,6 +15,7 @@
   - `app.json`: bumped `version` `1.2.0` → `1.3.0` (`runtimeVersion` policy `appVersion`), `versionCode` `2` → `3`; removed deprecated `androidNavigationBar`; added `["expo-navigation-bar", { "enforceContrast": false, "style": "light" }]` and `["expo-status-bar", { "style": "light" }]`; set `expo-splash-screen` `backgroundColor` to `#09090D` (closing `0z162` dark native splash in the same APK, zero `expo config --type introspect` warnings).
   - `src/lib/navigation-bar-native.ts`: guarded via `requireOptionalNativeModule('ExpoNavigationBar')` so older APKs/iOS/web never crash; calls `setStyle('light')` (light icons on dark ground, `isNavigationBarContrastEnforced = false`, also covers modals via `ExtraWindowEventListener`).
   - `src/app/_layout.tsx`: calls `applyDarkNavigationBar()` at launch and on `AppState` `'active'` (also fixes the post-call / theme-switch nav bar reset in `docs/later-list.md`).
+- **APK 1.3.0**: EAS build `ec2cfac4-ce1c-4ccd-8f3a-873c7739cb7e` (`versionCode` 3, runtime `1.3.0`), download: `https://expo.dev/artifacts/eas/3IoE6LU1dnw6CVOsOW_3GIFh29w68D-veh7PEPgZRow.apk`. Not installed on the A51 yet per owner's request ("telni ochma"); ready for `adb install -r` (keeps data) or direct phone download.
 - **Checked**: `npx expo config --type introspect` confirms `android:enforceNavigationBarContrast=false`, `expoEnforceNavigationBarContrast=false`, `android:windowLightNavigationBar=false`, `android:windowLightStatusBar=false`, splash `#09090D` with 0 warnings; `npx tsc --noEmit` 0; `npm test` 1082/1082.
 - **Note**: **OTAs for runtime 1.3.0 apply to APK 1.3.0+** once installed on the A51.
 
