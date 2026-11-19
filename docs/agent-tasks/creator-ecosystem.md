@@ -49,6 +49,10 @@ This split is what makes the owner's ask safe to ship:
 
 ## Phase 2: "Draw a picture" in Create (needs money: the owner's yes)
 
+**Done in phase 1 (2026-11-19, `3e1c5d13`)**: the switch is gone, the photo menu (Choose / Take / Remove) is in, pictures are shrunk and kept (`src/lib/character-picture.ts`), posters show initials for uploads (`src/lib/poster-picture.ts`, `Character.pictureDrawn`).
+
+**Already in the app for phase 2**: `PORTRAITS_AVAILABLE` + `requestPortrait` (`src/ai/character-studio.ts`, off, returns null), the price and the plan's free pictures (`portraitPrice`, `consumePortrait`, `PLAN_PORTRAITS` in `src/economy/quick-create.ts`), the `portrait` spend reason on the server, and Create already draws one when there is no photo and the looks are filled. Phase 2 is mostly the server route, the flag, `pictureDrawn: true` on a drawn picture, and "Draw again".
+
 - Button in Create's picture area: draws a portrait from the character's looks (`look`), gender, age
   and tagline, in our style (semi-realistic scene framed like a phone photo, the Cast 2.0 look:
   `docs/nano-banana-cast-2.md`). Three variants to pick from? Start with one, "Again" for another.
