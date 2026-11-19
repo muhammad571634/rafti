@@ -1,9 +1,9 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z295. START HERE: greeting coach in Create (owner's "Ha, qil" on polybuzz-live-test §4.4, 2026-11-19, Claude 1, Opus 5.5). NEXT: see it on the A51 (the phone dropped off adb right after the OTA)
+### 0z295. START HERE: greeting coach in Create (owner's "Ha, qil" on polybuzz-live-test §4.4, 2026-11-19, Claude 1, Opus 5.5). DONE, seen on the A51. NEXT: the owner's pick from docs/polybuzz-live-test.md §4
 - **What**: under the create form's first message, four bars + the level (Weak / Okay / Good / Great) and one tip, most useful first: say more (under 60 characters), set the scene with an *action* (or the opening line), end on the user's move (a question mark at the end in Latin, CJK or Arabic script, or {{user}}), add one detail (under 160). Nothing while the greeting is empty. Pure `src/lib/greeting-coach.ts`, kit `GreetingMeter`; 8 strings x 14 locales (`createCharacter.coach.*`).
 - **Checked**: tsc 0, `npm test` 1097/1097 (6 new: English, Japanese, Arabic), `check:locales`, `check:content`. OTA `7a0600a6`.
-- **Not seen on the A51 yet**: adb lost the phone (no device listed) before the check. Next: Find → + → Fill in myself, type a greeting step by step, check the bars move and a Russian tip wraps without cutting.
+- **Seen on the A51** (after the owner re-plugged the phone): "Hi." → no bars, Weak (orange), "Say a bit more"; 76 characters → 1 bar, "Set the scene with an *action*"; with a question at the end and an *action* → 3 green bars, Good, "Add one detail"; with a smell of rain and bread → 4 bars, Great, no tip. In Russian (Automatic) "Слабо" and the longest tip sit on one line, uncut. The test draft was discarded and the language set back to English.
 - **Not built** (from §4): an exposure boost for a strong greeting waits for the community library.
 
 ### 0z294. START HERE: first steps on Free gifts (owner's "Ha, qil" on polybuzz-live-test §4.1, 2026-11-19, Claude 1, Opus 5.5). DONE, deployed and seen on the A51. NEXT: the owner's pick from docs/polybuzz-live-test.md §4
