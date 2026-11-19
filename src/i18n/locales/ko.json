@@ -1123,6 +1123,39 @@
     "morePlan": "구독 시 최대 {{count}}개",
     "chatTitle": "이 대화에서의 프로필"
   },
+  "community": {
+    "title": "커뮤니티에서",
+    "chats_other": "채팅 {{count}}개",
+    "scene": "장면",
+    "firstMessage": "첫 메시지",
+    "you": "너",
+    "sayHi": "인사하기",
+    "report": "신고",
+    "reported": "감사합니다. 확인할게요.",
+    "reason": {
+      "rights": "다른 사람의 캐릭터나 작품을 사용함",
+      "realPerson": "실존 인물",
+      "minor": "18세 미만",
+      "sexual": "성적인 내용",
+      "hate": "혐오 또는 괴롭힘",
+      "other": "기타"
+    },
+    "shareTitle": "공유",
+    "shareToggle": "찾기에 공유",
+    "shareNote": "간단한 확인 후 찾기에 공유돼요",
+    "status": {
+      "pending": "확인 중…",
+      "live": "찾기에 공개됨",
+      "rejected": {
+        "realPerson": "공유 안 됨: 실존 인물",
+        "minor": "공유 안 됨: 18세 미만",
+        "explicit": "공유 안 됨: 노골적인 내용",
+        "hate": "공유 안 됨: 혐오 또는 괴롭힘",
+        "harm": "공유 안 됨: 유해한 내용",
+        "busy": "아직 공유 안 됨: 다시 저장하세요"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "약함",

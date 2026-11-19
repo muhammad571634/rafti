@@ -1123,6 +1123,39 @@
     "morePlan": "プラン加入で最大{{count}}個",
     "chatTitle": "このチャットでのあなた"
   },
+  "community": {
+    "title": "コミュニティから",
+    "chats_other": "{{count}} チャット",
+    "scene": "シーン",
+    "firstMessage": "最初のメッセージ",
+    "you": "あなた",
+    "sayHi": "話しかける",
+    "report": "報告",
+    "reported": "ありがとうございます。確認します。",
+    "reason": {
+      "rights": "他人のキャラクターや作品を使っている",
+      "realPerson": "実在の人物",
+      "minor": "18歳未満の人",
+      "sexual": "性的な内容",
+      "hate": "ヘイトや嫌がらせ",
+      "other": "その他"
+    },
+    "shareTitle": "共有",
+    "shareToggle": "見つけるで共有",
+    "shareNote": "簡単な確認のあと「見つける」で共有されます",
+    "status": {
+      "pending": "確認中…",
+      "live": "「見つける」に掲載中",
+      "rejected": {
+        "realPerson": "共有不可：実在の人物",
+        "minor": "共有不可：18歳未満",
+        "explicit": "共有不可：露骨な内容",
+        "hate": "共有不可：ヘイトや嫌がらせ",
+        "harm": "共有不可：有害な内容",
+        "busy": "まだ共有されていません：もう一度保存してください"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "弱い",

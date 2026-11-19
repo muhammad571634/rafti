@@ -1149,6 +1149,40 @@
     "morePlan": "Fino a {{count}} con un abbonamento",
     "chatTitle": "Sei presente in questa chat"
   },
+  "community": {
+    "title": "Dalla community",
+    "chats_one": "{{count}} chat",
+    "chats_other": "{{count}} chat",
+    "scene": "Scena",
+    "firstMessage": "Primo messaggio",
+    "you": "tu",
+    "sayHi": "Saluta",
+    "report": "Segnala",
+    "reported": "Grazie. Daremo un’occhiata.",
+    "reason": {
+      "rights": "Usa il personaggio o l’opera di qualcuno",
+      "realPerson": "Una persona reale",
+      "minor": "Qualcuno sotto i 18 anni",
+      "sexual": "Contenuti sessuali",
+      "hate": "Odio o molestie",
+      "other": "Altro"
+    },
+    "shareTitle": "Condividi",
+    "shareToggle": "Condividi in Scopri",
+    "shareNote": "Condiviso in Scopri dopo un rapido controllo",
+    "status": {
+      "pending": "Controllo…",
+      "live": "In Scopri",
+      "rejected": {
+        "realPerson": "Non condiviso: una persona reale",
+        "minor": "Non condiviso: qualcuno sotto i 18 anni",
+        "explicit": "Non condiviso: contenuti espliciti",
+        "hate": "Non condiviso: odio o molestie",
+        "harm": "Non condiviso: contenuti dannosi",
+        "busy": "Non ancora condiviso: salva di nuovo"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Debole",

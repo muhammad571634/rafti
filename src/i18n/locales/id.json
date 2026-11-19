@@ -1123,6 +1123,39 @@
     "morePlan": "Hingga {{count}} dengan paket",
     "chatTitle": "Kamu di obrolan ini"
   },
+  "community": {
+    "title": "Dari komunitas",
+    "chats_other": "{{count}} obrolan",
+    "scene": "Adegan",
+    "firstMessage": "Pesan pertama",
+    "you": "kamu",
+    "sayHi": "Sapa",
+    "report": "Laporkan",
+    "reported": "Terima kasih. Kami akan memeriksanya.",
+    "reason": {
+      "rights": "Memakai karakter atau karya orang lain",
+      "realPerson": "Orang sungguhan",
+      "minor": "Seseorang di bawah 18 tahun",
+      "sexual": "Konten seksual",
+      "hate": "Kebencian atau pelecehan",
+      "other": "Lainnya"
+    },
+    "shareTitle": "Bagikan",
+    "shareToggle": "Bagikan di Temukan",
+    "shareNote": "Dibagikan di Temukan setelah pemeriksaan singkat",
+    "status": {
+      "pending": "Memeriksa…",
+      "live": "Di Temukan",
+      "rejected": {
+        "realPerson": "Tidak dibagikan: orang sungguhan",
+        "minor": "Tidak dibagikan: di bawah 18 tahun",
+        "explicit": "Tidak dibagikan: konten eksplisit",
+        "hate": "Tidak dibagikan: kebencian atau pelecehan",
+        "harm": "Tidak dibagikan: konten berbahaya",
+        "busy": "Belum dibagikan: simpan lagi"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Lemah",

@@ -49,7 +49,8 @@ import { analyticsChannel, experiment } from '@/lib/analytics';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite, serverCommunity } from '@/ai/server';
+import { cardOf, type CommunityItem } from '@/lib/community';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import { mayReact } from '@/ai/react';
@@ -693,6 +694,15 @@ export interface AppState {
   receivePushLine: (push: { id: string; characterId: string; text: string; at: string; reach?: string; ideas?: ReplyIdea[] }) => void;
   /** Edits a character the user made; seed characters are not editable. */
   updateCharacter: (characterId: string, patch: Partial<Omit<Character, 'id' | 'isOfficial'>>) => void;
+  /**
+   * Shares the user's own character in the community library, or takes it back (0z300). Answers what
+   * the review said (`live`, `rejected`), `off` once taken back, or `failed` (no server, no answer).
+   */
+  shareCharacter: (characterId: string, on: boolean) => Promise<'live' | 'rejected' | 'off' | 'failed'>;
+  /** A community character joins the user's list as their own copy (once) and its chat opens; answers the chat. */
+  addCommunityCharacter: (item: CommunityItem) => { characterId: string; conversationId: string };
+  /** Reports a community character (one per user); false when the server did not take it. */
+  reportCommunity: (communityId: string, reason: string) => Promise<boolean>;
   resetRelationship: (characterId: string) => void;
   setBackground: (characterId: string, backgroundId: string) => void;
   setNickname: (characterId: string, nickname: string) => void;
@@ -2430,6 +2440,57 @@ export const useAppStore = create<AppState>()(
           { id: messageId, conversationId: conversation.id, author: 'them', kind: 'text', text, createdAt: at, ...withIdeas(reach), ...(ideas?.length ? { ideas } : {}) },
           { countUnread: true },
         );
+      },
+
+      shareCharacter: async (characterId, on) => {
+        const character = get().characters.find((c) => c.id === characterId && !c.isOfficial && !c.fromCommunity);
+        if (!character) return 'failed';
+        const patch = (p: Partial<Character>) => set((s) => ({ characters: s.characters.map((c) => (c.id === characterId ? { ...c, ...p } : c)) }));
+        if (!on) {
+          patch({ visibility: 'private', review: undefined, communityId: undefined, communityReason: undefined });
+          if (character.communityId) void withAccount((token) => serverCommunity.unpublish(token, characterId)).catch(() => null);
+          return 'off';
+        }
+        const card = cardOf(character);
+        if (!card) return 'failed';
+        patch({ visibility: 'public', review: 'pending', communityReason: undefined });
+        const result = await withAccount((token) => serverCommunity.publish(token, characterId, card)).catch(() => null);
+        if (!result) {
+          patch({ visibility: 'private', review: undefined });
+          return 'failed';
+        }
+        patch({ review: result.status === 'live' ? 'approved' : 'rejected', communityId: result.id, communityReason: result.reason });
+        return result.status === 'live' ? 'live' : 'rejected';
+      },
+
+      addCommunityCharacter: (item) => {
+        const known = get().characters.find((c) => c.fromCommunity === item.id);
+        if (known) {
+          const conversationId = get().conversations.find((c) => c.characterId === known.id)?.id ?? get().addFriend(known.id);
+          return { characterId: known.id, conversationId };
+        }
+        const { card } = item;
+        const ids = get().addCharacter({
+          ...card,
+          bio: card.bio ?? card.tagline ?? '',
+          tags: card.tags ?? [],
+          handle: '@community',
+          series: 'Community',
+          category: 'original',
+          accentIndex: card.accentIndex ?? 0,
+          voiceReady: true,
+          isOfficial: false,
+          visibility: 'private',
+          fromCommunity: item.id,
+        });
+        // Counted once per user on the server; the count is only a number on the shelf.
+        void withAccount((token) => serverCommunity.add(token, item.id)).catch(() => null);
+        return ids;
+      },
+
+      reportCommunity: async (communityId, reason) => {
+        const result = await withAccount((token) => serverCommunity.report(token, communityId, reason)).catch(() => null);
+        return !!result;
       },
 
       updateCharacter: (characterId, patch) =>

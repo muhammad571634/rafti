@@ -40,6 +40,7 @@ import type {
   SpinResult,
   WalletState,
 } from './session-types';
+import type { CommunityCard, CommunityItem, CommunityReason, CommunitySort, CommunityStatus } from '@/lib/community';
 
 /**
  * The phone's side of the Sigmazam API (`server/`). Every build talks to the cloud server
@@ -134,6 +135,17 @@ const withToken = (accessToken: string, init: RequestInit = {}): RequestInit => 
   headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
 });
 const post = (accessToken: string, body: unknown) => withToken(accessToken, { method: 'POST', body: JSON.stringify(body) });
+
+/** The community library (0z300): share, take back, browse, add, report. Null when the server is off or refused. */
+export const serverCommunity = {
+  // A share waits for the model's review, so it gets longer than a wallet call.
+  publish: (accessToken: string, localId: string, card: CommunityCard) =>
+    call<{ id: string; status: CommunityStatus; reason?: CommunityReason }>('/v1/community/publish', post(accessToken, { localId, card }), 30000),
+  unpublish: (accessToken: string, localId: string) => call<{ ok: true }>('/v1/community/unpublish', post(accessToken, { localId }), 8000),
+  list: (accessToken: string, sort: CommunitySort) => call<{ items: CommunityItem[] }>(`/v1/community?sort=${sort}`, withToken(accessToken), 8000),
+  add: (accessToken: string, id: string) => call<{ chats: number }>(`/v1/community/${id}/add`, post(accessToken, {}), 8000),
+  report: (accessToken: string, id: string, reason: string) => call<{ status: CommunityStatus }>(`/v1/community/${id}/report`, post(accessToken, { reason }), 8000),
+};
 
 /**
  * The wallet on the server (B1.2). Each call answers the server's wallet, or null when the server is

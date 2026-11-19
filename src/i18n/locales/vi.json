@@ -1123,6 +1123,39 @@
     "morePlan": "Lên tới {{count}} với gói đăng ký",
     "chatTitle": "Bạn đang tham gia cuộc trò chuyện này"
   },
+  "community": {
+    "title": "Từ cộng đồng",
+    "chats_other": "{{count}} cuộc trò chuyện",
+    "scene": "Cảnh",
+    "firstMessage": "Tin nhắn đầu tiên",
+    "you": "bạn",
+    "sayHi": "Chào",
+    "report": "Báo cáo",
+    "reported": "Cảm ơn. Chúng tôi sẽ xem xét.",
+    "reason": {
+      "rights": "Dùng nhân vật hoặc tác phẩm của người khác",
+      "realPerson": "Người thật",
+      "minor": "Người dưới 18 tuổi",
+      "sexual": "Nội dung tình dục",
+      "hate": "Thù ghét hoặc quấy rối",
+      "other": "Khác"
+    },
+    "shareTitle": "Chia sẻ",
+    "shareToggle": "Chia sẻ trong Khám phá",
+    "shareNote": "Được chia sẻ trong Khám phá sau khi kiểm tra nhanh",
+    "status": {
+      "pending": "Đang kiểm tra…",
+      "live": "Có trong Khám phá",
+      "rejected": {
+        "realPerson": "Không chia sẻ: người thật",
+        "minor": "Không chia sẻ: dưới 18 tuổi",
+        "explicit": "Không chia sẻ: nội dung khiêu dâm",
+        "hate": "Không chia sẻ: thù ghét hoặc quấy rối",
+        "harm": "Không chia sẻ: nội dung có hại",
+        "busy": "Chưa chia sẻ: hãy lưu lại"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Yếu",

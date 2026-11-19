@@ -1149,6 +1149,40 @@
     "morePlan": "Up to {{count}} with a plan",
     "chatTitle": "You are in this chat"
   },
+  "community": {
+    "title": "From the community",
+    "chats_one": "{{count}} chat",
+    "chats_other": "{{count}} chats",
+    "scene": "Scene",
+    "firstMessage": "First message",
+    "you": "you",
+    "sayHi": "Say hi",
+    "report": "Report",
+    "reported": "Thanks. We’ll take a look.",
+    "reason": {
+      "rights": "Uses someone’s character or work",
+      "realPerson": "A real person",
+      "minor": "Someone under 18",
+      "sexual": "Sexual content",
+      "hate": "Hate or harassment",
+      "other": "Something else"
+    },
+    "shareTitle": "Share",
+    "shareToggle": "Share in Find",
+    "shareNote": "Shared in Find after a quick check",
+    "status": {
+      "pending": "Checking…",
+      "live": "In Find",
+      "rejected": {
+        "realPerson": "Not shared: a real person",
+        "minor": "Not shared: someone under 18",
+        "explicit": "Not shared: explicit content",
+        "hate": "Not shared: hate or harassment",
+        "harm": "Not shared: harmful content",
+        "busy": "Not shared yet: save again to retry"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Weak",

@@ -1149,6 +1149,40 @@
     "morePlan": "Abonelikle {{count}} taneye kadar",
     "chatTitle": "Bu sohbettesin"
   },
+  "community": {
+    "title": "Topluluktan",
+    "chats_one": "{{count}} sohbet",
+    "chats_other": "{{count}} sohbet",
+    "scene": "Sahne",
+    "firstMessage": "İlk mesaj",
+    "you": "sen",
+    "sayHi": "Selam ver",
+    "report": "Bildir",
+    "reported": "Teşekkürler. İnceleyeceğiz.",
+    "reason": {
+      "rights": "Başkasının karakterini veya eserini kullanıyor",
+      "realPerson": "Gerçek bir kişi",
+      "minor": "18 yaşından küçük biri",
+      "sexual": "Cinsel içerik",
+      "hate": "Nefret veya taciz",
+      "other": "Başka bir şey"
+    },
+    "shareTitle": "Paylaş",
+    "shareToggle": "Keşfet’te paylaş",
+    "shareNote": "Kısa bir kontrolden sonra Keşfet’te paylaşılır",
+    "status": {
+      "pending": "Kontrol ediliyor…",
+      "live": "Keşfet’te",
+      "rejected": {
+        "realPerson": "Paylaşılmadı: gerçek bir kişi",
+        "minor": "Paylaşılmadı: 18 yaşından küçük",
+        "explicit": "Paylaşılmadı: müstehcen içerik",
+        "hate": "Paylaşılmadı: nefret veya taciz",
+        "harm": "Paylaşılmadı: zararlı içerik",
+        "busy": "Henüz paylaşılmadı: tekrar kaydet"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Zayıf",

@@ -1149,6 +1149,40 @@
     "morePlan": "Hasta {{count}} con un plan",
     "chatTitle": "Eres tú en este chat"
   },
+  "community": {
+    "title": "De la comunidad",
+    "chats_one": "{{count}} chat",
+    "chats_other": "{{count}} chats",
+    "scene": "Escena",
+    "firstMessage": "Primer mensaje",
+    "you": "tú",
+    "sayHi": "Saludar",
+    "report": "Denunciar",
+    "reported": "Gracias. Lo revisaremos.",
+    "reason": {
+      "rights": "Usa el personaje o la obra de alguien",
+      "realPerson": "Una persona real",
+      "minor": "Alguien menor de 18",
+      "sexual": "Contenido sexual",
+      "hate": "Odio o acoso",
+      "other": "Otra cosa"
+    },
+    "shareTitle": "Compartir",
+    "shareToggle": "Compartir en Explorar",
+    "shareNote": "Se comparte en Explorar tras una revisión rápida",
+    "status": {
+      "pending": "Revisando…",
+      "live": "En Explorar",
+      "rejected": {
+        "realPerson": "No compartido: una persona real",
+        "minor": "No compartido: alguien menor de 18",
+        "explicit": "No compartido: contenido explícito",
+        "hate": "No compartido: odio o acoso",
+        "harm": "No compartido: contenido dañino",
+        "busy": "Aún no compartido: guarda de nuevo"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Flojo",

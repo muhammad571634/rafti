@@ -13,6 +13,7 @@ import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from
 import { baseLanguage } from '@/ai/reply-language';
 import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, Rewrite, SmallRound } from '@/components/create/kit';
 import { coachGreeting } from '@/lib/greeting-coach';
+import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { PressableScale, Screen, Toggle, Txt } from '@/components/ui';
@@ -38,7 +39,6 @@ import {
   OPENING_MAX,
   QUIRK_MAX,
   SCENARIO_MAX,
-  reviewAfterEdit,
   ROLES,
   STARTER_MAX,
   STARTERS_MAX,
@@ -75,11 +75,6 @@ const initialsOf = (name: string) =>
 /** Their avatar's colours without a picture, so the page, the meet moment and the chat look alike. */
 const gradientOf = (accent: number) => avatarGradients[accent % avatarGradients.length];
 
-/**
- * Sharing a creation in Find is off until moderation exists (business-plan §12, decision 4: no UGC
- * market at launch; audit 2026-10-13). While false every creation is saved private.
- */
-const SHARING_OPEN = false;
 
 /** Non-empty lines, trimmed; undefined when none are left, so the field is cleared. */
 const cleanList = (list: string[]) => {
@@ -239,6 +234,11 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const ownWorlds = useAppStore((s) => s.lorebooks);
   const setLoreLink = useAppStore((s) => s.setLoreLink);
   const updateCharacter = useAppStore((s) => s.updateCharacter);
+  const shareCharacter = useAppStore((s) => s.shareCharacter);
+  // Share in Find (0z300): dev and preview builds, the user's own characters only (never a community copy).
+  const canShare = COMMUNITY_OPEN && !editing?.fromCommunity;
+  const [share, setShare] = useState(editing?.visibility === 'public');
+  const shareChanged = !!editing && share !== (editing.visibility === 'public');
   const locale = useAppStore((s) => s.user.locale);
   const realAi = useAppStore((s) => !!s.settings.realAi);
   const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates, s.wallet));
@@ -328,7 +328,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
   });
   const shown = checked ? problemsBySection(problems) : {};
   const problemText = (section: CreateSection) => (shown[section] ? t(`createCharacter.problems.${shown[section]}`) : null);
-  const changed = editing ? !sameForm(form, initial) : false;
+  const changed = editing ? !sameForm(form, initial) || shareChanged : false;
 
   const leave = useCallback(() => {
     if (router.canGoBack()) router.back();
@@ -532,7 +532,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
       speakingStyle: form.style,
       role: form.role,
       voicePreset: ownVoice ? undefined : form.preset,
-      visibility: 'private' as const,
+      // Sharing is its own step (`shareCharacter`): an edit keeps what the character had.
+      visibility: editing?.visibility ?? ('private' as const),
       // Who they are to the user (Cast 2.0). A secret keeps its beats only if they were written for it;
       // a new one goes with none, and the model writes them once (`ensureStory` in the store).
       relation: form.relation.trim() || undefined,
@@ -572,7 +573,9 @@ function CharacterForm({ editing }: { editing?: Character }) {
         !same(next.likes, editing.likes) ||
         !same(next.dislikes, editing.dislikes) ||
         next.avatarUri !== editing.avatarUri;
-      updateCharacter(editing.id, { ...next, review: reviewAfterEdit(editing, SHARING_OPEN && editing.visibility === 'public', seenByOthers) });
+      updateCharacter(editing.id, next);
+      // Shared: switched off, switched on, or what others see changed (reviewed again).
+      if (canShare && (shareChanged || (share && seenByOthers))) void shareCharacter(editing.id, share);
       haptic.success();
       return leave();
     }
@@ -596,6 +599,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
       isOfficial: false,
     });
     if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
+    if (canShare && share) void shareCharacter(ids.characterId, true);
     void clearCreation();
     setCreating(false);
     setMade(ids);
@@ -831,6 +835,24 @@ function CharacterForm({ editing }: { editing?: Character }) {
                 </Animated.View>
               ) : null}
             </Card>
+
+            {canShare ? (
+              <Card title={t('community.shareTitle')}>
+                <View style={styles.toggleRow}>
+                  <Txt style={[styles.toggleText, styles.flex]}>{t('community.shareToggle')}</Txt>
+                  <Toggle value={share} onChange={setShare} onColor={systemColors.green} accessibilityLabel={t('community.shareToggle')} />
+                </View>
+                {editing?.visibility === 'public' && editing.review ? (
+                  <Txt style={[styles.toggleText, styles.shareStatus, editing.review === 'rejected' && styles.shareRefused]}>
+                    {editing.review === 'pending'
+                      ? t('community.status.pending')
+                      : editing.review === 'approved'
+                        ? t('community.status.live')
+                        : t(`community.status.rejected.${editing.communityReason ?? 'harm'}`)}
+                  </Txt>
+                ) : null}
+              </Card>
+            ) : null}
           </ScrollView>
         )}
 
@@ -857,7 +879,7 @@ function CharacterForm({ editing }: { editing?: Character }) {
             label={editing ? t('createCharacter.save') : totalCost > 0 ? t('createCharacter.create', { count: totalCost }) : t('createCharacter.createFree')}
             busy={creating}
             disabled={busy != null || (!!editing && !changed)}
-            caption={t('createCharacter.privateNote')}
+            caption={canShare && share ? t('community.shareNote') : t('createCharacter.privateNote')}
             error={error}
             onPress={() => void submit()}
           />
@@ -988,6 +1010,8 @@ const styles = StyleSheet.create({
   },
   photoButtonText: { ...inkFace('subStrong'), color: colors.onMedia },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.md },
+  shareStatus: { marginTop: space.sm, color: colors.textSecondary },
+  shareRefused: { color: systemColors.red },
   toggleText: { ...inkFace('sub'), color: colors.text },
   fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginTop: space.sm, marginBottom: 6 },
   subLabel: { ...inkFace('subStrong'), color: colors.textSecondary },

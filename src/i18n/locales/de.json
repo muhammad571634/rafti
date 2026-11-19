@@ -1149,6 +1149,40 @@
     "morePlan": "Bis zu {{count}} mit Abo",
     "chatTitle": "Deine Persona in diesem Chat"
   },
+  "community": {
+    "title": "Aus der Community",
+    "chats_one": "{{count}} Chat",
+    "chats_other": "{{count}} Chats",
+    "scene": "Szene",
+    "firstMessage": "Erste Nachricht",
+    "you": "du",
+    "sayHi": "Hallo sagen",
+    "report": "Melden",
+    "reported": "Danke. Wir sehen es uns an.",
+    "reason": {
+      "rights": "Nutzt die Figur oder das Werk von jemandem",
+      "realPerson": "Eine echte Person",
+      "minor": "Jemand unter 18",
+      "sexual": "Sexuelle Inhalte",
+      "hate": "Hass oder Belästigung",
+      "other": "Etwas anderes"
+    },
+    "shareTitle": "Teilen",
+    "shareToggle": "In „Entdecken“ teilen",
+    "shareNote": "Nach kurzer Prüfung in „Entdecken“ geteilt",
+    "status": {
+      "pending": "Wird geprüft…",
+      "live": "In „Entdecken“",
+      "rejected": {
+        "realPerson": "Nicht geteilt: eine echte Person",
+        "minor": "Nicht geteilt: jemand unter 18",
+        "explicit": "Nicht geteilt: explizite Inhalte",
+        "hate": "Nicht geteilt: Hass oder Belästigung",
+        "harm": "Nicht geteilt: schädliche Inhalte",
+        "busy": "Noch nicht geteilt: erneut speichern"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Schwach",

@@ -22,6 +22,8 @@ import { CircleTile } from '@/components/find/circle-tile';
 import { familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { MissCard, RoleSheet } from '@/components/find/miss-card';
+import { CommunityShelf } from '@/components/community/community-shelf';
+import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { InkSegmented, InkText } from '@/components/ink';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { CharacterAvatar, EmptyState, GlassButton, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon } from '@/components/ui';
@@ -285,6 +287,9 @@ export default function FindScreen() {
 
               <Section title={t('find.missTitle')} first={featured.length === 0} />
               <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
+
+              {/* Characters other users shared (0z300); dev and preview builds only for now. */}
+              {COMMUNITY_OPEN ? <CommunityShelf title={(text) => <Section title={text} />} /> : null}
 
               {groups.length > 0 ? (
                 <>

@@ -1123,6 +1123,39 @@
     "morePlan": "升級方案最高可擁有{{count}}個",
     "chatTitle": "你在這場對話中的設定"
   },
+  "community": {
+    "title": "來自社群",
+    "chats_other": "{{count}} 則聊天",
+    "scene": "場景",
+    "firstMessage": "第一則訊息",
+    "you": "你",
+    "sayHi": "打招呼",
+    "report": "檢舉",
+    "reported": "謝謝，我們會查看。",
+    "reason": {
+      "rights": "使用他人的角色或作品",
+      "realPerson": "真實人物",
+      "minor": "未滿 18 歲的人",
+      "sexual": "性內容",
+      "hate": "仇恨或騷擾",
+      "other": "其他"
+    },
+    "shareTitle": "分享",
+    "shareToggle": "分享到探索",
+    "shareNote": "經過快速檢查後分享到探索",
+    "status": {
+      "pending": "檢查中…",
+      "live": "已在探索",
+      "rejected": {
+        "realPerson": "未分享：真實人物",
+        "minor": "未分享：未滿 18 歲",
+        "explicit": "未分享：露骨內容",
+        "hate": "未分享：仇恨或騷擾",
+        "harm": "未分享：有害內容",
+        "busy": "尚未分享：請再儲存一次"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "偏弱",

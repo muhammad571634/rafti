@@ -1149,6 +1149,40 @@
     "morePlan": "Até {{count}} com um plano",
     "chatTitle": "Você está nesta conversa"
   },
+  "community": {
+    "title": "Da comunidade",
+    "chats_one": "{{count}} conversa",
+    "chats_other": "{{count}} conversas",
+    "scene": "Cena",
+    "firstMessage": "Primeira mensagem",
+    "you": "você",
+    "sayHi": "Dizer oi",
+    "report": "Denunciar",
+    "reported": "Obrigado. Vamos verificar.",
+    "reason": {
+      "rights": "Usa o personagem ou a obra de alguém",
+      "realPerson": "Uma pessoa real",
+      "minor": "Alguém com menos de 18",
+      "sexual": "Conteúdo sexual",
+      "hate": "Ódio ou assédio",
+      "other": "Outra coisa"
+    },
+    "shareTitle": "Compartilhar",
+    "shareToggle": "Compartilhar em Explorar",
+    "shareNote": "Compartilhado em Explorar após uma verificação rápida",
+    "status": {
+      "pending": "Verificando…",
+      "live": "Em Explorar",
+      "rejected": {
+        "realPerson": "Não compartilhado: uma pessoa real",
+        "minor": "Não compartilhado: menor de 18",
+        "explicit": "Não compartilhado: conteúdo explícito",
+        "hate": "Não compartilhado: ódio ou assédio",
+        "harm": "Não compartilhado: conteúdo nocivo",
+        "busy": "Ainda não compartilhado: salve de novo"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Fraco",

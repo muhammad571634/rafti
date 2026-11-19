@@ -1149,6 +1149,40 @@
     "morePlan": "Jusqu'à {{count}} avec un abonnement",
     "chatTitle": "Votre persona dans cette discussion"
   },
+  "community": {
+    "title": "De la communauté",
+    "chats_one": "{{count}} discussion",
+    "chats_other": "{{count}} discussions",
+    "scene": "Scène",
+    "firstMessage": "Premier message",
+    "you": "toi",
+    "sayHi": "Dire bonjour",
+    "report": "Signaler",
+    "reported": "Merci. Nous allons vérifier.",
+    "reason": {
+      "rights": "Utilise le personnage ou l’œuvre de quelqu’un",
+      "realPerson": "Une vraie personne",
+      "minor": "Quelqu’un de moins de 18 ans",
+      "sexual": "Contenu sexuel",
+      "hate": "Haine ou harcèlement",
+      "other": "Autre chose"
+    },
+    "shareTitle": "Partager",
+    "shareToggle": "Partager dans Découvrir",
+    "shareNote": "Partagé dans Découvrir après une vérification rapide",
+    "status": {
+      "pending": "Vérification…",
+      "live": "Dans Découvrir",
+      "rejected": {
+        "realPerson": "Non partagé : une vraie personne",
+        "minor": "Non partagé : quelqu’un de moins de 18 ans",
+        "explicit": "Non partagé : contenu explicite",
+        "hate": "Non partagé : haine ou harcèlement",
+        "harm": "Non partagé : contenu nuisible",
+        "busy": "Pas encore partagé : enregistre à nouveau"
+      }
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Faible",
