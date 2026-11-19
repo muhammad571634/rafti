@@ -59,6 +59,7 @@ import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 import { keepCharacterPicture } from '@/lib/character-picture';
 import { type StoryTemplate, templateById } from '@/lib/templates';
+import { localTemplate } from '@/i18n/content';
 import { serverTemplates } from '@/ai/server';
 import { withAccount } from '@/ai/account';
 
@@ -235,7 +236,8 @@ export default function CreateCharacterScreen() {
   const router = useRouter();
   const { id, template: templateParam } = useLocalSearchParams<{ id?: string; template?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
-  const template = templateById((Array.isArray(templateParam) ? templateParam[0] : templateParam) ?? '');
+  const written = templateById((Array.isArray(templateParam) ? templateParam[0] : templateParam) ?? '');
+  const template = useMemo(() => (written ? localTemplate(written) : undefined), [written]);
   const editing = useAppStore((s) => (editId ? s.characters.find((c) => c.id === editId && !c.isOfficial) : undefined));
 
   if (editId && !editing) {

@@ -15,6 +15,7 @@ import { officialLorebooks } from '@/mock/lorebooks';
 import { radioGifts } from '@/mock/radio';
 import { officialScenes } from '@/mock/scenes';
 import { WORLDS } from '@/mock/worlds';
+import { TEMPLATES } from '@/lib/templates';
 
 import { BRIEF_VOICE } from '@/mock/brief';
 import { CARE_VOICE } from '@/mock/care';
@@ -267,6 +268,13 @@ for (const sn of secretNotes) {
   secretNotesSection[sn.id] = note;
 }
 
+// Story templates on Find (docs/agent-tasks/template-library.md): the hook and the words of each card.
+const templatesSection: Record<string, unknown> = {};
+for (const t of TEMPLATES) {
+  const { relation, tagline, bio, mask, scenario, opening, greeting } = t.card;
+  templatesSection[t.id] = { hook: t.hook, card: { relation, tagline, bio, mask, scenario, opening, greeting } };
+}
+
 const content = {
   characters: charactersSection,
   datePlaces: datePlacesSection,
@@ -286,6 +294,7 @@ const content = {
   diaryPages: diaryPagesSection,
   diaryEntries: diaryEntriesSection,
   secretNotes: secretNotesSection,
+  templates: templatesSection,
   voice: {
     reply: REPLY_VOICE,
     chat: CHAT_VOICE,

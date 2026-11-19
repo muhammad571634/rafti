@@ -73,6 +73,17 @@ export function localCharacter<T extends { id: string; isOfficial?: boolean }>(c
   return overlay(c, (CONTENT[lang]?.characters as Record<string, unknown> | undefined)?.[c.id]);
 }
 
+/**
+ * A story template in the screen language (content section `templates`, keyed by id: the hook and the
+ * card's words). English, as written in `src/lib/templates.ts`, until the content batch translates it.
+ */
+export function localTemplate<T extends { id: string; hook: string; card: object }>(template: T): T {
+  const lang = i18n.language || 'en';
+  const words = (CONTENT[lang]?.templates as Record<string, { hook?: string; card?: object }> | undefined)?.[template.id];
+  if (!words) return template;
+  return { ...template, hook: words.hook ?? template.hook, card: overlay(template.card, words.card) };
+}
+
 /** Overlay for a diary entry by id. */
 export function localDiaryEntry<T extends { id: string }>(entry: T): T {
   const lang = i18n.language || 'en';

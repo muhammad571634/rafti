@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { InkChip, InkText, PillButton } from '@/components/ink';
+import { localTemplate } from '@/i18n/content';
 import { Avatar, PressableScale, Sheet } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { shortCount } from '@/lib/format';
@@ -102,8 +103,9 @@ function CountBadge({ stats, trending }: { stats?: TemplateStats; trending: bool
   );
 }
 
-function StoryCard({ item, width, stats, trending, onPress }: { item: StoryTemplate; width: number; stats?: TemplateStats; trending: boolean; onPress: () => void }) {
+function StoryCard({ item: written, width, stats, trending, onPress }: { item: StoryTemplate; width: number; stats?: TemplateStats; trending: boolean; onPress: () => void }) {
   const { t } = useTranslation();
+  const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
   return (
@@ -136,10 +138,12 @@ function StoryCard({ item, width, stats, trending, onPress }: { item: StoryTempl
 }
 
 /** One story: who they are, how it starts, Say hi, or Make it yours in Create. */
-export function StorySheet({ template, stats, onClose }: { template: StoryTemplate | null; stats?: TemplateStats; onClose: () => void }) {
+export function StorySheet({ template: written, stats, onClose }: { template: StoryTemplate | null; stats?: TemplateStats; onClose: () => void }) {
   const { t } = useTranslation();
   const router = useRouter();
   const addTemplateCharacter = useAppStore((s) => s.addTemplateCharacter);
+  // In the screen language: the copy Say hi keeps is in their words too.
+  const template = written ? localTemplate(written) : null;
   const card = template?.card;
   const fill = (text: string) => text.replace(/\{\{user\}\}/g, t('community.you')).replace(/\{\{char\}\}/g, card?.name ?? '');
 
