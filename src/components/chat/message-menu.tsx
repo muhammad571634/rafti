@@ -155,7 +155,8 @@ export function MessageMenu({
         <MenuRow key={row.key} label={row.label} icon={row.icon} onPress={row.onPress} line={i < firstGroup.length - 1} />
       ))}
       <View style={styles.gap} />
-      {onRewind ? <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" danger line onPress={() => onRewind(message)} /> : null}
+      {/* Not red since 0z286: a rewind keeps the later lines as a branch, nothing is lost. */}
+      {onRewind ? <MenuRow label={t('chat.rewindToHere')} icon="arrow-undo-outline" line onPress={() => onRewind(message)} /> : null}
       <MenuRow label={t('chat.deleteMessage')} icon="trash-outline" danger onPress={() => onDelete(message)} />
     </View>
   );

@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z286. START HERE: branches (owner's yes, docs/polybuzz-core.md §5.4) + version_kept (0z285) (2026-11-19, Claude 1, Opus 5.5). NEXT: §5.5 story steering in +, or the owner's pick
+- **Branches**: a rewind keeps the later lines as a branch (`src/lib/branches.ts` pure, `src/lib/branch-files.ts` one AsyncStorage key per branch, read only on switch; the store keeps `branches` records, persisted). Chat More > Story > Branches (`branches-sheet.tsx`, row hidden when the chat has none, and in groups): newest first, first line, count, date; a tap switches (where the chat was becomes a branch in its turn), trash deletes; 8 per chat, the oldest dropped with its lines and voice notes; a branch whose point an earlier rewind cut away shows faded. Rewind no longer deletes voice notes; clear / delete chat and Delete account take branches along. Level, shells and memories stay as with a rewind. Branches stay on this phone (a new phone restores the chat as it is).
+- **Not red any more** (HIG: red only where something is lost): "Rewind to here" in the hold menu, its confirm, and Switch (`confirmAction` `safe`). Rewind copy in 14 locales: "Rewind? N later messages go to Branches".
+- **version_kept** (0z285): writing on after browsing a reply's versions logs which one of how many (`analytics-diff.ts`).
+- **Seen on the A51** (OTA `7af13f32`): Milo's chat rewound to "come over to the bar" (confirm "Rewind? 4 later messages go to Branches"), More showed Branches, the sheet listed "You: cant go out tonight…, 4 messages, Nov 19 12:31", Switch brought all four back (voice note and reaction too). The non-red change went out after that check.
+- **Checked**: tsc 0, `npm test` 1062/1062, `check:locales`.
+
 ### 0z284. START HERE: a visit the friend promises is kept in the story, PolyBuzz's way (owner's yes, 2026-11-19, Claude 1, Opus 5.5). NEXT: owner deploys the server
 - **Owner**: "ha tuzatish kerak, polybuzz kabi qilib qo'y" on the 0z283 note (Milo told a scared user "I'm coming over" and nothing followed).
 - **Rule** (`CHARACTER_RULES`, `src/ai/rules.ts`, beside the touch rule): being together is part of the story; an offer to come over / meet / bring something can happen; the next replies play it out (on the way, *knocks*, there with them) and a promised visit is never dropped. The limit, its own line with an example: when the user is going through something real (someone in hospital, an accident, a loss, danger) the friend does not set off or arrive; they stay in words and offer a call.

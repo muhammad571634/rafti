@@ -35,6 +35,7 @@ export function BranchesSheet({ conversationId, theirName, visible, onClose }: {
       message: t('chat.branches.switchLine'),
       action: t('chat.branches.switch'),
       cancel: t('common.cancel'),
+      safe: true,
       onConfirm: () => {
         if (busy) return;
         setBusy(true);

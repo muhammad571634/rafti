@@ -511,6 +511,7 @@ export default function ChatRoomScreen() {
       title: t('chat.rewindTitle', { count: laterCount(data, message.id) }),
       action: t('chat.rewind'),
       cancel: t('common.cancel'),
+      safe: true,
       onConfirm: () => {
         setEditing(null);
         // The later lines and their voice notes are kept as a branch (0z286), not deleted.

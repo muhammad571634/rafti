@@ -14,6 +14,7 @@ export function confirmAction({
   action,
   cancel,
   onConfirm,
+  safe = false,
 }: {
   title: string;
   /** What goes, in a line under the title. */
@@ -21,10 +22,12 @@ export function confirmAction({
   action: string;
   cancel: string;
   onConfirm: () => void;
+  /** Nothing is lost (a rewind keeps a branch, a switch keeps the chat): the choice is not red (HIG). */
+  safe?: boolean;
 }) {
   if (Platform.OS === 'ios') {
     ActionSheetIOS.showActionSheetWithOptions(
-      { title, message, options: [action, cancel], destructiveButtonIndex: 0, cancelButtonIndex: 1 },
+      { title, message, options: [action, cancel], ...(safe ? {} : { destructiveButtonIndex: 0 }), cancelButtonIndex: 1 },
       (index) => {
         if (index === 0) onConfirm();
       },
@@ -33,6 +36,6 @@ export function confirmAction({
   }
   showAlert(title, message, [
     { text: cancel, style: 'cancel' },
-    { text: action, style: 'destructive', onPress: onConfirm },
+    { text: action, style: safe ? 'default' : 'destructive', onPress: onConfirm },
   ]);
 }
