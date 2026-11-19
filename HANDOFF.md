@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z295. START HERE: greeting coach in Create (owner's "Ha, qil" on polybuzz-live-test §4.4, 2026-11-19, Claude 1, Opus 5.5). NEXT: see it on the A51 (the phone dropped off adb right after the OTA)
+- **What**: under the create form's first message, four bars + the level (Weak / Okay / Good / Great) and one tip, most useful first: say more (under 60 characters), set the scene with an *action* (or the opening line), end on the user's move (a question mark at the end in Latin, CJK or Arabic script, or {{user}}), add one detail (under 160). Nothing while the greeting is empty. Pure `src/lib/greeting-coach.ts`, kit `GreetingMeter`; 8 strings x 14 locales (`createCharacter.coach.*`).
+- **Checked**: tsc 0, `npm test` 1097/1097 (6 new: English, Japanese, Arabic), `check:locales`, `check:content`. OTA `7a0600a6`.
+- **Not seen on the A51 yet**: adb lost the phone (no device listed) before the check. Next: Find → + → Fill in myself, type a greeting step by step, check the bars move and a Russian tip wraps without cutting.
+- **Not built** (from §4): an exposure boost for a strong greeting waits for the community library.
+
 ### 0z294. START HERE: first steps on Free gifts (owner's "Ha, qil" on polybuzz-live-test §4.1, 2026-11-19, Claude 1, Opus 5.5). DONE, deployed and seen on the A51. NEXT: the owner's pick from docs/polybuzz-live-test.md §4
 - **Found first**: the 7-day check-in ladder already exists (Free gifts, 30→50, day 7 up to 100, Today widget). What was missing were newcomer steps.
 - **Built**: a First steps card under the check-in, five one-time steps paid in shells (110 in all): talk to 3 friends 20, make your own character 30, a real talk (20 own lines in one chat) 20, a plan or alarm 20, notifications on 20. Each row: progress ("2/3 · +20"), Go (takes the user there; notifications ask the phone, or open settings after a no), Claim, a check when paid; the card goes when all are paid. Today's gift dot lights for a step waiting. Pure logic `src/economy/first-steps.ts`, hook `src/hooks/use-first-steps.ts`, store `claimFirstStep` (paid steps in `daily.firstSteps`), server `/v1/wallet/first-step` (shared table, ledger key `first:<step>`, once per account on every server; an unpaid claim reopens the step). Quest ledger label now plain "Quest" (14 locales). Analytics `first_step`.
