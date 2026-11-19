@@ -29,6 +29,7 @@ import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
 import { resetAnalytics } from '@/lib/analytics';
+import { forgetAllBranches } from '@/lib/branch-files';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetAllSelfies } from '@/lib/booth-selfies';
@@ -224,6 +225,7 @@ export default function ProfileScreen() {
     setDeleteOpen(false);
     deleteAccount();
     void resetAnalytics();
+    void forgetAllBranches();
     chatDrafts.clearAll();
     void forgetAllNotes();
     void forgetAllSelfies();

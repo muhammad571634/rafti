@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Aller aux messages les plus récents",
+    "branches": {
+      "switchTitle": "Passer à cette branche ?",
+      "switchLine": "Le chat tel qu’il est maintenant est gardé comme branche.",
+      "switch": "Passer",
+      "failed": "Cette branche ne peut pas revenir.",
+      "deleteTitle": "Supprimer cette branche ?",
+      "empty": "Rembobine un chat et les messages suivants sont gardés ici.",
+      "count_one": "1 message",
+      "count_other": "{{count}} messages"
+    },
     "next": {
       "call": "Appeler",
       "date": "Aller à un rendez-vous",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Scène",
       "timeSkip": "Saut dans le temps",
+      "branches": "Branches",
       "voice": "Message vocal",
       "photo": "Photo",
       "gift": "Cadeau",
@@ -490,8 +501,8 @@
     "unpin": "Désépingler",
     "pinnedToast": "Épinglé dans l'histoire",
     "rewind": "Revenir en arrière",
-    "rewindTitle_one": "Supprimer 1 message postérieur ?",
-    "rewindTitle_other": "Supprimer {{count}} messages postérieurs ?",
+    "rewindTitle_one": "Rembobiner ? 1 message suivant ira dans Branches",
+    "rewindTitle_other": "Rembobiner ? {{count}} messages suivants iront dans Branches",
     "deleteMessage": "Supprimer pour moi",
     "react": "Réagir avec {{name}}",
     "reactions": {

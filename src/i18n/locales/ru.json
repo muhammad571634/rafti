@@ -344,6 +344,18 @@
   },
   "chat": {
     "jumpToNewest": "К новым сообщениям",
+    "branches": {
+      "switchTitle": "Перейти на эту ветку?",
+      "switchLine": "Чат в том виде, как сейчас, сохранится веткой.",
+      "switch": "Перейти",
+      "failed": "Эту ветку нельзя вернуть.",
+      "deleteTitle": "Удалить эту ветку?",
+      "empty": "Перемотайте чат, и последующие сообщения сохранятся здесь.",
+      "count_one": "{{count}} сообщение",
+      "count_few": "{{count}} сообщения",
+      "count_many": "{{count}} сообщений",
+      "count_other": "{{count}} сообщения"
+    },
     "next": {
       "call": "Позвонить",
       "date": "Пойти на свидание",
@@ -381,6 +393,7 @@
     "attachments": {
       "scene": "Сцена",
       "timeSkip": "Пропуск времени",
+      "branches": "Ветки",
       "voice": "Голос",
       "photo": "Фото",
       "gift": "Подарок",
@@ -514,8 +527,8 @@
     "unpin": "Открепить",
     "pinnedToast": "Закреплено в Истории",
     "rewind": "Перемотка",
-    "rewindTitle_one": "Удалить 1 последующее сообщение?",
-    "rewindTitle_other": "Удалить {{count}} последующих сообщений?",
+    "rewindTitle_one": "Перемотать? {{count}} последующее сообщение уйдёт в Ветки",
+    "rewindTitle_other": "Перемотать? {{count}} последующих сообщения уйдут в Ветки",
     "deleteMessage": "Удалить у меня",
     "react": "Реакция от {{name}}",
     "reactions": {
@@ -534,8 +547,8 @@
     "addMinutes": "Добавить минуты",
     "shellCost_few": "{{count}} ракушки",
     "shellCost_many": "{{count}} ракушек",
-    "rewindTitle_few": "Удалить {{count}} последующих сообщения?",
-    "rewindTitle_many": "Удалить {{count}} последующих сообщений?",
+    "rewindTitle_few": "Перемотать? {{count}} последующих сообщения уйдут в Ветки",
+    "rewindTitle_many": "Перемотать? {{count}} последующих сообщений уйдут в Ветки",
     "streakShort_few": "{{count}} дня",
     "streakShort_many": "{{count}} дней",
     "mood": {

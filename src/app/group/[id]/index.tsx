@@ -344,7 +344,8 @@ export default function GroupChatScreen() {
       case 'timeSkip':
         return setSkipOpen(true);
       case 'scene':
-        // Hidden in groups (`hide` on More): scenes play in one-to-one chats.
+      case 'branches':
+        // Hidden in groups (`hide` on More): scenes and branches are one-to-one chats' (0z286).
         return;
       case 'more':
         return setMoreOpen(true);
@@ -459,7 +460,7 @@ export default function GroupChatScreen() {
       </BlurTargetView>
 
       <TimeSkipSheet visible={skipOpen} block={block} onClose={() => setSkipOpen(false)} onPick={skipTo} />
-      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} hide={['scene']} />
+      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} hide={['scene', 'branches']} />
 
       {/* Two-person things: pick the member, then their own flow opens. */}
       <Sheet visible={!!withOne} onClose={() => setWithOne(null)} title={t('group.pickMember')}>

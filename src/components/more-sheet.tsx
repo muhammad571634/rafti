@@ -9,11 +9,11 @@ import { systemColors } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
 
 /** What plays inside a chat: the chat's own handler runs it (a sheet there, or a screen with its friend). */
-export type MoreChatKey = 'truthOrDare' | 'quiz' | 'scene' | 'timeSkip';
+export type MoreChatKey = 'truthOrDare' | 'quiz' | 'scene' | 'timeSkip' | 'branches';
 type MoreAppKey = 'photoBooth' | 'lore' | 'radio' | 'streams' | 'board' | 'personas';
 export type MoreKey = MoreChatKey | MoreAppKey;
 
-const CHAT_KEYS: readonly MoreKey[] = ['truthOrDare', 'quiz', 'scene', 'timeSkip'];
+const CHAT_KEYS: readonly MoreKey[] = ['truthOrDare', 'quiz', 'scene', 'timeSkip', 'branches'];
 
 /** The four groups (audit 2026-11-15 §6.2, approved prototype `docs/prototypes/more-sheet.html`). */
 const GROUPS: { title: 'play' | 'story' | 'watch' | 'you'; items: { key: MoreKey; icon: keyof typeof Ionicons.glyphMap; fill: string }[] }[] = [
@@ -30,6 +30,8 @@ const GROUPS: { title: 'play' | 'story' | 'watch' | 'you'; items: { key: MoreKey
     items: [
       { key: 'scene', icon: 'film', fill: systemColors.teal },
       { key: 'timeSkip', icon: 'time', fill: systemColors.gray },
+      // The later lines rewinds kept (0z286); a chat with none hides the row (`hide`).
+      { key: 'branches', icon: 'git-branch', fill: systemColors.green },
       { key: 'lore', icon: 'library', fill: systemColors.brown },
     ],
   },
@@ -50,6 +52,7 @@ const LABEL: Record<MoreKey, string> = {
   quiz: 'chat.attachments.quiz',
   scene: 'chat.attachments.scene',
   timeSkip: 'chat.attachments.timeSkip',
+  branches: 'chat.attachments.branches',
   photoBooth: 'photoBooth.title',
   lore: 'lore.title',
   radio: 'radio.title',

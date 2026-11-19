@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "En yeni mesajlara git",
+    "branches": {
+      "switchTitle": "Bu dala geçilsin mi?",
+      "switchLine": "Sohbetin şu anki hali bir dal olarak saklanır.",
+      "switch": "Geç",
+      "failed": "Bu dal geri gelemez.",
+      "deleteTitle": "Bu dal silinsin mi?",
+      "empty": "Bir sohbeti geri sar, sonraki mesajlar burada saklanır.",
+      "count_one": "1 mesaj",
+      "count_other": "{{count}} mesaj"
+    },
     "next": {
       "call": "Ara",
       "date": "Randevuya çık",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Sahne",
       "timeSkip": "Zaman atlama",
+      "branches": "Dallar",
       "voice": "Ses",
       "photo": "Fotoğraf",
       "gift": "Hediye",
@@ -490,8 +501,8 @@
     "unpin": "Sabitlemeyi kaldır",
     "pinnedToast": "Hikayeye sabitlendi",
     "rewind": "Geri sar",
-    "rewindTitle_one": "Sonraki 1 mesaj silinsin mi?",
-    "rewindTitle_other": "Sonraki {{count}} mesaj silinsin mi?",
+    "rewindTitle_one": "Geri sarılsın mı? Sonraki 1 mesaj Dallara gider",
+    "rewindTitle_other": "Geri sarılsın mı? Sonraki {{count}} mesaj Dallara gider",
     "deleteMessage": "Benden sil",
     "react": "{{name}} ile tepki ver",
     "reactions": {

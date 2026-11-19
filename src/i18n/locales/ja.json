@@ -325,6 +325,15 @@
   },
   "chat": {
     "jumpToNewest": "最新のメッセージへ",
+    "branches": {
+      "switchTitle": "この分岐に切り替えますか？",
+      "switchLine": "今のチャットは分岐として残ります。",
+      "switch": "切り替える",
+      "failed": "この分岐は戻せません。",
+      "deleteTitle": "この分岐を削除しますか？",
+      "empty": "チャットを巻き戻すと、その後のメッセージがここに残ります。",
+      "count_other": "{{count}}件のメッセージ"
+    },
     "next": {
       "call": "電話する",
       "date": "デートする",
@@ -362,6 +371,7 @@
     "attachments": {
       "scene": "シーン",
       "timeSkip": "タイムスキップ",
+      "branches": "分岐",
       "voice": "ボイス",
       "photo": "写真",
       "gift": "ギフト",
@@ -479,7 +489,7 @@
     "unpin": "固定解除",
     "pinnedToast": "ストーリーにピン留めしました",
     "rewind": "巻き戻し",
-    "rewindTitle_other": "以降のメッセージ{{count}}件を削除しますか？",
+    "rewindTitle_other": "巻き戻しますか？ その後の{{count}}件は分岐に残ります",
     "deleteMessage": "自分側のみ削除",
     "react": "{{name}}とリアクション",
     "reactions": {

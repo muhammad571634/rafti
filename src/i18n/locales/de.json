@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Zu den neuesten Nachrichten",
+    "branches": {
+      "switchTitle": "Zu dieser Verzweigung wechseln?",
+      "switchLine": "Der jetzige Verlauf bleibt als Verzweigung erhalten.",
+      "switch": "Wechseln",
+      "failed": "Diese Verzweigung kann nicht zurückkommen.",
+      "deleteTitle": "Diese Verzweigung löschen?",
+      "empty": "Spul einen Chat zurück, und die späteren Nachrichten bleiben hier.",
+      "count_one": "1 Nachricht",
+      "count_other": "{{count}} Nachrichten"
+    },
     "next": {
       "call": "Anrufen",
       "date": "Zum Date",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Szene",
       "timeSkip": "Zeitsprung",
+      "branches": "Verzweigungen",
       "voice": "Sprachnachricht",
       "photo": "Foto",
       "gift": "Geschenk",
@@ -490,8 +501,8 @@
     "unpin": "Lösen",
     "pinnedToast": "An Geschichte gepinnt",
     "rewind": "Zurückspulen",
-    "rewindTitle_one": "1 spätere Nachricht löschen?",
-    "rewindTitle_other": "{{count}} spätere Nachrichten löschen?",
+    "rewindTitle_one": "Zurückspulen? 1 spätere Nachricht kommt zu Verzweigungen",
+    "rewindTitle_other": "Zurückspulen? {{count}} spätere Nachrichten kommen zu Verzweigungen",
     "deleteMessage": "Für mich löschen",
     "react": "Reagieren mit {{name}}",
     "reactions": {

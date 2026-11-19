@@ -325,6 +325,15 @@
   },
   "chat": {
     "jumpToNewest": "Ke pesan terbaru",
+    "branches": {
+      "switchTitle": "Pindah ke cabang ini?",
+      "switchLine": "Obrolan yang sekarang disimpan sebagai cabang.",
+      "switch": "Pindah",
+      "failed": "Cabang ini tidak bisa kembali.",
+      "deleteTitle": "Hapus cabang ini?",
+      "empty": "Putar balik obrolan dan pesan setelahnya disimpan di sini.",
+      "count_other": "{{count}} pesan"
+    },
     "next": {
       "call": "Telepon",
       "date": "Pergi kencan",
@@ -362,6 +371,7 @@
     "attachments": {
       "scene": "Adegan",
       "timeSkip": "Lompatan waktu",
+      "branches": "Cabang",
       "voice": "Suara",
       "photo": "Foto",
       "gift": "Hadiah",
@@ -479,7 +489,7 @@
     "unpin": "Lepas sematan",
     "pinnedToast": "Disematkan ke Cerita",
     "rewind": "Putar balik",
-    "rewindTitle_other": "Hapus {{count}} pesan setelahnya?",
+    "rewindTitle_other": "Putar balik? {{count}} pesan setelahnya masuk ke Cabang",
     "deleteMessage": "Hapus untuk saya",
     "react": "Beri reaksi bersama {{name}}",
     "reactions": {

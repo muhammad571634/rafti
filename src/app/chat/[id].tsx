@@ -42,6 +42,7 @@ import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
 import { NextChip } from '@/components/chat/next-chip';
+import { BranchesSheet } from '@/components/chat/branches-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -51,7 +52,7 @@ import { CharacterAvatar, Header, Screen, Txt } from '@/components/ui';
 import { usePickPhoto } from '@/components/chat/use-pick-photo';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
-import { canRewindTo, lastExchange, laterCount, laterNotes, shareLines } from '@/lib/chat-turns';
+import { canRewindTo, lastExchange, laterCount, shareLines } from '@/lib/chat-turns';
 import { confirmAction } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { reachReason } from '@/lib/mind';
@@ -166,6 +167,9 @@ export default function ChatRoomScreen() {
   const retryReply = useAppStore((s) => s.retryReply);
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const markNextUsed = useAppStore((s) => s.markNextUsed);
+  // Branches this chat kept (0z286): the More sheet shows its row only when there are some.
+  const branchCount = useAppStore((s) => s.branches.filter((b) => b.conversationId === conversationId).length);
+  const [branchesOpen, setBranchesOpen] = useState(false);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
   const continueChat = useAppStore((s) => s.continueChat);
@@ -509,10 +513,8 @@ export default function ChatRoomScreen() {
       cancel: t('common.cancel'),
       onConfirm: () => {
         setEditing(null);
-        // Read at the tap, not from the render: a note may have landed while the sheet was open.
-        const notes = laterNotes(useAppStore.getState().messages[conversation.id], message.id);
+        // The later lines and their voice notes are kept as a branch (0z286), not deleted.
         rewindTo(conversation.id, message.id);
-        for (const name of notes) void dropNote(name);
       },
     });
 
@@ -541,6 +543,8 @@ export default function ChatRoomScreen() {
         return router.push('/diary/write');
       case 'more':
         return setMoreOpen(true);
+      case 'branches':
+        return setBranchesOpen(true);
     }
   };
 
@@ -788,7 +792,8 @@ export default function ChatRoomScreen() {
       />
       {freeOut.sheet}
       <TimeSkipSheet visible={skipOpen} block={block} scene={conversation.scene?.title} onClose={() => setSkipOpen(false)} onPick={skipTo} />
-      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} />
+      <MoreSheet visible={moreOpen} onClose={() => setMoreOpen(false)} onChatPick={attach} hide={branchCount ? [] : ['branches']} />
+      <BranchesSheet conversationId={conversation.id} theirName={name} visible={branchesOpen} onClose={() => setBranchesOpen(false)} />
 
       <CallPaywallSheet
         visible={callGate === 'paywall'}

@@ -43,6 +43,8 @@ import { localCharacter, localized } from '@/i18n/content';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import { nextChoices } from '@/ai/next-moment';
+import { dropBranchLines, loadBranchLines, saveBranchLines } from '@/lib/branch-files';
+import { addBranch, branchRecord, cutAfter, swapIn, worthBranching } from '@/lib/branches';
 import { analyticsChannel, experiment } from '@/lib/analytics';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
@@ -330,6 +332,7 @@ import type {
   MemorySource,
   Message,
   NextKind,
+  ChatBranch,
   Mood,
   MessageTone,
   Moment,
@@ -471,6 +474,8 @@ export interface AppState {
   typing: Record<string, boolean>;
   /** Versions of their newest reply per chat (↻). Not saved: after a restart the one on screen stays. */
   replyVersions: Record<string, ReplyVersions>;
+  /** Later lines kept by rewinds (0z286, `src/lib/branches.ts`); their lines are saved apart. */
+  branches: ChatBranch[];
   /**
    * Group ids and the members typing there now, in the order they started. Several can type at
    * once; a member is listed once per reply still on its way, so overlapping replies never
@@ -535,6 +540,12 @@ export interface AppState {
   editLastMessage: (conversationId: string, text: string) => SendResult;
   /** Deletes everything after one of their lines, as if the chat had stopped there. */
   rewindTo: (conversationId: string, messageId: string) => void;
+  /**
+   * Puts a branch back (0z286): the chat goes on from its point with its lines, and where the chat
+   * was is kept as a branch. `gone`: its point is no longer in the chat; `missing`: its lines are lost.
+   */
+  switchBranch: (conversationId: string, branchId: string) => Promise<'ok' | 'gone' | 'missing' | 'failed'>;
+  deleteBranch: (branchId: string) => void;
   /** They go on without the user writing (Continue). One reply, so it costs what a message does. */
   continueChat: (conversationId: string) => SendResult;
   /**
@@ -969,6 +980,7 @@ export type ProfilePatch = Partial<
 >;
 
 type PersistedKeys =
+  | 'branches'
   | 'pushOutbox'
   | 'pushHealth'
   | 'pushLines'
@@ -1204,6 +1216,7 @@ export const useAppStore = create<AppState>()(
       levelUp: null,
       typing: {},
       replyVersions: {},
+      branches: [],
       groupTyping: {},
       activeConversationId: null,
       incomingCall: null,
@@ -1346,6 +1359,7 @@ export const useAppStore = create<AppState>()(
         const character = get().characters.find((c) => c.id === conversation?.characterId);
         const greeting = character ? openingFor(get(), character, `${conversationId}:${Date.now()}`) : '';
         const now = new Date().toISOString();
+        dropChatBranches(set, get, conversationId);
         set((s) => ({
           replyVersions: omitKey(s.replyVersions, conversationId),
           messages: {
@@ -1367,6 +1381,7 @@ export const useAppStore = create<AppState>()(
       deleteChat: (conversationId) => {
         // A reply still on its way must not land in a chat that is gone.
         cancelReplies(set, conversationId);
+        dropChatBranches(set, get, conversationId);
         set((s) => {
           const { [conversationId]: _messages, ...messages } = s.messages;
           const { [conversationId]: _typing, ...typing } = s.typing;
@@ -1562,14 +1577,61 @@ export const useAppStore = create<AppState>()(
         if (at < 0 || at === list.length - 1) return;
         // Level, shells and memories stay as they are (owner, 2026-10-24).
         cancelReplies(set, conversationId);
+        // What came after is kept as a branch (0z286), its lines saved apart; the record shows at once.
+        const cut = cutAfter(get().messages[conversationId] ?? [], messageId);
+        const branch = cut && worthBranching(cut.tail) ? branchRecord(uid('br'), conversationId, messageId, cut.tail, new Date()) : null;
         set((s) => {
           const current = s.messages[conversationId] ?? [];
           const keep = current.findIndex((m) => m.id === messageId);
+          const added = branch ? addBranch(s.branches, branch) : null;
+          if (added) for (const old of added.dropped) void dropBranchLines(old.id);
           return {
             ...withMessages(s, conversationId, current.slice(0, keep + 1)),
             replyVersions: omitKey(s.replyVersions, conversationId),
+            ...(added ? { branches: added.branches } : {}),
           };
         });
+        // Not saved (storage full): the record goes too, so the list never offers what cannot come back.
+        if (branch && cut) {
+          void saveBranchLines(branch.id, cut.tail).then((saved) => {
+            if (!saved) set((s) => ({ branches: s.branches.filter((b) => b.id !== branch.id) }));
+          });
+        }
+      },
+
+      switchBranch: async (conversationId, branchId) => {
+        const branch = get().branches.find((b) => b.id === branchId && b.conversationId === conversationId);
+        if (!branch) return 'missing';
+        const lines = await loadBranchLines(branchId);
+        if (!lines) {
+          set((s) => ({ branches: s.branches.filter((b) => b.id !== branchId) }));
+          return 'missing';
+        }
+        cancelReplies(set, conversationId);
+        const swapped = swapIn(get().messages[conversationId] ?? [], branch.atMessageId, lines);
+        if (!swapped) return 'gone';
+        // Where the chat is now is kept first; if that cannot be saved, nothing changes.
+        const here = worthBranching(swapped.current) ? branchRecord(uid('br'), conversationId, branch.atMessageId, swapped.current, new Date()) : null;
+        if (here && !(await saveBranchLines(here.id, swapped.current))) return 'failed';
+        set((s) => {
+          const rest = s.branches.filter((b) => b.id !== branchId);
+          const added = here ? addBranch(rest, here) : { branches: rest, dropped: [] };
+          for (const old of added.dropped) void dropBranchLines(old.id);
+          return {
+            ...withMessages(s, conversationId, swapped.messages),
+            replyVersions: omitKey(s.replyVersions, conversationId),
+            branches: added.branches,
+          };
+        });
+        // Its lines are the chat's now; their voice notes stay with them.
+        void dropBranchLines(branchId, false);
+        return 'ok';
+      },
+
+      deleteBranch: (branchId) => {
+        if (!get().branches.some((b) => b.id === branchId)) return;
+        set((s) => ({ branches: s.branches.filter((b) => b.id !== branchId) }));
+        void dropBranchLines(branchId);
       },
 
       continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
@@ -4244,6 +4306,7 @@ export const useAppStore = create<AppState>()(
         groups: s.groups,
         radioClips: s.radioClips,
         newRadioGifts: s.newRadioGifts,
+        branches: s.branches,
         dateThemes: s.dateThemes,
         userQuizzes: s.userQuizzes,
         selfQuizzes: s.selfQuizzes,
@@ -7234,6 +7297,14 @@ function omitKey<T>(record: Record<string, T>, key: string): Record<string, T> {
 }
 
 /** A chat's new message list, with the list's preview following its new last line. */
+/** A chat cleared or deleted: its branches go too (their points are gone), with their lines and notes. */
+function dropChatBranches(set: Setter, get: Getter, conversationId: string) {
+  const gone = get().branches.filter((b) => b.conversationId === conversationId);
+  if (!gone.length) return;
+  set((s) => ({ branches: s.branches.filter((b) => b.conversationId !== conversationId) }));
+  for (const b of gone) void dropBranchLines(b.id);
+}
+
 function withMessages(s: AppState, conversationId: string, messages: Message[]) {
   // System lines (the AI notice, cards) never become the preview.
   const last = [...messages].reverse().find((m) => m.kind !== 'system');

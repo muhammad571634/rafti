@@ -325,6 +325,15 @@
   },
   "chat": {
     "jumpToNewest": "前往最新訊息",
+    "branches": {
+      "switchTitle": "切換到這個分支？",
+      "switchLine": "現在的聊天會保留為一個分支。",
+      "switch": "切換",
+      "failed": "這個分支無法回來。",
+      "deleteTitle": "刪除這個分支？",
+      "empty": "倒轉聊天後，之後的訊息會保留在這裡。",
+      "count_other": "{{count}} 則訊息"
+    },
     "next": {
       "call": "打電話",
       "date": "去約會",
@@ -362,6 +371,7 @@
     "attachments": {
       "scene": "場景",
       "timeSkip": "時間跳轉",
+      "branches": "分支",
       "voice": "語音",
       "photo": "照片",
       "gift": "禮物",
@@ -479,7 +489,7 @@
     "unpin": "取消釘選",
     "pinnedToast": "已釘選至故事",
     "rewind": "倒退",
-    "rewindTitle_other": "刪除後續的{{count}}條訊息？",
+    "rewindTitle_other": "要倒轉嗎？之後的 {{count}} 則訊息會移到分支",
     "deleteMessage": "僅為我刪除",
     "react": "與{{name}}互動回應",
     "reactions": {

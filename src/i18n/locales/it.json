@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Vai ai messaggi più recenti",
+    "branches": {
+      "switchTitle": "Passare a questo ramo?",
+      "switchLine": "La chat com’è ora viene tenuta come ramo.",
+      "switch": "Passa",
+      "failed": "Questo ramo non può tornare.",
+      "deleteTitle": "Eliminare questo ramo?",
+      "empty": "Riavvolgi una chat e i messaggi successivi restano qui.",
+      "count_one": "1 messaggio",
+      "count_other": "{{count}} messaggi"
+    },
     "next": {
       "call": "Chiamare",
       "date": "Uscire insieme",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Scena",
       "timeSkip": "Salto temporale",
+      "branches": "Rami",
       "voice": "Voce",
       "photo": "Foto",
       "gift": "Regalo",
@@ -490,8 +501,8 @@
     "unpin": "Rimuovi",
     "pinnedToast": "Fissato nella storia",
     "rewind": "Riavvolgi",
-    "rewindTitle_one": "Eliminare 1 messaggio successivo?",
-    "rewindTitle_other": "Eliminare {{count}} messaggi successivi?",
+    "rewindTitle_one": "Riavvolgere? 1 messaggio successivo va nei Rami",
+    "rewindTitle_other": "Riavvolgere? {{count}} messaggi successivi vanno nei Rami",
     "deleteMessage": "Elimina per me",
     "react": "Reagisci con {{name}}",
     "reactions": {

@@ -325,6 +325,15 @@
   },
   "chat": {
     "jumpToNewest": "Đến tin nhắn mới nhất",
+    "branches": {
+      "switchTitle": "Chuyển sang nhánh này?",
+      "switchLine": "Cuộc trò chuyện hiện tại được giữ lại thành một nhánh.",
+      "switch": "Chuyển",
+      "failed": "Nhánh này không thể quay lại.",
+      "deleteTitle": "Xóa nhánh này?",
+      "empty": "Tua lại cuộc trò chuyện và các tin nhắn sau đó được giữ ở đây.",
+      "count_other": "{{count}} tin nhắn"
+    },
     "next": {
       "call": "Gọi",
       "date": "Đi hẹn hò",
@@ -362,6 +371,7 @@
     "attachments": {
       "scene": "Bối cảnh",
       "timeSkip": "Nhảy thời gian",
+      "branches": "Nhánh",
       "voice": "Giọng nói",
       "photo": "Ảnh",
       "gift": "Quà tặng",
@@ -479,7 +489,7 @@
     "unpin": "Bỏ ghim",
     "pinnedToast": "Đã ghim vào Câu chuyện",
     "rewind": "Tua lại",
-    "rewindTitle_other": "Xóa {{count}} tin nhắn sau?",
+    "rewindTitle_other": "Tua lại? {{count}} tin nhắn sau đó sẽ vào Nhánh",
     "deleteMessage": "Xóa đối với tôi",
     "react": "Bày tỏ cảm xúc cùng {{name}}",
     "reactions": {

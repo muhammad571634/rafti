@@ -325,6 +325,15 @@
   },
   "chat": {
     "jumpToNewest": "최신 메시지로 이동",
+    "branches": {
+      "switchTitle": "이 분기로 바꿀까요?",
+      "switchLine": "지금의 대화는 분기로 남아요.",
+      "switch": "바꾸기",
+      "failed": "이 분기는 되돌릴 수 없어요.",
+      "deleteTitle": "이 분기를 삭제할까요?",
+      "empty": "대화를 되감으면 이후 메시지가 여기에 남아요.",
+      "count_other": "메시지 {{count}}개"
+    },
     "next": {
       "call": "전화하기",
       "date": "데이트하기",
@@ -362,6 +371,7 @@
     "attachments": {
       "scene": "상황극",
       "timeSkip": "시간 건너뛰기",
+      "branches": "분기",
       "voice": "음성",
       "photo": "사진",
       "gift": "선물",
@@ -479,7 +489,7 @@
     "unpin": "고정 해제",
     "pinnedToast": "스토리에 고정되었습니다",
     "rewind": "되돌리기",
-    "rewindTitle_other": "이후의 메시지 {{count}}개를 삭제할까요?",
+    "rewindTitle_other": "되감을까요? 이후 메시지 {{count}}개는 분기로 가요",
     "deleteMessage": "나에게서만 삭제",
     "react": "{{name}}와(과) 리액션하기",
     "reactions": {

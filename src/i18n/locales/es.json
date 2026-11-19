@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Ir a los mensajes más recientes",
+    "branches": {
+      "switchTitle": "¿Cambiar a esta rama?",
+      "switchLine": "El chat tal como está ahora se guarda como una rama.",
+      "switch": "Cambiar",
+      "failed": "Esta rama no puede volver.",
+      "deleteTitle": "¿Eliminar esta rama?",
+      "empty": "Rebobina un chat y los mensajes posteriores se guardan aquí.",
+      "count_one": "1 mensaje",
+      "count_other": "{{count}} mensajes"
+    },
     "next": {
       "call": "Llamar",
       "date": "Tener una cita",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Escena",
       "timeSkip": "Salto de tiempo",
+      "branches": "Ramas",
       "voice": "Voz",
       "photo": "Foto",
       "gift": "Regalo",
@@ -490,8 +501,8 @@
     "unpin": "Desfijar",
     "pinnedToast": "Fijado en la historia",
     "rewind": "Rebobinar",
-    "rewindTitle_one": "¿Eliminar 1 mensaje posterior?",
-    "rewindTitle_other": "¿Eliminar {{count}} mensajes posteriores?",
+    "rewindTitle_one": "¿Rebobinar? 1 mensaje posterior irá a Ramas",
+    "rewindTitle_other": "¿Rebobinar? {{count}} mensajes posteriores irán a Ramas",
     "deleteMessage": "Eliminar para mí",
     "react": "Reaccionar con {{name}}",
     "reactions": {

@@ -257,6 +257,23 @@ export interface Mood {
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
+/**
+ * The later lines a rewind kept (0z286, `src/lib/branches.ts`): a branch of the chat the user can
+ * switch back to. Only this record lives in the app's state; its lines are saved apart.
+ */
+export interface ChatBranch {
+  id: string;
+  conversationId: string;
+  /** The message the branch goes on from; switching needs it still in the chat. */
+  atMessageId: string;
+  createdAt: string;
+  /** Its lines (cards and system notes left out of the count). */
+  count: number;
+  /** Its first line, cut short. */
+  preview: string;
+  /** Who wrote that first line. */
+  from?: MessageAuthor;
+}
 /** What a friend may invite the user to right after a reply (`src/ai/next-moment.ts`). */
 export type NextKind = 'call' | 'date' | 'quiz' | 'truthOrDare' | 'diary' | 'secretNote' | 'bedtime' | 'photo';
 /**

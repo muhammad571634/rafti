@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Ir para as mensagens mais recentes",
+    "branches": {
+      "switchTitle": "Mudar para este ramo?",
+      "switchLine": "A conversa como está agora fica guardada como um ramo.",
+      "switch": "Mudar",
+      "failed": "Este ramo não pode voltar.",
+      "deleteTitle": "Apagar este ramo?",
+      "empty": "Volte uma conversa e as mensagens seguintes ficam aqui.",
+      "count_one": "1 mensagem",
+      "count_other": "{{count}} mensagens"
+    },
     "next": {
       "call": "Ligar",
       "date": "Ir a um encontro",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Cena",
       "timeSkip": "Avanço no tempo",
+      "branches": "Ramos",
       "voice": "Voz",
       "photo": "Foto",
       "gift": "Presente",
@@ -490,8 +501,8 @@
     "unpin": "Desafixar",
     "pinnedToast": "Fixado na história",
     "rewind": "Voltar conversa",
-    "rewindTitle_one": "Excluir 1 mensagem seguinte?",
-    "rewindTitle_other": "Excluir {{count}} mensagens seguintes?",
+    "rewindTitle_one": "Voltar? 1 mensagem seguinte vai para Ramos",
+    "rewindTitle_other": "Voltar? {{count}} mensagens seguintes vão para Ramos",
     "deleteMessage": "Excluir para mim",
     "react": "Reagir com {{name}}",
     "reactions": {

@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Go to the newest messages",
+    "branches": {
+      "switchTitle": "Switch to this branch?",
+      "switchLine": "Where the chat is now is kept as a branch.",
+      "switch": "Switch",
+      "failed": "This branch can't come back.",
+      "deleteTitle": "Delete this branch?",
+      "empty": "Rewind a chat and the later messages are kept here.",
+      "count_one": "1 message",
+      "count_other": "{{count}} messages"
+    },
     "next": {
       "call": "Call",
       "date": "Go on a date",
@@ -367,6 +377,7 @@
     "attachments": {
       "scene": "Scene",
       "timeSkip": "Time skip",
+      "branches": "Branches",
       "voice": "Voice",
       "photo": "Photo",
       "gift": "Gift",
@@ -490,8 +501,8 @@
     "unpin": "Unpin",
     "pinnedToast": "Pinned to Story",
     "rewind": "Rewind",
-    "rewindTitle_one": "Delete 1 later message?",
-    "rewindTitle_other": "Delete {{count}} later messages?",
+    "rewindTitle_one": "Rewind? 1 later message goes to Branches",
+    "rewindTitle_other": "Rewind? {{count}} later messages go to Branches",
     "deleteMessage": "Delete for me",
     "react": "React with {{name}}",
     "reactions": {
