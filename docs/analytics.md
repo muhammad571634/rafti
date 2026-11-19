@@ -53,6 +53,13 @@ arm (stable per install, independent between experiments) and records one `expos
 Compare arms in `analytics.experiments`. Every batch also carries the install's `bucket` (0-99) for
 ad-hoc splits. End an experiment by removing the call (and the losing code) in the same change.
 
+## Which lines land
+
+`reply_rated` (a thumbs on their line) and `version_kept` (the user wrote on after browsing a reply's
+versions: which one, of how many) are the preference signal (docs/polybuzz-core.md §5.3). Compare
+them by model and prompt version once traffic comes; `message_sent` right after a reply is the
+softer signal that it landed.
+
 ## Running experiments
 
 - `next_moment` (0z283): arms `on` / `off`, weights 4 : 1, holdout in `production` only (dev and

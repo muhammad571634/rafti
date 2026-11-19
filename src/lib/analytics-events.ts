@@ -28,6 +28,8 @@ export const EVENTS = {
   reply_failed: ['character'],
   /** Another version of their reply was asked for. */
   regenerate: ['character'],
+  /** The user wrote on after browsing versions: which one (1-based) of how many stayed on screen. */
+  version_kept: ['character', 'index', 'of'],
   /** The user rated one of their replies (thumbs), the signal of which lines land. */
   reply_rated: ['character', 'rating'],
   /** A call ended (or was missed). */

@@ -32,7 +32,7 @@ export interface WatchedState {
   wallet: { subscription?: { plan: string; status: string } };
   /** `lastLoginDay` moves when the day's check-in is collected. */
   daily: { checkInDay: number; lastLoginDay?: string };
-  replyVersions: Record<string, { afterId: string; versions: readonly unknown[] } | undefined>;
+  replyVersions: Record<string, { afterId: string; versions: readonly unknown[]; index: number } | undefined>;
 }
 
 export type Tracked = { [N in EventName]: { name: N; props?: PropsOf<N> } }[EventName];
@@ -71,6 +71,14 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState): Tracke
       }
       // Pages read back from the server land many lines at once into a chat that already had some.
       if (sent.length <= BURST) out.push(...sent);
+      // Writing on after browsing their reply's versions: the one on screen is the one kept, the
+      // signal of which of the model's lines land (docs/polybuzz-core.md §5.3).
+      const held = next.replyVersions[chatId];
+      const filled = held?.versions.filter((v) => (v as readonly unknown[]).length > 0).length ?? 0;
+      const lastMine = (before ?? []).findLast((m) => m.author === 'me' && m.kind !== 'system' && !m.card);
+      if (sent.length === 1 && held && filled > 1 && lastMine?.id === held.afterId) {
+        out.push({ name: 'version_kept', props: { index: held.index + 1, of: filled, ...(character ? { character } : {}) } });
+      }
     }
   }
 
