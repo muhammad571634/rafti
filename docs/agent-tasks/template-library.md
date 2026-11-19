@@ -42,21 +42,52 @@ What we leave out: school age (the adult version instead: "back home after years
 people, franchises, and cruelty (jealousy is a feeling a character owns and admits, never control, threats
 or harm; explicit scenes fade to black as in every chat).
 
+## 1b. Measured on PolyBuzz (A51, Russian locale, 2026-11-19; browse only, nothing sent)
+
+150 cards read from the Explore tabs (For you, Slow burn, Redemption, Rebellious, Teammates, Drama, Head over
+heels), 587M chats in all. Types and counts only; no card text is kept or reused. The feed is personalised to
+the phone's account, so read the split as directional.
+
+| Plot type (original characters) | Chats | Lead |
+| --- | ---: | --- |
+| A bet / a dare about you (the popular one bet on winning you) | 95M | mostly her |
+| A funny break-in (a clumsy thief stuck in your house) | 45M | her |
+| Your brother's best friend (sweet, cold, or jealous) | 45M | him |
+| She is obsessed with you and you never noticed / the prettiest girl likes you | 35M | her |
+| Your mom's friend's daughter (or son) comes over / moves in | 30M | mostly her |
+| A couple at home: he / she wants a baby, a proposal, a wedding | 30M | both |
+| Royal: the emperor / prince chose you over your sister | 23M | him |
+| Bikers, a gang, a mafia heir, a soldier who found you | 25M | him |
+| Boyfriend drama: cold, jealous, a hard past to heal | 25M | him |
+| Step-family and sisters (a step-sister in trouble, a sleepover) | 15M | her |
+| Comfort: the only one at her birthday, someone exhausted, a rescue | 17M | both |
+| Enemies: the bully who likes you, the enemy who saw you with another | 14M | him |
+| Cheating and jealousy (left at the wedding, a second wife) | 10M | him |
+
+Fan characters took 85M (a cold masked soldier, idol-band members, anime heroes): we do not copy them, but
+their **types** carry over: the cold protector soldier, the idol who must hide you, the angry hero who cries.
+
+What changes in our plan: a big female-lead demand on PolyBuzz (the bet, the obsessed girl, the mom's
+friend's daughter: men's top picks), so the split moves from 60/34/6 to **55 him / 40 her / 5 any**; new
+plot types join the shelves (the bet, the funny break-in, the mom's friend's child, a couple wanting a baby
+(no pregnancy scenes), royal choice over a sister, the soldier who found you); school settings become
+university or "back home" with adults.
+
 ## 2. The shelves and the split (100 templates)
 
 | Shelf (chip) | Plot types inside | Him | Her | Any |
 | --- | --- | ---: | ---: | ---: |
-| Best friend | secret crush, friends to lovers, the one who stayed, situationship | 9 | 5 | |
-| Married | arranged marriage, cold husband / wife, contract marriage, second chance at home | 8 | 3 | |
-| Dangerous | mafia heir, bodyguard, bad boy only you calm, street racer | 9 | 2 | |
-| Boss | cold CEO, boss after one night, rival in the office, your assistant | 6 | 3 | |
-| Enemies | rival turned roommate, fake dating your enemy, the one who ruined your year | 6 | 4 | |
-| Ex | wants you back, at the wedding, new girlfriend jealous, the one you left | 5 | 5 | |
-| Forbidden | brother's / sister's best friend, your friend's ex, the teacher's assistant at uni | 5 | 3 | |
-| Slow burn | stuck together (snowstorm, road trip), neighbour, gym crush, fake couple | 5 | 4 | |
-| Fantasy | vampire, prince, werewolf, fallen angel, dragon knight (originals) | 6 | 3 | |
-| Comfort | the friend who listens, big sister / brother energy, night-shift nurse, therapist-like mentor | 1 | 2 | 6 |
-| **Total** | | **60** | **34** | **6** |
+| Best friend | secret crush, friends to lovers, the bet / dare, situationship | 6 | 6 | |
+| Close to home | brother's / sister's best friend, mom's friend's child, step-family, the new roommate | 7 | 6 | |
+| She / he likes you | the obsessed admirer you never noticed, the popular one who chose you, fake dating | 3 | 7 | |
+| Married | arranged marriage, cold husband / wife, wants a baby, the proposal, second chance | 6 | 4 | |
+| Dangerous | mafia heir, bodyguard, biker gang, the soldier who found you, bad boy only you calm | 9 | 2 | |
+| Boss | cold CEO, boss after one night, office rival | 5 | 2 | |
+| Enemies | the bully who likes you, enemy who saw you with another, rival roommate | 5 | 3 | |
+| Ex and jealousy | wants you back, left at the wedding, cheating, his new girlfriend | 5 | 4 | |
+| Fantasy and royal | the emperor who chose you, prince, vampire, werewolf, the clumsy thief in your house | 7 | 4 | |
+| Comfort | the only one at your birthday, exhausted partner, the friend who listens | 2 | 2 | 5 |
+| **Total** | | **55** | **40** | **5** |
 
 "Any": the user picks the gender when they make it their own; until then the card speaks gender-neutral.
 A template the user makes their own can change gender, name, look, anything.
