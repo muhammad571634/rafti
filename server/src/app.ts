@@ -42,6 +42,7 @@ import {
 import { REPORT_REASONS } from '../../src/ai/safety.ts';
 import { cleanEventBatch, EVENT_LIMITS } from '../../src/lib/analytics-events.ts';
 import { cleanNext } from '../../src/ai/next-moment.ts';
+import { checkSkipTo, cleanSkipTo, SKIP_TO_MAX, TIME_SKIPS, TWIST_MAX, type SteerKind } from '../../src/lib/chat-steer.ts';
 import {
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
@@ -51,7 +52,7 @@ import {
   WHEEL_SEGMENTS,
   WHEEL_WEIGHTS,
 } from '../../src/economy/shells.ts';
-import type { LedgerReason, MemoryItem, PlanId } from '../../src/types/index.ts';
+import type { LedgerReason, MemoryItem, PlanId, TimeSkip } from '../../src/types/index.ts';
 import { PLANS, shellGrant } from '../../src/economy/plans.ts';
 import { FREE_MESSAGES_PER_DAY, MESSAGE_SHELLS, PLAN_MESSAGES_PER_DAY } from '../../src/economy/free-messages.ts';
 import type { MessageCharge, PayLine, PayReason } from '../../src/ai/session-types.ts';
@@ -113,6 +114,31 @@ const TOKEN_REFUSED_MS = 30_000;
 const MAX_KNOWN_TOKENS = 20_000;
 /** How long one answer of the database's health stands (`/health` is asked every 30 s by the host, and by every app open). */
 const DB_HEALTH_MS = 30_000;
+
+const STEER_KINDS: readonly SteerKind[] = ['continue', 'skip', 'twist'];
+const STEER_SKIPS = new Set<string>([...TIME_SKIPS, 'scene', 'own']);
+
+/**
+ * Validates and caps `steer` on `/v1/chat/reply` (0z288): known kinds/skips only, own words cut to
+ * `SKIP_TO_MAX` / `TWIST_MAX`, and minors/explicit own words refused (crisis still passes to
+ * `chatReply` so the character answers with care and shows the helpline card).
+ */
+function cleanSteer(raw: unknown): { value?: ChatPromptInput['steer']; bad?: boolean } {
+  if (raw == null) return {};
+  if (typeof raw !== 'object' || Array.isArray(raw)) return { bad: true };
+  const s = raw as { kind?: unknown; skip?: unknown; to?: unknown };
+  if (typeof s.kind !== 'string' || !STEER_KINDS.includes(s.kind as SteerKind)) return { bad: true };
+  const kind = s.kind as SteerKind;
+  const skip = kind === 'skip' && typeof s.skip === 'string' && STEER_SKIPS.has(s.skip) ? (s.skip as TimeSkip) : undefined;
+  const max = kind === 'twist' ? TWIST_MAX : SKIP_TO_MAX;
+  const wantsTo = kind === 'twist' || (kind === 'skip' && skip === 'own');
+  const to = wantsTo && typeof s.to === 'string' ? cleanSkipTo(s.to, max) || undefined : undefined;
+  if (to) {
+    const problems = checkSkipTo(to, max);
+    if (problems.includes('minors') || problems.includes('explicit')) return { bad: true };
+  }
+  return { value: { kind, ...(skip ? { skip } : {}), ...(to ? { to } : {}) } };
+}
 
 /**
  * When a token says it ends, in ms, or null when it cannot be read. Only for a token the sign-in
@@ -1163,6 +1189,8 @@ export function createApp(
     if (!input?.character?.name || !input?.user || !Array.isArray(input.messages)) return c.json({ error: 'badInput' }, 400);
     const images = cleanImages(input.images);
     if (images === null) return c.json({ error: 'badInput' }, 400);
+    const steer = cleanSteer(input.steer);
+    if (steer.bad) return c.json({ error: 'badInput' }, 400);
     // A profile without a locale is written to in English. Until the database keeps each chat's
     // language lock, the model follows the language the user writes in, whatever it is, reminded
     // with their latest words (`languageCue`), so nobody gets answered in a language they did not use.
@@ -1170,6 +1198,7 @@ export function createApp(
     input = {
       ...input,
       images,
+      steer: steer.value,
       mode: CHAT_MODES.includes(input.mode as ChatMode) ? input.mode : undefined,
       user,
       messages: input.messages.slice(-MAX_MESSAGES),

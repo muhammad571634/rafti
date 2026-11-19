@@ -1615,7 +1615,11 @@ export const useAppStore = create<AppState>()(
         // Where the chat is now is kept first; if that cannot be saved, nothing changes.
         const here = worthBranching(swapped.current) ? branchRecord(uid('br'), conversationId, branch.atMessageId, swapped.current, new Date()) : null;
         if (here && !(await saveBranchLines(here.id, swapped.current))) return 'failed';
+        let applied = false;
         set((s) => {
+          // The chat may have been deleted while saving the branch file.
+          if (!s.conversations.some((c) => c.id === conversationId)) return {};
+          applied = true;
           const rest = s.branches.filter((b) => b.id !== branchId);
           const added = here ? addBranch(rest, here) : { branches: rest, dropped: [] };
           for (const old of added.dropped) void dropBranchLines(old.id);
@@ -1625,6 +1629,10 @@ export const useAppStore = create<AppState>()(
             branches: added.branches,
           };
         });
+        if (!applied) {
+          if (here) void dropBranchLines(here.id, false);
+          return 'gone';
+        }
         // Its lines are the chat's now; their voice notes stay with them.
         void dropBranchLines(branchId, false);
         return 'ok';
@@ -6500,8 +6508,10 @@ function nextOpen(state: AppState, conversation: Conversation, lines: readonly M
     dateOpen: DATE_PLACES.some((p) => p.levelRequired <= level),
   });
   if (!kinds.length) return kinds;
+  // Holdout runs only in production; dev/preview stay always-on without logging a misleading 'off' exposure.
+  if (analyticsChannel() !== 'production') return kinds;
   const arm = experiment('next_moment', ['on', 'off'] as const, [4, 1]);
-  return arm === 'off' && analyticsChannel() === 'production' ? [] : kinds;
+  return arm === 'off' ? [] : kinds;
 }
 
 function afterReply(set: Setter, get: Getter, conversationId: string) {

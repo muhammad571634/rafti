@@ -72,25 +72,43 @@ function appInfo(): EventBatch['app'] {
 
 function load() {
   ready ??= (async () => {
+    let resolvedId = install;
+    let parsed: TrackedEvent[] = [];
     try {
       const [saved, id] = await Promise.all([AsyncStorage.getItem(QUEUE_KEY), AsyncStorage.getItem(INSTALL_KEY)]);
-      install = id || newId();
-      if (!id) await AsyncStorage.setItem(INSTALL_KEY, install);
-      const parsed = saved ? (JSON.parse(saved) as TrackedEvent[]) : [];
-      if (Array.isArray(parsed)) queue = parsed.slice(-EVENT_LIMITS.queue);
+      resolvedId = resolvedId || id || newId();
+      if (!id) await AsyncStorage.setItem(INSTALL_KEY, resolvedId);
+      const raw = saved ? (JSON.parse(saved) as TrackedEvent[]) : [];
+      if (Array.isArray(raw)) parsed = raw.slice(-EVENT_LIMITS.queue);
     } catch {
-      install ||= newId();
+      resolvedId ||= newId();
     }
-    for (const e of early) queue = enqueue(queue, e);
+    // Assign `install` only after awaits so `add()` buffers into `early` instead of racing with `parsed`.
+    install ||= resolvedId;
+    if (!enabled) {
+      queue = [];
+      early = [];
+      return;
+    }
+    const pending = [...parsed, ...early, ...queue];
     early = [];
+    queue = pending.slice(-EVENT_LIMITS.queue);
   })();
   return ready;
 }
 
+function clearSaveTimer() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+}
+
 function save() {
-  if (saveTimer) return;
+  if (!enabled || saveTimer) return;
   saveTimer = setTimeout(() => {
     saveTimer = null;
+    if (!enabled) return;
     AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(queue)).catch(() => {});
   }, SAVE_AFTER_MS);
 }
@@ -173,6 +191,7 @@ export function setAnalyticsEnabled(on: boolean) {
   }
   enabled = on;
   if (on) return;
+  clearSaveTimer();
   queue = [];
   early = [];
   session = null;
@@ -188,16 +207,20 @@ export function setAnalyticsEnabled(on: boolean) {
 export function experiment<A extends string>(name: string, arms: readonly A[], weights?: readonly number[]): A {
   if (!install) return arms[0];
   const arm = variant(install, name, arms, weights);
-  const key = `${session?.id ?? ''}:${name}`;
+  if (!enabled) return arm;
+  const now = Date.now();
+  const sid = currentSession(now, !started);
+  const key = `${sid}:${name}`;
   if (!exposed.has(key)) {
     exposed.add(key);
-    track('exposure', { experiment: name, arm });
+    add({ id: newId(), name: 'exposure', at: now, session: sid, props: { experiment: name, arm } });
   }
   return arm;
 }
 
 /** A new account on this phone (after Delete account): a new install id and nothing queued from before. */
 export async function resetAnalytics() {
+  clearSaveTimer();
   queue = [];
   early = [];
   session = null;

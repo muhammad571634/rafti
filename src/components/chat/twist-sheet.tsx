@@ -65,9 +65,7 @@ export function TwistSheet({
           <View style={styles.body}>
             <View style={styles.text}>
               <Txt style={styles.title}>{t('chat.twistSurprise')}</Txt>
-              <Txt style={styles.hint} lines={1}>
-                {t('chat.twistSurpriseHint')}
-              </Txt>
+              <Txt style={styles.hint}>{t('chat.twistSurpriseHint')}</Txt>
             </View>
             <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
           </View>

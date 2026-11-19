@@ -69,7 +69,7 @@ export function BranchesSheet({ conversationId, theirName, visible, onClose }: {
                 </View>
                 <View style={styles.body}>
                   {/* Two lines: the branch's first words, theirs or yours, as the chat shows them. */}
-                  <InkText lines={2}>{b.from === 'me' ? `${t('search.you')}: ${b.preview}` : b.preview || theirName}</InkText>
+                  <InkText lines={2}>{b.from === 'me' ? (b.preview ? `${t('search.you')}: ${b.preview}` : t('search.you')) : b.preview || theirName}</InkText>
                   <InkText variant="footnote" color={ink.text3} lines={1}>
                     {`${t('chat.branches.count', { count: b.count })} · ${when(b.createdAt)}`}
                   </InkText>

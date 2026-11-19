@@ -55,10 +55,17 @@ describe('eventsFromChange', () => {
     assert.deepEqual(names(base, { ...base, messages: { conv_kai: [...page, ...(base.messages.conv_kai ?? [])] } }), []);
   });
 
-  it('does not count lines a branch brings back', () => {
+  it('does not count lines a branch brings back, even within two minutes', () => {
     const old = new Date(Date.now() - 3_600_000).toISOString();
     const back = { ...base, messages: { conv_kai: [...(base.messages.conv_kai ?? []), { id: 'b1', author: 'me' as const, kind: 'text', createdAt: old }, { id: 'b2', author: 'them' as const, kind: 'text', next: 'quiz', createdAt: old }] } };
     assert.deepEqual(names(base, back), []);
+    const recent = new Date(Date.now() - 10_000).toISOString();
+    const switched = {
+      ...base,
+      branches: [{ id: 'br_new' }],
+      messages: { conv_kai: [...(base.messages.conv_kai ?? []), { id: 'b3', author: 'me' as const, kind: 'text', createdAt: recent }, { id: 'b4', author: 'them' as const, kind: 'text', next: 'quiz', createdAt: recent }] },
+    };
+    assert.deepEqual(names({ ...base, branches: [{ id: 'br_old' }] }, switched), []);
   });
 
   it('sees a failed reply and a rating, once each', () => {
@@ -72,10 +79,10 @@ describe('eventsFromChange', () => {
     assert.deepEqual(names(failed, { ...failed, messages: { conv_kai: [...(failed.messages.conv_kai ?? [])] } }), []);
   });
 
-  it('names the version kept when the user writes on after browsing', () => {
+  it('names the version kept when the user writes on after browsing (even when replyVersions clears in the same update)', () => {
     const exchange = { conv_kai: [{ id: 'm1', author: 'them' as const, kind: 'text' }, { id: 'm2', author: 'me' as const, kind: 'text' }, { id: 'm3', author: 'them' as const, kind: 'text' }] };
     const browsed = { ...base, messages: exchange, replyVersions: { conv_kai: { afterId: 'm2', versions: [['a'], ['b'], ['c']], index: 1 } } };
-    const wrote = { ...browsed, messages: { conv_kai: [...exchange.conv_kai, { id: 'm4', author: 'me' as const, kind: 'text' }] } };
+    const wrote = { ...browsed, replyVersions: {}, messages: { conv_kai: [...exchange.conv_kai, { id: 'm4', author: 'me' as const, kind: 'text' }] } };
     assert.deepEqual(eventsFromChange(browsed, wrote), [
       { name: 'message_sent', props: { kind: 'text', group: false, character: 'c_kai' } },
       { name: 'version_kept', props: { index: 2, of: 3, character: 'c_kai' } },
@@ -83,6 +90,14 @@ describe('eventsFromChange', () => {
     // A later line is not a second choice.
     const later = { ...wrote, messages: { conv_kai: [...wrote.messages.conv_kai, { id: 'm5', author: 'them' as const, kind: 'text' }, { id: 'm6', author: 'me' as const, kind: 'text' }] } };
     assert.deepEqual(names(wrote, later), ['message_sent']);
+    // Regenerating a twist/skip/continue also anchors on the steer marker, and ignores empty failed slots.
+    const twistChat = { conv_kai: [{ id: 'm1', author: 'them' as const, kind: 'system', card: 'twist' }, { id: 'm2', author: 'them' as const, kind: 'text' }] };
+    const twistBrowsed = { ...base, messages: twistChat, replyVersions: { conv_kai: { afterId: 'm1', versions: [['a'], [], ['c']], index: 2 } } };
+    const twistWrote = { ...twistBrowsed, replyVersions: {}, messages: { conv_kai: [...twistChat.conv_kai, { id: 'm3', author: 'me' as const, kind: 'text' }] } };
+    assert.deepEqual(eventsFromChange(twistBrowsed, twistWrote), [
+      { name: 'message_sent', props: { kind: 'text', group: false, character: 'c_kai' } },
+      { name: 'version_kept', props: { index: 2, of: 2, character: 'c_kai' } },
+    ]);
   });
 
   it('counts another version of their reply only when one is added', () => {

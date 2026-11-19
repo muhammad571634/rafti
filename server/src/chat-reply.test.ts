@@ -93,6 +93,25 @@ describe('the output check (the provider’s safety filter)', () => {
     assert.ok(seen[1].includes(cueLine));
   });
 
+  it('caps twist words, refuses minors/explicit twists and catches crisis twists on the server (0z288)', async () => {
+    const longTwist = 'A sudden storm knocks out all the lights across the entire city block right now and keeps going';
+    const { provider, seen } = scripted({ text: '{"messages":["Whoa, pitch black."]}', usage: {} });
+    const ok = await post(provider, { ...body, steer: { kind: 'twist', to: longTwist } });
+    assert.equal(ok.status, 200);
+    assert.ok(!seen[0].includes('keeps going'));
+    assert.ok(seen[0].includes('A sudden storm knocks out all the lights across the entire'));
+
+    const refused = await post(provider, { ...body, steer: { kind: 'twist', to: 'a schoolgirl walks in' } });
+    assert.equal(refused.status, 400);
+
+    const { provider: crisisProvider, seen: crisisSeen } = scripted({ text: '{"messages":["Are you safe right now?"]}', usage: {} });
+    const crisisRes = await post(crisisProvider, { ...body, steer: { kind: 'twist', to: 'I want to kill myself' } });
+    assert.equal(crisisRes.status, 200);
+    assert.equal((await crisisRes.json()).crisis, true);
+    assert.ok(crisisSeen[0].includes('SAFETY NOW'));
+    assert.ok(!crisisSeen[0].includes('asked for a twist'));
+  });
+
   it('shows the helpline card when only the second try raises the crisis flag', async () => {
     const { provider } = scripted({ text: '', blocked: 'reply', usage: {} }, { text: '{"messages":["Are you safe right now?"],"crisis":true}', usage: {} });
     const res = await post(provider);

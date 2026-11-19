@@ -60,8 +60,10 @@ export async function chatReply<I extends ChatPromptInput>(
   { mode = input.mode ?? 'chat', layoutOf = layoutChatPrompt as (input: I) => PromptLayout }: { mode?: string; layoutOf?: (input: I) => PromptLayout } = {},
 ): Promise<GuardedReply> {
   const started = Date.now();
-  const caught = userLines(input.messages).slice(-1).some(detectCrisis);
-  const layout = layoutOf(caught ? { ...input, crisis: true } : input);
+  const caught = userLines(input.messages).slice(-1).some(detectCrisis) || (!!input.steer?.to && detectCrisis(input.steer.to));
+  // In a crisis, drop an own skip/twist so `CRISIS_CUE` leads instead of steering past it.
+  const firstInput = caught ? { ...input, crisis: true, ...(input.steer?.to ? { steer: undefined } : {}) } : input;
+  const layout = layoutOf(firstInput);
   const first = await provider.complete(layout, { timeoutMs });
   const calls: ChatCall[] = [{ mode, layout, result: first }];
   let reply = parseModelReply(first.text);

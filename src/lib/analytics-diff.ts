@@ -34,6 +34,8 @@ export interface WatchedState {
   /** `lastLoginDay` moves when the day's check-in is collected. */
   daily: { checkInDay: number; lastLoginDay?: string };
   replyVersions: Record<string, { afterId: string; versions: readonly unknown[]; index: number } | undefined>;
+  /** Changes on rewind / branch switch / delete: lines restored by a switch never count as new sends. */
+  branches?: readonly { id: string }[];
 }
 
 export type Tracked = { [N in EventName]: { name: N; props?: PropsOf<N> } }[EventName];
@@ -49,6 +51,7 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState, now = D
   const out: Tracked[] = [];
 
   if (prev.messages !== next.messages) {
+    const branchChanged = prev.branches !== next.branches;
     const characterOf = new Map(next.conversations.map((c) => [c.id, c.characterId]));
     const groupIds = new Set(next.groups.map((g) => g.id));
     for (const [chatId, list] of Object.entries(next.messages)) {
@@ -62,7 +65,7 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState, now = D
       const sent: Tracked[] = [];
       for (const m of list.slice(-TAIL)) {
         const was = old.get(m.id);
-        if (!was && m.createdAt && now - Date.parse(m.createdAt) > BACK_MS) continue;
+        if (!was && (branchChanged || (m.createdAt && now - Date.parse(m.createdAt) > BACK_MS))) continue;
         if (!was) {
           if (m.author === 'me' && !m.card && m.kind !== 'system' && m.kind !== 'call') {
             sent.push({ name: 'message_sent', props: { kind: m.kind, group, ...(character ? { character } : {}) } });
@@ -76,12 +79,17 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState, now = D
       // Pages read back from the server land many lines at once into a chat that already had some.
       if (sent.length <= BURST) out.push(...sent);
       // Writing on after browsing their reply's versions: the one on screen is the one kept, the
-      // signal of which of the model's lines land (docs/polybuzz-core.md §5.3).
-      const held = next.replyVersions[chatId];
-      const filled = held?.versions.filter((v) => (v as readonly unknown[]).length > 0).length ?? 0;
-      const lastMine = (before ?? []).findLast((m) => m.author === 'me' && m.kind !== 'system' && !m.card);
-      if (sent.length === 1 && held && filled > 1 && lastMine?.id === held.afterId) {
-        out.push({ name: 'version_kept', props: { index: held.index + 1, of: filled, ...(character ? { character } : {}) } });
+      // signal of which of the model's lines land (docs/polybuzz-core.md §5.3). Read from `prev`
+      // because `appendMessage` clears `replyVersions[chatId]` in the same store update.
+      const held = prev.replyVersions[chatId];
+      const nonEmpty = (v: unknown) => Array.isArray(v) && v.length > 0;
+      const filled = held?.versions.filter(nonEmpty).length ?? 0;
+      const lastTurn = (before ?? []).findLast(
+        (m) => (m.author === 'me' && m.kind !== 'system' && m.kind !== 'call' && !m.card) || m.card === 'continue' || m.card === 'skip' || m.card === 'twist',
+      );
+      if (sent.length === 1 && held && filled > 1 && lastTurn?.id === held.afterId && nonEmpty(held.versions[held.index])) {
+        const picked = held.versions.slice(0, held.index + 1).filter(nonEmpty).length;
+        out.push({ name: 'version_kept', props: { index: picked, of: filled, ...(character ? { character } : {}) } });
       }
     }
   }
