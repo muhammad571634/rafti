@@ -26,6 +26,7 @@ import { toOutbox } from '@/notifications/outbox';
 import { counts } from '@/notifications/plan';
 import { type AppState as Store, useAppStore } from '@/store/use-app-store';
 import type { IdeaIntent } from '@/types';
+import { track } from '@/lib/analytics';
 
 /** The app settles first; opening it is not the moment to wait on the model. */
 const WRITE_AHEAD_DELAY_MS = 20_000;
@@ -97,6 +98,7 @@ export function usePushNotifications() {
       if (!data?.id) return;
       // The tap leads somewhere, so Today's welcome back stays quiet this time.
       markOpenedFromNotification();
+      if (!data.test) track('push_open', { kind: data.kind });
       useAppStore.getState().landDuePushes();
       land(data);
       // A reply idea's button ("I ate!") or a reply typed on the lock screen: the answer goes into

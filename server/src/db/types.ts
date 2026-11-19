@@ -15,6 +15,7 @@ import type {
   WalletState,
 } from '../../../src/ai/session-types.ts';
 import type { PlanId } from '../../../src/types/index.ts';
+import type { CleanBatch } from '../../../src/lib/analytics-events.ts';
 
 export type {
   BootstrapInput,
@@ -112,6 +113,12 @@ export interface Db {
 
   /** Keeps a report for review (supabase/migrations/*_b3_reports.sql); one sent twice is kept once. */
   saveReport(userId: string, report: ReportRequest): Promise<void>;
+
+  /**
+   * Keeps a batch of app events (supabase/migrations/*_b13_app_events.sql, product analytics); an
+   * event sent twice is kept once. Absent: the server takes no events (`/v1/events` says 503).
+   */
+  saveEvents?(userId: string, batch: CleanBatch): Promise<void>;
 
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
   deleteUser(userId: string): Promise<void>;

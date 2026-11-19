@@ -47,6 +47,7 @@ import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, night, NightScope, space } from '@/theme';
 import { ink, inkGutter, inkRadius, inkType } from '@/theme/ink';
 import type { Character, Pronouns } from '@/types';
+import { track } from '@/lib/analytics';
 
 /** The four people most talk to (docs/cast-2.md §5): two for her, two for him; the hour picks who leads (`deckForHour`). */
 const PICKS = ['c_milo', 'c_caleb', 'c_mia', 'c_sam'];
@@ -124,6 +125,10 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
 
   const [step, setStep] = useState<Step>('intro');
   const [dir, setDir] = useState<1 | -1>(1);
+  // Where new people stop (analytics.onboarding); the dev walk-through on an onboarded phone does not count.
+  useEffect(() => {
+    if (!preview) track('onboarding_step', { step });
+  }, [preview, step]);
   // HIG Entering data: what the system already knows is not asked again.
   const [year, setYear] = useState(DEFAULT_YEAR);
   const [name, setName] = useState('');

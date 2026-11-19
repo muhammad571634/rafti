@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z282. START HERE: product analytics built, first-party (2026-11-19, Claude 1, Opus 5.5). NEXT: owner applies b13 + deploys, then check events on the A51
+- **Owner picked** "Analytics first" from the 0z281 gap list. How it works and how to read it: `docs/analytics.md`.
+- **Built**: shared catalog `src/lib/analytics-events.ts` (names, props, batch cleaner, buckets, `variant`); phone queue `src/lib/analytics.ts` (saved queue, sessions, batches of 50 to `POST /v1/events`, `experiment()`); `src/lib/analytics-diff.ts` reads events from store changes (message sent, reply failed, thumbs, regenerate, call, level, own character, onboarding done, plan, check-in), mounted by `src/hooks/use-analytics.ts` with a `screen` per route; direct calls only in onboarding steps, push taps, the shells sheet. Server route with 600 batches/day cap; migration `20261119100000_b13_app_events.sql` (`app_events`, cascade on delete, 13-month purge, `analytics.*` views: daily, retention D1/D7/D30, first_day, onboarding, paywall, screens, experiments). Profile → "Share usage data" toggle (14 locales). Privacy policy "App activity", cost ledger row 22. The store file was not touched.
+- **Checked**: tsc 0, `npm test` 1044/1044 (21 new), server tests 117/117, server tsc, `check:locales`, `check:content`.
+- **Owner steps (batched)**: apply the migration, deploy the server. Until then the phone keeps events (up to 500) and sends them after the deploy.
+- **Second reader**: more than 20 files (14 are one-line locale additions); a quick read of `server/src/app.ts` `/v1/events` and the migration by Claude 2 or Gemini is welcome before real traffic.
+- **Still to do**: after the deploy, read `analytics.daily` for the owner's preview channel; first experiment candidates come from the 0z281 list (end-of-turn nudge).
+
 ### 0z281. PolyBuzz core read with REA, `docs/polybuzz-core.md` (2026-11-19, Claude 1, Opus 5.5). NEXT: owner picks which gap to build
 - **Owner asked** (called it "Whispy AI" first, then said they meant PolyBuzz): open its core, where we lag, what to take, what to do better.
 - **Done**: second pass over Gemini 4 Argon's `docs/polybuzz-teardown.md` (still uncommitted, theirs): all 19 DEX to smali, 373 request contracts with in/out fields, the stream chunk, push scheduler, English strings of both web bundles. Raw files in `C:\Users\joray\rea-work\polybuzz\` (`api-contract.txt`, `h5-api.txt`, `h5-en-strings.txt`). No traffic to their servers.

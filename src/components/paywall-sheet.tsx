@@ -1,10 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, type Href } from 'expo-router';
+import { useRouter, useSegments, type Href } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Divider, moduleTile, PressableScale, Sheet, ShellBadge, ShellIcon, SymbolTile, Txt } from '@/components/ui';
 import { TRIAL } from '@/economy/plans';
+import { track } from '@/lib/analytics';
+import { screenName } from '@/lib/analytics-events';
 import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import {
   FREE_SPINS_PER_DAY,
@@ -45,6 +48,13 @@ export function PaywallSheet({
   const member = useAppStore((s) => memberActive(s.wallet));
   const proMember = useAppStore((s) => callsIncluded(s.wallet));
   const daily = useAppStore((s) => s.daily);
+
+  // Who runs out of shells, and where (analytics.paywall): once each time the sheet opens.
+  const where = screenName(useSegments());
+  const open = need != null;
+  useEffect(() => {
+    if (open) track('paywall_view', { source: message ? 'message' : 'shells', where });
+  }, [open, message, where]);
 
   const today = todayKey();
   // In a chat with today's free messages used, the sheet says so and when they come back (audit §6.3).

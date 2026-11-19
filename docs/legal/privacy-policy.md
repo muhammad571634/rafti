@@ -73,6 +73,12 @@ and up to 8 lines of the chat before it, so a person can review it in context.
 and how much it cost. These records hold no message content. We use them to keep the service
 running, to count how many people come back, and to keep costs in check.
 
+**App activity.** What you do in the app, as counts: when you open it, which screens you visit,
+that you sent a message (not what it said), a call and how long it lasted, a level reached, a plan
+started, a notification opened, where the shells ran out. No message words, nothing you typed, no
+names. We use it to see what works and where people get stuck, and to compare two versions of a
+feature. It is sent only to our own server. You can turn it off: Profile → Share usage data.
+
 **On your phone only.** Your full chats, voice recordings, photos and settings are also kept on
 your phone. Notifications from your characters are scheduled on the phone itself.
 
@@ -112,6 +118,9 @@ transfer safeguards for the EU and UK.]
 - Usage records: 13 months, so we can compare a month with the same month a year before, or until
   you delete your account, whichever comes first. Only a daily total of what the AI cost us is kept,
   with nothing that says whose it was.
+- App activity: 13 months, or until you delete your account or turn Share usage data off on the
+  phone (what is waiting there is deleted; what already reached us stays until the 13 months or the
+  account's deletion).
 - Our host's server logs are short-lived and hold no message content.
 
 ### Your choices and rights
@@ -121,6 +130,7 @@ transfer safeguards for the EU and UK.]
 - **Voice and photos:** the app asks before the first voice message or photo goes to our AI
   service. Without your yes, nothing is sent.
 - **Notifications:** turn them off in the app or in your phone's settings.
+- **App activity:** Profile → Share usage data turns it off.
 - Depending on where you live, you may have the right to see, correct, export or delete your data,
   and to object to how we use it. Write to [email] and we will answer within 30 days. You may also
   complain to your local data protection authority.
@@ -150,7 +160,7 @@ Neither form counts data that stays on the phone.
 | Audio (voice messages) | sent for processing, not stored | yes | no | App functionality |
 | Photos | sent for processing, not stored | yes | no | App functionality |
 | Purchase history (shells, plan) | yes | yes | no | App functionality |
-| Product interaction / app activity (usage records) | yes | yes | no | Analytics |
+| Product interaction / app activity (usage records, app activity events) | yes | yes | no | Analytics |
 | Other data: language, time zone (the year of birth stays on the phone) | yes | yes | no | App functionality |
 
 Google Play also asks: data is encrypted in transit (HTTPS) — yes; users can request deletion —

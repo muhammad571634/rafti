@@ -17,6 +17,8 @@ import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
 import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
+import { useAnalytics } from '@/hooks/use-analytics';
+import { startAnalytics } from '@/lib/analytics';
 import { startAwayClock } from '@/lib/away-clock';
 import { noDuplicatePush } from '@/lib/no-duplicate-push';
 import { useAppStore } from '@/store/use-app-store';
@@ -28,6 +30,8 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 SplashScreen.setOptions({ duration: 200, fade: true });
 // Today's welcome back needs to know how long the app was away (src/lib/welcome-back.ts).
 startAwayClock();
+// Product analytics: the session and its `app_open` begin with the launch (`src/lib/analytics.ts`).
+startAnalytics();
 /** Longest the splash waits for saved data before it lets go anyway. */
 const SPLASH_LIMIT_MS = 8000;
 // Night only (theme/colors.ts): the native side (keyboard, pickers, system bars) is dark too, and
@@ -69,6 +73,7 @@ export default function RootLayout() {
 }
 
 function AppRoot() {
+  useAnalytics();
   return (
     <SafeAreaProvider>
       <Stack

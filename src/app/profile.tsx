@@ -28,6 +28,7 @@ import {
 import { pickLanguage } from '@/components/profile/language-list';
 import { SUPPORTED_LOCALES, getSavedLocaleSync } from '@/i18n';
 import { planStatus } from '@/economy/plans';
+import { resetAnalytics } from '@/lib/analytics';
 import { lastWelcomeCheck, rewindAwayClock } from '@/lib/away-clock';
 import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetAllSelfies } from '@/lib/booth-selfies';
@@ -222,6 +223,7 @@ export default function ProfileScreen() {
     if (result === 'failed') return setDeleteFailed(true);
     setDeleteOpen(false);
     deleteAccount();
+    void resetAnalytics();
     chatDrafts.clearAll();
     void forgetAllNotes();
     void forgetAllSelfies();
@@ -365,7 +367,16 @@ export default function ProfileScreen() {
           ))}
           <SwitchRow icon="volume-high" fill={FILL.sound} label={t('profile.messageSound')} value={settings.messageSound} onChange={(v) => setSetting('messageSound', v)} />
           <SwitchRow icon="sparkles" fill={FILL.animation} label={t('profile.chatAnimation')} value={settings.chatAnimation} onChange={(v) => setSetting('chatAnimation', v)} />
-          <SwitchRow icon="phone-portrait" fill={FILL.haptics} label={t('profile.haptics')} value={settings.haptics} onChange={(v) => setSetting('haptics', v)} last />
+          <SwitchRow icon="phone-portrait" fill={FILL.haptics} label={t('profile.haptics')} value={settings.haptics} onChange={(v) => setSetting('haptics', v)} />
+          {/* Product analytics (0z282): counts, never what anyone wrote; off empties what is waiting on the phone. */}
+          <SwitchRow
+            icon="bar-chart"
+            fill={FILL.privacy}
+            label={t('profile.shareUsage')}
+            value={settings.shareUsage !== false}
+            onChange={(v) => setSetting('shareUsage', v)}
+            last
+          />
         </Group>
 
         {/* Development and preview (internal APK) builds. */}

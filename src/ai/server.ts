@@ -14,6 +14,7 @@ import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
 import type { CharacterArc, Emotion, PlanId } from '@/types';
+import type { EventBatch } from '@/lib/analytics-events';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
 import type {
@@ -196,6 +197,24 @@ export const serverReports = {
     if (!base) return null;
     try {
       const res = await fetch(`${base}/v1/reports`, { ...post(accessToken, request), signal: AbortSignal.timeout(15_000) });
+      if (res.ok) return 'kept';
+      return res.status === 400 || res.status === 413 ? 'refused' : null;
+    } catch {
+      return null;
+    }
+  },
+};
+
+/**
+ * A batch of app events (product analytics, `src/lib/analytics.ts`). `refused`: the server will
+ * never take it (400, 413), so it is dropped; null: it did not get there and goes again later.
+ */
+export const serverEvents = {
+  send: async (accessToken: string, batch: EventBatch): Promise<'kept' | 'refused' | null> => {
+    const base = apiBase();
+    if (!base) return null;
+    try {
+      const res = await fetch(`${base}/v1/events`, { ...post(accessToken, batch), signal: AbortSignal.timeout(15_000) });
       if (res.ok) return 'kept';
       return res.status === 400 || res.status === 413 ? 'refused' : null;
     } catch {

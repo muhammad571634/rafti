@@ -1155,6 +1155,8 @@ export interface AppSettings {
   photosToAi?: boolean;
   /** The user agreed that voice messages go to the AI service to be written out (`useVoiceNote`). */
   voiceToAi?: boolean;
+  /** Product analytics (Profile → Share usage data, `src/lib/analytics.ts`): on unless the user turns it off. */
+  shareUsage?: boolean;
   /** B1.2: the wallet lives on the server whenever the app has one; `false` (dev) keeps it on the phone. */
   serverWallet?: boolean;
   /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */

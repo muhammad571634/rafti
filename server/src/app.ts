@@ -40,6 +40,7 @@ import {
   type SpeakRequest,
 } from '../../src/ai/session-types.ts';
 import { REPORT_REASONS } from '../../src/ai/safety.ts';
+import { cleanEventBatch, EVENT_LIMITS } from '../../src/lib/analytics-events.ts';
 import {
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
@@ -99,6 +100,10 @@ const CHAT_BODY_MAX_BYTES = PHOTOS_MAX * PHOTO_CHARS_MAX + 2_000_000;
 const VOICE_BODY_MAX_BYTES = CLIP_CHARS_MAX + 1000;
 /** A report: the message and the lines before it, at up to 4 bytes a character. */
 const REPORT_BODY_MAX_BYTES = (REPORT_LIMITS.context + 1) * REPORT_LIMITS.textChars * 4 + 4000;
+/** A full batch of app events, each with its props at their longest, and room for the rest. */
+const EVENTS_BODY_MAX_BYTES = EVENT_LIMITS.batch * (EVENT_LIMITS.props * (EVENT_LIMITS.text * 4 + 40) + 200) + 2000;
+/** Batches of app events an account may send a day (the phone sends one a minute at most while open). */
+export const EVENT_BATCHES_PER_DAY = 600;
 const MINUTE_MS = 60_000;
 const DAY_MS = 86_400_000;
 const TOKEN_KNOWN_MS = 5 * MINUTE_MS;
@@ -511,6 +516,7 @@ export function createApp(
   }
   // Accounts start anonymous and free, so reports have their own cap.
   const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
+  const eventsDay = windowLimiter(EVENT_BATCHES_PER_DAY, DAY_MS);
   // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
   const userVoiceDay = windowBudget(opts.speech?.userCharsPerDay ?? 0, DAY_MS);
   const serviceVoiceDay = windowBudget(opts.speech?.charsPerDay ?? 0, DAY_MS);
@@ -607,6 +613,7 @@ export function createApp(
   }
   app.use('/v1/voice/transcribe', bodyLimit({ maxSize: VOICE_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   app.use('/v1/reports', bodyLimit({ maxSize: REPORT_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
+  app.use('/v1/events', bodyLimit({ maxSize: EVENTS_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
   app.use('/v1/voice/speak', bodyLimit({ maxSize: SPEAK_BODY_MAX_BYTES, onError: (c) => c.json({ error: 'tooLarge' }, 413) }));
 
   /**
@@ -907,6 +914,25 @@ export function createApp(
       return c.json({ ok: true });
     } catch (error) {
       console.error('[report] not kept', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  // What people do in the app (product analytics, 0z282): batches of events from the phone, never
+  // message words (`src/lib/analytics-events.ts`). Bad events are dropped and counted; a batch sent
+  // twice is kept once. 400 tells the phone to drop the batch for good, anything else to send it again.
+  app.post('/v1/events', async (c) => {
+    if (!db?.saveEvents) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const batch = cleanEventBatch(await readJson(c));
+    if (!batch) return c.json({ error: 'badInput' }, 400);
+    if (!eventsDay(userId)) return c.json({ error: 'busy' }, 429);
+    try {
+      await db.saveEvents(userId, batch);
+      return c.json({ kept: batch.events.length, skipped: batch.skipped });
+    } catch (error) {
+      console.error('[events] not kept', error);
       return c.json({ error: 'failed' }, 500);
     }
   });

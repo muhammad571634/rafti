@@ -268,6 +268,27 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       if (error) throw new Error(`reports: ${error.message}`);
     },
 
+    async saveEvents(userId, batch) {
+      if (!batch.events.length) return;
+      const { error } = await client.from('app_events').upsert(
+        batch.events.map((e) => ({
+          user_id: userId,
+          client_id: e.id,
+          name: e.name,
+          props: e.props ?? {},
+          session_id: e.session,
+          at: e.at.toISOString(),
+          app_version: batch.app.version,
+          channel: batch.app.channel,
+          platform: batch.app.platform,
+          locale: batch.app.locale,
+          bucket: batch.bucket,
+        })),
+        { onConflict: 'user_id,client_id', ignoreDuplicates: true },
+      );
+      if (error) throw new Error(`app_events: ${error.message}`);
+    },
+
     async deleteUser(userId) {
       const { error } = await client.auth.admin.deleteUser(userId);
       if (error) throw new Error(`deleteUser: ${error.message}`);

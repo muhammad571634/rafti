@@ -4,7 +4,8 @@ import { describe, it } from 'node:test';
 import { DAILY_CHECK_IN, PAID_SHARES_PER_DAY, SHARE_REWARD, WHEEL_WEIGHTS } from '../../src/economy/shells.ts';
 import type { PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { MEMORY_SYNC_LIMITS, REPORT_LIMITS, SPEAK_CHARS_MAX, type ReportRequest } from '../../src/ai/session-types.ts';
-import { cleanLocale, cleanMemorySync, cleanReport, cleanSpeak, cleanSync, cleanTimeZone, createApp, SYNC_LIMITS } from './app.ts';
+import { cleanLocale, cleanMemorySync, cleanReport, cleanSpeak, cleanSync, cleanTimeZone, createApp, EVENT_BATCHES_PER_DAY, SYNC_LIMITS } from './app.ts';
+import type { CleanBatch } from '../../src/lib/analytics-events.ts';
 import {
   WalletError,
   type BootstrapInput,
@@ -807,6 +808,45 @@ describe('POST /v1/reports', () => {
     const res = await app.request('/v1/reports', { method: 'POST', headers: auth, body });
     assert.deepEqual(await res.json(), { ok: true });
     assert.deepEqual(kept, [['user-1', report]]);
+  });
+});
+
+describe('POST /v1/events (product analytics)', () => {
+  const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
+  const batch = {
+    events: [
+      { id: 'ev_0001', name: 'app_open', at: Date.now() - 1000, session: 'sess_1', props: { cold: true } },
+      { id: 'ev_0002', name: 'Bad Name', at: Date.now(), session: 'sess_1' },
+    ],
+    app: { version: '1.2.0', channel: 'preview', platform: 'android', locale: 'en' },
+    bucket: 7,
+  };
+
+  it('keeps the good events for the signed-in user and counts the bad ones', async () => {
+    const kept: [string, CleanBatch][] = [];
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ saveEvents: async (userId, b) => void kept.push([userId, b]) }) });
+    const body = JSON.stringify(batch);
+    assert.equal((await app.request('/v1/events', { method: 'POST', body })).status, 401);
+    assert.equal((await app.request('/v1/events', { method: 'POST', headers: auth, body: '{"events":[]}' })).status, 400);
+    assert.equal((await app.request('/v1/events', { method: 'POST', headers: auth, body: 'not json' })).status, 400);
+    const res = await app.request('/v1/events', { method: 'POST', headers: auth, body });
+    assert.deepEqual(await res.json(), { kept: 1, skipped: 1 });
+    assert.equal(kept.length, 1);
+    assert.equal(kept[0][0], 'user-1');
+    assert.equal(kept[0][1].events[0].name, 'app_open');
+    assert.deepEqual(kept[0][1].events[0].props, { cold: true });
+    assert.equal(kept[0][1].bucket, 7);
+  });
+
+  it('says 503 without a store, 500 when the store fails, and caps batches a day', async () => {
+    const body = JSON.stringify(batch);
+    const bare = createApp(null, { timeoutMs: 1000, db: makeDb({}) });
+    assert.equal((await bare.request('/v1/events', { method: 'POST', headers: auth, body })).status, 503);
+    const broken = createApp(null, { timeoutMs: 1000, db: makeDb({ saveEvents: async () => Promise.reject(new Error('down')) }) });
+    assert.equal((await broken.request('/v1/events', { method: 'POST', headers: auth, body })).status, 500);
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ saveEvents: async () => {} }), limits: { dataPerMinute: 10_000 } });
+    for (let i = 0; i < EVENT_BATCHES_PER_DAY; i += 1) assert.equal((await app.request('/v1/events', { method: 'POST', headers: auth, body })).status, 200);
+    assert.equal((await app.request('/v1/events', { method: 'POST', headers: auth, body })).status, 429);
   });
 });
 
