@@ -9,7 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Appearance, Platform, StyleSheet, View } from 'react-native';
+import { Appearance, AppState, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -24,6 +24,7 @@ import { noDuplicatePush } from '@/lib/no-duplicate-push';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
 import { KeyboardRoot } from '@/lib/keyboard-native';
+import { applyDarkNavigationBar } from '@/lib/navigation-bar-native';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 // A short fade: the launch intro (or the first screen) is already drawn under the splash.
@@ -38,6 +39,7 @@ const SPLASH_LIMIT_MS = 8000;
 // the window behind every screen (keyboard, transitions) is the night ground.
 if (Platform.OS !== 'web') Appearance.setColorScheme('dark');
 SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
+applyDarkNavigationBar();
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
@@ -49,6 +51,16 @@ export default function RootLayout() {
     initI18n()
       .catch(() => {})
       .finally(() => setI18nReady(true));
+  }, []);
+
+  // Keep the Android 3-button / gesture nav bar dark after returning from background, calls or OS theme switches (0z292).
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    applyDarkNavigationBar();
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') applyDarkNavigationBar();
+    });
+    return () => sub.remove();
   }, []);
 
   // The splash stays up until the first real screen is there (OnboardingGate lets it go); this

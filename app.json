@@ -2,7 +2,7 @@
   "expo": {
     "name": "Sigmazam",
     "slug": "sigmazam",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "sigmazam",
@@ -28,12 +28,9 @@
         ]
       }
     },
-    "androidNavigationBar": {
-      "enforceContrast": false
-    },
     "android": {
       "package": "com.sigmazam.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#FDF6EE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -59,10 +56,20 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#FBF6F1",
-          "dark": {
-            "backgroundColor": "#05060F"
-          }
+          "backgroundColor": "#09090D"
+        }
+      ],
+      [
+        "expo-status-bar",
+        {
+          "style": "light"
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "enforceContrast": false,
+          "style": "light"
         }
       ],
       "expo-localization",

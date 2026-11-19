@@ -28,9 +28,9 @@ Tick items off here as they land; add new postponed items under the right headin
 ## 3. Waits for the ElevenLabs grant + `sigmazam.app` domain (then the next APK)
 
 1. Support mail (`support@sigmazam.app`), the account-deletion web page, Privacy and Terms pages (`LEGAL_URLS`).
-2. The next APK, with its native items: black native splash (0z162), cream under the Android nav bar (0z153),
-   Android share-chooser callback (0z159), a Save button for share posters (media-library), the nav bar after a
-   theme switch during a call.
+2. The next APK, with its native items: ~~black native splash (0z162)~~ (done in 0z292, APK 1.3.0),
+   ~~Android dark nav bar & after-call reset (0z153)~~ (done in 0z292, APK 1.3.0 with `expo-navigation-bar`),
+   Android share-chooser callback (0z159), a Save button for share posters (media-library).
 3. Server push (Firebase on Android, APNs with the Apple account): pushes when the app has been closed for days.
    Today the phone plans about three days ahead; past that a user who never opens the app gets nothing.
 
