@@ -66,6 +66,8 @@ describe('cleanNext and the prompt', () => {
     assert.equal(nextParts(undefined, ['quiz'])[0].text.includes('NEXT MOMENT OPEN'), true);
     assert.equal(nextParts(undefined, ['quiz'])[0].text.includes('quiz = a quiz about each other'), true);
     assert.equal(nextParts(undefined, ['quiz'])[0].tier, 'turn');
+    // Seen on the A51: "let's play 20 questions" under a truth-or-dare button. The words must match the key.
+    assert.ok(nextParts(undefined, ['quiz'])[0].text.includes('the key of exactly what your words invite'));
     assert.equal(nextParts(undefined, [])[0].text, '');
     assert.equal(nextParts('call', ['quiz'])[0].text, '');
   });

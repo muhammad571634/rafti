@@ -22,7 +22,7 @@ export const NEXT_KINDS: readonly NextKind[] = ['call', 'date', 'quiz', 'truthOr
 /** What each moment is, for the model. */
 const WHAT: Record<NextKind, string> = {
   call: 'a voice call with you, now',
-  date: 'a date with you at a place in the app',
+  date: 'you ask them out on a date at a place in the app (not just "come over")',
   quiz: 'a quiz about each other',
   truthOrDare: 'a game of truth or dare',
   diary: 'they write today in their diary (their day, how they feel)',
@@ -43,8 +43,8 @@ const CRISIS_LINES = 20;
 
 export const NEXT_RULES_LINES = [
   'NEXT MOMENT: below, NEXT MOMENT OPEN lists what you may invite them to now: one of those things, if and only if it follows naturally from the last lines (they are bored: a game; they talk about their day: their diary; they cannot sleep at night: falling asleep together; they describe something they see: a photo; you want to hear their voice: a call).',
-  '- Say it in your own words inside your messages, as a person would ("wanna call?", "show me!"), and add "next":"<one key from the list>" to the same JSON. A button under your reply then opens it.',
-  '- Most replies have none. Never two in a row, never when they are upset or busy with something else, never as a sales line. Leave it out whenever the list is missing or nothing fits.',
+  '- Say it in your own words inside your messages, as a person would ("wanna call?", "show me!"), and add "next":"<one key from the list>" to the same JSON: the key of exactly what your words invite (truth or dare is truthOrDare, never another game). A button under your reply then opens it.',
+  '- Most replies have none. Never two in a row, never when they are busy with something else, never as a sales line. When they are upset, only a call, to be there for them, never a game or a feature. Leave it out whenever the list is missing or nothing fits.',
 ];
 
 /** This turn's open moments, near the end where the model looks last. */
