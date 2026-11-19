@@ -1,7 +1,7 @@
 import type { LorePrompt } from '@/lib/lorebook';
 import type { PersonaView } from '@/lib/personas';
 import type { ReplyPrefs, TurnPlan } from '@/lib/reply-engine';
-import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, Relationship, Thread, TimeSkip, User } from '@/types';
+import type { ActiveScene, Character, MemoryAbout, MemoryItem, Message, NextKind, Relationship, Thread, TimeSkip, User } from '@/types';
 
 import { steerCue } from '../lib/chat-steer';
 import { redoCue } from '../lib/chat-turns';
@@ -21,6 +21,7 @@ import { humanTurnLines } from './human-turn';
 import { ownDayParts, type OwnDay } from './own-day';
 import { reactParts } from './react';
 import { thoughtParts } from './inner-thought';
+import { nextParts } from './next-moment';
 import { REPLY_SHAPE } from './reply-style';
 import { CRISIS_CUE, SAFE_RETRY_CUE } from './safety';
 import { characterParts, theyLines } from './rules';
@@ -137,6 +138,8 @@ export interface ChatPromptInput {
   prefs?: ReplyPrefs;
   /** This character's pinned memories (`pinnedLines`). */
   pinned?: readonly MemoryItem[];
+  /** Moments the reply may invite the user to (`nextChoices`); missing or empty on most turns. */
+  next?: readonly NextKind[];
   /** Their other open memories (`factLines`). */
   facts?: readonly MemoryItem[];
   /** The summary of earlier chats (backend-plan §7), the last thing before the history. */
@@ -238,6 +241,8 @@ export function chatParts(input: ChatPromptInput): PromptPart[] {
     // What they really think behind the reply, hidden until the user opens it (owner, 2026-11-18); none on a call.
     ...thoughtParts(input.mode === 'call', input.messages),
     part('offers', 'turn', input.mode === 'call' ? [] : offerLines(input.messages)),
+    // A call, a date, a game... when the talk leads there (0z283); only on the rare turns the app opens one.
+    ...nextParts(input.mode, input.next),
     // No stored language lock yet: their own latest words say which language (src/ai/reply-language.ts).
     part('languageNow', 'turn', followsUser(input.replyLanguage) ? languageCue(userLines(input.messages), input.user.locale) : []),
     part('crisis', 'turn', input.crisis ? CRISIS_CUE : []),

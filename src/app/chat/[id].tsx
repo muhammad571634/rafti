@@ -41,6 +41,7 @@ import { JumpToNewest } from '@/components/chat/jump-to-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
 import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
+import { NextChip } from '@/components/chat/next-chip';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
@@ -65,7 +66,8 @@ import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from 
 import { nightColors as colors, friendAccent, shadows, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
-import type { Message, MessageTone, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
+import type { Message, MessageTone, NextKind, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
+import { track } from '@/lib/analytics';
 import { KC } from '@/lib/keyboard-native';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
@@ -163,6 +165,7 @@ export default function ChatRoomScreen() {
   const setComposing = useAppStore((s) => s.setComposing);
   const retryReply = useAppStore((s) => s.retryReply);
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
+  const markNextUsed = useAppStore((s) => s.markNextUsed);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
   const continueChat = useAppStore((s) => s.continueChat);
@@ -273,6 +276,8 @@ export default function ChatRoomScreen() {
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById[CREAM_BG];
   const background = wallpaper.colors;
   const data = useMemo(() => messages ?? [], [messages]);
+  // Set below with the + panel's own handlers; a ref, so the list's cells need not change with them.
+  const openNextRef = useRef<(messageId: string, kind: NextKind) => void>(() => {});
   // What the list draws: a scene's end line is left out when a new scene card follows it (`shownLines`).
   const shown = useMemo(() => shownLines(data), [data]);
   // Newest first for the inverted list: the chat opens on its latest line with nothing to scroll (iOS Messages).
@@ -399,6 +404,10 @@ export default function ChatRoomScreen() {
           {item.noted && item.author === 'me' ? <NotedChip noted={item.noted} onPress={setThreadOpen} /> : null}
           {/* No ready replies in the chat (owner, 2026-11-17: the user writes, a live conversation). The
               one exception is "May I text you?": its Yes is the only way to allow their pushes. */}
+          {/* A call, a date, a game their reply invited to (0z283): until the user writes again. */}
+          {item.author === 'them' && item.next && !item.nextUsed && newestLineId === item.id ? (
+            <NextChip kind={item.next} onOpen={() => openNextRef.current(item.id, item.next!)} />
+          ) : null}
           {conversationId && isAskReach(item.reach) && shownIdeas(item, data) ? (
             <QuickReplies
               ideas={item.ideas!}
@@ -411,7 +420,7 @@ export default function ChatRoomScreen() {
         </View>
       );
     },
-    [character, animations, openedAt, data, shown, lastMine, flash, callBack, openMenu, toggleLove, conversationId, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply],
+    [character, animations, openedAt, data, shown, lastMine, flash, callBack, openMenu, toggleLove, conversationId, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply, newestLineId],
   );
 
   if (!conversation || !character) {
@@ -541,6 +550,14 @@ export default function ChatRoomScreen() {
   const startCall = () => {
     if (callMinutes > 0) return router.push(`/call/${character.id}`);
     setCallGate(withCalls ? 'out' : 'paywall');
+  };
+  // The invitation under their reply opens what the + panel would; the button goes once tapped.
+  openNextRef.current = (messageId, kind) => {
+    markNextUsed(conversation.id, messageId);
+    track('next_tapped', { kind, character: character.id });
+    if (kind === 'call') return startCall();
+    if (kind === 'bedtime') return router.push('/bedtime');
+    return attach(kind);
   };
   const openStore = (route: '/store/shell?tab=shells' | '/store/shell?tab=plans&plan=pro') => {
     setCallGate(null);

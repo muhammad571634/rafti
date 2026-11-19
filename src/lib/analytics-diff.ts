@@ -17,6 +17,7 @@ interface WatchedMessage {
   failed?: boolean;
   rating?: 'up' | 'down';
   card?: string;
+  next?: string;
 }
 
 /** The part of the store this reads (structural, so the store's own type fits). */
@@ -62,6 +63,7 @@ export function eventsFromChange(prev: WatchedState, next: WatchedState): Tracke
           if (m.author === 'me' && !m.card && m.kind !== 'system' && m.kind !== 'call') {
             sent.push({ name: 'message_sent', props: { kind: m.kind, group, ...(character ? { character } : {}) } });
           }
+          if (m.author === 'them' && m.next && before) out.push({ name: 'next_shown', props: { kind: m.next, ...(character ? { character } : {}) } });
           continue;
         }
         if (m.author === 'me' && m.failed && !was.failed) out.push({ name: 'reply_failed', props: character ? { character } : {} });

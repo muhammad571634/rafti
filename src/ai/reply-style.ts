@@ -1,10 +1,11 @@
 import type { ReplyPrefs } from '@/lib/reply-engine';
-import type { Emotion, SetupOffer } from '@/types';
+import type { Emotion, NextKind, SetupOffer } from '@/types';
 
 import { speechOnly } from '../lib/reply-engine/narration';
 import { cleanPhotoNotes } from './photo-prompt';
 import { cleanDayNotes } from './own-day';
 import { cleanThought } from './inner-thought';
+import { cleanNext } from './next-moment';
 import { cleanReact, type React } from './react';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, hasThreadOps, type ThreadOps } from './thread-prompt';
@@ -103,6 +104,8 @@ export interface ModelReply {
   thought?: string;
   /** One-tap replies the user could send next (`IDEAS_CUE`). */
   ideas?: string[];
+  /** A moment it invites the user to (`src/ai/next-moment.ts`); the server keeps it only if the turn opened it. */
+  next?: NextKind;
 }
 
 /**
@@ -125,7 +128,7 @@ export function parseModelReply(raw: string): ModelReply {
   const json = raw.match(/\{[\s\S]*\}/)?.[0];
   if (json) {
     try {
-      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown };
+      const data = parseJson(json) as { language?: unknown; emotion?: string; intensity?: number; messages?: unknown; crisis?: unknown; photos?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; next?: unknown };
       const bubbles = Array.isArray(data.messages)
         ? data.messages.filter((b): b is string => typeof b === 'string' && !!b.trim()).map((b) => b.trim())
         : [];
@@ -137,6 +140,7 @@ export function parseModelReply(raw: string): ModelReply {
         const react = cleanReact(data.react);
         const thought = cleanThought(data.thought);
         const ideas = cleanIdeas(data.ideas);
+        const next = cleanNext(data.next);
         return {
           bubbles,
           ...(typeof data.language === 'string' && data.language.trim() ? { language: data.language.trim().slice(0, 24) } : {}),
@@ -150,6 +154,7 @@ export function parseModelReply(raw: string): ModelReply {
           ...(react ? { react } : {}),
           ...(thought ? { thought } : {}),
           ...(ideas.length ? { ideas } : {}),
+          ...(next ? { next } : {}),
         };
       }
     } catch {

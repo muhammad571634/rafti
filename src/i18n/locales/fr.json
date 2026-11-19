@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "Aller aux messages les plus récents",
+    "next": {
+      "call": "Appeler",
+      "date": "Aller à un rendez-vous",
+      "quiz": "Jouer au quiz",
+      "truthOrDare": "Action ou vérité",
+      "diary": "Écrire ma journée",
+      "secretNote": "Écrire un mot",
+      "bedtime": "S'endormir ensemble",
+      "photo": "Envoyer une photo"
+    },
     "notifyOff": "Les notifications sont désactivées, les messages de {{name}} ne peuvent pas vous parvenir.",
     "notifyOffAction": "Activer",
     "ideaEditHint": "Appui long pour modifier avant d'envoyer",

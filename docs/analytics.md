@@ -53,6 +53,12 @@ arm (stable per install, independent between experiments) and records one `expos
 Compare arms in `analytics.experiments`. Every batch also carries the install's `bucket` (0-99) for
 ad-hoc splits. End an experiment by removing the call (and the losing code) in the same change.
 
+## Running experiments
+
+- `next_moment` (0z283): arms `on` / `off`, weights 4 : 1, holdout in `production` only (dev and
+  preview always get it). The invitation under a reply (`src/ai/next-moment.ts`); events
+  `next_shown`, `next_tapped`; compare `back_next_day` in `analytics.experiments`.
+
 ## Rules
 
 - Add an event only with a question it answers; name it `noun_verb` in the past (`message_sent`).

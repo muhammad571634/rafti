@@ -42,6 +42,8 @@ import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
 import { enforceStyle } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
+import { nextChoices } from '@/ai/next-moment';
+import { analyticsChannel, experiment } from '@/lib/analytics';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
@@ -327,6 +329,7 @@ import type {
   MemoryItem,
   MemorySource,
   Message,
+  NextKind,
   Mood,
   MessageTone,
   Moment,
@@ -526,6 +529,8 @@ export interface AppState {
   retryGroupReply: (groupId: string) => void;
   /** Shows another version of their newest reply (‹ › or a swipe). */
   showReplyVersion: (conversationId: string, index: number) => void;
+  /** The moment under their reply was opened (`src/ai/next-moment.ts`): its button goes. */
+  markNextUsed: (conversationId: string, messageId: string) => void;
   /** Changes your newest text and asks them again; their answer to the old words goes. Costs a message. */
   editLastMessage: (conversationId: string, text: string) => SendResult;
   /** Deletes everything after one of their lines, as if the chat had stopped there. */
@@ -1496,6 +1501,13 @@ export const useAppStore = create<AppState>()(
         });
         return 'sent';
       },
+
+      markNextUsed: (conversationId, messageId) =>
+        set((s) => {
+          const list = s.messages[conversationId];
+          if (!list?.some((m) => m.id === messageId && m.next && !m.nextUsed)) return {};
+          return { messages: { ...s.messages, [conversationId]: list.map((m) => (m.id === messageId ? { ...m, nextUsed: true } : m)) } };
+        }),
 
       showReplyVersion: (conversationId, index) => {
         const state = get();
@@ -6033,7 +6045,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
 
   // `setup`: an alarm or plan they offered to set up; its card goes under the reply's last bubble.
   // `felt`: the model's own reading of how the friend feels after this reply (0z141); the stand-in's guess otherwise.
-  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[], thought?: string) => {
+  const deliver = (written: string[], setup?: SetupOffer, felt?: Pick<Mood, 'emotion' | 'intensity'>, offered?: string[], thought?: string, next?: NextKind) => {
     const lines = enforceStyle(written, replyPrefs(bond).style);
     // The model's one-tap replies, in the chat's language, as chips: a tap sends them as a message
     // would. A care check-in's own ideas and the turn's own chips come first.
@@ -6089,6 +6101,8 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
           ...(last && reach && ideas?.length ? { reach, ideas } : {}),
           // What they really think, on the reply's last bubble, hidden until opened (owner, 2026-11-18).
           ...(last && thought ? { thought } : {}),
+          // A moment they invited the user to (0z283): one button under this bubble opens it.
+          ...(last && next ? { next } : {}),
         };
         // It shows word by word, as a streamed reply would (`src/lib/reveal.ts`).
         markFresh(message.id);
@@ -6138,10 +6152,13 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
 
     ensureStory(set, get, character.id);
     const messages = ctx.history.filter((m) => !m.pending);
+    // A call, a date, a game... the reply may invite to (0z283): only on a fresh answer to the user's own line.
+    const next = trigger === 'message' && avoid == null && !steer && !cue && !photo ? nextOpen(state, conversation, messages) : [];
     const input = {
       character,
       user: state.user,
       relationship: bond,
+      ...(next.length ? { next } : {}),
       steer,
       prefs: replyPrefs(bond),
       // Who they are here, the scene and the world books: the same as the stand-in reads.
@@ -6190,7 +6207,7 @@ function scheduleReply(set: Setter, get: Getter, conversationId: string, request
       if (reply.react && trigger === 'message' && avoid == null && !steer) markTheirReaction(set, conversationId, reply.react);
       // The server's crisis check (any language): the helpline card, as a caught phrase gets.
       if (reply.crisis) appendHelplineCard(set, get, conversationId);
-      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought);
+      deliver(reply.lines, reply.setup, reply.emotion ? { emotion: reply.emotion, intensity: reply.intensity ?? 0.5 } : undefined, reply.ideas, reply.thought, reply.next);
       // What they will follow up on: only from a reply to the user's message, once (↻ and steers would add it again).
       if (reply.threads && hasThreadOps(reply.threads) && trigger === 'message' && avoid == null && !steer) {
         applyModelThreads(set, get, conversationId, character.id, reply.threads);
@@ -6402,6 +6419,24 @@ function maybeAskToReach(set: Setter, get: Getter, conversationId: string): bool
 }
 
 /** After their reply: the consent ask when it is time, else one real-life moment (`maybeLifeMoment`). */
+/**
+ * What this reply may invite the user to (`nextChoices`): usually nothing. Real users in the
+ * holdout (a fifth, production only) get none, so `analytics.experiments` shows what it does for
+ * coming back; development and preview builds always get it.
+ */
+function nextOpen(state: AppState, conversation: Conversation, lines: readonly Message[]): NextKind[] {
+  const level = state.relationships[conversation.characterId]?.level ?? 0;
+  const kinds = nextChoices(lines, {
+    now: new Date(),
+    inScene: !!conversation.scene,
+    canCall: minutesOf(state.wallet, 'call').total > 0,
+    dateOpen: DATE_PLACES.some((p) => p.levelRequired <= level),
+  });
+  if (!kinds.length) return kinds;
+  const arm = experiment('next_moment', ['on', 'off'] as const, [4, 1]);
+  return arm === 'off' && analyticsChannel() === 'production' ? [] : kinds;
+}
+
 function afterReply(set: Setter, get: Getter, conversationId: string) {
   if (!maybeAskToReach(set, get, conversationId)) maybeLifeMoment(set, get, conversationId);
 }

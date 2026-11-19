@@ -325,6 +325,16 @@
   },
   "chat": {
     "jumpToNewest": "Đến tin nhắn mới nhất",
+    "next": {
+      "call": "Gọi",
+      "date": "Đi hẹn hò",
+      "quiz": "Chơi đố vui",
+      "truthOrDare": "Thật hay thách",
+      "diary": "Viết ngày của tôi",
+      "secretNote": "Viết lời nhắn",
+      "bedtime": "Cùng ngủ",
+      "photo": "Gửi ảnh"
+    },
     "notifyOff": "Thông báo đang tắt, nên tin nhắn của {{name}} không thể đến được với bạn.",
     "notifyOffAction": "Bật lên",
     "ideaEditHint": "Nhấn giữ để chỉnh sửa trước khi gửi",

@@ -54,7 +54,8 @@ const exposed = new Set<string>();
 
 const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 
-function channel(): EventBatch['app']['channel'] {
+/** Which build this is: `dev` (Expo Go), `preview` (the owner's and testers' APK), `production`. */
+export function analyticsChannel(): EventBatch['app']['channel'] {
   if (__DEV__) return 'dev';
   const name = Updates.channel;
   return name === 'preview' || name === 'production' ? name : 'unknown';
@@ -63,7 +64,7 @@ function channel(): EventBatch['app']['channel'] {
 function appInfo(): EventBatch['app'] {
   return {
     version: Constants.expoConfig?.version ?? 'unknown',
-    channel: channel(),
+    channel: analyticsChannel(),
     platform: Platform.OS === 'ios' || Platform.OS === 'android' ? Platform.OS : 'web',
     locale: i18n.language || 'unknown',
   };

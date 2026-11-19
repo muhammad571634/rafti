@@ -325,6 +325,16 @@
   },
   "chat": {
     "jumpToNewest": "最新のメッセージへ",
+    "next": {
+      "call": "電話する",
+      "date": "デートする",
+      "quiz": "クイズで遊ぶ",
+      "truthOrDare": "真実か挑戦か",
+      "diary": "今日を日記に",
+      "secretNote": "メモを書く",
+      "bedtime": "一緒に眠る",
+      "photo": "写真を送る"
+    },
     "notifyOff": "通知がオフになっているため、{{name}}からのメッセージが届きません。",
     "notifyOffAction": "オンにする",
     "ideaEditHint": "送信前に長押しして編集",

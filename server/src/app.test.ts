@@ -811,6 +811,39 @@ describe('POST /v1/reports', () => {
   });
 });
 
+describe('POST /v1/chat/reply: the next moment (0z283)', () => {
+  const answer = '{"messages":["You sound bored. Truth or dare?"],"next":"truthOrDare"}';
+  const reply = (seen: string[]) => {
+    const provider: LlmProvider = {
+      name: 'fake',
+      complete: async (layout: PromptLayout) => {
+        seen.push(JSON.stringify(layout));
+        return { text: answer, usage: {} };
+      },
+    };
+    return createApp(provider, { timeoutMs: 1000, db: makeDb({}) });
+  };
+
+  it('passes an invitation the turn opened, and tells the model what is open', async () => {
+    const seen: string[] = [];
+    const res = await post(reply(seen), { ...body, next: ['truthOrDare', 'quiz', 'skydive'] });
+    const json = await res.json();
+    assert.equal(json.next, 'truthOrDare');
+    assert.ok(seen[0].includes('NEXT MOMENT OPEN'));
+    assert.ok(seen[0].includes('truthOrDare = a game of truth or dare'));
+    assert.ok(!seen[0].includes('skydive'));
+  });
+
+  it('drops one the turn did not open, and says nothing of it on a plain turn', async () => {
+    const seen: string[] = [];
+    const json = await (await post(reply(seen), body)).json();
+    assert.equal(json.next, undefined);
+    assert.ok(!seen[0].includes('NEXT MOMENT'));
+    const other = await (await post(reply([]), { ...body, next: ['quiz'] })).json();
+    assert.equal(other.next, undefined);
+  });
+});
+
 describe('POST /v1/events (product analytics)', () => {
   const auth = { authorization: 'Bearer good', 'content-type': 'application/json' };
   const batch = {

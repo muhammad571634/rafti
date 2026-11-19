@@ -42,6 +42,10 @@ export const EVENTS = {
   push_open: ['kind'],
   level_up: ['character', 'level'],
   check_in: ['day'],
+  /** Their reply invited the user to a moment (a call, a date, a game: `src/ai/next-moment.ts`). */
+  next_shown: ['kind', 'character'],
+  /** The user tapped that invitation's button. */
+  next_tapped: ['kind', 'character'],
   /** The user was put in an experiment's arm (`variant`), once a session. */
   exposure: ['experiment', 'arm'],
 } as const;

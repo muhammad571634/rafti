@@ -325,6 +325,16 @@
   },
   "chat": {
     "jumpToNewest": "최신 메시지로 이동",
+    "next": {
+      "call": "전화하기",
+      "date": "데이트하기",
+      "quiz": "퀴즈 하기",
+      "truthOrDare": "진실 혹은 도전",
+      "diary": "오늘 일기 쓰기",
+      "secretNote": "쪽지 쓰기",
+      "bedtime": "함께 잠들기",
+      "photo": "사진 보내기"
+    },
     "notifyOff": "알림이 꺼져 있어 {{name}}의 메시지를 받을 수 없습니다.",
     "notifyOffAction": "켜기",
     "ideaEditHint": "보내기 전에 길게 눌러 수정하세요",

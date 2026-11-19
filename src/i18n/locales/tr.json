@@ -330,6 +330,16 @@
   },
   "chat": {
     "jumpToNewest": "En yeni mesajlara git",
+    "next": {
+      "call": "Ara",
+      "date": "Randevuya çık",
+      "quiz": "Testi oyna",
+      "truthOrDare": "Doğruluk mu cesaret mi",
+      "diary": "Günümü yaz",
+      "secretNote": "Not yaz",
+      "bedtime": "Birlikte uyu",
+      "photo": "Fotoğraf gönder"
+    },
     "notifyOff": "Bildirimler kapalı olduğundan {{name}} mesajları sana ulaşamaz.",
     "notifyOffAction": "Aç",
     "ideaEditHint": "Göndermeden önce değiştirmek için uzun bas",

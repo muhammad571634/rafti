@@ -325,6 +325,16 @@
   },
   "chat": {
     "jumpToNewest": "Ke pesan terbaru",
+    "next": {
+      "call": "Telepon",
+      "date": "Pergi kencan",
+      "quiz": "Main kuis",
+      "truthOrDare": "Truth or dare",
+      "diary": "Tulis hariku",
+      "secretNote": "Tulis catatan",
+      "bedtime": "Tertidur bersama",
+      "photo": "Kirim foto"
+    },
     "notifyOff": "Notifikasi mati, sehingga pesan dari {{name}} tidak dapat sampai kepadamu.",
     "notifyOffAction": "Nyalakan",
     "ideaEditHint": "Tekan lama untuk mengedit sebelum mengirim",

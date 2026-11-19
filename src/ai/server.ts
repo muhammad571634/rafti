@@ -10,10 +10,11 @@ import { cleanLanguage, type Transcript, type VoiceClip } from './voice-prompt';
 import { cleanDayNotes } from './own-day';
 import { cleanReact, type React } from './react';
 import { cleanThought } from './inner-thought';
+import { cleanNext } from './next-moment';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
-import type { CharacterArc, Emotion, PlanId } from '@/types';
+import type { CharacterArc, Emotion, NextKind, PlanId } from '@/types';
 import type { EventBatch } from '@/lib/analytics-events';
 import type { SetupOffer } from '@/types';
 import type { WriteKind, WriteRequest, WriteResults } from './writes';
@@ -239,8 +240,8 @@ export async function serverReply(
   input: ChatPromptInput,
   accessToken?: string | null,
   pay?: PayLine,
-): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge } | null> {
-  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown }>(
+): Promise<{ lines: string[]; crisis: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
+  const reply = await call<{ messages?: string[]; crisis?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
     '/v1/chat/reply',
     {
       method: 'POST',
@@ -273,6 +274,8 @@ export async function serverReply(
     thought: reply?.crisis === true ? undefined : cleanThought(reply?.thought),
     // One-tap replies in the chat's language (0z176), checked again: they come over the network.
     ideas: reply?.crisis === true ? undefined : cleanIdeas(reply?.ideas),
+    // A moment the reply invites to (0z283): only one this turn opened.
+    next: reply?.crisis === true ? undefined : cleanNext(reply?.next, input.next ?? []),
     // How the friend feels after this reply, in the model's own reading (0z141): it carries into the next one.
     ...(EMOTIONS.includes(reply?.emotion as Emotion)
       ? { emotion: reply?.emotion as Emotion, intensity: typeof reply?.intensity === 'number' ? Math.min(1, Math.max(0, reply.intensity)) : 0.5 }

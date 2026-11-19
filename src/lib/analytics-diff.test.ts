@@ -34,6 +34,12 @@ describe('eventsFromChange', () => {
     assert.deepEqual(eventsFromChange(base, next), [{ name: 'message_sent', props: { kind: 'voice', group: false, character: 'c_kai' } }]);
   });
 
+  it('sees an invitation under their reply, not one in a restored chat', () => {
+    const list = base.messages.conv_kai ?? [];
+    const next = { ...base, messages: { conv_kai: [...list, { id: 'm2', author: 'them' as const, kind: 'text', next: 'quiz' }] } };
+    assert.deepEqual(eventsFromChange(base, next), [{ name: 'next_shown', props: { kind: 'quiz', character: 'c_kai' } }]);
+  });
+
   it('marks a group line as a group line', () => {
     const next = { ...base, messages: { ...base.messages, grp_1: [{ id: 'g1', author: 'me' as const, kind: 'text' }] } };
     assert.deepEqual(eventsFromChange(base, next), [{ name: 'message_sent', props: { kind: 'text', group: true } }]);

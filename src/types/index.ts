@@ -257,6 +257,8 @@ export interface Mood {
 }
 
 export type MessageKind = 'text' | 'voice' | 'image' | 'system' | 'call';
+/** What a friend may invite the user to right after a reply (`src/ai/next-moment.ts`). */
+export type NextKind = 'call' | 'date' | 'quiz' | 'truthOrDare' | 'diary' | 'secretNote' | 'bedtime' | 'photo';
 /**
  * How far a time skip moves the story (`src/lib/chat-steer.ts`): one of four spans, the running
  * scene's next moment, or the user's own words (`Message.skipTo`).
@@ -321,6 +323,12 @@ export interface Message {
   theirReaction?: string;
   /** What they really thought and did not say, on the last bubble of their reply; hidden until opened (`src/ai/inner-thought.ts`). */
   thought?: string;
+  /**
+   * A moment their reply invites the user to (`src/ai/next-moment.ts`): one button under the reply's
+   * last bubble opens it. `nextUsed`: tapped once, so the button is gone.
+   */
+  next?: NextKind;
+  nextUsed?: boolean;
   /** The user opened `thought`: the next reply may notice it (`openedThought`). */
   thoughtRead?: boolean;
   /** 👍 👎 on their reply, kept on its first line; the friend never sees it (`src/lib/reply-rating.ts`). */

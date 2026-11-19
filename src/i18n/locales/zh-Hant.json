@@ -325,6 +325,16 @@
   },
   "chat": {
     "jumpToNewest": "前往最新訊息",
+    "next": {
+      "call": "打電話",
+      "date": "去約會",
+      "quiz": "玩問答",
+      "truthOrDare": "真心話大冒險",
+      "diary": "寫下我的一天",
+      "secretNote": "寫張紙條",
+      "bedtime": "一起入睡",
+      "photo": "傳照片"
+    },
     "notifyOff": "通知已關閉，因此你將無法即時收到{{name}}傳來的訊息。",
     "notifyOffAction": "開啟通知",
     "ideaEditHint": "長按可在發送前進行修改",

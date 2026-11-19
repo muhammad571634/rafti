@@ -41,6 +41,7 @@ import {
 } from '../../src/ai/session-types.ts';
 import { REPORT_REASONS } from '../../src/ai/safety.ts';
 import { cleanEventBatch, EVENT_LIMITS } from '../../src/lib/analytics-events.ts';
+import { cleanNext } from '../../src/ai/next-moment.ts';
 import {
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
@@ -1173,6 +1174,8 @@ export function createApp(
       user,
       messages: input.messages.slice(-MAX_MESSAGES),
       replyLanguage: replyLanguageOf({ ...input, user }),
+      // The moments this turn may invite to: known keys only, as the phone listed them.
+      next: Array.isArray(input.next) ? [...new Set(input.next.flatMap((k) => cleanNext(k) ?? []))] : undefined,
       // The user's clock and what they set up with this friend (0z135); malformed ones are dropped.
       clock: cleanClock(input.clock),
       together: cleanTogether(input.together),
@@ -1242,7 +1245,9 @@ export function createApp(
       const ideas = crisis || (input.mode && input.mode !== 'chat') ? undefined : reply.ideas;
       // `thought`: what the friend really thinks, hidden under the reply until the user opens it; never on a call or after a crisis.
       const thought = crisis || input.mode === 'call' ? undefined : reply.thought;
-      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, thought, ideas, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
+      // `next`: a moment the reply invites the user to (0z283); only one the turn opened, texting only, never after a crisis.
+      const next = crisis || (input.mode && input.mode !== 'chat') ? undefined : cleanNext(reply.next, input.next ?? []);
+      return c.json({ messages: reply.bubbles, emotion: reply.emotion, intensity: reply.intensity, crisis, photos: reply.photos, setup, threads, day, react, thought, ideas, next, voice, model: result.model ?? provider.name, ms, charge: paid?.charge });
     } catch (error) {
       if (error instanceof LlmBusyError) {
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);
