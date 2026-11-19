@@ -1150,6 +1150,18 @@
     "chatTitle": "You are in this chat"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Weak",
+      "okay": "Okay",
+      "good": "Good",
+      "great": "Great",
+      "tip": {
+        "more": "Say a bit more: what is happening right now",
+        "scene": "Set the scene with an *action*",
+        "move": "End on their move: ask them something",
+        "detail": "Add one detail of the moment"
+      }
+    },
     "title": "New character",
     "editTitle": "Edit character",
     "save": "Save",

@@ -1124,6 +1124,18 @@
     "chatTitle": "你在這場對話中的設定"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "偏弱",
+      "okay": "還行",
+      "good": "不錯",
+      "great": "很棒",
+      "tip": {
+        "more": "多寫一點：現在正在發生什麼",
+        "scene": "用一個*動作*營造場景",
+        "move": "以對方的回合結尾：問個問題",
+        "detail": "加上一個當下的細節"
+      }
+    },
     "title": "新角色",
     "editTitle": "編輯角色",
     "save": "儲存",

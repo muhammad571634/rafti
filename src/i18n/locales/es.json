@@ -1150,6 +1150,18 @@
     "chatTitle": "Eres tú en este chat"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Flojo",
+      "okay": "Bien",
+      "good": "Bueno",
+      "great": "Genial",
+      "tip": {
+        "more": "Cuenta un poco más: qué está pasando ahora",
+        "scene": "Crea la escena con una *acción*",
+        "move": "Termina con su turno: pregúntale algo",
+        "detail": "Añade un detalle del momento"
+      }
+    },
     "title": "Nuevo personaje",
     "editTitle": "Editar personaje",
     "save": "Guardar",

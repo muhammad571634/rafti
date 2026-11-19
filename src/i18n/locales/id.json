@@ -1124,6 +1124,18 @@
     "chatTitle": "Kamu di obrolan ini"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Lemah",
+      "okay": "Lumayan",
+      "good": "Bagus",
+      "great": "Hebat",
+      "tip": {
+        "more": "Ceritakan sedikit lagi: apa yang terjadi sekarang",
+        "scene": "Bangun suasana dengan *aksi*",
+        "move": "Akhiri dengan giliran mereka: tanyakan sesuatu",
+        "detail": "Tambahkan satu detail momen itu"
+      }
+    },
     "title": "Karakter baru",
     "editTitle": "Edit karakter",
     "save": "Simpan",

@@ -1150,6 +1150,18 @@
     "chatTitle": "Votre persona dans cette discussion"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Faible",
+      "okay": "Correct",
+      "good": "Bien",
+      "great": "Excellent",
+      "tip": {
+        "more": "Dis-en un peu plus : que se passe-t-il là ?",
+        "scene": "Pose la scène avec une *action*",
+        "move": "Termine sur son tour : pose-lui une question",
+        "detail": "Ajoute un détail du moment"
+      }
+    },
     "title": "Nouveau personnage",
     "editTitle": "Modifier le personnage",
     "save": "Enregistrer",

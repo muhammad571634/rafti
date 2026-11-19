@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
+import type { CoachLevel, CoachResult } from '@/lib/greeting-coach';
 import { colors, fonts, space, systemColors, systemGround } from '@/theme';
 import { inkFace } from '@/theme/ink';
 
@@ -117,6 +118,36 @@ export function Field({
         keyboardType={keyboardType}
         accessibilityLabel={label}
       />
+    </View>
+  );
+}
+
+/** The greeting coach's colour for each level: iOS system colours, warm to green. */
+const LEVEL_COLOR: Record<CoachLevel, string> = { weak: systemColors.orange, okay: systemColors.yellow, good: systemColors.green, great: systemColors.green };
+
+/**
+ * The greeting coach under the first message (0z295, `src/lib/greeting-coach.ts`): four bars and the
+ * level on one line, the one thing to do next under it. Nothing while the greeting is empty.
+ */
+export function GreetingMeter({ result }: { result: CoachResult | null }) {
+  const { t } = useTranslation();
+  if (!result) return null;
+  const color = LEVEL_COLOR[result.level];
+  const level = t(`createCharacter.coach.${result.level}`);
+  const tip = result.tip ? t(`createCharacter.coach.tip.${result.tip}`) : null;
+  return (
+    <View style={styles.meter} accessible accessibilityLabel={tip ? `${level}. ${tip}` : level}>
+      <View style={styles.meterRow}>
+        <View style={styles.bars}>
+          {[0, 1, 2, 3].map((i) => (
+            <View key={i} style={[styles.meterBar, i < result.score && { backgroundColor: color }]} />
+          ))}
+        </View>
+        <Txt style={[styles.meterLevel, { color }]} lines={1}>
+          {level}
+        </Txt>
+      </View>
+      {tip ? <Txt style={styles.meterTip}>{tip}</Txt> : null}
     </View>
   );
 }
@@ -269,6 +300,12 @@ const styles = StyleSheet.create({
   problem: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
   problemText: { ...inkFace('subStrong'), flex: 1, color: systemColors.red },
   field: { marginTop: space.sm },
+  meter: { marginTop: space.sm, gap: 4 },
+  meterRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  bars: { flexDirection: 'row', gap: 4 },
+  meterBar: { width: 22, height: 5, borderRadius: 3, backgroundColor: systemGround.fill },
+  meterLevel: { ...inkFace('subStrong') },
+  meterTip: { ...inkFace('caption'), color: colors.textSecondary },
   fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginBottom: 6 },
   label: { ...inkFace('subStrong'), color: colors.textSecondary },
   count: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },

@@ -1150,6 +1150,18 @@
     "chatTitle": "Bu sohbettesin"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Zayıf",
+      "okay": "İdare eder",
+      "good": "İyi",
+      "great": "Harika",
+      "tip": {
+        "more": "Biraz daha anlat: şu an ne oluyor",
+        "scene": "Sahneyi bir *hareketle* kur",
+        "move": "Onun hamlesiyle bitir: bir şey sor",
+        "detail": "O anın bir ayrıntısını ekle"
+      }
+    },
     "title": "Yeni karakter",
     "editTitle": "Karakteri düzenle",
     "save": "Kaydet",

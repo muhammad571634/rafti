@@ -1150,6 +1150,18 @@
     "chatTitle": "Você está nesta conversa"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Fraco",
+      "okay": "Ok",
+      "good": "Bom",
+      "great": "Ótimo",
+      "tip": {
+        "more": "Conte um pouco mais: o que está acontecendo agora",
+        "scene": "Monte a cena com uma *ação*",
+        "move": "Termine na vez dela: pergunte algo",
+        "detail": "Acrescente um detalhe do momento"
+      }
+    },
     "title": "Novo personagem",
     "editTitle": "Editar personagem",
     "save": "Salvar",

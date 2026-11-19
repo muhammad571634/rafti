@@ -1124,6 +1124,18 @@
     "chatTitle": "Bạn đang tham gia cuộc trò chuyện này"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Yếu",
+      "okay": "Tạm được",
+      "good": "Tốt",
+      "great": "Tuyệt",
+      "tip": {
+        "more": "Kể thêm chút nữa: điều gì đang diễn ra",
+        "scene": "Dựng cảnh bằng một *hành động*",
+        "move": "Kết thúc bằng lượt của họ: hỏi điều gì đó",
+        "detail": "Thêm một chi tiết của khoảnh khắc"
+      }
+    },
     "title": "Nhân vật mới",
     "editTitle": "Chỉnh sửa nhân vật",
     "save": "Lưu",

@@ -1150,6 +1150,18 @@
     "chatTitle": "Deine Persona in diesem Chat"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Schwach",
+      "okay": "Okay",
+      "good": "Gut",
+      "great": "Stark",
+      "tip": {
+        "more": "Sag etwas mehr: Was passiert gerade?",
+        "scene": "Setz die Szene mit einer *Handlung*",
+        "move": "Ende mit ihrem Zug: Frag sie etwas",
+        "detail": "Füg ein Detail des Moments hinzu"
+      }
+    },
     "title": "Neue Figur",
     "editTitle": "Figur bearbeiten",
     "save": "Speichern",

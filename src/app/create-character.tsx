@@ -11,7 +11,8 @@ import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
-import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, Rewrite, SmallRound } from '@/components/create/kit';
+import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, Rewrite, SmallRound } from '@/components/create/kit';
+import { coachGreeting } from '@/lib/greeting-coach';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { PressableScale, Screen, Toggle, Txt } from '@/components/ui';
@@ -730,6 +731,8 @@ function CharacterForm({ editing }: { editing?: Character }) {
 
             <Card title={label('flow.firstMessage')} right={sparkle('greeting', label('greeting'))} onLayout={at('first')}>
               <Field label={label('greeting')} hideLabel value={form.greeting} onChange={(greeting) => set({ greeting })} placeholder={label('greetingPlaceholder')} max={GREETING_MAX} multiline rows={3} />
+              {/* How strong the first message is, and the one thing to add (0z295). */}
+              <GreetingMeter result={coachGreeting({ greeting: form.greeting, opening: form.opening })} />
               <Field label={label('opening')} value={form.opening} onChange={(opening) => set({ opening })} placeholder={label('openingPlaceholder')} max={OPENING_MAX} action={sparkle('opening', label('opening'))} />
               <Lines
                 label={t('createCharacter.moreGreetings', { count: form.greetings.length, max: MORE_GREETINGS_MAX })}

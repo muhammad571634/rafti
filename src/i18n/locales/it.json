@@ -1150,6 +1150,18 @@
     "chatTitle": "Sei presente in questa chat"
   },
   "createCharacter": {
+    "coach": {
+      "weak": "Debole",
+      "okay": "Discreto",
+      "good": "Buono",
+      "great": "Ottimo",
+      "tip": {
+        "more": "Racconta un po’ di più: cosa sta succedendo adesso",
+        "scene": "Crea la scena con un’*azione*",
+        "move": "Chiudi con la sua mossa: fagli una domanda",
+        "detail": "Aggiungi un dettaglio del momento"
+      }
+    },
     "title": "Nuovo personaggio",
     "editTitle": "Modifica personaggio",
     "save": "Salva",
