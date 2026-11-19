@@ -23,6 +23,8 @@ import { cleanGroupLines, layoutGroupReply, type GroupPromptInput } from '../../
 import { cleanMemoryPass, memoryPassParts, parseMemoryPass } from '../../src/ai/memory-pass.ts';
 import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
+import { cardTexts, cleanCard, COMMUNITY_PAGE, parseReview, REPORTS_TO_HIDE, reviewPrompt, type CommunityReason, type CommunitySort } from '../../src/lib/community.ts';
+import { contentProblems } from '../../src/lib/create-character.ts';
 import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import type { Context, MiddlewareHandler } from 'hono';
@@ -187,6 +189,8 @@ const bearer = (header: string | undefined) => header?.match(/^Bearer\s+(\S+)$/i
 /** The most one spend or grant may move: anything bigger is a bug or an attack. */
 const MAX_SPEND = 1000;
 const MAX_GRANT = 5000;
+/** Shares a day per user: each is a model review (0z300). */
+const COMMUNITY_PUBLISHES_PER_DAY = 20;
 const SPEND_REASONS = new Set<LedgerReason>(['chat', 'voice', 'photo', 'note', 'board', 'date', 'photoBooth', 'voiceClone', 'portrait', 'stream', 'call', 'topUp', 'setup', 'radio', 'other']);
 const GRANT_REASONS = new Set<LedgerReason>(['purchase', 'quest', 'invite', 'plan', 'membership', 'share', 'ad', 'other']);
 /** Earnings that land in today's free bucket and burn at midnight (src/economy/shells.ts). */
@@ -545,6 +549,9 @@ export function createApp(
   // Accounts start anonymous and free, so reports have their own cap.
   const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
   const eventsDay = windowLimiter(EVENT_BATCHES_PER_DAY, DAY_MS);
+  // Shares a day per user (each one is a model review) and community reports a day per user.
+  const publishDay = windowLimiter(COMMUNITY_PUBLISHES_PER_DAY, DAY_MS);
+  const communityReportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
   // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
   const userVoiceDay = windowBudget(opts.speech?.userCharsPerDay ?? 0, DAY_MS);
   const serviceVoiceDay = windowBudget(opts.speech?.charsPerDay ?? 0, DAY_MS);
@@ -954,6 +961,101 @@ export function createApp(
       console.error('[report] not kept', error);
       return c.json({ error: 'failed' }, 500);
     }
+  });
+
+  // The community library (0z300, docs/agent-tasks/community-library.md). A share is cleaned and
+  // reviewed (the words check, then the model) before anyone sees it: `live` or `rejected` with a reason.
+  const isUuid = (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+  async function reviewCard(c: Context, card: NonNullable<ReturnType<typeof cleanCard>>): Promise<CommunityReason | null> {
+    const words = contentProblems(cardTexts(card).join('\n'));
+    if (words.includes('minors')) return 'minor';
+    if (words.includes('explicit')) return 'explicit';
+    if (!provider) return 'busy';
+    const layout = layoutPrompt([part('review', 'turn', [reviewPrompt(card)])]);
+    try {
+      const result = await provider.complete(layout, { timeoutMs: opts.timeoutMs, temperature: 0, strict: true });
+      logUsage(db, signedIn(c), { kind: 'llm', mode: 'communityReview', model: result.model ?? provider.name, promptVersion: promptVersion(layout), inputTokens: result.usage.input, cachedTokens: result.usage.cached, outputTokens: result.usage.output, costUsd: costUsd(result.model, result.usage) });
+      // The provider's own filter stopping the review is a no as well.
+      if (result.blocked) return 'explicit';
+      const verdict = parseReview(result.text);
+      return verdict.ok ? null : verdict.reason;
+    } catch {
+      return 'busy';
+    }
+  }
+
+  app.post('/v1/community/publish', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const body = await readJson(c);
+    const localId = typeof body?.localId === 'string' ? body.localId.trim() : '';
+    const card = cleanCard(body?.card);
+    if (!card || !isKey(localId)) return c.json({ error: 'badInput' }, 400);
+    if (!publishDay(userId)) return c.json({ error: 'busy' }, 429);
+    const reason = await reviewCard(c, card);
+    const status = reason ? 'rejected' : 'live';
+    try {
+      const { id } = await db.community.publish(userId, localId, card, status, reason);
+      console.log(`[community] publish ${status}${reason ? ` ${reason}` : ''}`);
+      return c.json({ id, status, ...(reason ? { reason } : {}) });
+    } catch (error) {
+      console.error('[community] publish failed', error);
+      return c.json({ error: 'failed' }, 500);
+    }
+  });
+
+  app.post('/v1/community/unpublish', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const body = await readJson(c);
+    const localId = typeof body?.localId === 'string' ? body.localId.trim() : '';
+    if (!isKey(localId)) return c.json({ error: 'badInput' }, 400);
+    await db.community.unpublish(userId, localId);
+    return c.json({ ok: true });
+  });
+
+  app.get('/v1/community', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    if (!(await signedIn(c))) return c.json({ error: 'signIn' }, 401);
+    const sort: CommunitySort = c.req.query('sort') === 'new' ? 'new' : 'popular';
+    const offset = Math.min(10_000, Math.max(0, Number.parseInt(c.req.query('offset') ?? '0', 10) || 0));
+    return c.json({ items: await db.community.list(sort, COMMUNITY_PAGE, offset) });
+  });
+
+  app.get('/v1/community/:id', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    if (!(await signedIn(c))) return c.json({ error: 'signIn' }, 401);
+    const id = c.req.param('id');
+    if (!isUuid(id)) return c.json({ error: 'badInput' }, 400);
+    const item = await db.community.get(id);
+    return item ? c.json(item) : c.json({ error: 'notFound' }, 404);
+  });
+
+  app.post('/v1/community/:id/add', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const id = c.req.param('id');
+    if (!isUuid(id)) return c.json({ error: 'badInput' }, 400);
+    const chats = await db.community.add(userId, id);
+    return chats == null ? c.json({ error: 'notFound' }, 404) : c.json({ chats });
+  });
+
+  app.post('/v1/community/:id/report', async (c) => {
+    if (!db?.community) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const id = c.req.param('id');
+    const body = await readJson(c);
+    const reason = typeof body?.reason === 'string' ? body.reason.trim().slice(0, 40) : '';
+    if (!isUuid(id) || !reason) return c.json({ error: 'badInput' }, 400);
+    if (!communityReportDay(userId)) return c.json({ error: 'busy' }, 429);
+    const status = await db.community.report(userId, id, reason, REPORTS_TO_HIDE);
+    if (!status) return c.json({ error: 'notFound' }, 404);
+    console.log(`[community] report ${reason} -> ${status}`);
+    return c.json({ status });
   });
 
   // What people do in the app (product analytics, 0z282): batches of events from the phone, never

@@ -1100,3 +1100,62 @@ describe('POST /v1/voice/transcribe', () => {
     assert.equal((await ask(createApp(answering('{}'), { timeoutMs: 1000 }), { clip: { ...clip, data } })).status, 413);
   });
 });
+
+describe('community library (0z300)', () => {
+  type Community = NonNullable<import('./db/types.ts').Db['community']>;
+  const req = (app: ReturnType<typeof createApp>, method: 'GET' | 'POST', path: string, json?: unknown) =>
+    app.request(path, { method, headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: json === undefined ? undefined : JSON.stringify(json) });
+  const reviewer = (text: string): LlmProvider => ({ name: 'fake', complete: async () => ({ text, usage: {} }) });
+  const card = { name: 'Levi Ackerman', greeting: 'Tch. You tracked mud in again.', bio: 'Captain, now your roommate.', picture: 'file:///secret.jpg', definition: 'private dialog' };
+  function store() {
+    const kept: unknown[] = [];
+    const community: Community = {
+      publish: async (_u, localId, c, status, reason) => (kept.push({ localId, c, status, reason }), { id: 'x1' }),
+      unpublish: async () => {},
+      list: async () => [{ id: 'x1', card: { name: 'Levi', greeting: 'Tch.' }, chats: 3, createdAt: '2026-11-19T00:00:00Z' }],
+      get: async (id) => (id === '11111111-1111-1111-1111-111111111111' ? { id, card: { name: 'Levi', greeting: 'Tch.' }, chats: 3, createdAt: 'x' } : null),
+      add: async () => 4,
+      report: async (_u, _id, _r, hideAt) => (hideAt === 3 ? 'live' : null),
+    };
+    return { kept, db: makeDb({ community }) };
+  }
+
+  it('publishes a fan character the review passes, keeping only shared fields', async () => {
+    const { kept, db } = store();
+    const res = await req(createApp(reviewer('{"ok":true}'), { timeoutMs: 1000, db }), 'POST', '/v1/community/publish', { localId: 'u_levi', card });
+    assert.deepEqual(await res.json(), { id: 'x1', status: 'live' });
+    const row = kept[0] as { c: Record<string, unknown>; status: string };
+    assert.equal(row.c.name, 'Levi Ackerman');
+    assert.equal(row.c.picture, undefined);
+    assert.equal(row.c.definition, undefined);
+  });
+
+  it('keeps a refused share as rejected with the reason, and a word-check hit never reaches the model', async () => {
+    const { kept, db } = store();
+    const refusing = createApp(reviewer('{"ok":false,"reason":"realPerson"}'), { timeoutMs: 1000, db });
+    assert.deepEqual(await (await req(refusing, 'POST', '/v1/community/publish', { localId: 'a', card })).json(), { id: 'x1', status: 'rejected', reason: 'realPerson' });
+    let asked = false;
+    const watching = createApp({ name: 'fake', complete: async () => ((asked = true), { text: '{"ok":true}', usage: {} }) }, { timeoutMs: 1000, db });
+    const res = await req(watching, 'POST', '/v1/community/publish', { localId: 'b', card: { ...card, bio: 'a schoolgirl in her first year' } });
+    assert.equal(((await res.json()) as { reason: string }).reason, 'minor');
+    assert.equal(asked, false);
+    assert.equal(kept.length, 2);
+  });
+
+  it('refuses a card without a name or greeting, and needs a database', async () => {
+    const { db } = store();
+    assert.equal((await req(createApp(reviewer('{"ok":true}'), { timeoutMs: 1000, db }), 'POST', '/v1/community/publish', { localId: 'a', card: { name: 'X' } })).status, 400);
+    assert.equal((await req(createApp(null, { timeoutMs: 1000, db: makeDb({}) }), 'POST', '/v1/community/publish', { localId: 'a', card })).status, 503);
+  });
+
+  it('lists, reads one, counts an add and takes a report with the hide line', async () => {
+    const { db } = store();
+    const app = createApp(null, { timeoutMs: 1000, db });
+    assert.equal(((await (await req(app, 'GET', '/v1/community?sort=new')).json()) as { items: unknown[] }).items.length, 1);
+    assert.equal((await req(app, 'GET', '/v1/community/11111111-1111-1111-1111-111111111111')).status, 200);
+    assert.equal((await req(app, 'GET', '/v1/community/22222222-2222-2222-2222-222222222222')).status, 404);
+    assert.equal((await req(app, 'GET', '/v1/community/not-an-id')).status, 400);
+    assert.deepEqual(await (await req(app, 'POST', '/v1/community/11111111-1111-1111-1111-111111111111/add')).json(), { chats: 4 });
+    assert.deepEqual(await (await req(app, 'POST', '/v1/community/11111111-1111-1111-1111-111111111111/report', { reason: 'rights' })).json(), { status: 'live' });
+  });
+});

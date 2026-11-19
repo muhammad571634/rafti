@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 import { PLANS, TRIAL } from '../../../src/economy/plans.ts';
+import type { CommunityItem, CommunityStatus } from '../../../src/lib/community.ts';
 
 import {
   WalletError,
@@ -287,6 +288,45 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
         { onConflict: 'user_id,client_id', ignoreDuplicates: true },
       );
       if (error) throw new Error(`app_events: ${error.message}`);
+    },
+
+    community: {
+      async publish(userId, localId, card, status, reason) {
+        const { data, error } = await client
+          .from('community_characters')
+          .upsert({ owner_id: userId, local_id: localId, card, status, reason, updated_at: new Date().toISOString() }, { onConflict: 'owner_id,local_id' })
+          .select('id')
+          .single();
+        if (error) throw new Error(`community publish: ${error.message}`);
+        return { id: (data as { id: string }).id };
+      },
+      async unpublish(userId, localId) {
+        const { error } = await client.from('community_characters').delete().eq('owner_id', userId).eq('local_id', localId);
+        if (error) throw new Error(`community unpublish: ${error.message}`);
+      },
+      async list(sort, limit, offset) {
+        let query = client.from('community_characters').select('id, card, chats, created_at').eq('status', 'live');
+        query = sort === 'popular' ? query.order('chats', { ascending: false }).order('created_at', { ascending: false }) : query.order('created_at', { ascending: false });
+        const { data, error } = await query.range(offset, offset + limit - 1);
+        if (error) throw new Error(`community list: ${error.message}`);
+        return (data ?? []).map((r: { id: string; card: CommunityItem['card']; chats: number; created_at: string }) => ({ id: r.id, card: r.card, chats: r.chats, createdAt: r.created_at }));
+      },
+      async get(id) {
+        const { data, error } = await client.from('community_characters').select('id, card, chats, created_at').eq('id', id).eq('status', 'live').maybeSingle();
+        if (error) throw new Error(`community get: ${error.message}`);
+        const r = data as { id: string; card: CommunityItem['card']; chats: number; created_at: string } | null;
+        return r ? { id: r.id, card: r.card, chats: r.chats, createdAt: r.created_at } : null;
+      },
+      async add(userId, id) {
+        const { data, error } = await client.rpc('community_add', { p_user: userId, p_id: id });
+        if (error) throw new Error(`community add: ${error.message}`);
+        return typeof data === 'number' ? data : null;
+      },
+      async report(userId, id, reason, hideAt) {
+        const { data, error } = await client.rpc('community_report', { p_user: userId, p_id: id, p_reason: reason, p_hide_at: hideAt });
+        if (error) throw new Error(`community report: ${error.message}`);
+        return (data as CommunityStatus | null) ?? null;
+      },
     },
 
     async deleteUser(userId) {

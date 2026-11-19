@@ -16,6 +16,7 @@ import type {
 } from '../../../src/ai/session-types.ts';
 import type { PlanId } from '../../../src/types/index.ts';
 import type { CleanBatch } from '../../../src/lib/analytics-events.ts';
+import type { CommunityCard, CommunityItem, CommunityReason, CommunitySort, CommunityStatus } from '../../../src/lib/community.ts';
 
 export type {
   BootstrapInput,
@@ -119,6 +120,21 @@ export interface Db {
    * event sent twice is kept once. Absent: the server takes no events (`/v1/events` says 503).
    */
   saveEvents?(userId: string, batch: CleanBatch): Promise<void>;
+
+  /**
+   * The community library (supabase/migrations/*_b14_community_characters.sql). Absent: the routes
+   * say 503. Publishing again (same owner, same local id) updates the row and its review.
+   */
+  community?: {
+    publish(userId: string, localId: string, card: CommunityCard, status: CommunityStatus, reason: CommunityReason | null): Promise<{ id: string }>;
+    unpublish(userId: string, localId: string): Promise<void>;
+    list(sort: CommunitySort, limit: number, offset: number): Promise<CommunityItem[]>;
+    get(id: string): Promise<CommunityItem | null>;
+    /** Counts the user once; null when it is not live. */
+    add(userId: string, id: string): Promise<number | null>;
+    /** Once per user; answers the status after it, or null when there is no such character. */
+    report(userId: string, id: string, reason: string, hideAt: number): Promise<CommunityStatus | null>;
+  };
 
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
   deleteUser(userId: string): Promise<void>;
