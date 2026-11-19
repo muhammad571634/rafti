@@ -737,7 +737,8 @@ export default function ChatRoomScreen() {
         </KeyboardBox>
 
         <ChatHeader
-          avatar={<CharacterAvatar character={character} size={46} />}
+          avatar={<CharacterAvatar character={character} size={42} />}
+          ringColor={friendAccent(character.id).strong}
           title={name}
           online
           identityLabel={[name, t('chat.aiCharacter'), typing ? t('chatList.typing') : t(`chat.mood.${mood}`), t('a11y.chatSettings')].join(', ')}

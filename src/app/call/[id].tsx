@@ -18,6 +18,7 @@ import { useHandsFree } from '@/components/call/use-hands-free';
 import { playOnce, setCallAudio, stopNote } from '@/components/chat/voice-player';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
+import { InkText } from '@/components/ink';
 import { Anim, BlurBackdrop, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
 import { planStatus } from '@/economy/plans';
 import { CAPTION_STEP_MS, captionLevels } from '@/lib/call-level';
@@ -25,8 +26,8 @@ import { callClock, shortName } from '@/lib/format';
 import { shareText } from '@/lib/share';
 import { dropClip, keepSpeech } from '@/lib/voice-files';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, space, systemColors } from '@/theme';
-import { inkRadius } from '@/theme/ink';
+import { colors, fonts, friendAccent, gradients, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -408,51 +409,58 @@ export default function CallScreen() {
     void shareText(t('call.shareMessage', { name }));
   };
 
+  const accent = friendAccent(character.id);
+
   return (
     <Screen
       background={gradients.call}
       statusBarStyle="light"
-      backdrop={<BlurBackdrop source={characterImage(character)} dim={0.3} blur={50} />}>
+      backdrop={<BlurBackdrop source={characterImage(character)} dim={0.36} blur={50} />}>
+      {/* Soft friend-hue atmospheric aura fading smoothly into obsidian ground. */}
       <LinearGradient
-        colors={['rgba(0,0,0,0.28)', 'rgba(0,0,0,0.12)', 'rgba(0,0,0,0.5)']}
-        locations={[0, 0.4, 1]}
+        colors={[`${accent.strong}38`, 'rgba(9,9,13,0.68)', ink.ground]}
+        locations={[0, 0.56, 1]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
 
-      <View style={callGlass.top}>
+      <View style={styles.topRow}>
         {state === 'active' ? (
-          <Animated.View entering={FadeIn.duration(320)} style={[callGlass.glass, callGlass.warn]}>
-            <Ionicons name={low ? 'timer' : 'timer-outline'} size={15} color={low ? systemColors.orange : colors.onMedia} />
-            <Txt style={callGlass.warnText}>
+          <Animated.View entering={FadeIn.duration(320)} style={styles.minPill}>
+            <View style={[styles.liveDot, low && styles.liveDotLow]} />
+            <InkText variant="caption" color={ink.text} style={styles.tabular}>
               {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
-            </Txt>
+            </InkText>
           </Animated.View>
-        ) : null}
+        ) : (
+          <View />
+        )}
         <PressableScale
-          style={[callGlass.glass, styles.share]}
+          style={styles.share}
           hitSlop={6}
           scaleTo={0.88}
           accessibilityLabel={t('a11y.share')}
           onPress={share}>
-          <Ionicons name="share-outline" size={20} color={colors.onMedia} />
+          <Ionicons name="share-outline" size={19} color={ink.text} />
         </PressableScale>
       </View>
 
       <View style={styles.head}>
         <View style={styles.avatarWrap}>
-          {state === 'connecting' ? <Anim name="calling" size={230} tint="rgba(255,255,255,0.7)" style={styles.rings} /> : null}
-          <CallRings size={150} their={their} mine={mine} thinking={state === 'active' && !!live && waiting}>
-            <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.85)" />
+          {state === 'connecting' ? <Anim name="calling" size={230} tint={accent.strong} style={styles.rings} /> : null}
+          <CallRings size={146} their={their} mine={mine} thinking={state === 'active' && !!live && waiting} accentColor={accent.strong}>
+            <CharacterAvatar character={character} size={146} ring ringColor={accent.strong} />
           </CallRings>
         </View>
 
-        <Txt style={[callGlass.title, styles.name]} lines={2}>
+        <InkText variant="display" color={ink.text} center lines={2} style={styles.name}>
           {name}
-        </Txt>
+        </InkText>
 
         {state === 'empty' ? null : (
-          <Txt style={callGlass.timer}>{state === 'connecting' ? t('call.connecting') : callClock(seconds)}</Txt>
+          <InkText variant="sub" color="rgba(255,255,255,0.64)" center style={[styles.timer, styles.tabular]}>
+            {state === 'connecting' ? t('call.connecting') : callClock(seconds)}
+          </InkText>
         )}
       </View>
 
@@ -463,9 +471,11 @@ export default function CallScreen() {
           key={line}
           entering={FadeIn.duration(320)}
           exiting={FadeOut.duration(200)}
-          style={[callGlass.glass, callGlass.caption]}
+          style={[styles.fallbackCaption, callGlass.caption]}
           accessibilityLiveRegion="polite">
-          <Txt style={callGlass.captionText}>{`“${lines[line]}”`}</Txt>
+          <View style={[styles.fallbackLine, { borderLeftColor: accent.strong }]}>
+            <Txt style={styles.fallbackText}>{`“${lines[line]}”`}</Txt>
+          </View>
         </Animated.View>
       ) : null}
 
@@ -477,6 +487,7 @@ export default function CallScreen() {
             hearing={mic.phase === 'sending'}
             hearingFailed={mic.failed}
             caption={caption}
+            accentColor={accent.strong}
             waiting={waiting}
             failed={failed}
             onRetryHearing={mic.retry}
@@ -520,17 +531,48 @@ export default function CallScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { padding: space.xl },
+  tabular: { fontVariant: ['tabular-nums'] },
+  topRow: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: space.lg,
+    marginTop: space.xs,
+  },
+  minPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 34,
+    paddingHorizontal: 13,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+  },
+  liveDot: { width: 7, height: 7, borderRadius: inkRadius.pill, backgroundColor: systemColors.green },
+  liveDotLow: { backgroundColor: systemColors.orange },
   share: {
-    position: 'absolute',
-    right: 0,
     width: 40,
     height: 40,
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
   },
-  head: { marginTop: 70, alignItems: 'center', paddingHorizontal: space.xxl },
+  head: { marginTop: 64, alignItems: 'center', paddingHorizontal: space.xxl },
   avatarWrap: { alignItems: 'center', justifyContent: 'center' },
   rings: { position: 'absolute' },
-  name: { marginTop: 22 },
+  name: { marginTop: 26 },
+  timer: { marginTop: 4 },
+  fallbackCaption: {
+    backgroundColor: 'rgba(18,18,24,0.72)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.14)',
+  },
+  fallbackLine: { alignSelf: 'stretch', borderLeftWidth: 2, paddingLeft: 12 },
+  fallbackText: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 23, color: 'rgba(255,255,255,0.95)' },
 });

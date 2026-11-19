@@ -7,13 +7,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
 import { IconButton, PressableScale, Txt } from '@/components/ui';
-import { colors, fonts, hitSlop, playful, space, systemColors } from '@/theme';
+import { colors, fonts, hitSlop, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
-/** Room the header takes under the status bar: one row of 46pt round buttons and the face. */
+/** Room the header takes under the status bar: one row of round glass buttons and the face. */
 export const HEADER_ROOM = 64;
 /** The fade under the solid header ground. */
 const FADE = 20;
-const ROUND = 46;
+const ROUND = 42;
 
 /** The same colour, fully transparent: the end of the fade under the header. */
 const fadeOut = (color: string) => (/^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent');
@@ -41,6 +42,7 @@ export function HeaderFade({ color, room }: { color: string; room: number }) {
  */
 export function ChatHeader({
   avatar,
+  ringColor,
   title,
   caption,
   identityLabel,
@@ -52,6 +54,8 @@ export function ChatHeader({
   below,
 }: {
   avatar: React.ReactNode;
+  /** Optional subtle friend-accent ring around the header avatar. */
+  ringColor?: string;
   title: string;
   caption: React.ReactNode;
   identityLabel: string;
@@ -69,7 +73,7 @@ export function ChatHeader({
   const insets = useSafeAreaInsets();
   const onPhoto = useOnPhoto();
   const round = [styles.round, onPhoto && styles.photoRound];
-  const ink = onPhoto ? colors.onMedia : colors.text;
+  const fg = onPhoto ? colors.onMedia : ink.text;
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + space.xs }]} pointerEvents="box-none">
@@ -81,16 +85,16 @@ export function ChatHeader({
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
           style={round}>
-          <Ionicons name="chevron-back" size={26} color={ink} style={styles.backGlyph} />
+          <Ionicons name="chevron-back" size={23} color={fg} style={styles.backGlyph} />
         </PressableScale>
 
         <PressableScale style={styles.identity} scaleTo={0.97} accessibilityRole="button" accessibilityLabel={identityLabel} onPress={onIdentity}>
           <View>
-            {avatar}
+            <View style={ringColor ? [styles.avatarRing, { borderColor: ringColor }] : undefined}>{avatar}</View>
             {online ? <View style={[styles.online, onPhoto && styles.onlineOnPhoto]} /> : null}
           </View>
           <View style={styles.names}>
-            <Txt style={[styles.title, onPhoto && styles.photoShadow]} color={ink} lines={1}>
+            <Txt style={[styles.title, onPhoto && styles.photoShadow]} color={fg} lines={1}>
               {title}
             </Txt>
             <View style={styles.caption}>{caption}</View>
@@ -99,8 +103,8 @@ export function ChatHeader({
 
         <IconButton
           icon="call-outline"
-          size={23}
-          color={ink}
+          size={21}
+          color={fg}
           dot={missedCall}
           style={round}
           accessibilityLabel={callLabel}
@@ -130,28 +134,42 @@ const styles = StyleSheet.create({
   header: { position: 'absolute', top: 0, left: 0, right: 0 },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm + 2, paddingHorizontal: space.lg },
   fade: { position: 'absolute', top: 0, left: 0, right: 0 },
-  round: { width: ROUND, height: ROUND, borderRadius: ROUND / 2, alignItems: 'center', justifyContent: 'center', backgroundColor: playful.round },
-  photoRound: { backgroundColor: colors.onMediaGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  round: {
+    width: ROUND,
+    height: ROUND,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  photoRound: {
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+  },
   backGlyph: { marginLeft: -2 },
   identity: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2 },
+  avatarRing: { padding: 1.5, borderWidth: 1.5, borderRadius: inkRadius.pill },
   online: {
     position: 'absolute',
     right: -1,
     bottom: -1,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    borderWidth: 2.5,
-    borderColor: playful.ground,
+    width: 13,
+    height: 13,
+    borderRadius: inkRadius.pill,
+    borderWidth: 2,
+    borderColor: ink.ground,
     backgroundColor: systemColors.green,
   },
   onlineOnPhoto: { borderColor: colors.black },
   names: { flex: 1, minWidth: 0 },
-  title: { fontFamily: fonts.playful, fontSize: 22, lineHeight: 27 },
+  title: { fontFamily: fonts.serif, fontSize: 21, lineHeight: 26, letterSpacing: -0.25 },
   caption: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  captionText: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.textSecondary, flexShrink: 1 },
-  captionStrong: { color: colors.text },
-  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.textSecondary },
+  captionText: { fontSize: 13, lineHeight: 17, fontWeight: '500', color: ink.text2, flexShrink: 1 },
+  captionStrong: { color: ink.text },
+  captionDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: ink.text2 },
   below: { marginTop: space.sm },
   photoShadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 6 },
   photoCaption: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },

@@ -1,28 +1,19 @@
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {
-  BondHead,
-  BondTrack,
-  FaceCard,
-  FriendAccent,
-  GlassPill,
-  Group,
-  LinkRow,
-  PeachButton,
-  ProfileTop,
-  QuickAction,
-  useFriendAccent,
-  QuickRow,
-  profileSheet,
-} from '@/components/character/kit';
+import { FriendAccent } from '@/components/character/kit';
 import { FriendMoments } from '@/components/character/moments';
-import { Header, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
+import { ProfileHero } from '@/components/character/profile-hero';
+import { InkText } from '@/components/ink';
 import { planDate } from '@/components/plans/copy';
 import { useEarlyAccess } from '@/components/plans/early-access';
+import { Header, PressableScale, Screen, SFIcon, useScrolledPast } from '@/components/ui';
 import { opensToAllAt } from '@/economy/early-access';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { useOpenChat } from '@/hooks/use-open-chat';
@@ -33,19 +24,15 @@ import { daysBetween, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { night, space } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { friendAccent, hitSlop, space } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character, Relationship, Scene } from '@/types';
 
-// Always dark (appearance B, owner 2026-11-11): a friend's page is a moment with them.
-const { colors, ground: systemGround, friendAccent } = night;
-const profileStyles = profileSheet.night;
-
 /**
- * Discovery -> profile -> "Add friend" is the reference app's way in: adding a character opens a
- * chat that starts with their greeting. In the four tabs' look (0z152) on the night ground in both
- * themes (appearance B): their picture as Find's photo card with the name on it, one peach action,
- * and cards below.
+ * Character Profile on the Ink Night ground (approved Ink+ prototype): full-bleed edge-to-edge
+ * portrait melting into `#09090D`, a single unified Action Row (Message + Call + Secret note),
+ * a Living Bond Strip matching Us's closeness language, live FriendMoments scenes, Story Beats,
+ * and a compact About card. Preserves 100% of existing early-access, scene, and routing logic.
  */
 export default function CharacterProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -66,15 +53,14 @@ export default function CharacterProfileScreen() {
   // Two quick taps on a moment start it once.
   const continuedAt = useRef(0);
   const locale = useAppStore((s) => s.user.locale);
-  // A new character is Pro-only for its first 7 days; the sheet's trial adds it and opens the chat.
   const openChatOnce = useOpenChat();
   const early = useEarlyAccess(openChatOnce);
-  // Past the face card, the top row shows the name.
-  const { scrolled, onScroll } = useScrolledPast(360);
+  // Once scrolled past the hero, reveal a compact sticky top bar so Back stays reachable.
+  const { scrolled, onScroll } = useScrolledPast(300);
 
   if (!character) {
     return (
-      <Screen night background={colors.bgPlain}>
+      <Screen night background={ink.ground}>
         <Header title={t('errors.notFound')} />
       </Screen>
     );
@@ -84,6 +70,10 @@ export default function CharacterProfileScreen() {
   const voiceReady = character.voiceReady;
   const shown = localCharacter(character);
   const name = displayName(character, relationship);
+  const first = shortName(name);
+  const accent = friendAccent(character.id);
+  const relation = shown.relation ?? shown.worldRole;
+  const eyebrow = [relation, character.series ? phrase(character.series) : undefined].filter(Boolean).join(' · ') || character.handle;
 
   const locked = !isFriend && early.locked(character);
   const opensAt = opensToAllAt(character);
@@ -91,7 +81,6 @@ export default function CharacterProfileScreen() {
   const openChat = () => {
     if (locked) return early.add(character);
     const conversationId = conversation?.id ?? addFriend(character.id);
-    // Back to that chat when it is under this profile, else on top of it (`useOpenChat`).
     openChatOnce(conversationId);
   };
 
@@ -107,111 +96,245 @@ export default function CharacterProfileScreen() {
   };
 
   return (
-    <Screen night background={systemGround.ground}>
-      <ProfileTop
-        title={name}
-        showTitle={scrolled}
-        // Back only (owner, 2026-11-11): a ⋯ to the chat's settings did what back does from there,
-        // and the chat's header opens the settings anywhere else.
-        onBack={() => router.back()}
-      />
-
-      {/* Their own space: quick actions, the level and the row tiles in their colour. */}
-      <FriendAccent value={friendAccent(character.id)}>
+    <Screen night edgeToEdge background={ink.ground}>
+      <FriendAccent value={accent}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           onScroll={onScroll}
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
-          <FaceCard
-            tall
+          contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+          <ProfileHero
             character={character}
             name={name}
-            // Store rule: an AI character is marked as one.
-            nameBadge={<GlassPill label={t('safety.ai')} accessibilityLabel={t('safety.ai')} />}
-            lines={[`${character.handle}${character.series ? ` · ${phrase(character.series)}` : ''}`, shown.relation ?? shown.worldRole]}
-            topLeft={
-              voiceReady ? (
-                <GlassPill
-                  label={t('find.voiceReady')}
-                  icon={
-                    // SF Symbols' own pulse on iPhone: the voice is alive.
-                    <SFIcon ios="waveform" icon="pulse" size={14} color={colors.onMedia} animation={{ effect: { type: 'pulse' }, repeating: true, speed: 0.5 }} />
-                  }
-                />
-              ) : undefined
-            }
+            eyebrow={eyebrow}
+            tagline={shown.tagline}
+            voiceReady={voiceReady}
+            topInset={insets.top}
+            onBack={() => router.back()}
           />
 
-          {locked ? <Txt style={[profileStyles.caption, styles.bold]}>{t('find.proFirst')}</Txt> : null}
-          {character.review === 'pending' ? <Txt style={profileStyles.caption}>{t('createCharacter.inReview')}</Txt> : null}
+          <View style={styles.body}>
+            {/* Unified Single-Row Action Bar: crisp white primary pill + round Call & Secret Note */}
+            <View style={styles.actionsRow}>
+              <PressableScale
+                scaleTo={0.97}
+                accessibilityRole="button"
+                accessibilityLabel={isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
+                onPress={openChat}
+                style={styles.primaryPill}>
+                <Ionicons name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'} size={18} color={ink.onPill} />
+                <InkText variant="bodyStrong" color={ink.onPill} lines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.shrink}>
+                  {isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
+                </InkText>
+              </PressableScale>
 
-          <View style={styles.words}>
-            {shown.tagline ? (
-              <Txt style={styles.tagline} center>
-                {shown.tagline}
-              </Txt>
+              {isFriend ? (
+                <>
+                  <PressableScale
+                    scaleTo={0.92}
+                    disabled={!voiceReady}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('characterProfile.call')}
+                    accessibilityState={{ disabled: !voiceReady }}
+                    onPress={() => router.push(`/call/${character.id}`)}
+                    style={[styles.circleAction, !voiceReady && styles.disabled]}>
+                    <Ionicons name="call-outline" size={21} color={ink.text} />
+                  </PressableScale>
+                  <PressableScale
+                    scaleTo={0.92}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('characterProfile.secretNote')}
+                    onPress={() => router.push(`/secret-note/${character.id}`)}
+                    style={styles.circleAction}>
+                    <Ionicons name="mail-outline" size={21} color={ink.text} />
+                  </PressableScale>
+                </>
+              ) : null}
+            </View>
+
+            {locked ? (
+              <InkText variant="footnote" color={ink.accent} center style={styles.caption}>
+                {opensAt != null
+                  ? `${t('find.proFirst')} · ${t('newCharacters.opensOn', { date: planDate(opensAt) })}`
+                  : t('find.proFirst')}
+              </InkText>
             ) : null}
-            <Txt style={styles.bio} center>
-              {shown.bio}
-            </Txt>
-            {shown.tags.length > 0 ? (
-              <View style={styles.tags}>
-                {shown.tags.map((tag) => (
-                  <View key={tag} style={styles.tag}>
-                    <Txt style={styles.tagText} maxFontSizeMultiplier={1.3}>
-                      {tag}
-                    </Txt>
-                  </View>
-                ))}
-              </View>
+            {character.review === 'pending' ? (
+              <InkText variant="footnote" center style={styles.caption}>
+                {t('createCharacter.inReview')}
+              </InkText>
+            ) : null}
+            {!voiceReady ? (
+              <InkText variant="footnote" center style={styles.caption}>
+                {t('characterProfile.voiceTraining')}
+              </InkText>
+            ) : null}
+
+            {/* Living Bond Strip: visual twin of Us screen's closeness language */}
+            {isFriend && relationship ? (
+              <BondStrip
+                relationship={relationship}
+                accentStrong={accent.strong}
+                memoryCount={memoryCount}
+                onMemories={() => router.push(`/character/${character.id}/memories`)}
+              />
             ) : null}
           </View>
 
-          <PeachButton
-            label={isFriend ? t('characterProfile.chat') : t('characterProfile.addFriend')}
-            icon={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'}
-            onPress={openChat}
-          />
-          {locked && opensAt != null ? <Txt style={profileStyles.caption}>{t('newCharacters.opensOn', { date: planDate(opensAt) })}</Txt> : null}
-          {isFriend ? (
-            <QuickRow center>
-              <QuickAction
-                icon="call"
-                label={t('characterSettings.quickCall')}
-                accessibilityLabel={t('characterProfile.call')}
-                disabled={!voiceReady}
-                onPress={() => router.push(`/call/${character.id}`)}
-              />
-              <QuickAction icon="mail" label={t('characterProfile.secretNote')} onPress={() => router.push(`/secret-note/${character.id}`)} />
-            </QuickRow>
-          ) : null}
-          {!voiceReady ? <Txt style={profileStyles.caption}>{t('characterProfile.voiceTraining')}</Txt> : null}
-
+          {/* Live scenes to step into (keeps FriendMoments + weekly AI generation + share intact) */}
           <FriendMoments character={character} isFriend={isFriend} onContinue={continueScene} />
 
-          <AboutCard character={shown} name={shortName(name)} locale={locale} />
-
-          <StoryCard character={shown} level={relationship?.level ?? 0} />
-
-          {isFriend && relationship ? (
-            <BondCard
-              relationship={relationship}
-              memoryCount={memoryCount}
-              onMemories={() => router.push(`/character/${character.id}/memories`)}
-            />
-          ) : null}
+          <View style={styles.sections}>
+            <StoryCard character={shown} level={relationship?.level ?? 0} accentStrong={accent.strong} accentSoft={accent.soft} />
+            <AboutCard character={shown} name={first} locale={locale} />
+          </View>
         </ScrollView>
       </FriendAccent>
+
+      {/* Compact sticky top bar once scrolled past the hero */}
+      {scrolled ? (
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={[styles.stickyBar, { paddingTop: insets.top + 6 }]}>
+          <PressableScale
+            onPress={() => router.back()}
+            scaleTo={0.88}
+            hitSlop={hitSlop}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.back')}
+            style={styles.stickyBack}>
+            <Ionicons name="chevron-back" size={22} color={ink.text} style={styles.backGlyph} />
+          </PressableScale>
+          <InkText variant="cardSmall" lines={1} center style={styles.grow}>
+            {name}
+          </InkText>
+          <View style={styles.stickySpacer} />
+        </Animated.View>
+      ) : null}
+
       {early.sheet}
     </Screen>
   );
 }
 
-/**
- * Their story and facts in one white card (`src/mock/character-profiles.ts`), as the chat's first
- * card shows them: the story, then the dynamic, age and height, what they love and can't stand.
- */
+/** Living Bond Strip matching Us's closeness language: Lv + streak/days + hairline bar + Memories link. */
+function BondStrip({
+  relationship,
+  accentStrong,
+  memoryCount,
+  onMemories,
+}: {
+  relationship: Relationship;
+  accentStrong: string;
+  memoryCount: number;
+  onMemories: () => void;
+}) {
+  const { t } = useTranslation();
+  const { progress } = levelForIntimacy(relationship.intimacy);
+  const days = daysBetween(relationship.anniversary) + 1;
+  const maxed = relationship.intimacy >= relationship.nextLevelAt;
+  const pct = Math.round(Math.min(1, Math.max(0, progress)) * 100);
+
+  return (
+    <View style={styles.bondCard}>
+      <LinearGradient
+        colors={[`${accentStrong}30`, `${accentStrong}00`]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.72, y: 0.9 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+
+      <View style={styles.bondTop}>
+        <InkText variant="cardSmall" lines={1} style={[styles.grow, styles.tabular]}>
+          {`${t('home.hero.level', { level: relationship.level })} · ${phrase(relationship.levelTitle)}`}
+        </InkText>
+        <View style={styles.streakPill}>
+          {relationship.streakDays > 0 ? <SFIcon ios="flame.fill" icon="flame" size={12} color={ink.streakText} /> : null}
+          <InkText variant="caption" color={ink.streakText} lines={1} style={styles.tabular}>
+            {relationship.streakDays > 0
+              ? `${relationship.streakDays} · ${days} ${t('us.daysShort', { count: days })}`
+              : `${days} ${t('us.daysShort', { count: days })}`}
+          </InkText>
+        </View>
+      </View>
+
+      <View style={styles.bondTrack}>
+        <View style={[styles.bondFill, { width: `${pct}%`, backgroundColor: accentStrong }]} />
+      </View>
+
+      <View style={styles.bondFoot}>
+        <InkText variant="footnote" color={ink.text2} lines={1} style={[styles.grow, styles.tabular]}>
+          {maxed
+            ? t('us.intimacy', { count: relationship.intimacy })
+            : t('us.toLevel', { count: Math.max(0, relationship.nextLevelAt - relationship.intimacy), level: relationship.level + 1 })}
+        </InkText>
+        <PressableScale
+          scaleTo={0.95}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')}
+          onPress={onMemories}
+          style={styles.memoriesBtn}>
+          <InkText variant="footnoteStrong" color={ink.text} style={styles.tabular}>
+            {memoryCount > 0 ? `${t('characterProfile.memories')} · ${memoryCount}` : t('characterProfile.memories')}
+          </InkText>
+          <Ionicons name="chevron-forward" size={14} color={ink.text2} />
+        </PressableScale>
+      </View>
+    </View>
+  );
+}
+
+/** Story Beats ("What they hold back"): unlocked chapters glow in the friend's accent. */
+function StoryCard({
+  character,
+  level,
+  accentStrong,
+  accentSoft,
+}: {
+  character: Character;
+  level: number;
+  accentStrong: string;
+  accentSoft: string;
+}) {
+  const { t } = useTranslation();
+  const beats = character.arc?.beats;
+  if (!beats?.length) return null;
+  const openCount = beats.filter((b) => level >= b.atLevel).length;
+
+  return (
+    <View style={styles.inkCard}>
+      <View style={styles.cardHead}>
+        <InkText variant="cardSmall" accessibilityRole="header" style={styles.grow}>
+          {t('world.story')}
+        </InkText>
+        <InkText variant="footnote" color={ink.text3} style={styles.tabular}>
+          {`${openCount}/${beats.length}`}
+        </InkText>
+      </View>
+
+      {beats.map((beat, i) => {
+        const open = level >= beat.atLevel;
+        return (
+          <View key={beat.atLevel} style={[styles.storyRow, i < beats.length - 1 && styles.rowLine]}>
+            <View style={[styles.storyIcon, open && { backgroundColor: accentSoft }]}>
+              <SFIcon
+                ios={open ? 'key.fill' : 'lock.fill'}
+                icon={open ? 'key' : 'lock-closed'}
+                size={15}
+                color={open ? accentStrong : ink.text3}
+              />
+            </View>
+            <InkText variant={open ? 'subStrong' : 'sub'} color={open ? ink.text : ink.text3} style={styles.grow}>
+              {open ? beat.title : t('world.level', { level: beat.atLevel })}
+            </InkText>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+/** Compact About Card: bio, backstory, tags, and clean 2-column facts inside one calm Ink card. */
 function AboutCard({ character, name, locale }: { character: Character; name: string; locale: string }) {
   const { t } = useTranslation();
   const rows = [
@@ -221,118 +344,174 @@ function AboutCard({ character, name, locale }: { character: Character; name: st
     character.likes?.length ? { key: 'loves', label: t('intro.loves'), value: character.likes.join(', ') } : null,
     character.dislikes?.length ? { key: 'cantStand', label: t('intro.cantStand'), value: character.dislikes.join(', ') } : null,
   ].filter((row) => row !== null);
-  if (!character.backstory && !rows.length) return null;
+
+  const hasBio = !!character.bio || !!character.backstory || character.tags.length > 0;
+  if (!hasBio && !rows.length) return null;
 
   return (
-    <Group title={t('intro.open', { name })}>
-      {character.backstory ? (
-        <View style={[styles.aboutStory, rows.length > 0 && styles.line]}>
-          <Txt style={styles.aboutLabel}>{t('intro.story')}</Txt>
-          <Txt style={styles.aboutText}>{character.backstory}</Txt>
-        </View>
-      ) : null}
+    <View style={styles.inkCard}>
+      <View style={[styles.aboutTop, rows.length > 0 && styles.rowLine]}>
+        <InkText variant="cardSmall" accessibilityRole="header">
+          {t('intro.open', { name })}
+        </InkText>
+        {character.bio ? <InkText variant="sub" color="rgba(255,255,255,0.72)">{character.bio}</InkText> : null}
+        {character.backstory ? <InkText variant="sub" color={ink.text2}>{character.backstory}</InkText> : null}
+        {character.tags.length > 0 ? (
+          <View style={styles.tags}>
+            {character.tags.map((tag) => (
+              <View key={tag} style={styles.tag}>
+                <InkText variant="caption" color={ink.text2}>
+                  {tag}
+                </InkText>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </View>
+
       {rows.map((row, i) => (
-        <View key={row.key} style={[styles.aboutRow, i < rows.length - 1 && styles.line]}>
-          <Txt style={styles.aboutLabel}>{row.label}</Txt>
-          <Txt style={styles.aboutValue}>{row.value}</Txt>
+        <View key={row.key} style={[styles.factRow, i < rows.length - 1 && styles.rowLine]}>
+          <InkText variant="footnote" color={ink.text3} style={styles.factLabel}>
+            {row.label}
+          </InkText>
+          <InkText variant="subStrong" color={ink.text} style={styles.factValue}>
+            {row.value}
+          </InkText>
         </View>
       ))}
-    </Group>
-  );
-}
-
-/**
- * What they hold back, opening with the bond (`src/lib/world-story.ts`): a beat's title once its
- * level is reached, a lock and the level before that. The secret itself only comes up in the chat.
- */
-function StoryCard({ character, level }: { character: Character; level: number }) {
-  const { t } = useTranslation();
-  const beats = character.arc?.beats;
-  if (!beats?.length) return null;
-  return (
-    <Group title={t('world.story')}>
-      <View style={styles.storyList}>
-        {beats.map((beat, i) => {
-          const open = level >= beat.atLevel;
-          return (
-            <View key={beat.atLevel} style={[styles.storyRow, i < beats.length - 1 && styles.line]}>
-              <View style={[styles.storyIcon, open && styles.storyIconOpen]}>
-                <SFIcon
-                  ios={open ? 'key.fill' : 'lock.fill'}
-                  icon={open ? 'key' : 'lock-closed'}
-                  size={15}
-                  color={open ? colors.brandText : colors.textFaint}
-                />
-              </View>
-              <Txt style={[styles.aboutValue, styles.grow, !open && styles.storyLocked]}>{open ? beat.title : t('world.level', { level: beat.atLevel })}</Txt>
-            </View>
-          );
-        })}
-      </View>
-    </Group>
-  );
-}
-
-/** Level, progress, streak and days together in one white card, with Memories as its last row. */
-function BondCard({
-  relationship,
-  memoryCount,
-  onMemories,
-}: {
-  relationship: Relationship;
-  memoryCount: number;
-  onMemories: () => void;
-}) {
-  const { t } = useTranslation();
-  const accent = useFriendAccent();
-  const progress = levelForIntimacy(relationship.intimacy).progress;
-  // Intimacy keeps growing past the last threshold, so the top level shows a plain total.
-  const maxed = relationship.intimacy >= relationship.nextLevelAt;
-
-  return (
-    <Group>
-      <BondHead
-        // One SF Symbols bounce when the card appears (iPhone).
-        heart={<SFIcon ios="heart.fill" icon="heart" size={18} color={accent?.strong ?? colors.brandText} animation={{ effect: { type: 'bounce' } }} />}
-        title={t('characterProfile.levelLine', { level: relationship.level, title: phrase(relationship.levelTitle) })}
-        line={`${t('us.streak', { count: relationship.streakDays })} · ${t('us.daysTogether', { count: daysBetween(relationship.anniversary) + 1 })}`}
-        end={
-          <Txt style={styles.progress}>
-            {maxed
-              ? t('us.intimacy', { count: relationship.intimacy })
-              : t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
-          </Txt>
-        }
-      />
-      <BondTrack progress={progress} />
-      <View style={styles.bondFoot}>
-        <LinkRow label={t('characterProfile.memories')} icon="bookmark" meta={memoryCount > 0 ? String(memoryCount) : undefined} onPress={onMemories} last />
-      </View>
-    </Group>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
-  bold: { fontWeight: inkFace('subStrong').fontWeight },
-  words: { paddingHorizontal: space.xl, paddingTop: 18, paddingBottom: 18, alignItems: 'center' },
-  // Their line in the serif (it carries Latin, Cyrillic and Greek; other scripts fall back cleanly).
-  tagline: { ...inkFace('cardSmall'), color: systemGround.label },
-  bio: { marginTop: 8, ...inkFace('sub'), color: colors.textSecondary },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
-  tag: { minHeight: 32, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
-  tagText: { ...inkFace('sub'), color: systemGround.label },
-  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  aboutStory: { paddingHorizontal: 18, paddingTop: 8, paddingBottom: 14, gap: 4 },
-  aboutRow: { paddingHorizontal: 18, paddingVertical: 12, gap: 2 },
-  aboutLabel: { ...inkFace('footnote'), color: colors.textSecondary },
-  aboutText: inkFace('sub'),
-  aboutValue: inkFace('body'),
-  storyList: { paddingTop: 4 },
-  storyRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: 18, paddingVertical: 12 },
-  storyIcon: { width: 32, height: 32, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  storyIconOpen: { backgroundColor: colors.primarySofter },
-  storyLocked: { color: colors.textSecondary },
-  progress: { ...inkFace('subStrong'), color: colors.textSecondary },
-  bondFoot: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
+  shrink: { flexShrink: 1 },
+  tabular: { fontVariant: ['tabular-nums'] },
+  body: { paddingHorizontal: 16, paddingTop: 10, gap: 14 },
+  sections: { paddingHorizontal: 16, marginTop: 16, gap: 14 },
+  actionsRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  primaryPill: {
+    flex: 1,
+    minHeight: 50,
+    paddingHorizontal: 18,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    backgroundColor: ink.pill,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  circleAction: {
+    width: 50,
+    height: 50,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  disabled: { opacity: 0.4 },
+  caption: { paddingHorizontal: 8 },
+  bondCard: {
+    borderRadius: 24,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    padding: 16,
+    gap: 10,
+  },
+  bondTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  streakPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.streakFill,
+  },
+  bondTrack: {
+    height: 6,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.hairlineFill,
+    overflow: 'hidden',
+  },
+  bondFill: { height: '100%', borderRadius: inkRadius.pill },
+  bondFoot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  memoriesBtn: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  inkCard: {
+    borderRadius: 24,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  cardHead: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: ink.edge,
+  },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
+  storyRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
+  storyIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  aboutTop: { padding: 16, gap: 8 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 },
+  tag: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
+  },
+  factRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+  },
+  factLabel: { minWidth: '34%', flexShrink: 0, paddingTop: 1 },
+  factValue: { flex: 1, textAlign: 'right' },
+  stickyBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    backgroundColor: 'rgba(9,9,13,0.94)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: ink.edge,
+  },
+  stickyBack: {
+    width: 40,
+    height: 40,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+  },
+  backGlyph: { marginLeft: -2 },
+  stickySpacer: { width: 40 },
 });

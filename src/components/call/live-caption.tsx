@@ -7,13 +7,14 @@ import type { CallLine } from '@/ai/call-prompt';
 import { HELPLINE_URL } from '@/ai/safety';
 import { callGlass } from '@/components/call/call-controls';
 import { Anim, PressableScale, Txt } from '@/components/ui';
-import { colors, space } from '@/theme';
+import { colors, fonts, space } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 
 /**
- * The live caption on a call on the model: their line in quotes (on a group call with the speaker's
- * name over it), the user's own words softer, a wave while the user speaks, dots while the words are
- * written out or they answer, and Not Delivered with a retry when the model is busy.
+ * The live caption on a call on the model: their line in warm editorial serif inside a deep
+ * obsidian dark-glass panel (with an optional friend-hue left bar echoing Chat's Variant A),
+ * the user's own words softer, a wave while the user speaks, dots while waiting, and Not
+ * Delivered with a retry when the model is busy.
  */
 export function LiveCaption({
   talking,
@@ -21,6 +22,7 @@ export function LiveCaption({
   hearingFailed,
   caption,
   who,
+  accentColor,
   waiting,
   failed,
   onRetryHearing,
@@ -32,6 +34,8 @@ export function LiveCaption({
   caption: CallLine | null;
   /** The speaker's name on a group call. */
   who?: string;
+  /** Optional friend-hue accent bar on 1:1 calls. */
+  accentColor?: string;
   waiting: boolean;
   failed: boolean;
   onRetryHearing: () => void;
@@ -41,23 +45,29 @@ export function LiveCaption({
   const retry = hearingFailed ? onRetryHearing : failed ? onRetry : null;
   if (retry) {
     return (
-      <PressableScale style={[callGlass.glass, callGlass.caption, styles.caption]} onPress={retry} accessibilityRole="button" accessibilityLabel={t('chat.tryAgain')}>
+      <PressableScale style={[styles.panel, callGlass.caption, styles.caption]} onPress={retry} accessibilityRole="button" accessibilityLabel={t('chat.tryAgain')}>
         <Txt style={callGlass.captionText}>{t('chat.notDelivered')}</Txt>
         <Txt style={styles.captionSoft}>{t('chat.tryAgain')}</Txt>
       </PressableScale>
     );
   }
   const mine = caption?.author === 'me';
+  const accented = !!accentColor && !mine && !who;
   return (
-    <View style={[callGlass.glass, callGlass.caption, styles.caption]} accessibilityLiveRegion="polite">
+    <View style={[styles.panel, callGlass.caption, styles.caption]} accessibilityLiveRegion="polite">
       {talking ? (
         <Anim name="voiceWave" size={34} tint={colors.onMedia} />
       ) : (
         <>
           {caption && !hearing ? (
-            <Animated.View key={caption.text} entering={FadeIn.duration(320)}>
+            <Animated.View
+              key={caption.text}
+              entering={FadeIn.duration(320)}
+              style={accented ? [styles.accentedLine, { borderLeftColor: accentColor }] : undefined}>
               {who && !mine ? <Txt style={styles.who}>{who}</Txt> : null}
-              <Txt style={mine ? styles.captionSoft : callGlass.captionText}>{mine ? caption.text : `“${caption.text}”`}</Txt>
+              <Txt style={mine ? styles.captionSoft : accented ? styles.theirSerifLeft : styles.theirSerif}>
+                {mine ? caption.text : `“${caption.text}”`}
+              </Txt>
             </Animated.View>
           ) : null}
           {hearing || waiting ? <Anim name="typing" size={30} tint={colors.onMedia} /> : null}
@@ -83,7 +93,15 @@ export function CallHelpline() {
 }
 
 const styles = StyleSheet.create({
-  caption: { minHeight: 56, justifyContent: 'center' },
+  panel: {
+    backgroundColor: 'rgba(18,18,24,0.72)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.14)',
+  },
+  caption: { minHeight: 58, justifyContent: 'center' },
+  accentedLine: { alignSelf: 'stretch', borderLeftWidth: 2, paddingLeft: 12 },
+  theirSerif: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 23, color: 'rgba(255,255,255,0.95)', textAlign: 'center' },
+  theirSerifLeft: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 23, color: 'rgba(255,255,255,0.95)', textAlign: 'left' },
   captionSoft: { ...inkFace('sub'), color: 'rgba(255,255,255,0.72)', textAlign: 'center' },
   who: { ...inkFace('caption'), color: 'rgba(255,255,255,0.72)', textAlign: 'center', marginBottom: 2 },
   helpline: {

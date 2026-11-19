@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,20 +32,20 @@ import { forgetNotes } from '@/lib/voice-files';
 import { relativeStamp, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
+import { currentMood, temperamentFor } from '@/lib/reply-engine/mood';
+import { awakeAt } from '@/lib/today';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { isDark, palette, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { friendAccent, isDark, palette, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 import type { Character, Conversation, GroupChat } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
 /** A row's face (iOS Messages' list size). */
-const AVATAR = 52;
-const PINNED_AVATAR = 56;
-/** The pinned face's ring, now in the ground (owner, 2026-11-09: no friend colours in the list), and the gap inside it. */
-const PINNED_RING = 3;
+const AVATAR = 48;
+const PINNED_AVATAR = 52;
+/** The pinned face's ring thickness and inner gap. */
+const PINNED_RING = 2;
 const PINNED_GAP = 2;
-/** The unread dot's column before the face, as in Messages. */
-const DOT_COLUMN = 18;
 /**
  * One swipe action's slot: a rounded pill inside it, as in iOS 18 Messages (owner's screenshots,
  * 2026-11-11: the flush rectangles clipped "Выключить звук" at their edges).
@@ -57,12 +58,11 @@ const MENU_AVATAR = 36;
 /** How many of the chat's last lines the long-press preview shows. */
 const PREVIEW_LINES = 3;
 const WHITE = '#FFFFFF';
+const PINNED_BG = '#14141C';
 /**
- * The unread dot in the brand's peach (owner, 2026-11-09: brand colour, not Messages' blue): the
- * brand #FFC497 itself at night, a deeper step of the same peach by day, where the pale one would
- * fade into the white ground.
+ * The unread dot in the brand's peach (owner, 2026-11-09: brand colour, not Messages' blue).
  */
-const UNREAD = isDark ? palette.apricot300 : palette.apricot600;
+const UNREAD = isDark ? palette.apricotCalm : palette.apricot600;
 
 type Filter = 'all' | 'unread' | 'groups';
 const FILTERS: Filter[] = ['all', 'unread', 'groups'];
@@ -97,6 +97,7 @@ const isUnread = (item: ChatItem) => rowOf(item).unreadCount > 0;
 /** The handlers every row shares; stable, so a row re-renders only when its own chat changes. */
 interface RowActions {
   open: (item: ChatItem) => void;
+  openProfile: (item: ChatItem) => void;
   hold: (item: ChatItem) => void;
   mute: (item: ChatItem) => void;
   pin: (item: ChatItem) => void;
@@ -261,6 +262,11 @@ export default function ChatListScreen() {
         if (item.kind === 'chat') router.push(`/chat/${item.id}`);
         else router.push({ pathname: '/group/[id]', params: { id: item.id } });
       },
+      openProfile: (item) => {
+        if (openRow.current) return closeOpenRow();
+        if (item.kind === 'chat') router.push(`/character/${item.character.id}`);
+        else router.push({ pathname: '/group/[id]/info', params: { id: item.id } });
+      },
       hold: (item) => {
         haptic.lift();
         setHeld(item);
@@ -316,11 +322,20 @@ export default function ChatListScreen() {
     setQuery('');
   };
 
+  const awake = awakeAt(new Date().getHours());
+  const moodOf = (item: ChatItem): string | undefined => {
+    if (item.kind !== 'chat') return undefined;
+    const rel = relationships[item.character.id];
+    const emotion = currentMood(rel?.mood, temperamentFor(item.character), Date.now()).emotion;
+    return t(`chat.mood.${emotion}`);
+  };
+
   const renderItem = useCallback(
     ({ item }: { item: ChatItem }) => (
       <ChatRow
         item={item}
         level={levelOf(item)}
+        awake={awake}
         typing={isTyping(item)}
         editing={editing}
         actions={actions}
@@ -328,7 +343,7 @@ export default function ChatListScreen() {
     ),
     // `levelOf` and `isTyping` read these maps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [relationships, typing, groupTyping, editing, actions],
+    [relationships, typing, groupTyping, awake, editing, actions],
   );
 
   return (
@@ -411,7 +426,7 @@ export default function ChatListScreen() {
               ListHeaderComponent={
                 pinned.length > 0 ? (
                   <View>
-                    <InkText variant="subStrong" accessibilityRole="header" style={styles.section}>
+                    <InkText variant="caption" color={ink.text3} accessibilityRole="header" style={styles.section}>
                       {t('chatList.pinned')}
                     </InkText>
                     <ScrollView
@@ -423,6 +438,8 @@ export default function ChatListScreen() {
                         <PinnedTile
                           key={item.id}
                           item={item}
+                          awake={awake}
+                          mood={moodOf(item)}
                           typing={isTyping(item)}
                           editing={editing}
                           onPress={() => actions.open(item)}
@@ -576,11 +593,13 @@ function useRowLabel(item: ChatItem, level: number | null, typing: boolean) {
 }
 
 /**
- * A pinned chat in the row on top: a face ringed in the friend's colour, an ink pin mark (a red dot
- * when there is news, dots while they write) and the name.
+ * A pinned chat as a glowing night friend card (approved Ink+ prototype): soft friend-hue wash,
+ * ringed avatar with live green dot & unread count badge, short name, and live mood or typing dots.
  */
 function PinnedTile({
   item,
+  awake,
+  mood,
   typing,
   editing,
   onPress,
@@ -588,6 +607,8 @@ function PinnedTile({
   onUnpin,
 }: {
   item: ChatItem;
+  awake: boolean;
+  mood?: string;
   typing: boolean;
   editing: boolean;
   onPress: () => void;
@@ -596,39 +617,59 @@ function PinnedTile({
 }) {
   const { t } = useTranslation();
   const label = useRowLabel(item, null, typing);
-  const unread = rowOf(item).unreadCount > 0;
+  const unreadCount = rowOf(item).unreadCount;
+  const unread = unreadCount > 0;
+  const accent = item.kind === 'chat' ? friendAccent(item.character.id).strong : systemColors.mint;
+
   return (
     <View style={styles.pinnedCell}>
       <PressableScale
-        scaleTo={0.94}
+        scaleTo={0.95}
         onPress={onPress}
         onLongPress={editing ? undefined : onLongPress}
         delayLongPress={350}
         accessibilityRole="button"
         accessibilityLabel={label}
         style={styles.pinnedTile}>
-        <View style={styles.pinnedRing}>
-          {item.kind === 'chat' ? (
-            <CharacterAvatar character={item.character} size={PINNED_AVATAR} />
-          ) : (
-            <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={ink.ground} />
-          )}
+        <LinearGradient
+          colors={[`${accent}34`, `${accent}00`]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.78 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+        <View style={styles.pinnedFaceWrap}>
+          <View style={[styles.pinnedRing, { borderColor: accent }]}>
+            {item.kind === 'chat' ? (
+              <CharacterAvatar character={item.character} size={PINNED_AVATAR} />
+            ) : (
+              <GroupAvatar members={item.members} size={PINNED_AVATAR} ringColor={PINNED_BG} />
+            )}
+          </View>
+          {item.kind === 'chat' && awake ? <View style={styles.pinnedAwake} pointerEvents="none" /> : null}
+          {unread ? (
+            <View style={styles.pinnedBadge} pointerEvents="none">
+              <InkText variant="caption" color={ink.onAccent} style={styles.tabular}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </InkText>
+            </View>
+          ) : null}
         </View>
-        {typing ? (
-          <View style={styles.pinnedTyping} pointerEvents="none">
-            <TypingDots color={ink.text} />
-          </View>
-        ) : unread ? (
-          <View style={styles.pinnedDot} pointerEvents="none" />
-        ) : editing ? null : (
-          <View style={styles.pinMark} pointerEvents="none">
-            <Ionicons name="pin" size={11} color={ink.ground} />
-          </View>
-        )}
-        <InkText variant="caption" color={unread ? ink.text : ink.text2} lines={1} style={styles.pinnedName}>
+
+        <InkText variant="caption" color={ink.text} lines={1} style={styles.pinnedName}>
           {item.kind === 'chat' ? shortName(item.name) : item.name}
         </InkText>
+        {typing ? (
+          <View style={styles.pinnedMoodSlot}>
+            <TypingDots color={accent} size={5} />
+          </View>
+        ) : mood ? (
+          <InkText variant="caption" color={ink.text3} lines={1} style={styles.pinnedMood}>
+            {mood}
+          </InkText>
+        ) : null}
       </PressableScale>
+
       {editing ? (
         <PressableScale
           scaleTo={0.9}
@@ -710,12 +751,14 @@ function SwipeAction({ action, progress }: { action: SwipeActionSpec; progress: 
 const ChatRow = memo(function ChatRow({
   item,
   level,
+  awake,
   typing,
   editing,
   actions,
 }: {
   item: ChatItem;
   level: number | null;
+  awake: boolean;
   typing: boolean;
   editing: boolean;
   actions: RowActions;
@@ -726,6 +769,7 @@ const ChatRow = memo(function ChatRow({
   const row = rowOf(item);
   const unread = row.unreadCount > 0;
   const canPin = item.kind === 'chat';
+  const accent = item.kind === 'chat' ? friendAccent(item.character.id).strong : systemColors.mint;
   const pinLabel = isPinned(item) ? t('chatList.unpin') : t('chatList.pin');
   const muteLabel = row.muted ? t('chatList.unmute') : t('chatList.mute');
   const readLabel = unread ? t('chatList.read') : t('chatList.unread');
@@ -748,6 +792,11 @@ const ChatRow = memo(function ChatRow({
     if (Date.now() - draggedAt.current < 400) return;
     if (opened.current) swipe.current?.close();
     else actions.open(item);
+  };
+  const pressAvatar = () => {
+    if (Date.now() - draggedAt.current < 400) return;
+    if (opened.current) swipe.current?.close();
+    else actions.openProfile(item);
   };
 
   // Swipe actions cannot be reached with a screen reader, so the row offers them too.
@@ -808,57 +857,81 @@ const ChatRow = memo(function ChatRow({
         }}
         renderLeft={(progress) => <SwipeActions actions={leading} progress={progress} side="left" />}
         renderRight={(progress) => <SwipeActions actions={trailing} progress={progress} side="right" />}>
-        <PressableScale
-          scaleTo={0.98}
-          dimOnPress={false}
-          style={styles.row}
-          onPress={press}
-          onLongPress={editing ? undefined : () => actions.hold(item)}
-          delayLongPress={350}
-          accessibilityRole="button"
-          accessibilityLabel={label}
-          accessibilityActions={a11yActions}
-          onAccessibilityAction={(e) => {
-            const name = e.nativeEvent.actionName;
-            if (name === 'read') actions.read(item);
-            else if (name === 'pin') actions.pin(item);
-            else if (name === 'mute') actions.mute(item);
-            else if (name === 'delete') actions.remove(item);
-          }}>
-          {/* Messages' unread mark: a blue dot in its own column; the column stays when read, so faces line up. */}
-          <View style={styles.dotColumn}>{unread ? <View style={styles.unreadDot} /> : null}</View>
-          {item.kind === 'chat' ? (
-            <CharacterAvatar character={item.character} size={AVATAR} />
-          ) : (
-            <GroupAvatar members={item.members} size={AVATAR} ringColor={ink.card} />
-          )}
+        <View style={styles.row}>
+          {/* Tapping the avatar opens Character Profile directly; sibling of row body so buttons never nest. */}
+          <PressableScale
+            scaleTo={0.93}
+            disabled={editing}
+            onPress={pressAvatar}
+            onLongPress={editing ? undefined : () => actions.hold(item)}
+            delayLongPress={350}
+            accessibilityRole="button"
+            accessibilityLabel={item.name}
+            style={styles.avatarTap}>
+            <View style={[styles.avatarRing, { borderColor: unread ? accent : ink.edge }]}>
+              {item.kind === 'chat' ? (
+                <CharacterAvatar character={item.character} size={AVATAR} />
+              ) : (
+                <GroupAvatar members={item.members} size={AVATAR} ringColor={ink.card} />
+              )}
+            </View>
+            {item.kind === 'chat' && awake ? <View style={styles.rowAwake} pointerEvents="none" /> : null}
+          </PressableScale>
 
-          <View style={styles.body}>
+          <PressableScale
+            scaleTo={0.99}
+            dimOnPress={false}
+            style={styles.body}
+            onPress={press}
+            onLongPress={editing ? undefined : () => actions.hold(item)}
+            delayLongPress={350}
+            accessibilityRole="button"
+            accessibilityLabel={label}
+            accessibilityActions={a11yActions}
+            onAccessibilityAction={(e) => {
+              const name = e.nativeEvent.actionName;
+              if (name === 'read') actions.read(item);
+              else if (name === 'pin') actions.pin(item);
+              else if (name === 'mute') actions.mute(item);
+              else if (name === 'delete') actions.remove(item);
+            }}>
             <View style={styles.line}>
               <InkText variant="bodyStrong" lines={1} style={styles.name}>
                 {item.name}
               </InkText>
               {level != null ? (
-                <View style={styles.level}>
-                  <Ionicons name="heart" size={10} color={systemColors.pink} />
-                  <InkText variant="caption">{level}</InkText>
+                <View style={styles.levelPill}>
+                  <InkText variant="caption" color={accent} style={styles.tabular}>
+                    {t('home.hero.level', { level })}
+                  </InkText>
                 </View>
               ) : null}
               {row.muted ? <Ionicons name="notifications-off" size={13} color={ink.text3} /> : null}
               <View style={styles.spacer} />
-              <InkText variant="footnote">{relativeStamp(row.lastMessageAt)}</InkText>
-            </View>
-            {typing ? (
-              <View style={styles.typing}>
-                <TypingDots color={ink.text2} size={7} />
-              </View>
-            ) : row.lastMessagePreview ? (
-              <InkText variant="sub" lines={1}>
-                {row.lastMessagePreview}
+              <InkText variant="footnote" color={unread ? ink.accent : ink.text3} style={styles.tabular}>
+                {relativeStamp(row.lastMessageAt)}
               </InkText>
-            ) : null}
-          </View>
-        </PressableScale>
+            </View>
+
+            <View style={styles.previewRow}>
+              {typing ? (
+                <View style={styles.typing}>
+                  <InkText variant="footnote" color={accent}>
+                    {t('chatList.typing')}
+                  </InkText>
+                  <TypingDots color={accent} size={5} />
+                </View>
+              ) : row.lastMessagePreview ? (
+                <InkText variant="sub" color={unread ? 'rgba(255,255,255,0.88)' : ink.text2} lines={1} style={styles.previewText}>
+                  {row.lastMessagePreview}
+                </InkText>
+              ) : (
+                <View style={styles.previewText} />
+              )}
+              {unread ? <View style={styles.unreadDot} /> : null}
+            </View>
+          </PressableScale>
+        </View>
       </SwipeRow>
     </View>
   );
@@ -936,55 +1009,60 @@ const styles = StyleSheet.create({
   },
   filters: { marginTop: space.sm, marginHorizontal: space.lg, flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   listTop: { paddingTop: space.md, paddingBottom: space.md },
-  section: { marginHorizontal: space.lg, marginBottom: space.sm },
-  // Pinned chats: one row of ringed faces that scrolls sideways when there are many.
-  pinnedRow: { paddingHorizontal: space.lg, paddingTop: 2, gap: 14 },
-  pinnedCell: { width: PINNED_AVATAR + (PINNED_RING + PINNED_GAP) * 2, alignItems: 'center' },
-  pinnedTile: { alignItems: 'center', gap: 5 },
+  section: { marginHorizontal: space.lg, marginBottom: space.sm, textTransform: 'uppercase', letterSpacing: 0.6 },
+  // Pinned chats: glowing night friend cards scrolling sideways cleanly.
+  pinnedRow: { paddingHorizontal: space.lg, paddingTop: 2, gap: 10 },
+  pinnedCell: { width: 102 },
+  pinnedTile: {
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 11,
+    paddingHorizontal: 8,
+    borderRadius: 22,
+    borderCurve: 'continuous',
+    backgroundColor: PINNED_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  pinnedFaceWrap: { position: 'relative' },
   pinnedRing: {
     padding: PINNED_GAP,
     borderWidth: PINNED_RING,
     borderRadius: inkRadius.pill,
-    borderColor: ink.ground,
-    backgroundColor: ink.ground,
   },
-  pinMark: {
+  pinnedAwake: {
     position: 'absolute',
     right: 0,
-    top: 0,
-    width: 20,
-    height: 20,
+    bottom: 0,
+    width: 13,
+    height: 13,
     borderRadius: inkRadius.pill,
+    backgroundColor: systemColors.green,
+    borderWidth: 2,
+    borderColor: PINNED_BG,
+  },
+  pinnedBadge: {
+    position: 'absolute',
+    right: -3,
+    top: -3,
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 5,
+    borderRadius: inkRadius.pill,
+    borderWidth: 2,
+    borderColor: PINNED_BG,
+    backgroundColor: UNREAD,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.text,
   },
-  pinnedTyping: {
-    position: 'absolute',
-    right: -6,
-    top: -2,
-    height: 20,
-    paddingHorizontal: 6,
-    borderRadius: inkRadius.pill,
-    justifyContent: 'center',
-    backgroundColor: ink.card,
-  },
-  pinnedDot: {
-    position: 'absolute',
-    right: 2,
-    top: 2,
-    width: 16,
-    height: 16,
-    borderRadius: inkRadius.pill,
-    borderWidth: 2.5,
-    borderColor: ink.ground,
-    backgroundColor: UNREAD,
-  },
-  pinnedName: { maxWidth: PINNED_AVATAR + 14 },
+  pinnedName: { maxWidth: '100%' },
+  pinnedMood: { maxWidth: '100%', fontSize: 11, lineHeight: 14, fontWeight: '500' },
+  pinnedMoodSlot: { height: 14, justifyContent: 'center' },
   unpinBadge: {
     position: 'absolute',
-    top: -2,
-    left: 0,
+    top: -4,
+    left: -4,
     width: 22,
     height: 22,
     borderRadius: inkRadius.pill,
@@ -994,9 +1072,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: ink.ground,
   },
+  tabular: { fontVariant: ['tabular-nums'] },
   dots: { flexDirection: 'row', alignItems: 'center' },
-  // Each chat is its own card (owner, 2026-11-17, from the Tide canvas): the gutter and the gap sit
-  // outside the swipe, so its actions are exactly the card's height and width.
+  // Each chat is its own card (owner, 2026-11-17): the gutter and the gap sit outside the swipe.
   rowWrap: { flexDirection: 'row', alignItems: 'center', marginHorizontal: space.lg, marginBottom: 10 },
   removeCell: { width: 36, marginRight: 4, alignItems: 'center', justifyContent: 'center' },
   swipe: { flex: 1 },
@@ -1005,8 +1083,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingLeft: 4,
-    paddingRight: 14,
+    paddingHorizontal: 14,
     paddingVertical: 12,
     borderRadius: inkRadius.row,
     borderCurve: 'continuous',
@@ -1014,15 +1091,33 @@ const styles = StyleSheet.create({
     borderColor: ink.edge,
     backgroundColor: ink.card,
   },
-  dotColumn: { width: DOT_COLUMN - 12 + 6, marginRight: -6, alignItems: 'flex-end' },
-  unreadDot: { width: 11, height: 11, borderRadius: inkRadius.pill, backgroundColor: UNREAD },
-  body: { flex: 1, minWidth: 0, gap: 3, minHeight: AVATAR, justifyContent: 'center' },
-  line: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  // The name shrinks first, so the level heart stays right after it and the time stays whole.
+  avatarTap: { position: 'relative' },
+  avatarRing: { padding: 1.5, borderWidth: 1.5, borderRadius: inkRadius.pill },
+  rowAwake: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 12,
+    height: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: systemColors.green,
+    borderWidth: 2,
+    borderColor: ink.card,
+  },
+  unreadDot: { width: 10, height: 10, borderRadius: inkRadius.pill, backgroundColor: UNREAD },
+  body: { flex: 1, minWidth: 0, gap: 4, minHeight: AVATAR, justifyContent: 'center' },
+  line: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   name: { flexShrink: 1 },
-  level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  levelPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    borderRadius: inkRadius.pill,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+  },
   spacer: { flex: 1, minWidth: 6 },
-  typing: { height: 19, justifyContent: 'center', paddingTop: 4 },
+  previewRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  previewText: { flex: 1, minWidth: 0 },
+  typing: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 },
   actions: { flex: 1, flexDirection: 'row', overflow: 'hidden' },
   actionsLeft: {},
   actionsRight: {},

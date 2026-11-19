@@ -30,12 +30,15 @@ export function CallRings({
   their,
   mine,
   thinking,
+  accentColor,
   children,
 }: {
   size: number;
   their: SharedValue<number>;
   mine: SharedValue<number>;
   thinking: boolean;
+  /** Optional friend-hue colour for the voice-reactive rings and aura. */
+  accentColor?: string;
   children: ReactNode;
 }) {
   const reduced = useReducedMotion();
@@ -54,15 +57,28 @@ export function CallRings({
   const rim = useAnimatedStyle(() => ({ opacity: mine.get() }));
   const turning = useAnimatedStyle(() => ({ opacity: arc.get(), transform: [{ rotate: `${spin.get()}deg` }] }));
   const circle = { width: size, height: size, borderRadius: size / 2 };
+  const ringFill = accentColor ?? 'rgba(255,255,255,0.55)';
+  const haloSize = size + 28;
 
   return (
     <View style={[styles.wrap, { width: size, height: size }]}>
+      {accentColor ? (
+        <View
+          pointerEvents="none"
+          style={[styles.halo, { width: haloSize, height: haloSize, borderRadius: haloSize / 2, borderColor: `${accentColor}55` }]}
+        />
+      ) : null}
       {RINGS.map((ring, i) => (
-        <TheirRing key={i} level={their} grow={ring.grow} alpha={ring.alpha} still={reduced} style={circle} />
+        <TheirRing key={i} level={their} grow={ring.grow} alpha={ring.alpha} still={reduced} color={ringFill} style={circle} />
       ))}
       <Animated.View
         pointerEvents="none"
-        style={[styles.arc, { width: size + 18, height: size + 18, borderRadius: (size + 18) / 2 }, turning]}
+        style={[
+          styles.arc,
+          { width: size + 18, height: size + 18, borderRadius: (size + 18) / 2 },
+          accentColor ? { borderTopColor: accentColor, borderRightColor: `${accentColor}55` } : undefined,
+          turning,
+        ]}
       />
       <Animated.View style={lean}>
         {children}
@@ -77,24 +93,27 @@ function TheirRing({
   grow,
   alpha,
   still,
+  color,
   style,
 }: {
   level: SharedValue<number>;
   grow: number;
   alpha: number;
   still: boolean;
+  color: string;
   style: { width: number; height: number; borderRadius: number };
 }) {
   const animated = useAnimatedStyle(() => {
     const l = level.get();
     return { opacity: l * alpha, transform: [{ scale: still ? 1 + grow * 0.4 : 1 + grow * l }] };
   });
-  return <Animated.View pointerEvents="none" style={[styles.ring, style, animated]} />;
+  return <Animated.View pointerEvents="none" style={[styles.ring, { backgroundColor: color }, style, animated]} />;
 }
 
 const styles = StyleSheet.create({
   wrap: { alignItems: 'center', justifyContent: 'center' },
-  ring: { position: 'absolute', backgroundColor: 'rgba(255,255,255,0.55)' },
+  halo: { position: 'absolute', borderWidth: 1 },
+  ring: { position: 'absolute' },
   // Their answer on its way: a quarter of a thin white circle, turning.
   arc: {
     position: 'absolute',
