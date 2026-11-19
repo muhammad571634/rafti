@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z292. PolyBuzz live test, `docs/polybuzz-live-test.md` (owner: "PolyBuzz qanday ushlab qoladi, to'liq tekshir", 2026-11-19, Claude 1, Opus 5.5). NEXT: owner decides fan characters (§6) and picks from §4
+- **Done**: PolyBuzz driven on the A51 (home, a top character, 12 chat turns on the free S model and 2 on Passion, model ladder, memory page, report and rating sheets, settings, coin store and its countdown / exit coupon, create form step 1, check-in and newcomer tasks). Nothing bought, location denied, the test character not saved. The same nine lines replayed through our prompt (`gemini-3.1-flash-lite`, owner's free key; script kept out of the repo).
+- **Findings**: our prompt beats their free model and is close to their paid Passion (faster, the user's language, no grammar slips, initiative, opinions); tighten mask hold and concrete recall. Their memory showed 0 cards and is all paid; ours is free. Their hold comes from content supply (user-made library, creator quality coach), a 7-day check-in ladder + newcomer tasks, and a named model ladder with free tastes.
+- **Ranked for us** (§4): newcomer path + visible 7-day ladder; fan characters (owner's decision); community library; create quality coach; scene card at start; prompt tightening; named reply styles after the paid key.
+- **Still to do**: owner's answer on fan characters / real people (§6).
+
 ### 0z292. Dark Android navigation bar & night native splash — Preview APK 1.3.0 (owner asked to fix the white Android 3-button nav bar, 2026-11-19, Gemini 4 Neon). Building & installing APK 1.3.0 on the A51
 - **Root cause (verified via A51 `dumpsys window` + Expo 58 source)**: It was never the phone's replaced screen. Two real bugs caused the bright white 3-button nav bar on Android 13 (SDK 33, phone in Light Mode `Night mode: no`):
   1. `app.json` had `"androidNavigationBar": { "enforceContrast": false }` (`0z153`), which Expo SDK 58's `@expo/config-plugins/build/android/SystemBars.js` explicitly ignores (`deprecated and has no effect. Use the expo-navigation-bar plugin configuration instead.`), so `android:enforceNavigationBarContrast` was never written into APK 1.2.0's `styles.xml`.
