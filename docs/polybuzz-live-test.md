@@ -75,6 +75,10 @@ out loud (store page, onboarding), not to hide.
    user in it (their name, where, what just happened), as the creator wrote it.
 6. **Prompt tightening** (small, measurable): hold the mask / secret for user-made characters
    (their arc is written by `ensureStory`); answer "do you remember" with the concrete facts.
+   **Measured 2026-11-19 (0z299): no change needed.** On the free model, recall in an emotional
+   moment 3/3 (Biscuit's fever and the driving test named), a straight "do you have a crush on me?"
+   kept the secret 3/3, a user confessing first got a warm answer 2/2 (one call timed out). The
+   vague recall in §2 was a one-off; a new rule would add tokens to every reply for no gain.
 7. **Named reply styles later**: when the paid key comes, present models / styles by what they are
    good at, with a free taste, instead of one hidden model.
 
