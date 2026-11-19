@@ -1183,6 +1183,28 @@
       }
     }
   },
+    "stories": {
+      "title": "Stories",
+      "seeAll": "See all",
+      "new": "New",
+      "trending": "Trending",
+      "makeOwn": "Make it yours",
+      "owns_one": "{{count}} made it theirs",
+      "owns_other": "{{count}} made it theirs",
+      "tropes": {
+        "forYou": "For you",
+        "bestFriend": "Best friend",
+        "closeToHome": "Close to home",
+        "likesYou": "Into you",
+        "married": "Married",
+        "dangerous": "Dangerous",
+        "boss": "Boss",
+        "enemies": "Enemies",
+        "ex": "Ex",
+        "fantasy": "Fantasy",
+        "comfort": "Comfort"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Weak",

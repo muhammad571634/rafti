@@ -49,8 +49,9 @@ import { analyticsChannel, experiment } from '@/lib/analytics';
 import type { StreamLineRequest } from '@/ai/content-prompts';
 import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
-import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite, serverCommunity } from '@/ai/server';
+import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite, serverCommunity, serverTemplates } from '@/ai/server';
 import { cardOf, knownCommunityCharacter, type CommunityItem } from '@/lib/community';
+import type { StoryTemplate } from '@/lib/templates';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
 import { mayReact } from '@/ai/react';
@@ -701,6 +702,8 @@ export interface AppState {
   shareCharacter: (characterId: string, on: boolean) => Promise<'live' | 'rejected' | 'off' | 'failed'>;
   /** A community character joins the user's list as their own copy (once) and its chat opens; answers the chat. */
   addCommunityCharacter: (item: CommunityItem) => { characterId: string; conversationId: string };
+  /** Say hi to a story template on Find: their own copy (once) and its chat, counted once on the server. */
+  addTemplateCharacter: (template: StoryTemplate) => { characterId: string; conversationId: string };
   /** Reports a community character (one per user); false when the server did not take it. */
   reportCommunity: (communityId: string, reason: string) => Promise<boolean>;
   resetRelationship: (characterId: string) => void;
@@ -2485,6 +2488,30 @@ export const useAppStore = create<AppState>()(
         });
         // Counted once per user on the server; the count is only a number on the shelf.
         void withAccount((token) => serverCommunity.add(token, item.id)).catch(() => null);
+        return ids;
+      },
+
+      addTemplateCharacter: (template) => {
+        const known = get().characters.find((c) => c.fromTemplate === template.id && !c.isOfficial);
+        if (known) {
+          const conversationId = get().conversations.find((c) => c.characterId === known.id)?.id ?? get().addFriend(known.id);
+          return { characterId: known.id, conversationId };
+        }
+        const { card } = template;
+        const ids = get().addCharacter({
+          ...card,
+          bio: card.bio ?? card.tagline ?? '',
+          tags: card.tags ?? [],
+          handle: '@stories',
+          series: 'Stories',
+          category: 'original',
+          accentIndex: card.accentIndex ?? 0,
+          voiceReady: true,
+          isOfficial: false,
+          visibility: 'private',
+          fromTemplate: template.id,
+        });
+        void withAccount((token) => serverTemplates.add(token, template.id, 'hi')).catch(() => null);
         return ids;
       },
 

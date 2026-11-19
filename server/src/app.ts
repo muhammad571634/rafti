@@ -25,6 +25,7 @@ import type { PromptMode } from '../../src/ai/modes.ts';
 import { layoutPrompt, part, type PromptLayout } from '../../src/ai/prompt-layout.ts';
 import { cardTexts, cleanCard, COMMUNITY_PAGE, parseReview, REPORTS_TO_HIDE, reviewPrompt, type CommunityReason, type CommunitySort } from '../../src/lib/community.ts';
 import { contentProblems } from '../../src/lib/create-character.ts';
+import { isTemplateId, type TemplateStats } from '../../src/lib/templates.ts';
 import { followsUser, followUserLanguage } from '../../src/ai/reply-language.ts';
 import { parseTouchReply } from '../../src/ai/thread-prompt.ts';
 import type { Context, MiddlewareHandler } from 'hono';
@@ -552,6 +553,10 @@ export function createApp(
   // Shares a day per user (each one is a model review) and community reports a day per user.
   const publishDay = windowLimiter(COMMUNITY_PUBLISHES_PER_DAY, DAY_MS);
   const communityReportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
+  // Template uses a minute per user: a burst past this is a script, not a person (template-library.md §3).
+  const templateMinute = windowLimiter(30, 60_000);
+  // The template numbers are the same for everyone: read them at most every five minutes.
+  let templateStats: { at: number; stats: Record<string, TemplateStats> } | null = null;
   // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
   const userVoiceDay = windowBudget(opts.speech?.userCharsPerDay ?? 0, DAY_MS);
   const serviceVoiceDay = windowBudget(opts.speech?.charsPerDay ?? 0, DAY_MS);
@@ -1056,6 +1061,30 @@ export function createApp(
     if (!status) return c.json({ error: 'notFound' }, 404);
     console.log(`[community] report ${reason} -> ${status}`);
     return c.json({ status });
+  });
+
+  // Story templates on Find (docs/agent-tasks/template-library.md): the cards ship in the app, the
+  // server keeps the real counts. Stats are shared by everyone and cached; a use counts once per account.
+  app.get('/v1/templates/stats', async (c) => {
+    if (!db?.templates) return c.json({ error: 'noDatabase' }, 503);
+    if (!(await signedIn(c))) return c.json({ error: 'signIn' }, 401);
+    if (!templateStats || Date.now() - templateStats.at > 5 * 60_000) {
+      templateStats = { at: Date.now(), stats: await db.templates.stats() };
+    }
+    return c.json({ stats: templateStats.stats });
+  });
+
+  app.post('/v1/templates/:id/add', async (c) => {
+    if (!db?.templates) return c.json({ error: 'noDatabase' }, 503);
+    const userId = await signedIn(c);
+    if (!userId) return c.json({ error: 'signIn' }, 401);
+    const id = c.req.param('id');
+    const body = await readJson(c);
+    const how = body?.how === 'own' ? 'own' : body?.how === 'hi' ? 'hi' : null;
+    if (!isTemplateId(id) || !how) return c.json({ error: 'badInput' }, 400);
+    if (!templateMinute(userId)) return c.json({ error: 'busy' }, 429);
+    await db.templates.add(userId, id, how);
+    return c.json({ ok: true });
   });
 
   // What people do in the app (product analytics, 0z282): batches of events from the phone, never

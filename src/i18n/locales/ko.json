@@ -1156,6 +1156,27 @@
       }
     }
   },
+    "stories": {
+      "title": "스토리",
+      "seeAll": "모두 보기",
+      "new": "새로운",
+      "trending": "인기",
+      "makeOwn": "내 캐릭터로 만들기",
+      "owns_other": "{{count}}명이 자기 것으로 만듦",
+      "tropes": {
+        "forYou": "추천",
+        "bestFriend": "절친",
+        "closeToHome": "가까운 사이",
+        "likesYou": "너에게 반함",
+        "married": "결혼",
+        "dangerous": "위험한",
+        "boss": "상사",
+        "enemies": "라이벌",
+        "ex": "전 애인",
+        "fantasy": "판타지",
+        "comfort": "위로"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "약함",

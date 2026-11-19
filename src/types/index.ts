@@ -81,6 +81,8 @@ export interface Character {
   communityReason?: string;
   /** A copy added from the community library: the shared character's id. */
   fromCommunity?: string;
+  /** Made from a story template on Find (said hi, or made it their own): the template's id. */
+  fromTemplate?: string;
   /**
    * Official characters only: the day it went live. Pro can add it from then, everyone else
    * 7 days later (`src/economy/early-access.ts`). Left out for the launch cast and creations.

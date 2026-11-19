@@ -1156,6 +1156,27 @@
       }
     }
   },
+    "stories": {
+      "title": "Cerita",
+      "seeAll": "Lihat semua",
+      "new": "Baru",
+      "trending": "Lagi tren",
+      "makeOwn": "Jadikan milikmu",
+      "owns_other": "{{count}} menjadikannya milik mereka",
+      "tropes": {
+        "forYou": "Untukmu",
+        "bestFriend": "Sahabat",
+        "closeToHome": "Dekat rumah",
+        "likesYou": "Suka kamu",
+        "married": "Menikah",
+        "dangerous": "Berbahaya",
+        "boss": "Bos",
+        "enemies": "Musuh",
+        "ex": "Mantan",
+        "fantasy": "Fantasi",
+        "comfort": "Penghiburan"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Lemah",

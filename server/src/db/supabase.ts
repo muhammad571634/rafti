@@ -329,6 +329,22 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       },
     },
 
+    templates: {
+      async add(userId, id, how) {
+        const { error } = await client.rpc('template_add', { p_user: userId, p_id: id, p_how: how });
+        if (error) throw new Error(`template add: ${error.message}`);
+      },
+      async stats() {
+        const { data, error } = await client.rpc('template_stats');
+        if (error) throw new Error(`template stats: ${error.message}`);
+        const out: Record<string, { chats: number; week: number; owns: number }> = {};
+        for (const r of (data ?? []) as { template_id: string; chats: number | string; week: number | string; owns: number | string }[]) {
+          out[r.template_id] = { chats: Number(r.chats), week: Number(r.week), owns: Number(r.owns) };
+        }
+        return out;
+      },
+    },
+
     async deleteUser(userId) {
       const { error } = await client.auth.admin.deleteUser(userId);
       if (error) throw new Error(`deleteUser: ${error.message}`);

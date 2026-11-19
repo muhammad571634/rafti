@@ -1249,6 +1249,30 @@
       }
     }
   },
+    "stories": {
+      "title": "Истории",
+      "seeAll": "Все",
+      "new": "Новое",
+      "trending": "В тренде",
+      "makeOwn": "Сделать своим",
+      "owns_one": "{{count}} сделал своим",
+      "owns_few": "{{count}} сделали своим",
+      "owns_many": "{{count}} сделали своим",
+      "owns_other": "{{count}} сделали своим",
+      "tropes": {
+        "forYou": "Для вас",
+        "bestFriend": "Лучший друг",
+        "closeToHome": "Совсем рядом",
+        "likesYou": "Влюблён в тебя",
+        "married": "В браке",
+        "dangerous": "Опасные",
+        "boss": "Босс",
+        "enemies": "Враги",
+        "ex": "Бывшие",
+        "fantasy": "Фэнтези",
+        "comfort": "Утешение"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Слабо",

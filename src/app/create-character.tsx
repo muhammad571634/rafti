@@ -58,6 +58,9 @@ import { inkFace } from '@/theme/ink';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 import { keepCharacterPicture } from '@/lib/character-picture';
+import { type StoryTemplate, templateById } from '@/lib/templates';
+import { serverTemplates } from '@/ai/server';
+import { withAccount } from '@/ai/account';
 
 const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
@@ -114,6 +117,30 @@ const BLANK: CreateForm = {
   arcBeats: [],
   arcFor: '',
 };
+
+/**
+ * A story template made the user's own (Find → Make it yours): the form starts filled in from it, and
+ * the user changes anything, adds their own picture, and keeps it private.
+ */
+function formOfTemplate({ card }: StoryTemplate): CreateForm {
+  return {
+    ...BLANK,
+    name: card.name,
+    tagline: card.tagline ?? '',
+    gender: card.gender,
+    age: card.age != null ? String(card.age) : '',
+    traits: (card.tags ?? []).filter(isTrait),
+    style: card.speakingStyle ?? 'casual',
+    role: card.role ?? 'friend',
+    bio: card.bio ?? '',
+    scenario: card.scenario ?? '',
+    greeting: card.greeting,
+    opening: card.opening ?? '',
+    preset: card.voicePreset ?? 'warm',
+    relation: card.relation ?? '',
+    mask: card.mask ?? '',
+  };
+}
 
 /** A character the user made, as the form holds it. */
 function formOf(c: Character): CreateForm {
@@ -206,8 +233,9 @@ const fromDraft = (form: CreateForm, d: CharacterDraft): CreateForm => ({
 export default function CreateCharacterScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id, template: templateParam } = useLocalSearchParams<{ id?: string; template?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
+  const template = templateById((Array.isArray(templateParam) ? templateParam[0] : templateParam) ?? '');
   const editing = useAppStore((s) => (editId ? s.characters.find((c) => c.id === editId && !c.isOfficial) : undefined));
 
   if (editId && !editing) {
@@ -218,12 +246,12 @@ export default function CreateCharacterScreen() {
     );
   }
   // Keyed so the form starts again from the stored character if it changes underneath.
-  return <CharacterForm key={editing?.id ?? 'new'} editing={editing} />;
+  return <CharacterForm key={editing?.id ?? template?.id ?? 'new'} editing={editing} template={editing ? undefined : template} />;
 }
 
 type Phase = 'idea' | 'writing' | 'form' | 'meet';
 
-function CharacterForm({ editing }: { editing?: Character }) {
+function CharacterForm({ editing, template }: { editing?: Character; template?: StoryTemplate }) {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
@@ -249,10 +277,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
   const quickUpsell = quickLeft === 0 && createTier(subscription, Date.now()) !== 'pro';
   const language = baseLanguage(locale);
 
-  const [phase, setPhase] = useState<Phase>(editing ? 'form' : 'idea');
+  const [phase, setPhase] = useState<Phase>(editing || template ? 'form' : 'idea');
   /** Their avatar colour, chosen once: the page shows the same one the chat will. */
-  const [accent] = useState(() => editing?.accentIndex ?? Math.floor(Math.random() * avatarGradients.length));
-  const initial = useMemo(() => (editing ? formOf(editing) : BLANK), [editing]);
+  const [accent] = useState(() => editing?.accentIndex ?? template?.card.accentIndex ?? Math.floor(Math.random() * avatarGradients.length));
+  const initial = useMemo(() => (editing ? formOf(editing) : template ? formOfTemplate(template) : BLANK), [editing, template]);
   const [form, setForm] = useState<CreateForm>(initial);
   const set = useCallback((patch: Partial<CreateForm>) => setForm((f) => ({ ...f, ...patch })), []);
 
@@ -288,11 +316,11 @@ function CharacterForm({ editing }: { editing?: Character }) {
 
   // A new character: offer the one left unfinished last time.
   useEffect(() => {
-    if (editing) return;
+    if (editing || template) return;
     void loadCreation().then((saved) => {
       if (alive.current && saved) setKept(saved.form);
     });
-  }, [editing]);
+  }, [editing, template]);
 
   // Keep the unfinished new character as it is typed (Android may close the app behind the user).
   useEffect(() => {
@@ -609,7 +637,10 @@ function CharacterForm({ editing }: { editing?: Character }) {
       accentIndex: accent,
       voiceReady: true,
       isOfficial: false,
+      fromTemplate: template?.id,
     });
+    // Made a story template their own: counted once on the server (Find's real numbers).
+    if (template) void withAccount((token) => serverTemplates.add(token, template.id, 'own')).catch(() => null);
     if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
     if (canShare && share) void shareCharacter(ids.characterId, true);
     void clearCreation();

@@ -1183,6 +1183,28 @@
       }
     }
   },
+    "stories": {
+      "title": "Historias",
+      "seeAll": "Ver todo",
+      "new": "Nuevo",
+      "trending": "Tendencia",
+      "makeOwn": "Hazlo tuyo",
+      "owns_one": "{{count}} lo hizo suyo",
+      "owns_other": "{{count}} lo hicieron suyo",
+      "tropes": {
+        "forYou": "Para ti",
+        "bestFriend": "Mejor amigo",
+        "closeToHome": "En casa",
+        "likesYou": "Le gustas",
+        "married": "Casados",
+        "dangerous": "Peligro",
+        "boss": "Jefe",
+        "enemies": "Enemigos",
+        "ex": "Ex",
+        "fantasy": "Fantasía",
+        "comfort": "Consuelo"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Flojo",

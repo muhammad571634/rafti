@@ -1183,6 +1183,28 @@
       }
     }
   },
+    "stories": {
+      "title": "Storie",
+      "seeAll": "Vedi tutte",
+      "new": "Nuova",
+      "trending": "Di tendenza",
+      "makeOwn": "Rendilo tuo",
+      "owns_one": "{{count}} l’ha fatto suo",
+      "owns_other": "{{count}} l’hanno fatto suo",
+      "tropes": {
+        "forYou": "Per te",
+        "bestFriend": "Migliore amico",
+        "closeToHome": "Vicino a casa",
+        "likesYou": "Ha un debole",
+        "married": "Sposati",
+        "dangerous": "Pericoloso",
+        "boss": "Capo",
+        "enemies": "Nemici",
+        "ex": "Ex",
+        "fantasy": "Fantasy",
+        "comfort": "Conforto"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Debole",

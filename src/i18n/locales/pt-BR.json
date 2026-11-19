@@ -1183,6 +1183,28 @@
       }
     }
   },
+    "stories": {
+      "title": "Histórias",
+      "seeAll": "Ver tudo",
+      "new": "Novo",
+      "trending": "Em alta",
+      "makeOwn": "Deixe do seu jeito",
+      "owns_one": "{{count}} fez a sua",
+      "owns_other": "{{count}} fizeram a sua",
+      "tropes": {
+        "forYou": "Para você",
+        "bestFriend": "Melhor amigo",
+        "closeToHome": "Perto de casa",
+        "likesYou": "Afim de você",
+        "married": "Casados",
+        "dangerous": "Perigoso",
+        "boss": "Chefe",
+        "enemies": "Inimigos",
+        "ex": "Ex",
+        "fantasy": "Fantasia",
+        "comfort": "Conforto"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Fraco",

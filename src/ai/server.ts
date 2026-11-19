@@ -41,6 +41,7 @@ import type {
   WalletState,
 } from './session-types';
 import type { CommunityCard, CommunityItem, CommunityReason, CommunitySort, CommunityStatus } from '@/lib/community';
+import type { TemplateStats, TemplateUse } from '@/lib/templates';
 
 /**
  * The phone's side of the Sigmazam API (`server/`). Every build talks to the cloud server
@@ -145,6 +146,12 @@ export const serverCommunity = {
   list: (accessToken: string, sort: CommunitySort) => call<{ items: CommunityItem[] }>(`/v1/community?sort=${sort}`, withToken(accessToken), 8000),
   add: (accessToken: string, id: string) => call<{ chats: number }>(`/v1/community/${id}/add`, post(accessToken, {}), 8000),
   report: (accessToken: string, id: string, reason: string) => call<{ status: CommunityStatus }>(`/v1/community/${id}/report`, post(accessToken, { reason }), 8000),
+};
+
+/** Story templates (template-library.md): the shared real counts, and one use per account. */
+export const serverTemplates = {
+  stats: (accessToken: string) => call<{ stats: Record<string, TemplateStats> }>('/v1/templates/stats', withToken(accessToken), 8000),
+  add: (accessToken: string, id: string, how: TemplateUse) => call<{ ok: true }>(`/v1/templates/${id}/add`, post(accessToken, { how }), 8000),
 };
 
 /**

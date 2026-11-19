@@ -1156,6 +1156,27 @@
       }
     }
   },
+    "stories": {
+      "title": "ストーリー",
+      "seeAll": "すべて見る",
+      "new": "新着",
+      "trending": "話題",
+      "makeOwn": "自分仕様にする",
+      "owns_other": "{{count}}人が自分仕様に",
+      "tropes": {
+        "forYou": "おすすめ",
+        "bestFriend": "親友",
+        "closeToHome": "身近な人",
+        "likesYou": "あなたに夢中",
+        "married": "夫婦",
+        "dangerous": "危険な恋",
+        "boss": "上司",
+        "enemies": "ライバル",
+        "ex": "元恋人",
+        "fantasy": "ファンタジー",
+        "comfort": "癒やし"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "弱い",

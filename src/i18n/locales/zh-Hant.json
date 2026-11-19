@@ -1156,6 +1156,27 @@
       }
     }
   },
+    "stories": {
+      "title": "故事",
+      "seeAll": "查看全部",
+      "new": "新",
+      "trending": "熱門",
+      "makeOwn": "改成你的",
+      "owns_other": "{{count}} 人改成自己的",
+      "tropes": {
+        "forYou": "為你推薦",
+        "bestFriend": "摯友",
+        "closeToHome": "近在身邊",
+        "likesYou": "喜歡你",
+        "married": "婚姻",
+        "dangerous": "危險",
+        "boss": "老闆",
+        "enemies": "冤家",
+        "ex": "前任",
+        "fantasy": "奇幻",
+        "comfort": "療癒"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "偏弱",

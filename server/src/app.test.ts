@@ -1101,6 +1101,31 @@ describe('POST /v1/voice/transcribe', () => {
   });
 });
 
+describe('story templates (template-library.md)', () => {
+  type Templates = NonNullable<import('./db/types.ts').Db['templates']>;
+  const req = (app: ReturnType<typeof createApp>, method: 'GET' | 'POST', path: string, json?: unknown) =>
+    app.request(path, { method, headers: { 'content-type': 'application/json', authorization: 'Bearer good' }, body: json === undefined ? undefined : JSON.stringify(json) });
+
+  it('counts a known template once per call shape and serves cached stats', async () => {
+    const adds: unknown[] = [];
+    let reads = 0;
+    const templates: Templates = {
+      add: async (userId, id, how) => void adds.push({ userId, id, how }),
+      stats: async () => (reads++, { t_noah: { chats: 12, week: 4, owns: 1 } }),
+    };
+    const app = createApp(null, { timeoutMs: 1000, db: makeDb({ templates }) });
+    assert.deepEqual(await (await req(app, 'POST', '/v1/templates/t_noah/add', { how: 'own' })).json(), { ok: true });
+    assert.equal(adds.length, 1);
+    assert.equal((await req(app, 'POST', '/v1/templates/t_nobody/add', { how: 'hi' })).status, 400);
+    assert.equal((await req(app, 'POST', '/v1/templates/t_noah/add', { how: 'maybe' })).status, 400);
+    const first = (await (await req(app, 'GET', '/v1/templates/stats')).json()) as { stats: Record<string, unknown> };
+    await req(app, 'GET', '/v1/templates/stats');
+    assert.deepEqual(first.stats.t_noah, { chats: 12, week: 4, owns: 1 });
+    assert.equal(reads, 1);
+    assert.equal((await req(createApp(null, { timeoutMs: 1000, db: makeDb({}) }), 'GET', '/v1/templates/stats')).status, 503);
+  });
+});
+
 describe('community library (0z300)', () => {
   type Community = NonNullable<import('./db/types.ts').Db['community']>;
   const req = (app: ReturnType<typeof createApp>, method: 'GET' | 'POST', path: string, json?: unknown) =>

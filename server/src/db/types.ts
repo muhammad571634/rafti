@@ -17,6 +17,7 @@ import type {
 import type { PlanId } from '../../../src/types/index.ts';
 import type { CleanBatch } from '../../../src/lib/analytics-events.ts';
 import type { CommunityCard, CommunityItem, CommunityReason, CommunitySort, CommunityStatus } from '../../../src/lib/community.ts';
+import type { TemplateStats, TemplateUse } from '../../../src/lib/templates.ts';
 
 export type {
   BootstrapInput,
@@ -134,6 +135,17 @@ export interface Db {
     add(userId: string, id: string): Promise<number | null>;
     /** Once per user; answers the status after it, or null when there is no such character. */
     report(userId: string, id: string, reason: string, hideAt: number): Promise<CommunityStatus | null>;
+  };
+
+  /**
+   * Real counts for the story templates (supabase/migrations/*_b15_template_adds.sql). Absent: the
+   * routes say 503 and the shelves show "New" everywhere.
+   */
+  templates?: {
+    /** Once per account per template; `own` upgrades an earlier `hi`. */
+    add(userId: string, id: string, how: TemplateUse): Promise<void>;
+    /** Every used template's numbers, keyed by id. */
+    stats(): Promise<Record<string, TemplateStats>>;
   };
 
   /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */

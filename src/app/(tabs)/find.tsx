@@ -23,6 +23,7 @@ import { familySeats } from '@/components/find/family-row';
 import { FamilySheet } from '@/components/find/family-sheet';
 import { MissCard, RoleSheet } from '@/components/find/miss-card';
 import { CommunityShelf } from '@/components/community/community-shelf';
+import { StoriesShelf } from '@/components/stories/stories-shelf';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { InkSegmented, InkText } from '@/components/ink';
 import { useEarlyAccess } from '@/components/plans/early-access';
@@ -287,6 +288,9 @@ export default function FindScreen() {
 
               <Section title={t('find.missTitle')} first={featured.length === 0} />
               <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
+
+              {/* Story templates by trope (template-library.md): real counts, Say hi or make it yours. */}
+              <StoriesShelf gender={who === 'everyone' ? undefined : who} title={(text) => <Section title={text} />} />
 
               {/* Characters other users shared (0z300); dev and preview builds only for now. */}
               {COMMUNITY_OPEN ? <CommunityShelf title={(text) => <Section title={text} />} /> : null}

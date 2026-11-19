@@ -1183,6 +1183,28 @@
       }
     }
   },
+    "stories": {
+      "title": "Histoires",
+      "seeAll": "Tout voir",
+      "new": "Nouveau",
+      "trending": "Tendance",
+      "makeOwn": "En faire le tien",
+      "owns_one": "{{count}} l’a adopté",
+      "owns_other": "{{count}} l’ont adopté",
+      "tropes": {
+        "forYou": "Pour toi",
+        "bestFriend": "Meilleur ami",
+        "closeToHome": "Tout près",
+        "likesYou": "Craque pour toi",
+        "married": "Mariés",
+        "dangerous": "Dangereux",
+        "boss": "Patron",
+        "enemies": "Ennemis",
+        "ex": "Ex",
+        "fantasy": "Fantasy",
+        "comfort": "Réconfort"
+      }
+    },
   "createCharacter": {
     "coach": {
       "weak": "Faible",

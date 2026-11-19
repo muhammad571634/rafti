@@ -71,3 +71,10 @@ export function clipName(name: string, max = 6) {
   const letters = Array.from(name.trim());
   return letters.length > max ? `${letters.slice(0, max).join('')}…` : letters.join('');
 }
+
+/** A big count the short way, as chat apps show it: 940, 2.1K, 12K, 3.4M. */
+export function shortCount(n: number) {
+  if (n < 1000) return count(n);
+  const [value, unit] = n < 1e6 ? [n / 1e3, 'K'] : [n / 1e6, 'M'];
+  return `${(value < 10 ? value.toFixed(1) : Math.floor(value).toString()).replace(/\.0$/, '')}${unit}`;
+}
