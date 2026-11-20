@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Geschichten",
-      "seeAll": "Alle ansehen",
-      "new": "Neu",
-      "trending": "Im Trend",
-      "makeOwn": "Zu deinem machen",
-      "owns_one": "{{count}} hat es übernommen",
-      "owns_other": "{{count}} haben es übernommen",
-      "tropes": {
-        "forYou": "Für dich",
-        "bestFriend": "Bester Freund",
-        "closeToHome": "Ganz nah",
-        "likesYou": "Steht auf dich",
-        "married": "Verheiratet",
-        "dangerous": "Gefährlich",
-        "boss": "Chef",
-        "enemies": "Feinde",
-        "ex": "Ex",
-        "fantasy": "Fantasy",
-        "comfort": "Geborgenheit"
-      }
-    },
+  "stories": {
+    "title": "Geschichten",
+    "seeAll": "Alle ansehen",
+    "new": "Neu",
+    "trending": "Im Trend",
+    "makeOwn": "Zu deinem machen",
+    "owns_one": "{{count}} hat es übernommen",
+    "owns_other": "{{count}} haben es übernommen",
+    "tropes": {
+      "forYou": "Für dich",
+      "bestFriend": "Bester Freund",
+      "closeToHome": "Ganz nah",
+      "likesYou": "Steht auf dich",
+      "married": "Verheiratet",
+      "dangerous": "Gefährlich",
+      "boss": "Chef",
+      "enemies": "Feinde",
+      "ex": "Ex",
+      "fantasy": "Fantasy",
+      "comfort": "Geborgenheit"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Schwach",
@@ -1398,7 +1398,9 @@
       "startChat": "Chat starten",
       "discardTitle": "Änderungen verwerfen?",
       "discard": "Verwerfen",
-      "keepEditing": "Weiter bearbeiten"
+      "keepEditing": "Weiter bearbeiten",
+      "modeIdea": "Idee",
+      "modeForm": "Details"
     },
     "youTwo": "Ihr zwei",
     "relation": "Wer ist das für dich",
@@ -1731,7 +1733,6 @@
       "met": "Ihr wurdet Freunde",
       "arc": "Hat sich geöffnet: {{title}}"
     },
-    "showMore": "{{count}} weitere anzeigen",
     "daysLabel_one": "Tag zusammen",
     "daysLabel_other": "Tage zusammen",
     "daysShort_one": "Tag",

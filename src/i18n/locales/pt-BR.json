@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Histórias",
-      "seeAll": "Ver tudo",
-      "new": "Novo",
-      "trending": "Em alta",
-      "makeOwn": "Deixe do seu jeito",
-      "owns_one": "{{count}} fez a sua",
-      "owns_other": "{{count}} fizeram a sua",
-      "tropes": {
-        "forYou": "Para você",
-        "bestFriend": "Melhor amigo",
-        "closeToHome": "Perto de casa",
-        "likesYou": "Afim de você",
-        "married": "Casados",
-        "dangerous": "Perigoso",
-        "boss": "Chefe",
-        "enemies": "Inimigos",
-        "ex": "Ex",
-        "fantasy": "Fantasia",
-        "comfort": "Conforto"
-      }
-    },
+  "stories": {
+    "title": "Histórias",
+    "seeAll": "Ver tudo",
+    "new": "Novo",
+    "trending": "Em alta",
+    "makeOwn": "Deixe do seu jeito",
+    "owns_one": "{{count}} fez a sua",
+    "owns_other": "{{count}} fizeram a sua",
+    "tropes": {
+      "forYou": "Para você",
+      "bestFriend": "Melhor amigo",
+      "closeToHome": "Perto de casa",
+      "likesYou": "Afim de você",
+      "married": "Casados",
+      "dangerous": "Perigoso",
+      "boss": "Chefe",
+      "enemies": "Inimigos",
+      "ex": "Ex",
+      "fantasy": "Fantasia",
+      "comfort": "Conforto"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Fraco",
@@ -1398,7 +1398,9 @@
       "startChat": "Começar a conversar",
       "discardTitle": "Descartar alterações?",
       "discard": "Descartar",
-      "keepEditing": "Continuar editando"
+      "keepEditing": "Continuar editando",
+      "modeIdea": "Ideia",
+      "modeForm": "Ficha"
     },
     "youTwo": "Vocês dois",
     "relation": "Quem é pra você",
@@ -1717,7 +1719,7 @@
     "mostTalked": "Mais conversou",
     "ofMonth": "{{percent}} do seu mês",
     "yourDays": "Seus dias",
-    "showMore": "Ver mais {{count}}",
+    "showMore": "Mostrar mais {{count}}",
     "level": "Nível {{level}}",
     "intimacy": "{{count}} intimidade",
     "streak": "{{count}} dias de sequência",
@@ -1731,7 +1733,6 @@
       "met": "Vocês viraram amigos",
       "arc": "Se abriu: {{title}}"
     },
-    "showMore": "Mostrar mais {{count}}",
     "daysLabel_one": "dia juntos",
     "daysLabel_other": "dias juntos",
     "daysShort_one": "dia",

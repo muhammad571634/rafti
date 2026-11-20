@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Storie",
-      "seeAll": "Vedi tutte",
-      "new": "Nuova",
-      "trending": "Di tendenza",
-      "makeOwn": "Rendilo tuo",
-      "owns_one": "{{count}} l’ha fatto suo",
-      "owns_other": "{{count}} l’hanno fatto suo",
-      "tropes": {
-        "forYou": "Per te",
-        "bestFriend": "Migliore amico",
-        "closeToHome": "Vicino a casa",
-        "likesYou": "Ha un debole",
-        "married": "Sposati",
-        "dangerous": "Pericoloso",
-        "boss": "Capo",
-        "enemies": "Nemici",
-        "ex": "Ex",
-        "fantasy": "Fantasy",
-        "comfort": "Conforto"
-      }
-    },
+  "stories": {
+    "title": "Storie",
+    "seeAll": "Vedi tutte",
+    "new": "Nuova",
+    "trending": "Di tendenza",
+    "makeOwn": "Rendilo tuo",
+    "owns_one": "{{count}} l’ha fatto suo",
+    "owns_other": "{{count}} l’hanno fatto suo",
+    "tropes": {
+      "forYou": "Per te",
+      "bestFriend": "Migliore amico",
+      "closeToHome": "Vicino a casa",
+      "likesYou": "Ha un debole",
+      "married": "Sposati",
+      "dangerous": "Pericoloso",
+      "boss": "Capo",
+      "enemies": "Nemici",
+      "ex": "Ex",
+      "fantasy": "Fantasy",
+      "comfort": "Conforto"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Debole",
@@ -1398,7 +1398,9 @@
       "startChat": "Inizia a chattare",
       "discardTitle": "Annullare le modifiche?",
       "discard": "Annulla modifiche",
-      "keepEditing": "Continua a modificare"
+      "keepEditing": "Continua a modificare",
+      "modeIdea": "Idea",
+      "modeForm": "Scheda"
     },
     "youTwo": "Voi due",
     "relation": "Chi è per te",
@@ -1731,7 +1733,6 @@
       "met": "Siete diventati amici",
       "arc": "Si è aperto: {{title}}"
     },
-    "showMore": "Mostra altri {{count}}",
     "daysLabel_one": "giorno insieme",
     "daysLabel_other": "giorni insieme",
     "daysShort_one": "giorno",

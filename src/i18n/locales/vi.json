@@ -1156,27 +1156,27 @@
       }
     }
   },
-    "stories": {
-      "title": "Câu chuyện",
-      "seeAll": "Xem tất cả",
-      "new": "Mới",
-      "trending": "Thịnh hành",
-      "makeOwn": "Biến thành của bạn",
-      "owns_other": "{{count}} người đã biến thành của mình",
-      "tropes": {
-        "forYou": "Dành cho bạn",
-        "bestFriend": "Bạn thân",
-        "closeToHome": "Gần gũi",
-        "likesYou": "Thích bạn",
-        "married": "Kết hôn",
-        "dangerous": "Nguy hiểm",
-        "boss": "Sếp",
-        "enemies": "Kẻ thù",
-        "ex": "Người yêu cũ",
-        "fantasy": "Kỳ ảo",
-        "comfort": "An ủi"
-      }
-    },
+  "stories": {
+    "title": "Câu chuyện",
+    "seeAll": "Xem tất cả",
+    "new": "Mới",
+    "trending": "Thịnh hành",
+    "makeOwn": "Biến thành của bạn",
+    "owns_other": "{{count}} người đã biến thành của mình",
+    "tropes": {
+      "forYou": "Dành cho bạn",
+      "bestFriend": "Bạn thân",
+      "closeToHome": "Gần gũi",
+      "likesYou": "Thích bạn",
+      "married": "Kết hôn",
+      "dangerous": "Nguy hiểm",
+      "boss": "Sếp",
+      "enemies": "Kẻ thù",
+      "ex": "Người yêu cũ",
+      "fantasy": "Kỳ ảo",
+      "comfort": "An ủi"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Yếu",
@@ -1370,7 +1370,9 @@
       "startChat": "Bắt đầu trò chuyện",
       "discardTitle": "Bỏ các thay đổi?",
       "discard": "Bỏ",
-      "keepEditing": "Tiếp tục sửa"
+      "keepEditing": "Tiếp tục sửa",
+      "modeIdea": "Ý tưởng",
+      "modeForm": "Chi tiết"
     },
     "youTwo": "Hai người",
     "relation": "Người đó là ai với bạn",
@@ -1687,7 +1689,7 @@
     "mostTalked": "Trò chuyện nhiều nhất",
     "ofMonth": "{{percent}} tháng của bạn",
     "yourDays": "Những ngày của bạn",
-    "showMore": "Xem thêm {{count}}",
+    "showMore": "Hiển thị thêm {{count}}",
     "level": "Cấp {{level}}",
     "intimacy": "{{count}} thân thiết",
     "streak": "chuỗi {{count}} ngày",
@@ -1701,7 +1703,6 @@
       "met": "Hai bạn đã trở thành bạn bè",
       "arc": "Đã mở lòng: {{title}}"
     },
-    "showMore": "Hiển thị thêm {{count}}",
     "daysLabel_other": "ngày bên nhau",
     "daysShort_other": "ngày",
     "ringLevel": "Cấp độ",

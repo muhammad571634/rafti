@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Stories",
-      "seeAll": "See all",
-      "new": "New",
-      "trending": "Trending",
-      "makeOwn": "Make it yours",
-      "owns_one": "{{count}} made it theirs",
-      "owns_other": "{{count}} made it theirs",
-      "tropes": {
-        "forYou": "For you",
-        "bestFriend": "Best friend",
-        "closeToHome": "Close to home",
-        "likesYou": "Into you",
-        "married": "Married",
-        "dangerous": "Dangerous",
-        "boss": "Boss",
-        "enemies": "Enemies",
-        "ex": "Ex",
-        "fantasy": "Fantasy",
-        "comfort": "Comfort"
-      }
-    },
+  "stories": {
+    "title": "Stories",
+    "seeAll": "See all",
+    "new": "New",
+    "trending": "Trending",
+    "makeOwn": "Make it yours",
+    "owns_one": "{{count}} made it theirs",
+    "owns_other": "{{count}} made it theirs",
+    "tropes": {
+      "forYou": "For you",
+      "bestFriend": "Best friend",
+      "closeToHome": "Close to home",
+      "likesYou": "Into you",
+      "married": "Married",
+      "dangerous": "Dangerous",
+      "boss": "Boss",
+      "enemies": "Enemies",
+      "ex": "Ex",
+      "fantasy": "Fantasy",
+      "comfort": "Comfort"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Weak",
@@ -1398,7 +1398,9 @@
       "startChat": "Start chatting",
       "discardTitle": "Discard changes?",
       "discard": "Discard",
-      "keepEditing": "Keep editing"
+      "keepEditing": "Keep editing",
+      "modeIdea": "Idea",
+      "modeForm": "Form"
     },
     "youTwo": "You two",
     "relation": "Who they are to you",
@@ -1731,7 +1733,6 @@
       "met": "You became friends",
       "arc": "Opened up: {{title}}"
     },
-    "showMore": "Show {{count}} more",
     "daysLabel_one": "day together",
     "daysLabel_other": "days together",
     "daysShort_one": "day",

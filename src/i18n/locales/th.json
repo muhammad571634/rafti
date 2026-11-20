@@ -1156,27 +1156,27 @@
       }
     }
   },
-    "stories": {
-      "title": "เรื่องราว",
-      "seeAll": "ดูทั้งหมด",
-      "new": "ใหม่",
-      "trending": "มาแรง",
-      "makeOwn": "ทำเป็นของคุณ",
-      "owns_other": "{{count}} คนทำเป็นของตัวเอง",
-      "tropes": {
-        "forYou": "สำหรับคุณ",
-        "bestFriend": "เพื่อนสนิท",
-        "closeToHome": "คนใกล้ตัว",
-        "likesYou": "แอบชอบคุณ",
-        "married": "แต่งงาน",
-        "dangerous": "อันตราย",
-        "boss": "เจ้านาย",
-        "enemies": "ศัตรู",
-        "ex": "แฟนเก่า",
-        "fantasy": "แฟนตาซี",
-        "comfort": "ปลอบใจ"
-      }
-    },
+  "stories": {
+    "title": "เรื่องราว",
+    "seeAll": "ดูทั้งหมด",
+    "new": "ใหม่",
+    "trending": "มาแรง",
+    "makeOwn": "ทำเป็นของคุณ",
+    "owns_other": "{{count}} คนทำเป็นของตัวเอง",
+    "tropes": {
+      "forYou": "สำหรับคุณ",
+      "bestFriend": "เพื่อนสนิท",
+      "closeToHome": "คนใกล้ตัว",
+      "likesYou": "แอบชอบคุณ",
+      "married": "แต่งงาน",
+      "dangerous": "อันตราย",
+      "boss": "เจ้านาย",
+      "enemies": "ศัตรู",
+      "ex": "แฟนเก่า",
+      "fantasy": "แฟนตาซี",
+      "comfort": "ปลอบใจ"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "อ่อน",
@@ -1370,7 +1370,9 @@
       "startChat": "เริ่มแชต",
       "discardTitle": "ทิ้งการแก้ไขไหม?",
       "discard": "ทิ้ง",
-      "keepEditing": "แก้ไขต่อ"
+      "keepEditing": "แก้ไขต่อ",
+      "modeIdea": "ไอเดีย",
+      "modeForm": "ฟอร์ม"
     },
     "youTwo": "เธอกับเขา",
     "relation": "เขาเป็นใครสำหรับเธอ",
@@ -1687,7 +1689,7 @@
     "mostTalked": "คุยมากที่สุด",
     "ofMonth": "{{percent}} ของเดือนนี้",
     "yourDays": "วันของคุณ",
-    "showMore": "ดูเพิ่มอีก {{count}}",
+    "showMore": "แสดงเพิ่มอีก {{count}}",
     "level": "เลเวล {{level}}",
     "intimacy": "ความสนิท {{count}}",
     "streak": "คุยต่อเนื่อง {{count}} วัน",
@@ -1701,7 +1703,6 @@
       "met": "คุณได้กลายมาเป็นเพื่อนกัน",
       "arc": "เปิดใจ: {{title}}"
     },
-    "showMore": "แสดงเพิ่มอีก {{count}}",
     "daysLabel_other": "วันด้วยกัน",
     "daysShort_other": "วัน",
     "ringLevel": "เลเวล",

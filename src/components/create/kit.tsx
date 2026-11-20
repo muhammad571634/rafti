@@ -40,6 +40,48 @@ export function CreateHead({
   return <InkNavBar backLabel={t('common.back')} onBack={onBack} title={title} scrolled={scrolled} right={right} />;
 }
 
+/** Compact top-right dark-glass 2-segment toggle for switching between Idea and Form modes. */
+export function ModeSwitch({
+  mode,
+  ideaLabel,
+  formLabel,
+  onChange,
+}: {
+  mode: 'idea' | 'form';
+  ideaLabel: string;
+  formLabel: string;
+  onChange: (next: 'idea' | 'form') => void;
+}) {
+  const options: { key: 'idea' | 'form'; label: string }[] = [
+    { key: 'idea', label: ideaLabel },
+    { key: 'form', label: formLabel },
+  ];
+  return (
+    <View style={styles.modeTrack} accessibilityRole="tablist">
+      {options.map(({ key, label }) => {
+        const active = mode === key;
+        return (
+          <PressableScale
+            key={key}
+            scaleTo={0.94}
+            dimOnPress={false}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: active }}
+            accessibilityLabel={label}
+            onPress={() => {
+              if (!active) onChange(key);
+            }}
+            style={[styles.modePill, active && styles.modePillOn]}>
+            <Txt style={[styles.modeText, active && styles.modeTextOn]} lines={1} maxFontSizeMultiplier={1.15}>
+              {label}
+            </Txt>
+          </PressableScale>
+        );
+      })}
+    </View>
+  );
+}
+
 /** An Ink Night+ card with a serif title; `problem` rings it in red and names what is missing. */
 export function Card({
   title,
@@ -343,6 +385,27 @@ export const BOTTOM_BAR_SPACE = 136;
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   tabular: { fontVariant: ['tabular-nums'] },
+  modeTrack: {
+    height: 36,
+    padding: 3,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    backgroundColor: CHIP_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  modePill: {
+    height: 30,
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modePillOn: { backgroundColor: ink.pill },
+  modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
+  modeTextOn: { color: ink.ground },
   card: {
     marginHorizontal: inkGutter,
     marginTop: 14,

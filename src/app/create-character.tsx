@@ -11,7 +11,7 @@ import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
-import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, Rewrite, SmallRound } from '@/components/create/kit';
+import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, ModeSwitch, Rewrite, SmallRound } from '@/components/create/kit';
 import { InkText, PhotoGlassPill } from '@/components/ink';
 import { coachGreeting } from '@/lib/greeting-coach';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
@@ -669,10 +669,36 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   }
 
   const title = editing ? t('createCharacter.editTitle') : t('createCharacter.title');
+  const switchMode = (next: 'idea' | 'form') => {
+    if (next === phase) return;
+    haptic.selection();
+    setError(null);
+    if (next === 'idea') {
+      void saveCreation(form);
+      if (hasContent(form)) setKept(form);
+    } else {
+      setChecked(false);
+    }
+    setPhase(next);
+  };
 
   return (
     <Screen background={ink.ground}>
-      <CreateHead title={title} onBack={back} scrolled={scrolled} />
+      <CreateHead
+        title={title}
+        onBack={back}
+        scrolled={scrolled}
+        right={
+          !editing && !drawing && (phase === 'idea' || phase === 'form') ? (
+            <ModeSwitch
+              mode={phase}
+              ideaLabel={t('createCharacter.flow.modeIdea')}
+              formLabel={t('createCharacter.flow.modeForm')}
+              onChange={switchMode}
+            />
+          ) : undefined
+        }
+      />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {phase === 'writing' ? (
           <WritingSteps />

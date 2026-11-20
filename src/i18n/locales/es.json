@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Historias",
-      "seeAll": "Ver todo",
-      "new": "Nuevo",
-      "trending": "Tendencia",
-      "makeOwn": "Hazlo tuyo",
-      "owns_one": "{{count}} lo hizo suyo",
-      "owns_other": "{{count}} lo hicieron suyo",
-      "tropes": {
-        "forYou": "Para ti",
-        "bestFriend": "Mejor amigo",
-        "closeToHome": "En casa",
-        "likesYou": "Le gustas",
-        "married": "Casados",
-        "dangerous": "Peligro",
-        "boss": "Jefe",
-        "enemies": "Enemigos",
-        "ex": "Ex",
-        "fantasy": "Fantasía",
-        "comfort": "Consuelo"
-      }
-    },
+  "stories": {
+    "title": "Historias",
+    "seeAll": "Ver todo",
+    "new": "Nuevo",
+    "trending": "Tendencia",
+    "makeOwn": "Hazlo tuyo",
+    "owns_one": "{{count}} lo hizo suyo",
+    "owns_other": "{{count}} lo hicieron suyo",
+    "tropes": {
+      "forYou": "Para ti",
+      "bestFriend": "Mejor amigo",
+      "closeToHome": "En casa",
+      "likesYou": "Le gustas",
+      "married": "Casados",
+      "dangerous": "Peligro",
+      "boss": "Jefe",
+      "enemies": "Enemigos",
+      "ex": "Ex",
+      "fantasy": "Fantasía",
+      "comfort": "Consuelo"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Flojo",
@@ -1398,7 +1398,9 @@
       "startChat": "Empezar a chatear",
       "discardTitle": "¿Descartar cambios?",
       "discard": "Descartar",
-      "keepEditing": "Seguir editando"
+      "keepEditing": "Seguir editando",
+      "modeIdea": "Idea",
+      "modeForm": "Ficha"
     },
     "youTwo": "Ustedes dos",
     "relation": "Quién es para ti",
@@ -1717,7 +1719,7 @@
     "mostTalked": "Más hablado",
     "ofMonth": "{{percent}} de tu mes",
     "yourDays": "Tus días",
-    "showMore": "Ver {{count}} más",
+    "showMore": "Mostrar {{count}} más",
     "level": "Nivel {{level}}",
     "intimacy": "{{count}} intimidad",
     "streak": "Racha de {{count}} días",
@@ -1731,7 +1733,6 @@
       "met": "Se hicieron amigos",
       "arc": "Se abrió: {{title}}"
     },
-    "showMore": "Mostrar {{count}} más",
     "daysLabel_one": "día juntos",
     "daysLabel_other": "días juntos",
     "daysShort_one": "día",

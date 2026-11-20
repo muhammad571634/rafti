@@ -1156,27 +1156,27 @@
       }
     }
   },
-    "stories": {
-      "title": "스토리",
-      "seeAll": "모두 보기",
-      "new": "새로운",
-      "trending": "인기",
-      "makeOwn": "내 캐릭터로 만들기",
-      "owns_other": "{{count}}명이 자기 것으로 만듦",
-      "tropes": {
-        "forYou": "추천",
-        "bestFriend": "절친",
-        "closeToHome": "가까운 사이",
-        "likesYou": "너에게 반함",
-        "married": "결혼",
-        "dangerous": "위험한",
-        "boss": "상사",
-        "enemies": "라이벌",
-        "ex": "전 애인",
-        "fantasy": "판타지",
-        "comfort": "위로"
-      }
-    },
+  "stories": {
+    "title": "스토리",
+    "seeAll": "모두 보기",
+    "new": "새로운",
+    "trending": "인기",
+    "makeOwn": "내 캐릭터로 만들기",
+    "owns_other": "{{count}}명이 자기 것으로 만듦",
+    "tropes": {
+      "forYou": "추천",
+      "bestFriend": "절친",
+      "closeToHome": "가까운 사이",
+      "likesYou": "너에게 반함",
+      "married": "결혼",
+      "dangerous": "위험한",
+      "boss": "상사",
+      "enemies": "라이벌",
+      "ex": "전 애인",
+      "fantasy": "판타지",
+      "comfort": "위로"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "약함",
@@ -1370,7 +1370,9 @@
       "startChat": "채팅 시작",
       "discardTitle": "변경 사항을 버릴까요?",
       "discard": "버리기",
-      "keepEditing": "계속 편집"
+      "keepEditing": "계속 편집",
+      "modeIdea": "아이디어",
+      "modeForm": "상세"
     },
     "youTwo": "너와 그 사람",
     "relation": "너에게 어떤 사람이야",
@@ -1701,7 +1703,6 @@
       "met": "친구가 되었습니다",
       "arc": "마음을 열었어요: {{title}}"
     },
-    "showMore": "{{count}}개 더 보기",
     "daysLabel_other": "함께한 날들",
     "daysShort_other": "일",
     "ringLevel": "레벨",

@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Hikâyeler",
-      "seeAll": "Tümünü gör",
-      "new": "Yeni",
-      "trending": "Trend",
-      "makeOwn": "Kendine uyarla",
-      "owns_one": "{{count}} kişi uyarladı",
-      "owns_other": "{{count}} kişi uyarladı",
-      "tropes": {
-        "forYou": "Senin için",
-        "bestFriend": "En yakın arkadaş",
-        "closeToHome": "Yakınında",
-        "likesYou": "Sana âşık",
-        "married": "Evli",
-        "dangerous": "Tehlikeli",
-        "boss": "Patron",
-        "enemies": "Düşmanlar",
-        "ex": "Eski sevgili",
-        "fantasy": "Fantastik",
-        "comfort": "Teselli"
-      }
-    },
+  "stories": {
+    "title": "Hikâyeler",
+    "seeAll": "Tümünü gör",
+    "new": "Yeni",
+    "trending": "Trend",
+    "makeOwn": "Kendine uyarla",
+    "owns_one": "{{count}} kişi uyarladı",
+    "owns_other": "{{count}} kişi uyarladı",
+    "tropes": {
+      "forYou": "Senin için",
+      "bestFriend": "En yakın arkadaş",
+      "closeToHome": "Yakınında",
+      "likesYou": "Sana âşık",
+      "married": "Evli",
+      "dangerous": "Tehlikeli",
+      "boss": "Patron",
+      "enemies": "Düşmanlar",
+      "ex": "Eski sevgili",
+      "fantasy": "Fantastik",
+      "comfort": "Teselli"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Zayıf",
@@ -1398,7 +1398,9 @@
       "startChat": "Sohbete başla",
       "discardTitle": "Değişiklikler silinsin mi?",
       "discard": "Sil",
-      "keepEditing": "Düzenlemeye devam et"
+      "keepEditing": "Düzenlemeye devam et",
+      "modeIdea": "Fikir",
+      "modeForm": "Form"
     },
     "youTwo": "Siz ikiniz",
     "relation": "Senin için kim",
@@ -1731,7 +1733,6 @@
       "met": "Arkadaş oldunuz",
       "arc": "Açıldı: {{title}}"
     },
-    "showMore": "{{count}} tane daha göster",
     "daysLabel_one": "birlikte gün",
     "daysLabel_other": "birlikte gün",
     "daysShort_one": "gün",

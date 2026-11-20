@@ -1156,27 +1156,27 @@
       }
     }
   },
-    "stories": {
-      "title": "ストーリー",
-      "seeAll": "すべて見る",
-      "new": "新着",
-      "trending": "話題",
-      "makeOwn": "自分仕様にする",
-      "owns_other": "{{count}}人が自分仕様に",
-      "tropes": {
-        "forYou": "おすすめ",
-        "bestFriend": "親友",
-        "closeToHome": "身近な人",
-        "likesYou": "あなたに夢中",
-        "married": "夫婦",
-        "dangerous": "危険な恋",
-        "boss": "上司",
-        "enemies": "ライバル",
-        "ex": "元恋人",
-        "fantasy": "ファンタジー",
-        "comfort": "癒やし"
-      }
-    },
+  "stories": {
+    "title": "ストーリー",
+    "seeAll": "すべて見る",
+    "new": "新着",
+    "trending": "話題",
+    "makeOwn": "自分仕様にする",
+    "owns_other": "{{count}}人が自分仕様に",
+    "tropes": {
+      "forYou": "おすすめ",
+      "bestFriend": "親友",
+      "closeToHome": "身近な人",
+      "likesYou": "あなたに夢中",
+      "married": "夫婦",
+      "dangerous": "危険な恋",
+      "boss": "上司",
+      "enemies": "ライバル",
+      "ex": "元恋人",
+      "fantasy": "ファンタジー",
+      "comfort": "癒やし"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "弱い",
@@ -1370,7 +1370,9 @@
       "startChat": "チャットを始める",
       "discardTitle": "変更を破棄しますか？",
       "discard": "破棄",
-      "keepEditing": "編集を続ける"
+      "keepEditing": "編集を続ける",
+      "modeIdea": "アイデア",
+      "modeForm": "詳細"
     },
     "youTwo": "ふたりの関係",
     "relation": "あなたにとって誰？",
@@ -1687,7 +1689,7 @@
     "mostTalked": "一番話した",
     "ofMonth": "今月の{{percent}}",
     "yourDays": "あなたの毎日",
-    "showMore": "さらに{{count}}件表示",
+    "showMore": "他{{count}}件を表示",
     "level": "レベル {{level}}",
     "intimacy": "親密度 {{count}}",
     "streak": "{{count}}日連続",
@@ -1701,7 +1703,6 @@
       "met": "友達になりました",
       "arc": "打ち明けた:{{title}}"
     },
-    "showMore": "他{{count}}件を表示",
     "daysLabel_other": "一緒に過ごした日数",
     "daysShort_other": "日",
     "ringLevel": "レベル",

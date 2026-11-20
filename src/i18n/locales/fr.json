@@ -1183,28 +1183,28 @@
       }
     }
   },
-    "stories": {
-      "title": "Histoires",
-      "seeAll": "Tout voir",
-      "new": "Nouveau",
-      "trending": "Tendance",
-      "makeOwn": "En faire le tien",
-      "owns_one": "{{count}} l’a adopté",
-      "owns_other": "{{count}} l’ont adopté",
-      "tropes": {
-        "forYou": "Pour toi",
-        "bestFriend": "Meilleur ami",
-        "closeToHome": "Tout près",
-        "likesYou": "Craque pour toi",
-        "married": "Mariés",
-        "dangerous": "Dangereux",
-        "boss": "Patron",
-        "enemies": "Ennemis",
-        "ex": "Ex",
-        "fantasy": "Fantasy",
-        "comfort": "Réconfort"
-      }
-    },
+  "stories": {
+    "title": "Histoires",
+    "seeAll": "Tout voir",
+    "new": "Nouveau",
+    "trending": "Tendance",
+    "makeOwn": "En faire le tien",
+    "owns_one": "{{count}} l’a adopté",
+    "owns_other": "{{count}} l’ont adopté",
+    "tropes": {
+      "forYou": "Pour toi",
+      "bestFriend": "Meilleur ami",
+      "closeToHome": "Tout près",
+      "likesYou": "Craque pour toi",
+      "married": "Mariés",
+      "dangerous": "Dangereux",
+      "boss": "Patron",
+      "enemies": "Ennemis",
+      "ex": "Ex",
+      "fantasy": "Fantasy",
+      "comfort": "Réconfort"
+    }
+  },
   "createCharacter": {
     "coach": {
       "weak": "Faible",
@@ -1398,7 +1398,9 @@
       "startChat": "Commencer à discuter",
       "discardTitle": "Abandonner les modifications ?",
       "discard": "Abandonner",
-      "keepEditing": "Continuer à modifier"
+      "keepEditing": "Continuer à modifier",
+      "modeIdea": "Idée",
+      "modeForm": "Fiche"
     },
     "youTwo": "Vous deux",
     "relation": "Qui c’est pour toi",
@@ -1717,7 +1719,7 @@
     "mostTalked": "Le plus de messages",
     "ofMonth": "{{percent}} de ton mois",
     "yourDays": "Tes journées",
-    "showMore": "Voir {{count}} de plus",
+    "showMore": "Afficher {{count}} de plus",
     "level": "Niveau {{level}}",
     "intimacy": "{{count}} intimité",
     "streak": "Série de {{count}} jours",
@@ -1731,7 +1733,6 @@
       "met": "Vous êtes devenus amis",
       "arc": "S'est confié : {{title}}"
     },
-    "showMore": "Afficher {{count}} de plus",
     "daysLabel_one": "jour ensemble",
     "daysLabel_other": "jours ensemble",
     "daysShort_one": "jour",
