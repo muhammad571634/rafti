@@ -348,18 +348,19 @@ const FACE_SHARE = 0.5;
 
 function DreamFace({ character, size }: { character: Character; size: number }) {
   const half = size / 2;
+  const gradId = `dreamMelt-${character.id.replace(/[^a-zA-Z0-9_-]/g, '')}`;
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.dream]}>
       <Animated.View key={character.id} entering={FadeIn.duration(260)} style={{ width: size, height: size }}>
         <CharacterAvatar character={character} size={size} />
         <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
           <Defs>
-            <RadialGradient id="dreamMelt" cx="50%" cy="50%" r="50%">
+            <RadialGradient id={gradId} cx="50%" cy="50%" r="50%">
               <Stop offset="0.6" stopColor={BED_BG} stopOpacity={0} />
               <Stop offset="1" stopColor={BED_BG} stopOpacity={0.92} />
             </RadialGradient>
           </Defs>
-          <Circle cx={half} cy={half} r={half} fill="url(#dreamMelt)" />
+          <Circle cx={half} cy={half} r={half} fill={`url(#${gradId})`} />
         </Svg>
       </Animated.View>
     </View>
@@ -412,8 +413,9 @@ const styles = StyleSheet.create({
   faces: { flexGrow: 1, justifyContent: 'center', gap: 14, paddingHorizontal: inkGutter },
   timerCard: {
     marginHorizontal: inkGutter,
-    height: 76,
+    minHeight: 76,
     paddingHorizontal: 14,
+    paddingVertical: 14,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: ink.card,

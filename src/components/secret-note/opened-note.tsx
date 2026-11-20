@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   lock: {
     width: 38,
     height: 38,
-    borderRadius: inkRadius.pill,
+    borderRadius: 19,
     backgroundColor: LOCK_BG,
     borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center',

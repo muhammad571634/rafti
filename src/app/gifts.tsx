@@ -123,6 +123,15 @@ export default function GiftsScreen() {
   const wheelCard = useRef<ViewInstance>(null);
   const capsuleBox = useRef<ViewInstance>(null);
   const shellMark = useRef<ViewInstance>(null);
+  const pourTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (pourTimer.current) clearTimeout(pourTimer.current);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+    },
+    [],
+  );
   const capsuleStyle = useAnimatedStyle(() => {
     const w = wobbleAt(wobble.get());
     return { transform: [{ scaleX: 1 + 0.1 * w }, { scaleY: 1 - 0.08 * w }] };
@@ -133,10 +142,24 @@ export default function GiftsScreen() {
     setPending(amount);
     const wasScrolled = scrollY.current > 1;
     if (wasScrolled) scroll.current?.scrollTo({ y: 0, animated: true });
-    setTimeout(() => {
-      wheelCard.current?.measureInWindow((wx, wy, ww, wh) => {
-        capsuleBox.current?.measureInWindow((cx) => {
-          shellMark.current?.measureInWindow((sx, sy, sw, sh) => {
+    if (pourTimer.current) clearTimeout(pourTimer.current);
+    pourTimer.current = setTimeout(() => {
+      const wheelRef = wheelCard.current;
+      const capRef = capsuleBox.current;
+      const markRef = shellMark.current;
+      if (!wheelRef || !capRef || !markRef) {
+        setPending(0);
+        setReward(amount);
+        return;
+      }
+      wheelRef.measureInWindow((wx, wy, ww, wh) => {
+        if (ww <= 0 && wh <= 0) {
+          setPending(0);
+          setReward(amount);
+          return;
+        }
+        capRef.measureInWindow((cx) => {
+          markRef.measureInWindow((sx, sy, sw, sh) => {
             setPour({ amount, from: { x: wx + ww / 2, y: wy + wh / 2 }, wallet: { x: sx + sw / 2, y: sy + sh / 2, left: cx } });
           });
         });
@@ -151,7 +174,8 @@ export default function GiftsScreen() {
   const copyCode = async () => {
     await Clipboard.setStringAsync(code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopied(false), 1600);
   };
 
   const invite = () => void shareText(t('gifts.inviteMessage', { code, count: INVITE_REWARD }));
@@ -219,12 +243,12 @@ export default function GiftsScreen() {
         title={t('gifts.title')}
         scrolled={scrolled}
         right={
-          <Animated.View ref={capsuleBox} style={[styles.capsule, capsuleStyle]}>
+          <Animated.View ref={capsuleBox} collapsable={false} style={[styles.capsule, capsuleStyle]}>
             <View
               style={styles.capsuleInner}
               accessible
               accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
-              <View ref={shellMark}>
+              <View ref={shellMark} collapsable={false}>
                 <ShellIcon size={16} />
               </View>
               <Txt style={styles.capsuleText}>{count(shownShells)}</Txt>
@@ -338,7 +362,7 @@ export default function GiftsScreen() {
             <Txt style={styles.statusText}>{spinStatus}</Txt>
           </View>
         </View>
-        <View ref={wheelCard} style={[styles.inkCard, styles.wheel]}>
+        <View ref={wheelCard} collapsable={false} style={[styles.inkCard, styles.wheel]}>
           <LuckyWheel
             size={wheelSize}
             disabled={!canSpin}

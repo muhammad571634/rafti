@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   dockCaption: { textAlign: 'center' },
   meter: { gap: 5, marginBottom: 2 },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  track: { height: 5, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: ink.hairlineFill },
-  fill: { height: '100%', borderRadius: inkRadius.pill, backgroundColor: ink.accent },
+  track: { height: 5, borderRadius: 3, overflow: 'hidden', backgroundColor: ink.hairlineFill },
+  fill: { height: '100%', borderRadius: 3, backgroundColor: ink.accent },
   lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
 });

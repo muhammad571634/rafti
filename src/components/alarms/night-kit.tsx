@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { sleepColors as night } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace } from '@/theme/ink';
 
 /**
  * The parts the night screens share (Bedtime, Alarms, the alarm editor; owner-approved prototypes
@@ -42,6 +42,7 @@ export function NightFace({
   children: React.ReactNode;
 }) {
   const ringed = on || steady;
+  const ringRadius = Math.ceil((size + RING_PAD * 2 + RING_BORDER * 2) / 2);
   return (
     <PressableScale onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={name} style={styles.face}>
       <View
@@ -50,7 +51,7 @@ export function NightFace({
           ringed && styles.faceRingBorder,
           on && ringColor ? { borderColor: ringColor } : null,
           ringed && !on && styles.faceRingIdle,
-          { borderRadius: inkRadius.pill },
+          { borderRadius: ringRadius },
         ]}>
         {children}
       </View>
@@ -64,7 +65,7 @@ export function NightFace({
 /** A round 44pt button on the navy: -/+ beside a big number. */
 export function NightRound({ icon, label, onPress, size = 44 }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; onPress: () => void; size?: number }) {
   return (
-    <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={label} hitSlop={6} style={[styles.round, { width: size, height: size, borderRadius: inkRadius.pill }]}>
+    <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={label} hitSlop={6} style={[styles.round, { width: size, height: size, borderRadius: size / 2 }]}>
       <Ionicons name={icon} size={22} color={night.text} />
     </PressableScale>
   );

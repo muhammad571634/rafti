@@ -253,7 +253,7 @@ export default function SecretNoteScreen() {
                     style={styles.creaseLine}
                   />
                   <InkText variant="caption" color={accent.strong} style={styles.creaseText}>
-                    {t('today.cards.sealed')}
+                    {t('home.widget.sealed')}
                   </InkText>
                   <LinearGradient
                     colors={['rgba(255,255,255,0.06)', `${accent.strong}55`]}

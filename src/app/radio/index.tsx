@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     right: 14,
     bottom: 5,
     height: 2.5,
-    borderRadius: inkRadius.pill,
+    borderRadius: 2,
     backgroundColor: 'rgba(255,255,255,0.14)',
     overflow: 'hidden',
   },

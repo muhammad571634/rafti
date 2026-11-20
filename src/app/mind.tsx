@@ -129,7 +129,7 @@ export default function MindScreen() {
         </InkText>
 
         {chipFriends.length > 1 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll} contentContainerStyle={styles.chips}>
             <PressableScale
               scaleTo={0.95}
               accessibilityRole="button"
@@ -181,7 +181,8 @@ export default function MindScreen() {
 
 const styles = StyleSheet.create({
   title: { marginTop: 2, marginHorizontal: inkGutter },
-  chips: { gap: 8, paddingHorizontal: inkGutter, marginTop: 14 },
+  chipsScroll: { marginTop: 14, flexGrow: 0 },
+  chips: { gap: 8, paddingHorizontal: inkGutter },
   chip: {
     height: 34,
     paddingHorizontal: 14,
