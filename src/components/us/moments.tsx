@@ -13,7 +13,7 @@ import { characterImage } from '@/components/ui/avatar';
 import { phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
 import { clockTime, shortName } from '@/lib/format';
-import { buildTimeline, momentTarget, type TimelineItem } from '@/lib/moment-groups';
+import { buildTimeline, isMilestone, momentTarget, type TimelineItem } from '@/lib/moment-groups';
 import { dateFromKey, dayKey } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -211,6 +211,7 @@ export function MomentCard({
   item,
   today,
   content,
+  highlightMilestone = false,
   onPress,
 }: {
   item: TimelineItem;
@@ -218,11 +219,14 @@ export function MomentCard({
   content: MomentContent;
   /** Kept in props for backward compatibility with `/moments/[characterId]`. */
   face?: string | number;
+  /** On the full Moments timeline, milestones wear a soft hue-tinted rim and serif headline. */
+  highlightMilestone?: boolean;
   onPress?: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const hue = KIND_TILE[item.kind].fill;
   const labelHue = isDark ? hue : deeper(hue);
+  const milestone = highlightMilestone && isMilestone(item.kind);
   const { kindLabel, headline, sub } = cardParts(item, content, t);
   const day = dayKey(item.at) === today ? t('common.today') : cardDay(item.at, today, i18n.language, t);
   const time = item.kind === 'plan' && !item.plan?.time ? undefined : clockTime(item.at);
@@ -235,7 +239,7 @@ export function MomentCard({
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={[kindLabel, when, headline, content.hearts, sub].filter(Boolean).join(', ')}
-      style={styles.card}>
+      style={[styles.card, milestone && { borderColor: `${hue}44` }]}>
       <Gradient colors={[`${hue}33`, `${hue}00`]} start={{ x: 0, y: 0 }} end={{ x: 0.65, y: 0.85 }} style={StyleSheet.absoluteFill} />
       <View style={styles.cardBody}>
         <View style={styles.metaRow}>
@@ -249,7 +253,7 @@ export function MomentCard({
 
         <View style={styles.contentRow}>
           <View style={styles.grow}>
-            <InkText variant="bodyStrong" lines={2}>
+            <InkText variant={milestone ? 'cardSmall' : 'bodyStrong'} lines={2}>
               {headline}
             </InkText>
             {content.hearts ? (

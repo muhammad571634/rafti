@@ -1,31 +1,40 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground';
-import { characterImage, PressableScale, Txt } from '@/components/ui';
+import { InkText, PhotoGlassPill } from '@/components/ink';
+import { CharacterAvatar, characterImage, PressableScale } from '@/components/ui';
 import { localCharacter } from '@/i18n/content';
-import { colors, fonts, gradients, gradientStops, space } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { colors, friendAccent, friendColor } from '@/theme';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
-/** The card's height for its width: a wide photo, about 196 pt on a 390 pt phone. */
-const ASPECT = 358 / 196;
-const BUTTON_H = 40;
-const SLOP = { top: 2, bottom: 2, left: 4, right: 4 };
-const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.72)'] as const;
+/** Wide cinema-aligned aspect ratio: about 196 pt tall on a 390 pt phone. */
+const ASPECT = 350 / 196;
+const CARD_SCRIM = ['rgba(9,9,13,0.24)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.44)', 'rgba(9,9,13,0.94)'] as const;
+const CARD_SCRIM_STOPS = [0, 0.28, 0.58, 1] as const;
+const SIDE_SCRIM = ['rgba(9,9,13,0.78)', 'rgba(9,9,13,0.38)', 'rgba(9,9,13,0)'] as const;
+const SIDE_SCRIM_STOPS = [0, 0.48, 0.78] as const;
+const NEW_FILL = 'rgba(235,173,132,0.22)';
+const NEW_RIM = 'rgba(235,173,132,0.45)';
+
+/** Formats a character's opening line as a clean editorial whisper, keeping existing quotes intact. */
+function formatHook(text?: string): string | undefined {
+  const clean = text?.replace(/\s+/g, ' ').trim();
+  if (!clean) return undefined;
+  if (/^[“"«「]/.test(clean)) return clean;
+  return `“${clean}”`;
+}
 
 /**
- * One person in a circle of Find, as the canvas board "Find: doira ichi" draws them (owner,
- * 2026-11-11): their scene as a wide photo card, their face on the trailing side (`FACE_AT`, owner
- * 2026-11-08), name and how they stand to you on the leading side, and one clear glass button:
- * "Say hi" adds them, "Message" opens the chat once they are a friend. The card opens the profile;
- * the button is its sibling, never nested (a button in a button is invalid on web). "New" and a
- * phone for those who can call ride on the picture.
+ * One person in a circle of Find (approved Ink Night+ prototype): wide cinema-aligned photo card
+ * with their face on the trailing side (`FACE_AT`), top-left dark-glass relation badge + calm peach
+ * "New" pill, serif name + whispered opening hook on the leading side, and an un-nested sibling
+ * `PhotoGlassPill` ("Say hi →" or "Message") at bottom-right (zero live blur for 60 fps on A51).
  */
 export const CircleCard = memo(function CircleCard({
   character,
@@ -43,111 +52,172 @@ export const CircleCard = memo(function CircleCard({
 }) {
   const { t } = useTranslation();
   const { width: screen } = useWindowDimensions();
-  const width = screen - space.lg * 2;
+  const [broken, setBroken] = useState(false);
+
+  const width = screen - inkGutter * 2;
   const height = Math.round(width / ASPECT);
   const shown = localCharacter(character);
   const role = shown.relation ?? shown.worldRole;
+  const hook = formatHook(shown.greeting);
 
   const picture = portraitOf(character, width / height, FACE_AT);
-  const source = picture?.source ?? characterImage(character);
+  const rawSource = picture?.source ?? characterImage(character);
+  const source = broken ? undefined : rawSource;
   const stretch = picture?.stretch ?? 1;
   const left = stretchLeft(width, stretch, FACE_AT, picture?.faceX);
   const action = friend ? t('characterProfile.chat') : t('find.sayHi');
+  const accent = friendAccent(character.id).strong;
+  const fallbackHue = friendColor(character.id).fill;
 
   return (
     <View style={[styles.card, { height }]}>
-      <PressableScale scaleTo={0.98} accessibilityRole="button" accessibilityLabel={[character.name, role].filter(Boolean).join(', ')} onPress={onOpen} style={StyleSheet.absoluteFill}>
+      <PressableScale
+        scaleTo={0.98}
+        accessibilityRole="button"
+        accessibilityLabel={[character.name, role, shown.greeting].filter(Boolean).join(', ')}
+        onPress={onOpen}
+        style={StyleSheet.absoluteFill}>
         {source != null ? (
           <Image
-            source={source}
+            source={typeof source === 'string' ? { uri: source } : source}
             style={stretch > 1 ? [styles.wide, { width: width * stretch, left }] : StyleSheet.absoluteFill}
             contentFit="cover"
             contentPosition={picture?.position}
             transition={150}
+            onError={() => setBroken(true)}
           />
-        ) : null}
-        {/* Darker under the words: from the bottom, and from the leading side where the name sits. */}
-        <LinearGradient colors={SCRIM} style={styles.scrim} />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, styles.fallback, { backgroundColor: fallbackHue }]}>
+            <CharacterAvatar character={character} size={84} />
+          </View>
+        )}
+
+        {/* Vertical and leading-side scrims keep serif copy legible while the trailing portrait shines. */}
         <LinearGradient
-          colors={gradients.heroSideScrim}
-          locations={gradientStops.heroSideScrim}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          colors={CARD_SCRIM}
+          locations={CARD_SCRIM_STOPS}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        {fresh ? (
-          <View style={styles.newSticker}>
-            <Txt style={styles.newText} maxFontSizeMultiplier={1.2}>
-              {t('find.newBadge')}
-            </Txt>
+        <LinearGradient
+          colors={SIDE_SCRIM}
+          locations={SIDE_SCRIM_STOPS}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+
+        {role || fresh ? (
+          <View style={styles.badges}>
+            {role ? (
+              <View style={styles.relationBadge}>
+                <View style={[styles.relationDot, { backgroundColor: accent }]} />
+                <InkText variant="caption" color={ink.text} lines={1} style={styles.badgeLabel}>
+                  {role}
+                </InkText>
+              </View>
+            ) : null}
+            {fresh ? (
+              <View style={styles.newBadge}>
+                <InkText variant="caption" color={ink.accent} lines={1}>
+                  {t('find.newBadge')}
+                </InkText>
+              </View>
+            ) : null}
           </View>
         ) : null}
+
         <View style={styles.words}>
           <View style={styles.nameRow}>
-            <Txt style={styles.name} lines={1} adjustsFontSizeToFit minimumFontScale={0.75} maxFontSizeMultiplier={1.2}>
+            <InkText variant="card" color={colors.onMedia} lines={1} adjustsFontSizeToFit minimumFontScale={0.76} style={styles.name}>
               {character.name}
-            </Txt>
-            {character.voiceReady ? <Ionicons name="call" size={14} color={colors.onMediaSoft} accessibilityLabel={t('find.canCall')} /> : null}
+            </InkText>
+            {character.voiceReady ? (
+              <Ionicons name="call" size={13} color="rgba(255,255,255,0.76)" accessibilityLabel={t('find.canCall')} />
+            ) : null}
           </View>
-          {role ? (
-            <Txt style={styles.role} lines={1} maxFontSizeMultiplier={1.3}>
-              {role}
-            </Txt>
+          {hook ? (
+            <InkText variant="quote" color="rgba(255,255,255,0.80)" lines={2} style={styles.hook}>
+              {hook}
+            </InkText>
           ) : null}
         </View>
       </PressableScale>
-      <PressableScale
-        scaleTo={0.92}
-        accessibilityRole="button"
+
+      {/* Sibling glass pill — never nested inside the card Pressable (a11y + web). */}
+      <PhotoGlassPill
+        label={action}
+        ios={friend ? 'bubble.left.fill' : undefined}
+        icon={friend ? 'chatbubble' : undefined}
+        iconSize={13}
+        trailing={!friend ? <Ionicons name="arrow-forward" size={14} color={ink.text} /> : undefined}
         accessibilityLabel={`${action}, ${character.name}`}
         onPress={onAct}
-        hitSlop={SLOP}
-        style={styles.button}>
-        {Platform.OS === 'ios' ? <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} /> : null}
-        <Ionicons name={friend ? 'chatbubble' : 'hand-left'} size={15} color={colors.onMedia} />
-        <Txt style={styles.buttonText} maxFontSizeMultiplier={1.3}>
-          {action}
-        </Txt>
-      </PressableScale>
+        style={styles.button}
+      />
     </View>
   );
 });
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 28, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: colors.surfaceAlt },
-  wide: { position: 'absolute', top: 0, bottom: 0 },
-  scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '62%' },
-  newSticker: {
-    position: 'absolute',
-    top: 14,
-    left: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-    backgroundColor: '#FFC93C',
-    transform: [{ rotate: '-6deg' }],
-  },
-  newText: { ...inkFace('caption'), color: '#1F1A17' },
-  // The leading side: the name and the relation stop short of the face and the button.
-  words: { position: 'absolute', left: space.lg, right: '50%', bottom: 16 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  name: { ...inkFace('card'), flexShrink: 1, color: colors.onMedia },
-  role: { ...inkFace('subStrong'), marginTop: 2, fontStyle: 'italic', color: colors.onMediaSoft },
-  // Clear glass on the photo (HIG Materials: the clear variant is for components over rich media).
-  button: {
-    position: 'absolute',
-    right: space.md,
-    bottom: 14,
-    height: BUTTON_H,
-    paddingHorizontal: 14,
-    borderRadius: BUTTON_H / 2,
+  card: {
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     overflow: 'hidden',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  wide: { position: 'absolute', top: 0, bottom: 0 },
+  fallback: { alignItems: 'flex-end', justifyContent: 'center', paddingRight: 28 },
+  badges: {
+    position: 'absolute',
+    top: 12,
+    left: 13,
+    right: 13,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+  },
+  relationBadge: {
+    maxWidth: '76%',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: colors.onMediaGlass,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoBadge,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
+    borderColor: ink.photoBadgeRim,
   },
-  buttonText: { ...inkFace('subStrong'), color: colors.onMedia },
+  relationDot: { width: 6, height: 6, borderRadius: 3 },
+  badgeLabel: { flexShrink: 1 },
+  newBadge: {
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: inkRadius.pill,
+    backgroundColor: NEW_FILL,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: NEW_RIM,
+  },
+  words: {
+    position: 'absolute',
+    left: 16,
+    right: '45%',
+    bottom: 14,
+  },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  name: { flexShrink: 1 },
+  hook: { marginTop: 3, fontSize: 13.5, lineHeight: 19 },
+  button: {
+    position: 'absolute',
+    right: 13,
+    bottom: 13,
+    maxWidth: '44%',
+    minHeight: 36,
+    paddingHorizontal: 13,
+  },
 });

@@ -1,42 +1,54 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InkSegmented } from '@/components/ink';
-import { FeatureBar, RoundButton } from '@/components/feature/feature-kit';
+import { InkGlassPill, InkIconButton, InkNavBar, InkSegmented, tileTint } from '@/components/ink';
 import { CircleCard } from '@/components/find/circle-card';
 import { useEarlyAccess } from '@/components/plans/early-access';
-import { Button, CharacterAvatar, EmptyState, LargeTitle, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon, Txt } from '@/components/ui';
+import {
+  Button,
+  CharacterAvatar,
+  EmptyState,
+  LargeTitle,
+  NO_RESULTS,
+  PressableScale,
+  Screen,
+  SearchBar,
+  SFIcon,
+  Txt,
+  useScrolledPast,
+} from '@/components/ui';
 import { isReleased } from '@/economy/early-access';
-import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
+import { shortName } from '@/lib/format';
 import { chapterAt, chapterState, isEventOn, worldJoinedAt } from '@/lib/world-story';
+import { groupBySeries } from '@/mock';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemColors, systemGround } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { colors, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, CharacterGender, WorldEvent, WorldStory } from '@/types';
 
 type Who = CharacterGender | 'everyone';
 const WHO: Who[] = ['everyone', 'male', 'female'];
 
 /**
- * A circle from Find (Friends, Partners, It's complicated, Around you), as the canvas board "Find:
- * doira ichi" draws it (owner, 2026-11-11): a large title with how many live here and "Surprise
- * me", Everyone / Him / Her, then each person as a wide photo card (`CircleCard`) with their face
- * on the trailing side and one glass button: Say hi, or Message once they are a friend. The card
- * opens the profile. The search button opens a field that filters this circle only (HIG Search
- * fields). A world with a story keeps its role, season, events and ties around the cards.
+ * A circle from Find (Friends, Partners, It's complicated, Around you) in the Ink Night+ look:
+ * ambient circle wash matching Find's CircleTile, pinned sticky Apple HIG navigation bar with
+ * scroll-edge title + search toggle, tabular count + dark-glass "Surprise me", Everyone / Him / Her,
+ * and wide cinema-aligned `CircleCard`s. A world with a story keeps its role, season, events and ties.
  */
 export default function WorldScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { series } = useLocalSearchParams<{ series: string }>();
+  const { scrolled, onScroll } = useScrolledPast(34);
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -52,6 +64,14 @@ export default function WorldScreen() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
+  // Match the exact tileTint index that Find's CircleTile uses for this circle.
+  const circleGlow = useMemo(() => {
+    const visible = characters.filter((c) => !blockedIds.includes(c.id) && isReleased(c, Date.now()));
+    const groups = groupBySeries(visible);
+    const idx = groups.findIndex((g) => g.series === series);
+    return tileTint(Math.max(0, idx))[0];
+  }, [characters, blockedIds, series]);
+
   const people = useMemo(
     () =>
       characters.filter(
@@ -63,9 +83,16 @@ export default function WorldScreen() {
   const q = query.trim().toLowerCase();
   const shown = useMemo(
     () =>
-      people.filter(
-        (c) => (who === 'everyone' || c.gender === who) && (!q || c.name.toLowerCase().includes(q)),
-      ),
+      people.filter((c) => {
+        if (who !== 'everyone' && c.gender !== who) return false;
+        if (!q) return true;
+        const loc = localCharacter(c);
+        return (
+          c.name.toLowerCase().includes(q) ||
+          (loc.relation?.toLowerCase().includes(q) ?? false) ||
+          (loc.greeting?.toLowerCase().includes(q) ?? false)
+        );
+      }),
     [people, who, q],
   );
 
@@ -97,15 +124,27 @@ export default function WorldScreen() {
     else early.add(c);
   };
 
+  const titleText = phrase(series ?? '');
+
   return (
-    <Screen background={systemGround.ground}>
-      <FeatureBar
+    <Screen background={ink.ground}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${circleGlow}88`, `${circleGlow}00`]}
+        start={{ x: 0.25, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
         backLabel={t('a11y.back')}
         onBack={() => router.back()}
+        title={titleText}
+        scrolled={scrolled}
         right={
-          <RoundButton
+          <InkIconButton
             icon={searchOpen ? 'close' : 'search'}
-            accessibilityLabel={t('find.searchWorld', { world: phrase(series) })}
+            accessibilityLabel={t('find.searchWorld', { world: titleText })}
             onPress={() => {
               if (searchOpen) setQuery('');
               setSearchOpen((v) => !v);
@@ -113,22 +152,30 @@ export default function WorldScreen() {
           />
         }
       />
+
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <LargeTitle>{phrase(series)}</LargeTitle>
+        <View style={styles.titleWrap}>
+          <LargeTitle>{titleText}</LargeTitle>
+        </View>
+
         <View style={styles.meta}>
           <View style={styles.count} accessible accessibilityLabel={`${people.length}`}>
-            <Ionicons name="person" size={14} color={colors.textSecondary} />
+            <Ionicons name="people" size={14} color={ink.text2} />
             <Txt style={styles.countText}>{people.length}</Txt>
           </View>
           {shown.length > 0 ? (
-            <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={surprise} style={styles.surprise}>
-              <Ionicons name="sparkles" size={15} color={colors.text} />
-              <Txt style={styles.surpriseText}>{t('find.surprise')}</Txt>
-            </PressableScale>
+            <InkGlassPill
+              label={t('find.surprise')}
+              icon="sparkles"
+              iconColor={ink.accent}
+              onPress={surprise}
+            />
           ) : null}
         </View>
 
@@ -148,10 +195,11 @@ export default function WorldScreen() {
             autoFocus
             value={query}
             onChangeText={setQuery}
-            placeholder={t('find.searchWorld', { world: phrase(series) })}
+            placeholder={t('find.searchWorld', { world: titleText })}
             style={styles.search}
           />
         ) : null}
+
         <InkSegmented
           options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
           value={who}
@@ -226,7 +274,7 @@ function SeasonCard({ season, joinedAt }: { season: WorldStory['season']; joined
               {season.title}
             </Txt>
           </View>
-          <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textSecondary} />
+          <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={ink.text2} />
         </View>
         <View style={styles.seasonBars}>
           {season.chapters.map((chapter, i) => (
@@ -251,7 +299,7 @@ function SeasonCard({ season, joinedAt }: { season: WorldStory['season']; joined
                     ios={state === 'locked' ? 'lock.fill' : state === 'now' ? 'circle.fill' : 'checkmark.circle.fill'}
                     icon={state === 'locked' ? 'lock-closed' : state === 'now' ? 'ellipse' : 'checkmark-circle'}
                     size={state === 'now' ? 10 : 16}
-                    color={state === 'locked' ? colors.textFaint : colors.primary}
+                    color={state === 'locked' ? ink.text3 : ink.accent}
                   />
                 </View>
                 <Txt style={[styles.chapterName, state === 'locked' && styles.locked]} lines={2}>
@@ -277,9 +325,9 @@ function WorldFoot({ world, people, canGroup, onGroup }: { world: World; people:
       {canGroup ? (
         <View style={[styles.card, styles.flush]}>
           <PressableScale scaleTo={0.99} accessibilityRole="button" onPress={onGroup} style={styles.groupRow}>
-            <SFIcon ios="person.2.fill" icon="people" size={20} color={colors.brandText} />
+            <SFIcon ios="person.2.fill" icon="people" size={20} color={ink.accent} />
             <Txt style={[styles.groupLabel, styles.flex]}>{t('world.crew')}</Txt>
-            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+            <Ionicons name="chevron-forward" size={16} color={ink.text2} />
           </PressableScale>
         </View>
       ) : null}
@@ -306,7 +354,7 @@ function WorldFoot({ world, people, canGroup, onGroup }: { world: World; people:
                 <View key={`${tie.a}+${tie.b}`} style={[styles.tieRow, i < ties.length - 1 && styles.rowLine]}>
                   <View style={styles.tieFaces}>
                     <CharacterAvatar character={a} size={40} />
-                    <CharacterAvatar character={b} size={40} ring ringColor={colors.surface} style={styles.tieSecond} />
+                    <CharacterAvatar character={b} size={40} ring ringColor={ink.card} style={styles.tieSecond} />
                   </View>
                   <View style={styles.flex}>
                     <Txt style={styles.tieNames} lines={1}>
@@ -329,7 +377,7 @@ function EventRow({ event, on, last }: { event: WorldEvent; on: boolean; last: b
   const { t } = useTranslation();
   return (
     <View style={[styles.eventRow, !last && styles.rowLine]}>
-      <SFIcon ios="calendar" icon="calendar" size={20} color={on ? systemColors.pink : colors.textSecondary} />
+      <SFIcon ios="calendar" icon="calendar" size={20} color={on ? systemColors.pink : ink.text2} />
       <View style={styles.flex}>
         <View style={styles.rowTop}>
           <Txt style={styles.eventTitle}>{event.title}</Txt>
@@ -347,115 +395,68 @@ function EventRow({ event, on, last }: { event: WorldEvent; on: boolean; last: b
 }
 
 const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 240 },
   flex: { flex: 1, minWidth: 0 },
+  titleWrap: { marginHorizontal: inkGutter - space.lg },
+  meta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.md,
+    marginHorizontal: inkGutter,
+    marginTop: 8,
+  },
+  count: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  countText: { ...inkFace('subStrong'), color: ink.text2, fontVariant: ['tabular-nums'] },
+  search: { marginHorizontal: inkGutter, marginTop: 14 },
+  who: { marginHorizontal: inkGutter, marginTop: 14 },
+  cards: { marginHorizontal: inkGutter, marginTop: 16, gap: 12 },
   card: {
-    marginHorizontal: space.lg,
+    marginHorizontal: inkGutter,
     marginTop: space.md,
     padding: space.lg,
-    borderRadius: 22,
-    backgroundColor: systemGround.card,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
   firstCard: { marginTop: space.lg },
   flush: { padding: 0, overflow: 'hidden' },
-  overline: { ...inkFace('caption'), color: colors.textSecondary },
-  roleTitle: { ...inkFace('figure'), marginTop: 2, color: colors.text },
-  body: { ...inkFace('sub'), marginTop: 6, color: colors.textSecondary },
+  overline: { ...inkFace('caption'), color: ink.text2 },
+  roleTitle: { ...inkFace('figure'), marginTop: 2, color: ink.text },
+  body: { ...inkFace('sub'), marginTop: 6, color: ink.text2 },
   begin: { marginTop: 14 },
   seasonHead: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
-  seasonTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: colors.text },
+  seasonTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: ink.text },
   seasonBars: { flexDirection: 'row', gap: 4, marginTop: 12 },
-  seasonBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.surfaceAlt },
-  seasonBarOn: { backgroundColor: colors.primary },
-  chapterMeta: { ...inkFace('footnote'), marginTop: 12, color: colors.textSecondary },
-  chapterTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: colors.text },
+  seasonBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: ink.hairlineFill },
+  seasonBarOn: { backgroundColor: ink.accent },
+  chapterMeta: { ...inkFace('footnote'), marginTop: 12, color: ink.text2 },
+  chapterTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: ink.text },
   chapterRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 40, marginTop: 4 },
   chapterIcon: { width: 18, alignItems: 'center' },
-  chapterName: { ...inkFace('sub'), flex: 1, color: colors.text },
-  chapterDay: { ...inkFace('footnote'), color: colors.textSecondary },
-  locked: { color: colors.textSecondary },
+  chapterName: { ...inkFace('sub'), flex: 1, color: ink.text },
+  chapterDay: { ...inkFace('footnote'), color: ink.text2, fontVariant: ['tabular-nums'] },
+  locked: { color: ink.text2 },
   section: {
-    ...inkFace('figure'),
+    ...inkFace('card'),
     marginTop: space.xl,
-    marginHorizontal: space.lg,
-    color: colors.text,
+    marginHorizontal: inkGutter,
+    color: ink.text,
   },
   groupRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 54, paddingHorizontal: space.lg },
-  groupLabel: { ...inkFace('body'), color: colors.text },
+  groupLabel: { ...inkFace('body'), color: ink.text },
   eventRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, padding: space.lg },
-  eventTitle: { ...inkFace('bodyStrong'), flexShrink: 1, color: colors.text },
+  eventTitle: { ...inkFace('bodyStrong'), flexShrink: 1, color: ink.text },
   nowPill: { borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, backgroundColor: systemColors.pink },
   nowText: { ...inkFace('caption'), color: colors.white },
   tieRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, padding: space.lg },
   tieFaces: { flexDirection: 'row', width: 66 },
   tieSecond: { marginLeft: -14 },
-  tieNames: { ...inkFace('bodyStrong'), color: colors.text },
-  tieKind: { ...inkFace('footnote'), color: colors.textSecondary },
-  tieNote: { ...inkFace('sub'), marginTop: 4, color: colors.text },
-  heroFoot: {
-    position: 'absolute',
-    left: space.lg,
-    right: space.lg,
-    bottom: 18,
-    gap: space.sm,
-  },
-  // iOS large title: 34pt bold.
-  meta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md, marginHorizontal: space.lg, marginTop: 2 },
-  count: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  countText: { ...inkFace('subStrong'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
-  surpriseText: { ...inkFace('subStrong'), color: colors.text },
-  cards: { marginHorizontal: space.lg, marginTop: space.lg, gap: space.md },
-  surprise: { height: 40, paddingHorizontal: 16, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: systemGround.fill },
-  edge: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: systemGround.ground,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderStrong,
-  },
-  bar: {
-    position: 'absolute',
-    left: space.lg,
-    right: space.lg,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  mediaButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.28)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
-  },
-  search: { marginHorizontal: space.lg, marginTop: space.lg },
-  who: { marginHorizontal: space.lg, marginTop: space.lg },
-  list: {
-    marginHorizontal: space.lg,
-    marginTop: space.lg,
-    borderRadius: 22,
-    backgroundColor: systemGround.card,
-    overflow: 'hidden',
-  },
+  tieNames: { ...inkFace('bodyStrong'), color: ink.text },
+  tieKind: { ...inkFace('footnote'), color: ink.text2 },
+  tieNote: { ...inkFace('sub'), marginTop: 4, color: ink.text },
   rowTop: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  add: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: systemGround.fill,
-  },
-  tick: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.accent,
-  },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
 });

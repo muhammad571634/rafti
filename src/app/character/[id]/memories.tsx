@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { type ComponentProps, type ReactNode, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,31 +8,33 @@ import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InkSegmented } from '@/components/ink';
-import { FriendAccent, PeachButton, TitleTop, TopButton, useFriendAccent } from '@/components/character/kit';
-import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { InkFriendPill, InkIconButton, InkNavBar, InkSegmented, InkText } from '@/components/ink';
+import { FriendAccent, useFriendAccent } from '@/components/character/kit';
+import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
 import { count, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
-import { bottomRoom, night, palette, radius, space, type } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, night, space, type } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { MemoryAbout, MemoryItem } from '@/types';
 
-// Always dark (appearance B, owner 2026-11-11): what they keep of you is part of their space.
-const { colors, ground: systemGround, friendAccent } = night;
+const { colors, friendAccent } = night;
 
-/** Widths of the two grey lines on a locked row, so the rows do not look stamped. */
+/** Widths of the two muted lines on a locked row, so the rows do not look stamped. */
 const LOCKED_LINES: [number, number][] = [
-  [82, 46],
-  [68, 38],
-  [74, 52],
+  [78, 44],
+  [64, 38],
+  [72, 50],
 ];
 
-/** Each tab's colour in the bar and its legend: three shades of the one peach, deepest first (0z153). */
-const TAB_COLORS: Record<MemoryAbout, string> = { story: palette.apricot300, them: palette.apricot500, you: palette.apricot700 };
+const YOU_SEG_COLOR = '#B97856';
+const LOCK_PILL_BG = 'rgba(235,173,132,0.14)';
+const LOCK_PILL_RIM = 'rgba(235,173,132,0.34)';
+const BASIC_MINT = '#5FE0C4';
+const FOOTER_BG = 'rgba(9,9,13,0.94)';
 
 export default function MemoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,12 +43,14 @@ export default function MemoriesScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { scrolled, onScroll } = useScrolledPast(34);
 
   const memories = useAppStore((s) => s.memories);
   const wallet = useAppStore((s) => s.wallet);
-  const name = useAppStore((s) => s.characters.find((c) => c.id === characterId)?.name ?? '');
+  const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
+  const name = character?.name ?? '';
   // "Что {{name}} рассказал / рассказала": the verb agrees with the friend (i18next context).
-  const gender = useAppStore((s) => s.characters.find((c) => c.id === characterId)?.gender);
+  const gender = character?.gender;
   const addMemory = useAppStore((s) => s.addMemory);
   const togglePin = useAppStore((s) => s.toggleMemoryPin);
   const deleteMemory = useAppStore((s) => s.deleteMemory);
@@ -71,6 +76,9 @@ export default function MemoriesScreen() {
   const counts = useMemo(() => countByTab(open), [open]);
 
   const short = shortName(name);
+  const friendHue = characterId ? friendAccent(characterId) : null;
+  const accentStrong = friendHue?.strong ?? ink.accent;
+
   const tabLabel: Record<MemoryAbout, string> = {
     story: t('memories.tabStory'),
     them: short,
@@ -111,30 +119,53 @@ export default function MemoriesScreen() {
         : { symbol: { ios: 'bookmark.fill', icon: 'bookmark' }, title: t('memories.empty'), hint: t('memories.emptyHint') };
 
   return (
-    // The four tabs' look (0z153) on the night ground (appearance B), a heavy title by round buttons, the meter as a white
-    // card, a soft switch of the three tabs, then the chosen tab's memories in white cards; their space,
-    // so their accent marks what is pinned.
-    <FriendAccent value={characterId ? friendAccent(characterId) : null}>
-      <Screen night background={systemGround.ground}>
-        <TitleTop
-          title={t('memories.title')}
+    <FriendAccent value={friendHue}>
+      <Screen night background={ink.ground}>
+        <LinearGradient
+          pointerEvents="none"
+          colors={[`${accentStrong}28`, `${accentStrong}00`]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.ambient}
+        />
+
+        <InkNavBar
+          backLabel={t('a11y.back')}
           onBack={() => router.back()}
-          right={<TopButton icon="add" accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
+          scrolled={scrolled}
+          center={
+            character ? (
+              <InkFriendPill
+                character={character}
+                name={short}
+                ringColor={accentStrong}
+                onPress={() => router.push(`/character/${character.id}`)}
+              />
+            ) : undefined
+          }
+          right={<InkIconButton icon="add" size={22} accessibilityLabel={t('a11y.addMemory')} onPress={() => setAdding(true)} />}
         />
 
         <FlatList
           data={groups}
           keyExtractor={(group) => group.key}
-          contentContainerStyle={styles.list}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={[styles.list, { paddingBottom: locked.length > 0 ? space.xxl : insets.bottom + space.huge }]}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
+              <InkText variant="display" accessibilityRole="header" style={styles.screenTitle}>
+                {t('memories.title')}
+              </InkText>
               <Meter
                 counts={counts}
                 labels={tabLabel}
                 total={open.length}
                 locked={locked.length}
                 full={full}
+                accentColor={accentStrong}
+                onOpenUnlock={locked.length > 0 ? () => setUnlocking(true) : undefined}
               />
               <View style={styles.tabs}>
                 <InkSegmented
@@ -148,18 +179,19 @@ export default function MemoriesScreen() {
           renderItem={({ item: group }) => (
             <View>
               <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short, context: gender })}</Txt>
-              {group.items.map((memory, index) => (
-                <MemoryRow
-                  key={memory.id}
-                  memory={memory}
-                  who={memory.quote ? (memory.quote.author === 'me' ? t('memories.you') : short) : undefined}
-                  first={index === 0}
-                  last={index === group.items.length - 1}
-                  onEdit={() => startEdit(memory)}
-                  onPin={() => togglePin(memory.id)}
-                  onDelete={() => deleteMemory(memory.id)}
-                />
-              ))}
+              <View style={styles.groupCard}>
+                {group.items.map((memory, index) => (
+                  <MemoryRow
+                    key={memory.id}
+                    memory={memory}
+                    who={memory.quote ? (memory.quote.author === 'me' ? t('memories.you') : short) : undefined}
+                    last={index === group.items.length - 1}
+                    onEdit={() => startEdit(memory)}
+                    onPin={() => togglePin(memory.id)}
+                    onDelete={() => deleteMemory(memory.id)}
+                  />
+                ))}
+              </View>
             </View>
           )}
           ListEmptyComponent={
@@ -181,8 +213,18 @@ export default function MemoriesScreen() {
 
         {locked.length > 0 ? (
           <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
-            <PeachButton label={t('memories.unlock')} icon="lock-open" onPress={() => setUnlocking(true)} />
-            <Txt variant="caption" color={colors.textSecondary} center>
+            <PressableScale
+              scaleTo={0.97}
+              accessibilityRole="button"
+              accessibilityLabel={t('memories.unlock')}
+              onPress={() => setUnlocking(true)}
+              style={styles.unlockPill}>
+              <Ionicons name="lock-open" size={16} color={ink.onAccent} />
+              <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+                {t('memories.unlock')}
+              </InkText>
+            </PressableScale>
+            <Txt variant="caption" color={ink.text2} center style={styles.figure}>
               {t('memories.unlockCaption', { price: PLANS.basic.price })}
             </Txt>
           </View>
@@ -197,7 +239,8 @@ export default function MemoriesScreen() {
             value={draft}
             onChangeText={setDraft}
             placeholder={t('memories.addManual')}
-            placeholderTextColor={colors.textFaint}
+            placeholderTextColor={ink.placeholder}
+            selectionColor={accentStrong}
             style={styles.input}
             multiline
             autoFocus
@@ -208,11 +251,11 @@ export default function MemoriesScreen() {
         <Sheet visible={unlocking} onClose={() => setUnlocking(false)}>
           <View style={styles.sheetHead}>
             <View style={styles.lockArt}>
-              <Ionicons name="lock-closed" size={28} color={colors.textSecondary} />
+              <Ionicons name="lock-open" size={26} color={ink.accent} />
             </View>
-            <Txt variant="h3" center>
+            <InkText variant="card" style={styles.sheetTitle}>
               {t('memories.lockedTitle', { name: short, count: locked.length })}
-            </Txt>
+            </InkText>
           </View>
           <View style={styles.perks}>
             {[
@@ -220,21 +263,24 @@ export default function MemoriesScreen() {
               t('plans.shellsMonth', { amount: count(PLANS.basic.shells) }),
             ].map((perk) => (
               <View key={perk} style={styles.perk}>
-                <Ionicons name="checkmark" size={17} color={colors.text} />
-                <Txt variant="body" style={styles.flex}>
+                <Ionicons name="checkmark" size={17} color={ink.accent} />
+                <Txt variant="body" style={[styles.flex, styles.figure]}>
                   {perk}
                 </Txt>
               </View>
             ))}
           </View>
           <View style={styles.actions}>
-            <Button
-              label={t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })}
-              size="lg"
-              full
+            <PressableScale
+              scaleTo={0.97}
+              accessibilityRole="button"
               onPress={unlock}
-            />
-            <Txt variant="caption" color={colors.textMuted} center>
+              style={styles.unlockPill}>
+              <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+                {t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })}
+              </InkText>
+            </PressableScale>
+            <Txt variant="caption" color={ink.text2} center>
               {t('plans.billed.basic')}
             </Txt>
             <Button label={t('plans.notNow')} variant="ghost" full onPress={() => setUnlocking(false)} />
@@ -246,8 +292,8 @@ export default function MemoriesScreen() {
 }
 
 /**
- * How full the memory is, split by tab. Free plan: the share of the 20 open places each tab
- * takes, and how many are locked. With a plan the bar is the whole memory.
+ * Apple Health-style Ink Night+ memory meter: 6 pt segmented track (Story in friend hue, Them in
+ * warm brand peach, You in deep terracotta), crisp hairline edge, and tappable locked badge.
  */
 function Meter({
   counts,
@@ -255,41 +301,80 @@ function Meter({
   total,
   locked,
   full,
+  accentColor,
+  onOpenUnlock,
 }: {
   counts: Record<MemoryAbout, number>;
   labels: Record<MemoryAbout, string>;
   total: number;
   locked: number;
   full: boolean;
+  accentColor: string;
+  onOpenUnlock?: () => void;
 }) {
   const { t } = useTranslation();
   const room = full ? Math.max(total, 1) : FREE_MEMORY_LIMIT;
+  const segColors: Record<MemoryAbout, string> = {
+    story: accentColor,
+    them: ink.accent,
+    you: YOU_SEG_COLOR,
+  };
+
   return (
     <View style={styles.meter}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${accentColor}1A`, `${accentColor}00`]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.7, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+
       <View style={styles.meterHead}>
         <Txt style={[styles.flex, styles.meterTitle]} maxFontSizeMultiplier={1.3}>
           {full ? t('memories.allOpenCount', { count: total }) : t('memories.open', { count: total, limit: FREE_MEMORY_LIMIT })}
         </Txt>
-        {locked > 0 ? (
-          <Txt variant="small" color={colors.textSecondary} style={styles.figure}>
-            {t('memories.locked', { count: locked })}
-          </Txt>
+        {locked > 0 && onOpenUnlock ? (
+          <PressableScale
+            scaleTo={0.94}
+            accessibilityRole="button"
+            onPress={onOpenUnlock}
+            style={styles.lockedPill}>
+            <Ionicons name="lock-closed" size={11} color={ink.accent} />
+            <InkText variant="caption" color={ink.accent} style={styles.figure}>
+              {t('memories.locked', { count: locked })}
+            </InkText>
+          </PressableScale>
+        ) : full ? (
+          <View style={styles.basicBadge}>
+            <Ionicons name="checkmark-circle" size={14} color={BASIC_MINT} />
+            <InkText variant="caption" color={BASIC_MINT}>
+              {t('plans.name.basic')}
+            </InkText>
+          </View>
         ) : null}
       </View>
+
       <View style={styles.track}>
-        {MEMORY_TABS.filter((tab) => counts[tab] > 0).map((tab) => (
-          <View
-            key={tab}
-            style={[styles.fill, { width: `${(counts[tab] / room) * 100}%`, backgroundColor: TAB_COLORS[tab] }]}
-          />
-        ))}
+        {total > 0 ? (
+          <View style={[styles.trackFilled, { width: `${Math.min(100, (total / room) * 100)}%` }]}>
+            {MEMORY_TABS.filter((tab) => counts[tab] > 0).map((tab) => (
+              <View
+                key={tab}
+                style={[styles.fill, { flex: counts[tab], backgroundColor: segColors[tab] }]}
+              />
+            ))}
+          </View>
+        ) : null}
       </View>
+
       <View style={styles.legend}>
         {MEMORY_TABS.map((tab) => (
           <View key={tab} style={styles.legendItem}>
-            <View style={[styles.dot, { backgroundColor: TAB_COLORS[tab] }]} />
+            <View style={[styles.dot, { backgroundColor: segColors[tab] }]} />
             <Txt style={[styles.legendText, styles.figure]}>
-              {labels[tab]} {counts[tab]}
+              {labels[tab]}{' '}
+              <Txt style={styles.legendCount}>{counts[tab]}</Txt>
             </Txt>
           </View>
         ))}
@@ -304,7 +389,7 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
   return (
     <View style={styles.locked}>
       <View style={styles.lockedHead}>
-        <Ionicons name="lock-closed" size={14} color={colors.textSecondary} />
+        <Ionicons name="lock-closed" size={13} color={ink.text2} />
         <Txt style={styles.lockedTitle}>{t('memories.locked', { count: memories.length })}</Txt>
       </View>
       <View style={styles.lockedBox}>
@@ -319,11 +404,11 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
                 accessibilityLabel={t('a11y.lockedMemory')}
                 style={styles.lockedRow}>
                 <View style={styles.lockTile}>
-                  <Ionicons name="lock-closed" size={16} color={colors.textMuted} />
+                  <Ionicons name="lock-closed" size={15} color={ink.text2} />
                 </View>
                 <View style={styles.lines}>
                   <View style={[styles.line, { width: `${first}%` }]} />
-                  <View style={[styles.line, { width: `${second}%` }]} />
+                  <View style={[styles.line, styles.lineMuted, { width: `${second}%` }]} />
                 </View>
               </PressableScale>
             </View>
@@ -335,14 +420,12 @@ function LockedBox({ memories, onPress }: { memories: MemoryItem[]; onPress: () 
 }
 
 /**
- * One memory in an inset group: tap to edit; swipe left for Pin and Delete (also offered as
- * screen-reader actions). A pinned memory carries a grey pin. A line pinned from the chat is
- * quoted as it was said, with who said it: it is not edited, and Delete takes it back out.
+ * One memory inside an Ink inset group: tap to edit; swipe left for Pin (friend accent) and Delete
+ * (danger red). Pinned chat quotes wear a 2 pt friend-accent left rule and editorial serif italic.
  */
 function MemoryRow({
   memory,
   who,
-  first,
   last,
   onEdit,
   onPin,
@@ -351,7 +434,6 @@ function MemoryRow({
   memory: MemoryItem;
   /** Who said a quoted chat line. */
   who?: string;
-  first: boolean;
   last: boolean;
   onEdit: () => void;
   onPin: () => void;
@@ -361,6 +443,7 @@ function MemoryRow({
   const { t } = useTranslation();
   const swipe = useRef<SwipeableMethods>(null);
   const quoted = memory.quote != null;
+  const accentColor = accent?.strong ?? ink.accent;
   const pinLabel = memory.pinned ? t('a11y.unpin') : t('a11y.pin');
   const act = (run: () => void) => () => {
     swipe.current?.close();
@@ -375,66 +458,77 @@ function MemoryRow({
     else if (!quoted) onEdit();
   };
   const text = quoted ? `“${memory.text}”` : memory.text;
+  const sourceLabel = memory.source === 'board' ? t('us.publishKind.board') : t(`memories.sources.${memory.source}`);
 
   return (
-    <View style={[styles.rowWrap, first && styles.rowFirst, last && styles.rowLast]}>
-      <ReanimatedSwipeable
-        ref={swipe}
-        friction={2}
-        rightThreshold={40}
-        overshootRight={false}
-        // Both fire on release, just before the click a mouse drag ends with on web.
-        onSwipeableWillOpen={() => {
-          opened.current = true;
-          draggedAt.current = Date.now();
-        }}
-        onSwipeableWillClose={() => {
-          opened.current = false;
-          draggedAt.current = Date.now();
-        }}
-        renderRightActions={(progress) => (
-          <SwipeActions progress={progress}>
-            {quoted ? null : (
-              <Pressable onPress={act(onPin)} accessibilityRole="button" accessibilityLabel={pinLabel} style={[styles.swipeAction, styles.pinAction]}>
-                <Ionicons name={memory.pinned ? 'pin-outline' : 'pin'} size={20} color={colors.textOnPrimary} />
-              </Pressable>
-            )}
+    <ReanimatedSwipeable
+      ref={swipe}
+      friction={2}
+      rightThreshold={40}
+      overshootRight={false}
+      // Both fire on release, just before the click a mouse drag ends with on web.
+      onSwipeableWillOpen={() => {
+        opened.current = true;
+        draggedAt.current = Date.now();
+      }}
+      onSwipeableWillClose={() => {
+        opened.current = false;
+        draggedAt.current = Date.now();
+      }}
+      renderRightActions={(progress) => (
+        <SwipeActions progress={progress}>
+          {quoted ? null : (
             <Pressable
-              onPress={act(onDelete)}
+              onPress={act(onPin)}
               accessibilityRole="button"
-              accessibilityLabel={t('a11y.deleteMemory')}
-              style={[styles.swipeAction, styles.deleteAction]}>
-              <Ionicons name="trash" size={20} color={colors.white} />
+              accessibilityLabel={pinLabel}
+              style={[styles.swipeAction, { backgroundColor: accentColor }]}>
+              <Ionicons name={memory.pinned ? 'pin-outline' : 'pin'} size={20} color={ink.ground} />
             </Pressable>
-          </SwipeActions>
-        )}>
-        <Pressable
-          onPress={press}
-          accessibilityRole="button"
-          accessibilityLabel={quoted ? `${text}, ${who}` : `${memory.text}, ${t('memories.edit')}`}
-          accessibilityActions={
-            quoted
-              ? [{ name: 'delete', label: t('a11y.deleteMemory') }]
-              : [
-                  { name: 'pin', label: pinLabel },
-                  { name: 'delete', label: t('a11y.deleteMemory') },
-                ]
-          }
-          onAccessibilityAction={(e) => (e.nativeEvent.actionName === 'pin' ? onPin() : onDelete())}
-          style={({ pressed }) => [styles.memory, pressed && !quoted && styles.memoryPressed]}>
-          <View style={[styles.memoryBody, !last && styles.memoryLine]}>
-            <View style={styles.flex}>
-              <Txt style={[styles.memoryText, quoted && styles.quote]}>{text}</Txt>
-              <Txt style={styles.memoryMeta}>
-                {who ? `${who} · ` : ''}
-                {relativeStamp(memory.createdAt)}
-              </Txt>
-            </View>
-            {memory.pinned ? <Ionicons name="pin" size={16} color={accent?.strong ?? colors.brandText} style={styles.pin} /> : null}
+          )}
+          <Pressable
+            onPress={act(onDelete)}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.deleteMemory')}
+            style={[styles.swipeAction, styles.deleteAction]}>
+            <Ionicons name="trash" size={20} color={colors.white} />
+          </Pressable>
+        </SwipeActions>
+      )}>
+      <Pressable
+        onPress={press}
+        accessibilityRole="button"
+        accessibilityLabel={quoted ? `${text}, ${who}` : `${memory.text}, ${t('memories.edit')}`}
+        accessibilityActions={
+          quoted
+            ? [{ name: 'delete', label: t('a11y.deleteMemory') }]
+            : [
+                { name: 'pin', label: pinLabel },
+                { name: 'delete', label: t('a11y.deleteMemory') },
+              ]
+        }
+        onAccessibilityAction={(e) => (e.nativeEvent.actionName === 'pin' ? onPin() : onDelete())}
+        style={({ pressed }) => [styles.memory, pressed && !quoted && styles.memoryPressed]}>
+        <View style={[styles.memoryBody, !last && styles.memoryLine]}>
+          <View style={styles.flex}>
+            {quoted ? (
+              <View style={[styles.quoteRule, { borderLeftColor: accentColor }]}>
+                <InkText variant="quote" color="rgba(255,255,255,0.92)">
+                  {text}
+                </InkText>
+              </View>
+            ) : (
+              <Txt style={styles.memoryText}>{text}</Txt>
+            )}
+            <Txt style={[styles.memoryMeta, styles.figure]}>
+              {quoted ? (who ? `${who} · ` : '') : `${sourceLabel} · `}
+              {relativeStamp(memory.createdAt)}
+            </Txt>
           </View>
-        </Pressable>
-      </ReanimatedSwipeable>
-    </View>
+          {memory.pinned ? <Ionicons name="pin" size={15} color={accentColor} style={styles.pin} /> : null}
+        </View>
+      </Pressable>
+    </ReanimatedSwipeable>
   );
 }
 
@@ -448,75 +542,154 @@ function SwipeActions({ progress, children }: { progress: SharedValue<number>; c
 }
 
 const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
   flex: { flex: 1 },
-  list: { paddingTop: space.xs, paddingBottom: space.huge },
-  tabs: { marginHorizontal: space.lg, marginTop: 14 },
+  list: { paddingTop: 2 },
+  screenTitle: { marginHorizontal: inkGutter, marginTop: 2 },
+  tabs: { marginHorizontal: inkGutter, marginTop: 14 },
   groupTitle: {
-    marginTop: 22,
+    marginTop: 20,
     marginBottom: 8,
-    paddingHorizontal: space.lg + 6,
-    ...inkFace('subStrong'),
-    color: colors.textSecondary,
+    paddingHorizontal: inkGutter + 6,
+    ...inkFace('footnoteStrong'),
+    color: ink.text2,
   },
-  // Rows share one white card: the first rounds its top, the last its bottom.
-  rowWrap: { marginHorizontal: space.lg, backgroundColor: systemGround.card, overflow: 'hidden' },
-  rowFirst: { borderTopLeftRadius: inkRadius.card, borderTopRightRadius: inkRadius.card },
-  rowLast: { borderBottomLeftRadius: inkRadius.card, borderBottomRightRadius: inkRadius.card },
-  memory: { paddingLeft: 18, backgroundColor: systemGround.card },
-  memoryPressed: { backgroundColor: systemGround.fill },
-  memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 14, paddingRight: 18 },
-  memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  memoryText: { ...inkFace('body'), color: colors.text },
-  quote: { fontStyle: 'italic' },
-  memoryMeta: { marginTop: 2, ...inkFace('footnote'), color: colors.textSecondary },
+  groupCard: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  memory: { paddingLeft: 16, backgroundColor: ink.card },
+  memoryPressed: { backgroundColor: ink.raised },
+  memoryBody: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 13, paddingRight: 16 },
+  memoryLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
+  quoteRule: { borderLeftWidth: 2, paddingLeft: 10 },
+  memoryText: { ...inkFace('body'), fontSize: 15.5, lineHeight: 21.5, color: ink.text },
+  memoryMeta: { marginTop: 5, ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
   pin: { marginTop: 3 },
   actionsRow: { flexDirection: 'row' },
-  swipeAction: { width: 66, alignItems: 'center', justifyContent: 'center' },
-  pinAction: { backgroundColor: colors.primaryFill },
-  deleteAction: { backgroundColor: colors.danger },
+  swipeAction: { width: 64, alignItems: 'center', justifyContent: 'center' },
+  deleteAction: { backgroundColor: ink.danger },
   input: {
-    minHeight: 96,
-    padding: space.md,
+    minHeight: 100,
+    padding: 14,
     marginBottom: space.lg,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-    color: colors.text,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    backgroundColor: '#0E0E14',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+    color: ink.text,
     textAlignVertical: 'top',
     ...type.body,
   },
-  meter: { marginHorizontal: space.lg, padding: 18, paddingTop: 16, paddingBottom: 14, borderRadius: inkRadius.card, backgroundColor: systemGround.card },
-  meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterTitle: { ...inkFace('cardSmall'), color: systemGround.label, fontVariant: ['tabular-nums'] },
+  meter: {
+    marginHorizontal: inkGutter,
+    marginTop: 14,
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 15,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  meterTitle: { ...inkFace('bodyStrong'), fontSize: 16, color: ink.text, fontVariant: ['tabular-nums'] },
   figure: { fontVariant: ['tabular-nums'] },
-  // The tabs' shares sit side by side with a hairline gap, on the soft track.
-  track: { flexDirection: 'row', gap: 2, height: 10, marginTop: 12, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill, overflow: 'hidden' },
-  fill: { height: '100%' },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 10 },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  dot: { width: 9, height: 9, borderRadius: inkRadius.pill },
-  legendText: { ...inkFace('footnote'), color: colors.textSecondary },
-  locked: { gap: 8, paddingHorizontal: space.lg, paddingTop: 22 },
-  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 6 },
-  lockedTitle: { ...inkFace('subStrong'), color: colors.textSecondary },
-  lockedBox: { borderRadius: inkRadius.card, backgroundColor: systemGround.card, overflow: 'hidden' },
-  lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 62, paddingHorizontal: 18 },
-  lockTile: {
-    width: 36,
-    height: 36,
+  lockedPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: inkRadius.pill,
-    backgroundColor: systemGround.fill,
+    backgroundColor: LOCK_PILL_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: LOCK_PILL_RIM,
+  },
+  basicBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  track: {
+    height: 6,
+    marginTop: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    overflow: 'hidden',
+  },
+  trackFilled: {
+    flexDirection: 'row',
+    gap: 2.5,
+    height: '100%',
+  },
+  fill: { height: '100%', minWidth: 4, borderRadius: inkRadius.pill },
+  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 11 },
+  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  dot: { width: 7, height: 7, borderRadius: inkRadius.pill },
+  legendText: { ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
+  legendCount: { fontWeight: '600', color: ink.text },
+  locked: { gap: 8, paddingHorizontal: inkGutter, paddingTop: 20 },
+  lockedHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 6 },
+  lockedTitle: { ...inkFace('footnoteStrong'), color: ink.text2, fontVariant: ['tabular-nums'] },
+  lockedBox: {
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  lockedRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: 16 },
+  lockTile: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(118,118,128,0.20)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  lines: { flex: 1, gap: space.xs + 2 },
-  line: { height: 9, borderRadius: radius.pill, backgroundColor: systemGround.fill },
-  bar: { gap: space.sm, paddingTop: space.md, backgroundColor: systemGround.ground },
+  lines: { flex: 1, gap: 6 },
+  line: { height: 8, borderRadius: inkRadius.pill, backgroundColor: 'rgba(255,255,255,0.11)' },
+  lineMuted: { backgroundColor: 'rgba(255,255,255,0.07)' },
+  bar: {
+    gap: 6,
+    paddingHorizontal: inkGutter,
+    paddingTop: 12,
+    backgroundColor: FOOTER_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
+  unlockPill: {
+    height: 50,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    backgroundColor: ink.accent,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
   sheetHead: { alignItems: 'center', gap: space.md, marginTop: space.xs },
+  sheetTitle: { textAlign: 'center' },
   lockArt: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surfaceAlt,
+    width: 52,
+    height: 52,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    backgroundColor: LOCK_PILL_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: LOCK_PILL_RIM,
     alignItems: 'center',
     justifyContent: 'center',
   },

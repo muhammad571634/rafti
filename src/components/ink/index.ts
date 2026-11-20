@@ -8,6 +8,16 @@ export { listReorder } from './motion';
 export { InkScreen, type InkScreenProps } from './ink-screen';
 export { InkSegmented, type InkSegmentedOption, type InkSegmentedProps } from './ink-segmented';
 export { InkChip, type InkChipProps } from './ink-chip';
+export {
+  InkFriendPill,
+  type InkFriendPillProps,
+  InkGlassPill,
+  type InkGlassPillProps,
+  InkIconButton,
+  type InkIconButtonProps,
+  InkNavBar,
+  type InkNavBarProps,
+} from './ink-nav-bar';
 export { InkEm, InkText, type InkTextProps } from './ink-text';
 export { PhotoGlassPill, type PhotoGlassPillProps } from './glass-pill';
 export { PillButton, type PillButtonProps, type PillKind } from './pill-button';

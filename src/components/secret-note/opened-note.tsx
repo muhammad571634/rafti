@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
@@ -14,12 +14,11 @@ import Animated, {
 
 import { Anim, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { aurora, colors, isDark, space } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { colors, fonts, space } from '@/theme';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 
-/** The sealed note's lock: mint, the bond colour (shared with the screen's sealed row). */
-export const LOCK_BG = isDark ? 'rgba(48,209,88,0.18)' : '#E3F7EF';
-const GLOW = isDark ? 'rgba(48,209,88,0.55)' : 'rgba(48,180,120,0.45)';
+/** Calm dark-glass lock fill (shared default for `SealedRow` and `OpenedNote`). */
+export const LOCK_BG = 'rgba(9,9,13,0.48)';
 
 const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
@@ -32,15 +31,21 @@ const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
 const OPEN_AT = 340;
 const WORDS_AT = OPEN_AT + 400;
 
+function formatLetter(text: string): string {
+  const clean = text.trim();
+  if (!clean) return '';
+  if (/^[“"«「]/.test(clean)) return clean;
+  return `“${clean}”`;
+}
+
 /**
- * The sealed row: lock + "Their note is sealed" + hint. The screen shows it before the swap; the
- * open moment starts from the very same row, so nothing jumps when the status flips.
+ * The sealed row: dark-glass lock + "Their note is sealed" + hint.
  */
-export function SealedRow({ title, hint }: { title: string; hint: string }) {
+export function SealedRow({ title, hint, accentColor = ink.accent }: { title: string; hint: string; accentColor?: string }) {
   return (
     <View style={styles.row}>
-      <View style={styles.lock}>
-        <Ionicons name="lock-closed" size={18} color={colors.bondText} />
+      <View style={[styles.lock, { borderColor: `${accentColor}52` }]}>
+        <Ionicons name="lock-closed" size={17} color={accentColor} />
       </View>
       <View style={styles.flex}>
         <Txt style={styles.sealed}>{title}</Txt>
@@ -51,21 +56,26 @@ export function SealedRow({ title, hint }: { title: string; hint: string }) {
 }
 
 /**
- * Their note, opened (our own motion, iOS manner, 2026-11-07). On the swap (`reveal`): the lock
- * turns open with a small spring, the sealed row lifts away, the words rise into place while a
- * mint edge breathes once around the card, and the love-letter Lottie plays above them; one
- * success haptic with the words. Reduced motion: a plain crossfade. Opened earlier: just the words.
+ * Their note, opened (our own motion, iOS manner, 2026-11-07, upgraded to Ink Night+): on swap
+ * (`reveal`), the friend-accent dark-glass lock turns open with a spring, the sealed row lifts away,
+ * the optional friend attribution header + editorial serif words rise while an accent rim breathes
+ * once around the card, and the love-letter Lottie plays above them; one success haptic lands with
+ * the words. Reduced motion: a plain crossfade. Opened earlier: header + serif letter directly.
  */
 export function OpenedNote({
   text,
   sealedTitle,
   sealedHint,
   reveal,
+  accentColor = ink.accent,
+  header,
 }: {
   text: string;
   sealedTitle: string;
   sealedHint: string;
   reveal: boolean;
+  accentColor?: string;
+  header?: ReactNode;
 }) {
   const reduced = useReducedMotion();
   const [sealGone, setSealGone] = useState(!reveal);
@@ -126,13 +136,16 @@ export function OpenedNote({
 
   return (
     <View>
-      {reveal && !reduced ? <Animated.View pointerEvents="none" style={[styles.glow, edge]} /> : null}
+      {reveal && !reduced ? (
+        <Animated.View pointerEvents="none" style={[styles.glow, { borderColor: `${accentColor}77` }, edge]} />
+      ) : null}
 
       {open ? (
         <Animated.View style={body}>
+          {header ? <View style={styles.headerWrap}>{header}</View> : null}
           {/* The letter's room is kept from the start, so the card changes size only once. */}
-          {reveal ? <View style={styles.letter}>{letter ? <Anim name="loveLetter" size={120} loop={false} /> : null}</View> : null}
-          <Txt style={styles.noteText}>{text}</Txt>
+          {reveal ? <View style={styles.letter}>{letter ? <Anim name="loveLetter" size={112} loop={false} /> : null}</View> : null}
+          <Txt style={styles.noteText}>{formatLetter(text)}</Txt>
         </Animated.View>
       ) : null}
 
@@ -140,12 +153,12 @@ export function OpenedNote({
         // In the flow until the card opens (it holds the sealed size), then laid over the top as it lifts away.
         <Animated.View pointerEvents="none" style={[open ? styles.sealLayer : null, seal]}>
           <View style={styles.row}>
-            <View style={styles.lock}>
+            <View style={[styles.lock, { borderColor: `${accentColor}52` }]}>
               <Animated.View style={[styles.lockIcon, closedLock]}>
-                <Ionicons name="lock-closed" size={18} color={colors.bondText} />
+                <Ionicons name="lock-closed" size={17} color={accentColor} />
               </Animated.View>
               <Animated.View style={[styles.lockIcon, openLock]}>
-                <Ionicons name="lock-open" size={18} color={colors.bondText} />
+                <Ionicons name="lock-open" size={17} color={accentColor} />
               </Animated.View>
             </View>
             <View style={styles.flex}>
@@ -162,22 +175,36 @@ export function OpenedNote({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  lock: { width: 38, height: 38, borderRadius: 10, backgroundColor: LOCK_BG, alignItems: 'center', justifyContent: 'center' },
+  lock: {
+    width: 38,
+    height: 38,
+    borderRadius: inkRadius.pill,
+    backgroundColor: LOCK_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   lockIcon: { position: 'absolute' },
-  sealed: { ...inkFace('bodyStrong'), color: colors.text },
-  muted: { ...inkFace('footnote'), color: aurora.textMuted },
+  sealed: { ...inkFace('subStrong'), color: colors.text },
+  muted: { ...inkFace('footnote'), color: ink.text2 },
+  headerWrap: { marginBottom: 12 },
   sealLayer: { position: 'absolute', top: 0, left: 0, right: 0 },
-  letter: { width: 120, height: 120, alignSelf: 'center', marginTop: -space.md },
-  noteText: { ...inkFace('body'), color: colors.text },
-  /** The card's padding is space.lg; the edge sits on the card's own border. */
+  letter: { width: 112, height: 112, alignSelf: 'center', marginTop: -space.sm },
+  noteText: {
+    fontFamily: fonts.serif,
+    fontSize: 17.5,
+    lineHeight: 26.5,
+    letterSpacing: -0.2,
+    color: 'rgba(255,255,255,0.94)',
+  },
   glow: {
     position: 'absolute',
-    top: -space.lg,
-    left: -space.lg,
-    right: -space.lg,
-    bottom: -space.lg,
-    borderRadius: 20,
+    top: -18,
+    left: -18,
+    right: -18,
+    bottom: -18,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     borderWidth: 1.5,
-    borderColor: GLOW,
   },
 });
