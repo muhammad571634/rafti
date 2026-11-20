@@ -665,6 +665,7 @@
     "tabYou": "關於你",
     "you": "你",
     "groups": {
+      "promises": "約定",
       "pinnedChat": "從對話中釘選",
       "moments": "關鍵時刻",
       "them": "{{name}}告訴你的事",

@@ -665,6 +665,7 @@
     "tabYou": "나에 대해",
     "you": "나",
     "groups": {
+      "promises": "약속",
       "pinnedChat": "대화에서 고정됨",
       "moments": "주요 순간들",
       "them": "{{name}}이(가) 해준 이야기",

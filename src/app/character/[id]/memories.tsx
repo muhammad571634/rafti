@@ -10,16 +10,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { InkFriendPill, InkIconButton, InkNavBar, InkSegmented, InkText } from '@/components/ink';
 import { FriendAccent, useFriendAccent } from '@/components/character/kit';
+import { PlanDetailSheet } from '@/components/chat/plan-detail-sheet';
 import { Button, Divider, EmptyState, PressableScale, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import { FREE_MEMORY_LIMIT, hasFullMemory } from '@/economy/memory-limit';
 import { PLANS } from '@/economy/plans';
 import { count, relativeStamp, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { aboutOf, countByTab, groupMemories, MEMORY_TABS } from '@/lib/memory-groups';
+import { countByTab, groupMemories, MEMORY_TABS, tabOf, upcomingPlans } from '@/lib/memory-groups';
+import { dateFromKey, dayKeyFromToday, todayKey } from '@/mock/time';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
 import { bottomRoom, night, space, type } from '@/theme';
 import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
-import type { MemoryAbout, MemoryItem } from '@/types';
+import type { MemoryAbout, MemoryItem, ScheduleItem } from '@/types';
 
 const { colors, friendAccent } = night;
 
@@ -64,6 +66,9 @@ export default function MemoriesScreen() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [unlocking, setUnlocking] = useState(false);
+  // The plan opened from the Promises group (the same sheet the chat opens).
+  const [planId, setPlanId] = useState<string | null>(null);
+  const schedules = useAppStore((s) => s.schedules);
 
   // Without a plan 20 stay open (pinned first, then the newest); the rest are locked.
   const full = hasFullMemory(wallet.subscription, Date.now());
@@ -71,8 +76,14 @@ export default function MemoriesScreen() {
     () => memoryAccess(memories, wallet, characterId ?? ''),
     [memories, wallet, characterId],
   );
-  const groups = useMemo(() => groupMemories(open, tab), [open, tab]);
-  const lockedHere = useMemo(() => locked.filter((m) => aboutOf(m) === tab), [locked, tab]);
+  // What the two of them agreed: plans set with this friend from today on lead the Promises group.
+  const plans = useMemo(() => upcomingPlans(schedules, characterId ?? '', todayKey()), [schedules, characterId]);
+  const groups = useMemo(() => {
+    const list = groupMemories(open, tab);
+    if (tab !== 'story' || plans.length === 0 || list.some((g) => g.key === 'promises')) return list;
+    return [{ key: 'promises' as const, items: [] as MemoryItem[] }, ...list];
+  }, [open, tab, plans]);
+  const lockedHere = useMemo(() => locked.filter((m) => tabOf(m) === tab), [locked, tab]);
   const counts = useMemo(() => countByTab(open), [open]);
 
   const short = shortName(name);
@@ -180,6 +191,11 @@ export default function MemoriesScreen() {
             <View>
               <Txt style={styles.groupTitle}>{t(`memories.groups.${group.key}`, { name: short, context: gender })}</Txt>
               <View style={styles.groupCard}>
+                {group.key === 'promises'
+                  ? plans.map((plan, index) => (
+                      <PlanRow key={plan.id} plan={plan} last={index === plans.length - 1 && group.items.length === 0} onOpen={() => setPlanId(plan.id)} />
+                    ))
+                  : null}
                 {group.items.map((memory, index) => (
                   <MemoryRow
                     key={memory.id}
@@ -286,6 +302,7 @@ export default function MemoriesScreen() {
             <Button label={t('plans.notNow')} variant="ghost" full onPress={() => setUnlocking(false)} />
           </View>
         </Sheet>
+        <PlanDetailSheet planId={planId} onClose={() => setPlanId(null)} />
       </Screen>
     </FriendAccent>
   );
@@ -440,7 +457,7 @@ function MemoryRow({
   onDelete: () => void;
 }) {
   const accent = useFriendAccent();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const swipe = useRef<SwipeableMethods>(null);
   const quoted = memory.quote != null;
   const accentColor = accent?.strong ?? ink.accent;
@@ -522,13 +539,43 @@ function MemoryRow({
             )}
             <Txt style={[styles.memoryMeta, styles.figure]}>
               {quoted ? (who ? `${who} · ` : '') : `${sourceLabel} · `}
-              {relativeStamp(memory.createdAt)}
+              {memory.type === 'promise' && memory.until ? dayLabel(memory.until, t, i18n.language) : relativeStamp(memory.createdAt)}
             </Txt>
           </View>
           {memory.pinned ? <Ionicons name="pin" size={15} color={accentColor} style={styles.pin} /> : null}
         </View>
       </Pressable>
     </ReanimatedSwipeable>
+  );
+}
+
+/** A day as a person says it: Today, Tomorrow, else a short weekday and date in the app's language. */
+function dayLabel(key: string, t: (key: string) => string, language: string) {
+  if (key === todayKey()) return t('common.today');
+  if (key === dayKeyFromToday(1)) return t('common.tomorrow');
+  return dateFromKey(key).toLocaleDateString(language, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+/** A plan set with this friend, at the top of Promises: tap opens it (who, when, the reminder, Us, Delete). */
+function PlanRow({ plan, last, onOpen }: { plan: ScheduleItem; last: boolean; onOpen: () => void }) {
+  const accent = useFriendAccent();
+  const { t, i18n } = useTranslation();
+  const when = [dayLabel(plan.date, t, i18n.language), plan.time ?? null].filter(Boolean).join(' · ');
+  return (
+    <Pressable
+      onPress={onOpen}
+      accessibilityRole="button"
+      accessibilityLabel={`${plan.title}, ${when}`}
+      style={({ pressed }) => [styles.memory, pressed && styles.memoryPressed]}>
+      <View style={[styles.memoryBody, !last && styles.memoryLine]}>
+        <Ionicons name="calendar" size={17} color={accent?.strong ?? ink.accent} style={styles.planIcon} />
+        <View style={styles.flex}>
+          <Txt style={styles.memoryText}>{plan.title}</Txt>
+          <Txt style={[styles.memoryMeta, styles.figure]}>{when}</Txt>
+        </View>
+        <Ionicons name="chevron-forward" size={16} color={ink.text3} style={styles.pin} />
+      </View>
+    </Pressable>
   );
 }
 
@@ -571,6 +618,7 @@ const styles = StyleSheet.create({
   memoryText: { ...inkFace('body'), fontSize: 15.5, lineHeight: 21.5, color: ink.text },
   memoryMeta: { marginTop: 5, ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
   pin: { marginTop: 3 },
+  planIcon: { marginTop: 2 },
   actionsRow: { flexDirection: 'row' },
   swipeAction: { width: 64, alignItems: 'center', justifyContent: 'center' },
   deleteAction: { backgroundColor: ink.danger },

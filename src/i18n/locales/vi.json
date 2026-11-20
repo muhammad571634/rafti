@@ -665,6 +665,7 @@
     "tabYou": "Bạn",
     "you": "Bạn",
     "groups": {
+      "promises": "Lời hứa",
       "pinnedChat": "Được ghim từ cuộc trò chuyện",
       "moments": "Khoảnh khắc quan trọng",
       "them": "Những gì {{name}} đã kể với bạn",

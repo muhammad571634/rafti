@@ -682,6 +682,7 @@
     "tabYou": "Sen",
     "you": "Sen",
     "groups": {
+      "promises": "Sözler",
       "pinnedChat": "Sohbetinden sabitlendi",
       "moments": "Önemli anlar",
       "them": "{{name}} sana anlattıkları",

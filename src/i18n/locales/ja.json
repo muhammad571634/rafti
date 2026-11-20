@@ -665,6 +665,7 @@
     "tabYou": "あなた",
     "you": "あなた",
     "groups": {
+      "promises": "約束",
       "pinnedChat": "チャットからピン留め",
       "moments": "大切なモーメント",
       "them": "{{name}}が話してくれたこと",

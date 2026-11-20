@@ -682,6 +682,7 @@
     "tabYou": "You",
     "you": "You",
     "groups": {
+      "promises": "Promises",
       "pinnedChat": "Pinned from your chat",
       "moments": "Key moments",
       "them": "What {{name}} told you",

@@ -665,6 +665,7 @@
     "tabYou": "Kamu",
     "you": "Kamu",
     "groups": {
+      "promises": "Janji",
       "pinnedChat": "Disematkan dari obrolan",
       "moments": "Momen penting",
       "them": "Yang diceritakan {{name}} kepadamu",
