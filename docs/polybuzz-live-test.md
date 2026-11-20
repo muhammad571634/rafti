@@ -99,3 +99,17 @@ own fan character cannot work at all. Proposal: open fan characters for user-mad
 our cast and promotion original, add notice-and-takedown and a list of rights holders who asked.
 Real people (actors, idols, creators) stay closed: likeness and publicity laws, sexual content with
 a real person, and App Store review all point the same way. Not legal advice; the owner decides.
+
+## 7. Live side-by-side on the A51, 2026-11-20 (Claude 1)
+
+Same three English lines typed into PolyBuzz (Angelina, model "P") and Sigmazam (Milo), timed by polling the screen (about 1.5-3 s resolution).
+
+| | PolyBuzz | Sigmazam |
+| --- | --- | --- |
+| Reply on screen | 5-6 s, all three turns | 27 s, then Not Delivered |
+| Language | Russian to English lines (follows the creator) | - |
+| Fit | Ignored "I had a really hard day"; met "my boss yelled at me" with "what did you do to make him mad?" | - |
+
+- Sigmazam's failure was the free Gemini tier: `gemini-3.1-flash-lite` returned 503 "high demand", then each fallback model was aborted after ~5 s and the reply ended `busy`. Owner, 2026-11-20: free-tier speed is not worth tuning; judge speed again on the paid key.
+- PolyBuzz voice calls were not offered on this user-made character (no call button in chat, menu or profile).
+- Our call chain (from code): 1.2 s of silence ends the turn, then two model round trips in a row (the clip is written out by the model, then the reply is written), then ElevenLabs Flash per line, all lines asked at once. The biggest cut available is one model call that hears the clip and answers (saves a full round trip); worth doing with the paid key.
