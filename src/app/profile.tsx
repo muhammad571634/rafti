@@ -136,8 +136,8 @@ export default function ProfileScreen() {
     if (!convo) return;
     const mine = myMessageCount(s.messages[convo.id] ?? []);
     s.newSecretNote(convo.characterId, Math.max(DEPTH_EVERY, Math.floor(mine / DEPTH_EVERY) * DEPTH_EVERY));
-    const id = useAppStore.getState().notes.find((n) => n.characterId === convo.characterId)?.id;
-    if (id) router.push(`/secret-note/${id}`);
+    // The note screen opens a friend's latest note by the friend's id.
+    router.push(`/secret-note/${convo.characterId}`);
   };
 
   const showCheckIn = () => {
