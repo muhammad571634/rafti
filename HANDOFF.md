@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z309. Full audit of 0z305 + 0z308 (12 Ink Night+ screens) & Preview OTA published (owner's audit + OTA ask, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` (runtime 1.3.0)
+- **Audit fixes (`e57d0c90`, 9 files)**:
+  - **Missing i18n key (`src/app/secret-note/[id].tsx`)**: fixed `t('today.cards.sealed')` -> `t('home.widget.sealed')` on the sealed envelope divider so all 14 locales render `"Sealed"` instead of a raw key.
+  - **Android `measureInWindow` safety (`src/app/gifts.tsx`)**: added `collapsable={false}` to `capsuleBox`, `shellMark`, and `wheelCard`, guarded zero-size measurements with fallback to the reward sheet, and cleared timeout refs on unmount.
+  - **Android horizontal chip clipping (`src/app/mind.tsx`)**: moved `marginTop: 14` + `flexGrow: 0` from `contentContainerStyle` to `style` on the horizontal friend-chip `ScrollView`.
+  - **Android `borderRadius: 999` circle/bar safety**: switched square circles & thin tracks to exact numeric radii in `src/components/alarms/night-kit.tsx` (`NightFace`, `NightRound`), `src/components/secret-note/opened-note.tsx` (`lock`), `src/app/character/[id]/memories.tsx` (`track`, `fill`, `dot`, `line`, `unlockPill`), `src/app/photo-booth.tsx` (`track`, `fill`), and `src/app/radio/index.tsx` (`miniTrack`).
+  - **SVG `<Defs>` isolation & Dynamic Type (`src/app/bedtime.tsx`)**: scoped `DreamFace` `RadialGradient` ID per character (`dreamMelt-${id}`) and switched `timerCard` to `minHeight: 76` with vertical padding.
+- **Verified**: `npx tsc --noEmit` 0 errors, `npm test` 1119/1119 pass, `npm run check:locales` + `npm run check:content` PASS, full iOS + Android + Web Metro/React Compiler export succeeded with 0 errors.
+- **Preview OTA live (`preview`, runtime `1.3.0`)**: Update group `62477abd-8ab4-46cd-8f9a-ba321473f7e7` (Android `01a1f737-b149-71c7-a367-3791e0cae532`, iOS `01a1f737-b149-7f41-a980-2a9093c647f5`, commit `e57d0c90`). Carries `0z305` (Circle, Memories, Moments, Secret Note), `0z306`/`0z307` (100 translated story templates across 13 locales), `0z308` (Dating, Photo Booth, Radio, Bedtime, Alarms, Board, Mind, Gifts), and `0z309` audit fixes.
+- **Next**: Owner tests the 12 polished screens on the phone (swipe close & reopen twice). Approved prototypes ready for implementation next when owner says `"boshla"`: Group & Studio (`ink-polish-group-studio.html`) and Account & Settings (`ink-polish-account-settings.html`).
+
 ### 0z308. Activities Ink Night+ polish: Dating, Photo Booth, Radio, Bedtime, Alarms, Board, Mind, Gifts (owner's "boshla" on approved `ink-polish-activities.html`, 2026-11-20, Gemini Argon). DONE in code & pushed; awaiting owner review / OTA
 - **Shared primitives**: `InkNavBar` (`src/components/ink/ink-nav-bar.tsx`) now places scroll-edge titles inside flex center flow so long locales never collide with wide trailing controls (e.g. Dating's shells+add, Gifts' shell capsule); `NightFace` (`src/components/alarms/night-kit.tsx`) adds optional `ringColor` (backward-compatible with `alarms/edit.tsx`); `LuckyWheel` (`src/components/lucky-wheel.tsx`) tuned to calm obsidian/peach Ink Night+ slices with crisp white hub while keeping exact spin math and Russian-safe label sizing.
 - **8 screens polished (`0` locale files modified; `StoreBuyBar`, `Tile`, `Profile`, `Store` untouched)**:
