@@ -1,47 +1,77 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InkText, PillButton, Tile, tileTint } from '@/components/ink';
+import { InkGlassPill, InkIconButton, InkNavBar, InkText, PillButton, tileTint } from '@/components/ink';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import {
-  BackButton,
   Button,
   CharacterAvatar,
   EmptyState,
-  GlassButton,
   PressableScale,
   Screen,
   Sheet,
   ShellIcon,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { useCountingNumber } from '@/hooks/use-counting-number';
-import { haptic } from '@/lib/haptics';
-import { moodOpen, MOOD_LEVEL, themeCost } from '@/lib/date-themes';
-import { shortName } from '@/lib/format';
 import { localized } from '@/i18n/content';
+import { confirmAlert as confirm } from '@/lib/alert';
+import { moodOpen, MOOD_LEVEL, themeCost } from '@/lib/date-themes';
+import { count, shortName } from '@/lib/format';
+import { haptic } from '@/lib/haptics';
 import { DATE_PLACES, type DatePlace } from '@/mock/dates';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
+import { bottomRoom, colors, friendAccent, space } from '@/theme';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, DateTheme } from '@/types';
-import { confirmAlert as confirm } from '@/lib/alert';
+
+const BOND_MINT = '#5FE0C4';
+const DOCK_BG = 'rgba(9,9,13,0.94)';
+const PILL_BG = 'rgba(22,22,30,0.84)';
+const GLASS_RIM = 'rgba(255,255,255,0.12)';
+
+const PLACE_ICON: Record<string, keyof typeof Ionicons.glyphMap> = {
+  rainyStreet: 'rainy',
+  rain: 'rainy',
+  aquarium: 'water',
+  festival: 'sparkles',
+  summerFestival: 'sparkles',
+  studio: 'musical-notes',
+  lateStudio: 'musical-notes',
+  rooftop: 'moon',
+  cafe: 'cafe',
+  nightWalk: 'moon',
+};
+
+function iconForPlace(titleKey?: string): keyof typeof Ionicons.glyphMap {
+  if (!titleKey) return 'heart';
+  if (PLACE_ICON[titleKey]) return PLACE_ICON[titleKey];
+  const lower = titleKey.toLowerCase();
+  if (lower.includes('rain')) return 'rainy';
+  if (lower.includes('aqua') || lower.includes('sea') || lower.includes('beach')) return 'water';
+  if (lower.includes('fest') || lower.includes('park') || lower.includes('star')) return 'sparkles';
+  if (lower.includes('music') || lower.includes('studio') || lower.includes('record')) return 'musical-notes';
+  if (lower.includes('roof') || lower.includes('night') || lower.includes('moon')) return 'moon';
+  return 'heart';
+}
 
 /**
- * Dates: the places and the user's own dates as a grid of soft tiles (the Ink canvas, owner
- * 2026-11-13), each with its name in serif and its rounds and price, or the level it opens at.
- * A tap picks one (ringed); the button under the grid starts it with the chosen friend, or says
- * what level it needs. Your own date gets "…" (edit, delete) beside the button. Past dates sit
- * behind "View past dates"; "+" writes your own date. A place opens once the bond is close enough.
+ * Dates (approved Ink Night+ prototype): pinned sticky Apple HIG nav bar with shell counter + "+",
+ * Display serif title paired with a ringed friend-selector pill, 2-column stained-glass place tiles
+ * (icon badge, lock or warm peach active dot, serif title, tabular rounds/cost), past-dates capsule,
+ * and an anchored Start Date bottom dock.
  */
 export default function DatingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { scrolled, onScroll } = useScrolledPast(34);
 
   const shells = useAppStore((s) => s.wallet.shells);
   const shownShells = useCountingNumber(shells);
@@ -77,10 +107,8 @@ export default function DatingScreen() {
   if (!partner) {
     return (
       <Screen background={ink.ground}>
-        <View style={styles.bar}>
-          <BackButton />
-        </View>
-        <InkText variant="display" style={styles.title}>
+        <InkNavBar backLabel={t('a11y.back')} onBack={() => router.back()} />
+        <InkText variant="display" style={styles.emptyTitle}>
           {t('dating.walletTitle')}
         </InkText>
         <EmptyState
@@ -94,6 +122,7 @@ export default function DatingScreen() {
   }
 
   const level = relationships[partner.id]?.level ?? 0;
+  const partnerAccent = friendAccent(partner.id).strong;
   const nameOf = (c: Character) => shortName(displayName(c, relationships[c.id]));
   const name = nameOf(partner);
   // A date written for one friend plays with them; any other plays with the chosen partner.
@@ -134,11 +163,25 @@ export default function DatingScreen() {
   const newestOpen = [...places].reverse().find((p) => p.levelRequired <= level)?.id ?? places[0].id;
   const current = openId ?? newestOpen;
 
-  type DateTile = { id: string; name: string; locked: boolean; rounds: number; cost: number; needs: number; tint: readonly [string, string]; begin: () => void; theme?: DateTheme; friend?: Character };
-  const tiles: DateTile[] = [
+  type DateTileItem = {
+    id: string;
+    name: string;
+    icon: keyof typeof Ionicons.glyphMap;
+    locked: boolean;
+    rounds: number;
+    cost: number;
+    needs: number;
+    tint: readonly [string, string];
+    begin: () => void;
+    theme?: DateTheme;
+    friend?: Character;
+  };
+
+  const tiles: DateTileItem[] = [
     ...places.map((p, i) => ({
       id: p.id,
       name: t(`dating.places.${p.titleKey}`),
+      icon: iconForPlace(p.titleKey),
       locked: level < p.levelRequired,
       rounds: p.rounds.length,
       cost: p.cost,
@@ -152,6 +195,7 @@ export default function DatingScreen() {
       return {
         id: d.id,
         name: d.title,
+        icon: 'sparkles' as const,
         locked: !friend || !moodOpen(d.mood, friendLevel),
         rounds: d.rounds,
         cost: themeCost(d.rounds),
@@ -165,130 +209,196 @@ export default function DatingScreen() {
   ];
   const picked = tiles.find((x) => x.id === current) ?? tiles[0];
   const pickedWith = picked?.theme ? picked.friend : partner;
-
   const moreTheme = themes.find((d) => d.id === moreId);
 
   return (
     <Screen background={ink.ground}>
-      <View style={styles.bar}>
-        <BackButton />
-        <GlassButton
-          icon="add"
-          accessibilityLabel={t('dating.make')}
-          onPress={() => router.push({ pathname: '/date/theme', params: { partner: partner.id } })}
-        />
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
-        <InkText variant="display" style={styles.title}>
-          {t('dating.walletTitle')}
-        </InkText>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${partnerAccent}26`, `${partnerAccent}00`]}
+        start={{ x: 0.75, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
 
-        <View style={styles.pills}>
+      <InkNavBar
+        backLabel={t('a11y.back')}
+        onBack={() => router.back()}
+        title={t('dating.walletTitle')}
+        scrolled={scrolled}
+        right={
+          <View style={styles.barRight}>
+            <View style={styles.shellsPill} accessible accessibilityLabel={`${shells}`}>
+              <ShellIcon size={16} />
+              <InkText variant="footnoteStrong" color={ink.text} style={styles.figure}>
+                {count(shownShells)}
+              </InkText>
+            </View>
+            <InkIconButton
+              icon="add"
+              size={22}
+              accessibilityLabel={t('dating.make')}
+              onPress={() => router.push({ pathname: '/date/theme', params: { partner: partner.id } })}
+            />
+          </View>
+        }
+      />
+
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 116 }}>
+        <View style={styles.headRow}>
+          <InkText variant="display" accessibilityRole="header" style={styles.headTitle} lines={1} adjustsFontSizeToFit minimumFontScale={0.78}>
+            {t('dating.walletTitle')}
+          </InkText>
           <PressableScale
             scaleTo={0.95}
             accessibilityRole="button"
             accessibilityLabel={t('dating.choosePartner')}
             onPress={() => setChoosing(true)}
-            style={[styles.pill, styles.partner]}>
-            <CharacterAvatar character={partner} size={32} />
-            <InkText variant="subStrong" lines={1} style={styles.partnerName}>
+            style={styles.partnerPill}>
+            <View style={[styles.partnerRing, { borderColor: partnerAccent }]}>
+              <CharacterAvatar character={partner} size={26} />
+            </View>
+            <InkText variant="footnoteStrong" color={ink.text} lines={1} style={styles.partnerName}>
               {name}
             </InkText>
             <View style={styles.level}>
-              <Ionicons name="heart" size={12} color={colors.bondText} />
-              <InkText variant="footnote" color={colors.bondText} style={styles.figure}>
+              <Ionicons name="heart" size={11} color={BOND_MINT} />
+              <InkText variant="caption" color={BOND_MINT} style={styles.figure}>
                 {String(level)}
               </InkText>
             </View>
             <Ionicons name="chevron-down" size={13} color={ink.text2} />
           </PressableScale>
-          <View style={styles.grow} />
-          <View style={[styles.pill, styles.shells]} accessible accessibilityLabel={`${shells}`}>
-            <ShellIcon size={18} />
-            <InkText variant="subStrong" style={styles.figure}>
-              {String(shownShells)}
-            </InkText>
-          </View>
         </View>
 
         <View style={styles.tiles}>
           {tiles.map((tile) => {
-            // On the tile the short form beside the lock ("🔒 Lv 6"); the full "Reach level 6" is on the button and read aloud.
+            const isPicked = tile.id === picked?.id;
             const meta = tile.locked ? t('dating.level', { level: tile.needs }) : `${tile.rounds} ${t('dating.rounds')} · ${tile.cost}`;
             const spoken = tile.locked ? t('dating.locked', { level: tile.needs }) : meta;
             return (
-              <Tile
+              <PressableScale
                 key={tile.id}
-                tint={tile.tint}
-                name={tile.name}
-                dimmed={tile.locked}
-                picked={tile.id === picked?.id}
+                scaleTo={0.97}
+                accessibilityRole="button"
                 accessibilityLabel={`${tile.name}, ${spoken}`}
+                accessibilityState={{ selected: isPicked }}
                 onPress={() => {
-                  if (tile.id !== picked?.id) haptic.selection();
+                  if (!isPicked) haptic.selection();
                   setOpenId(tile.id);
                 }}
-                meta={
-                  <>
-                    {tile.locked ? <Ionicons name="lock-closed" size={12} color={ink.text2} /> : null}
-                    <InkText variant="footnote" lines={1} style={styles.figure}>
+                style={[
+                  styles.tile,
+                  tile.locked && styles.tileLocked,
+                  isPicked && (tile.locked ? styles.tilePickedLocked : styles.tilePicked),
+                ]}>
+                <LinearGradient
+                  colors={tile.tint}
+                  start={{ x: 0.1, y: 0 }}
+                  end={{ x: 0.9, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.tileTop}>
+                  <View style={styles.tileIconBadge}>
+                    <Ionicons name={tile.icon} size={16} color="rgba(255,255,255,0.90)" />
+                  </View>
+                  {tile.locked ? (
+                    <Ionicons name="lock-closed" size={14} color={ink.text2} />
+                  ) : isPicked ? (
+                    <View style={styles.pickedDot} />
+                  ) : null}
+                </View>
+
+                <View>
+                  <InkText variant="cardSmall" color={ink.text} lines={2} wordSafe>
+                    {tile.name}
+                  </InkText>
+                  <View style={styles.tileMeta}>
+                    <InkText variant="caption" color="rgba(255,255,255,0.68)" lines={1} style={styles.figure}>
                       {meta}
                     </InkText>
-                    {tile.locked ? null : <ShellIcon size={13} />}
-                  </>
-                }
-              />
+                    {tile.locked ? null : <ShellIcon size={12} />}
+                  </View>
+                </View>
+              </PressableScale>
             );
           })}
         </View>
 
-        {picked ? (
-          <View style={styles.go}>
+        {dates.length > 0 ? (
+          <View style={styles.pastWrap}>
+            <InkGlassPill
+              icon="images-outline"
+              label={t('dating.pastDates', { count: dates.length })}
+              onPress={() => router.push('/date/album')}
+              style={styles.pastPill}
+            />
+          </View>
+        ) : null}
+      </ScrollView>
+
+      {picked ? (
+        <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+          <View style={styles.dockRow}>
             <PillButton
               style={styles.grow}
               disabled={picked.locked}
               icon={picked.locked ? 'lock-closed' : undefined}
-              label={picked.locked ? (pickedWith ? t('dating.locked', { level: picked.needs }) : t('dating.noFriends')) : t('dating.start', { name: pickedWith ? nameOf(pickedWith) : name })}
+              label={
+                picked.locked
+                  ? pickedWith
+                    ? t('dating.locked', { level: picked.needs })
+                    : t('dating.noFriends')
+                  : t('dating.start', { name: pickedWith ? nameOf(pickedWith) : name })
+              }
               onPress={picked.begin}
             />
             {picked.theme ? (
-              <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('dating.more')} onPress={() => setMoreId(picked.id)} style={styles.more}>
+              <PressableScale
+                scaleTo={0.92}
+                accessibilityRole="button"
+                accessibilityLabel={t('dating.more')}
+                onPress={() => setMoreId(picked.id)}
+                style={styles.more}>
                 <Ionicons name="ellipsis-horizontal" size={20} color={ink.text} />
               </PressableScale>
             ) : null}
           </View>
-        ) : null}
-
-        {dates.length > 0 ? (
-          <PressableScale
-            scaleTo={0.95}
-            accessibilityRole="button"
-            onPress={() => router.push('/date/album')}
-            style={[styles.pill, styles.past]}>
-            <Ionicons name="images-outline" size={18} color={ink.text} />
-            <InkText variant="subStrong">{t('dating.pastDates', { count: dates.length })}</InkText>
-          </PressableScale>
-        ) : null}
-      </ScrollView>
+        </View>
+      ) : null}
 
       <Sheet visible={choosing} onClose={() => setChoosing(false)} title={t('dating.choosePartner')} scroll>
         <View style={styles.people}>
-          {known.map((c) => (
-            <PressableScale
-              key={c.id}
-              style={styles.person}
-              scaleTo={0.94}
-              onPress={() => {
-                setPartnerId(c.id);
-                setOpenId(null);
-                setChoosing(false);
-              }}>
-              <CharacterAvatar character={c} size={60} ring={c.id === partner.id} ringColor={colors.text} />
-              <Txt variant="smallStrong" lines={1} color={c.id === partner.id ? colors.text : colors.textMuted}>
-                {nameOf(c)}
-              </Txt>
-            </PressableScale>
-          ))}
+          {known.map((c) => {
+            const on = c.id === partner.id;
+            const cAccent = friendAccent(c.id).strong;
+            const cLv = relationships[c.id]?.level ?? 0;
+            return (
+              <PressableScale
+                key={c.id}
+                style={styles.person}
+                scaleTo={0.94}
+                onPress={() => {
+                  setPartnerId(c.id);
+                  setOpenId(null);
+                  setChoosing(false);
+                }}>
+                <View style={[styles.sheetRing, { borderColor: on ? cAccent : 'transparent' }]}>
+                  <CharacterAvatar character={c} size={56} />
+                </View>
+                <Txt variant="smallStrong" lines={1} color={on ? ink.text : ink.text2}>
+                  {nameOf(c)}
+                </Txt>
+                <InkText variant="caption" color={BOND_MINT} style={styles.figure}>
+                  {t('dating.level', { level: cLv })}
+                </InkText>
+              </PressableScale>
+            );
+          })}
         </View>
       </Sheet>
 
@@ -315,28 +425,127 @@ export default function DatingScreen() {
 }
 
 const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
   grow: { flex: 1 },
-  bar: {
+  emptyTitle: { marginTop: 4, marginHorizontal: inkGutter },
+  barRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  shellsPill: {
+    height: 36,
+    paddingHorizontal: 11,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: space.lg,
-    paddingTop: space.xs,
-    paddingBottom: space.sm,
+    gap: 5,
   },
-  title: { marginTop: 4, marginHorizontal: inkGutter },
-  pills: { marginTop: 12, marginBottom: 18, marginHorizontal: inkGutter, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  pill: { minHeight: 44, borderRadius: inkRadius.pill, backgroundColor: ink.raised, flexDirection: 'row', alignItems: 'center' },
-  partner: { paddingLeft: 6, paddingRight: 12, gap: 8, maxWidth: 240 },
+  headRow: {
+    marginTop: 2,
+    marginHorizontal: inkGutter,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  headTitle: { flexShrink: 1 },
+  partnerPill: {
+    height: 38,
+    maxWidth: '58%',
+    paddingLeft: 4,
+    paddingRight: 10,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    backgroundColor: PILL_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  partnerRing: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   partnerName: { flexShrink: 1 },
   level: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   figure: { fontVariant: ['tabular-nums'], flexShrink: 1 },
-  shells: { paddingLeft: 10, paddingRight: 14, gap: 6 },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginHorizontal: inkGutter },
-  go: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 20, marginHorizontal: inkGutter },
-  more: { width: 56, height: 56, borderRadius: inkRadius.pill, backgroundColor: ink.raised, alignItems: 'center', justifyContent: 'center' },
-  past: { alignSelf: 'center', marginTop: 14, paddingHorizontal: 18, gap: 8 },
+  tiles: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: 11,
+    marginTop: 18,
+    marginHorizontal: inkGutter,
+  },
+  tile: {
+    width: '48.2%',
+    aspectRatio: 1.02,
+    borderRadius: 26,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    padding: 14,
+    justifyContent: 'space-between',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.10)',
+  },
+  tileLocked: { opacity: 0.62 },
+  tilePicked: { borderWidth: 1.8, borderColor: ink.text },
+  tilePickedLocked: { borderWidth: 1.8, borderColor: 'rgba(255,255,255,0.65)' },
+  tileTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  tileIconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 11,
+    borderCurve: 'continuous',
+    backgroundColor: 'rgba(9,9,13,0.34)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pickedDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: ink.accent },
+  tileMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  pastWrap: { alignItems: 'center', marginTop: 18 },
+  pastPill: { height: 38, paddingHorizontal: 15 },
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingTop: 12,
+    paddingHorizontal: inkGutter,
+    backgroundColor: DOCK_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
+  dockRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  more: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   people: { flexDirection: 'row', flexWrap: 'wrap', gap: space.lg, justifyContent: 'center', paddingVertical: space.md },
-  person: { alignItems: 'center', gap: space.xs, width: 72 },
+  person: { alignItems: 'center', gap: 5, width: 76 },
+  sheetRing: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   moreActions: { gap: space.sm, paddingVertical: space.sm },
 });

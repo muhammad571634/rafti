@@ -8,21 +8,12 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { PressableScale, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { WHEEL_SEGMENTS } from '@/mock';
-import { colors, fonts, isDark, palette, radius, systemColors } from '@/theme';
+import { fonts, radius } from '@/theme';
+import { ink } from '@/theme/ink';
 
 const SEGMENT = 360 / WHEEL_SEGMENTS.length;
-/** Pastel iOS colours, led by Sigmazam's peach brand accent. */
-const FILLS = [
-  colors.primaryFill,
-  systemColors.purple,
-  systemColors.mint,
-  systemColors.yellow,
-  systemColors.pink,
-  systemColors.blue,
-  systemColors.green,
-];
-const FILL_OPACITY = isDark ? 0.72 : 0.38;
 const SPIN_MS = 3600;
+const TOP_PRIZE = Math.max(...WHEEL_SEGMENTS);
 
 function slice(cx: number, cy: number, r: number, from: number, to: number) {
   const rad = (deg: number) => (deg * Math.PI) / 180;
@@ -34,8 +25,9 @@ function slice(cx: number, cy: number, r: number, from: number, to: number) {
 }
 
 /**
- * The Free Gifts roulette. `onSpin` decides the result (the store owns the odds);
- * the wheel only animates to it and reports back when it stops.
+ * The Free Gifts roulette (Ink Night+ refined): calm obsidian alternating slices with a warm
+ * bronze-peach top-prize wedge, warm peach pointer and crisp white Spin hub. `onSpin` decides the
+ * result (the store owns the odds); the wheel only animates to it and reports back when it stops.
  */
 export function LuckyWheel({
   size = 260,
@@ -56,8 +48,8 @@ export function LuckyWheel({
   const rotation = useSharedValue(0);
   const [spinning, setSpinning] = useState(false);
   const r = size / 2;
-  const hubSize = Math.min(68, Math.max(52, Math.round(size * 0.32)));
-  const pointerSize = Math.max(20, Math.round(size * 0.11));
+  const hubSize = Math.min(64, Math.max(52, Math.round(size * 0.28)));
+  const pointerSize = Math.max(18, Math.round(size * 0.1));
   const pointerInset = pointerSize * 0.14;
 
   const land = (index: number) => {
@@ -67,7 +59,6 @@ export function LuckyWheel({
 
   const spin = async () => {
     if (spinning || disabled) return;
-    // Locked while the result comes (the server may draw it), so a second tap cannot spin twice.
     setSpinning(true);
     const index = await onSpin();
     if (index == null) {
@@ -75,7 +66,6 @@ export function LuckyWheel({
       return;
     }
 
-    // Land the middle of the winning slice under the pointer, after five full turns.
     const current = rotation.value % 360;
     const target = 360 - (index * SEGMENT + SEGMENT / 2);
     const delta = 360 * 5 + ((target - current + 360) % 360);
@@ -92,14 +82,12 @@ export function LuckyWheel({
     );
   };
 
-  // Today's Spin button: the wheel turns by itself once, as soon as the screen has settled.
   const autoSpun = useRef(false);
   useEffect(() => {
     if (!autoSpin || disabled || autoSpun.current) return;
     autoSpun.current = true;
     const timer = setTimeout(() => void spin(), 600);
     return () => clearTimeout(timer);
-    // `spin` reads the latest state; once per mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoSpin, disabled]);
 
@@ -109,30 +97,31 @@ export function LuckyWheel({
     <View style={{ width: size, height: size + 14, alignItems: 'center' }}>
       <Animated.View style={[{ width: size, height: size, marginTop: 14 }, wheelStyle]}>
         <Svg width={size} height={size}>
-          <Circle cx={r} cy={r} r={r - 1} fill={colors.surface} stroke={colors.border} strokeWidth={1} />
+          <Circle cx={r} cy={r} r={r - 1.5} fill="#1E1E29" stroke="rgba(235,173,132,0.42)" strokeWidth={2} />
           <G>
             {WHEEL_SEGMENTS.map((value, i) => {
               const from = -90 + i * SEGMENT;
               const mid = from + SEGMENT / 2;
               const rad = (mid * Math.PI) / 180;
-              const tx = r + r * 0.64 * Math.cos(rad);
-              const ty = r + r * 0.64 * Math.sin(rad);
-              const labelColor = isDark && [0, 2, 3, 6].includes(i) ? palette.gray900 : colors.text;
+              const tx = r + r * 0.66 * Math.cos(rad);
+              const ty = r + r * 0.66 * Math.sin(rad);
+              const isJackpot = value === TOP_PRIZE;
+              const fill = isJackpot ? '#56392F' : i % 2 === 0 ? '#1E1E29' : '#262634';
+              const labelColor = isJackpot || value >= 20 ? ink.accent : ink.text;
               return (
                 <G key={i}>
                   <Path
-                    d={slice(r, r, r - 1, from, from + SEGMENT)}
-                    fill={FILLS[i % FILLS.length]}
-                    fillOpacity={FILL_OPACITY}
-                    stroke={colors.surface}
-                    strokeWidth={1.5}
+                    d={slice(r, r, r - 2.5, from, from + SEGMENT)}
+                    fill={fill}
+                    stroke="rgba(255,255,255,0.09)"
+                    strokeWidth={1}
                   />
                   <SvgText
                     x={tx}
                     y={ty}
                     fill={labelColor}
-                    fontSize={size * 0.075}
-                    fontFamily={fonts.display}
+                    fontSize={size * 0.072}
+                    fontFamily={fonts.body}
                     fontWeight="700"
                     textAnchor="middle"
                     alignmentBaseline="middle"
@@ -146,13 +135,13 @@ export function LuckyWheel({
         </Svg>
       </Animated.View>
 
-      {/* pointer */}
+      {/* Top peach pointer */}
       <Svg width={pointerSize} height={pointerSize} style={styles.pointer}>
         <Path
           d={`M${pointerSize / 2} ${pointerSize - 2} L${pointerInset} ${pointerInset} Q${pointerSize / 2} 0 ${pointerSize - pointerInset} ${pointerInset} Z`}
-          fill={colors.text}
-          stroke={colors.white}
-          strokeWidth={2}
+          fill={ink.accent}
+          stroke={ink.ground}
+          strokeWidth={1.5}
         />
       </Svg>
 
@@ -166,8 +155,14 @@ export function LuckyWheel({
           { top: 14 + r - hubSize / 2, width: hubSize, height: hubSize, borderRadius: hubSize / 2 },
           (spinning || disabled) && styles.hubDisabled,
         ]}>
-        {/* One word on one line: Russian "Крутить" broke in two in the hub (A51 2026-11-05). */}
-        <Txt variant="bodyStrong" color={colors.textOnPrimary} lines={1} adjustsFontSizeToFit minimumFontScale={0.6} style={styles.hubLabel}>
+        {/* One word on one line: Russian "Крутить" stays crisp inside the hub. */}
+        <Txt
+          variant="smallStrong"
+          color={spinning || disabled ? ink.text2 : ink.onPill}
+          lines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.58}
+          style={styles.hubLabel}>
           {t('gifts.spin')}
         </Txt>
       </PressableScale>
@@ -179,15 +174,15 @@ const styles = StyleSheet.create({
   pointer: { position: 'absolute', top: 0 },
   hub: {
     position: 'absolute',
-    width: 68,
-    height: 68,
+    width: 60,
+    height: 60,
     borderRadius: radius.pill,
-    backgroundColor: colors.primaryFill,
-    borderWidth: 4,
-    borderColor: colors.white,
+    backgroundColor: ink.pill,
+    borderWidth: 3.5,
+    borderColor: ink.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hubDisabled: { backgroundColor: colors.textFaint },
+  hubDisabled: { backgroundColor: '#2C2C36' },
   hubLabel: { maxWidth: '100%', paddingHorizontal: 6 },
 });

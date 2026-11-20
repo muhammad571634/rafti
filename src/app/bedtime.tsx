@@ -1,15 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
-import { NightFace, NightRound, untilText } from '@/components/alarms/night-kit';
+import { NightFace, untilText } from '@/components/alarms/night-kit';
+import { InkIconButton, InkNavBar, InkText, PillButton } from '@/components/ink';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
-import { Anim, Button, CharacterAvatar, DotMatrix, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, CharacterAvatar, DotMatrix, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
@@ -17,23 +19,24 @@ import { nextAlarmAt } from '@/lib/alarms';
 import { callClock } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, sleepColors as night, space, systemColors } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, friendAccent, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
 /** Sleep timer steps for -/+, in minutes. */
 const TIMERS = [5, 10, 15, 20, 30, 45, 60, 90, 120];
-const FACE = 58;
-const STROKE = 10;
+const FACE = 52;
+const STROKE = 7;
+const BED_BG = '#07070B';
+const DOCK_BG = 'rgba(7,7,11,0.94)';
+const PRO_BG = 'rgba(217,166,245,0.16)';
+const PRO_RIM = 'rgba(217,166,245,0.34)';
+const PRO_INK = '#D9A6F5';
 
 /**
- * Bedtime, the night's own screen (owner-approved prototype 0z170,
- * https://claude.ai/artifact/Q4tgLYeHSLkpJnMcTvnP4c): the friend who whispers inside the dot field
- * (their picture in its middle since 2026-11-18), who as a row of faces, the sleep timer as a big number with -/+, the next
- * wake-up as a card (tap: the alarms; none: set one), one big button. While the friend whispers, a
- * ring empties around the rocking moon with the countdown, Stop and Pause. Whispers are Pro only
- * (backend-plan §15.10) and never use voice-reply minutes; alarms open for every plan. Colours come
- * from `sleepColors`, the night's navy in both themes, shared with the alarms.
+ * Bedtime (approved Ink Night+ prototype): deep nocturnal obsidian (`#07070B`) with lavender top
+ * wash, sticky Apple HIG nav bar, preserved breathing `DotMatrix` LED halo + melting `DreamFace`,
+ * friend-accent face strip, hairline-rimmed timer & wake-up cards, and anchored white CTA dock.
  */
 export default function BedtimeScreen() {
   const friendName = useFriendName();
@@ -41,9 +44,9 @@ export default function BedtimeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
-  // The moon fits any phone: the setup scrolls, the whispering screen never does.
-  const artSize = Math.round(Math.min(230, Math.max(150, height * 0.26)));
-  const ringSize = Math.round(Math.min(290, Math.max(200, height * 0.34)));
+  const { scrolled, onScroll } = useScrolledPast(34);
+  const artSize = Math.round(Math.min(220, Math.max(150, height * 0.25)));
+  const ringSize = Math.round(Math.min(276, Math.max(196, height * 0.33)));
 
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
@@ -65,6 +68,7 @@ export default function BedtimeScreen() {
   const reader = known.find((c) => c.id === readerId);
   const running = left != null;
   const name = reader ? friendName(reader, true) : '';
+  const readerAccent = reader ? friendAccent(reader.id).strong : ink.accent;
   const wake = useNextWake(alarms, characters);
 
   useEffect(() => {
@@ -73,7 +77,6 @@ export default function BedtimeScreen() {
       setLeft(null);
       return;
     }
-    // Real builds stream the whisper track with expo-audio and fade it out at zero.
     const tick = setTimeout(() => setLeft((s) => (s == null ? null : s - 1)), 1000);
     return () => clearTimeout(tick);
   }, [left, paused]);
@@ -99,33 +102,50 @@ export default function BedtimeScreen() {
     setStep(next);
   };
 
-  const wakeLine = wake ? `${wake.who ? friendName(wake.who, true) : wake.alarm.label || t('home.widget.wakeUp')} · ${untilText(t, wake.at.getTime() - Date.now())}` : '';
+  const wakeLine = wake
+    ? `${wake.who ? friendName(wake.who, true) : wake.alarm.label || t('home.widget.wakeUp')} · ${untilText(t, wake.at.getTime() - Date.now())}`
+    : '';
 
   return (
-    <Screen background={night.bg} statusBarStyle="light">
-      <Header
-        tint={night.text}
+    <Screen background={BED_BG} statusBarStyle="light">
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(167,139,250,0.20)', 'rgba(7,7,11,0)']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => (running ? stop() : router.back())}
+        title={t('bedtime.title')}
+        scrolled={!running && scrolled}
         right={
           !pro && !running ? (
             <View style={styles.proPill}>
-              <Txt style={styles.proText}>{t('plans.name.pro')}</Txt>
+              <InkText variant="caption" color={PRO_INK}>
+                {t('plans.name.pro')}
+              </InkText>
             </View>
-          ) : null
+          ) : undefined
         }
       />
 
       {running ? (
         <View style={[styles.whisperPage, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
           <View style={styles.whisperPill}>
-            {reader ? <CharacterAvatar character={reader} size={26} /> : null}
-            <Txt style={styles.whisperName} lines={1}>
+            {reader ? (
+              <View style={[styles.whisperRing, { borderColor: readerAccent }]}>
+                <CharacterAvatar character={reader} size={24} />
+              </View>
+            ) : null}
+            <InkText variant="footnoteStrong" color={ink.text} lines={1} style={styles.whisperName}>
               {t('bedtime.whispering', { name })}
-            </Txt>
-            {paused ? null : <Anim name="voiceWave" size={22} tint={night.primary} />}
+            </InkText>
+            {paused ? null : <Anim name="voiceWave" size={20} tint={ink.accent} />}
           </View>
 
-          {/* The LED dot field breathes inside the timer ring while the friend whispers, in place of the
-              sleeping mascot (owner, 2026-11-11: "the dark prototype's animation, more alive, wavy"). */}
           <TimerRing size={ringSize} share={minutes > 0 ? (left ?? 0) / (minutes * 60) : 0}>
             <View style={{ width: Math.round(ringSize * 0.8), height: Math.round(ringSize * 0.8) }}>
               <DotMatrix size={Math.round(ringSize * 0.8)} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={paused ? 0.2 : 0.9} active={!paused} />
@@ -138,7 +158,12 @@ export default function BedtimeScreen() {
           </Txt>
 
           <View style={styles.controls}>
-            <PressableScale onPress={stop} scaleTo={0.94} style={[styles.control, styles.controlGrey]} accessibilityRole="button" accessibilityLabel={t('bedtime.stop')}>
+            <PressableScale
+              onPress={stop}
+              scaleTo={0.93}
+              style={[styles.control, styles.controlGlass]}
+              accessibilityRole="button"
+              accessibilityLabel={t('bedtime.stop')}>
               <View style={styles.stopGlyph} />
             </PressableScale>
             <PressableScale
@@ -146,43 +171,52 @@ export default function BedtimeScreen() {
                 haptic.tap();
                 setPaused((p) => !p);
               }}
-              scaleTo={0.94}
+              scaleTo={0.93}
               style={[styles.control, styles.controlWarm]}
               accessibilityRole="button"
               accessibilityLabel={paused ? t('bedtime.resume') : t('bedtime.pause')}>
-              <Ionicons name={paused ? 'play' : 'pause'} size={30} color={night.textOnPrimary} />
+              <Ionicons name={paused ? 'play' : 'pause'} size={28} color={ink.onAccent} />
             </PressableScale>
           </View>
 
           <View style={styles.flex} />
           {wake ? (
             <View style={styles.wakePill} accessibilityLabel={`${t('bedtime.wakeUp')}, ${wake.time}, ${wakeLine}`}>
-              {wake.who ? <CharacterAvatar character={wake.who} size={26} /> : <Ionicons name="alarm" size={18} color={systemColors.green} />}
+              {wake.who ? (
+                <View style={[styles.whisperRing, { borderColor: friendAccent(wake.who.id).strong }]}>
+                  <CharacterAvatar character={wake.who} size={24} />
+                </View>
+              ) : (
+                <Ionicons name="alarm" size={16} color={systemColors.green} />
+              )}
               <Txt style={styles.wakePillTime}>{wake.time}</Txt>
               {wake.who ? (
-                <Txt style={styles.wakePillName} lines={1}>
+                <InkText variant="footnoteStrong" color={ink.text2} lines={1}>
                   {friendName(wake.who, true)}
-                </Txt>
+                </InkText>
               ) : null}
             </View>
           ) : null}
         </View>
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-            <Txt style={styles.title} accessibilityRole="header">
+          <ScrollView
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 112 }]}>
+            <InkText variant="display" accessibilityRole="header" style={styles.title}>
               {t('bedtime.title')}
-            </Txt>
+            </InkText>
 
             <View style={styles.hero}>
               <View style={{ width: artSize, height: artSize }}>
-                {/* The dot field at rest, slower and softer than while whispering. */}
                 <DotMatrix size={artSize} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={0.45} />
                 {reader ? <DreamFace character={reader} size={Math.round(artSize * FACE_SHARE)} /> : null}
               </View>
-              <Txt style={styles.heroTitle} center lines={2}>
+              <InkText variant="card" style={styles.heroTitle} lines={2}>
                 {reader ? t('bedtime.sleepWith', { name }) : t('bedtime.noVoices')}
-              </Txt>
+              </InkText>
             </View>
 
             {known.length > 1 ? (
@@ -194,6 +228,7 @@ export default function BedtimeScreen() {
                     on={c.id === readerId}
                     size={FACE}
                     steady
+                    ringColor={friendAccent(c.id).strong}
                     onPress={() => {
                       if (c.id !== readerId) haptic.selection();
                       setReaderId(c.id);
@@ -206,14 +241,14 @@ export default function BedtimeScreen() {
 
             {reader ? (
               <View style={styles.timerCard} accessibilityLabel={`${t('bedtime.setTimer')}, ${t('radio.minutes', { count: minutes })}`}>
-                <NightRound icon="remove" label={t('bedtime.setTimer')} onPress={() => nudge(-1)} size={52} />
+                <InkIconButton icon="remove" size={20} accessibilityLabel={t('bedtime.setTimer')} onPress={() => nudge(-1)} style={styles.stepBtn} />
                 <View style={styles.timerValue}>
-                  <Ionicons name="timer-outline" size={22} color={night.textSecondary} />
+                  <Ionicons name="timer-outline" size={20} color={ink.text2} />
                   <Txt style={styles.timerText} lines={1} maxFontSizeMultiplier={1.2}>
                     {t('radio.minutes', { count: minutes })}
                   </Txt>
                 </View>
-                <NightRound icon="add" label={t('bedtime.setTimer')} onPress={() => nudge(1)} size={52} />
+                <InkIconButton icon="add" size={20} accessibilityLabel={t('bedtime.setTimer')} onPress={() => nudge(1)} style={styles.stepBtn} />
               </View>
             ) : null}
 
@@ -225,7 +260,7 @@ export default function BedtimeScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={`${t('bedtime.wakeUp')}, ${wake.time}, ${wakeLine}`}>
                 <View style={styles.wakeTile}>
-                  <Ionicons name="alarm" size={24} color={night.white} />
+                  <Ionicons name="alarm" size={21} color="#FFFFFF" />
                 </View>
                 <View style={styles.flex}>
                   <Txt style={styles.wakeTime}>{wake.time}</Txt>
@@ -233,8 +268,12 @@ export default function BedtimeScreen() {
                     {wakeLine}
                   </Txt>
                 </View>
-                {wake.who ? <CharacterAvatar character={wake.who} size={36} /> : null}
-                <Ionicons name="chevron-forward" size={18} color={night.textFaint} />
+                {wake.who ? (
+                  <View style={[styles.wakeAvatarRing, { borderColor: friendAccent(wake.who.id).strong }]}>
+                    <CharacterAvatar character={wake.who} size={32} />
+                  </View>
+                ) : null}
+                <Ionicons name="chevron-forward" size={16} color={ink.text3} />
               </PressableScale>
             ) : (
               <PressableScale
@@ -244,26 +283,24 @@ export default function BedtimeScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('home.widget.setWake')}>
                 <View style={[styles.wakeTile, styles.wakeTileSoft]}>
-                  <Ionicons name="alarm-outline" size={24} color={systemColors.green} />
+                  <Ionicons name="alarm-outline" size={21} color={systemColors.green} />
                 </View>
                 <Txt style={[styles.flex, styles.wakeSet]} lines={1}>
                   {t('home.widget.setWake')}
                 </Txt>
                 <View style={styles.plus}>
-                  <Ionicons name="add" size={22} color={night.textOnPrimary} />
+                  <Ionicons name="add" size={20} color={ink.onAccent} />
                 </View>
               </PressableScale>
             )}
           </ScrollView>
 
-          <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.lg) }]}>
-            <Button
+          <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+            <PillButton
               label={t('bedtime.start')}
-              size="lg"
-              onPress={start}
+              icon={pro ? 'moon' : 'lock-closed'}
               disabled={!reader}
-              full
-              left={<Ionicons name={pro ? 'moon' : 'lock-closed'} size={18} color={night.textOnPrimary} />}
+              onPress={start}
             />
           </View>
         </>
@@ -305,18 +342,10 @@ function useNextWake(alarms: Alarm[], characters: Character[]) {
   }, [alarms, characters, t]);
 }
 
-/** The dot field: lavender in the middle drifting to the warm peach of the ring at its edge. */
 const NIGHT_DOTS = '#A78BFA';
-const NIGHT_DOTS_EDGE = '#FFB88A';
-
-/** How much of the dot field the friend's picture fills: the dots stay a halo round it. */
+const NIGHT_DOTS_EDGE = '#EBAD84';
 const FACE_SHARE = 0.5;
 
-/**
- * The chosen friend inside the dot field (owner, 2026-11-18: no mascot; the friend's picture in the
- * animation): their photo in the middle, its rim melting into the night so the dots seem to come
- * out of it. Picking another friend fades the new face in.
- */
 function DreamFace({ character, size }: { character: Character; size: number }) {
   const half = size / 2;
   return (
@@ -326,8 +355,8 @@ function DreamFace({ character, size }: { character: Character; size: number }) 
         <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
           <Defs>
             <RadialGradient id="dreamMelt" cx="50%" cy="50%" r="50%">
-              <Stop offset="0.6" stopColor={night.bg} stopOpacity={0} />
-              <Stop offset="1" stopColor={night.bg} stopOpacity={0.9} />
+              <Stop offset="0.6" stopColor={BED_BG} stopOpacity={0} />
+              <Stop offset="1" stopColor={BED_BG} stopOpacity={0.92} />
             </RadialGradient>
           </Defs>
           <Circle cx={half} cy={half} r={half} fill="url(#dreamMelt)" />
@@ -337,7 +366,6 @@ function DreamFace({ character, size }: { character: Character; size: number }) 
   );
 }
 
-/** The iOS Timer ring: it empties as the time runs out, the rocking moon inside. */
 function TimerRing({ size, share, children }: { size: number; share: number; children: React.ReactNode }) {
   const r = (size - STROKE) / 2;
   const length = 2 * Math.PI * r;
@@ -345,12 +373,12 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
   return (
     <View style={[styles.ring, { width: size, height: size }]}>
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
-        <Circle cx={size / 2} cy={size / 2} r={r} stroke={night.surfaceAlt} strokeWidth={STROKE} fill="none" />
+        <Circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.08)" strokeWidth={STROKE} fill="none" />
         <Circle
           cx={size / 2}
           cy={size / 2}
           r={r}
-          stroke={night.primary}
+          stroke={ink.accent}
           strokeWidth={STROKE}
           fill="none"
           strokeLinecap="round"
@@ -365,80 +393,134 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
 }
 
 const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 280 },
   flex: { flex: 1 },
-  scroll: { gap: space.lg, paddingBottom: space.xl },
-  title: { marginHorizontal: space.lg, ...inkFace('display'), color: night.text },
-  proPill: { height: 30, justifyContent: 'center', marginRight: space.sm, paddingHorizontal: 12, borderRadius: inkRadius.pill, backgroundColor: night.primarySofter },
-  proText: { ...inkFace('subStrong'), color: night.brandText },
-  hero: { alignItems: 'center', gap: space.lg, marginTop: space.xs },
+  scroll: { gap: 16 },
+  title: { marginHorizontal: inkGutter, marginTop: 2 },
+  proPill: {
+    height: 28,
+    paddingHorizontal: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: PRO_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: PRO_RIM,
+    justifyContent: 'center',
+  },
+  hero: { alignItems: 'center', gap: 10 },
   dream: { alignItems: 'center', justifyContent: 'center' },
-  heroTitle: { marginHorizontal: space.lg, ...inkFace('title'), color: night.text },
-  faces: { flexGrow: 1, justifyContent: 'center', gap: space.md, paddingHorizontal: space.lg },
+  heroTitle: { marginHorizontal: inkGutter, textAlign: 'center' },
+  faces: { flexGrow: 1, justifyContent: 'center', gap: 14, paddingHorizontal: inkGutter },
   timerCard: {
-    marginHorizontal: space.lg,
-    height: 92,
+    marginHorizontal: inkGutter,
+    height: 76,
     paddingHorizontal: 14,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
-    backgroundColor: night.surface,
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  timerValue: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  timerText: { ...inkFace('numeralSmall'), color: night.text },
+  stepBtn: { width: 44, height: 44, borderRadius: 22 },
+  timerValue: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  timerText: { ...inkFace('numeralSmall'), fontSize: 28, lineHeight: 34, color: ink.text },
   wakeCard: {
-    marginHorizontal: space.lg,
-    minHeight: 78,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.md,
+    marginHorizontal: inkGutter,
+    minHeight: 72,
+    paddingHorizontal: 15,
+    paddingVertical: 13,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
-    backgroundColor: night.surface,
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: 12,
   },
-  // An empty slot waiting to be filled: a dashed outline (systemGround.dash's role on the navy).
-  wakeEmpty: { backgroundColor: 'transparent', borderWidth: 2, borderStyle: 'dashed', borderColor: 'rgba(163,168,200,0.35)' },
-  wakeTile: { width: 46, height: 46, borderRadius: 14, borderCurve: 'continuous', backgroundColor: systemColors.green, alignItems: 'center', justifyContent: 'center' },
-  wakeTileSoft: { backgroundColor: 'rgba(52,199,89,0.18)' },
-  wakeTime: { ...inkFace('figure'), color: night.text },
-  wakeLine: { ...inkFace('subStrong'), color: night.textSecondary },
-  wakeSet: { ...inkFace('bodyStrong'), color: night.text },
-  plus: { width: 36, height: 36, borderRadius: inkRadius.pill, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  bar: { paddingHorizontal: space.lg, paddingTop: space.md },
-  // While whispering everything fits one screen: the friend, the ring, the time, Stop and Pause.
-  whisperPage: { flex: 1, alignItems: 'center', gap: space.xl, paddingTop: space.sm },
+  wakeEmpty: { backgroundColor: 'transparent', borderWidth: 1.5, borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.16)' },
+  wakeTile: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    borderCurve: 'continuous',
+    backgroundColor: systemColors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wakeTileSoft: { backgroundColor: 'rgba(48,209,88,0.16)' },
+  wakeTime: { ...inkFace('card'), fontVariant: ['tabular-nums'], color: ink.text },
+  wakeLine: { ...inkFace('footnote'), color: ink.text2, marginTop: 1, fontVariant: ['tabular-nums'] },
+  wakeSet: { ...inkFace('bodyStrong'), color: ink.text },
+  wakeAvatarRing: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  plus: { width: 34, height: 34, borderRadius: 17, backgroundColor: ink.accent, alignItems: 'center', justifyContent: 'center' },
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: inkGutter,
+    paddingTop: 12,
+    backgroundColor: DOCK_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
+  whisperPage: { flex: 1, alignItems: 'center', gap: 24, paddingTop: space.xs },
   whisperPill: {
     maxWidth: '86%',
+    height: 36,
+    paddingLeft: 5,
+    paddingRight: 13,
+    borderRadius: inkRadius.pill,
+    backgroundColor: 'rgba(22,22,30,0.84)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  whisperRing: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  whisperName: { flexShrink: 1 },
+  ring: { alignItems: 'center', justifyContent: 'center' },
+  countdown: { ...inkFace('numeralMid'), color: ink.text },
+  controls: { flexDirection: 'row', gap: 36 },
+  control: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center' },
+  controlGlass: {
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  controlWarm: { backgroundColor: ink.accent },
+  stopGlyph: { width: 18, height: 18, borderRadius: 4, backgroundColor: ink.text },
+  wakePill: {
     height: 38,
     paddingLeft: 6,
     paddingRight: 14,
     borderRadius: inkRadius.pill,
-    backgroundColor: night.well,
+    backgroundColor: 'rgba(22,22,30,0.84)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.sm,
+    gap: 8,
   },
-  whisperName: { flexShrink: 1, ...inkFace('subStrong'), color: night.text },
-  ring: { alignItems: 'center', justifyContent: 'center' },
-  countdown: { ...inkFace('numeralMid'), color: night.text },
-  controls: { flexDirection: 'row', gap: 44 },
-  control: { width: 76, height: 76, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
-  controlGrey: { backgroundColor: night.well },
-  controlWarm: { backgroundColor: night.primary },
-  stopGlyph: { width: 22, height: 22, borderRadius: 5, backgroundColor: night.text },
-  wakePill: {
-    height: 40,
-    paddingLeft: 8,
-    paddingRight: 16,
-    borderRadius: inkRadius.pill,
-    backgroundColor: night.well,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
-  wakePillTime: { ...inkFace('bodyStrong'), color: night.text, fontVariant: ['tabular-nums'] },
-  wakePillName: { flexShrink: 1, ...inkFace('subStrong'), color: night.textSecondary },
+  wakePillTime: { ...inkFace('subStrong'), color: ink.text, fontVariant: ['tabular-nums'] },
 });

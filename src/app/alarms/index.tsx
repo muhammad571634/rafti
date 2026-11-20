@@ -1,38 +1,40 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NIGHT_SWITCH } from '@/components/alarms/night';
 import { untilText } from '@/components/alarms/night-kit';
-import { CharacterAvatar, Header, PressableScale, Screen, Txt } from '@/components/ui';
+import { InkIconButton, InkNavBar, InkText, PillButton } from '@/components/ink';
+import { CharacterAvatar, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
 import { weekdayNames } from '@/lib/calendar';
 import { haptic } from '@/lib/haptics';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, sleepColors as night, space, systemColors } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, colors, friendAccent, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
-/** The next alarm's face, as the picked face in the editor; a row's face is smaller. */
-const HERO_FACE = 84;
-const ROW_FACE = 52;
+const HERO_FACE = 68;
+const ROW_FACE = 46;
+const BED_BG = '#07070B';
+const DOCK_BG = 'rgba(7,7,11,0.94)';
 
 /**
- * Wake-up alarms, in the same look as the editor (owner, 2026-11-07: "make the list match the new
- * alarm screen, ultra"; no prototype at his word). On Bedtime's navy: the next alarm as one big card
- * (who wakes you, the time, how long until it rings; a tap opens it), then each alarm as its own
- * card with the friend's face, the time, its days and a switch; a swipe to the left deletes one.
- * One big button adds an alarm.
+ * Wake-up alarms (approved Ink Night+ prototype): nocturnal `#07070B` ground with next-friend
+ * ambient wash, sticky Apple HIG nav bar with "+", friend-accent Next Alarm hero card, hairline-
+ * rimmed swipe-to-delete alarm cards with friend-colored repeat days, and an anchored white Add dock.
  */
 export default function AlarmsScreen() {
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const { scrolled, onScroll } = useScrolledPast(34);
   const alarms = useAppStore((s) => s.alarms);
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
@@ -40,14 +42,15 @@ export default function AlarmsScreen() {
   const deleteAlarm = useAppStore((s) => s.deleteAlarm);
   const h12 = uses12Hour();
   // Monday first, as the editor; the store keeps 0 = Sunday.
-  const weekdays = useMemo(() => weekdayNames(i18n.language).map((name, i) => ({ name: name.slice(0, 2), day: (i + 1) % 7 })), [i18n.language]);
+  const weekdays = useMemo(
+    () => weekdayNames(i18n.language).map((name, i) => ({ name: name.slice(0, 2), day: (i + 1) % 7 })),
+    [i18n.language],
+  );
 
   const friendOf = (id?: string) => characters.find((c) => c.id === id);
-  // The name the user calls them ("Mom"), as the chat header shows it.
   const nameOf = (c?: Character) => (c ? displayName(c, relationships[c.id]) : undefined);
 
   const sorted = [...alarms].sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute));
-  // The soonest alarm that is on, for the card on top.
   const next = useMemo(() => {
     const now = new Date();
     return alarms
@@ -55,6 +58,9 @@ export default function AlarmsScreen() {
       .map((a) => ({ a, at: nextAlarmAt(a, now) }))
       .sort((x, y) => x.at.getTime() - y.at.getTime())[0];
   }, [alarms]);
+
+  const nextFriend = next ? friendOf(next.a.characterId) : undefined;
+  const nextAccent = nextFriend ? friendAccent(nextFriend.id).strong : ink.accent;
 
   const add = () => router.push('/alarms/edit');
   const open = (alarm: Alarm) => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } });
@@ -64,21 +70,47 @@ export default function AlarmsScreen() {
   };
 
   return (
-    <Screen background={night.bg} statusBarStyle="light">
-      <Header tint={night.text} />
-      <Txt style={styles.title} accessibilityRole="header">
-        {t('alarms.title')}
-      </Txt>
+    <Screen background={BED_BG} statusBarStyle="light">
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${nextAccent}24`, 'rgba(7,7,11,0)']}
+        start={{ x: 0.25, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => router.back()}
+        title={t('alarms.title')}
+        scrolled={scrolled}
+        right={<InkIconButton icon="add" size={22} accessibilityLabel={t('alarms.add')} onPress={add} />}
+      />
 
       {sorted.length === 0 ? (
-        <View style={styles.empty}>
-          <View style={styles.emptyBell}>
-            <Ionicons name="alarm" size={56} color={night.textOnPrimary} />
+        <View style={styles.emptyWrap}>
+          <InkText variant="display" accessibilityRole="header" style={styles.title}>
+            {t('alarms.title')}
+          </InkText>
+          <View style={styles.empty}>
+            <View style={styles.emptyBell}>
+              <Ionicons name="alarm" size={44} color={ink.accent} />
+            </View>
+            <InkText variant="bodyStrong" color={ink.text}>
+              {t('alarms.empty')}
+            </InkText>
           </View>
-          <Txt style={styles.emptyText}>{t('alarms.empty')}</Txt>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 112 }]}
+          showsVerticalScrollIndicator={false}>
+          <InkText variant="display" accessibilityRole="header" style={styles.titleInline}>
+            {t('alarms.title')}
+          </InkText>
+
           {next ? (
             <PressableScale
               onPress={() => open(next.a)}
@@ -86,30 +118,44 @@ export default function AlarmsScreen() {
               accessibilityRole="button"
               accessibilityLabel={[t('alarms.next'), clock(next.a).time, untilText(t, next.at.getTime() - Date.now())].join(', ')}
               style={styles.hero}>
-              <Face friend={friendOf(next.a.characterId)} size={HERO_FACE} ring />
+              <LinearGradient
+                pointerEvents="none"
+                colors={[`${nextAccent}24`, `${nextAccent}00`]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.72, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Face friend={nextFriend} size={HERO_FACE} ringColor={nextAccent} />
               <View style={styles.heroText}>
-                <Txt style={styles.heroLabel}>{t('alarms.next').toUpperCase()}</Txt>
+                <Txt style={[styles.heroLabel, { color: nextAccent }]}>{t('alarms.next').toUpperCase()}</Txt>
                 <Txt style={styles.heroTime} maxFontSizeMultiplier={1.2}>
                   {clock(next.a).time}
                   {clock(next.a).period ? <Txt style={styles.heroPeriod}>{` ${clock(next.a).period}`}</Txt> : null}
                 </Txt>
                 <View style={styles.until}>
-                  <Ionicons name="moon" size={14} color={night.primary} />
-                  <Txt style={styles.untilText}>{untilText(t, next.at.getTime() - Date.now())}</Txt>
+                  <Ionicons name="moon" size={13} color={ink.accent} />
+                  <Txt style={styles.untilText} lines={1}>
+                    {nextFriend ? `${nameOf(nextFriend)} · ` : ''}
+                    {untilText(t, next.at.getTime() - Date.now())}
+                  </Txt>
                 </View>
               </View>
             </PressableScale>
           ) : (
             <View style={[styles.hero, styles.heroOff]}>
-              <Ionicons name="moon" size={20} color={night.textSecondary} />
-              <Txt style={styles.untilText}>{t('alarms.noneOn')}</Txt>
+              <Ionicons name="moon" size={18} color={ink.text2} />
+              <InkText variant="sub" color={ink.text2}>
+                {t('alarms.noneOn')}
+              </InkText>
             </View>
           )}
 
           {sorted.map((alarm) => {
             const friend = friendOf(alarm.characterId);
+            const acc = friend ? friendAccent(friend.id).strong : ink.accent;
             const { time, period } = clock(alarm);
             const title = alarm.label || nameOf(friend) || t('alarms.defaultLabel');
+            const subtitle = friend && alarm.label ? `${alarm.label} · ${nameOf(friend)}` : title;
             return (
               <ReanimatedSwipeable
                 key={alarm.id}
@@ -117,8 +163,12 @@ export default function AlarmsScreen() {
                 rightThreshold={40}
                 containerStyle={styles.swipe}
                 renderRightActions={() => (
-                  <Pressable style={styles.delete} onPress={() => deleteAlarm(alarm.id)} accessibilityRole="button" accessibilityLabel={t('alarms.deleteAlarm')}>
-                    <Ionicons name="trash" size={22} color={colors.white} />
+                  <Pressable
+                    style={styles.delete}
+                    onPress={() => deleteAlarm(alarm.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('alarms.deleteAlarm')}>
+                    <Ionicons name="trash" size={20} color={colors.white} />
                     <Txt style={styles.deleteText}>{t('alarms.delete')}</Txt>
                   </Pressable>
                 )}>
@@ -127,8 +177,8 @@ export default function AlarmsScreen() {
                     style={[styles.cardBody, !alarm.enabled && styles.off]}
                     onPress={() => open(alarm)}
                     accessibilityRole="button"
-                    accessibilityLabel={[period ? `${time} ${period}` : time, title].join(', ')}>
-                    <Face friend={friend} size={ROW_FACE} />
+                    accessibilityLabel={[period ? `${time} ${period}` : time, subtitle].join(', ')}>
+                    <Face friend={friend} size={ROW_FACE} ringColor={alarm.enabled ? acc : undefined} />
                     <View style={styles.cardText}>
                       <Txt style={styles.time} maxFontSizeMultiplier={1.2}>
                         {time}
@@ -139,7 +189,7 @@ export default function AlarmsScreen() {
                           {weekdays.map(({ name, day }) => {
                             const on = alarm.repeat.includes(day);
                             return (
-                              <Txt key={day} style={[styles.day, on && styles.dayOn]}>
+                              <Txt key={day} style={[styles.day, on && { color: acc, fontWeight: '700' }]}>
                                 {name}
                               </Txt>
                             );
@@ -147,7 +197,7 @@ export default function AlarmsScreen() {
                         </View>
                       ) : null}
                       <Txt style={styles.line} lines={1}>
-                        {title}
+                        {subtitle}
                       </Txt>
                     </View>
                   </Pressable>
@@ -167,29 +217,33 @@ export default function AlarmsScreen() {
         </ScrollView>
       )}
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + space.md }]}>
-        <PressableScale onPress={add} accessibilityRole="button" style={styles.cta}>
-          <Ionicons name="add" size={24} color={night.textOnPrimary} />
-          <Txt style={styles.ctaText} maxFontSizeMultiplier={1.2}>
-            {t('alarms.add')}
-          </Txt>
-        </PressableScale>
+      <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+        <PillButton label={t('alarms.add')} icon="add" onPress={add} />
       </View>
     </Screen>
   );
 }
 
-/** Who wakes you: their face, or a bell for a melody-only alarm. Radii in numbers (Android draws 999 square). */
-function Face({ friend, size, ring }: { friend?: Character; size: number; ring?: boolean }) {
-  const pad = ring ? 3 : 0;
-  const border = ring ? 3 : 0;
+/** Who wakes you: their ringed face, or a warm dark-glass bell for a melody-only alarm. */
+function Face({ friend, size, ringColor }: { friend?: Character; size: number; ringColor?: string }) {
+  const outer = ringColor ? size + 6 : size;
   return (
-    <View style={[ring && styles.ring, { padding: pad, borderWidth: border, borderRadius: inkRadius.pill }]}>
+    <View
+      style={[
+        styles.faceWrap,
+        {
+          width: outer,
+          height: outer,
+          borderRadius: outer / 2,
+          borderWidth: ringColor ? 1.8 : 0,
+          borderColor: ringColor ?? 'transparent',
+        },
+      ]}>
       {friend ? (
         <CharacterAvatar character={friend} size={size} />
       ) : (
-        <View style={[styles.bell, { width: size, height: size, borderRadius: inkRadius.pill }]}>
-          <Ionicons name="musical-notes" size={size * 0.42} color={night.textOnPrimary} />
+        <View style={[styles.bell, { width: size, height: size, borderRadius: size / 2 }]}>
+          <Ionicons name="musical-notes" size={size * 0.4} color={ink.accent} />
         </View>
       )}
     </View>
@@ -197,41 +251,84 @@ function Face({ friend, size, ring }: { friend?: Character; size: number; ring?:
 }
 
 const styles = StyleSheet.create({
-  title: {
-    paddingHorizontal: space.lg,
-    paddingBottom: space.md,
-    ...inkFace('display'),
-    color: night.text,
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
+  emptyWrap: { flex: 1 },
+  title: { paddingHorizontal: inkGutter, marginTop: 2 },
+  titleInline: { marginTop: 2, marginBottom: 4 },
+  scroll: { paddingHorizontal: inkGutter, gap: 10 },
+  hero: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    padding: 18,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+    marginBottom: 4,
   },
-  scroll: { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.sm + 2 },
-  hero: { flexDirection: 'row', alignItems: 'center', gap: space.lg, padding: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, marginBottom: space.sm },
-  heroOff: { gap: space.sm, paddingVertical: space.lg },
-  heroText: { flex: 1, gap: 2 },
-  heroLabel: { ...inkFace('caption'), color: night.primary },
-  heroTime: { ...inkFace('numeralMid'), color: night.text },
-  heroPeriod: { ...inkFace('cardSmall'), color: night.textSecondary },
-  until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  untilText: { ...inkFace('sub'), color: night.textSecondary },
-  ring: { borderColor: night.primary },
-  bell: { backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  swipe: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
-  card: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: night.surface },
-  cardBody: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md },
-  off: { opacity: 0.45 },
-  cardText: { flex: 1, gap: 2 },
-  time: { ...inkFace('numeralSmall'), color: night.text },
-  period: { ...inkFace('bodyStrong'), color: night.textSecondary },
-  days: { flexDirection: 'row', gap: 6 },
-  day: { ...inkFace('caption'), color: night.textFaint },
-  dayOn: { color: night.primary, fontWeight: '800' },
-  line: { ...inkFace('sub'), color: night.textSecondary },
-  delete: { width: 96, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  heroOff: { gap: 10, paddingVertical: 18 },
+  heroText: { flex: 1, minWidth: 0, gap: 2 },
+  heroLabel: { ...inkFace('caption'), letterSpacing: 0.5 },
+  heroTime: { ...inkFace('numeralMid'), fontSize: 42, lineHeight: 46, color: ink.text },
+  heroPeriod: { ...inkFace('subStrong'), color: ink.text2 },
+  until: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
+  untilText: { ...inkFace('footnote'), color: ink.text2, fontVariant: ['tabular-nums'], flexShrink: 1 },
+  faceWrap: { alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  bell: {
+    backgroundColor: 'rgba(235,173,132,0.16)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(235,173,132,0.34)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  swipe: {
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 15,
+    backgroundColor: ink.card,
+  },
+  cardBody: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  off: { opacity: 0.42 },
+  cardText: { flex: 1, minWidth: 0, gap: 3 },
+  time: { ...inkFace('numeralSmall'), fontSize: 30, lineHeight: 34, color: ink.text },
+  period: { ...inkFace('footnoteStrong'), color: ink.text2 },
+  days: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  day: { ...inkFace('caption'), fontSize: 11, color: 'rgba(235,235,245,0.28)' },
+  line: { ...inkFace('footnote'), color: ink.text2 },
+  delete: { width: 92, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center', gap: 4 },
   deleteText: { ...inkFace('caption'), color: colors.white },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.lg, paddingBottom: space.huge },
-  emptyBell: { width: 120, height: 120, borderRadius: inkRadius.pill, backgroundColor: night.primary, alignItems: 'center', justifyContent: 'center' },
-  emptyText: { ...inkFace('bodyStrong'), color: night.text },
-  footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  cta: { height: 56, borderRadius: inkRadius.pill, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  // System bold, as in the editor: the words come in every script.
-  ctaText: { ...inkFace('bodyStrong'), color: night.textOnPrimary },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingBottom: 110 },
+  emptyBell: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: 'rgba(235,173,132,0.14)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(235,173,132,0.32)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: inkGutter,
+    paddingTop: 12,
+    backgroundColor: DOCK_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
 });

@@ -1,51 +1,59 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import {
+  Linking,
+  ScrollView,
+  type ScrollViewInstance,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  View,
+  type ViewInstance,
+} from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { CoinDropReward, type Point, wobbleAt } from '@/components/coin-drop';
-import { featureStyles, HeroCard, RoundButton, TintCapsule } from '@/components/feature/feature-kit';
+import { InkNavBar, InkText } from '@/components/ink';
 import { LuckyWheel } from '@/components/lucky-wheel';
-import { PeekingMascot } from '@/components/peeking-mascot';
-import { GroupLabel } from '@/components/plans/store-look';
 import {
   Anim,
   Button,
-  LargeTitle,
   ListRow,
   PressableScale,
   Screen,
   SFIcon,
-  ShellIcon,
   Sheet,
+  ShellIcon,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
-import { FIRST_STEPS, DEEP_CHAT_LINES, FRIENDS_TO_MEET, type FirstStepKey } from '@/economy/first-steps';
+import { DEEP_CHAT_LINES, FIRST_STEPS, FRIENDS_TO_MEET, type FirstStepKey } from '@/economy/first-steps';
+import { useCountingNumber } from '@/hooks/use-counting-number';
 import { useFirstSteps } from '@/hooks/use-first-steps';
 import { track } from '@/lib/analytics';
 import { count } from '@/lib/format';
-import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
-import { useCountingNumber } from '@/hooks/use-counting-number';
 import { haptic } from '@/lib/haptics';
 import { inviteCodeFor, invitesThisWeek } from '@/lib/invite';
 import { shareText } from '@/lib/share';
 import {
-  INVITE_REWARD,
-  INVITES_PER_WEEK,
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
   FREE_SPINS_PER_DAY,
-  WHEEL_SEGMENTS,
+  INVITE_REWARD,
+  INVITES_PER_WEEK,
   todayKey,
+  WHEEL_SEGMENTS,
 } from '@/mock';
+import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, isDark, palette, radius, signature, space, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { colors, hitSlop, palette, radius, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -59,8 +67,7 @@ const STEP_TILES: Record<FirstStepKey, TileLook> = {
 };
 
 const ROW_ICON = 34;
-const WAY_ICON = 36;
-/** Invites, sharing and the invite steps as iOS system tiles (SF Symbols). */
+const WAY_ICON = 34;
 const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook> = {
   invite: { fill: systemColors.indigo, ios: 'person.badge.plus', icon: 'person-add' },
   share: { fill: systemColors.blue, ios: 'square.and.arrow.up', icon: 'share' },
@@ -69,29 +76,29 @@ const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook>
   back: { fill: systemColors.green, ios: 'calendar', icon: 'calendar' },
 };
 
+const GLASS_RIM = 'rgba(255,255,255,0.11)';
+const CHECKIN_RIM = 'rgba(248,113,113,0.28)';
+const PEACH_SOFT = 'rgba(235,173,132,0.14)';
+
 /**
- * Free shells: the daily check-in, the lucky wheel, then one "More shells" card (invite, share)
- * and your invite code. No ads anywhere in the app (owner, 2026-10-22): shells are bought, or
- * earned by coming back and bringing friends. An invite pays 50 to both sides once the friend
- * joins with the code and comes back on a later day; sharing pays nothing. A feature screen on
- * Apple's white ground (design-style §10): the check-in as one card in the Gifts tile's red, the
- * wheel and the ways in grey cards, red capsules. Every limit lives in the store so it survives a restart.
+ * Free gifts (approved Ink Night+ prototype): warm peach horizon glow, sticky Apple HIG nav bar
+ * with the live counting shell capsule, stained-glass crimson Daily Check-In card, First steps
+ * (Claim in peach, Go in dark glass), obsidian Lucky Wheel card, and invite/share Ink cards.
  */
 export default function GiftsScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { t } = useTranslation();
   const router = useRouter();
+  const { scrolled, onScroll: onScrollPast } = useScrolledPast(34);
 
   const shells = useAppStore((s) => s.wallet.shells);
   const daily = useAppStore((s) => s.daily);
   const spinWheel = useAppStore((s) => s.spinWheel);
-  // Today's Spin button opens the screen with `spin=1`: the wheel turns at once.
   const { spin: spinParam } = useLocalSearchParams<{ spin?: string }>();
   const user = useAppStore((s) => s.user);
   const redeemInvite = useAppStore((s) => s.redeemInvite);
   const claimFirstStep = useAppStore((s) => s.claimFirstStep);
-  // The phone's own answer on pushes: the planner's record lags a sync behind a fresh yes.
   const [pushOn, setPushOn] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     void pushesAllowed().then(setPushOn);
@@ -106,11 +113,9 @@ export default function GiftsScreen() {
   const [rulesOpen, setRulesOpen] = useState(false);
   const [accepted, setAccepted] = useState(false);
 
-  // The wheel's prize poured into the wallet by hand (Coin Drop Reward, on builds with Skia). Until
-  // the drop lands the capsule keeps the old balance, then wobbles and shows the new one.
+  // Coin Drop Reward measurements + live balance roll.
   const [pour, setPour] = useState<{ amount: number; from: Point; wallet: Point & { left: number } } | null>(null);
   const [pending, setPending] = useState(0);
-  // The capsule rolls to the new balance as the wheel's or the check-in's shells land (audit §8.2.3).
   const shownShells = useCountingNumber(Math.max(0, shells - pending));
   const wobble = useSharedValue(1);
   const scroll = useRef<ScrollViewInstance>(null);
@@ -126,9 +131,8 @@ export default function GiftsScreen() {
   const prizeWon = (amount: number) => {
     if (!CoinDropReward) return setReward(amount);
     setPending(amount);
-    // The wallet sits at the top: bring it into view before measuring where the drop goes.
-    const scrolled = scrollY.current > 1;
-    if (scrolled) scroll.current?.scrollTo({ y: 0, animated: true });
+    const wasScrolled = scrollY.current > 1;
+    if (wasScrolled) scroll.current?.scrollTo({ y: 0, animated: true });
     setTimeout(() => {
       wheelCard.current?.measureInWindow((wx, wy, ww, wh) => {
         capsuleBox.current?.measureInWindow((cx) => {
@@ -137,12 +141,12 @@ export default function GiftsScreen() {
           });
         });
       });
-    }, scrolled ? 380 : 0);
+    }, wasScrolled ? 380 : 0);
   };
 
   const code = inviteCodeFor(user);
   const invited = Math.min(INVITES_PER_WEEK, invitesThisWeek(user.inviteCredits));
-  const wheelSize = Math.max(0, Math.min(224, width - space.lg * 2 - space.md * 2));
+  const wheelSize = Math.max(0, Math.min(212, width - inkGutter * 2 - space.md * 2));
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(code);
@@ -150,8 +154,6 @@ export default function GiftsScreen() {
     setTimeout(() => setCopied(false), 1600);
   };
 
-  // Sending the code pays nothing by itself; the friend's shells and the sender's come once the
-  // friend joins with it and is back on a later day (the server credits the sender).
   const invite = () => void shareText(t('gifts.inviteMessage', { code, count: INVITE_REWARD }));
   const share = () => void shareText(t('gifts.shareMessage'));
 
@@ -168,7 +170,6 @@ export default function GiftsScreen() {
     setAccepted(true);
   };
 
-  // A step not done yet takes the user where it is done; notifications ask the phone (its settings once it said no).
   const goToStep = async (key: FirstStepKey) => {
     switch (key) {
       case 'friends':
@@ -191,51 +192,72 @@ export default function GiftsScreen() {
     haptic.success();
     track('first_step', { kind: key });
   };
-  // The counted steps show how far they are ("2/3"); every step shows what it pays.
-  const stepLine = (key: FirstStepKey, reward: number) => {
+  const stepLine = (key: FirstStepKey, amount: number) => {
     const far = key === 'friends' ? `${steps.progress.friends}/${FRIENDS_TO_MEET} · ` : key === 'deep' ? `${steps.progress.deep}/${DEEP_CHAT_LINES} · ` : '';
-    return steps.states[key] === 'claimed' ? undefined : `${far}+${reward}`;
+    return steps.states[key] === 'claimed' ? undefined : `${far}+${amount}`;
   };
 
   const today = todayKey();
   const checkedInToday = daily.lastLoginDay === today;
   const spinsUsed = daily.spinDay === today ? daily.spinsUsed : 0;
-  // No ads (owner, 2026-10-22): one free spin a day, nothing to watch for more.
   const canSpin = spinsUsed < FREE_SPINS_PER_DAY;
   const spinStatus = canSpin ? t('gifts.spinsFree') : t('gifts.spinsNone');
 
   return (
-    <Screen background={systemGround.ground}>
-      <ScrollView
-        ref={scroll}
-        onScroll={(e) => {
-          scrollY.current = e.nativeEvent.contentOffset.y;
-        }}
-        scrollEventThrottle={32}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
-        <View style={styles.bar}>
-          <RoundButton icon="chevron-back" accessibilityLabel={t('common.back')} onPress={() => router.back()} />
+    <Screen background={ink.ground}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(235,173,132,0.18)', 'rgba(9,9,13,0)']}
+        start={{ x: 0.8, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => router.back()}
+        title={t('gifts.title')}
+        scrolled={scrolled}
+        right={
           <Animated.View ref={capsuleBox} style={[styles.capsule, capsuleStyle]}>
-            <View style={styles.capsuleInner} accessible accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
+            <View
+              style={styles.capsuleInner}
+              accessible
+              accessibilityLabel={t('plans.shells', { count: Math.max(0, shells - pending) })}>
               <View ref={shellMark}>
-                <ShellIcon size={18} />
+                <ShellIcon size={16} />
               </View>
               <Txt style={styles.capsuleText}>{count(shownShells)}</Txt>
             </View>
           </Animated.View>
-        </View>
-        <LargeTitle>{t('gifts.title')}</LargeTitle>
+        }
+      />
 
-        {/* The day's check-in: the screen's one card in the Gifts tile's red, the mascot over its edge. */}
-        <HeroCard look={signature.gifts} style={styles.checkIn}>
-          {/* At night a warm amber glow behind the mascot, so its warm art sits in the dark (owner's brief, 2026-11-11). */}
-          {isDark ? <View pointerEvents="none" style={styles.mascotGlow} /> : null}
-          <PeekingMascot width={PEEK_WIDTH} />
+      <ScrollView
+        ref={scroll}
+        onScroll={(e) => {
+          scrollY.current = e.nativeEvent.contentOffset.y;
+          onScrollPast(e);
+        }}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
+        <InkText variant="display" accessibilityRole="header" style={styles.screenTitle}>
+          {t('gifts.title')}
+        </InkText>
+
+        {/* Calm stained-glass Daily Check-In Hero */}
+        <View style={styles.checkIn}>
+          <LinearGradient
+            colors={['rgba(239,68,68,0.22)', 'rgba(153,27,27,0.10)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.checkInHead}>
-            <Txt style={styles.checkInTitle} lines={1}>
+            <InkText variant="cardSmall" color={ink.text} lines={1} style={styles.shrink}>
               {t('gifts.checkIn')}
-            </Txt>
+            </InkText>
             <Txt style={styles.checkInDay} lines={1}>
               {t('gifts.dayOf', { day: Math.max(1, daily.checkInDay), total: DAILY_CHECK_IN.length })}
             </Txt>
@@ -247,7 +269,6 @@ export default function GiftsScreen() {
               const isToday = checkedInToday && day === daily.checkInDay;
               const next = day === daily.checkInDay + 1;
               const last = index === DAILY_CHECK_IN.length - 1;
-              // The surprise day shows its floor ("80+") until it is rolled.
               const shown = last
                 ? isToday
                   ? `+${daily.checkInAmount ?? amount}`
@@ -264,28 +285,26 @@ export default function GiftsScreen() {
                   accessible
                   accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                   <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
-                    {claimed ? <Ionicons name="checkmark" size={17} color={signature.gifts.strong} /> : <Txt style={styles.dayNumber}>{day}</Txt>}
+                    {claimed ? (
+                      <Ionicons name="checkmark" size={16} color={ink.onPill} />
+                    ) : (
+                      <Txt style={styles.dayNumber}>{day}</Txt>
+                    )}
                   </View>
-                  {last && !claimed ? (
-                    <View style={styles.offer}>
-                      <Txt style={styles.offerText}>{shown}</Txt>
-                    </View>
-                  ) : (
-                    <Txt style={[styles.dayAmount, claimed && styles.dayAmountOn]}>{shown}</Txt>
-                  )}
+                  <Txt style={[styles.dayAmount, claimed && styles.dayAmountOn, last && styles.dayAmountTop]}>
+                    {shown}
+                  </Txt>
                 </View>
               );
             })}
           </View>
-        </HeroCard>
+        </View>
 
-        {/* First steps (0z294): what a new user does first, each paid once; gone when all are paid. */}
+        {/* First steps (0z294) */}
         {steps.open ? (
           <>
-            <View style={styles.labelRow}>
-              <GroupLabel>{t('gifts.firstSteps.title')}</GroupLabel>
-            </View>
-            <View style={featureStyles.card}>
+            <Txt style={styles.sectionLabel}>{t('gifts.firstSteps.title')}</Txt>
+            <View style={styles.inkCard}>
               {FIRST_STEPS.map((step, i) => {
                 const state = steps.states[step.key];
                 return (
@@ -297,12 +316,12 @@ export default function GiftsScreen() {
                     action={
                       state === 'claimed' ? (
                         <View accessible accessibilityLabel={t('gifts.firstSteps.done')} style={styles.stepDone}>
-                          <Ionicons name="checkmark-circle" size={26} color={systemColors.green} />
+                          <Ionicons name="checkmark-circle" size={24} color={systemColors.green} />
                         </View>
                       ) : state === 'ready' ? (
-                        <TintCapsule look={signature.gifts} label={t('gifts.firstSteps.claim')} onPress={() => claimStep(step.key)} />
+                        <StepPill kind="peach" label={t('gifts.firstSteps.claim')} onPress={() => claimStep(step.key)} />
                       ) : (
-                        <TintCapsule look={signature.gifts} label={t('gifts.firstSteps.go')} onPress={() => void goToStep(step.key)} />
+                        <StepPill kind="glass" label={t('gifts.firstSteps.go')} onPress={() => void goToStep(step.key)} />
                       )
                     }
                     line={i < FIRST_STEPS.length - 1}
@@ -314,12 +333,12 @@ export default function GiftsScreen() {
         ) : null}
 
         <View style={styles.labelRow}>
-          <GroupLabel>{t('gifts.wheel')}</GroupLabel>
+          <Txt style={styles.sectionLabel}>{t('gifts.wheel')}</Txt>
           <View style={styles.statusPill}>
             <Txt style={styles.statusText}>{spinStatus}</Txt>
           </View>
         </View>
-        <View ref={wheelCard} style={[featureStyles.card, styles.wheel]}>
+        <View ref={wheelCard} style={[styles.inkCard, styles.wheel]}>
           <LuckyWheel
             size={wheelSize}
             disabled={!canSpin}
@@ -330,7 +349,7 @@ export default function GiftsScreen() {
         </View>
 
         <View style={styles.labelRow}>
-          <GroupLabel>{t('gifts.moreShells')}</GroupLabel>
+          <Txt style={styles.sectionLabel}>{t('gifts.moreShells')}</Txt>
           <PressableScale
             hitSlop={hitSlop}
             scaleTo={0.88}
@@ -338,29 +357,34 @@ export default function GiftsScreen() {
             accessibilityLabel={t('gifts.inviteRulesTitle')}
             style={styles.info}
             onPress={() => setRulesOpen(true)}>
-            <Ionicons name="information-circle-outline" size={20} color={systemGround.secondaryLabel} />
+            <Ionicons name="information-circle-outline" size={19} color={ink.text2} />
           </PressableScale>
         </View>
-        <View style={featureStyles.card}>
+        <View style={styles.inkCard}>
           <WayRow
             tile={WAY_TILES.invite}
             title={t('gifts.inviteTitle')}
             subtitle={t('gifts.inviteSub', { count: INVITE_REWARD, done: invited, total: INVITES_PER_WEEK })}
-            action={<TintCapsule look={signature.gifts} label={t('gifts.inviteNow')} onPress={invite} />}
+            action={<StepPill kind="peach" label={t('gifts.inviteNow')} onPress={invite} />}
             line
           />
-          {/* Sharing tells people about Sigmazam but pays nothing (owner, 2026-10-22). */}
-          <WayRow tile={WAY_TILES.share} title={t('gifts.shareTitle')} action={<TintCapsule look={signature.gifts} label={t('gifts.share')} onPress={share} />} />
+          <WayRow
+            tile={WAY_TILES.share}
+            title={t('gifts.shareTitle')}
+            action={<StepPill kind="glass" label={t('gifts.share')} onPress={share} />}
+          />
         </View>
 
-        <View style={[featureStyles.card, styles.codeRow]}>
+        <View style={[styles.inkCard, styles.codeRow]}>
           <View style={styles.codeTile}>
             <SFIcon ios="gift.fill" icon="gift" size={17} color={colors.white} />
           </View>
-          <Txt style={styles.codeLabel}>{t('gifts.yourCode')}</Txt>
-          <Txt style={styles.code} selectable>
-            {code}
-          </Txt>
+          <View style={styles.codeBody}>
+            <Txt style={styles.codeLabel}>{t('gifts.yourCode')}</Txt>
+            <Txt style={styles.code} selectable>
+              {code}
+            </Txt>
+          </View>
           <PressableScale
             hitSlop={hitSlop}
             scaleTo={0.88}
@@ -368,9 +392,10 @@ export default function GiftsScreen() {
             accessibilityLabel={t('gifts.copyCode')}
             style={styles.copy}
             onPress={() => void copyCode()}>
-            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={17} color={signature.gifts.text} />
+            <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={16} color={copied ? systemColors.green : ink.accent} />
           </PressableScale>
         </View>
+
         {user.invitePending ? (
           <Txt style={styles.pending}>{t('gifts.invitePending', { count: INVITE_REWARD })}</Txt>
         ) : user.redeemedInvite ? null : (
@@ -390,7 +415,7 @@ export default function GiftsScreen() {
             }}
             placeholder="ABC234"
             accessibilityLabel={t('gifts.haveCode')}
-            placeholderTextColor={colors.textFaint}
+            placeholderTextColor={ink.placeholder}
             autoCapitalize="characters"
             autoCorrect={false}
             maxLength={14}
@@ -398,7 +423,7 @@ export default function GiftsScreen() {
             onSubmitEditing={redeem}
           />
           {redeemError ? (
-            <Txt variant="small" color={colors.danger} center>
+            <Txt variant="small" color={ink.danger} center>
               {redeemError}
             </Txt>
           ) : null}
@@ -412,7 +437,7 @@ export default function GiftsScreen() {
           <Txt variant="h3" center>
             {t('gifts.codeAccepted')}
           </Txt>
-          <Txt variant="body" color={colors.textSecondary} center>
+          <Txt variant="body" color={ink.text2} center>
             {t('gifts.codeAcceptedBody', { count: INVITE_REWARD })}
           </Txt>
           <Button label={t('common.done')} onPress={() => setAccepted(false)} full />
@@ -424,7 +449,7 @@ export default function GiftsScreen() {
           {(['send', 'join', 'back'] as const).map((step) => (
             <ListRow key={step} title={t(`gifts.inviteSteps.${step}`)} left={<Tile look={WAY_TILES[step]} size={ROW_ICON} />} />
           ))}
-          <Txt variant="caption" color={colors.textMuted} center>
+          <Txt variant="caption" color={ink.text2} center>
             {t('gifts.inviteRulesNote', { count: INVITE_REWARD, total: INVITES_PER_WEEK })}
           </Txt>
         </View>
@@ -461,16 +486,28 @@ export default function GiftsScreen() {
   );
 }
 
-/** A Settings-style tile: an SF Symbol (Ionicons off iPhone) on an iOS system colour. */
+function StepPill({ kind, label, onPress }: { kind: 'peach' | 'glass'; label: string; onPress: () => void }) {
+  return (
+    <PressableScale
+      scaleTo={0.94}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[styles.stepPill, kind === 'peach' ? styles.stepPillPeach : styles.stepPillGlass]}>
+      <InkText variant="caption" color={kind === 'peach' ? ink.onAccent : ink.text} lines={1}>
+        {label}
+      </InkText>
+    </PressableScale>
+  );
+}
+
 function Tile({ look, size }: { look: TileLook; size: number }) {
   return (
-    <View style={[styles.tile, { width: size, height: size, borderRadius: Math.round(size * 0.26), backgroundColor: look.fill }]}>
+    <View style={[styles.tile, { width: size, height: size, borderRadius: Math.round(size * 0.28), backgroundColor: look.fill }]}>
       <SFIcon ios={look.ios} icon={look.icon} size={Math.round(size * 0.52)} color={colors.white} />
     </View>
   );
 }
 
-/** One way to earn shells: a tile, two lines, one capsule button. */
 function WayRow({
   tile,
   title,
@@ -497,92 +534,138 @@ function WayRow({
   );
 }
 
-/** The check-in mascot: 104pt wide, about 72pt of it stands above the card. */
-const PEEK_WIDTH = 104;
-const GLOW = 200;
-// 72 pt of mascot above the card: the title keeps clear of its hair at every text size.
-const PEEK_ROOM = 60;
-/** On the red card: a day still to come, and the surprise day's chip. */
-const ON_RED_SOFT = 'rgba(255,255,255,0.24)';
-
 const styles = StyleSheet.create({
-  stepDone: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
-  mascotGlow: {
-    position: 'absolute',
-    top: -GLOW * 0.7,
-    left: '50%',
-    marginLeft: -GLOW / 2,
-    width: GLOW,
-    height: GLOW,
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
+  shrink: { flexShrink: 1 },
+  screenTitle: { marginTop: 2, marginHorizontal: inkGutter },
+  stepDone: { minWidth: 38, minHeight: 38, alignItems: 'center', justifyContent: 'center' },
+  capsule: {
+    height: 36,
     borderRadius: inkRadius.pill,
-    experimental_backgroundImage: 'radial-gradient(circle, rgba(251,191,36,0.34) 0%, rgba(251,191,36,0.12) 45%, rgba(251,191,36,0) 72%)',
+    backgroundColor: 'rgba(22,22,30,0.86)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
   },
-  bar: {
-    height: 44,
-    paddingHorizontal: space.lg,
-    paddingTop: space.xs,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  capsuleInner: { height: 36, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 11, paddingRight: 13 },
+  capsuleText: { ...inkFace('footnoteStrong'), color: ink.text, fontVariant: ['tabular-nums'] },
+  checkIn: {
+    marginTop: 14,
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: CHECKIN_RIM,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
   },
-  capsule: { height: 40, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
-  capsuleInner: { height: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14 },
-  capsuleText: { ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
-  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  // Room above for the mascot peeking over the card.
-  checkIn: { marginTop: PEEK_ROOM + space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', paddingTop: 16, paddingBottom: space.lg, paddingHorizontal: space.md },
-  checkInHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: 4 },
-  checkInTitle: { flexShrink: 1, ...inkFace('caption'), textTransform: 'uppercase', color: colors.white },
-  checkInDay: { ...inkFace('caption'), color: colors.white, opacity: 0.85 },
+  checkInHead: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.sm, paddingHorizontal: 2 },
+  checkInDay: { ...inkFace('caption'), color: 'rgba(255,255,255,0.72)', fontVariant: ['tabular-nums'] },
   days: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 14 },
-  day: { alignItems: 'center', gap: 6 },
-  dayDot: { width: 36, height: 36, borderRadius: inkRadius.pill, backgroundColor: ON_RED_SOFT, alignItems: 'center', justifyContent: 'center' },
-  dayClaimed: { backgroundColor: colors.white },
-  // Tomorrow's day: the next one to come back for.
-  dayNext: { backgroundColor: 'transparent', borderWidth: 2.5, borderColor: colors.white },
-  dayNumber: { ...inkFace('subStrong'), color: colors.white },
-  dayAmount: { ...inkFace('caption'), color: colors.white, opacity: 0.85, fontVariant: ['tabular-nums'] },
-  dayAmountOn: { opacity: 1 },
-  offer: { paddingHorizontal: 6, borderRadius: 9, backgroundColor: ON_RED_SOFT },
-  offerText: { ...inkFace('caption'), color: colors.white },
+  day: { alignItems: 'center', gap: 6, flex: 1 },
+  dayDot: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayClaimed: { backgroundColor: ink.pill, borderColor: ink.pill },
+  dayNext: { backgroundColor: 'rgba(235,173,132,0.22)', borderWidth: 1.5, borderColor: ink.accent },
+  dayNumber: { ...inkFace('caption'), color: ink.text },
+  dayAmount: { ...inkFace('caption'), fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.58)', fontVariant: ['tabular-nums'] },
+  dayAmountOn: { color: ink.text, fontWeight: '700' },
+  dayAmountTop: { color: ink.accent, fontWeight: '700' },
+  sectionLabel: {
+    marginTop: 20,
+    marginBottom: 8,
+    marginHorizontal: inkGutter + 6,
+    ...inkFace('footnoteStrong'),
+    color: ink.text2,
+  },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
+  inkCard: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
   statusPill: {
     height: 24,
-    marginBottom: 4,
-    marginRight: space.lg,
+    marginBottom: 8,
+    marginRight: inkGutter,
     paddingHorizontal: 10,
     borderRadius: inkRadius.pill,
     justifyContent: 'center',
-    backgroundColor: signature.gifts.soft,
+    backgroundColor: PEACH_SOFT,
   },
-  statusText: { ...inkFace('caption'), color: signature.gifts.text },
+  statusText: { ...inkFace('caption'), color: ink.accent },
   wheel: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: space.md,
-    marginBottom: 23,
+    paddingVertical: 18,
+    paddingHorizontal: space.md,
   },
-  info: { marginBottom: 2, marginRight: space.lg + 4, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
+  info: { marginBottom: 6, marginRight: inkGutter + 2, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
   tile: { alignItems: 'center', justifyContent: 'center' },
-  way: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  wayBody: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  wayTitle: { ...inkFace('bodyStrong'), color: systemGround.label },
-  waySub: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  way: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
+  wayBody: { flex: 1, minWidth: '45%', gap: 2, paddingVertical: 11 },
+  wayTitle: { ...inkFace('subStrong'), fontSize: 15, color: ink.text },
+  waySub: { ...inkFace('caption'), fontWeight: '400', color: ink.text2, fontVariant: ['tabular-nums'] },
   wayLine: {
     position: 'absolute',
-    left: 14 + WAY_ICON + 12,
+    left: 60,
     right: 0,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.borderStrong,
+    backgroundColor: ink.edge,
   },
-  codeRow: { marginTop: 22, minHeight: 60, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  codeTile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.strong },
-  codeLabel: { flex: 1, ...inkFace('body'), color: systemGround.label },
-  code: { ...inkFace('bodyStrong'), letterSpacing: 3, color: systemGround.label },
-  copy: { width: 34, height: 34, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.gifts.soft },
-  haveCode: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, marginTop: space.sm },
-  haveCodeText: { ...inkFace('subStrong'), color: signature.gifts.text },
-  pending: { marginTop: space.md, marginHorizontal: space.lg * 2, textAlign: 'center', ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  stepPill: {
+    minWidth: 58,
+    height: 30,
+    paddingHorizontal: 13,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepPillPeach: { backgroundColor: ink.accent },
+  stepPillGlass: {
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+  },
+  codeRow: { marginTop: 14, minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14, paddingVertical: 10 },
+  codeTile: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: systemColors.indigo,
+  },
+  codeBody: { flex: 1, minWidth: 0, gap: 1 },
+  codeLabel: { ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
+  code: { ...inkFace('subStrong'), letterSpacing: 1.5, color: ink.text, fontVariant: ['tabular-nums'] },
+  copy: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+  },
+  haveCode: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, marginTop: 8 },
+  haveCodeText: { ...inkFace('footnoteStrong'), color: ink.accent },
+  pending: { marginTop: space.md, marginHorizontal: inkGutter * 2, textAlign: 'center', ...inkFace('footnote'), color: ink.text2 },
   success: { alignItems: 'center', gap: space.md },
   confetti: { position: 'absolute', top: -60 },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
@@ -591,13 +674,14 @@ const styles = StyleSheet.create({
   codeInput: {
     height: 54,
     borderRadius: radius.md,
-    borderWidth: 1.5,
-    borderColor: colors.border,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: '#0E0E14',
     paddingHorizontal: space.lg,
     ...inkFace('figureSmall'),
     letterSpacing: 4,
     textAlign: 'center',
-    color: colors.text,
+    color: ink.text,
   },
   rules: { gap: space.xs },
 });

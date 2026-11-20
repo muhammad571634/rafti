@@ -1,51 +1,53 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InkSegmented } from '@/components/ink';
+import { InkNavBar, InkSegmented, InkText, PillButton } from '@/components/ink';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
 import { FrameSwatch } from '@/components/photo-booth/frame-card';
 import { SendPill } from '@/components/photo-booth/send-pill';
 import { useTakeSelfie } from '@/components/photo-booth/take-selfie';
-import { dropSelfie } from '@/lib/booth-selfies';
 import { planDate } from '@/components/plans/copy';
 import { ProPaywallSheet } from '@/components/plans/pro-paywall-sheet';
-import { FeatureBar } from '@/components/feature/feature-kit';
-import { BUY_BAR_SPACE, GroupLabel, STORE, StoreBuyBar } from '@/components/plans/store-look';
 import {
   Button,
   CharacterAvatar,
-  LargeTitle,
   PressableScale,
   Screen,
-  SFIcon,
   Sheet,
   Txt,
+  useScrolledPast,
 } from '@/components/ui';
 import { photoQuota } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
-import { frameLook } from '@/lib/frames';
-import { shortName } from '@/lib/format';
 import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
+import { dropSelfie } from '@/lib/booth-selfies';
+import { shortName } from '@/lib/format';
+import { frameLook } from '@/lib/frames';
 import { WORLDS, type World } from '@/mock/worlds';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, paperRoom, signature, space, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, colors, friendAccent, paperRoom, space } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { BoothStyle, PhotoFrame } from '@/types';
 
 const STYLES: BoothStyle[] = ['polaroid', 'film', 'studio', 'street'];
-const SWATCH = 56;
-const GUTTER = space.lg;
-const CARD_PAD = 14;
-/** The preview's and the thumbnails' backing: iOS secondary fill on the white card. */
-/** Room under the content for the meter above the shoot button. */
-const METER_SPACE = 44;
+const SWATCH = 52;
+const CARD_PAD = 12;
+const DOCK_SPACE = 132;
+const METER_SPACE = 38;
 /** Long enough for the Pro sheet to finish closing before the camera opens. */
 const SHEET_GONE_MS = 450;
+
+const GLASS_RIM = 'rgba(255,255,255,0.11)';
+const PRO_BG = 'rgba(217,166,245,0.16)';
+const PRO_RIM = 'rgba(217,166,245,0.34)';
+const PRO_INK = '#D9A6F5';
+const DOCK_BG = 'rgba(14,14,20,0.95)';
 
 /** One choice in the frame row: plain, a world's frame (won in its quiz) or one the user made. */
 interface FrameChoice {
@@ -58,12 +60,9 @@ interface FrameChoice {
 }
 
 /**
- * A photo together with one friend: pick who and a style, then shoot. Pictures are Pro only
- * (30 a period, 3 on the trial) and never sold for shells (backend-plan §15.10); each adds
- * closeness and a moment on Us. The picture is drawn on the phone from the friend's art
- * (`BoothPicture`), kept in "Your photos", and goes to their chat only with Send. A feature screen
- * on Apple's white ground in Photos' blue (design-style §10): a grey preview card, friends, frames,
- * styles as a segmented control, and the buy bar with pictures left above the blue shoot button.
+ * Photo Booth (approved Ink Night+ prototype): warm paper prints set in the dark studio room
+ * (`paperRoom`), sticky Apple HIG nav bar, friend-accent portrait rings, warm brand-peach frame
+ * selection & quota bar, and a crisp white shutter dock — zero cold blue anywhere.
  */
 export default function PhotoBoothScreen() {
   const insets = useSafeAreaInsets();
@@ -71,6 +70,7 @@ export default function PhotoBoothScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
+  const { scrolled, onScroll } = useScrolledPast(34);
 
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
@@ -102,6 +102,8 @@ export default function PhotoBoothScreen() {
   const takeSelfie = useTakeSelfie();
 
   const partner = known.find((c) => c.id === partnerId);
+  const partnerAccent = partner ? friendAccent(partner.id).strong : ink.accent;
+
   const frames: FrameChoice[] = [
     { id: 'none', label: t('frames.plain') },
     ...localized('worlds', WORLDS).map((w) => ({
@@ -137,9 +139,8 @@ export default function PhotoBoothScreen() {
   const fresh = photos.find((p) => p.id === freshId);
   // Null without Pro or the trial.
   const quota = photoQuota(subscription, Date.now());
-  const cardInner = width - GUTTER * 2 - CARD_PAD * 2;
-  const previewHeight = Math.round(cardInner * 0.86);
-  // The preview's inner box, less a margin so the picture's edge and shadow show.
+  const cardInner = width - inkGutter * 2 - CARD_PAD * 2;
+  const previewHeight = Math.round(cardInner * 0.84);
   const stage = { width: cardInner - space.xl * 2, height: previewHeight - space.xl * 2 };
   const thumbWidth = (cardInner - space.sm * 3) / 4;
   const thumbHeight = thumbWidth * 1.25;
@@ -153,13 +154,8 @@ export default function PhotoBoothScreen() {
     setFreshId(undefined);
   };
 
-  // A booth shot: the front camera takes the user's half, then the print develops with the friend
-  // beside them (owner, 2026-11-05: in BIMOBIMO the user stood beside the character; ours only
-  // re-printed the friend's art, so "Take a photo" looked as if nothing happened). The allowance is
-  // checked before the camera opens and spent only once there is a selfie: closing it costs nothing.
   const shoot = async () => {
     if (!partner || shooting) return;
-    // The store's plan as it is now: a trial started a moment ago is not in this render yet.
     const allowance = photoQuota(useAppStore.getState().wallet.subscription, Date.now());
     if (!allowance) return setLocked(true);
     if (allowance.left <= 0) return;
@@ -169,7 +165,6 @@ export default function PhotoBoothScreen() {
       if (!selfie) return;
       const result = takePhoto(partner.id, style, look, selfie);
       if (result === 'locked' || result === 'usedUp') {
-        // The period turned while the camera was open: no picture, so no selfie kept either.
         void dropSelfie(selfie);
         if (result === 'locked') setLocked(true);
         return;
@@ -180,43 +175,63 @@ export default function PhotoBoothScreen() {
     }
   };
 
-  // The trial just started on the Pro sheet: the camera opens once the sheet has gone, never under
-  // a closing modal (iOS will not present one there). A ref, so clearing it cancels no timer.
   const shootAfterSheet = useRef(false);
   useEffect(() => {
     if (locked || !shootAfterSheet.current) return;
     shootAfterSheet.current = false;
     const timer = setTimeout(() => void shoot(), SHEET_GONE_MS);
     return () => clearTimeout(timer);
-    // `shoot` reads the latest plan from the store; this runs when the sheet closes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locked]);
 
+  const shootDisabled = !partner || shooting || (quota != null && quota.left <= 0);
+  const shootLabel = quota && quota.left <= 0 ? t('photoBooth.backOn', { date: planDate(quota.resetsAt) }) : t('photoBooth.shoot');
+  const shootIcon = quota ? (quota.left > 0 ? 'camera' : undefined) : 'lock-closed';
+
   return (
     <Screen background={paperRoom}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom + (quota ? METER_SPACE : 0) }}>
-        <FeatureBar
-          backLabel={t('common.back')}
-          onBack={() => router.back()}
-          right={
-            quota ? (
-              <View style={styles.capsule} accessible accessibilityLabel={t('photoBooth.picturesLeft', { count: quota.left })}>
-                <SFIcon ios="camera.fill" icon="camera" size={16} color={systemGround.label} />
-                <Txt style={styles.capsuleText}>{quota.left}</Txt>
-              </View>
-            ) : (
-              <View style={styles.proPill}>
-                <Txt style={styles.proPillText}>{t('plans.name.pro')}</Txt>
-              </View>
-            )
-          }
-        />
-        <LargeTitle>{t('photoBooth.title')}</LargeTitle>
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => router.back()}
+        title={t('photoBooth.title')}
+        scrolled={scrolled}
+        right={
+          quota ? (
+            <View style={styles.quotaPill} accessible accessibilityLabel={t('photoBooth.picturesLeft', { count: quota.left })}>
+              <Ionicons name="camera" size={14} color={ink.accent} />
+              <InkText variant="footnoteStrong" color={ink.text} style={styles.tabular}>
+                {quota.left}
+              </InkText>
+            </View>
+          ) : (
+            <View style={styles.proPill}>
+              <InkText variant="caption" color={PRO_INK}>
+                {t('plans.name.pro')}
+              </InkText>
+            </View>
+          )
+        }
+      />
 
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: DOCK_SPACE + insets.bottom + (quota ? METER_SPACE : 0) }}>
+        <InkText variant="display" accessibilityRole="header" style={styles.title}>
+          {t('photoBooth.title')}
+        </InkText>
+
+        {/* Tactile Print Stage Card — warm paper prints pop cleanly against deep obsidian */}
         <View style={[styles.card, styles.previewCard]}>
           <View style={[styles.preview, { height: previewHeight }]}>
+            <LinearGradient
+              pointerEvents="none"
+              colors={[`${partnerAccent}22`, `${partnerAccent}00`]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
             {fresh && partner ? (
               <>
                 <BoothPicture
@@ -230,7 +245,6 @@ export default function PhotoBoothScreen() {
                 <SendPill photo={fresh} style={styles.send} />
               </>
             ) : partner ? (
-              // What this style makes with this friend, before the shot: the user's half a silhouette.
               <BoothPicture
                 photo={{ style, seed: 0, createdAt: new Date().toISOString(), frame: look }}
                 character={partner}
@@ -239,25 +253,28 @@ export default function PhotoBoothScreen() {
                 style={style === 'polaroid' ? styles.tilt : undefined}
               />
             ) : (
-              <Txt style={styles.muted15}>{t('photoBooth.empty')}</Txt>
+              <InkText variant="sub">{t('photoBooth.empty')}</InkText>
             )}
           </View>
           {partner ? (
             <View style={styles.caption}>
-              <Txt style={styles.captionTitle} lines={1}>
+              <InkText variant="subStrong" color={ink.text} lines={1} style={styles.grow}>
                 {t('photoBooth.together', { name: friendName(partner, true) })}
-              </Txt>
-              <Txt style={styles.muted15}>{t(`photoBooth.styleNames.${fresh?.style ?? style}`)}</Txt>
+              </InkText>
+              <InkText variant="footnote" color={ink.text2}>
+                {t(`photoBooth.styleNames.${fresh?.style ?? style}`)}
+              </InkText>
             </View>
           ) : null}
         </View>
 
         {known.length > 0 ? (
           <>
-            <GroupLabel>{t('photoBooth.with')}</GroupLabel>
+            <Txt style={styles.sectionLabel}>{t('photoBooth.with')}</Txt>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.partners}>
               {known.map((character) => {
                 const on = character.id === partnerId;
+                const cAccent = friendAccent(character.id).strong;
                 return (
                   <PressableScale
                     key={character.id}
@@ -266,8 +283,8 @@ export default function PhotoBoothScreen() {
                     accessibilityLabel={friendName(character)}
                     accessibilityState={{ selected: on }}
                     onPress={() => pickPartner(character.id)}>
-                    <View style={[styles.ring, on && styles.ringOn]}>
-                      <CharacterAvatar character={character} size={52} />
+                    <View style={[styles.ring, { borderColor: on ? cAccent : 'transparent' }]}>
+                      <CharacterAvatar character={character} size={50} />
                     </View>
                     <Txt style={[styles.choiceLabel, on && styles.choiceLabelOn]} lines={1}>
                       {friendName(character, true)}
@@ -279,11 +296,19 @@ export default function PhotoBoothScreen() {
           </>
         ) : null}
 
+        <Txt style={styles.sectionLabel}>{t('photoBooth.styles')}</Txt>
+        <InkSegmented
+          options={STYLES.map((key) => ({ value: key, label: t(`photoBooth.styleNames.${key}`) }))}
+          value={style}
+          onChange={pickStyle}
+          style={styles.styles}
+        />
+
         <View style={styles.labelRow}>
-          <GroupLabel>{t('frames.frame')}</GroupLabel>
-          <Txt style={styles.labelValue} lines={1}>
+          <Txt style={styles.sectionLabel}>{t('frames.frame')}</Txt>
+          <InkText variant="footnote" color={ink.text3} lines={1} style={styles.labelValue}>
             {chosen.label}
-          </Txt>
+          </InkText>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.frames}>
           {frames.map((f) => {
@@ -303,10 +328,10 @@ export default function PhotoBoothScreen() {
                   ) : (
                     <FrameSwatch
                       look={{
-                        bg: colors.surface,
+                        bg: '#F4F1EA',
                         pattern: 'none',
-                        patternColor: colors.surface,
-                        ink: colors.text,
+                        patternColor: '#F4F1EA',
+                        ink: '#2C2621',
                         stickers: [],
                       }}
                       width={SWATCH}
@@ -314,7 +339,7 @@ export default function PhotoBoothScreen() {
                   )}
                   {f.locked ? (
                     <View style={styles.lock}>
-                      <Ionicons name="lock-closed" size={13} color={systemGround.label} />
+                      <Ionicons name="lock-closed" size={13} color={ink.text} />
                     </View>
                   ) : null}
                 </View>
@@ -331,26 +356,20 @@ export default function PhotoBoothScreen() {
             style={styles.frameChoice}
             onPress={() => router.push('/frame/edit')}>
             <View style={[styles.frameBox, styles.frameNew]}>
-              <Ionicons name="add" size={24} color={signature.photo.strong} />
+              <Ionicons name="add" size={22} color={ink.accent} />
             </View>
             <Txt style={styles.choiceLabel} center>
               {t('frames.make')}
             </Txt>
           </PressableScale>
         </ScrollView>
-        <Txt style={styles.footnote}>{frameHint}</Txt>
-
-        <GroupLabel>{t('photoBooth.styles')}</GroupLabel>
-        <InkSegmented
-          options={STYLES.map((key) => ({ value: key, label: t(`photoBooth.styleNames.${key}`) }))}
-          value={style}
-          onChange={pickStyle}
-          style={styles.styles}
-        />
+        <InkText variant="footnote" color={ink.text3} style={styles.footnote}>
+          {frameHint}
+        </InkText>
 
         {photos.length > 0 ? (
           <>
-            <GroupLabel>{t('photoBooth.yourPhotos')}</GroupLabel>
+            <Txt style={styles.sectionLabel}>{t('photoBooth.yourPhotos')}</Txt>
             <View style={[styles.card, styles.gallery]}>
               {photos.map((photo) => {
                 const who = characters.find((c) => c.id === photo.characterId);
@@ -375,34 +394,30 @@ export default function PhotoBoothScreen() {
         ) : null}
       </ScrollView>
 
-      {/* The buy bar in Photos' blue: pictures left above the button, or the Pro lock in it. */}
-      <StoreBuyBar
-        label={quota && quota.left <= 0 ? t('photoBooth.backOn', { date: planDate(quota.resetsAt) }) : t('photoBooth.shoot')}
-        caption={quota ? undefined : t('photoBooth.withPro')}
-        disabled={!partner || shooting || (quota != null && quota.left <= 0)}
-        onPress={shoot}
-       
-        look={signature.photo}
-        left={
-          quota ? (
-            // The shutter: this button opens the camera.
-            quota.left > 0 ? <Ionicons name="camera" size={19} color={colors.white} /> : undefined
-          ) : (
-            <Ionicons name="lock-closed" size={17} color={colors.white} />
-          )
-        }>
+      {/* Anchored Shutter Dock — warm peach meter + crisp white PillButton (zero cold blue) */}
+      <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
         {quota ? (
           <View style={styles.meter}>
             <View style={styles.meterHead}>
-              <Txt style={styles.meterLeft}>{t('photoBooth.left', { left: quota.left, total: quota.total })}</Txt>
-              <Txt style={styles.meterReset}>{t('photoBooth.resets', { date: planDate(quota.resetsAt) })}</Txt>
+              <InkText variant="caption" color={ink.text} style={[styles.grow, styles.tabular]}>
+                {t('photoBooth.left', { left: quota.left, total: quota.total })}
+              </InkText>
+              <InkText variant="caption" color={ink.text2} style={styles.tabular}>
+                {t('photoBooth.resets', { date: planDate(quota.resetsAt) })}
+              </InkText>
             </View>
             <View style={styles.track}>
-              <View style={[styles.fill, { width: `${Math.round((quota.left / quota.total) * 100)}%` }]} />
+              <View style={[styles.fill, { width: `${Math.round((quota.left / Math.max(1, quota.total)) * 100)}%` }]} />
             </View>
           </View>
         ) : null}
-      </StoreBuyBar>
+        <PillButton label={shootLabel} icon={shootIcon} disabled={shootDisabled} onPress={shoot} />
+        {!quota ? (
+          <InkText variant="footnote" color={ink.text2} style={styles.dockCaption}>
+            {t('photoBooth.withPro')}
+          </InkText>
+        ) : null}
+      </View>
 
       <Sheet visible={!!lockedWorld} onClose={() => setLockedWorld(null)}>
         {lockedWorld ? (
@@ -472,60 +487,132 @@ export default function PhotoBoothScreen() {
 }
 
 const styles = StyleSheet.create({
-  capsule: { height: 40, borderRadius: inkRadius.pill, flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 14, backgroundColor: systemGround.fill },
-  capsuleText: { ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
-  proPill: { height: 28, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: STORE.violetSoft },
-  proPillText: { ...inkFace('subStrong'), color: STORE.violetInk },
-  card: { marginHorizontal: GUTTER, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card },
-  previewCard: { marginTop: 18, padding: CARD_PAD, gap: 12 },
-  // The picture's stage: the white ground set into the grey card.
-  preview: { borderRadius: 16, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  grow: { flex: 1 },
+  tabular: { fontVariant: ['tabular-nums'] },
+  title: { marginTop: 2, marginHorizontal: inkGutter },
+  quotaPill: {
+    height: 36,
+    paddingHorizontal: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  proPill: {
+    height: 28,
+    paddingHorizontal: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: PRO_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: PRO_RIM,
+    justifyContent: 'center',
+  },
+  card: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  previewCard: { marginTop: 14, padding: CARD_PAD, gap: 11 },
+  preview: {
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    backgroundColor: ink.ground,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   tilt: { transform: [{ rotate: '-2.5deg' }] },
   send: { position: 'absolute', top: space.sm, left: space.sm },
-  caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md, paddingHorizontal: 2 },
-  captionTitle: { flex: 1, ...inkFace('bodyStrong'), color: systemGround.label },
-  muted15: { ...inkFace('sub'), color: systemGround.secondaryLabel },
-  partners: { gap: 14, paddingHorizontal: GUTTER },
-  partner: { width: 60, alignItems: 'center', gap: 6 },
-  ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
-  ringOn: { borderColor: signature.photo.strong },
-  choiceLabel: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  choiceLabelOn: { fontWeight: '700', color: systemGround.label },
-  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, maxWidth: '45%', ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  frames: { gap: 10, paddingHorizontal: GUTTER },
-  frameChoice: { width: 72, alignItems: 'center', gap: 6 },
+  caption: { flexDirection: 'row', alignItems: 'baseline', gap: space.md, paddingHorizontal: 4 },
+  sectionLabel: {
+    marginTop: 18,
+    marginBottom: 8,
+    marginHorizontal: inkGutter + 4,
+    ...inkFace('footnoteStrong'),
+    color: ink.text2,
+  },
+  partners: { gap: 14, paddingHorizontal: inkGutter },
+  partner: { width: 58, alignItems: 'center', gap: 6 },
+  ring: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  choiceLabel: { ...inkFace('caption'), fontWeight: '500', color: ink.text2 },
+  choiceLabelOn: { fontWeight: '600', color: ink.text },
+  styles: { marginHorizontal: inkGutter },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', paddingRight: inkGutter + 4 },
+  labelValue: { marginBottom: 8, maxWidth: '45%' },
+  frames: { gap: 10, paddingHorizontal: inkGutter },
+  frameChoice: { width: 68, alignItems: 'center', gap: 6 },
   frameBox: {
-    width: 72,
-    height: 88,
+    width: 68,
+    height: 82,
     borderRadius: 16,
-    borderWidth: 2.5,
-    borderColor: 'transparent',
-    backgroundColor: systemGround.card,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: ink.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  frameBoxOn: { borderColor: signature.photo.strong },
-  frameNew: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: signature.photo.strong, backgroundColor: 'transparent' },
-  dim: { opacity: 0.6 },
+  frameBoxOn: { borderWidth: 1.8, borderColor: ink.accent },
+  frameNew: {
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: 'rgba(235,173,132,0.48)',
+    backgroundColor: 'transparent',
+  },
+  dim: { opacity: 0.56 },
   lock: {
     position: 'absolute',
     width: 26,
     height: 26,
-    borderRadius: inkRadius.pill,
-    backgroundColor: systemGround.ground,
+    borderRadius: 13,
+    backgroundColor: 'rgba(9,9,13,0.78)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  styles: { marginHorizontal: GUTTER },
+  footnote: { marginTop: 8, marginHorizontal: inkGutter + 4 },
   gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, padding: CARD_PAD },
-  thumb: { borderRadius: 12, backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
-  lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
-  meter: { gap: 6, marginBottom: 4 },
+  thumb: {
+    borderRadius: 12,
+    backgroundColor: ink.ground,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingTop: 10,
+    paddingHorizontal: inkGutter,
+    gap: 8,
+    backgroundColor: DOCK_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
+  dockCaption: { textAlign: 'center' },
+  meter: { gap: 5, marginBottom: 2 },
   meterHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  meterLeft: { flex: 1, ...inkFace('subStrong'), color: systemGround.label, fontVariant: ['tabular-nums'] },
-  meterReset: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  track: { height: 6, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: systemGround.fill },
-  fill: { height: '100%', borderRadius: 3, backgroundColor: signature.photo.strong },
+  track: { height: 5, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: ink.hairlineFill },
+  fill: { height: '100%', borderRadius: inkRadius.pill, backgroundColor: ink.accent },
+  lockedSheet: { alignItems: 'center', gap: space.md, paddingBottom: space.lg },
 });

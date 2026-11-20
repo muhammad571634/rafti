@@ -146,17 +146,17 @@ export function InkNavBar({ backLabel, onBack, title, center, right, scrolled }:
         <View pointerEvents="box-none" style={styles.centerFlex}>
           {center}
         </View>
-      ) : title && scrolled ? (
-        <Animated.View
-          entering={FadeIn.duration(160)}
-          exiting={FadeOut.duration(120)}
-          pointerEvents="none"
-          style={styles.centerTitleSlot}>
-          <InkText variant="cardSmall" color={ink.text} lines={1} style={styles.centerTitle}>
-            {title}
-          </InkText>
-        </Animated.View>
-      ) : null}
+      ) : (
+        <View pointerEvents="none" style={styles.centerFlex}>
+          {title && scrolled ? (
+            <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+              <InkText variant="cardSmall" color={ink.text} lines={1} style={styles.centerTitle}>
+                {title}
+              </InkText>
+            </Animated.View>
+          ) : null}
+        </View>
+      )}
 
       <View style={styles.rightSlot}>{right ?? <View style={styles.spacer} />}</View>
     </View>
@@ -195,15 +195,6 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     marginHorizontal: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  centerTitleSlot: {
-    position: 'absolute',
-    left: 68,
-    right: 68,
-    top: 4,
-    bottom: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },

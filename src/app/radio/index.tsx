@@ -1,23 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { InkSegmented } from '@/components/ink';
-import { featureStyles, FeatureBar, HeroCard } from '@/components/feature/feature-kit';
-import { CARD_SHADOW, GroupLabel, IconTile } from '@/components/plans/store-look';
+import { InkNavBar, InkSegmented, InkText } from '@/components/ink';
+import { IconTile } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClips, type ClipView } from '@/components/radio/use-clips';
-import { Anim, CharacterAvatar, LargeTitle, PressableScale, Screen, SFIcon, Txt } from '@/components/ui';
+import { Anim, CharacterAvatar, PressableScale, Screen, SFIcon, Txt, useScrolledPast } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { radioTracks } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, isDark, signature, space, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, colors, friendAccent, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 type Tab = 'clips' | 'sounds';
@@ -32,35 +31,69 @@ const SOUND_TILE: Record<string, { fill: string; ios: SFSymbol; icon: IoniconNam
 };
 const SOUND_DEFAULT = { fill: systemColors.pink, ios: 'music.note' as SFSymbol, icon: 'musical-notes' as IoniconName };
 
-const MINI_HEIGHT = 64;
+const MINI_HEIGHT = 66;
+const RADIO_VIOLET = '#BF5AF2';
+const RADIO_TINT = '#DA8FFF';
+const RADIO_SOFT = 'rgba(191,90,242,0.18)';
+const RADIO_RIM = 'rgba(218,143,255,0.28)';
+const NEW_FILL = 'rgba(235,173,132,0.20)';
+const NEW_RIM = 'rgba(235,173,132,0.40)';
 
 /**
- * Radio (F27). Clips: friends say things for the user in their voice, and the user writes lines
- * for a friend to say. Sounds: the background tracks. One thing plays at a time; a floating mini
- * player (as in Music) shows it and opens a clip's player. A feature screen on Apple's white ground
- * (design-style §10): "Make a clip" as the one card in Radio's purple, the clips in grey cards.
+ * Radio (approved Ink Night+ prototype): soft violet horizon glow, pinned Apple HIG nav bar,
+ * stained-glass "Make a clip" hero, friend-ringed Clips & colored-tile Sounds in hairline-rimmed
+ * Ink cards, and a sleek Apple Music-style obsidian floating mini-player (no live BlurView).
  */
 export default function RadioScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { scrolled, onScroll } = useScrolledPast(34);
   const [tab, setTab] = useState<Tab>('clips');
   const { gifts, mine } = useRadioClips();
   const player = useRadioPlayer();
 
   const nowClip = player.kind === 'clip' ? [...mine, ...gifts].find((c) => c.id === player.id) : undefined;
   const nowSound = player.kind === 'sound' ? radioTracks.find((r) => r.id === player.id) : undefined;
-  // The mini player stays while something is loaded; a sound that ran out leaves it.
   const showBar = !!nowClip || (!!nowSound && player.playing);
   const progress = player.total ? Math.min(1, player.elapsed / player.total) : 0;
+  const nowSoundTile = nowSound ? (SOUND_TILE[nowSound.id] ?? SOUND_DEFAULT) : SOUND_DEFAULT;
+
+  const toggleMini = () => {
+    if (nowClip) {
+      player.toggle('clip', nowClip.id, nowClip.durationSec);
+    } else if (nowSound) {
+      if (player.playing) player.stop();
+      else player.play('sound', nowSound.id, nowSound.minutes * 60);
+    }
+  };
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(191,90,242,0.20)', 'rgba(9,9,13,0)']}
+        start={{ x: 0.75, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => router.back()}
+        title={t('radio.title')}
+        scrolled={scrolled}
+      />
+
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl + (showBar ? MINI_HEIGHT + space.md : 0) }}>
-        <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} />
-        <LargeTitle>{t('radio.title')}</LargeTitle>
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl + (showBar ? MINI_HEIGHT + space.lg : 0) }}>
+        <InkText variant="display" accessibilityRole="header" style={styles.screenTitle}>
+          {t('radio.title')}
+        </InkText>
+
         <InkSegmented<Tab>
           options={[
             { value: 'clips', label: t('radio.tabClips') },
@@ -73,23 +106,37 @@ export default function RadioScreen() {
 
         {tab === 'clips' ? (
           <>
-            <PressableScale scaleTo={0.985} onPress={() => router.push('/radio/make')} accessibilityRole="button" accessibilityLabel={t('radio.make')}>
-              <HeroCard look={signature.radio} style={styles.make}>
-                <IconTile fill={colors.white} size={44}>
-                  <SFIcon ios="mic.fill" icon="mic" size={22} color={signature.radio.strong} />
-                </IconTile>
-                <View style={styles.body}>
-                  <Txt style={[styles.title, styles.onHero]}>{t('radio.make')}</Txt>
-                  <Txt style={[styles.sub, styles.onHeroSoft]}>{t('radio.makeHint')}</Txt>
-                </View>
-                <Ionicons name="chevron-forward" size={15} color={colors.white} />
-              </HeroCard>
+            {/* Calm stained-glass Make a clip hero */}
+            <PressableScale
+              scaleTo={0.985}
+              onPress={() => router.push('/radio/make')}
+              accessibilityRole="button"
+              accessibilityLabel={t('radio.make')}
+              style={styles.makeCard}>
+              <LinearGradient
+                colors={['rgba(191,90,242,0.24)', 'rgba(106,43,176,0.11)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={styles.makeIcon}>
+                <SFIcon ios="mic.fill" icon="mic" size={20} color="#E5B3FF" />
+              </View>
+              <View style={styles.body}>
+                <InkText variant="bodyStrong" color={ink.text}>
+                  {t('radio.make')}
+                </InkText>
+                <InkText variant="footnote" color="rgba(255,255,255,0.68)">
+                  {t('radio.makeHint')}
+                </InkText>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="rgba(255,255,255,0.65)" />
             </PressableScale>
 
             {gifts.length ? (
               <>
-                <GroupLabel>{t('radio.fromFriends')}</GroupLabel>
-                <View style={featureStyles.card}>
+                <Txt style={styles.sectionLabel}>{t('radio.fromFriends')}</Txt>
+                <View style={styles.inkCard}>
                   {gifts.map((clip, i) => (
                     <ClipRow key={clip.id} clip={clip} line={i < gifts.length - 1} />
                   ))}
@@ -97,19 +144,21 @@ export default function RadioScreen() {
               </>
             ) : null}
 
-            <GroupLabel>{t('radio.yours')}</GroupLabel>
+            <Txt style={styles.sectionLabel}>{t('radio.yours')}</Txt>
             {mine.length ? (
-              <View style={featureStyles.card}>
+              <View style={styles.inkCard}>
                 {mine.map((clip, i) => (
                   <ClipRow key={clip.id} clip={clip} line={i < mine.length - 1} />
                 ))}
               </View>
             ) : (
-              <Txt style={styles.footnote}>{t('radio.emptyYours')}</Txt>
+              <InkText variant="footnote" color={ink.text2} style={styles.footnote}>
+                {t('radio.emptyYours')}
+              </InkText>
             )}
           </>
         ) : (
-          <View style={[featureStyles.card, styles.soundsCard]}>
+          <View style={[styles.inkCard, styles.soundsCard]}>
             {radioTracks.map((item, i) => {
               const active = player.kind === 'sound' && player.id === item.id && player.playing;
               const title = t(`radio.tracks.${item.titleKey}`);
@@ -123,12 +172,12 @@ export default function RadioScreen() {
                   accessibilityLabel={title}
                   accessibilityState={{ selected: active }}
                   style={styles.row}>
-                  <IconTile fill={tile.fill} size={44}>
-                    <SFIcon ios={tile.ios} icon={tile.icon} size={22} color={colors.white} />
+                  <IconTile fill={tile.fill} size={40}>
+                    <SFIcon ios={tile.ios} icon={tile.icon} size={20} color={colors.white} />
                   </IconTile>
                   <View style={styles.body}>
                     <Txt style={[styles.title, active && styles.titleOn]}>{title}</Txt>
-                    <Txt style={styles.sub}>{t('radio.minutes', { count: item.minutes })}</Txt>
+                    <Txt style={[styles.sub, styles.tabular]}>{t('radio.minutes', { count: item.minutes })}</Txt>
                   </View>
                   <PlayDot on={active} />
                   {i < radioTracks.length - 1 ? <View style={styles.line} /> : null}
@@ -140,44 +189,62 @@ export default function RadioScreen() {
       </ScrollView>
 
       {showBar ? (
-        <PressableScale
-          scaleTo={0.98}
-          dimOnPress={false}
-          disabled={!nowClip}
-          onPress={() => nowClip && router.push({ pathname: '/radio/[id]', params: { id: nowClip.id } })}
-          accessibilityRole={nowClip ? 'button' : undefined}
-          accessibilityLabel={nowClip ? t('radio.openPlayer') : undefined}
-          style={[styles.mini, { bottom: bottomRoom(insets.bottom, space.md) + space.xs }]}>
-          {Platform.OS === 'ios' ? <BlurView intensity={50} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} /> : null}
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: Platform.OS === 'ios' ? systemGround.bar : systemGround.barSolid }]} />
+        <View style={[styles.mini, { bottom: bottomRoom(insets.bottom, space.md) + space.xs }]}>
+          <LinearGradient
+            colors={['rgba(44,44,54,0.96)', 'rgba(22,22,28,0.98)']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={styles.miniHead}>
-            {nowClip ? (
-              <CharacterAvatar character={nowClip.character} size={40} />
-            ) : (
-              <View style={styles.miniWave}>
-                <Anim name="voiceWave" size={26} tint={signature.radio.strong} />
+            <PressableScale
+              scaleTo={0.98}
+              disabled={!nowClip}
+              onPress={() => nowClip && router.push({ pathname: '/radio/[id]', params: { id: nowClip.id } })}
+              accessibilityRole={nowClip ? 'button' : undefined}
+              accessibilityLabel={nowClip ? t('radio.openPlayer') : undefined}
+              style={styles.miniOpen}>
+              {nowClip ? (
+                <View style={[styles.miniRing, { borderColor: friendAccent(nowClip.character.id).strong }]}>
+                  <CharacterAvatar character={nowClip.character} size={36} />
+                </View>
+              ) : (
+                <IconTile fill={nowSoundTile.fill} size={38}>
+                  <SFIcon ios={nowSoundTile.ios} icon={nowSoundTile.icon} size={18} color={colors.white} />
+                </IconTile>
+              )}
+              <View style={styles.body}>
+                <Txt style={styles.miniTitle} lines={1}>
+                  {nowClip ? nowClip.title : nowSound ? t(`radio.tracks.${nowSound.titleKey}`) : ''}
+                </Txt>
+                <Txt style={[styles.sub, styles.tabular]} lines={1}>
+                  {nowClip ? nowClip.name : t('radio.left', { time: duration(Math.max(0, player.total - player.elapsed)) })}
+                </Txt>
               </View>
-            )}
-            <View style={styles.body}>
-              <Txt style={styles.miniTitle} lines={1}>
-                {nowClip ? nowClip.title : nowSound ? t(`radio.tracks.${nowSound.titleKey}`) : ''}
-              </Txt>
-              <Txt style={styles.sub} lines={1}>
-                {nowClip ? nowClip.name : t('radio.left', { time: duration(Math.max(0, player.total - player.elapsed)) })}
-              </Txt>
-            </View>
-            {nowClip && player.playing ? <Anim name="voiceWave" size={26} tint={signature.radio.strong} /> : null}
+              {player.playing ? <Anim name="voiceWave" size={24} tint={RADIO_TINT} /> : null}
+            </PressableScale>
+            <PressableScale
+              scaleTo={0.9}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityLabel={t(player.playing ? 'radio.pause' : 'radio.play', {
+                title: nowClip?.title ?? (nowSound ? t(`radio.tracks.${nowSound.titleKey}`) : ''),
+              })}
+              onPress={toggleMini}
+              style={styles.miniBtn}>
+              <Ionicons name={player.playing ? 'pause' : 'play'} size={15} color={ink.text} style={!player.playing && styles.playNudge} />
+            </PressableScale>
           </View>
           <View style={styles.miniTrack}>
             <View style={[styles.miniFill, { width: `${Math.round(progress * 100)}%` }]} />
           </View>
-        </PressableScale>
+        </View>
       ) : null}
     </Screen>
   );
 }
 
-/** A clip: the friend's face, its title, who and how long, and play. A locked gift says its level. */
+/** A clip: ringed friend avatar, title + calm peach New badge, who/length, and play dot. */
 function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -185,6 +252,7 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
   const toggle = useRadioPlayer((s) => s.toggle);
   const markHeard = useAppStore((s) => s.markRadioGiftHeard);
   const time = duration(clip.durationSec);
+  const cAccent = friendAccent(clip.character.id).strong;
 
   if (clip.locked) {
     return (
@@ -192,18 +260,17 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
         style={[styles.row, styles.locked]}
         accessible
         accessibilityLabel={t('radio.lockedA11y', { title: clip.title, level: clip.unlockLevel, name: clip.name })}>
-        <CharacterAvatar character={clip.character} size={44} />
+        <CharacterAvatar character={clip.character} size={42} />
         <View style={styles.body}>
           <Txt style={styles.title} lines={2}>
             {clip.title}
           </Txt>
-          {/* Two lines: in Russian or French one cut off the level it opens at. */}
           <Txt style={styles.sub} lines={2}>
             {t('radio.opensAt', { name: clip.name, level: clip.unlockLevel })}
           </Txt>
         </View>
         <View style={styles.lockDot}>
-          <Ionicons name="lock-closed" size={15} color={systemGround.secondaryLabel} />
+          <Ionicons name="lock-closed" size={14} color={ink.text2} />
         </View>
         {line ? <View style={styles.line} /> : null}
       </View>
@@ -211,7 +278,6 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
   }
 
   return (
-    // Two buttons side by side, not one inside the other: the row opens the player, the dot plays.
     <View style={styles.row}>
       <PressableScale
         scaleTo={0.985}
@@ -219,7 +285,9 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
         accessibilityRole="button"
         accessibilityLabel={clip.isNew ? `${clip.title}, ${t('radio.new')}` : clip.title}
         style={styles.clipOpen}>
-        <CharacterAvatar character={clip.character} size={44} />
+        <View style={[styles.clipRing, { borderColor: cAccent }]}>
+          <CharacterAvatar character={clip.character} size={38} />
+        </View>
         <View style={styles.body}>
           <View style={styles.titleRow}>
             <Txt style={[styles.title, styles.titleShrink, on && styles.titleOn]} lines={2}>
@@ -231,7 +299,7 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
               </View>
             ) : null}
           </View>
-          <Txt style={styles.sub} lines={1}>
+          <Txt style={[styles.sub, styles.tabular]} lines={1}>
             {clip.mine ? t('radio.byYou', { name: clip.name, time }) : t('radio.byFriend', { name: clip.name, time })}
           </Txt>
         </View>
@@ -252,62 +320,162 @@ function ClipRow({ clip, line }: { clip: ClipView; line: boolean }) {
   );
 }
 
-/** Play in a soft circle of Radio's purple; while playing, pause on the solid purple. */
 function PlayDot({ on }: { on: boolean }) {
   return (
     <View style={[styles.play, on && styles.playOn]}>
-      <Ionicons name={on ? 'pause' : 'play'} size={16} color={on ? colors.white : signature.radio.text} style={!on && styles.playNudge} />
+      <Ionicons name={on ? 'pause' : 'play'} size={15} color={on ? colors.white : RADIO_TINT} style={!on && styles.playNudge} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tabs: { marginHorizontal: space.lg, marginTop: 12 },
-  make: { marginTop: 22, minHeight: 76, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  onHero: { color: colors.white },
-  onHeroSoft: { color: colors.white, opacity: 0.85 },
-  soundsCard: { marginTop: 22 },
-  row: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
-  clipOpen: { flex: 1, minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  locked: { opacity: 0.55 },
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
+  tabular: { fontVariant: ['tabular-nums'] },
+  screenTitle: { marginTop: 2, marginHorizontal: inkGutter },
+  tabs: { marginHorizontal: inkGutter, marginTop: 14 },
+  makeCard: {
+    marginTop: 16,
+    marginHorizontal: inkGutter,
+    minHeight: 74,
+    paddingHorizontal: 15,
+    paddingVertical: 14,
+    borderRadius: 24,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: RADIO_RIM,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+  },
+  makeIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    borderCurve: 'continuous',
+    backgroundColor: 'rgba(191,90,242,0.28)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(218,143,255,0.36)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sectionLabel: {
+    marginTop: 20,
+    marginBottom: 8,
+    marginHorizontal: inkGutter + 6,
+    ...inkFace('footnoteStrong'),
+    color: ink.text2,
+  },
+  inkCard: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  soundsCard: { marginTop: 16 },
+  row: { minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
+  clipOpen: { flex: 1, minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  clipRing: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  locked: { opacity: 0.52 },
   line: {
     position: 'absolute',
-    left: 14 + 44 + 12,
+    left: 68,
     right: 0,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.borderStrong,
+    backgroundColor: ink.edge,
   },
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
-  title: { ...inkFace('bodyStrong'), color: systemGround.label },
+  title: { ...inkFace('subStrong'), fontSize: 15.5, color: ink.text },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   titleShrink: { flexShrink: 1 },
-  newPill: { height: 20, paddingHorizontal: 7, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: signature.radio.soft },
-  newText: { ...inkFace('caption'), color: signature.radio.text },
-  titleOn: { color: signature.radio.text },
-  sub: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  footnote: { marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  play: { width: 36, height: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.radio.soft },
-  playOn: { backgroundColor: signature.radio.strong },
-  // The play triangle sits a touch right of centre, as SF's play.fill does.
+  newPill: {
+    height: 20,
+    paddingHorizontal: 7,
+    borderRadius: inkRadius.pill,
+    justifyContent: 'center',
+    backgroundColor: NEW_FILL,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: NEW_RIM,
+  },
+  newText: { ...inkFace('caption'), fontSize: 10.5, color: ink.accent },
+  titleOn: { color: RADIO_TINT },
+  sub: { ...inkFace('footnote'), color: ink.text2 },
+  footnote: { marginHorizontal: inkGutter + 6 },
+  play: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: RADIO_SOFT,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: RADIO_RIM,
+  },
+  playOn: { backgroundColor: RADIO_VIOLET, borderColor: RADIO_VIOLET },
   playNudge: { marginLeft: 2 },
-  lockDot: { width: 36, height: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  lockDot: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(118,118,128,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   mini: {
     position: 'absolute',
-    left: space.md,
-    right: space.md,
+    left: 14,
+    right: 14,
     height: MINI_HEIGHT,
-    borderRadius: inkRadius.card,
+    borderRadius: 22,
     borderCurve: 'continuous',
     overflow: 'hidden',
     justifyContent: 'center',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderStrong,
-    ...CARD_SHADOW,
+    borderColor: 'rgba(255,255,255,0.16)',
   },
-  miniHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 12 },
-  miniWave: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: signature.radio.soft },
-  miniTitle: { ...inkFace('subStrong'), color: systemGround.label },
-  miniTrack: { position: 'absolute', left: 16, right: 16, bottom: 6, height: 3, borderRadius: inkRadius.pill, backgroundColor: systemGround.fill },
-  miniFill: { height: '100%', borderRadius: 2, backgroundColor: signature.radio.strong },
+  miniHead: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 12 },
+  miniOpen: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 11 },
+  miniRing: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  miniTitle: { ...inkFace('footnoteStrong'), fontSize: 14, color: ink.text },
+  miniBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  miniTrack: {
+    position: 'absolute',
+    left: 14,
+    right: 14,
+    bottom: 5,
+    height: 2.5,
+    borderRadius: inkRadius.pill,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    overflow: 'hidden',
+  },
+  miniFill: { height: '100%', borderRadius: 2, backgroundColor: RADIO_TINT },
 });

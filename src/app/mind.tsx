@@ -1,35 +1,59 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkNavBar, InkText } from '@/components/ink';
 import { kindOf, KIND_LOOK, threadMeta, whenText } from '@/components/mind/labels';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
-import { CharacterAvatar, EmptyState, GlassBar, IconRow, InsetGroup, LargeTitle, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
+import { shortName } from '@/lib/format';
 import { mindSections, nextTouch } from '@/lib/mind';
-import { useAppStore } from '@/store/use-app-store';
-import { colors, space } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { displayName, useAppStore } from '@/store/use-app-store';
+import { colors, friendAccent, space } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Thread } from '@/types';
 
+const NEXT_PILL_BG = 'rgba(235,173,132,0.14)';
+
 /**
- * Keeping in mind (A2): everything friends took from the chats, open to the user. Coming up (with a
- * time, soonest first), Following (tasks, goals, quests) and Settled (the last week), each with when
- * the next text goes. One friend's (from their settings) or everyone's (Profile). A row opens the
- * thread to change its time, settle it, stop its texts or forget it.
+ * Keeping in mind (approved Ink Night+ prototype): sticky Apple HIG nav bar, friend filter chips
+ * when viewing everyone's threads, hairline-rimmed Ink inset groups with colored iOS Settings icon
+ * tiles, warm peach next-text timing capsules, ringed friend avatars, and `ThreadSheet`.
  */
 export default function MindScreen() {
   const { characterId } = useLocalSearchParams<{ characterId?: string }>();
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const threads = useAppStore((s) => s.threads);
   const characters = useAppStore((s) => s.characters);
-  const { scrolled, onScroll } = useScrolledPast(44);
+  const relationships = useAppStore((s) => s.relationships);
+  const { scrolled, onScroll } = useScrolledPast(34);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [filterId, setFilterId] = useState<string | 'all'>('all');
 
-  const sections = useMemo(() => mindSections(threads, characterId), [threads, characterId]);
+  const activeCharacterId = characterId ?? (filterId === 'all' ? undefined : filterId);
+
+  // Friends who appear in active or recent threads (shown as filter chips when viewing everyone).
+  const chipFriends = useMemo(() => {
+    if (characterId) return [];
+    const seen = new Set<string>();
+    const out = [];
+    for (const th of threads) {
+      if (seen.has(th.characterId)) continue;
+      const c = characters.find((x) => x.id === th.characterId);
+      if (c) {
+        seen.add(c.id);
+        out.push(c);
+      }
+    }
+    return out;
+  }, [characterId, threads, characters]);
+
+  const sections = useMemo(() => mindSections(threads, activeCharacterId), [threads, activeCharacterId]);
   const groups = (
     [
       ['soon', sections.soon],
@@ -38,45 +62,112 @@ export default function MindScreen() {
     ] as const
   ).filter(([, list]) => list.length);
 
-  const row = (thread: Thread, last: boolean) => {
+  const renderRow = (thread: Thread, last: boolean) => {
     const look = KIND_LOOK[kindOf(thread)];
     const next = nextTouch(thread);
     const meta = threadMeta(t, i18n.language, thread);
-    const hint = next ? `${meta} · ${t('mind.next', { when: whenText(t, i18n.language, next.at) })}` : meta;
-    const friend = characterId ? undefined : characters.find((c) => c.id === thread.characterId);
+    const nextLabel = next ? t('mind.next', { when: whenText(t, i18n.language, next.at) }) : undefined;
+    const friend = activeCharacterId ? undefined : characters.find((c) => c.id === thread.characterId);
+    const closed = thread.status === 'closed';
+    const fAccent = friend ? friendAccent(friend.id).strong : undefined;
+
     return (
-      <IconRow
+      <Pressable
         key={thread.id}
-        icon={look.icon}
-        fill={thread.status === 'closed' ? colors.textFaint : look.fill}
-        title={thread.about}
-        hint={hint}
-        last={last}
         onPress={() => setOpenId(thread.id)}
-        right={
-          <View style={styles.right}>
-            {friend ? <CharacterAvatar character={friend} size={26} /> : null}
-            <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+        accessibilityRole="button"
+        accessibilityLabel={[thread.about, meta, nextLabel].filter(Boolean).join(', ')}
+        style={({ pressed }) => [styles.row, pressed && styles.rowPressed, !last && styles.rowLine]}>
+        <View style={[styles.tile, { backgroundColor: closed ? '#48484A' : look.fill }]}>
+          <Ionicons name={look.icon} size={17} color={colors.white} />
+        </View>
+        <View style={styles.rowBody}>
+          <Txt style={[styles.rowTitle, closed && styles.rowTitleClosed]} lines={2}>
+            {thread.about}
+          </Txt>
+          <View style={styles.metaLine}>
+            <Txt style={[styles.rowMeta, styles.tabular]} lines={1}>
+              {meta}
+            </Txt>
+            {nextLabel && !closed ? (
+              <View style={styles.nextPill}>
+                <Txt style={[styles.nextText, styles.tabular]} lines={1}>
+                  {nextLabel}
+                </Txt>
+              </View>
+            ) : null}
           </View>
-        }
-      />
+        </View>
+        <View style={styles.right}>
+          {friend ? (
+            <View style={[styles.avatarRing, { borderColor: closed ? 'transparent' : (fAccent ?? 'transparent') }]}>
+              <CharacterAvatar character={friend} size={24} />
+            </View>
+          ) : null}
+          <Ionicons name="chevron-forward" size={15} color={ink.text3} />
+        </View>
+      </Pressable>
     );
   };
 
   return (
-    <Screen background={colors.bg}>
-      <GlassBar title={t('mind.title')} scrolled={scrolled} />
+    <Screen background={ink.ground}>
+      <InkNavBar
+        backLabel={t('a11y.back')}
+        onBack={() => router.back()}
+        title={t('mind.title')}
+        scrolled={scrolled}
+      />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: insets.bottom + space.huge, flexGrow: 1 }}>
-        <LargeTitle>{t('mind.title')}</LargeTitle>
+        <InkText variant="display" accessibilityRole="header" style={styles.title}>
+          {t('mind.title')}
+        </InkText>
+
+        {chipFriends.length > 1 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+            <PressableScale
+              scaleTo={0.95}
+              accessibilityRole="button"
+              accessibilityState={{ selected: filterId === 'all' }}
+              onPress={() => setFilterId('all')}
+              style={[styles.chip, filterId === 'all' && styles.chipOn]}>
+              <InkText variant="footnoteStrong" color={filterId === 'all' ? ink.onPill : ink.text2}>
+                {t('contacts.all')}
+              </InkText>
+            </PressableScale>
+            {chipFriends.map((c) => {
+              const on = filterId === c.id;
+              const acc = friendAccent(c.id).strong;
+              return (
+                <PressableScale
+                  key={c.id}
+                  scaleTo={0.95}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  onPress={() => setFilterId(c.id)}
+                  style={[styles.chip, styles.friendChip, on && styles.chipOn]}>
+                  <View style={[styles.chipRing, { borderColor: on ? 'transparent' : acc }]}>
+                    <CharacterAvatar character={c} size={22} />
+                  </View>
+                  <InkText variant="footnoteStrong" color={on ? ink.onPill : ink.text2} lines={1}>
+                    {shortName(displayName(c, relationships[c.id]))}
+                  </InkText>
+                </PressableScale>
+              );
+            })}
+          </ScrollView>
+        ) : null}
+
         {groups.length ? (
           groups.map(([key, list]) => (
             <View key={key}>
               <Txt style={styles.section}>{t(`mind.${key}`)}</Txt>
-              <InsetGroup>{list.map((thread, i) => row(thread, i === list.length - 1))}</InsetGroup>
+              <View style={styles.groupCard}>{list.map((thread, i) => renderRow(thread, i === list.length - 1))}</View>
             </View>
           ))
         ) : (
@@ -89,13 +180,82 @@ export default function MindScreen() {
 }
 
 const styles = StyleSheet.create({
-  section: {
-    ...inkFace('footnote'),
-    color: colors.textSecondary,
-    textTransform: 'uppercase',
-    paddingHorizontal: space.lg * 2,
-    paddingTop: space.xl,
-    paddingBottom: space.sm - 2,
+  title: { marginTop: 2, marginHorizontal: inkGutter },
+  chips: { gap: 8, paddingHorizontal: inkGutter, marginTop: 14 },
+  chip: {
+    height: 34,
+    paddingHorizontal: 14,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.raised,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
-  right: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  friendChip: { paddingLeft: 4, paddingRight: 12 },
+  chipOn: { backgroundColor: ink.pill },
+  chipRing: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1.4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  section: {
+    ...inkFace('footnoteStrong'),
+    color: ink.text2,
+    paddingHorizontal: inkGutter + 6,
+    paddingTop: 20,
+    paddingBottom: 8,
+  },
+  groupCard: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 13,
+    paddingHorizontal: 14,
+  },
+  rowPressed: { backgroundColor: ink.raised },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
+  tile: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowBody: { flex: 1, minWidth: 0, gap: 4 },
+  rowTitle: { ...inkFace('subStrong'), fontSize: 15.5, color: ink.text },
+  rowTitleClosed: { color: ink.text2 },
+  metaLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
+  rowMeta: { ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
+  nextPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: inkRadius.pill,
+    backgroundColor: NEXT_PILL_BG,
+  },
+  nextText: { ...inkFace('caption'), fontSize: 11, color: ink.accent },
+  tabular: { fontVariant: ['tabular-nums'] },
+  right: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  avatarRing: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1.4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
 });

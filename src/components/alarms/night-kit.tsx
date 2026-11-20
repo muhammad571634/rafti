@@ -28,6 +28,7 @@ export function NightFace({
   onPress,
   size,
   steady,
+  ringColor,
   children,
 }: {
   name: string;
@@ -36,6 +37,8 @@ export function NightFace({
   /** The face's size inside the ring. */
   size: number;
   steady?: boolean;
+  /** Optional friend-accent border colour when selected. */
+  ringColor?: string;
   children: React.ReactNode;
 }) {
   const ringed = on || steady;
@@ -45,6 +48,7 @@ export function NightFace({
         style={[
           styles.faceRing,
           ringed && styles.faceRingBorder,
+          on && ringColor ? { borderColor: ringColor } : null,
           ringed && !on && styles.faceRingIdle,
           { borderRadius: inkRadius.pill },
         ]}>
