@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z310. Group & Studio Ink Night+ polish: Group Chat/Info, Group Call, Personas, World Books, Create Character (owner's "boshla" on approved `ink-polish-group-studio.html`, 2026-11-20, Gemini Argon). DONE in code & pushed; awaiting review / OTA
+### 0z310. Group & Studio Ink Night+ polish: Group Chat/Info, Group Call, Personas, World Books, Create Character (owner's "boshla" on approved `ink-polish-group-studio.html`, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` OTA `e66b82f9` (runtime 1.3.0)
 - **Additive shared polish (zero breaking changes to 1:1 chats, 1:1 calls, Find `Tile`, or `character/kit.tsx`; `0` locale files modified)**:
   - `MessageBubble` (`src/components/chat/message-bubble.tsx`) & `TypingRow` (`src/components/chat/typing-row.tsx`): optional `accentColor` prop tints group sender name, avatar ring, Variant A narration rule, and single-typer dots/label in each member's `friendAccent`.
   - `LiveCaption` (`src/components/call/live-caption.tsx`): extends `accentColor` to group calls (`who` present) with a `2.5 pt` active-speaker accent left bar, colored speaker name, and editorial italic serif quote inside obsidian dark glass.
@@ -11,7 +11,8 @@
   4. **World Books (`src/app/lore/index.tsx`, `src/components/lore/lore-rows.tsx`)**: sticky `InkNavBar` (`LoreInfoButton` upgraded to `InkIconButton` + `+`), 2-column stained-glass book tiles with overlapping linked-friend avatars & tabular entry count (`Tile` untouched), 2-line header with peach `Edit` pill, Android-safe horizontal kind filter chips (`flexGrow: 0`), and inset `ink.card` entries with colored `KIND_LOOK` dots, kind labels, preview text, wrapped keyword chips, and integrated `New entry` footer.
   5. **Create Character (`src/app/create-character.tsx`, `src/components/create/kit.tsx`, `src/components/create/quick-create.tsx`)**: full Ink Night+ across all 4 phases (`idea`, `writing`, `form`, `meet`): sticky `InkNavBar`, hairline-rimmed `ink.card` sections, sunken `#0E0E14` focus-tinted inputs, dark-glass chips (`Pill` export preserved for `personas/edit`, `lore/entry`, `streams/new`) & `✦` rewrite buttons, `PhotoGlassPill` Cinema Hero card, 4-bar `GreetingMeter`, green-tile `Share in Find` card, preserved green `DotMatrix` `WritingSteps`, and obsidian dock with crisp white primary CTA.
 - **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1119/1119 pass (including `idle-screens.test.ts`), `npm run check:locales` + `npm run check:content` PASS, static i18n/style audit 0 missing keys / 0 unused styles.
-- **Next**: Owner review / Preview OTA, then final polish batch: Account & Settings (`ink-polish-account-settings.html`).
+- **Preview OTA live (`preview`, runtime `1.3.0`)**: Update group `e66b82f9-8bd8-4787-a0fd-5cb045c42bb3` (Android `01a1f75d-6e36-7d00-be2b-87fd17c57507`, iOS `01a1f75d-6e36-7cd1-aca9-a4d425528116`, commit `620dbcb9`).
+- **Next**: Owner tests the 5 polished Group & Studio screens on the phone (swipe close & reopen twice), then final polish batch: Account & Settings (`ink-polish-account-settings.html`).
 
 ### 0z309. Full audit of 0z305 + 0z308 (12 Ink Night+ screens) & Preview OTA published (owner's audit + OTA ask, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` (runtime 1.3.0)
 - **Audit fixes (`e57d0c90`, 9 files)**:
