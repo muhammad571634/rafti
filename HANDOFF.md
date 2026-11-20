@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z311. Chat Settings Ink Night+ & Apple HIG polish (owner's "boshla" on approved `ink-polish-chat-settings.html`, 2026-11-20, Gemini Argon). DONE in code & pushed; awaiting Preview OTA
+### 0z311. Chat Settings Ink Night+ & Apple HIG polish (owner's "boshla" on approved `ink-polish-chat-settings.html`, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` OTA `31e1ebaa` (runtime 1.3.0)
 - **New modular UI primitives (`src/components/character/settings-parts.tsx`)**: built cleanly without touching `src/components/character/kit.tsx` (so Character Profile `src/app/character/[id].tsx` stays untouched; `0` locale files modified):
   - `SettingsHeroCard`: trailing portrait framing (`portraitOf`/`stretchLeft`, fallback to `CharacterAvatar` on `friendColor`), multi-stop vertical + leading scrims, top-left dark-glass live mood badge (`AI · mood` + friend-accent dot), bottom-left serif identity + `Since` date.
   - `SettingsQuickTile`: Apple Contacts-style 4 dark-glass quick action tiles with semantic icon colors (`Call` green, `Search` white, `Memories` peach + tabular peach count pill, `Background` cyan) and Android-safe numeric radii.
@@ -10,7 +10,8 @@
   - Ambient friend-accent horizon glow, sticky `InkNavBar` with scroll-edge serif title and dark-glass `Edit` pill for user-made characters.
   - Replaced nested `ScrollView`s in Persona, Relationship, and `ClosenessSheet` with `Sheet scroll` (fixes Android nested scroll and guarantees sheets never exceed screen height); Nickname sheet upgraded to focus-tinted sunken input + white `PillButton`; `ClosenessSheet` accepts optional `accentColor` (backward-compatible default `colors.bond`).
 - **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1119/1119 pass, `npm run check:locales` PASS, static i18n/style/radius audit 0 unused styles & 0 `borderRadius: 999` traps.
-- **Next**: Publish Preview OTA (bundles both Create Character's `[ Idea | Form ]` toggle from `eb726f0b` and Chat Settings `0z311`), then final polish batch: Account & Settings (`ink-polish-account-settings.html`).
+- **Preview OTA live (`preview`, runtime `1.3.0`)**: Update group `31e1ebaa-2bb4-49f1-9c0b-7ebf90c2d76c` (Android `01a1f9fe-29ec-7890-8a5e-5a67bf0f3dab`, iOS `01a1f9fe-29ec-7bfa-af2e-ee596d523de3`, commit `5d58c07a`). Bundles both Create Character's `[ Idea | Form ]` capsule toggle (`eb726f0b`) and Chat Settings Ink Night+ polish (`5d58c07a`).
+- **Next**: Owner tests Chat Settings and Create Character's `Idea | Form` switch on the phone (swipe close & reopen twice), then final polish batch: Account & Settings (`ink-polish-account-settings.html`).
 
 ### 0z310. Group & Studio Ink Night+ polish: Group Chat/Info, Group Call, Personas, World Books, Create Character (owner's "boshla" on approved `ink-polish-group-studio.html`, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` OTA `e66b82f9` (runtime 1.3.0)
 - **Additive shared polish (zero breaking changes to 1:1 chats, 1:1 calls, Find `Tile`, or `character/kit.tsx`; `0` locale files modified)**:
