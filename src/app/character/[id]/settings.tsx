@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
@@ -6,49 +6,47 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Header, ListRow, Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import {
-  BondHead,
-  BondTrack,
-  CardRound,
-  ChoiceRow,
-  DangerRow,
-  FaceCard,
-  FriendAccent,
-  Group,
-  LinkRow,
-  useProfileStyles,
-  ProfileTop,
-  QuickAction,
-  QuickRow,
-  SwitchRow,
-  TopButton,
-} from '@/components/character/kit';
+  type IoniconName,
+  SettingsCard,
+  SettingsChoiceBlock,
+  SettingsClosenessCard,
+  SettingsDangerRow,
+  SettingsHeroCard,
+  SettingsLinkRow,
+  SettingsQuickTile,
+  SettingsSheetOption,
+  SettingsSwitchRow,
+} from '@/components/character/settings-parts';
 import { ClosenessSheet } from '@/components/closeness-sheet';
-import { phrase } from '@/i18n';
-import { FAMILY_LABELS } from '@/lib/kin';
+import { InkGlassPill, InkNavBar, PillButton } from '@/components/ink';
 import { planDate } from '@/components/plans/copy';
+import { Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
 import { isActiveMemory } from '@/economy/memory-limit';
-import { chatDrafts } from '@/lib/chat-drafts';
 import { forgetFriendNow } from '@/hooks/use-forget-friend';
-import { forgetNotes } from '@/lib/voice-files';
+import { phrase } from '@/i18n';
+import { localized } from '@/i18n/content';
+import { confirmAlert as confirm } from '@/lib/alert';
+import { chatDrafts } from '@/lib/chat-drafts';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { FAMILY_LABELS } from '@/lib/kin';
 import { booksFor } from '@/lib/lorebook';
 import { personaFor, personaList } from '@/lib/personas';
 import { currentMood, replyPrefs, temperamentFor } from '@/lib/reply-engine';
+import { forgetNotes } from '@/lib/voice-files';
 import { levelForIntimacy, MAX_LEVEL, TIERS, unlockedLabels } from '@/mock';
-import { localized } from '@/i18n/content';
 import { officialLorebooks } from '@/mock/lorebooks';
 import { callsIncluded, displayName, useAppStore } from '@/store/use-app-store';
-import { colors, friendAccent, radius, space, systemGround, type } from '@/theme';
+import { colors, friendAccent, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Lorebook, ReplyLength, ReplyStyle } from '@/types';
-import { confirmAlert as confirm } from '@/lib/alert';
-
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 const REPLY_STYLES: readonly ReplyStyle[] = ['talk', 'mix', 'story'];
 const REPLY_LENGTHS: readonly ReplyLength[] = ['short', 'auto', 'long'];
+const INPUT_BG = '#0E0E14';
+const INPUT_RIM = 'rgba(255,255,255,0.10)';
+const INPUT_FOCUS_RIM = 'rgba(235,173,132,0.58)';
 
 type ActionKey =
   | 'voiceCall'
@@ -62,8 +60,14 @@ type ActionKey =
   | 'remove'
   | 'block';
 
+/**
+ * Chat settings (approved Ink Night+ prototype `ink-polish-chat-settings.html`): ambient
+ * friend-accent horizon wash, sticky `InkNavBar` with scroll-edge serif name + optional `Edit`
+ * glass pill, Cinema hero photo card with live mood badge, Apple Contacts-style 4 glass quick
+ * action tiles, tinted Closeness card, semantic iOS colored icon rows, crisp white-thumb reply
+ * controls, red-icon destructive rows, and Ink Night+ sheets.
+ */
 export default function CharacterSettingsScreen() {
-  const profileStyles = useProfileStyles();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
@@ -92,25 +96,35 @@ export default function CharacterSettingsScreen() {
   const chatPersonas = useAppStore((s) => s.chatPersonas);
   const setChatPersona = useAppStore((s) => s.setChatPersona);
   const lorebooks = useAppStore((s) => s.lorebooks);
-  const [personaOpen, setPersonaOpen] = useState(false);
 
+  const [personaOpen, setPersonaOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
+  const [nickFocused, setNickFocused] = useState(false);
   const [draftName, setDraftName] = useState('');
   const [closenessOpen, setClosenessOpen] = useState(false);
   const [labelOpen, setLabelOpen] = useState(false);
-  // Past the avatar and name, the bar shows the name (iOS scroll edge).
-  const { scrolled, onScroll } = useScrolledPast(220);
+  // Past the hero card, the sticky nav bar shows the character's serif name (iOS scroll edge).
+  const { scrolled, onScroll } = useScrolledPast(160);
 
   if (!character) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Header title={t('errors.notFound')} />
+      <Screen background={ink.ground}>
+        <InkNavBar backLabel={t('common.back')} onBack={() => router.back()} title={t('errors.notFound')} scrolled />
       </Screen>
     );
   }
 
   const name = displayName(character, relationship);
   const own = !character.isOfficial;
+  const accent = friendAccent(character.id);
+
+  // Everything with them goes: their photos too, and the user's selfies in them must not stay behind.
+  const friendId = character.id;
+  const leave = (how: 'remove' | 'delete' | 'block') => {
+    forgetFriendNow(friendId, how);
+    if (router.canDismiss()) router.dismissAll();
+    router.replace('/(tabs)/chat');
+  };
 
   const run = (key: ActionKey) => {
     switch (key) {
@@ -167,198 +181,272 @@ export default function CharacterSettingsScreen() {
     }
   };
 
-  // Everything with them goes: their photos too, and the user's selfies in them must not stay behind.
-  const friendId = character.id;
-  const leave = (how: 'remove' | 'delete' | 'block') => {
-    forgetFriendNow(friendId, how);
-    if (router.canDismiss()) router.dismissAll();
-    router.replace('/(tabs)/chat');
-  };
+  const quick: { key: ActionKey; icon: IoniconName; color: string; label: string; badge?: number }[] = [
+    { key: 'voiceCall', icon: 'call', color: systemColors.green, label: t('characterSettings.quickCall') },
+    { key: 'searchHistory', icon: 'search', color: ink.text, label: t('characterSettings.quickSearch') },
+    {
+      key: 'characterMemories',
+      icon: 'bookmark',
+      color: ink.accent,
+      label: t('characterSettings.characterMemories'),
+      badge: memoryCount,
+    },
+    { key: 'changeBackground', icon: 'image', color: systemColors.cyan, label: t('characterSettings.quickBackground') },
+  ];
 
-  const quick: { key: ActionKey; icon: IoniconName; label: string; badge?: number }[] = [
-    { key: 'voiceCall', icon: 'call', label: t('characterSettings.quickCall') },
-    { key: 'searchHistory', icon: 'search', label: t('characterSettings.quickSearch') },
-    { key: 'characterMemories', icon: 'bookmark', label: t('characterSettings.characterMemories'), badge: memoryCount },
-    { key: 'changeBackground', icon: 'image', label: t('characterSettings.quickBackground') },
+  const danger: { key: ActionKey; icon: IoniconName; label: string }[] = [
+    { key: 'clearChat', icon: 'trash-outline', label: t('characterSettings.clearChat') },
+    { key: 'reset', icon: 'refresh-outline', label: t('characterSettings.reset') },
+    {
+      key: 'remove',
+      icon: 'person-remove-outline',
+      label: t(own ? 'friendRemove.deleteRow' : 'friendRemove.removeRow', { name: shortName(name) }),
+    },
+    { key: 'block', icon: 'ban-outline', label: t('characterSettings.blockName', { name: shortName(name) }) },
   ];
-  const danger: { key: ActionKey; label: string }[] = [
-    { key: 'clearChat', label: t('characterSettings.clearChat') },
-    { key: 'reset', label: t('characterSettings.reset') },
-    { key: 'remove', label: t(own ? 'friendRemove.deleteRow' : 'friendRemove.removeRow', { name: shortName(name) }) },
-    { key: 'block', label: t('characterSettings.blockName', { name: shortName(name) }) },
-  ];
+
   // How they feel right now, as under their name in the chat; it fades back to their usual self.
   const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
+  const moodLine = `${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`;
+  const sinceLine = relationship ? t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) }) : null;
+
+  const bondProgress = relationship ? levelForIntimacy(relationship.intimacy) : null;
+  const bondMaxed = relationship ? relationship.level >= MAX_LEVEL : false;
+  const bondLine =
+    relationship && bondProgress
+      ? `${t('closeness.level', { level: relationship.level })} · ${
+          bondMaxed
+            ? t('closeness.max')
+            : t('closeness.toNext', { count: Math.max(0, bondProgress.nextLevelAt - relationship.intimacy), level: relationship.level + 1 })
+        }`
+      : '';
+
+  const currentPersona = conversation
+    ? personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas })
+    : null;
+  const unlocked = unlockedLabels(relationship?.level ?? 0);
+  const tierItems = TIERS.flatMap((tier) => tier.labels.map((label) => ({ tier, label })));
 
   return (
-    // The four tabs' look (0z152): Apple's white ground, their picture as Find's photo card, white cards.
-    <Screen background={systemGround.ground}>
-      <ProfileTop
-        title={name}
-        showTitle={scrolled}
+    <Screen background={ink.ground}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${accent.strong}2E`, 'rgba(9,9,13,0)']}
+        start={{ x: 0.72, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('common.back')}
         onBack={() => router.back()}
+        title={name}
+        scrolled={scrolled}
         right={
           // Only the user's own characters can be edited; seed ones get a nickname below.
           own ? (
-            <TopButton label={t('common.edit')} accessibilityLabel={t('characterSettings.editCharacter')} onPress={() => run('editCharacter')} />
+            <InkGlassPill
+              label={t('common.edit')}
+              accessibilityLabel={t('characterSettings.editCharacter')}
+              onPress={() => run('editCharacter')}
+            />
           ) : undefined
         }
       />
 
-      {/* Their own space: quick actions, the level and the row tiles in their colour. */}
-      <FriendAccent value={friendAccent(character.id)}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.huge }}>
-          <FaceCard
-            character={character}
-            name={name}
-            lines={[
-              `${t('chat.aiShort')} · ${t(`chat.mood.${mood}`)}`,
-              relationship ? t('characterSettings.since', { date: planDate(Date.parse(relationship.anniversary)) }) : null,
-            ]}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingTop: 4, paddingBottom: insets.bottom + space.huge }}>
+        <SettingsHeroCard character={character} name={name} moodLine={moodLine} sinceLine={sinceLine} accent={accent} />
+
+        <View style={styles.quickRow}>
+          {quick.map((q) => (
+            <SettingsQuickTile
+              key={q.key}
+              icon={q.icon}
+              iconColor={q.color}
+              label={q.label}
+              badge={q.badge}
+              onPress={() => run(q.key)}
+            />
+          ))}
+        </View>
+
+        {relationship && bondProgress ? (
+          <SettingsClosenessCard
+            accent={accent}
+            stageTitle={phrase(relationship.levelTitle)}
+            levelLine={bondLine}
+            progress={bondProgress.progress}
+            relationshipLabel={t('closeness.relationship')}
+            relationshipValue={relationship.label ? phrase(relationship.label) : t('closeness.pickShort')}
+            infoLabel={t('closeness.title')}
+            onInfo={() => setClosenessOpen(true)}
+            onPickRelationship={() => setLabelOpen(true)}
           />
+        ) : null}
 
-          <QuickRow>
-            {quick.map((q) => (
-              <QuickAction key={q.key} icon={q.icon} label={q.label} badge={q.badge} onPress={() => run(q.key)} />
-            ))}
-          </QuickRow>
+        {/* Chat toggles: semantic iOS system colors for scannability. */}
+        <SettingsCard>
+          <SettingsSwitchRow
+            icon="mic"
+            fill={systemColors.purple}
+            label={t('characterSettings.voiceReplies')}
+            value={relationship?.voiceReplies ?? true}
+            disabled={!character.voiceReady}
+            onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
+          />
+          <SettingsSwitchRow
+            icon="chatbubble-ellipses"
+            fill={systemColors.green}
+            label={t('characterSettings.messagesFirst')}
+            value={relationship?.messagesFirst ?? true}
+            onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
+          />
+          <SettingsSwitchRow
+            icon="sparkles"
+            fill={systemColors.orange}
+            label={t('characterSettings.chatAnimation')}
+            value={chatAnimation}
+            onChange={(v) => setSetting('chatAnimation', v)}
+            last
+          />
+        </SettingsCard>
 
-          {relationship ? (
-            <RelationshipCard
-              level={relationship.level}
-              intimacy={relationship.intimacy}
-              title={phrase(relationship.levelTitle)}
-              label={relationship.label && phrase(relationship.label)}
-              onPick={() => setLabelOpen(true)}
-              onInfo={() => setClosenessOpen(true)}
+        {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
+        {!hasPlan && character.voiceReady ? (
+          <Txt style={styles.footerHint} maxFontSizeMultiplier={1.25}>
+            {t('characterSettings.voiceRepliesPlanHint')}
+          </Txt>
+        ) : null}
+
+        {/* How their replies read (response style and length); the next reply follows. */}
+        <SettingsCard>
+          <SettingsChoiceBlock
+            label={t('characterSettings.replyStyle')}
+            options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
+            value={replyPrefs(relationship).style}
+            onChange={(style) => setReplyPrefs(character.id, { style })}
+          />
+          <SettingsChoiceBlock
+            label={t('characterSettings.replyLength')}
+            options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
+            value={replyPrefs(relationship).length}
+            onChange={(length) => setReplyPrefs(character.id, { length })}
+            last
+          />
+        </SettingsCard>
+
+        {/* Personalization & World links */}
+        <SettingsCard>
+          {conversation && currentPersona ? (
+            <SettingsLinkRow
+              icon="person-circle"
+              fill={systemColors.blue}
+              label={t('personas.youAre')}
+              meta={currentPersona.name}
+              onPress={() => setPersonaOpen(true)}
             />
           ) : null}
+          {/* What their world and the user's books tell them (Lorebook). */}
+          <SettingsLinkRow
+            icon="book"
+            fill={systemColors.teal}
+            label={t('lore.chatRow')}
+            meta={loreMeta(booksFor(character, lorebooks, localized('lorebooks', officialLorebooks)), t)}
+            onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
+          />
+          {/* What they took from the chat (A2): open threads, to see, change or stop. */}
+          <SettingsLinkRow
+            icon="pin"
+            fill={systemColors.orange}
+            label={t('mind.title')}
+            meta={openThreads ? String(openThreads) : undefined}
+            onPress={() => router.push({ pathname: '/mind', params: { characterId: character.id } })}
+          />
+          <SettingsLinkRow
+            icon="person"
+            fill={systemColors.indigo}
+            label={t('characterSettings.profile')}
+            onPress={() => run('characterSettings')}
+          />
+          <SettingsLinkRow
+            icon="pricetag"
+            fill={systemColors.pink}
+            label={t('characterSettings.nicknameRow')}
+            meta={relationship?.nickname || t('characterSettings.none')}
+            onPress={() => {
+              setDraftName(relationship?.nickname ?? '');
+              setRenaming(true);
+            }}
+            last
+          />
+        </SettingsCard>
 
-          {/* The former "Chat settings" sheet, inline as on iOS. */}
-          <Group>
-            <SwitchRow
-              label={t('characterSettings.voiceReplies')}
-              icon="mic"
-              value={relationship?.voiceReplies ?? true}
-              disabled={!character.voiceReady}
-              onChange={(v) => setCharacterPref(character.id, 'voiceReplies', v)}
+        {/* Destructive actions */}
+        <SettingsCard>
+          {danger.map((d, i) => (
+            <SettingsDangerRow
+              key={d.key}
+              icon={d.icon}
+              label={d.label}
+              last={i === danger.length - 1}
+              onPress={() => run(d.key)}
             />
-            <SwitchRow
-              label={t('characterSettings.messagesFirst')}
-              icon="chatbubble-ellipses"
-              value={relationship?.messagesFirst ?? true}
-              onChange={(v) => setCharacterPref(character.id, 'messagesFirst', v)}
-            />
-            <SwitchRow
-              label={t('characterSettings.chatAnimation')}
-              icon="sparkles"
-              value={chatAnimation}
-              onChange={(v) => setSetting('chatAnimation', v)}
-              last
-            />
-          </Group>
-          {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
-          {!hasPlan && character.voiceReady ? <Txt style={profileStyles.footer}>{t('characterSettings.voiceRepliesPlanHint')}</Txt> : null}
+          ))}
+        </SettingsCard>
+      </ScrollView>
 
-          {/* How their replies read (Character.AI's response style and length); the next reply follows. */}
-          <Group>
-            <ChoiceRow
-              label={t('characterSettings.replyStyle')}
-              options={REPLY_STYLES.map((value) => ({ value, label: t(`characterSettings.replyStyles.${value}`) }))}
-              value={replyPrefs(relationship).style}
-              onChange={(style) => setReplyPrefs(character.id, { style })}
-            />
-            <ChoiceRow
-              label={t('characterSettings.replyLength')}
-              options={REPLY_LENGTHS.map((value) => ({ value, label: t(`characterSettings.replyLengths.${value}`) }))}
-              value={replyPrefs(relationship).length}
-              onChange={(length) => setReplyPrefs(character.id, { length })}
-              last
-            />
-          </Group>
-
-          <Group>
-            {conversation ? (
-              <LinkRow
-                label={t('personas.youAre')}
-                icon="person-circle"
-                meta={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).name}
-                onPress={() => setPersonaOpen(true)}
-              />
-            ) : null}
-            {/* What their world and the user's books tell them (Character.AI's Lorebook). */}
-            <LinkRow
-              label={t('lore.chatRow')}
-              icon="book"
-              meta={loreMeta(booksFor(character, lorebooks, localized('lorebooks', officialLorebooks)), t)}
-              onPress={() => router.push({ pathname: '/lore/for/[characterId]', params: { characterId: character.id } })}
-            />
-            {/* What they took from the chat (A2): open threads, to see, change or stop. */}
-            <LinkRow
-              label={t('mind.title')}
-              icon="pin"
-              meta={openThreads ? String(openThreads) : undefined}
-              onPress={() => router.push({ pathname: '/mind', params: { characterId: character.id } })}
-            />
-            <LinkRow label={t('characterSettings.profile')} icon="person" onPress={() => run('characterSettings')} />
-            <LinkRow
-              label={t('characterSettings.nicknameRow')}
-              icon="pricetag"
-              meta={relationship?.nickname || t('characterSettings.none')}
-              onPress={() => {
-                setDraftName(relationship?.nickname ?? '');
-                setRenaming(true);
-              }}
-              last
-            />
-          </Group>
-
-          <Group>
-            {danger.map((d, i) => (
-              <DangerRow key={d.key} label={d.label} last={i === danger.length - 1} onPress={() => run(d.key)} />
-            ))}
-          </Group>
-        </ScrollView>
-      </FriendAccent>
-
-      <Sheet visible={renaming} onClose={() => setRenaming(false)} title={t('characterSettings.nickname')} avoidKeyboard>
+      <Sheet
+        visible={renaming}
+        onClose={() => {
+          setRenaming(false);
+          setNickFocused(false);
+        }}
+        title={t('characterSettings.nickname')}
+        avoidKeyboard>
         <TextInput
           value={draftName}
           onChangeText={setDraftName}
+          onFocus={() => setNickFocused(true)}
+          onBlur={() => setNickFocused(false)}
           placeholder={character.name}
           accessibilityLabel={t('characterSettings.nickname')}
-          placeholderTextColor={colors.textFaint}
-          style={styles.input}
+          placeholderTextColor={ink.placeholder}
+          selectionColor={ink.accent}
+          style={[styles.input, nickFocused && styles.inputFocused]}
           maxLength={30}
           autoFocus
         />
-        <Txt variant="caption" color={colors.textMuted} style={styles.hint}>
+        <Txt style={styles.hint} maxFontSizeMultiplier={1.25}>
           {t('characterSettings.nicknameHint')}
         </Txt>
-        <Button
+        <PillButton
           label={t('common.save')}
-          full
+          kind="primary"
+          size="md"
           onPress={() => {
             setNickname(character.id, draftName);
             setRenaming(false);
+            setNickFocused(false);
           }}
         />
       </Sheet>
 
-      {/* Who the user is in this chat (Character.AI's per-chat persona); the character sees it from the next reply. */}
-      <Sheet visible={personaOpen} onClose={() => setPersonaOpen(false)} title={t('personas.chatTitle')}>
-        <ScrollView style={styles.labelScroll} showsVerticalScrollIndicator={false}>
+      {/* Who the user is in this chat (per-chat persona); the character sees it from the next reply. */}
+      <Sheet visible={personaOpen} onClose={() => setPersonaOpen(false)} title={t('personas.chatTitle')} scroll>
+        <View style={styles.sheetCard}>
           {conversation
             ? personaList({ user, personas }).map((persona) => (
-                <LabelRow
+                <SettingsSheetOption
                   key={persona.id}
                   title={persona.name}
-                  meta={persona.profile ? t('personas.profile') : undefined}
-                  selected={personaFor(conversation.id, { user, personas, defaultPersonaId, chatPersonas }).id === persona.id}
+                  meta={persona.profile ? t('personas.profile') : persona.about || undefined}
+                  selected={currentPersona?.id === persona.id}
+                  checkColor={ink.accent}
+                  checkInk={ink.onAccent}
                   onPress={() => {
                     haptic.selection();
                     setChatPersona(conversation.id, persona.id);
@@ -367,69 +455,83 @@ export default function CharacterSettingsScreen() {
                 />
               ))
             : null}
-          <LabelRow
+          <SettingsSheetOption
             title={t('personas.manage')}
-            selected={false}
             link
+            last
             onPress={() => {
               setPersonaOpen(false);
               router.push('/personas');
             }}
           />
-        </ScrollView>
+        </View>
       </Sheet>
 
-      <ClosenessSheet visible={closenessOpen} onClose={() => setClosenessOpen(false)} level={relationship?.level} />
+      <ClosenessSheet
+        visible={closenessOpen}
+        onClose={() => setClosenessOpen(false)}
+        level={relationship?.level}
+        accentColor={accent.strong}
+      />
 
       <Sheet
         visible={labelOpen}
         onClose={() => setLabelOpen(false)}
-        title={t('closeness.labelTitle', { name: shortName(name) })}>
-        <ScrollView style={styles.labelScroll} showsVerticalScrollIndicator={false}>
-          <Txt variant="small" color={colors.textSecondary} style={styles.labelHint}>
-            {t('closeness.labelHint')}
-          </Txt>
-          <LabelRow
+        title={t('closeness.labelTitle', { name: shortName(name) })}
+        scroll>
+        <Txt style={styles.labelHint} maxFontSizeMultiplier={1.25}>
+          {t('closeness.labelHint')}
+        </Txt>
+        <View style={styles.sheetCard}>
+          <SettingsSheetOption
             title={t('closeness.none')}
             selected={!relationship?.label}
+            checkColor={colors.bond}
+            checkInk={ink.ground}
             onPress={() => {
+              haptic.selection();
               setRelationshipLabel(character.id, undefined);
               setLabelOpen(false);
             }}
           />
           {/* Family (src/lib/kin.ts): open from the start, never romantic, keeps a day's rhythm. */}
           {FAMILY_LABELS.map((label) => (
-            <LabelRow
+            <SettingsSheetOption
               key={label}
               title={phrase(label)}
               meta={t('closeness.family')}
               selected={relationship?.label === label}
+              checkColor={colors.bond}
+              checkInk={ink.ground}
               onPress={() => {
+                haptic.selection();
                 setRelationshipLabel(character.id, label);
                 setLabelOpen(false);
               }}
             />
           ))}
-          {TIERS.flatMap((tier) =>
-            tier.labels.map((label) => {
-              const open = unlockedLabels(relationship?.level ?? 0).includes(label);
-              return (
-                <LabelRow
-                  key={label}
-                  title={phrase(label)}
-                  meta={open ? phrase(tier.title) : t('closeness.lockedAt', { level: tier.from })}
-                  locked={!open}
-                  selected={relationship?.label === label}
-                  onPress={() => {
-                    if (!open) return;
-                    setRelationshipLabel(character.id, label);
-                    setLabelOpen(false);
-                  }}
-                />
-              );
-            }),
-          )}
-        </ScrollView>
+          {tierItems.map(({ tier, label }, idx) => {
+            const isOpen = unlocked.includes(label);
+            return (
+              <SettingsSheetOption
+                key={label}
+                title={phrase(label)}
+                meta={isOpen ? phrase(tier.title) : t('closeness.lockedAt', { level: tier.from })}
+                locked={!isOpen}
+                selected={relationship?.label === label}
+                checkColor={colors.bond}
+                checkInk={ink.ground}
+                last={idx === tierItems.length - 1}
+                onPress={() => {
+                  if (!isOpen) return;
+                  haptic.selection();
+                  setRelationshipLabel(character.id, label);
+                  setLabelOpen(false);
+                }}
+              />
+            );
+          })}
+        </View>
       </Sheet>
     </Screen>
   );
@@ -441,94 +543,50 @@ function loreMeta(books: Lorebook[], t: TFunction) {
   return books.length ? t('lore.bookCount', { count: books.length }) : t('characterSettings.none');
 }
 
-/** Level, stage, progress to the next level and the label you chose. */
-function RelationshipCard({
-  level,
-  intimacy,
-  title,
-  label,
-  onPick,
-  onInfo,
-}: {
-  level: number;
-  intimacy: number;
-  title: string;
-  label?: string;
-  onPick: () => void;
-  onInfo: () => void;
-}) {
-  const { t } = useTranslation();
-  const { progress, nextLevelAt } = levelForIntimacy(intimacy);
-  const maxed = level >= MAX_LEVEL;
-
-  return (
-    <Group>
-      <BondHead
-        title={title}
-        line={`${t('closeness.level', { level })} · ${
-          maxed ? t('closeness.max') : t('closeness.toNext', { count: Math.max(0, nextLevelAt - intimacy), level: level + 1 })
-        }`}
-        end={<CardRound icon="information" accessibilityLabel={t('closeness.title')} onPress={onInfo} />}
-      />
-      <BondTrack progress={progress} />
-      <View style={styles.bondRow}>
-        <LinkRow label={t('closeness.relationship')} meta={label ?? t('closeness.pickShort')} onPress={onPick} last />
-      </View>
-    </Group>
-  );
-}
-
-function LabelRow({
-  title,
-  meta,
-  locked,
-  selected,
-  link,
-  onPress,
-}: {
-  title: string;
-  meta?: string;
-  locked?: boolean;
-  selected: boolean;
-  /** A row that opens another screen: a chevron instead of the radio. */
-  link?: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <ListRow
-      title={title}
-      meta={meta}
-      trailing={
-        link ? (
-          <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
-        ) : locked ? (
-          <Ionicons name="lock-closed" size={16} color={colors.textFaint} />
-        ) : (
-          <Ionicons
-            name={selected ? 'radio-button-on' : 'radio-button-off'}
-            size={20}
-            color={selected ? colors.bond : colors.textFaint}
-          />
-        )
-      }
-      onPress={onPress}
-      style={locked ? styles.locked : undefined}
-    />
-  );
-}
-
 const styles = StyleSheet.create({
-  bondRow: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
-  labelScroll: { maxHeight: 460 },
-  labelHint: { marginBottom: space.sm },
-  locked: { opacity: 0.5 },
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 260 },
+  quickRow: {
+    flexDirection: 'row',
+    gap: 9,
+    marginHorizontal: inkGutter,
+    marginTop: 14,
+  },
+  footerHint: {
+    ...inkFace('footnote'),
+    color: ink.text2,
+    marginHorizontal: inkGutter + 12,
+    marginTop: 8,
+  },
+  sheetCard: {
+    borderRadius: inkRadius.row,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  labelHint: {
+    ...inkFace('footnote'),
+    color: ink.text2,
+    marginBottom: space.md,
+  },
   input: {
     height: 48,
-    paddingHorizontal: space.md,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceAlt,
-    color: colors.text,
-    ...type.body,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    backgroundColor: INPUT_BG,
+    borderWidth: 1,
+    borderColor: INPUT_RIM,
+    color: ink.text,
+    ...inkFace('body'),
   },
-  hint: { marginTop: space.sm, marginBottom: space.lg },
+  inputFocused: { borderColor: INPUT_FOCUS_RIM },
+  hint: {
+    ...inkFace('footnote'),
+    color: ink.text2,
+    marginTop: space.sm,
+    marginBottom: space.lg,
+    marginHorizontal: 4,
+  },
 });

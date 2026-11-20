@@ -1,5 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z311. Chat Settings Ink Night+ & Apple HIG polish (owner's "boshla" on approved `ink-polish-chat-settings.html`, 2026-11-20, Gemini Argon). DONE in code & pushed; awaiting Preview OTA
+- **New modular UI primitives (`src/components/character/settings-parts.tsx`)**: built cleanly without touching `src/components/character/kit.tsx` (so Character Profile `src/app/character/[id].tsx` stays untouched; `0` locale files modified):
+  - `SettingsHeroCard`: trailing portrait framing (`portraitOf`/`stretchLeft`, fallback to `CharacterAvatar` on `friendColor`), multi-stop vertical + leading scrims, top-left dark-glass live mood badge (`AI · mood` + friend-accent dot), bottom-left serif identity + `Since` date.
+  - `SettingsQuickTile`: Apple Contacts-style 4 dark-glass quick action tiles with semantic icon colors (`Call` green, `Search` white, `Memories` peach + tabular peach count pill, `Background` cyan) and Android-safe numeric radii.
+  - `SettingsClosenessCard`: hairline-rimmed `ink.card` with soft diagonal friend-accent wash, ringed heart glyph, serif stage title, tabular level progress, `34 pt` dark-glass `i` button, `6 pt` track, and inset `Relationship` row with friend-accent pill.
+  - `SettingsSwitchRow`, `SettingsChoiceBlock`, `SettingsLinkRow`, `SettingsDangerRow`, `SettingsSheetOption`: semantic iOS system-colored tiles (purple Voice, green Reach out, orange Animations, blue Persona, teal World books, orange Keeping in mind, indigo Profile, pink Nickname), crisp white-thumb segmented controls for `Reply style` & `Reply length`, subtle red outline icons on destructive rows, and Ink Night+ inset sheet rows.
+- **Screen & sheet updates (`src/app/character/[id]/settings.tsx`, `src/components/closeness-sheet.tsx`)**:
+  - Ambient friend-accent horizon glow, sticky `InkNavBar` with scroll-edge serif title and dark-glass `Edit` pill for user-made characters.
+  - Replaced nested `ScrollView`s in Persona, Relationship, and `ClosenessSheet` with `Sheet scroll` (fixes Android nested scroll and guarantees sheets never exceed screen height); Nickname sheet upgraded to focus-tinted sunken input + white `PillButton`; `ClosenessSheet` accepts optional `accentColor` (backward-compatible default `colors.bond`).
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1119/1119 pass, `npm run check:locales` PASS, static i18n/style/radius audit 0 unused styles & 0 `borderRadius: 999` traps.
+- **Next**: Publish Preview OTA (bundles both Create Character's `[ Idea | Form ]` toggle from `eb726f0b` and Chat Settings `0z311`), then final polish batch: Account & Settings (`ink-polish-account-settings.html`).
+
 ### 0z310. Group & Studio Ink Night+ polish: Group Chat/Info, Group Call, Personas, World Books, Create Character (owner's "boshla" on approved `ink-polish-group-studio.html`, 2026-11-20, Gemini Argon). DONE, pushed & live on `preview` OTA `e66b82f9` (runtime 1.3.0)
 - **Additive shared polish (zero breaking changes to 1:1 chats, 1:1 calls, Find `Tile`, or `character/kit.tsx`; `0` locale files modified)**:
   - `MessageBubble` (`src/components/chat/message-bubble.tsx`) & `TypingRow` (`src/components/chat/typing-row.tsx`): optional `accentColor` prop tints group sender name, avatar ring, Variant A narration rule, and single-typer dots/label in each member's `friendAccent`.

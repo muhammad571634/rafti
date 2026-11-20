@@ -1,13 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { PressableScale, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { tierForLevel, TIERS } from '@/mock';
-import { colors, radius, space } from '@/theme';
-import { inkRadius } from '@/theme/ink';
+import { colors, space } from '@/theme';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 
 /**
  * "How closeness works": the five stages with their level ranges. Tapping a
@@ -18,117 +18,129 @@ export function ClosenessSheet({
   visible,
   onClose,
   level,
+  accentColor,
 }: {
   visible: boolean;
   onClose: () => void;
   level?: number;
+  /** Optional friend accent to highlight the current closeness stage. */
+  accentColor?: string;
 }) {
   const { t } = useTranslation();
   const current = level != null ? tierForLevel(level).key : undefined;
   const [open, setOpen] = useState<string | undefined>(current);
+  const tint = accentColor ?? colors.bond;
+  const tintFill = accentColor ? `${accentColor}1E` : colors.bondSoft;
+  const tintBorder = accentColor ? `${accentColor}66` : colors.bond;
+  const tintText = accentColor ?? colors.bondText;
 
   useEffect(() => {
     if (visible) setOpen(current);
   }, [visible, current]);
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('closeness.title')}>
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Txt variant="small" color={colors.textSecondary} style={styles.body}>
-          {t('closeness.body')}
-        </Txt>
+    <Sheet visible={visible} onClose={onClose} title={t('closeness.title')} scroll>
+      <Txt style={styles.body} maxFontSizeMultiplier={1.25}>
+        {t('closeness.body')}
+      </Txt>
 
-        {TIERS.map((tier) => {
-          const expanded = open === tier.key;
-          const here = current === tier.key;
-          return (
-            <PressableScale
-              key={tier.key}
-              scaleTo={0.98}
-              style={[styles.tier, here && styles.tierHere]}
-              accessibilityState={{ expanded }}
-              onPress={() => setOpen(expanded ? undefined : tier.key)}>
-              <View style={styles.head}>
-                <View style={[styles.heart, here && styles.heartHere]}>
-                  <Ionicons name={tier.from === 0 ? 'heart-outline' : 'heart'} size={18} color={colors.bond} />
-                </View>
-                <View style={styles.flex}>
-                  <Txt variant="bodyStrong">{phrase(tier.title)}</Txt>
-                  {here ? (
-                    <Txt variant="caption" color={colors.bondText}>
-                      {t('closeness.youAreHere')}
-                    </Txt>
-                  ) : null}
-                </View>
-                <Txt variant="smallStrong" color={colors.textMuted}>
-                  {tier.from === tier.to
-                    ? t('closeness.level', { level: tier.from })
-                    : t('closeness.levels', { from: tier.from, to: tier.to })}
-                </Txt>
-                <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textMuted} />
+      {TIERS.map((tier) => {
+        const expanded = open === tier.key;
+        const here = current === tier.key;
+        return (
+          <PressableScale
+            key={tier.key}
+            scaleTo={0.98}
+            style={[styles.tier, here && { backgroundColor: tintFill, borderColor: tintBorder }]}
+            accessibilityRole="button"
+            accessibilityState={{ expanded }}
+            onPress={() => setOpen(expanded ? undefined : tier.key)}>
+            <View style={styles.head}>
+              <View style={[styles.heart, here && { backgroundColor: `${tint}28` }]}>
+                <Ionicons name={tier.from === 0 ? 'heart-outline' : 'heart'} size={17} color={tint} />
               </View>
+              <View style={styles.flex}>
+                <Txt style={styles.tierTitle} maxFontSizeMultiplier={1.3}>
+                  {phrase(tier.title)}
+                </Txt>
+                {here ? (
+                  <Txt style={[styles.hereLabel, { color: tintText }]} maxFontSizeMultiplier={1.25}>
+                    {t('closeness.youAreHere')}
+                  </Txt>
+                ) : null}
+              </View>
+              <Txt style={[styles.levels, styles.tabular]} maxFontSizeMultiplier={1.25}>
+                {tier.from === tier.to
+                  ? t('closeness.level', { level: tier.from })
+                  : t('closeness.levels', { from: tier.from, to: tier.to })}
+              </Txt>
+              <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={15} color={ink.text3} />
+            </View>
 
-              {expanded ? (
-                <View style={styles.detail}>
-                  {tier.labels.length ? (
-                    <>
-                      <Txt variant="caption" color={colors.textMuted}>
-                        {t('closeness.unlocks')}
-                      </Txt>
-                      <View style={styles.labels}>
-                        {tier.labels.map((label) => (
-                          <View key={label} style={styles.label}>
-                            <Txt variant="chip" color={colors.bondText}>
-                              {phrase(label)}
-                            </Txt>
-                          </View>
-                        ))}
-                      </View>
-                    </>
-                  ) : (
-                    <Txt variant="small" color={colors.textSecondary}>
-                      {t('closeness.nothing')}
+            {expanded ? (
+              <View style={styles.detail}>
+                {tier.labels.length ? (
+                  <>
+                    <Txt style={styles.unlocks} maxFontSizeMultiplier={1.2}>
+                      {t('closeness.unlocks')}
                     </Txt>
-                  )}
-                </View>
-              ) : null}
-            </PressableScale>
-          );
-        })}
-      </ScrollView>
+                    <View style={styles.labels}>
+                      {tier.labels.map((label) => (
+                        <View key={label} style={[styles.labelChip, { backgroundColor: `${tint}20` }]}>
+                          <Txt style={[styles.labelText, { color: tintText }]} maxFontSizeMultiplier={1.2}>
+                            {phrase(label)}
+                          </Txt>
+                        </View>
+                      ))}
+                    </View>
+                  </>
+                ) : (
+                  <Txt style={styles.emptyDetail} maxFontSizeMultiplier={1.25}>
+                    {t('closeness.nothing')}
+                  </Txt>
+                )}
+              </View>
+            ) : null}
+          </PressableScale>
+        );
+      })}
     </Sheet>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  scroll: { maxHeight: 520 },
-  body: { marginBottom: space.lg },
+  flex: { flex: 1, minWidth: 0 },
+  tabular: { fontVariant: ['tabular-nums'] },
+  body: { ...inkFace('footnote'), color: ink.text2, marginBottom: space.md },
   tier: {
-    padding: space.md,
-    marginBottom: space.sm,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
+    padding: 14,
+    marginBottom: 9,
+    borderRadius: inkRadius.row,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
   },
-  tierHere: { backgroundColor: colors.bondSoft, borderColor: colors.bond },
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  head: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   heart: {
     width: 34,
     height: 34,
-    borderRadius: inkRadius.pill,
-    backgroundColor: colors.surface,
+    borderRadius: 17,
+    backgroundColor: ink.raised,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heartHere: { backgroundColor: colors.surface },
-  detail: { marginTop: space.md, marginLeft: 34 + space.md, gap: space.sm },
-  labels: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs + 2 },
-  label: {
-    paddingHorizontal: space.sm + 2,
-    paddingVertical: space.xs,
-    borderRadius: inkRadius.pill,
-    backgroundColor: colors.surface,
+  tierTitle: { ...inkFace('body'), fontSize: 15.5, lineHeight: 20, fontWeight: '600', color: ink.text },
+  hereLabel: { ...inkFace('caption'), fontSize: 12, lineHeight: 16, marginTop: 1 },
+  levels: { ...inkFace('footnoteStrong'), fontSize: 13, lineHeight: 17, color: ink.text2 },
+  detail: { marginTop: 12, marginLeft: 46, gap: 8 },
+  unlocks: { ...inkFace('caption'), color: ink.text2 },
+  labels: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  labelChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
+  labelText: { ...inkFace('caption'), fontSize: 12.5, lineHeight: 16 },
+  emptyDetail: { ...inkFace('footnote'), color: ink.text2 },
 });
