@@ -143,7 +143,7 @@ export default function SecretNoteScreen() {
           contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}
           keyboardShouldPersistTaps="handled">
           <InkText variant="footnoteStrong" color={ink.text2} style={styles.kicker}>
-            {t('secretNote.question')}
+            {note.depth ? t('secretNote.depthKicker', { n: note.depth }) : t('secretNote.question')}
           </InkText>
           <InkText variant="title" accessibilityRole="header" style={styles.question}>
             {note.prompt}
@@ -314,12 +314,21 @@ export default function SecretNoteScreen() {
         {exchanged ? null : (
           <View style={[styles.foot, { paddingBottom: insets.bottom + space.md }]}>
             <PillButton label={t('secretNote.swap')} onPress={exchange} disabled={!canExchange} style={styles.swap} />
-            <View style={styles.price}>
-              <ShellIcon size={14} />
-              <InkText variant="footnote" color={ink.text2} style={styles.count}>
-                {String(shellCosts.secretNote)}
-              </InkText>
-            </View>
+            {/* A keepsake (`depth`) is the friend's gift: no price. */}
+            {note.depth ? (
+              <View style={styles.price}>
+                <InkText variant="footnote" color={ink.text2}>
+                  {t('common.free')}
+                </InkText>
+              </View>
+            ) : (
+              <View style={styles.price}>
+                <ShellIcon size={14} />
+                <InkText variant="footnote" color={ink.text2} style={styles.count}>
+                  {String(shellCosts.secretNote)}
+                </InkText>
+              </View>
+            )}
           </View>
         )}
       </KeyboardAvoidingView>

@@ -34,3 +34,21 @@ export function helplineToday(chat: readonly Message[], now = new Date()): boole
   const today = dayKey(now);
   return chat.some((m) => m.card === 'helpline' && dayKey(m.createdAt) === today);
 }
+
+/** Every this many of the user's messages with a friend, their next daily note is a keepsake (`depth`). */
+export const DEPTH_EVERY = 40;
+
+/**
+ * The depth this friend's next note should mark, or undefined: the highest multiple of
+ * `DEPTH_EVERY` the user's message count has passed, when no note of theirs marks it yet. A long
+ * absence that crossed two marks gives one keepsake, for the latest.
+ */
+export function depthMilestone(myMessages: number, notes: readonly SecretNote[], characterId: string, every = DEPTH_EVERY): number | undefined {
+  const mark = Math.floor(myMessages / every) * every;
+  if (mark < every) return undefined;
+  const marked = notes.reduce((top, n) => (n.characterId === characterId && n.depth && n.depth > top ? n.depth : top), 0);
+  return mark > marked ? mark : undefined;
+}
+
+/** The user's own messages in a chat, the clock of `depthMilestone` (cards and unsent lines left out). */
+export const myMessageCount = (chat: readonly Message[]) => chat.filter((m) => m.author === 'me' && !m.card && !m.pending).length;

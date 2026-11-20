@@ -11,7 +11,7 @@ import { pickSeeded } from '@/lib/seeded';
 import { fourWidgets } from '@/lib/today';
 import { greeters } from '@/lib/greeters';
 import { lastTalkedAt } from '@/lib/talk';
-import { dailyNoteStep } from '@/lib/daily-note';
+import { dailyNoteStep, depthMilestone, myMessageCount } from '@/lib/daily-note';
 import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard';
 import { fillNames, pickOpening, withOpening } from '@/ai/character-draft';
 import { diaryMemoryLine, rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
@@ -771,7 +771,8 @@ export interface AppState {
 
   /* secret note */
   ensureSecretNote: (characterId: string) => void;
-  newSecretNote: (characterId: string) => void;
+  /** `depth`: the note is the keepsake for that many of the user's messages (`depthMilestone`). */
+  newSecretNote: (characterId: string, depth?: number) => void;
   /** Today's sealed note from the friend you talked with last (`dailyNoteStep`). Safe to call often. */
   leaveDailyNote: (characterId: string) => void;
   writeNote: (noteId: string, text: string) => void;
@@ -2925,14 +2926,16 @@ export const useAppStore = create<AppState>()(
         }
       },
 
-      newSecretNote: (characterId) => {
+      newSecretNote: (characterId, depth) => {
         const id = uid('sn');
         const previous = latestNote(get().notes, characterId)?.prompt;
         const pool = localized('secretNotePrompts', secretNotePrompts).filter((p) => p !== previous);
+        // A keepsake asks what they never said; the model writes it from the chat and memories (`writeBase`).
+        const prompt = depth ? i18n.t('secretNote.depthPrompt', { context: genderOf(get(), characterId) }) : pick(pool);
 
         set((s) => ({
           notes: [
-            { id, characterId, date: todayKey(), prompt: pick(pool), myNote: '', status: 'composing' },
+            { id, characterId, date: todayKey(), prompt, myNote: '', status: 'composing', ...(depth ? { depth } : {}) },
             ...s.notes,
           ],
         }));
@@ -2946,12 +2949,14 @@ export const useAppStore = create<AppState>()(
         // Before launch finishes the chats are still loading: an empty chat would hide a helpline card.
         if (!s.hydrated) return;
         const chatId = s.conversations.find((c) => c.characterId === characterId)?.id;
-        const step = dailyNoteStep(s.notes, characterId, chatId ? (s.messages[chatId] ?? []) : []);
+        const chat = chatId ? (s.messages[chatId] ?? []) : [];
+        const step = dailyNoteStep(s.notes, characterId, chat);
         const now = Date.now();
         // Every visit to Today calls this: a busy model is asked again only now and then.
         if (!step || now - (dailyNoteTries.get(characterId) ?? 0) < NOTE_RETRY_MS) return;
         dailyNoteTries.set(characterId, now);
-        if (step === 'new') get().newSecretNote(characterId);
+        // Past every 40th message of theirs, the day's note is a keepsake of how far you have come.
+        if (step === 'new') get().newSecretNote(characterId, depthMilestone(myMessageCount(chat), s.notes, characterId));
         else {
           const latest = latestNote(s.notes, characterId);
           if (latest) askSecretNote(set, get, latest.id);
@@ -2968,7 +2973,8 @@ export const useAppStore = create<AppState>()(
       exchangeNote: (noteId) => {
         const note = get().notes.find((n) => n.id === noteId);
         if (!note || note.status !== 'ready' || !note.myNote.trim()) return 'notReady';
-        if (!get().spendShells(shellCosts.secretNote, 'note', note.characterId)) return 'noShells';
+        // A keepsake is the friend's gift: its swap is free.
+        if (!note.depth && !get().spendShells(shellCosts.secretNote, 'note', note.characterId)) return 'noShells';
 
         set((s) => ({
           notes: s.notes.map((n) => (n.id === noteId ? { ...n, status: 'exchanged' } : n)),

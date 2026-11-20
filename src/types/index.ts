@@ -650,6 +650,11 @@ export interface SecretNote {
   status: SecretNoteStatus;
   /** The model was busy and their note is not written yet. */
   busy?: boolean;
+  /**
+   * A keepsake for how far the two of them have come: the number of the user's messages it marks
+   * (40, 80, ...), `depthMilestone`. Its question is about what the friend never said; the swap is free.
+   */
+  depth?: number;
 }
 
 export interface CallRecord {

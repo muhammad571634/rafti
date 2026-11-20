@@ -834,7 +834,9 @@
     "sealedTitle": "โน้ตของ {{name}} ถูกปิดผนึกอยู่",
     "sealedHint": "โน้ตจะเปิดออกเมื่อคุณแลกเปลี่ยนโน้ตกัน",
     "yourNote": "โน้ตของคุณ",
-    "swap": "แลกเปลี่ยนโน้ต"
+    "swap": "แลกเปลี่ยนโน้ต",
+    "depthKicker": "{{n}} ข้อความที่มีด้วยกัน",
+    "depthPrompt": "สิ่งที่ฉันไม่เคยบอกเธอ"
   },
   "store": {
     "title": "ร้านค้า",
@@ -1826,6 +1828,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "โน้ตความทรงจำ",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

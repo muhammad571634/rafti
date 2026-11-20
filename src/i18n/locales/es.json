@@ -854,7 +854,9 @@
     "sealedTitle": "La nota de {{name}} está sellada",
     "sealedHint": "Se abrirá cuando intercambien notas",
     "yourNote": "Tu nota",
-    "swap": "Intercambiar notas"
+    "swap": "Intercambiar notas",
+    "depthKicker": "{{n}} mensajes juntos",
+    "depthPrompt": "Lo que nunca te dije"
   },
   "store": {
     "title": "Tienda",
@@ -1859,6 +1861,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "Nota de recuerdo",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

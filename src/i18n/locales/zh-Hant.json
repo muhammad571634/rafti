@@ -834,7 +834,9 @@
     "sealedTitle": "{{name}}的便籤目前密封中",
     "sealedHint": "交換便籤後即可拆開閱讀",
     "yourNote": "你的便籤",
-    "swap": "交換便籤"
+    "swap": "交換便籤",
+    "depthKicker": "一起聊了 {{n}} 則訊息",
+    "depthPrompt": "我從沒對你說過的話"
   },
   "store": {
     "title": "商店",
@@ -1826,6 +1828,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "紀念紙條",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

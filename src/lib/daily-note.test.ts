@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { dayKey } from '../mock/time';
-import { dailyNoteStep, helplineToday } from './daily-note';
+import { dailyNoteStep, depthMilestone, helplineToday, myMessageCount } from './daily-note';
 import type { Message, SecretNote } from '@/types';
 
 const now = new Date(2026, 10, 3, 9, 0);
@@ -47,5 +47,27 @@ describe("Today's sealed note", () => {
   it('keeps a sealed note off Today only on the helpline day', () => {
     assert.equal(helplineToday([helpline(new Date(2026, 10, 3, 8, 0))], now), true);
     assert.equal(helplineToday([helpline(new Date(2026, 10, 2, 23, 0))], now), false);
+  });
+});
+
+describe('depth keepsakes', () => {
+  const marked = (depth: number, characterId = 'kai'): SecretNote => ({ ...note('exchanged'), id: `d${depth}`, characterId, depth });
+
+  it('waits for the first 40 of the user messages', () => {
+    assert.equal(depthMilestone(0, [], 'kai'), undefined);
+    assert.equal(depthMilestone(39, [], 'kai'), undefined);
+    assert.equal(depthMilestone(40, [], 'kai'), 40);
+  });
+
+  it('marks each multiple once, per friend, and only the latest after a long gap', () => {
+    assert.equal(depthMilestone(55, [marked(40)], 'kai'), undefined);
+    assert.equal(depthMilestone(80, [marked(40)], 'kai'), 80);
+    assert.equal(depthMilestone(130, [marked(40)], 'kai'), 120);
+    assert.equal(depthMilestone(45, [marked(40, 'mia')], 'kai'), 40);
+  });
+
+  it("counts only the user's own sent lines", () => {
+    const line = (author: 'me' | 'them', extra: Partial<Message> = {}): Message => ({ id: Math.random().toString(), conversationId: 'c', author, kind: 'text', text: 'hi', createdAt: now.toISOString(), ...extra });
+    assert.equal(myMessageCount([line('me'), line('them'), line('me', { pending: true }), line('me', { card: 'setup' }), line('me')]), 2);
   });
 });

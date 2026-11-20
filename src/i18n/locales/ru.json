@@ -906,7 +906,11 @@
     "sealedTitle": "Записка от {{name}} запечатана",
     "sealedHint": "Она откроется, когда вы обменяетесь записками",
     "yourNote": "Ваша записка",
-    "swap": "Обменяться записками"
+    "swap": "Обменяться записками",
+    "depthKicker": "{{n}} сообщений вместе",
+    "depthPrompt": "Что я тебе так и не сказал",
+    "depthPrompt_male": "Что я тебе так и не сказал",
+    "depthPrompt_female": "Что я тебе так и не сказала"
   },
   "store": {
     "title": "Магазин",
@@ -1937,6 +1941,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "Памятная записка",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

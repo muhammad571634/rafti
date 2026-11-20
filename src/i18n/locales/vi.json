@@ -834,7 +834,9 @@
     "sealedTitle": "Lời nhắn của {{name}} đã được niêm phong",
     "sealedHint": "Nó sẽ mở ra khi hai bạn trao đổi lời nhắn",
     "yourNote": "Lời nhắn của bạn",
-    "swap": "Trao đổi lời nhắn"
+    "swap": "Trao đổi lời nhắn",
+    "depthKicker": "{{n}} tin nhắn bên nhau",
+    "depthPrompt": "Điều mình chưa từng nói với cậu"
   },
   "store": {
     "title": "Cửa hàng",
@@ -1826,6 +1828,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "Ghi chú kỷ niệm",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

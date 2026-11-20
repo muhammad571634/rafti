@@ -834,7 +834,9 @@
     "sealedTitle": "{{name}}のメモは封印されています",
     "sealedHint": "メモを交換すると開きます",
     "yourNote": "あなたのメモ",
-    "swap": "メモを交換する"
+    "swap": "メモを交換する",
+    "depthKicker": "一緒に{{n}}通",
+    "depthPrompt": "ずっと言えなかったこと"
   },
   "store": {
     "title": "ストア",
@@ -1826,6 +1828,7 @@
     "welcomeTest": "Test the welcome back",
     "helloTest": "Play the first hello",
     "levelUpTest": "Play a level-up",
+    "keepsakeTest": "記念のノート",
     "alarmTest": "Ring a wake-up alarm",
     "checkInTest": "Show the daily check-in"
   },

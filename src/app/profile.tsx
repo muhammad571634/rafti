@@ -41,6 +41,7 @@ import { AWAY_MS } from '@/lib/welcome-back';
 import { countMessages } from '@/store/message-db';
 import { syncMemories } from '@/store/memory-sync';
 import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/store/message-sync';
+import { DEPTH_EVERY, myMessageCount } from '@/lib/daily-note';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, storeColors, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
@@ -128,6 +129,17 @@ export default function ProfileScreen() {
     const alarm = s.alarms.find((a) => a.characterId) ?? s.alarms[0];
     if (alarm && s.ringAlarm(alarm.id)) router.push('/alarms/ring');
   };
+  // Dev: the keepsake note (every 40th message) for the friend you talked with last, without waiting for the day's note.
+  const keepsakeNote = () => {
+    const s = useAppStore.getState();
+    const convo = [...s.conversations].sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt))[0];
+    if (!convo) return;
+    const mine = myMessageCount(s.messages[convo.id] ?? []);
+    s.newSecretNote(convo.characterId, Math.max(DEPTH_EVERY, Math.floor(mine / DEPTH_EVERY) * DEPTH_EVERY));
+    const id = useAppStore.getState().notes.find((n) => n.characterId === convo.characterId)?.id;
+    if (id) router.push(`/secret-note/${id}`);
+  };
+
   const showCheckIn = () => {
     const s = useAppStore.getState();
     useAppStore.setState({ dailyReward: { amount: s.daily.checkInAmount ?? 10, day: Math.max(1, s.daily.checkInDay) } });
@@ -398,6 +410,7 @@ export default function ProfileScreen() {
             <LinkRow icon="heart" label={t('profile.levelUpTest')} onPress={playLevelUp} />
             <LinkRow icon="alarm" label={t('profile.alarmTest')} onPress={ringWake} />
             <LinkRow icon="gift" label={t('profile.checkInTest')} onPress={showCheckIn} />
+            <LinkRow icon="mail" label={t('profile.keepsakeTest')} onPress={keepsakeNote} />
             {/* Signs in to Supabase (anonymously) and loads this account's wallet from the server (B0). */}
             <LinkRow icon="cloud" label={t('profile.serverAccount')} meta={accountStatus} onPress={() => void checkAccount()} />
             {/* B1.2: shells are spent and earned on the server; turning it on loads the server's wallet. */}
