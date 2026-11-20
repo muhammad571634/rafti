@@ -102,7 +102,15 @@ export default function MemoriesScreen() {
     setDraft('');
   };
 
+  // The tap that closes the plan sheet (its Delete) must not land on the row under it as it goes.
+  const planClosedAt = useRef(0);
+  const closePlan = () => {
+    planClosedAt.current = Date.now();
+    setPlanId(null);
+  };
+
   const startEdit = (memory: MemoryItem) => {
+    if (Date.now() - planClosedAt.current < 600) return;
     setDraft(memory.text);
     setEditingId(memory.id);
   };
@@ -193,7 +201,7 @@ export default function MemoriesScreen() {
               <View style={styles.groupCard}>
                 {group.key === 'promises'
                   ? plans.map((plan, index) => (
-                      <PlanRow key={plan.id} plan={plan} last={index === plans.length - 1 && group.items.length === 0} onOpen={() => setPlanId(plan.id)} />
+                      <PlanRow key={plan.id} plan={plan} last={index === plans.length - 1 && group.items.length === 0} onOpen={() => Date.now() - planClosedAt.current >= 600 && setPlanId(plan.id)} />
                     ))
                   : null}
                 {group.items.map((memory, index) => (
@@ -302,7 +310,7 @@ export default function MemoriesScreen() {
             <Button label={t('plans.notNow')} variant="ghost" full onPress={() => setUnlocking(false)} />
           </View>
         </Sheet>
-        <PlanDetailSheet planId={planId} onClose={() => setPlanId(null)} />
+        <PlanDetailSheet planId={planId} onClose={closePlan} />
       </Screen>
     </FriendAccent>
   );
