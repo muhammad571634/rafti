@@ -329,7 +329,7 @@ export default function HomeScreen() {
                 <PressableScale
                   scaleTo={0.98}
                   accessibilityRole="button"
-                  accessibilityLabel={`${t('home.todo.note', { name: noteName })}, ${t('home.widget.sealed')}`}
+                  accessibilityLabel={`${t('home.todo.note', { name: noteName })}, ${note.depth ? t('secretNote.depthKicker', { n: note.depth }) : t('home.widget.sealed')}`}
                   onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
                   style={styles.row}>
                   <View style={styles.noteIcon}>
@@ -340,9 +340,19 @@ export default function HomeScreen() {
                       <InkText variant="bodyStrong" lines={1}>
                         {t('home.todo.note', { name: noteName })}
                       </InkText>
-                      <InkText variant="sub" lines={1}>
-                        {t('home.widget.sealed')}
-                      </InkText>
+                      {/* A keepsake (every 40th message, `depth`) says how far you have come, in the note's warm colour. */}
+                      {note.depth ? (
+                        <View style={styles.keepsake}>
+                          <Ionicons name="sparkles" size={13} color={SUN_LIGHT} />
+                          <InkText variant="sub" lines={1} color={SUN_LIGHT} style={styles.flex}>
+                            {t('secretNote.depthKicker', { n: note.depth })}
+                          </InkText>
+                        </View>
+                      ) : (
+                        <InkText variant="sub" lines={1}>
+                          {t('home.widget.sealed')}
+                        </InkText>
+                      )}
                     </View>
                     <Ionicons name="chevron-forward" size={18} color={ink.text3} />
                   </View>
@@ -672,6 +682,7 @@ const Slot = memo(function Slot({
 });
 
 const styles = StyleSheet.create({
+  keepsake: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   topEdge: { position: 'absolute', top: 0, left: 0, right: 0 },
   flex: { flex: 1, minWidth: 0 },
   // The top row under the Dynamic Island: the mascot on the leading edge, your face
