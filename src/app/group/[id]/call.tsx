@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -24,6 +23,7 @@ import { apiBase } from '@/ai/server';
 import { CallControls, callGlass } from '@/components/call/call-controls';
 import { CallHelpline, LiveCaption } from '@/components/call/live-caption';
 import { useHandsFree } from '@/components/call/use-hands-free';
+import { InkText } from '@/components/ink';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
 import { Anim, BlurBackdrop, CharacterAvatar, Screen, Txt, characterImage } from '@/components/ui';
@@ -31,8 +31,8 @@ import { planStatus } from '@/economy/plans';
 import { callClock, shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { callScript, callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, space, systemColors } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { colors, fonts, friendAccent, gradients, space, systemColors } from '@/theme';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 
 /** `empty`: no minutes when it opened; `out`: they ran out mid-call and it waits on the sheet. */
 type CallState = 'empty' | 'connecting' | 'active' | 'out';
@@ -40,17 +40,13 @@ type CallState = 'empty' | 'connecting' | 'active' | 'out';
 const WARN_SECONDS = 120;
 /** Each member speaks a line in turn — a stand-in for streamed TTS. */
 const SUBTITLE_INTERVAL_MS = 4500;
+const QUIET_RIM = 'rgba(255,255,255,0.22)';
 
 /**
- * A group call: every member on screen, the one speaking lit up with their line under
- * them. It uses the same call minutes as a one-to-one call, and the same sheets when
- * they run out; the call lands in the group chat as one line.
- *
- * With the model on (0z113) it is a real talk, as on a one-to-one call: two members pick up with a
- * hello, the user just talks (the open mic, a pause ends their turn, Mute closes it), and one or two
- * members answer each time (`groupCallReply`), their lines as captions under their name while their
- * face lights up. A busy model says Not Delivered with a retry, never a stock line. With the model
- * off, the old subtitles run.
+ * Group Call (approved Ink Night+ prototype): dynamic active-speaker atmospheric wash in the
+ * speaker's `friendAccent`, dark-glass minutes pill with live dot, breathing outer halo + ringed
+ * member stage + green voice equalizer badge, editorial serif title + tabular clock, and obsidian
+ * `LiveCaption` accented with a 2.5 pt speaker bar.
  */
 export default function GroupCallScreen() {
   const insets = useSafeAreaInsets();
@@ -129,11 +125,11 @@ export default function GroupCallScreen() {
   const play = async (theirs: GroupCallLine[]) => {
     hush();
     const mine = sayTurn.current;
-    for (const line of theirs) {
+    for (const item of theirs) {
       if (mine !== sayTurn.current || !mounted.current) return;
       setSpeaking(true);
-      setCaption(line);
-      await pause(captionMs(line.text));
+      setCaption(item);
+      await pause(captionMs(item.text));
     }
     if (mine === sayTurn.current && mounted.current) setSpeaking(false);
   };
@@ -181,10 +177,10 @@ export default function GroupCallScreen() {
   const mic = useHandsFree(!!live && state === 'active' && !muted && !waiting, (words) => {
     if (detectCrisis(words.text)) markCrisis();
     if (!mounted.current || booked.current) return;
-    const line: GroupCallLine = { author: 'me', text: words.text, language: words.language };
-    said.current = [...said.current, line];
+    const item: GroupCallLine = { author: 'me', text: words.text, language: words.language };
+    said.current = [...said.current, item];
     hush();
-    setCaption(line);
+    setCaption(item);
     ask();
   });
   const userTalking = mic.phase === 'speaking';
@@ -258,7 +254,7 @@ export default function GroupCallScreen() {
 
   if (!group || !groupId || members.length < 2) {
     return (
-      <Screen>
+      <Screen background={ink.ground}>
         <Txt style={styles.missing}>{t('group.notFound')}</Txt>
       </Screen>
     );
@@ -269,6 +265,18 @@ export default function GroupCallScreen() {
   const current = lines[line % Math.max(1, lines.length)];
   const speakerId = live ? (speaking && caption?.author === 'them' ? caption.characterId : undefined) : undefined;
   const captionWho = caption?.characterId ? members.findIndex((m) => m.id === caption.characterId) : -1;
+  const captionAccent = captionWho >= 0 ? friendAccent(members[captionWho].id).strong : undefined;
+
+  const activeSpeaker =
+    state === 'active'
+      ? live
+        ? members.find((m) => m.id === speakerId)
+        : current != null
+          ? members[current.who]
+          : undefined
+      : undefined;
+  const activeAccent = activeSpeaker ? friendAccent(activeSpeaker.id).strong : friendAccent(members[0].id).strong;
+  const offlineSpeakerAccent = current != null && members[current.who] ? friendAccent(members[current.who].id).strong : ink.accent;
 
   const book = () => {
     const talked = secondsRef.current;
@@ -299,25 +307,33 @@ export default function GroupCallScreen() {
   const monthly = !!status && !status.trial;
   // The minutes left show for the whole call; the last two turn the clock orange.
   const low = remaining <= WARN_SECONDS;
-  const face = members.length >= 3 ? 92 : 112;
+  const face = members.length >= 3 ? 86 : 106;
 
   return (
     <Screen
       background={gradients.call}
       statusBarStyle="light"
-      backdrop={<BlurBackdrop source={characterImage(members[0])} dim={0.35} blur={50} />}>
+      backdrop={<BlurBackdrop source={characterImage(activeSpeaker ?? members[0])} dim={0.44} blur={50} />}>
       <LinearGradient
-        colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.14)', 'rgba(0,0,0,0.52)']}
-        locations={[0, 0.4, 1]}
+        colors={['rgba(7,7,11,0.34)', 'rgba(7,7,11,0.18)', 'rgba(7,7,11,0.68)']}
+        locations={[0, 0.42, 1]}
         style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+      {/* Dynamic Active-Speaker Atmospheric Wash */}
+      <LinearGradient
+        colors={[`${activeAccent}34`, `${activeAccent}00`]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.65 }}
+        style={styles.speakerGlow}
         pointerEvents="none"
       />
 
       <View style={callGlass.top}>
         {state === 'active' ? (
-          <Animated.View entering={FadeIn.duration(320)} style={[callGlass.glass, callGlass.warn]}>
-            <Ionicons name={low ? 'timer' : 'timer-outline'} size={15} color={low ? systemColors.orange : colors.onMedia} />
-            <Txt style={callGlass.warnText}>
+          <Animated.View entering={FadeIn.duration(320)} style={styles.minutesPill}>
+            <View style={[styles.liveDot, { backgroundColor: low ? systemColors.orange : systemColors.green }]} />
+            <Txt style={styles.minutesText}>
               {t(monthly ? 'plans.minLeftMonth' : 'plans.minLeft', { count: Math.max(1, Math.ceil(remaining / 60)) })}
             </Txt>
           </Animated.View>
@@ -330,15 +346,29 @@ export default function GroupCallScreen() {
         ) : null}
         {members.map((m, i) => {
           const talking = state === 'active' && (live ? speakerId === m.id : current?.who === i);
+          const acc = friendAccent(m.id).strong;
+          const ringOuter = face + 6;
           return (
-            <View key={m.id} style={[styles.face, state === 'active' && !talking && styles.quiet]}>
-              <View>
-                <CharacterAvatar
-                  character={m}
-                  size={face}
-                  ring
-                  ringColor={talking ? colors.onMedia : 'rgba(255,255,255,0.45)'}
-                />
+            <View
+              key={m.id}
+              style={[
+                styles.face,
+                state === 'active' && (talking ? styles.faceTalking : styles.quiet),
+              ]}>
+              <View style={[styles.avatarStage, { width: ringOuter, height: ringOuter }]}>
+                {talking ? <SpeakerHalo size={ringOuter + 14} color={acc} /> : null}
+                <View
+                  style={[
+                    styles.avatarRing,
+                    {
+                      width: ringOuter,
+                      height: ringOuter,
+                      borderRadius: ringOuter / 2,
+                      borderColor: talking ? acc : QUIET_RIM,
+                    },
+                  ]}>
+                  <CharacterAvatar character={m} size={face} />
+                </View>
                 {talking ? <SpeakingBadge /> : null}
               </View>
               <Txt style={styles.faceName} lines={1}>
@@ -350,9 +380,9 @@ export default function GroupCallScreen() {
       </View>
 
       <View style={styles.head}>
-        <Txt style={callGlass.title} lines={2}>
+        <InkText variant="title" style={styles.callTitle} lines={2}>
           {title}
-        </Txt>
+        </InkText>
         {state === 'empty' ? null : (
           <Txt style={callGlass.timer}>{state === 'connecting' ? t('group.callConnecting') : callClock(seconds)}</Txt>
         )}
@@ -369,6 +399,7 @@ export default function GroupCallScreen() {
             hearingFailed={mic.failed}
             caption={caption}
             who={captionWho >= 0 ? nameOf(captionWho) : undefined}
+            accentColor={captionAccent}
             waiting={waiting}
             failed={failed}
             onRetryHearing={mic.retry}
@@ -382,10 +413,12 @@ export default function GroupCallScreen() {
           key={line}
           entering={FadeIn.duration(320)}
           exiting={FadeOut.duration(200)}
-          style={[callGlass.glass, callGlass.caption]}
+          style={[styles.offlinePanel, callGlass.caption]}
           accessibilityLiveRegion="polite">
-          <Txt style={styles.who}>{nameOf(current.who)}</Txt>
-          <Txt style={callGlass.captionText}>{`“${current.text}”`}</Txt>
+          <View style={[styles.offlineAccent, { borderLeftColor: offlineSpeakerAccent }]}>
+            <Txt style={[styles.offlineWho, { color: offlineSpeakerAccent }]}>{nameOf(current.who)}</Txt>
+            <Txt style={styles.offlineSerif}>{`“${current.text}”`}</Txt>
+          </View>
         </Animated.View>
       ) : null}
 
@@ -419,6 +452,35 @@ export default function GroupCallScreen() {
   );
 }
 
+/** Soft breathing halo around whichever member is talking now. */
+function SpeakerHalo({ size, color }: { size: number; color: string }) {
+  const reduced = useReducedMotion();
+  const pulse = useSharedValue(0);
+  useEffect(() => {
+    if (reduced) return;
+    pulse.value = withRepeat(withSequence(withTiming(1, { duration: 1100 }), withTiming(0, { duration: 1100 })), -1);
+  }, [reduced, pulse]);
+  const style = useAnimatedStyle(() => ({
+    opacity: 0.45 + pulse.value * 0.45,
+    transform: [{ scale: 1 + pulse.value * 0.08 }],
+  }));
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        styles.halo,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderColor: `${color}88`,
+        },
+        style,
+      ]}
+    />
+  );
+}
+
 /** The green badge on whoever is talking: three bars that rise and fall like a voice. */
 function SpeakingBadge() {
   return (
@@ -446,28 +508,60 @@ function Bar({ delay }: { delay: number }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  missing: { padding: space.xl },
-  faces: { marginTop: 52, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 18 },
+  speakerGlow: { position: 'absolute', top: 0, left: 0, right: 0, height: 420 },
+  missing: { padding: space.xl, color: ink.text2 },
+  minutesPill: {
+    height: 32,
+    paddingHorizontal: 13,
+    borderRadius: inkRadius.pill,
+    backgroundColor: 'rgba(20,20,26,0.56)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.24)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+  },
+  liveDot: { width: 7, height: 7, borderRadius: 3.5 },
+  minutesText: { ...inkFace('caption'), fontSize: 12.5, color: colors.onMedia, fontVariant: ['tabular-nums'] },
+  faces: { marginTop: 44, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 16, paddingHorizontal: 16 },
   rings: { position: 'absolute', alignSelf: 'center', top: -60 },
-  face: { width: 100, alignItems: 'center', gap: 10 },
-  quiet: { opacity: 0.6 },
-  faceName: { ...inkFace('subStrong'), color: colors.onMedia },
-  head: { marginTop: 50, paddingHorizontal: space.xl },
-  who: { ...inkFace('caption'), color: 'rgba(255,255,255,0.72)' },
+  face: { width: 98, alignItems: 'center', gap: 10 },
+  faceTalking: { transform: [{ scale: 1.04 }] },
+  quiet: { opacity: 0.56, transform: [{ scale: 0.96 }] },
+  avatarStage: { alignItems: 'center', justifyContent: 'center' },
+  halo: { position: 'absolute', borderWidth: 1.5 },
+  avatarRing: {
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  faceName: { ...inkFace('subStrong'), fontSize: 13.5, color: colors.onMedia },
+  head: { marginTop: 34, paddingHorizontal: space.xl, alignItems: 'center' },
+  callTitle: { textAlign: 'center', color: colors.onMedia },
+  offlinePanel: {
+    backgroundColor: 'rgba(20,20,28,0.84)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.14)',
+    alignItems: 'stretch',
+  },
+  offlineAccent: { borderLeftWidth: 2.5, paddingLeft: 12, gap: 3 },
+  offlineWho: { ...inkFace('caption'), fontWeight: '700', letterSpacing: 0.25 },
+  offlineSerif: { fontFamily: fonts.serifItalic, fontSize: 16, lineHeight: 22.5, color: 'rgba(255,255,255,0.94)' },
   badge: {
     position: 'absolute',
     right: -2,
     bottom: -2,
-    width: 30,
-    height: 30,
-    borderRadius: inkRadius.pill,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: systemColors.green,
-    borderWidth: 3,
-    borderColor: 'rgba(16,16,24,0.55)',
+    borderWidth: 2.5,
+    borderColor: '#0E0E15',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
   },
-  bar: { width: 3, height: 12, borderRadius: inkRadius.pill, backgroundColor: colors.onMedia },
+  bar: { width: 2.5, height: 11, borderRadius: 1.5, backgroundColor: colors.onMedia },
 });

@@ -1,40 +1,46 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, type KeyboardTypeOptions, type LayoutChangeEvent, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { InkNavBar } from '@/components/ink';
 import { PressableScale, Txt } from '@/components/ui';
 import type { CoachLevel, CoachResult } from '@/lib/greeting-coach';
-import { colors, fonts, space, systemColors, systemGround } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { bottomRoom, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+
+const GLASS_RIM = 'rgba(255,255,255,0.11)';
+const FIELD_BG = '#0E0E14';
+const FIELD_RIM = 'rgba(255,255,255,0.10)';
+const FIELD_FOCUS = 'rgba(235,173,132,0.55)';
+const CHIP_BG = 'rgba(118,118,128,0.22)';
+const DOCK_BG = 'rgba(9,9,13,0.94)';
 
 /**
- * The create screen's parts in the playful skin (design-style §10, 0z149): the cream ground, a
- * heavy rounded title, white cards with soft chips, the ✦ that writes a field again, and one big
- * peach button at the bottom. Text the user types stays on the system face (every script).
+ * Create Character kit (approved Ink Night+ prototype): pinned Apple HIG sticky nav bar, hairline-
+ * rimmed obsidian cards, sunken focus-tinted input wells, dark-glass chips & ✦ rewrite buttons,
+ * 4-bar Greeting Coach meter, and an anchored obsidian dock with a crisp white primary CTA.
  */
 
-/** The top: a round back button and the screen's title. */
-export function CreateHead({ title, onBack, right }: { title: string; onBack: () => void; right?: ReactNode }) {
+/** Sticky Apple HIG top bar for all Create Character phases. */
+export function CreateHead({
+  title,
+  onBack,
+  right,
+  scrolled = true,
+}: {
+  title: string;
+  onBack: () => void;
+  right?: ReactNode;
+  scrolled?: boolean;
+}) {
   const { t } = useTranslation();
-  return (
-    <View style={styles.head}>
-      <PressableScale onPress={onBack} scaleTo={0.9} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('common.back')} style={styles.round}>
-        <Ionicons name="chevron-back" size={22} color={systemGround.label} />
-      </PressableScale>
-      {/* A long title ("Редактировать персонажа") shrinks to fit rather than being cut. */}
-      <Txt style={[styles.title, styles.grow]} lines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-        {title}
-      </Txt>
-      {right}
-    </View>
-  );
+  return <InkNavBar backLabel={t('common.back')} onBack={onBack} title={title} scrolled={scrolled} right={right} />;
 }
 
-/** A white card with a heavy title; `problem` shows what is missing here, in red, and rings it. */
+/** An Ink Night+ card with a serif title; `problem` rings it in red and names what is missing. */
 export function Card({
   title,
   right,
@@ -73,7 +79,7 @@ export function Card({
   );
 }
 
-/** A labelled input on a soft well; `action` (✦) sits at the label's end. */
+/** A labelled input on a sunken dark well that lights in warm peach on focus; `action` (✦) sits at the label's end. */
 export function Field({
   label,
   value,
@@ -98,6 +104,7 @@ export function Field({
   action?: ReactNode;
   rows?: number;
 }) {
+  const [focused, setFocused] = useState(false);
   return (
     <View style={styles.field}>
       {hideLabel ? null : (
@@ -110,9 +117,16 @@ export function Field({
       <TextInput
         value={value}
         onChangeText={onChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         placeholder={placeholder}
-        placeholderTextColor={colors.textFaint}
-        style={[styles.input, multiline && { minHeight: 22 * rows + 24, textAlignVertical: 'top' }]}
+        placeholderTextColor={ink.placeholder}
+        selectionColor={ink.accent}
+        style={[
+          styles.input,
+          focused && styles.inputFocused,
+          multiline && { minHeight: 22 * rows + 22, textAlignVertical: 'top' },
+        ]}
         maxLength={max}
         multiline={multiline}
         keyboardType={keyboardType}
@@ -123,11 +137,16 @@ export function Field({
 }
 
 /** The greeting coach's colour for each level: iOS system colours, warm to green. */
-const LEVEL_COLOR: Record<CoachLevel, string> = { weak: systemColors.orange, okay: systemColors.yellow, good: systemColors.green, great: systemColors.green };
+const LEVEL_COLOR: Record<CoachLevel, string> = {
+  weak: systemColors.orange,
+  okay: systemColors.yellow,
+  good: systemColors.green,
+  great: systemColors.green,
+};
 
 /**
- * The greeting coach under the first message (0z295, `src/lib/greeting-coach.ts`): four bars and the
- * level on one line, the one thing to do next under it. Nothing while the greeting is empty.
+ * The greeting coach under the first message (0z295, `src/lib/greeting-coach.ts`): four equal
+ * flex bars and the level on one line, the one thing to do next under it. Nothing while empty.
  */
 export function GreetingMeter({ result }: { result: CoachResult | null }) {
   const { t } = useTranslation();
@@ -157,7 +176,7 @@ export function FieldPair({ children }: { children: ReactNode }) {
   return <View style={styles.pair}>{children}</View>;
 }
 
-/** One soft chip: ink when on. */
+/** One dark-glass Ink Night+ chip: crisp white with dark ink when on. */
 export function Chip({ label, on, onPress, icon }: { label: string; on: boolean; onPress: () => void; icon?: ReactNode }) {
   return (
     <PressableScale
@@ -190,7 +209,7 @@ export function ChipGroup({ label, right, children }: { label?: string; right?: 
   );
 }
 
-/** ✦: write this again. A spinner while it is being written. */
+/** ✦: write this again. Dark-glass circle with warm peach sparkle; a spinner while busy. */
 export function Rewrite({ label, busy, disabled, onPress }: { label: string; busy: boolean; disabled?: boolean; onPress: () => void }) {
   return (
     <Pressable
@@ -201,16 +220,31 @@ export function Rewrite({ label, busy, disabled, onPress }: { label: string; bus
       accessibilityLabel={label}
       accessibilityState={{ busy, disabled: !!disabled }}
       style={({ pressed }) => [styles.rewrite, pressed && styles.pressed, disabled && styles.off]}>
-      {busy ? <ActivityIndicator size="small" color={colors.brandText} /> : <Ionicons name="sparkles" size={16} color={colors.brandText} />}
+      {busy ? <ActivityIndicator size="small" color={ink.accent} /> : <Ionicons name="sparkles" size={15} color={ink.accent} />}
     </Pressable>
   );
 }
 
-/** A small round icon button inside a card (shuffle, remove). */
-export function SmallRound({ icon, label, onPress, color = systemGround.label }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void; color?: string }) {
+/** A small round dark-glass icon button inside a card (shuffle, remove). */
+export function SmallRound({
+  icon,
+  label,
+  onPress,
+  color = ink.text,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+  color?: string;
+}) {
   return (
-    <Pressable onPress={onPress} hitSlop={8} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [styles.rewrite, styles.soft, pressed && styles.pressed]}>
-      <Ionicons name={icon} size={17} color={color} />
+    <Pressable
+      onPress={onPress}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [styles.rewrite, pressed && styles.pressed]}>
+      <Ionicons name={icon} size={16} color={color} />
     </Pressable>
   );
 }
@@ -224,12 +258,15 @@ export function Disclosure({ label, open, onPress }: { label: string; open: bool
       accessibilityState={{ expanded: open }}
       style={({ pressed }) => [styles.disclosure, pressed && styles.pressed]}>
       <Txt style={[styles.disclosureText, styles.grow]}>{label}</Txt>
-      <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textSecondary} />
+      <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={ink.text2} />
     </Pressable>
   );
 }
 
-/** The bottom: one big peach button over a fade of the ground, a line under it, and room for an error. */
+/**
+ * Anchored obsidian dock: crisp white primary PillButton CTA, error slot above, and clean
+ * caption + inline peach secondary action (e.g. "3 of 3 left today" | "Fill in myself") below.
+ */
 export function BottomBar({
   label,
   onPress,
@@ -250,108 +287,180 @@ export function BottomBar({
   secondary?: { label: string; onPress: () => void };
 }) {
   const insets = useSafeAreaInsets();
+  const isDisabled = !!(disabled || busy);
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, space.md) }]} pointerEvents="box-none">
-      <LinearGradient colors={systemGround.groundFade} style={styles.fade} pointerEvents="none" />
-      <View style={styles.barBody}>
-        {error ? (
-          <Animated.View entering={FadeIn.duration(160)}>
-            <Txt style={styles.error}>{error}</Txt>
-          </Animated.View>
-        ) : null}
-        <PressableScale
-          onPress={onPress}
-          disabled={disabled || busy}
-          scaleTo={0.97}
-          accessibilityRole="button"
-          accessibilityLabel={label}
-          accessibilityState={{ disabled: !!(disabled || busy), busy: !!busy }}
-          style={[styles.cta, disabled && !busy && styles.ctaOff]}>
-          {busy ? <ActivityIndicator color={colors.textOnPrimary} /> : left}
-          <Txt style={[styles.ctaText, disabled && !busy && styles.ctaTextOff]} maxFontSizeMultiplier={1.2}>
-            {label}
+    <View style={[styles.bar, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+      {error ? (
+        <Animated.View entering={FadeIn.duration(160)}>
+          <Txt style={styles.error}>{error}</Txt>
+        </Animated.View>
+      ) : null}
+      <PressableScale
+        onPress={onPress}
+        disabled={isDisabled}
+        scaleTo={0.97}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ disabled: isDisabled, busy: !!busy }}
+        style={[styles.cta, disabled && !busy && styles.ctaOff]}>
+        {busy ? <ActivityIndicator color={ink.onPill} /> : left}
+        <Txt style={[styles.ctaText, disabled && !busy && styles.ctaTextOff]} maxFontSizeMultiplier={1.2}>
+          {label}
+        </Txt>
+      </PressableScale>
+      {secondary && caption ? (
+        <View style={styles.footRow}>
+          <Txt style={[styles.captionLeft, styles.tabular]} lines={1}>
+            {caption}
           </Txt>
-        </PressableScale>
-        {secondary ? (
-          <PressableScale onPress={secondary.onPress} scaleTo={0.97} accessibilityRole="button" style={styles.secondary}>
-            <Txt style={styles.secondaryText} maxFontSizeMultiplier={1.2}>
+          <PressableScale
+            onPress={secondary.onPress}
+            hitSlop={8}
+            scaleTo={0.95}
+            accessibilityRole="button"
+            style={styles.secondaryInline}>
+            <Txt style={styles.secondaryInlineText} maxFontSizeMultiplier={1.2}>
               {secondary.label}
             </Txt>
           </PressableScale>
-        ) : null}
-        {caption ? <Txt style={styles.caption}>{caption}</Txt> : null}
-      </View>
+        </View>
+      ) : secondary ? (
+        <PressableScale onPress={secondary.onPress} scaleTo={0.97} accessibilityRole="button" style={styles.secondary}>
+          <Txt style={styles.secondaryText} maxFontSizeMultiplier={1.2}>
+            {secondary.label}
+          </Txt>
+        </PressableScale>
+      ) : caption ? (
+        <Txt style={styles.caption}>{caption}</Txt>
+      ) : null}
     </View>
   );
 }
 
-/** How much room the bar takes, so a scroll ends above it. */
-export const BOTTOM_BAR_SPACE = 170;
+/** How much room the dock takes, so a scroll ends cleanly above it. */
+export const BOTTOM_BAR_SPACE = 136;
 
 const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  round: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  title: { ...inkFace('title'), color: systemGround.label },
-  card: { marginHorizontal: space.lg, marginTop: 14, padding: space.lg, borderRadius: 24, backgroundColor: systemGround.card, borderWidth: 2, borderColor: 'transparent' },
-  cardProblem: { borderColor: systemColors.red },
-  cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  cardTitle: { ...inkFace('cardSmall'), color: systemGround.label },
+  tabular: { fontVariant: ['tabular-nums'] },
+  card: {
+    marginHorizontal: inkGutter,
+    marginTop: 14,
+    padding: 16,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  cardProblem: { borderWidth: 1.5, borderColor: systemColors.red },
+  cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 8 },
+  cardTitle: { ...inkFace('cardSmall'), color: ink.text },
   problem: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
   problemText: { ...inkFace('subStrong'), flex: 1, color: systemColors.red },
-  field: { marginTop: space.sm },
-  meter: { marginTop: space.sm, gap: 4 },
-  meterRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  bars: { flexDirection: 'row', gap: 4 },
-  meterBar: { width: 22, height: 5, borderRadius: 3, backgroundColor: systemGround.fill },
-  meterLevel: { ...inkFace('subStrong') },
-  meterTip: { ...inkFace('caption'), color: colors.textSecondary },
-  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginBottom: 6 },
-  label: { ...inkFace('subStrong'), color: colors.textSecondary },
-  count: { ...inkFace('caption'), color: colors.textSecondary, fontVariant: ['tabular-nums'] },
+  field: { marginTop: 10 },
+  meter: { marginTop: 10, gap: 5 },
+  meterRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  bars: { flex: 1, flexDirection: 'row', gap: 5 },
+  meterBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: ink.hairlineFill },
+  meterLevel: { ...inkFace('caption'), fontWeight: '700' },
+  meterTip: { ...inkFace('caption'), fontWeight: '400', color: ink.text2 },
+  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 30, marginBottom: 6 },
+  label: { ...inkFace('footnoteStrong'), color: ink.text2 },
+  count: { ...inkFace('caption'), color: ink.text3, fontVariant: ['tabular-nums'] },
   input: {
     ...inkFace('body'),
-    minHeight: 48,
-    paddingHorizontal: 14,
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderRadius: 14,
-    backgroundColor: systemGround.fill,
-    color: colors.text,
+    fontSize: 15,
+    lineHeight: 21,
+    minHeight: 46,
+    paddingHorizontal: 13,
+    paddingTop: 11,
+    paddingBottom: 11,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    backgroundColor: FIELD_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: FIELD_RIM,
+    color: ink.text,
   },
-  pair: { flexDirection: 'row', gap: space.md },
+  inputFocused: { borderColor: FIELD_FOCUS },
+  pair: { flexDirection: 'row', gap: 10 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, borderRadius: 19, backgroundColor: systemGround.fill },
-  chipOn: { backgroundColor: systemGround.label },
-  chipText: { ...inkFace('subStrong'), color: systemGround.label },
-  chipTextOn: { color: systemGround.ground },
-  rewrite: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySofter },
-  soft: { backgroundColor: systemGround.fill },
-  pressed: { opacity: 0.6 },
-  off: { opacity: 0.4 },
-  disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 44, marginTop: space.sm },
-  // Reads as a card title: the closed card is its own section.
-  disclosureText: { ...inkFace('cardSmall'), color: systemGround.label },
-  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: systemGround.ground },
-  // The ground fades in above the bar; behind it the ground is solid, so nothing shows through.
-  fade: { position: 'absolute', left: 0, right: 0, top: -28, height: 28 },
-  barBody: { paddingHorizontal: space.lg, paddingTop: space.sm, gap: space.sm, backgroundColor: systemGround.ground },
+  chip: {
+    minHeight: 34,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 13,
+    paddingVertical: 6,
+    borderRadius: 17,
+    backgroundColor: CHIP_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  chipOn: { backgroundColor: ink.pill, borderColor: ink.pill },
+  chipText: { ...inkFace('footnoteStrong'), fontSize: 13, color: 'rgba(235,235,245,0.82)' },
+  chipTextOn: { color: ink.ground },
+  rewrite: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+  },
+  pressed: { opacity: 0.65 },
+  off: { opacity: 0.38 },
+  disclosure: { flexDirection: 'row', alignItems: 'center', minHeight: 42 },
+  disclosureText: { ...inkFace('cardSmall'), color: ink.text },
+  bar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: inkGutter,
+    paddingTop: 10,
+    gap: 8,
+    backgroundColor: DOCK_BG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: ink.edge,
+  },
   cta: {
-    height: 56,
-    borderRadius: 28,
+    height: 52,
+    borderRadius: 26,
+    borderCurve: 'continuous',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: space.sm,
-    backgroundColor: colors.primaryFill,
+    gap: 8,
+    backgroundColor: ink.pill,
   },
-  // Off: a solid soft fill, never see-through.
-  ctaOff: { backgroundColor: systemGround.fill },
-  ctaTextOff: { color: colors.textFaint },
-  // System bold: the button's words come in every script.
-  ctaText: { ...inkFace('bodyStrong'), color: colors.textOnPrimary },
-  caption: { ...inkFace('footnote'), textAlign: 'center', color: colors.textSecondary },
-  secondary: { height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  secondaryText: { ...inkFace('bodyStrong'), color: systemGround.label },
-  error: { ...inkFace('subStrong'), textAlign: 'center', color: systemColors.red },
+  ctaOff: { backgroundColor: ink.raised },
+  ctaText: { ...inkFace('bodyStrong'), color: ink.onPill },
+  ctaTextOff: { color: ink.text3 },
+  footRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    paddingHorizontal: 4,
+    minHeight: 28,
+  },
+  captionLeft: { ...inkFace('caption'), fontWeight: '400', color: ink.text2, flexShrink: 1 },
+  secondaryInline: { minHeight: 28, justifyContent: 'center', paddingHorizontal: 4 },
+  secondaryInlineText: { ...inkFace('caption'), fontSize: 12.5, color: ink.accent },
+  caption: { ...inkFace('caption'), fontWeight: '400', textAlign: 'center', color: ink.text2 },
+  secondary: {
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: GLASS_RIM,
+  },
+  secondaryText: { ...inkFace('subStrong'), color: ink.text },
+  error: { ...inkFace('footnoteStrong'), textAlign: 'center', color: systemColors.red },
 });

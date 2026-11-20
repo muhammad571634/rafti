@@ -52,6 +52,8 @@ export interface MessageBubbleProps {
   onDoubleTap?: (message: Message) => void;
   /** Group chats: the member's name over the first bubble of their run. */
   senderName?: string;
+  /** Group chats: optional friend-accent hue for sender label, avatar ring, and Variant A narration rule. */
+  accentColor?: string;
   /** Group chats: the "not real people" line names everyone. */
   aiNoticeText?: string;
   /** The line is pinned to Memories: a small pin sits on its top corner. */
@@ -98,6 +100,7 @@ export const MessageBubble = memo(function MessageBubble({
   onLongPress,
   onDoubleTap,
   senderName,
+  accentColor,
   aiNoticeText,
   pinned,
   onRetry,
@@ -201,7 +204,7 @@ export const MessageBubble = memo(function MessageBubble({
       ) : message.kind === 'image' && message.imageUri ? (
         <ChatPhoto uri={message.imageUri} aspect={message.imageAspect} />
       ) : (
-        <TextBubble message={message} mine={mine} tail={runEnd} quoteTitle={quoteTitle} onQuotePress={quotePress} />
+        <TextBubble message={message} mine={mine} tail={runEnd} accentColor={accentColor} quoteTitle={quoteTitle} onQuotePress={quotePress} />
       )}
       {burst ? <Anim key={burst} name="heartBurst" size={BURST} loop={false} style={styles.burst} /> : null}
       {pinned ? (
@@ -304,8 +307,18 @@ export const MessageBubble = memo(function MessageBubble({
                   accessibilityLabel={name}
                   onPress={() => onAvatarPress(character)}
                   hitSlop={8}>
-                  <CharacterAvatar character={character} size={AVATAR} />
+                  {accentColor ? (
+                    <View style={[styles.avatarRing, { borderColor: accentColor }]}>
+                      <CharacterAvatar character={character} size={AVATAR - 4} />
+                    </View>
+                  ) : (
+                    <CharacterAvatar character={character} size={AVATAR} />
+                  )}
                 </PressableScale>
+              ) : accentColor ? (
+                <View style={[styles.avatarRing, { borderColor: accentColor }]}>
+                  <CharacterAvatar character={character} size={AVATAR - 4} />
+                </View>
               ) : (
                 <CharacterAvatar character={character} size={AVATAR} />
               )
@@ -314,7 +327,11 @@ export const MessageBubble = memo(function MessageBubble({
           {column ? (
             <View style={styles.column}>
               {named ? (
-                <Txt variant="caption" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} lines={1} style={[styles.sender, onPhoto && styles.photoShadow]}>
+                <Txt
+                  variant="caption"
+                  color={accentColor ?? (onPhoto ? colors.onMediaSoft : colors.textSecondary)}
+                  lines={1}
+                  style={[styles.sender, accentColor && styles.senderAccented, onPhoto && styles.photoShadow]}>
                   {senderName}
                 </Txt>
               ) : null}
@@ -334,12 +351,14 @@ function TextBubble({
   message,
   mine,
   tail,
+  accentColor,
   quoteTitle,
   onQuotePress,
 }: {
   message: Message;
   mine: boolean;
   tail: boolean;
+  accentColor?: string;
   quoteTitle?: string;
   onQuotePress?: (id: string) => void;
 }) {
@@ -376,7 +395,7 @@ function TextBubble({
           {visible.map((block, i) =>
             block.kind === 'action' ? (
               <View key={i} style={styles.actionBlock}>
-                <View style={[styles.actionBar, mine ? styles.actionBarMine : styles.actionBarTheirs]} />
+                <View style={[styles.actionBar, mine ? styles.actionBarMine : accentColor ? { backgroundColor: accentColor, opacity: 0.9 } : styles.actionBarTheirs]} />
                 <Txt style={[styles.actionBlockText, actionStyle]}>{block.text}</Txt>
               </View>
             ) : (
@@ -907,6 +926,7 @@ const styles = StyleSheet.create({
   // A bubble with a member's name or a time shares one column with them, which carries the cap instead.
   column: { flexShrink: 1, maxWidth: '72%', alignItems: 'flex-start', gap: 3 },
   sender: { paddingLeft: space.xs },
+  senderAccented: { fontWeight: '700' },
   timeTheirs: { paddingTop: 0, paddingRight: 0, paddingLeft: space.xs },
   wide: { maxWidth: '100%' },
   fill: { maxWidth: '100%' },
@@ -946,6 +966,15 @@ const styles = StyleSheet.create({
   runEnd: { marginBottom: space.sm + 2 },
   mine: { flex: 1, alignItems: 'flex-end' },
   avatarSlot: { width: AVATAR },
+  avatarRing: {
+    width: AVATAR,
+    height: AVATAR,
+    borderRadius: AVATAR / 2,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   // The avatar stays level with the bubble, above the time's line (14pt + the 3pt gap).
   avatarOverTime: { marginBottom: 17 },
   bubble: {

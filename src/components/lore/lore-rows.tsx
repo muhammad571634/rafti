@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
-import { CharacterAvatar, characterImage, GlassButton, Sheet, Txt } from '@/components/ui';
+import { InkIconButton } from '@/components/ink';
+import { CharacterAvatar, characterImage, Sheet, Txt } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space, systemColors } from '@/theme';
@@ -162,7 +163,7 @@ export function LoreInfoButton() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <GlassButton icon="information-circle-outline" accessibilityLabel={t('lore.infoTitle')} onPress={() => setOpen(true)} />
+      <InkIconButton icon="information-circle-outline" size={20} accessibilityLabel={t('lore.infoTitle')} onPress={() => setOpen(true)} />
       <Sheet visible={open} onClose={() => setOpen(false)} title={t('lore.infoTitle')}>
         <View style={styles.info}>
           {INFO.map((point) => (

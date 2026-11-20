@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
 import * as Clipboard from 'expo-clipboard';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +45,8 @@ import { haptic } from '@/lib/haptics';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, nightColors, playfulNightGround, space } from '@/theme';
+import { colors, friendAccent, nightColors, space } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import type { Character, Message, ReplyTo, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -205,12 +207,15 @@ export default function GroupChatScreen() {
         : typers.length === 2
           ? t('group.typingTwo', { a: nameOf(typers[0]), b: nameOf(typers[1]) })
           : t('group.typingMany', { a: nameOf(typers[0]), b: nameOf(typers[1]), c: nameOf(typers[2]) });
-  // The group's own background (info → Chat background), drawn as a one-to-one chat draws it.
+  // The group's own background (info → Chat background). Default swaps legacy brown ground for Ink obsidian.
   const backgroundId = group?.backgroundId ?? CREAM_BG;
   const artWallpaper = chatArtBackgroundsById[backgroundId];
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
   // An Art wallpaper is a picture: the one-to-one chat's picture look (`chat-ground.tsx`).
   const onPicture = !!artWallpaper;
+  const onDefaultInk = !onPicture && (backgroundId === CREAM_BG || backgroundId === 'bg_plain');
+  const screenGround = (onPicture ? [colors.black, colors.black] : onDefaultInk ? [ink.ground, ink.ground] : wallpaper.colors) as readonly [string, string];
+  const headerFadeColor = onDefaultInk ? ink.ground : wallpaper.colors[0];
   const pictureTop = usePictureListTop(onPicture, insets.top + HEADER_ROOM);
 
   // Only messages that arrive while the group is open animate in.
@@ -254,6 +259,7 @@ export default function GroupChatScreen() {
           receipt={item.id === lastMine}
           showTime={run.showTime}
           senderName={author ? nameOf(author) : undefined}
+          accentColor={author ? friendAccent(author.id).strong : undefined}
           aiNoticeText={noticeText}
           onLongPress={openMenu}
           onDoubleTap={toggleLove}
@@ -383,15 +389,22 @@ export default function GroupChatScreen() {
   const headerRoom = insets.top + HEADER_ROOM;
 
   return (
-    <Screen
-      background={(onPicture ? [colors.black, colors.black] : wallpaper.colors) as readonly [string, string]}
-      statusBarStyle="light"
-      edgeToEdge>
+    <Screen background={screenGround} statusBarStyle="light" edgeToEdge>
       {/* Always dark (appearance B, owner 2026-11-11): every ground takes the on-picture look. */}
       <ChatGroundProvider value>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
-        {artWallpaper ? <PictureGround picture={{ source: artWallpaper.image }} /> : null}
+        {artWallpaper ? (
+          <PictureGround picture={{ source: artWallpaper.image }} />
+        ) : onDefaultInk ? (
+          <LinearGradient
+            pointerEvents="none"
+            colors={['rgba(168,147,240,0.14)', 'rgba(9,9,13,0)']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.ambient}
+          />
+        ) : null}
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <View style={styles.flex}>
             <FlatList
@@ -413,7 +426,13 @@ export default function GroupChatScreen() {
               ListHeaderComponent={
                 <>
                   {block ? null : <ReplyControls count={1} index={0} onStep={() => {}} onContinue={goOn} />}
-                  {typers.length ? <TypingRow characters={typers} label={typingLabel} /> : null}
+                  {typers.length ? (
+                    <TypingRow
+                      characters={typers}
+                      label={typingLabel}
+                      accentColor={typers.length === 1 ? friendAccent(typers[0].id).strong : undefined}
+                    />
+                  ) : null}
                 </>
               }
               // A row far up is not measured yet: jump near it, then aim again.
@@ -424,7 +443,7 @@ export default function GroupChatScreen() {
             />
             {onPicture ? <PictureEdge top={pictureTop} /> : null}
             <JumpToNewest visible={away} unseen={unseen} onPress={jump} />
-            {!artWallpaper ? <HeaderFade color={wallpaper.colors[0]} room={headerRoom} /> : null}
+            {!artWallpaper ? <HeaderFade color={headerFadeColor} room={headerRoom} /> : null}
           </View>
 
           <ChatInput
@@ -447,7 +466,7 @@ export default function GroupChatScreen() {
         </KeyboardAvoidingView>
 
         <ChatHeader
-          avatar={<GroupAvatar members={members} size={46} ringColor={playfulNightGround} />}
+          avatar={<GroupAvatar members={members} size={46} ringColor={headerFadeColor} />}
           title={title}
           identityLabel={`${t('group.rowLabel', { name: title })}, ${t('group.members', { count: members.length })}, ${t('group.info')}`}
           onIdentity={openInfo}
@@ -469,16 +488,18 @@ export default function GroupChatScreen() {
           {members.map((member, index) => (
             <PressableScale
               key={member.id}
-              scaleTo={1}
+              scaleTo={0.99}
               style={[styles.way, index < members.length - 1 && styles.wayLine]}
               accessibilityRole="button"
               accessibilityLabel={displayName(member, relationships[member.id])}
               onPress={() => withOne && openWith(withOne, member)}>
-              <CharacterAvatar character={member} size={ROW_AVATAR} />
+              <View style={[styles.wayAvatarRing, { borderColor: friendAccent(member.id).strong }]}>
+                <CharacterAvatar character={member} size={ROW_AVATAR - 4} />
+              </View>
               <Txt style={styles.wayName} lines={1}>
                 {displayName(member, relationships[member.id])}
               </Txt>
-              <Ionicons name="chevron-forward" size={15} color={colors.textFaint} />
+              <Ionicons name="chevron-forward" size={15} color={ink.text3} />
             </PressableScale>
           ))}
         </View>
@@ -582,13 +603,30 @@ export default function GroupChatScreen() {
 const NO_ONE: string[] = [];
 
 const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
   flex: { flex: 1 },
   // As the one-to-one chat's art veil: the picture stays, the bubbles stay easy to read.
   missing: { padding: space.xl },
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: nightColors.primarySoft },
   list: { paddingTop: space.sm },
-  ways: { borderRadius: 14, backgroundColor: colors.bg, overflow: 'hidden' },
+  ways: {
+    borderRadius: inkRadius.row,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
   way: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 60, paddingHorizontal: space.lg },
-  wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderStrong },
-  wayName: { flex: 1, fontSize: 17, letterSpacing: -0.4 },
+  wayLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
+  wayAvatarRing: {
+    width: ROW_AVATAR,
+    height: ROW_AVATAR,
+    borderRadius: ROW_AVATAR / 2,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  wayName: { flex: 1, fontSize: 17, letterSpacing: -0.4, color: ink.text },
 });

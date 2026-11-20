@@ -12,11 +12,12 @@ import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftF
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
 import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, Rewrite, SmallRound } from '@/components/create/kit';
+import { InkText, PhotoGlassPill } from '@/components/ink';
 import { coachGreeting } from '@/lib/greeting-coach';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { ListRow, PressableScale, Screen, Sheet, Toggle, Txt } from '@/components/ui';
+import { ListRow, PressableScale, Screen, Sheet, Toggle, Txt, useScrolledPast } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { clearCreation, loadCreation, saveCreation } from '@/lib/create-draft-storage';
@@ -53,8 +54,8 @@ import {
 } from '@/lib/create-character';
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, fonts, space, systemColors, systemGround } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { avatarGradients, colors, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 import { keepCharacterPicture } from '@/lib/character-picture';
@@ -67,7 +68,11 @@ const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
 const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
 /** How long typing waits before the unfinished character is kept on the phone. */
 const SAVE_AFTER_MS = 600;
-const SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.68)'] as const;
+const SCRIM = ['rgba(9,9,13,0.20)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.45)', 'rgba(9,9,13,0.92)'] as const;
+const SCRIM_STOPS = [0, 0.32, 0.62, 1] as const;
+const FIELD_BG = '#0E0E14';
+const FIELD_RIM = 'rgba(255,255,255,0.10)';
+const SHARE_TILE_BG = 'rgba(48,209,88,0.16)';
 /** "Alisa Vetrova" -> "AV": the same letters their avatar shows without a picture. */
 const initialsOf = (name: string) =>
   name
@@ -242,8 +247,8 @@ export default function CreateCharacterScreen() {
 
   if (editId && !editing) {
     return (
-      <Screen background={systemGround.ground}>
-        <CreateHead title={t('errors.notFound')} onBack={() => router.back()} />
+      <Screen background={ink.ground}>
+        <CreateHead title={t('errors.notFound')} onBack={() => router.back()} scrolled />
       </Screen>
     );
   }
@@ -258,6 +263,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   const router = useRouter();
   const navigation = useNavigation();
   const keyboardUp = useKeyboardVisible();
+  const { scrolled, onScroll } = useScrolledPast(34);
   const addCharacter = useAppStore((s) => s.addCharacter);
   const ownWorlds = useAppStore((s) => s.lorebooks);
   const setLoreLink = useAppStore((s) => s.setLoreLink);
@@ -665,15 +671,15 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   const title = editing ? t('createCharacter.editTitle') : t('createCharacter.title');
 
   return (
-    <Screen background={systemGround.ground}>
-      <CreateHead title={title} onBack={back} />
+    <Screen background={ink.ground}>
+      <CreateHead title={title} onBack={back} scrolled={scrolled} />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {phase === 'writing' ? (
           <WritingSteps />
         ) : drawing ? (
           <DotWait title={t('createCharacter.quick.drawing')} />
         ) : phase === 'idea' ? (
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
+          <ScrollView onScroll={onScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
             {kept ? (
               <ContinueCard
                 name={kept.name.trim()}
@@ -704,9 +710,9 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
             />
           </ScrollView>
         ) : (
-          <ScrollView ref={scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
-            {/* Their picture and name, as Find shows a character: tap to choose a photo. */}
-            <View onLayout={at('who')}>
+          <ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
+            {/* Cinema hero photo card matching Find: tap photo or top-right PhotoGlassPill. */}
+            <View onLayout={at('who')} style={styles.heroWrap}>
               <PressableScale onPress={() => setPhotoMenu(true)} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={styles.hero}>
                 {form.imageUri ? (
                   <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
@@ -717,22 +723,26 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
                     </Txt>
                   </LinearGradient>
                 )}
-                <LinearGradient colors={SCRIM} style={styles.heroScrim} />
+                <LinearGradient colors={SCRIM} locations={SCRIM_STOPS} style={StyleSheet.absoluteFill} />
                 <View style={styles.heroFoot}>
-                  <Txt style={styles.heroName} lines={1} maxFontSizeMultiplier={1.2}>
+                  <InkText variant="card" color={colors.onMedia} lines={1} style={styles.heroName}>
                     {form.name.trim() || label('namePlaceholder')}
-                  </Txt>
+                  </InkText>
                   {form.tagline.trim() ? (
-                    <Txt style={styles.heroLine} lines={2}>
+                    <InkText variant="quote" color="rgba(255,255,255,0.78)" lines={2} style={styles.heroLine}>
                       {form.tagline}
-                    </Txt>
+                    </InkText>
                   ) : null}
                 </View>
-                <View style={styles.photoButton}>
-                  <Ionicons name="camera" size={16} color={colors.onMedia} />
-                  <Txt style={styles.photoButtonText}>{label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}</Txt>
-                </View>
               </PressableScale>
+              <PhotoGlassPill
+                ios="camera.fill"
+                icon="camera"
+                iconSize={14}
+                label={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}
+                onPress={() => setPhotoMenu(true)}
+                style={styles.photoPill}
+              />
             </View>
 
             <Card title={label('basics')} problem={problemText('who')}>
@@ -816,7 +826,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
             <Card title={label('voice')} problem={problemText('voice')} onLayout={at('voice')}>
               <ChipGroup>
                 {ownVoice || (editing && !editing.voicePreset) ? (
-                  <Chip label={label('flow.ownVoice')} on={ownVoice} onPress={() => set({ preset: undefined })} icon={<Ionicons name="mic" size={15} color={ownVoice ? systemGround.ground : systemGround.label} />} />
+                  <Chip label={label('flow.ownVoice')} on={ownVoice} onPress={() => set({ preset: undefined })} icon={<Ionicons name="mic" size={15} color={ownVoice ? ink.ground : ink.text} />} />
                 ) : null}
                 {VOICES.map((v) => (
                   <Chip key={v} label={t(`createCharacter.voices.${v}`)} on={!ownVoice && form.preset === v} onPress={() => set({ preset: v })} />
@@ -830,14 +840,15 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
                 <Animated.View entering={FadeInDown.duration(200)}>
                   <View style={styles.fieldHead}>
                     <Txt style={[styles.subLabel, styles.flex]}>{label('dialog')}</Txt>
-                    <Ionicons name="lock-closed" size={13} color={colors.textSecondary} accessibilityLabel={label('privateNote')} />
+                    <Ionicons name="lock-closed" size={13} color={ink.text2} accessibilityLabel={label('privateNote')} />
                     {sparkle('dialog', label('dialog'))}
                   </View>
                   <TextInput
                     value={definitionToText(form.definition, dialogLabels)}
                     onChangeText={(text) => set({ definition: textToDefinition(text, dialogLabels) })}
                     placeholder={t('createCharacter.dialogPlaceholder', dialogLabels)}
-                    placeholderTextColor={colors.textFaint}
+                    placeholderTextColor={ink.placeholder}
+                    selectionColor={ink.accent}
                     style={styles.dialog}
                     maxLength={DEFINITION_MAX}
                     multiline
@@ -846,7 +857,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
                   />
                   {editing ? (
                     <Pressable onPress={addFromChat} accessibilityRole="button" style={styles.inlineAction}>
-                      <Ionicons name="chatbubbles" size={16} color={colors.brandText} />
+                      <Ionicons name="chatbubbles" size={16} color={ink.accent} />
                       <Txt style={styles.inlineActionText}>{label('addFromChat')}</Txt>
                     </Pressable>
                   ) : null}
@@ -877,13 +888,21 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
             </Card>
 
             {canShare ? (
-              <Card title={t('community.shareTitle')}>
-                <View style={styles.toggleRow}>
-                  <Txt style={[styles.toggleText, styles.flex]}>{t('community.shareToggle')}</Txt>
+              <Card>
+                <View style={styles.shareRow}>
+                  <View style={styles.shareTile}>
+                    <Ionicons name="globe-outline" size={17} color={systemColors.green} />
+                  </View>
+                  <View style={styles.flex}>
+                    <Txt style={styles.shareTitle}>{t('community.shareTitle')}</Txt>
+                    <Txt style={[styles.shareSub, share && styles.shareSubOn]}>
+                      {share ? t('community.shareNote') : t('createCharacter.privateNote')}
+                    </Txt>
+                  </View>
                   <Toggle value={share} onChange={setShare} onColor={systemColors.green} accessibilityLabel={t('community.shareToggle')} />
                 </View>
                 {editing?.visibility === 'public' && editing.review ? (
-                  <Txt style={[styles.toggleText, styles.shareStatus, editing.review === 'rejected' && styles.shareRefused]}>
+                  <Txt style={[styles.shareSub, styles.shareStatus, editing.review === 'rejected' && styles.shareRefused]}>
                     {editing.review === 'pending'
                       ? t('community.status.pending')
                       : editing.review === 'approved'
@@ -900,7 +919,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
         {phase === 'idea' && !keyboardUp ? (
           <BottomBar
             label={quickUpsell ? t('createCharacter.quick.more') : t('createCharacter.quick.write')}
-            left={<Ionicons name="sparkles" size={18} color={colors.textOnPrimary} />}
+            left={<Ionicons name="sparkles" size={17} color={!quickUpsell && (!idea.trim() || quickLeft === 0) ? ink.text3 : ink.onPill} />}
             disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
             error={error}
             onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}
@@ -978,18 +997,19 @@ function Lines({
             value={line}
             onChangeText={(text) => onChange(lines.map((l, i) => (i === index ? text : l)))}
             placeholder={placeholder}
-            placeholderTextColor={colors.textFaint}
+            placeholderTextColor={ink.placeholder}
+            selectionColor={ink.accent}
             style={[styles.lineInput, styles.flex]}
             maxLength={size}
             multiline
             accessibilityLabel={placeholder}
           />
-          <SmallRound icon="close" label={t('createCharacter.remove')} onPress={() => onChange(lines.filter((_, i) => i !== index))} color={colors.textSecondary} />
+          <SmallRound icon="close" label={t('createCharacter.remove')} onPress={() => onChange(lines.filter((_, i) => i !== index))} color={ink.text2} />
         </View>
       ))}
       {lines.length < max ? (
         <Pressable onPress={() => onChange([...lines, ''])} accessibilityRole="button" style={styles.inlineAction}>
-          <Ionicons name="add-circle" size={18} color={colors.brandText} />
+          <Ionicons name="add-circle" size={18} color={ink.accent} />
           <Txt style={styles.inlineActionText}>{addLabel}</Txt>
         </Pressable>
       ) : null}
@@ -1004,7 +1024,7 @@ function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number
   const name = form.name.trim();
   const greeting = (form.greeting.trim() || t('createCharacter.defaultGreeting', { name })).replace(/\{\{user\}\}/g, you);
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
       <View style={styles.meet}>
         <Animated.View entering={ZoomIn.springify().damping(14)} style={styles.meetFace}>
           {form.imageUri ? (
@@ -1028,58 +1048,102 @@ function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number
           </Txt>
         </Animated.View>
       </View>
-      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={18} color={colors.textOnPrimary} />} />
+      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={ink.onPill} />} />
     </Screen>
   );
 }
 
-const HERO_H = 300;
+const HERO_H = 224;
 const MEET = 148;
 
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
-  // Find's featured card: radius 30, a scrim at the foot, the name in heavy rounded white.
-  hero: { height: HERO_H, marginHorizontal: space.lg, marginTop: space.sm, borderRadius: 30, overflow: 'hidden', backgroundColor: colors.surfaceAlt },
-  heroCenter: { alignItems: 'center', justifyContent: 'center' },
-  heroScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%' },
-  // Their avatar's monogram, white on its colours, set a little high so the name below stays clear.
-  initial: { ...inkFace('display'), marginTop: -56, color: colors.white },
-  heroFoot: { position: 'absolute', left: space.lg, right: space.lg, bottom: 18 },
-  heroName: { ...inkFace('display'), color: colors.onMedia },
-  heroLine: { ...inkFace('subStrong'), marginTop: 2, color: colors.onMediaMuted },
-  // Clear glass on a photo (Find's "Say hi"); on a colour, the same shape a shade over it.
-  photoButton: {
-    position: 'absolute',
-    top: 14,
-    right: 14,
-    height: 36,
-    paddingHorizontal: 14,
-    borderRadius: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: colors.onMediaGlass,
+  heroWrap: { marginHorizontal: inkGutter, marginTop: 4 },
+  hero: {
+    height: HERO_H,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: ink.card,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.onMediaHairline,
+    borderColor: FIELD_RIM,
   },
-  photoButtonText: { ...inkFace('subStrong'), color: colors.onMedia },
-  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.md },
-  shareStatus: { marginTop: space.sm, color: colors.textSecondary },
+  heroCenter: { alignItems: 'center', justifyContent: 'center' },
+  initial: { ...inkFace('display'), marginTop: -44, color: colors.white },
+  heroFoot: { position: 'absolute', left: 16, right: 16, bottom: 14 },
+  heroName: { fontSize: 25, lineHeight: 30 },
+  heroLine: { marginTop: 2, fontSize: 13.5, lineHeight: 19 },
+  photoPill: { position: 'absolute', top: 12, right: 12, minHeight: 34, paddingHorizontal: 12 },
+  shareRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
+  shareTile: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    borderCurve: 'continuous',
+    backgroundColor: SHARE_TILE_BG,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shareTitle: { ...inkFace('subStrong'), fontSize: 15.5, color: ink.text },
+  shareSub: { ...inkFace('caption'), fontWeight: '400', color: ink.text2, marginTop: 1 },
+  shareSubOn: { color: systemColors.green },
+  shareStatus: { marginTop: 10 },
   shareRefused: { color: systemColors.red },
-  toggleText: { ...inkFace('sub'), color: colors.text },
-  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 32, marginTop: space.sm, marginBottom: 6 },
-  subLabel: { ...inkFace('subStrong'), color: colors.textSecondary },
-  dialog: { ...inkFace('body'), minHeight: 140, padding: 14, borderRadius: 14, backgroundColor: systemGround.fill, color: colors.text },
+  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 30, marginTop: space.sm, marginBottom: 6 },
+  subLabel: { ...inkFace('footnoteStrong'), color: ink.text2 },
+  dialog: {
+    ...inkFace('body'),
+    fontSize: 15,
+    lineHeight: 21,
+    minHeight: 140,
+    padding: 13,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    backgroundColor: FIELD_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: FIELD_RIM,
+    color: ink.text,
+  },
   inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
-  inlineActionText: { ...inkFace('subStrong'), color: colors.brandText },
+  inlineActionText: { ...inkFace('footnoteStrong'), fontSize: 14, color: ink.accent },
   lines: { marginTop: space.sm },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  lineInput: { ...inkFace('body'), minHeight: 44, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, backgroundColor: systemGround.fill, color: colors.text },
+  lineInput: {
+    ...inkFace('body'),
+    fontSize: 15,
+    lineHeight: 21,
+    minHeight: 44,
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    backgroundColor: FIELD_BG,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: FIELD_RIM,
+    color: ink.text,
+  },
   meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
-  meetFace: { width: MEET, height: MEET, borderRadius: MEET / 2, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  meetFace: {
+    width: MEET,
+    height: MEET,
+    borderRadius: MEET / 2,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: FIELD_RIM,
+  },
   meetInitial: { ...inkFace('display'), color: colors.white },
-  meetTitle: { ...inkFace('display'), textAlign: 'center', color: systemGround.label },
-  // Their first message as the chat shows theirs: a white bubble.
-  meetBubble: { maxWidth: '92%', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomLeftRadius: 6, backgroundColor: systemGround.card },
-  meetBubbleText: { ...inkFace('body'), color: colors.text },
+  meetTitle: { ...inkFace('display'), textAlign: 'center', color: ink.text },
+  meetBubble: {
+    maxWidth: '92%',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 22,
+    borderBottomLeftRadius: 6,
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  meetBubbleText: { ...inkFace('body'), color: ink.text },
 });

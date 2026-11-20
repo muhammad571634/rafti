@@ -16,13 +16,14 @@ const SMALL = 22;
  * it like a run's last bubble. In a group several members can type at once: one bubble, their
  * faces overlapping (up to three) and `label` naming them ("Kai and Elio are typing").
  */
-export function TypingRow({ characters, label }: { characters: Character[]; label?: string }) {
+export function TypingRow({ characters, label, accentColor }: { characters: Character[]; label?: string; accentColor?: string }) {
   const onPhoto = useOnPhoto();
   if (characters.length === 0) return null;
   const faces = characters.slice(0, MAX_FACES);
+  const dotTint = accentColor ?? (onPhoto ? colors.onMediaSoft : colors.textSecondary);
   const bubble = (
     <View style={[styles.bubble, onPhoto && styles.photoBubble]}>
-      <Anim name="typing" size={34} tint={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
+      <Anim name="typing" size={34} tint={dotTint} />
     </View>
   );
   return (
@@ -33,7 +34,13 @@ export function TypingRow({ characters, label }: { characters: Character[]; labe
       accessibilityLiveRegion="polite"
       accessibilityLabel={label}>
       {faces.length === 1 ? (
-        <CharacterAvatar character={faces[0]} size={AVATAR} />
+        accentColor ? (
+          <View style={[styles.avatarRing, { borderColor: accentColor }]}>
+            <CharacterAvatar character={faces[0]} size={AVATAR - 4} />
+          </View>
+        ) : (
+          <CharacterAvatar character={faces[0]} size={AVATAR} />
+        )
       ) : (
         <View style={[styles.faces, { width: SMALL + (faces.length - 1) * (SMALL - 8) }]}>
           {faces.map((c, i) => (
@@ -45,7 +52,7 @@ export function TypingRow({ characters, label }: { characters: Character[]; labe
       )}
       {label ? (
         <View style={styles.named}>
-          <Txt variant="caption" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.label} lines={1}>
+          <Txt variant="caption" color={accentColor ?? (onPhoto ? colors.onMediaSoft : colors.textSecondary)} style={[styles.label, accentColor && styles.labelAccented]} lines={1}>
             {label}
           </Txt>
           {bubble}
@@ -65,6 +72,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     marginBottom: space.sm + 2,
   },
+  avatarRing: {
+    width: AVATAR,
+    height: AVATAR,
+    borderRadius: AVATAR / 2,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   // Overlapping faces, each with a ring of the ground so they read as separate people.
   faces: { height: SMALL, marginBottom: 3 },
   face: {
@@ -77,6 +93,7 @@ const styles = StyleSheet.create({
   },
   named: { flexShrink: 1, alignItems: 'flex-start', gap: 3 },
   label: { paddingLeft: space.xs },
+  labelAccented: { fontWeight: '600' },
   bubble: {
     paddingHorizontal: space.md,
     height: 38,
