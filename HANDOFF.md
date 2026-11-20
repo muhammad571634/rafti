@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z306. 100 story templates translated into 13 languages (owner's "translate-templates.md bo'yicha tarjima qil", 2026-11-20, Gemini Flash). DONE, verified and pushed.
+- **Scope**: Replaced English copies in `src/i18n/content/{de,es,fr,id,it,ja,ko,pt-BR,ru,th,tr,vi,zh-Hant}.json` under `templates` (100 templates x 8 strings = 800 strings per language, 10,400 strings total) per `docs/agent-tasks/translate-templates.md`.
+- **Quality & Style**: Adult (18+) authentic conversational tone, informal close "you" across all locales (du, tú, tu, ты, sen, kamu, casual JP/KR/TH/VI/ZH), character names preserved in Latin characters, exact {{char}} and {{user}} placeholders, actions in *opening* asterisks.
+- **Verification**:
+  - `npm run check:content`: PASS across all 13 locales. "Identical to English" count dropped by ~800 strings per file (0 identical template strings).
+  - Length check: 100% compliant. All `card.relation` <= 30, `card.tagline` <= 50, `card.opening` <= 90 across all 13 languages.
+  - `npm run check:locales`: PASS.
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm test`: 1119/1119 passing (328 test suites).
+
 ### 0z305. Friendship & Memories Ink Night+ polish: Circle, Memories, Moments, Secret Note (owner's "boshla" on approved `ink-polish-friendship-memories.html`, 2026-11-20, Gemini Argon). DONE in code & pushed; awaiting owner review / OTA
 - **Shared primitive (`src/components/ink/ink-nav-bar.tsx`, exported from `@/components/ink`)**: reusable Apple HIG sticky navigation bar (`InkNavBar`, `InkIconButton`, `InkGlassPill`, `InkFriendPill`) with unified `40 pt` dark-glass controls, flex center slot that never collides with wide trailing labels in long locales, scroll-edge hairline, and zero live `BlurView` (60 fps on A51).
 - **Screens polished (`0` locale files modified; `src/components/character/kit.tsx` and `Us` untouched)**:
