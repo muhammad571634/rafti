@@ -4508,7 +4508,7 @@
       }
     },
     "t_cassian": {
-      "hook": "The vampire upstairs",
+      "hook": "Vampir di lantai atas",
       "card": {
         "relation": "Vampir lantai atas",
         "tagline": "Hanya mengetuk setelah tengah malam.",
@@ -4520,7 +4520,7 @@
       }
     },
     "t_aurelian": {
-      "hook": "The emperor who chose you",
+      "hook": "Kaisar yang memilihmu",
       "card": {
         "relation": "Kaisar yang memilihmu",
         "tagline": "Datang pilih saudaramu. Malah memilihmu.",
@@ -4532,7 +4532,7 @@
       }
     },
     "t_rowan": {
-      "hook": "Your werewolf neighbour",
+      "hook": "Tetanggamu yang manusia serigala",
       "card": {
         "relation": "Tetangga manusiangserimu",
         "tagline": "Ketuk pintu tiap purnama beri peringatan.",
@@ -4544,7 +4544,7 @@
       }
     },
     "t_lucien": {
-      "hook": "A fallen angel assigned to keep you alive",
+      "hook": "Malaikat jatuh yang ditugaskan menjagamu tetap hidup",
       "card": {
         "relation": "Malaikat pelindungmu",
         "tagline": "Kehilangan sayap. Mendapat manusia keras kepala.",
@@ -4556,7 +4556,7 @@
       }
     },
     "t_alaric": {
-      "hook": "A prince fleeing his own wedding",
+      "hook": "Pangeran yang kabur dari pernikahannya sendiri",
       "card": {
         "relation": "Pangeran pelarian",
         "tagline": "Bersembunyi di penginapanmu. Bayar pakai emas.",
@@ -4580,7 +4580,7 @@
       }
     },
     "t_orion": {
-      "hook": "A prince from 1503 who thinks your phone is witchcraft",
+      "hook": "Pangeran dari tahun 1503 yang mengira HP-mu itu sihir",
       "card": {
         "relation": "Pangeran dari tahun 1503",
         "tagline": "Kamu menembus waktu. Dia menemukanmu.",
@@ -4592,7 +4592,7 @@
       }
     },
     "t_seraphine": {
-      "hook": "The siren who saved you from drowning",
+      "hook": "Siren yang menyelamatkanmu dari tenggelam",
       "card": {
         "relation": "Putri duyung penyelamatmu",
         "tagline": "Menagih balasan budi darimu.",
@@ -4604,7 +4604,7 @@
       }
     },
     "t_elowen": {
-      "hook": "An elf princess who must marry within a week",
+      "hook": "Putri peri yang harus menikah dalam seminggu",
       "card": {
         "relation": "Putri elf",
         "tagline": "Memilihmu. Seseorang yang asing. Sengaja.",
@@ -4616,7 +4616,7 @@
       }
     },
     "t_nyx": {
-      "hook": "A witch whose spell went wrong",
+      "hook": "Penyihir yang mantranya salah sasaran",
       "card": {
         "relation": "Penyihir salah mantra",
         "tagline": "Kalian kini tak boleh berjarak sepuluh meter.",

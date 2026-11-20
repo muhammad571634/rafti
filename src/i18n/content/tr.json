@@ -3668,7 +3668,7 @@
       }
     },
     "t_elena": {
-      "hook": "Your summer best friend, back after six years",
+      "hook": "Altı yıl sonra geri dönen yaz arkadaşın.",
       "card": {
         "relation": "Yaz arkadaşın",
         "tagline": "Hoşçakal demeden gitti. Her mektubu sakladı.",
@@ -3680,7 +3680,7 @@
       }
     },
     "t_jade": {
-      "hook": "Your gaming partner who can't sleep",
+      "hook": "Uyuyamayan oyun partnerin.",
       "card": {
         "relation": "Oyun arkadaşın",
         "tagline": "Gece 3'te arar: \"Bir şey söyle. Herhangi bir şey.\"",
@@ -3692,7 +3692,7 @@
       }
     },
     "t_lucas": {
-      "hook": "Your brother's best friend, crashing on your couch for a month",
+      "hook": "Kardeşinin en yakın arkadaşı, bir ay boyunca senin kanepende kalıyor.",
       "card": {
         "relation": "Kardeşinin en iyi arkadaşı",
         "tagline": "Kardeşine uzak duracağına söz verdi. Durmadı.",
@@ -3704,7 +3704,7 @@
       }
     },
     "t_dominic": {
-      "hook": "Your brother's cold best friend",
+      "hook": "Kardeşinin soğuk en yakın arkadaşı.",
       "card": {
         "relation": "Kardeşinin en iyi arkadaşı",
         "tagline": "Sana karşı soğuk. Biri sana yazana kadar.",
@@ -3728,7 +3728,7 @@
       }
     },
     "t_gabriel": {
-      "hook": "Your new neighbour across the hall",
+      "hook": "Koridorun karşısındaki yeni komşun.",
       "card": {
         "relation": "Komşun",
         "tagline": "Sürekli kargolarını alıyor. Kendi getiriyor.",
@@ -3740,7 +3740,7 @@
       }
     },
     "t_marco": {
-      "hook": "The best man at your sister's wedding",
+      "hook": "Kız kardeşinin düğünündeki sağdıç.",
       "card": {
         "relation": "Sağdıç",
         "tagline": "Bütün gece seni izledi. Sonunda dansa kaldırdı.",
@@ -3752,7 +3752,7 @@
       }
     },
     "t_felix": {
-      "hook": "Your best friend's older brother, home from the army",
+      "hook": "En yakın arkadaşının askerden dönen ağabeyi.",
       "card": {
         "relation": "Arkadaşının büyük ağabeyi",
         "tagline": "Çocuk gitti. Doğum gününü hatırlayarak döndü.",
@@ -3764,7 +3764,7 @@
       }
     },
     "t_arjun": {
-      "hook": "The guy your mom keeps inviting to dinner",
+      "hook": "Annenin sürekli yemeğe çağırdığı çocuk.",
       "card": {
         "relation": "Annenin yemek misafiri",
         "tagline": "Annen mükemmel olacağınızı düşünüyor. O da öyle.",
@@ -3776,7 +3776,7 @@
       }
     },
     "t_sofia": {
-      "hook": "Your mom's friend's daughter, staying the summer",
+      "hook": "Annenin arkadaşının kızı, yaz boyunca sizde kalıyor.",
       "card": {
         "relation": "Annenin arkadaşının kızı",
         "tagline": "Tüm yaz misafir odanda. Kapüşonlunun içinde.",
@@ -4340,7 +4340,7 @@
       }
     },
     "t_austin": {
-      "hook": "Your enemy and fake boyfriend",
+      "hook": "Düşmanın ve sahte sevgilin.",
       "card": {
         "relation": "Sahte sevgili & Düşman",
         "tagline": "Eski sevgilileri kıskandırmak için sahte randevu.",

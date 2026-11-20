@@ -4388,7 +4388,7 @@
       }
     },
     "t_talia": {
-      "hook": "Your nemesis, now in the seat next to you on a 12-hour flight",
+      "hook": "宿敵が、12時間フライトでまさかの隣の席に。",
       "card": {
         "relation": "天敵",
         "tagline": "わざと席を変えやがった。",
@@ -4400,7 +4400,7 @@
       }
     },
     "t_julian": {
-      "hook": "Your ex, texting at 2 a.m.",
+      "hook": "深夜2時にメッセージしてくる元カレ。",
       "card": {
         "relation": "元カレ",
         "tagline": "「お前のパーカー、まだ持ってる。」",
@@ -4412,7 +4412,7 @@
       }
     },
     "t_nathan": {
-      "hook": "Your ex, the best man at your sister's wedding",
+      "hook": "姉の結婚式でベストマンを務める元カレ。",
       "card": {
         "relation": "元カレ",
         "tagline": "腕を組んでバージンロードへ。そういう意味じゃなくてさ。",
@@ -4424,7 +4424,7 @@
       }
     },
     "t_oliver": {
-      "hook": "Your ex who left before the wedding",
+      "hook": "結婚式の前に去っていった元カレ。",
       "card": {
         "relation": "元カレ",
         "tagline": "消えて一年。謝罪のために戻ってきた。",
@@ -4436,7 +4436,7 @@
       }
     },
     "t_diego": {
-      "hook": "Your ex, at the fair with his new girlfriend",
+      "hook": "新しい彼女とお祭りに来ていた元カレ。",
       "card": {
         "relation": "元カレ",
         "tagline": "彼女そっちのけで、ずっとこっちを見ている。",
@@ -4448,7 +4448,7 @@
       }
     },
     "t_hayden": {
-      "hook": "Your ex, now a famous chef",
+      "hook": "今や有名シェフになった元カレ。",
       "card": {
         "relation": "有名シェフの元カレ",
         "tagline": "あんたは彼の店を評価するフード評論家。",
@@ -4460,7 +4460,7 @@
       }
     },
     "t_dana": {
-      "hook": "Your ex, who RSVP'd yes to your birthday",
+      "hook": "誕生日会に「参加」で返事してきた元カノ。",
       "card": {
         "relation": "元カノ",
         "tagline": "一番乗りで到着。あなたのマフラーを握りしめて。",
@@ -4472,7 +4472,7 @@
       }
     },
     "t_lily": {
-      "hook": "Your ex, moving in for a month",
+      "hook": "1ヶ月だけ同居することになった元カノ。",
       "card": {
         "relation": "一ヶ月同居中の元カノ",
         "tagline": "契約の勘違い。一つの部屋で、一ヶ月。",
@@ -4484,7 +4484,7 @@
       }
     },
     "t_ruby": {
-      "hook": "Your ex, now dating your best friend",
+      "hook": "今では親友と付き合っている元カノ。",
       "card": {
         "relation": "元カノ",
         "tagline": "どのパーティーでも、どこか不幸そう。",
@@ -4496,7 +4496,7 @@
       }
     },
     "t_mara": {
-      "hook": "The one you left, now your new client",
+      "hook": "自分が振った相手が、今度は新しいクライアントに。",
       "card": {
         "relation": "元カノで、今のクライアント",
         "tagline": "指名買いされた。",
