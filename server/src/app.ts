@@ -64,7 +64,7 @@ import { cleanImages, PHOTO_CHARS_MAX, PHOTOS_MAX } from '../../src/ai/photo-pro
 import { cleanClip, CLIP_CHARS_MAX, parseTranscript, transcribeLayout } from '../../src/ai/voice-prompt.ts';
 import { chatReply } from './chat-reply.ts';
 import { WalletError, type BootstrapInput, type Db, type UsageEvent } from './db/types.ts';
-import { LlmBusyError, type LlmProvider } from './llm/types.ts';
+import { LlmBusyError, type LlmProvider, LlmTooLargeError } from './llm/types.ts';
 import type { SpeechProvider } from './speech/elevenlabs.ts';
 import { lineSigner } from './speech/sign.ts';
 import { speechOnly } from '../../src/lib/reply-engine/narration.ts';
@@ -740,6 +740,7 @@ export function createApp(
       return c.json({ ...answer, model });
     } catch (error) {
       if (error instanceof LlmBusyError) return c.json({ error: 'busy' }, 503);
+      if (error instanceof LlmTooLargeError) return c.json({ error: 'tooLarge' }, 413);
       console.error(`[${mode}] failed`, error);
       return c.json({ error: 'failed' }, 502);
     }
@@ -1431,6 +1432,7 @@ export function createApp(
         console.warn(`[reply] busy: ${error.message.slice(0, 160)}`);
         return c.json({ error: 'busy' }, 503);
       }
+      if (error instanceof LlmTooLargeError) return c.json({ error: 'tooLarge' }, 413);
       console.error('[reply] failed', error);
       return c.json({ error: 'failed' }, 502);
     }

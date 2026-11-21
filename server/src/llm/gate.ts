@@ -1,4 +1,5 @@
-import { LlmBusyError, type LlmProvider } from './types.ts';
+import type { PromptLayout } from '../../../src/ai/prompt-layout.ts';
+import { LlmBusyError, type LlmProvider, LlmTooLargeError } from './types.ts';
 import { costUsd } from './usage.ts';
 
 /**
@@ -14,6 +15,12 @@ export interface GateLimits {
   maxWaitMs: number;
   /** A UTC day's spend at list price, in USD, for the whole service; 0 means no cap. */
   budgetUsdPerDay: number;
+  /**
+   * The longest prompt text (system tiers, history and turn; pictures apart) a call may send. The app
+   * sends the character, memory and chat itself, and a request body may hold megabytes, so this is
+   * what stops one modified client from buying a million-token call (audit P1-2, 0z323).
+   */
+  maxPromptChars: number;
 }
 
 export const GATE_LIMITS: GateLimits = {
@@ -22,7 +29,18 @@ export const GATE_LIMITS: GateLimits = {
   maxQueued: 240,
   maxWaitMs: 6000,
   budgetUsdPerDay: 0,
+  // The largest real prompt in 30 days was ~9,700 tokens (a chat reply, usage_events, 2026-11-21), about
+  // 40,000 characters; three times that leaves room for long user-made characters and lore.
+  maxPromptChars: 120_000,
 };
+
+/** The characters a laid-out prompt sends as text. */
+export function promptChars(layout: PromptLayout): number {
+  let total = layout.turn.length;
+  for (const block of layout.system) total += block.text.length;
+  for (const turn of layout.history) total += turn.text.length;
+  return total;
+}
 
 /**
  * The share of the slots and of the day's budget that side work may use (`priority: 'side'`: lines
@@ -47,7 +65,7 @@ export interface GateStats {
  * so the cap holds across restarts and machines; without it only this process's own calls count.
  */
 export function createGate(limits: Partial<GateLimits> = {}, { now = Date.now, spentToday }: { now?: () => number; spentToday?: () => Promise<number | null> } = {}) {
-  const { maxInFlight, maxQueued, maxWaitMs, budgetUsdPerDay } = { ...GATE_LIMITS, ...limits };
+  const { maxInFlight, maxQueued, maxWaitMs, budgetUsdPerDay, maxPromptChars } = { ...GATE_LIMITS, ...limits };
   const sideMax = Math.max(1, Math.floor(maxInFlight * SIDE_SHARE));
   const waiting: { start: () => void }[] = [];
   let inFlight = 0;
@@ -118,6 +136,12 @@ export function createGate(limits: Partial<GateLimits> = {}, { now = Date.now, s
       return {
         name: provider.name,
         async complete(layout, opts) {
+          const size = promptChars(layout);
+          if (maxPromptChars && size > maxPromptChars) {
+            turnedAway += 1;
+            console.warn(`[alert] prompt too large: ${size} chars (max ${maxPromptChars}), not sent`);
+            throw new LlmTooLargeError(`prompt: ${size} chars`);
+          }
           rollDay();
           const side = opts.priority === 'side';
           if (budgetUsdPerDay && spent >= budgetUsdPerDay * (side ? SIDE_SHARE : 1)) throw refuse(side ? 'budget: side work is paused for today' : "budget: today's budget is spent");

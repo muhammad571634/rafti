@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import type { PromptLayout } from '../../../src/ai/prompt-layout.ts';
-import { createGate } from './gate.ts';
-import { LlmBusyError, type LlmProvider, type LlmResult } from './types.ts';
+import { createGate, promptChars } from './gate.ts';
+import { LlmBusyError, type LlmProvider, type LlmResult, LlmTooLargeError } from './types.ts';
 
 const layout = { system: [], history: [], turn: 'hi' } as unknown as PromptLayout;
 
@@ -128,5 +128,24 @@ describe('the model gate', () => {
     assert.ok(left < 5000 && left > 4000, `left ${left}`);
     model.letGo();
     await second;
+  });
+
+  it('never sends a prompt past the size cap, counting every tier, the history and the turn', async () => {
+    const model = held();
+    const gate = createGate({ maxPromptChars: 100 });
+    const wrapped = gate.wrap(model.provider);
+    const big = { system: [{ tier: 'global', text: 'x'.repeat(40) }], history: [{ role: 'user', text: 'y'.repeat(40) }], turn: 'z'.repeat(21) } as unknown as PromptLayout;
+    assert.equal(promptChars(big), 101);
+    await assert.rejects(wrapped.complete(big, { timeoutMs: 1000 }), LlmTooLargeError);
+    assert.equal(model.seen(), 0);
+    assert.equal(gate.stats().turnedAway, 1);
+    assert.equal(gate.stats().inFlight, 0);
+    // At the cap it goes through.
+    const fits = { ...big, turn: 'z'.repeat(20) } as PromptLayout;
+    const call = wrapped.complete(fits, { timeoutMs: 1000 });
+    await tick();
+    model.letGo();
+    await call;
+    assert.equal(model.seen(), 1);
   });
 });

@@ -33,3 +33,6 @@ export interface LlmResult {
 
 /** The provider is out of quota or rate-limited (the free tier's daily cap): try later. */
 export class LlmBusyError extends Error {}
+
+/** The prompt is far past anything the app sends (`GateLimits.maxPromptChars`): never sent to the model. */
+export class LlmTooLargeError extends Error {}
