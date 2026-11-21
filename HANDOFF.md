@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z317. Group stories: a comedy in scenes with 2-3 friends (owner approved the prototype: "kino kabi, jarayon oldinga borsin", 2026-11-21, Claude 1, Opus 5.5). DONE, OTA preview (`5a967b46`, `b64ed02f`), seen on the A51
+- **What**: Find → Stories → Groups chip, three stories (Dorm 214, Three Brothers Café, Operation Ring), each 2-3 members and 5 scenes; a card tap makes the members and a story group chat that opens on scene 1 (scene card, then two members talk before the user); every member turn carries the story cue (premise, scene, goal, sitcom tone) through the existing group cue, so no server deploy; Next scene chip (lit after 6 messages); after the last scene the group goes on. Design: `docs/group-stories.md`; cost rows in `docs/cost-ledger.md`.
+- **Seen on the A51 (Russian)**: Groups chip and cards; Operation Ring playing scene 2 with in-character Russian lines from Bea and Oscar, Next scene chip over the input.
+- **Still to do**: translate the cards/scene cards into the 12 other content files (brief `docs/agent-tasks/translate-group-stories.md`, Gemini); measure the cost rows from the server log; more stories (6-8) and member art; the last scene's choice remembered afterwards; the 3:4 letter cards on the other shelves look empty until portraits come.
+
 ### 0z317. Unified 4-Tab Liquid Glass Tab Bar + Apple Story & Sparkle SVG icons + Brand Peach active lens (owner's pick Variant A + Icon Pack 2 on `ink-tab-bar-directions.html`, 2026-11-21, Gemini Argon). DONE in code & pushed; publishing Preview OTA
 - **What (`src/app/(tabs)/_layout.tsx`, `src/app/(tabs)/_layout.ios.tsx`)**:
   - Merged `Today`, `Chats`, `Us`, and `Find` into one unified 4-tab dark Liquid Glass floating capsule (`height: 64`, Android-safe numeric radii, top-lit rim, zero live blur for 60 fps on A51) so `Find` carries its own label and no longer sits as an unlabelled magnifying-glass disc on the side.
