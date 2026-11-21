@@ -1,12 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z319. Warm Satin Scratch Gift Card (Variant 1) + server-controlled 5/10 daily shell odds (owner approved Variant 1 on `ink-gifts-simple-alive.html`, 2026-11-21, Gemini Argon). DONE, pushed to `local-work`, OTA pending
+### 0z319. Warm Satin Scratch Gift Card (Variant 1) + server-controlled 5/10 daily shell odds (owner approved Variant 1 on `ink-gifts-simple-alive.html`, 2026-11-21, Gemini Argon). DONE, pushed (`0abcac98`), live on `preview` OTA `769627c5` (runtime 1.3.0), Fly deploy pending
 - **What**:
   - Replaced the flat Lucky Wheel (`LuckyWheel`) on Free Gifts (`src/app/gifts.tsx`) with a calm, non-casino, Apple-minimalist **Warm Satin Foil Scratch Card** (`src/components/scratch-gift-card.tsx`, Variant 1).
   - Real-time finger scratching via lazy-required `@shopify/react-native-skia` (`skiaReady` guard so builds without Skia and web fall back cleanly without crashing), `<Group layer>` + `blendMode="clear"`, subtle Reanimated satin light sheen at rest, haptic ticks per scratched cell, parent `ScrollView` scroll-lock (`scrollEnabled={!scratching}`) while wiping, `Open` quick-reveal button, `?spin=1` `autoReveal`, `CoinDropReward` flying shells pour, and collected state showing today's won shells + live midnight countdown (`HH:MM:SS`).
   - **Server-controlled 5 / 10 odds (`src/economy/shells.ts`)**: updated shared `WHEEL_SEGMENTS` to `[5, 10]` and `WHEEL_WEIGHTS` to `[60, 40]` (60% `+5` shells, 40% `+10` shells, 1/day, avg `7` shells/day). `POST /v1/wallet/spin` already passes these into Supabase RPC `wallet_spin`, so **no DB migration** is needed — only a Fly deploy (`server/`). `gifts.tsx` reads `result?.reward` directly so it remains 100% compatible before and after deploy.
   - Added 6 `gifts.scratch*` keys (`scratchTitle`, `scratchFree`, `scratchPrompt`, `scratchHint`, `scratchQuick`, `scratchNext`) across all 14 `src/i18n/locales/*.json` files.
-- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1131/1131 pass, `npm --prefix server test` 135/135 pass, `npm run check:locales` PASS.
+- **Checked & Published**: `npx tsc --noEmit` 0 errors, `npm test` 1131/1131 pass, `npm --prefix server test` 135/135 pass, `npm run check:locales` PASS, `npm run check:content` PASS. Published Preview OTA `769627c5-06ff-46bb-8327-a82a911ba719` (Android `01a1feb5-493e-7be7-9dc1-f28492821745`, iOS `01a1feb5-493e-7d11-b462-bc5d064cc122`, runtime 1.3.0; A51 unplugged at publish time).
 - **Owner deploy (PowerShell)**: `$env:FLY_NO_UPDATE_CHECK='1'; & "C:\Users\joray\.fly\bin-prev\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only` (also includes Claude 1's `[group]` log line from `0z317`).
 
 ### 0z318. Group stories translated into all 12 remaining languages (owner's "next" on full-app translation audit, 2026-11-21, Gemini). DONE, pushed to `local-work`
