@@ -61,6 +61,7 @@ const FILL = {
   grey: systemColors.gray,
   support: systemColors.green,
   privacy: systemColors.cyan,
+  backup: systemColors.blue,
   terms: systemColors.brown,
   plan: systemColors.purple,
   personas: systemColors.blue,
@@ -382,6 +383,18 @@ export default function ProfileScreen() {
           <SwitchRow icon="volume-high" fill={FILL.sound} label={t('profile.messageSound')} value={settings.messageSound} onChange={(v) => setSetting('messageSound', v)} />
           <SwitchRow icon="sparkles" fill={FILL.animation} label={t('profile.chatAnimation')} value={settings.chatAnimation} onChange={(v) => setSetting('chatAnimation', v)} />
           <SwitchRow icon="phone-portrait" fill={FILL.haptics} label={t('profile.haptics')} value={settings.haptics} onChange={(v) => setSetting('haptics', v)} />
+          {/* Chat backup (0z322): on with the AI ask; the account keeps the chats and memory. Off stops sending; the copy goes with Delete account. */}
+          <SwitchRow
+            icon="cloud-upload"
+            fill={FILL.backup}
+            label={t('profile.chatBackup')}
+            value={!!settings.serverMessages}
+            onChange={(v) => {
+              setSetting('serverMessages', v);
+              if (v) void syncChats();
+              else setChatsStatus(undefined);
+            }}
+          />
           {/* Product analytics (0z282): counts, never what anyone wrote; off empties what is waiting on the phone. */}
           <SwitchRow
             icon="bar-chart"
@@ -430,23 +443,12 @@ export default function ProfileScreen() {
             />
             {/* B1.3a: messages live in SQLite on the phone; the count shows the import worked. */}
             <LinkRow icon="chatbubbles" label={t('profile.messagesOnPhone')} meta={messageCount} onPress={() => void checkMessages()} />
-            {/* B1.3b: the chats are copied to the server; turning it on reads them back on an empty phone, then sends what is new. */}
+            {/* B1.3b: syncs the backed-up chats now and shows how it went (the switch is Chat backup above). */}
             <LinkRow
               icon="cloud-upload"
               label={t('profile.serverChats')}
               meta={chatsStatus}
               onPress={settings.serverMessages ? () => void syncChats() : undefined}
-              end={
-                <Toggle
-                  value={!!settings.serverMessages}
-                  onChange={(v) => {
-                    setSetting('serverMessages', v);
-                    if (v) void syncChats();
-                    else setChatsStatus(undefined);
-                  }}
-                  accessibilityLabel={t('profile.serverChats')}
-                />
-              }
             />
             {/* Fires the planned pushes now, a few seconds apart. */}
             <LinkRow icon="paper-plane" label={t('profile.testPushes')} meta={testResult} onPress={() => void testPushes()} />

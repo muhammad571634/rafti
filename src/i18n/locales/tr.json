@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Hatıra notu",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Sohbet yedeği"
   },
   "errors": {
     "generic": "Bir şeyler ters gitti.",
@@ -2846,5 +2847,11 @@
     "story": "Hikâye",
     "watch": "Dinle ve izle",
     "you": "Sen"
+  },
+  "aiConsent": {
+    "title": "Sohbetler ve yapay zekâ",
+    "body": "Arkadaşların yapay zekâ ile yanıt verir: onlara yazdıkların yapay zekâ hizmetimiz Google Gemini’ye gönderilir. Sohbetlerin ayrıca hesabına yedeklenir. Yedeklemeyi Profil’den kapatabilirsin.",
+    "agree": "Kabul ediyorum",
+    "notNow": "Şimdi değil"
   }
 }

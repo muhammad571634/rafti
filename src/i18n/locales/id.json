@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Catatan kenangan",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Cadangan chat"
   },
   "errors": {
     "generic": "Terjadi kesalahan.",
@@ -2804,5 +2805,11 @@
     "story": "Cerita",
     "watch": "Dengar dan tonton",
     "you": "Kamu"
+  },
+  "aiConsent": {
+    "title": "Chat dan AI",
+    "body": "Teman-temanmu membalas dengan AI: apa yang kamu tulis dikirim ke layanan AI kami, Google Gemini. Chatmu juga dicadangkan ke akunmu. Kamu bisa mematikan cadangan di Profil.",
+    "agree": "Setuju",
+    "notNow": "Nanti saja"
   }
 }

@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Keepsake note",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Chat backup"
   },
   "errors": {
     "generic": "Something went wrong.",
@@ -2846,5 +2847,11 @@
     "story": "Story",
     "watch": "Listen and watch",
     "you": "You"
+  },
+  "aiConsent": {
+    "title": "Chats and AI",
+    "body": "Your friends answer with AI: what you write to them goes to our AI service, Google Gemini. Your chats are also backed up to your account. You can turn the backup off in Profile.",
+    "agree": "Agree",
+    "notNow": "Not now"
   }
 }

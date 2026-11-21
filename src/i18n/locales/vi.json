@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Ghi chú kỷ niệm",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Sao lưu trò chuyện"
   },
   "errors": {
     "generic": "Đã xảy ra sự cố.",
@@ -2804,5 +2805,11 @@
     "story": "Câu chuyện",
     "watch": "Nghe và xem",
     "you": "Bạn"
+  },
+  "aiConsent": {
+    "title": "Trò chuyện và AI",
+    "body": "Bạn bè của bạn trả lời bằng AI: những gì bạn viết sẽ được gửi đến dịch vụ AI của chúng tôi là Google Gemini. Các cuộc trò chuyện cũng được sao lưu vào tài khoản của bạn. Bạn có thể tắt sao lưu trong Hồ sơ.",
+    "agree": "Đồng ý",
+    "notNow": "Để sau"
   }
 }

@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "โน้ตความทรงจำ",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "สำรองแชต"
   },
   "errors": {
     "generic": "เกิดข้อผิดพลาดขึ้นบางอย่าง",
@@ -2804,5 +2805,11 @@
     "story": "เรื่องราว",
     "watch": "ฟังและดู",
     "you": "คุณ"
+  },
+  "aiConsent": {
+    "title": "แชตและ AI",
+    "body": "เพื่อนของคุณตอบด้วย AI สิ่งที่คุณเขียนจะถูกส่งไปยังบริการ AI ของเรา คือ Google Gemini แชตของคุณจะถูกสำรองไว้ในบัญชีของคุณด้วย คุณปิดการสำรองได้ในโปรไฟล์",
+    "agree": "ยอมรับ",
+    "notNow": "ไว้ก่อน"
   }
 }

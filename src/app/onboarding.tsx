@@ -33,6 +33,7 @@ import { MoonOrbit, NightMoon } from '@/components/onboarding/night-moon';
 import { EASE_IN_OUT, EASE_OUT, type MoonPlace, moonPlaces, slowFor } from '@/components/onboarding/night-motion';
 import { NightSky } from '@/components/onboarding/night-sky';
 import { NightYearWheel, type YearWheelHandle } from '@/components/onboarding/night-year-wheel';
+import { useAiConsent } from '@/components/privacy/use-ai-consent';
 import { LanguageList, pickLanguage } from '@/components/profile/language-list';
 import { Anim, PressableScale, Sheet } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
@@ -104,6 +105,7 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
 
   const characters = useAppStore((s) => s.characters);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
+  const consent = useAiConsent();
 
   // The hour of the first launch holds for the whole run (the scene never flips mid-way).
   const [part] = useState(() => partOfDay(new Date().getHours()));
@@ -248,7 +250,10 @@ function OnboardingScreen({ preview = false }: { preview?: boolean }) {
             const live = wheel.current?.year() ?? year;
             if (live !== year) setYear(live);
             if (thisYear - live < MIN_AGE) return haptic.error();
-            go('friend');
+            // The AI ask (App Store 5.1.2(i)) once the age is through, so nobody under 18 sees it; the
+            // walk-through on an onboarded phone already has the answer.
+            if (consent.agreed || preview) go('friend');
+            else consent.ask(() => go('friend'), true);
           },
         };
       case 'friend':

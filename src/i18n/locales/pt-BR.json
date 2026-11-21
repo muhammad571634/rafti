@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Nota de lembrança",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Backup das conversas"
   },
   "errors": {
     "generic": "Algo deu errado.",
@@ -2846,5 +2847,11 @@
     "story": "História",
     "watch": "Ouvir e assistir",
     "you": "Você"
+  },
+  "aiConsent": {
+    "title": "Conversas e IA",
+    "body": "Seus amigos respondem com IA: o que você escreve para eles é enviado ao nosso serviço de IA, o Google Gemini. Suas conversas também ganham um backup na sua conta. Você pode desativar o backup no Perfil.",
+    "agree": "Concordo",
+    "notNow": "Agora não"
   }
 }

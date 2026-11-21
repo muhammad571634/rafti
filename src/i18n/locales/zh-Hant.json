@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "紀念紙條",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "聊天備份"
   },
   "errors": {
     "generic": "發生了一點意外狀況。",
@@ -2804,5 +2805,11 @@
     "story": "故事",
     "watch": "聽與看",
     "you": "你"
+  },
+  "aiConsent": {
+    "title": "聊天與 AI",
+    "body": "你的朋友透過 AI 回覆:你寫給他們的內容會傳送到我們的 AI 服務 Google Gemini。你的聊天也會備份到你的帳號。你可以在個人檔案中關閉備份。",
+    "agree": "同意",
+    "notNow": "稍後再說"
   }
 }

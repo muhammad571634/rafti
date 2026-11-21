@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "기념 쪽지",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "채팅 백업"
   },
   "errors": {
     "generic": "문제가 발생했습니다.",
@@ -2804,5 +2805,11 @@
     "story": "스토리",
     "watch": "듣고 보기",
     "you": "나"
+  },
+  "aiConsent": {
+    "title": "채팅과 AI",
+    "body": "친구들은 AI로 답장해요. 내가 쓴 내용은 AI 서비스인 Google Gemini로 전송돼요. 채팅은 내 계정에도 백업돼요. 백업은 프로필에서 끌 수 있어요.",
+    "agree": "동의",
+    "notNow": "나중에"
   }
 }

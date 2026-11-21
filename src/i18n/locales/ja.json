@@ -1839,7 +1839,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "記念のノート",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "チャットのバックアップ"
   },
   "errors": {
     "generic": "問題が発生しました。",
@@ -2804,5 +2805,11 @@
     "story": "ストーリー",
     "watch": "聴く・見る",
     "you": "あなた"
+  },
+  "aiConsent": {
+    "title": "チャットとAI",
+    "body": "キャラクターはAIで返信します。あなたが書いた内容は当社のAIサービス Google Gemini に送信されます。チャットはあなたのアカウントにもバックアップされます。バックアップはプロフィールでオフにできます。",
+    "agree": "同意する",
+    "notNow": "今はしない"
   }
 }

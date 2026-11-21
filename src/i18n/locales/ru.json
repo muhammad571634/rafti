@@ -1952,7 +1952,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Памятная записка",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Резервная копия чатов"
   },
   "errors": {
     "generic": "Что-то пошло не так.",
@@ -2956,5 +2957,11 @@
     "story": "История",
     "watch": "Слушать и смотреть",
     "you": "Ты"
+  },
+  "aiConsent": {
+    "title": "Чаты и ИИ",
+    "body": "Твои друзья отвечают с помощью ИИ: то, что ты им пишешь, отправляется в наш ИИ-сервис Google Gemini. Чаты также сохраняются в резервной копии в твоём аккаунте. Копирование можно выключить в профиле.",
+    "agree": "Принимаю",
+    "notNow": "Не сейчас"
   }
 }

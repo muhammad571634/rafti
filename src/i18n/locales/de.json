@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Erinnerungsnotiz",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Chat-Sicherung"
   },
   "errors": {
     "generic": "Etwas ist schiefgelaufen.",
@@ -2846,5 +2847,11 @@
     "story": "Geschichte",
     "watch": "Hören und sehen",
     "you": "Du"
+  },
+  "aiConsent": {
+    "title": "Chats und KI",
+    "body": "Deine Freunde antworten mit KI: Was du ihnen schreibst, geht an unseren KI-Dienst, Google Gemini. Deine Chats werden außerdem in deinem Konto gesichert. Die Sicherung kannst du im Profil ausschalten.",
+    "agree": "Zustimmen",
+    "notNow": "Nicht jetzt"
   }
 }

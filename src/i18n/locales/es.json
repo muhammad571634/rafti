@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Nota de recuerdo",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Copia de los chats"
   },
   "errors": {
     "generic": "Algo salió mal.",
@@ -2846,5 +2847,11 @@
     "story": "Historia",
     "watch": "Escuchar y ver",
     "you": "Tú"
+  },
+  "aiConsent": {
+    "title": "Chats e IA",
+    "body": "Tus amigos responden con IA: lo que les escribes se envía a nuestro servicio de IA, Google Gemini. Tus chats también se guardan como copia de seguridad en tu cuenta. Puedes desactivar la copia en Perfil.",
+    "agree": "Aceptar",
+    "notNow": "Ahora no"
   }
 }

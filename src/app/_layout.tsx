@@ -15,6 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
+import { useAiConsent } from '@/components/privacy/use-ai-consent';
 import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
 import { useAnalytics } from '@/hooks/use-analytics';
@@ -131,6 +132,7 @@ function AppRoot() {
       </Stack>
       <AlarmRuntime />
       <OnboardingGate />
+      <AiConsentGate />
       {/* The app's own dialog on Android and the web (`showAlert`); iPhone shows Apple's. */}
       <AlertHost />
     </SafeAreaProvider>
@@ -166,6 +168,30 @@ function OnboardingGate() {
 
   if (released) return null;
   return <View style={styles.cover} pointerEvents="auto" />;
+}
+
+/**
+ * Someone who was chatting before the AI ask existed (onboarded, no answer yet) gets it once a launch,
+ * a beat after the first screen shows. It has no "Not now": what they write already goes to the model,
+ * so agreeing is the way on (deleting the account in Profile is the way out).
+ */
+function AiConsentGate() {
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+  const { agreed, ask } = useAiConsent();
+  const [asked, setAsked] = useState(false);
+  const due = hydrated && onboarded && !agreed && !asked;
+
+  useEffect(() => {
+    if (!due) return;
+    const id = setTimeout(() => {
+      setAsked(true);
+      ask(() => {}, false);
+    }, 900);
+    return () => clearTimeout(id);
+  }, [due, ask]);
+
+  return null;
 }
 
 /**

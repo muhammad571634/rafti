@@ -1872,7 +1872,8 @@
     "levelUpTest": "Play a level-up",
     "keepsakeTest": "Note souvenir",
     "alarmTest": "Ring a wake-up alarm",
-    "checkInTest": "Show the daily check-in"
+    "checkInTest": "Show the daily check-in",
+    "chatBackup": "Sauvegarde des discussions"
   },
   "errors": {
     "generic": "Un problème est survenu.",
@@ -2846,5 +2847,11 @@
     "story": "Histoire",
     "watch": "Écouter et regarder",
     "you": "Toi"
+  },
+  "aiConsent": {
+    "title": "Discussions et IA",
+    "body": "Tes amis répondent grâce à l’IA : ce que tu leur écris est envoyé à notre service d’IA, Google Gemini. Tes discussions sont aussi sauvegardées sur ton compte. Tu peux désactiver la sauvegarde dans Profil.",
+    "agree": "J’accepte",
+    "notNow": "Pas maintenant"
   }
 }

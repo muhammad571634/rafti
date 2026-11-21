@@ -1223,8 +1223,10 @@ export interface AppSettings {
   shareUsage?: boolean;
   /** B1.2: the wallet lives on the server whenever the app has one; `false` (dev) keeps it on the phone. */
   serverWallet?: boolean;
-  /** Development (B1.3b): the chats are copied to the local server's database and can be read back. */
+  /** Chat backup (Profile → Chat backup): the chats and memory are copied to the account on the server and read back on an empty phone. Turned on with `aiConsentAt`. */
   serverMessages?: boolean;
+  /** When the user agreed that what they write goes to the AI service and their chats are backed up (App Store 5.1.2(i), `useAiConsent`). */
+  aiConsentAt?: string;
   /** A friend's message outside its chat: our sound in the app, a banner outside it (`src/notifications/incoming.ts`). */
   messageSound: boolean;
   /** Show what they wrote on the lock screen. Off by default: an 18+ app keeps it private. */

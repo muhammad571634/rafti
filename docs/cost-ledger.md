@@ -83,3 +83,7 @@ more than a message, priced honestly (`src/economy/setup-cost.ts`, same price fr
 - A new output field the app does not read is a cost with no value: wire it or drop the instruction.
 - A feature that makes the friend write first adds a call per event: write its count here.
 - Measure with the server log after the deploy, never with paid test calls just to measure.
+
+## Storage (0z322)
+
+- Chat backup is on for everyone who agrees to the AI ask: each user's messages and memory rows live in Supabase (`messages`, memory tables). No model calls. Not measured yet: read the table sizes once real users come; the free tier holds 500 MB.
