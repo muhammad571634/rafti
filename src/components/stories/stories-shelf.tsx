@@ -21,6 +21,7 @@ import { useTemplateStats } from './use-template-stats';
 export type StoryShelf = Trope | 'forYou';
 const SHELVES: readonly StoryShelf[] = ['forYou', ...TROPES];
 const GAP = 12;
+const TAG_GAP = 6;
 
 /** The templates a shelf shows for Find's Everyone / Him / Her switch; templates with no gender fit both. */
 export function storiesFor(trope: StoryShelf, gender: CharacterGender | undefined, stats: Readonly<Record<string, TemplateStats>>) {
@@ -142,6 +143,7 @@ function StoryCard({
   const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
+  const [tagH, setTagH] = useState(0);
   return (
     <PressableScale
       scaleTo={0.97}
@@ -165,16 +167,17 @@ function StoryCard({
             <Ionicons name="book-outline" size={18} color={ink.text2} />
           </PressableScale>
         </View>
-        {/* Who they are to you, then the knot: PolyBuzz's three-line hook. */}
-        <InkText variant="footnote" color={ink.text2} lines={3}>
+        {/* Who they are to you, then the knot (PolyBuzz's hook); four lines so long languages still reach the knot. */}
+        <InkText variant="footnote" color={ink.text2} lines={4}>
           <InkText variant="footnote" color={ink.text}>
-            {item.hook}
+            {card.tagline ? item.hook.replace(/[.。]\s*$/, '') : item.hook}
           </InkText>
           {card.tagline ? ` — ${card.tagline}` : ''}
         </InkText>
-        <View style={styles.tags}>
-          {(card.tags ?? []).slice(0, 3).map((tag) => (
-            <View key={tag} style={styles.tag}>
+        {/* Up to three tags in at most two rows: a tag that would start a third row is left out. */}
+        <View style={[styles.tags, tagH ? { maxHeight: tagH * 2 + TAG_GAP } : null]}>
+          {(card.tags ?? []).slice(0, 3).map((tag, i) => (
+            <View key={tag} style={styles.tag} onLayout={i === 0 && !tagH ? (e) => setTagH(e.nativeEvent.layout.height) : undefined}>
               <InkText variant="caption" color={ink.text2} lines={1}>
                 {t(`createCharacter.traitNames.${tag}`)}
               </InkText>
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
   body: { gap: 6, padding: 12 },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP, overflow: 'hidden' },
   tag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.raised, maxWidth: '100%' },
   more: { alignItems: 'center', paddingTop: 12 },
   sheet: { gap: 14, paddingBottom: 8 },
