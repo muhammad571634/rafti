@@ -40,6 +40,26 @@ export function geminiBlocked(res: { promptFeedback?: { blockReason?: string }; 
   return STOPPED.includes(res.candidates?.[0]?.finishReason ?? '') ? 'reply' : undefined;
 }
 
+/** Long enough for one model to write a whole reply under load (measured: 1.3-2.6 s quiet, much more when busy). */
+export const ANSWER_MIN_MS = 8000;
+/** A model that turned a call away at once is tried last for this long. */
+export const BUSY_FOR_MS = 20_000;
+
+/**
+ * How long one model may take: half of what is left, never less than a reply needs (`ANSWER_MIN_MS`),
+ * never past the deadline. Before 0z314 each fallback got a quarter of the whole wait (5 s), so after
+ * a "high demand" every next model was cut off mid-reply and the user saw Not Delivered (A51, 2026-11-20).
+ */
+export function attemptMs(left: number): number {
+  return Math.floor(Math.min(left, Math.max(ANSWER_MIN_MS, left / 2)));
+}
+
+/** The models in the order to try them: those that turned a call away in the last `BUSY_FOR_MS` go last, the rest keep their order. */
+export function freshFirst(models: readonly string[], busyUntil: ReadonlyMap<string, number>, now = Date.now()): string[] {
+  const busy = (model: string) => (busyUntil.get(model) ?? 0) > now;
+  return [...models.filter((m) => !busy(m)), ...models.filter(busy)];
+}
+
 /**
  * Google's Gemini (AI Studio key). The system tiers become the system instruction, the history the
  * turns, and this reply's own lines go last, on the user's side. JSON out, as `REPLY_SHAPE` asks.
@@ -53,13 +73,16 @@ export function geminiBlocked(res: { promptFeedback?: { blockReason?: string }; 
  */
 export function geminiProvider(apiKey: string, models: readonly string[], { temperature = 0.9 } = {}): LlmProvider {
   const ai = new GoogleGenAI({ apiKey });
+  // Shared by every call of this provider: a spike turns many calls away at once, so the next ones start elsewhere.
+  const busyUntil = new Map<string, number>();
   return {
     name: `gemini:${models[0]}`,
     async complete(layout, { timeoutMs, temperature: callTemperature, strict }) {
       const deadline = Date.now() + timeoutMs;
       let last: unknown;
       // Round twice: a model that just said "high demand" is often free again a moment later.
-      for (const [i, model] of [...models, ...models].entries()) {
+      const order = freshFirst(models, busyUntil);
+      for (const model of [...order, ...order]) {
         const left = deadline - Date.now();
         if (left < 1500) break;
         const tried = Date.now();
@@ -72,9 +95,8 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
               responseMimeType: 'application/json',
               temperature: callTemperature ?? temperature,
               safetySettings: strict ? STRICT_SAFETY_SETTINGS : SAFETY_SETTINGS,
-              // One model may not take the whole wait: the first gets half, each next a quarter.
-              // Whole milliseconds: a fraction throws before the call is made.
-              abortSignal: AbortSignal.timeout(Math.floor(Math.min(left, Math.max(5000, timeoutMs / (i === 0 ? 2 : 4))))),
+              // One model may not take the whole wait, but each gets enough to finish a reply (`attemptMs`).
+              abortSignal: AbortSignal.timeout(attemptMs(left)),
             },
           });
           const usage = res.usageMetadata;
@@ -96,8 +118,11 @@ export function geminiProvider(apiKey: string, models: readonly string[], { temp
         } catch (error) {
           last = error;
           console.warn(`[gemini] ${model}: ${String((error as Error).message).slice(0, 140)}`);
-          // Turned away at once (a quota, high demand): a short breath before the next.
-          if (Date.now() - tried < 1000) await new Promise((resolve) => setTimeout(resolve, 400));
+          // Turned away at once (a quota, high demand): tried last for a while, and a short breath before the next.
+          if (Date.now() - tried < 1000) {
+            busyUntil.set(model, Date.now() + BUSY_FOR_MS);
+            await new Promise((resolve) => setTimeout(resolve, 400));
+          }
         }
       }
       throw new LlmBusyError(String((last as Error | undefined)?.message ?? 'no model answered'));
