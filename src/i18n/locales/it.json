@@ -271,6 +271,7 @@
     "previewCall": "Chiamata vocale"
   },
   "group": {
+    "nextScene": "Scena successiva",
     "newChat": "Nuova chat",
     "newChatHint": "Incontra qualcuno in Trova",
     "newGroup": "Nuovo gruppo",
@@ -1197,6 +1198,7 @@
     "owns_other": "{{count}} l’hanno fatto suo",
     "tropes": {
       "forYou": "Per te",
+      "groups": "Gruppi",
       "bestFriend": "Migliore amico",
       "closeToHome": "Vicino a casa",
       "likesYou": "Ha un debole",

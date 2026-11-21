@@ -267,6 +267,7 @@
     "previewCall": "Gọi thoại"
   },
   "group": {
+    "nextScene": "Cảnh tiếp theo",
     "newChat": "Cuộc trò chuyện mới",
     "newChatHint": "Gặp gỡ ai đó trong mục Khám phá",
     "newGroup": "Nhóm mới",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}} người đã biến thành của mình",
     "tropes": {
       "forYou": "Dành cho bạn",
+      "groups": "Nhóm",
       "bestFriend": "Bạn thân",
       "closeToHome": "Gần gũi",
       "likesYou": "Thích bạn",

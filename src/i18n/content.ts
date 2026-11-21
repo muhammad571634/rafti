@@ -84,6 +84,35 @@ export function localTemplate<T extends { id: string; hook: string; card: object
   return { ...template, hook: words.hook ?? template.hook, card: overlay(template.card, words.card) };
 }
 
+interface GroupStoryWords {
+  name?: string;
+  hook?: string;
+  knot?: string;
+  userRole?: string;
+  members?: Record<string, { who?: string }>;
+  beats?: { title?: string; setting?: string }[];
+}
+
+/**
+ * A group story's words on screen in the screen language (content section `groupStories`, by id): the
+ * card, the members' lines and the scene cards. English, as in `src/lib/group-stories.ts`, until
+ * translated. What only the model reads stays English.
+ */
+export function localGroupStory<T extends { id: string; name: string; hook: string; knot: string; userRole: string; members: { id: string; who: string }[]; beats: { title: string; setting: string }[] }>(story: T): T {
+  const lang = i18n.language || 'en';
+  const words = (CONTENT[lang]?.groupStories as Record<string, GroupStoryWords> | undefined)?.[story.id];
+  if (!words) return story;
+  return {
+    ...story,
+    name: words.name ?? story.name,
+    hook: words.hook ?? story.hook,
+    knot: words.knot ?? story.knot,
+    userRole: words.userRole ?? story.userRole,
+    members: story.members.map((m) => ({ ...m, who: words.members?.[m.id]?.who ?? m.who })),
+    beats: story.beats.map((b, i) => ({ ...b, title: words.beats?.[i]?.title ?? b.title, setting: words.beats?.[i]?.setting ?? b.setting })),
+  };
+}
+
 /** Overlay for a diary entry by id. */
 export function localDiaryEntry<T extends { id: string }>(entry: T): T {
   const lang = i18n.language || 'en';

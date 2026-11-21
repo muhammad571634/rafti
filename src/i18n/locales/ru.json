@@ -281,6 +281,7 @@
     "previewCall": "Голосовой звонок"
   },
   "group": {
+    "nextScene": "Следующая сцена",
     "newChat": "Новый чат",
     "newChatHint": "Познакомьтесь с кем-то в Поиске",
     "newGroup": "Новая группа",
@@ -1267,6 +1268,7 @@
     "owns_other": "{{count}} сделали своим",
     "tropes": {
       "forYou": "Для вас",
+      "groups": "Группы",
       "bestFriend": "Лучший друг",
       "closeToHome": "Совсем рядом",
       "likesYou": "Влюблён в тебя",

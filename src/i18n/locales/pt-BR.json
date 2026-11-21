@@ -271,6 +271,7 @@
     "previewCall": "Chamada de voz"
   },
   "group": {
+    "nextScene": "Próxima cena",
     "newChat": "Nova conversa",
     "newChatHint": "Encontre alguém na Busca",
     "newGroup": "Novo grupo",
@@ -1197,6 +1198,7 @@
     "owns_other": "{{count}} fizeram a sua",
     "tropes": {
       "forYou": "Para você",
+      "groups": "Grupos",
       "bestFriend": "Melhor amigo",
       "closeToHome": "Perto de casa",
       "likesYou": "Afim de você",

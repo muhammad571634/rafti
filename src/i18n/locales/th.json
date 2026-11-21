@@ -267,6 +267,7 @@
     "previewCall": "โทรด้วยเสียง"
   },
   "group": {
+    "nextScene": "ฉากถัดไป",
     "newChat": "แชทใหม่",
     "newChatHint": "พบปะใครสักคนในหน้าค้นหา",
     "newGroup": "กลุ่มใหม่",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}} คนทำเป็นของตัวเอง",
     "tropes": {
       "forYou": "สำหรับคุณ",
+      "groups": "กลุ่ม",
       "bestFriend": "เพื่อนสนิท",
       "closeToHome": "คนใกล้ตัว",
       "likesYou": "แอบชอบคุณ",

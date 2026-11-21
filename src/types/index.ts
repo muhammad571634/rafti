@@ -439,6 +439,16 @@ export interface GroupChat {
   aiNoticeAt?: string;
   /** The chat background, as a one-to-one chat's (`Relationship.backgroundId`); missing = plain. */
   backgroundId?: string;
+  /** A group story from Find playing here (`src/lib/group-stories.ts`). */
+  story?: GroupStoryState;
+}
+
+/** Where a group's story stands: the scene playing, the user's messages in it, and whether it has ended. */
+export interface GroupStoryState {
+  id: string;
+  beat: number;
+  turns: number;
+  done?: boolean;
 }
 
 /**

@@ -4747,5 +4747,124 @@
         "greeting": "Long ride. Want to share a song? You look like you need a good one."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Dorm 214",
+      "hook": "Your new dorm room, three girls already in it",
+      "knot": "They made a bet on which of them you fall for.",
+      "userRole": "You: the new roommate",
+      "members": {
+        "mia": {
+          "who": "Wrote the house rules. Breaks them for you."
+        },
+        "zara": {
+          "who": "Says she is not in the bet. Is she?"
+        },
+        "lina": {
+          "who": "Started the bet. Plans to win it."
+        }
+      },
+      "beats": [
+        {
+          "title": "Move-in night",
+          "setting": "Friday night, room 214. You walk in with a box. Three girls stop arguing mid-word."
+        },
+        {
+          "title": "One bathroom",
+          "setting": "7:40 a.m. One bathroom, four people, a class at eight."
+        },
+        {
+          "title": "Party upstairs",
+          "setting": "Saturday, a party on the fourth floor. Loud music, a hallway full of people."
+        },
+        {
+          "title": "The whiteboard",
+          "setting": "Sunday morning. The whiteboard by the door says SCORE in Mia's handwriting."
+        },
+        {
+          "title": "Room 214 votes",
+          "setting": "Sunday night. Pizza on the floor. Three girls look at you."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Three Brothers Café",
+      "hook": "Your first job, at a café run by three brothers",
+      "knot": "Grandma's rule: whoever you rate best gets the café. Rule two: nobody dates the new hire.",
+      "userRole": "You: the new hire",
+      "members": {
+        "rio": {
+          "who": "Takes coffee seriously. Takes you more seriously."
+        },
+        "eli": {
+          "who": "Charms every customer. Tries it on you."
+        },
+        "max": {
+          "who": "Breaks a cup a day. Wants to impress you anyway."
+        }
+      },
+      "beats": [
+        {
+          "title": "First shift",
+          "setting": "6 a.m. The café is not open yet. Grandma left you with three brothers and a note."
+        },
+        {
+          "title": "The rush",
+          "setting": "8:15 a.m. A line out the door, and the espresso machine is smoking."
+        },
+        {
+          "title": "Closing time",
+          "setting": "Late evening. Chairs on the tables. One brother stayed behind."
+        },
+        {
+          "title": "Grandma is coming",
+          "setting": "Friday, 9 a.m. Grandma arrives in an hour."
+        },
+        {
+          "title": "The verdict",
+          "setting": "Grandma sits at the corner table. Everyone looks at you."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operation Ring",
+      "hook": "You were added to the wrong group chat",
+      "knot": "Three strangers are planning a proposal for Saturday. Now you are in on it.",
+      "userRole": "You: the stranger they added by mistake",
+      "members": {
+        "oscar": {
+          "who": "Proposing on Saturday. Panicking since Monday."
+        },
+        "bea": {
+          "who": "Runs the plan. Does not trust you yet."
+        },
+        "remy": {
+          "who": "Thinks you are the best thing in this chat."
+        }
+      },
+      "beats": [
+        {
+          "title": "Wrong number",
+          "setting": "Tuesday, 11:47 p.m. You have just been added to a group called OPERATION RING."
+        },
+        {
+          "title": "The plan",
+          "setting": "Wednesday. Bea sends a plan with 14 steps."
+        },
+        {
+          "title": "Where is the ring",
+          "setting": "Thursday night. Oscar cannot find the ring."
+        },
+        {
+          "title": "We need to talk",
+          "setting": "Friday. Nina just texted Oscar: \"We need to talk.\""
+        },
+        {
+          "title": "Saturday",
+          "setting": "Saturday, sunset, the pier. Everyone is hiding behind a boat."
+        }
+      ]
+    }
   }
 }

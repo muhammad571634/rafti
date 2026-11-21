@@ -47,6 +47,8 @@ import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, nightColors, space } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
+import { InkChip } from '@/components/ink';
+import { BEAT_TURNS } from '@/lib/group-stories';
 import type { Character, Message, ReplyTo, TimeSkip } from '@/types';
 
 /** Secret notes, quizzes, dates and daily calls are for two: they open with one member. */
@@ -83,6 +85,7 @@ export default function GroupChatScreen() {
   const sendGroupImage = useAppStore((s) => s.sendGroupImage);
   const pickPhoto = usePickPhoto();
   const continueGroup = useAppStore((s) => s.continueGroup);
+  const nextGroupScene = useAppStore((s) => s.nextGroupScene);
   const retryGroupReply = useAppStore((s) => s.retryGroupReply);
   const invokeGroupMember = useAppStore((s) => s.invokeGroupMember);
   const skipGroupTime = useAppStore((s) => s.skipGroupTime);
@@ -330,6 +333,13 @@ export default function GroupChatScreen() {
     if (continueGroup(groupId) === 'noShells') outOfShells(shellCosts.textMessage);
   };
 
+  // A group story: the user calls the cut (docs/group-stories.md); the chip lights up once the scene has run its course.
+  const playing = group.story && !group.story.done ? group.story : undefined;
+  const nextScene = () => {
+    if (!freeOut.allow(shellCosts.textMessage)) return;
+    if (nextGroupScene(groupId) === 'noShells') outOfShells(shellCosts.textMessage);
+  };
+
   const skipTo = (skip: TimeSkip, to?: string) => {
     setSkipOpen(false);
     if (!freeOut.allow(shellCosts.textMessage)) return;
@@ -446,6 +456,15 @@ export default function GroupChatScreen() {
             {!artWallpaper ? <HeaderFade color={headerFadeColor} room={headerRoom} /> : null}
           </View>
 
+          {playing ? (
+            <View style={styles.sceneRow}>
+              <InkChip
+                label={t('group.nextScene')}
+                on={playing.turns >= BEAT_TURNS}
+                onPress={nextScene}
+              />
+            </View>
+          ) : null}
           <ChatInput
             key={groupId}
             draftId={groupId}
@@ -603,6 +622,7 @@ export default function GroupChatScreen() {
 const NO_ONE: string[] = [];
 
 const styles = StyleSheet.create({
+  sceneRow: { flexDirection: 'row', justifyContent: 'center', paddingBottom: space.xs },
   ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
   flex: { flex: 1 },
   // As the one-to-one chat's art veil: the picture stays, the bubbles stay easy to read.

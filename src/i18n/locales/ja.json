@@ -267,6 +267,7 @@
     "previewCall": "音声通話"
   },
   "group": {
+    "nextScene": "次のシーン",
     "newChat": "新しいチャット",
     "newChatHint": "「見つける」で出会う",
     "newGroup": "新しいグループ",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}}人が自分仕様に",
     "tropes": {
       "forYou": "おすすめ",
+      "groups": "グループ",
       "bestFriend": "親友",
       "closeToHome": "身近な人",
       "likesYou": "あなたに夢中",

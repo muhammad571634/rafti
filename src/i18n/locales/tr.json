@@ -271,6 +271,7 @@
     "previewCall": "Sesli arama"
   },
   "group": {
+    "nextScene": "Sonraki sahne",
     "newChat": "Yeni sohbet",
     "newChatHint": "Keşfet bölümünde biriyle tanış",
     "newGroup": "Yeni grup",
@@ -1197,6 +1198,7 @@
     "owns_other": "{{count}} kişi uyarladı",
     "tropes": {
       "forYou": "Senin için",
+      "groups": "Gruplar",
       "bestFriend": "En yakın arkadaş",
       "closeToHome": "Yakınında",
       "likesYou": "Sana âşık",

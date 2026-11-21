@@ -17,15 +17,18 @@ import { avatarGradients } from '@/theme';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { CharacterGender } from '@/types';
 
+import { GroupStoryGrid } from './group-stories';
 import { useTemplateStats } from './use-template-stats';
 
-export type StoryShelf = Trope | 'forYou';
-const SHELVES: readonly StoryShelf[] = ['forYou', ...TROPES];
+export type StoryShelf = Trope | 'forYou' | 'groups';
+const SHELVES: readonly StoryShelf[] = ['forYou', 'groups', ...TROPES];
 const GAP = 12;
 const TAG_GAP = 4;
 
 /** The templates a shelf shows for Find's Everyone / Him / Her switch; templates with no gender fit both. */
 export function storiesFor(trope: StoryShelf, gender: CharacterGender | undefined, stats: Readonly<Record<string, TemplateStats>>) {
+  // Group stories have their own grid (`GroupStoryGrid`).
+  if (trope === 'groups') return [];
   return shelf(trope, stats).filter((t) => !gender || !t.card.gender || t.card.gender === gender);
 }
 
@@ -59,10 +62,12 @@ export function StoriesShelf({ gender, title }: { gender?: CharacterGender; titl
     <>
       {title(t('stories.title'), all)}
       <StoryChips value={trope} onChange={setTrope} />
-      <StoryGrid items={list.slice(0, 8)} stats={stats} trending={trending} onOpen={setOpen} />
-      <View style={styles.more}>
-        <PillButton label={t('stories.seeAll')} kind="quiet" onPress={all} />
-      </View>
+      {trope === 'groups' ? <GroupStoryGrid gender={gender} /> : <StoryGrid items={list.slice(0, 8)} stats={stats} trending={trending} onOpen={setOpen} />}
+      {trope === 'groups' ? null : (
+        <View style={styles.more}>
+          <PillButton label={t('stories.seeAll')} kind="quiet" onPress={all} />
+        </View>
+      )}
       <StorySheet template={open} stats={open ? stats[open.id] : undefined} onClose={() => setOpen(null)} />
     </>
   );

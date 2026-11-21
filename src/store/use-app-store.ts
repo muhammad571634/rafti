@@ -39,7 +39,8 @@ import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, 
 import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
-import { localCharacter, localized } from '@/i18n/content';
+import { localCharacter, localGroupStory, localized } from '@/i18n/content';
+import { beatOpenCue, countTurn, groupStoryById, memberMark, nextBeat, storyCue } from '@/lib/group-stories';
 import { bubblesSpeech, enforceStyleBubbles } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import { nextChoices } from '@/ai/next-moment';
@@ -567,6 +568,13 @@ export interface AppState {
   /* group chats (queue item 16): every plan; a message costs what it does in any chat */
   /** 2 or 3 characters the user knows; returns the group id, or null when the pick is not valid. */
   createGroup: (memberIds: string[], name?: string) => string | null;
+  /**
+   * A group story from Find (`src/lib/group-stories.ts`): its members (private, no one-to-one chats)
+   * and a group chat that plays it, opening on the first scene. Again: the group already playing it.
+   */
+  startGroupStory: (storyId: string) => string | null;
+  /** Next scene in a story group: a scene card, then two members open it; a message's price. */
+  nextGroupScene: (groupId: string) => SendResult;
   sendGroupText: (groupId: string, text: string, replyTo?: ReplyTo) => SendResult;
   sendGroupVoice: (groupId: string, durationSec: number, transcript: string, audioFile?: string, levels?: number[]) => SendResult;
   sendGroupImage: (groupId: string, imageUri: string, aspect?: number) => SendResult;
@@ -1721,6 +1729,71 @@ export const useAppStore = create<AppState>()(
         const others = groupTitle(ids.slice(1).map((m) => memberName(get(), m)));
         writeGroupTurns(set, get, id, [{ characterId: ids[0], lines: [pick(groupHellos)(others, genderOf(get(), ids[0]))], cue: groupHelloCue(others), quiet: true }]);
         return id;
+      },
+
+      startGroupStory: (storyId) => {
+        const story = groupStoryById(storyId);
+        if (!story) return null;
+        const playing = get().groups.find((g) => g.story?.id === storyId);
+        if (playing) return playing.id;
+        const words = localGroupStory(story);
+        // The members, made once per story; no one-to-one chat (a profile's Message makes one later).
+        const memberIds = story.members.map((m) => {
+          const mark = memberMark(story.id, m.id);
+          const known = get().characters.find((c) => c.fromTemplate === mark && !c.isOfficial);
+          if (known) return known.id;
+          const id = uid('c');
+          const member: Character = {
+            id,
+            name: m.name,
+            handle: '@stories',
+            bio: m.bio,
+            backstory: m.backstory,
+            category: 'original',
+            gender: m.gender,
+            age: m.age,
+            role: m.role,
+            voicePreset: m.voice,
+            speakingStyle: m.style,
+            tags: m.tags,
+            tagline: words.members.find((w) => w.id === m.id)?.who ?? m.who,
+            series: words.name,
+            accentIndex: m.accentIndex,
+            voiceReady: true,
+            isOfficial: false,
+            visibility: 'private',
+            greeting: '',
+            fromTemplate: mark,
+          };
+          set((s) => ({ characters: [member, ...s.characters] }));
+          return id;
+        });
+        const id = uid('grp');
+        const now = new Date().toISOString();
+        const group: GroupChat = { id, memberIds, name: words.name, createdAt: now, lastMessagePreview: '', lastMessageAt: now, unreadCount: 0, muted: false, story: { id: story.id, beat: 0, turns: 0 } };
+        set((st) => ({ groups: [...st.groups, group], messages: { ...st.messages, [id]: [] } }));
+        noticeGroupAiIfDue(set, get, id);
+        openStoryScene(set, get, id);
+        return id;
+      },
+
+      nextGroupScene: (groupId) => {
+        const state = get();
+        const group = state.groups.find((g) => g.id === groupId);
+        const story = group?.story && !group.story.done ? groupStoryById(group.story.id) : undefined;
+        if (!group?.story || !story) return 'empty';
+        if (state.groupTyping[groupId]?.length) return 'empty';
+        if (!payLine(get, shellCosts.textMessage, 'chat', groupId)) return 'noShells';
+        countMessage(set, get);
+        const next = nextBeat(group.story, story);
+        set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, story: next } : g)) }));
+        if (next.done) {
+          const name = localGroupStory(story).name;
+          appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'sceneEnd', text: name, createdAt: new Date().toISOString() }, { quiet: true });
+          return 'sent';
+        }
+        openStoryScene(set, get, groupId);
+        return 'sent';
       },
 
       sendGroupText: (groupId, text, replyTo) => {
@@ -6852,7 +6925,8 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
   const history = state.messages[groupId] ?? [];
   const turn = history.filter((m) => m.author === 'me').length;
   const crisis = !!text && detectCrisis(text);
-  const [first, second] = pickResponders(group.memberIds, names, text, speakersIn(state, groupId), crisis ? 0 : turn);
+  const [first, picked] = pickResponders(group.memberIds, names, text, speakersIn(state, groupId), crisis ? 0 : turn);
+  let second: string | undefined = picked;
   if (!first) return;
   if (crisis) {
     appendGroupMessage(
@@ -6862,9 +6936,17 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
       { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() },
       { quiet: true },
     );
-    writeGroupTurns(set, get, groupId, [{ characterId: first, lines: [pick(crisisReplies)] }]);
+    writeGroupTurns(set, get, groupId, [{ characterId: first, plain: true, lines: [pick(crisisReplies)] }]);
     return;
   }
+  // A story group: the scene counts the user's message, and someone always joins in (a scene is a
+  // conversation among them, not a queue of answers).
+  const playing = group.story && !group.story.done ? groupStoryById(group.story.id) : undefined;
+  if (group.story && playing) {
+    const counted = countTurn(group.story, playing).state;
+    set((s) => ({ groups: s.groups.map((g) => (g.id === groupId ? { ...g, story: counted } : g)) }));
+  }
+  if (playing && !second) second = group.memberIds.find((id) => id !== first && !namedMembers(text, names).includes(id)) ?? group.memberIds.find((id) => id !== first);
   // Two members named: both answer the user. Otherwise the second talks to the first.
   const bothAsked = namedMembers(text, names).length >= 2;
   writeGroupTurns(set, get, groupId, [
@@ -6879,7 +6961,40 @@ function answerGroup(set: Setter, get: Getter, groupId: string, text: string, fi
   ]);
 }
 
+/**
+ * A story group's scene opens (`src/lib/group-stories.ts`): the scene card (the first says who the
+ * user is), then the scene's lead speaks and another member answers, before the user says a word.
+ */
+function openStoryScene(set: Setter, get: Getter, groupId: string) {
+  const group = get().groups.find((g) => g.id === groupId);
+  const story = group?.story && !group.story.done ? groupStoryById(group.story.id) : undefined;
+  if (!group?.story || !story) return;
+  const words = localGroupStory(story);
+  const beat = words.beats[group.story.beat];
+  const setting = group.story.beat === 0 ? `${beat.setting}\n${words.userRole}` : beat.setting;
+  appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'scene', text: beat.title, setting, createdAt: new Date().toISOString() });
+  const ids = group.memberIds;
+  const lead = ids[story.beats[group.story.beat].lead] ?? ids[0];
+  const second = ids.find((id) => id !== lead && !speakersIn(get(), groupId).slice(-1).includes(id)) ?? ids.find((id) => id !== lead);
+  const others = groupTitle(ids.filter((id) => id !== lead).map((m) => memberName(get(), m)));
+  writeGroupTurns(set, get, groupId, [
+    { characterId: lead, lines: [pick(groupHellos)(others, genderOf(get(), lead))], cue: beatOpenCue(others), quiet: true },
+    ...(second ? [{ characterId: second, lines: [pick(groupReactions)(memberName(get(), lead), genderOf(get(), second))], cue: groupReactCue(memberName(get(), lead)), quiet: true }] : []),
+  ]);
+}
+
+/** The story's lines for a member's turn while it plays (none after a crisis or once it ended). */
+function storyCueFor(state: AppState, group: GroupChat): string[] {
+  const story = group.story && !group.story.done ? groupStoryById(group.story.id) : undefined;
+  if (!group.story || !story) return [];
+  const words = localGroupStory(story);
+  const beat = words.beats[group.story.beat];
+  return storyCue(story, group.story, { title: beat.title, setting: beat.setting, userRole: words.userRole });
+}
+
 interface GroupTurn {
+  /** A crisis answer: the story steps aside. */
+  plain?: boolean;
   characterId: string;
   /** The stand-in, for when the model is off, busy or slow. */
   lines: string[];
@@ -6904,7 +7019,8 @@ function groupInput(state: AppState, group: GroupChat, turn: GroupTurn, said: re
     persona: personaFor(group.id, state),
     lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
     messages,
-    cue: turn.cue,
+    // A story group: the story's lines first, then this turn's own (the server keeps eight).
+    cue: [...(turn.plain ? [] : storyCueFor(state, group)), ...(turn.cue ?? [])],
     // The hour, and the member's own day as their one-to-one chat keeps it (0z145).
     clock: chatClock(),
     ownDay: ownDayOf(state.relationships[character.id]?.ownDay, todayKey()),

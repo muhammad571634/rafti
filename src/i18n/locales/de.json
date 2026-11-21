@@ -271,6 +271,7 @@
     "previewCall": "Sprachanruf"
   },
   "group": {
+    "nextScene": "Nächste Szene",
     "newChat": "Neuer Chat",
     "newChatHint": "Finde jemanden bei Finden",
     "newGroup": "Neue Gruppe",
@@ -1197,6 +1198,7 @@
     "owns_other": "{{count}} haben es übernommen",
     "tropes": {
       "forYou": "Für dich",
+      "groups": "Gruppen",
       "bestFriend": "Bester Freund",
       "closeToHome": "Ganz nah",
       "likesYou": "Steht auf dich",

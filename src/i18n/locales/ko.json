@@ -267,6 +267,7 @@
     "previewCall": "음성 통화"
   },
   "group": {
+    "nextScene": "다음 장면",
     "newChat": "새 대화",
     "newChatHint": "찾기에서 친구 만나기",
     "newGroup": "새 그룹",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}}명이 자기 것으로 만듦",
     "tropes": {
       "forYou": "추천",
+      "groups": "그룹",
       "bestFriend": "절친",
       "closeToHome": "가까운 사이",
       "likesYou": "너에게 반함",

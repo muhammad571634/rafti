@@ -267,6 +267,7 @@
     "previewCall": "語音通話"
   },
   "group": {
+    "nextScene": "下一幕",
     "newChat": "新對話",
     "newChatHint": "在探索中結識角色",
     "newGroup": "新群組",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}} 人改成自己的",
     "tropes": {
       "forYou": "為你推薦",
+      "groups": "群組",
       "bestFriend": "摯友",
       "closeToHome": "近在身邊",
       "likesYou": "喜歡你",

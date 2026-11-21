@@ -267,6 +267,7 @@
     "previewCall": "Panggilan suara"
   },
   "group": {
+    "nextScene": "Adegan berikutnya",
     "newChat": "Obrolan baru",
     "newChatHint": "Temui seseorang di menu Temukan",
     "newGroup": "Grup baru",
@@ -1169,6 +1170,7 @@
     "owns_other": "{{count}} menjadikannya milik mereka",
     "tropes": {
       "forYou": "Untukmu",
+      "groups": "Grup",
       "bestFriend": "Sahabat",
       "closeToHome": "Dekat rumah",
       "likesYou": "Suka kamu",
