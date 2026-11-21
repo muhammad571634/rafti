@@ -265,7 +265,8 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: inkGutter },
   card: { borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
   // The initial up top, the count bottom left (where PolyBuzz keeps it).
-  face: { height: 132, alignItems: 'flex-start', justifyContent: 'space-between', padding: 12 },
+  // 3:4 as PolyBuzz's portraits, with or without a picture, so the two cards of a row stay one height.
+  face: { aspectRatio: 3 / 4, alignItems: 'flex-start', justifyContent: 'space-between', padding: 12 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   photo: { aspectRatio: 3 / 4, justifyContent: 'flex-end', alignItems: 'flex-start', padding: 12, backgroundColor: ink.raised },
   scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '40%' },
