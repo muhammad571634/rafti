@@ -1,13 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z320. Adaptive user gender & behavioral discovery ranking on Find, Stories, Groups & Circles (owner's "next", 2026-11-21, Gemini Argon). DONE, pushed to `local-work`
+### 0z320. Adaptive user gender & behavioral discovery ranking on Find, Stories, Groups & Circles (owner's "next", 2026-11-21, Gemini Argon). DONE, pushed (`8849275e`), live on `preview` OTA `26c25a19` (runtime 1.3.0)
 - **What**:
   - Created pure domain ranking engine `src/lib/discovery-rank.ts` (`coldStartGenderPrior`, `computeDiscoveryWeights`, `hourLeadForGender`, `rankCharactersForUser`, `rankFeaturedForUser`, `rankTemplatesForUser`, `rankGroupStoriesForUser`) and React hook `src/hooks/use-discovery-rank.ts` (`useDiscoveryWeights`).
   - **Cold-start Day-1 adaptation**: uses `user.pronouns` (`he` -> ~74/26 female, `she` -> ~74/26 male, `they`/unset -> 50/50 interleaved) blended with onboarding's earliest chosen companion (`conversations` / `relationships`), plus gender-matched `hourLeadForGender` (`c_sam`/`c_clara`/`c_lena`/`c_mia` vs `c_milo`/`c_caleb`/`c_roman`/`c_asher`). Never locks out any gender.
   - **Implicit behavioral adaptation**: smoothly shifts confidence via `1 - exp(-signal / 12)` from 14-day time-decayed chat messages, likes/reactions/dislikes, relationship closeness levels, and `recentlyViewed`, while isolating family relationships (`isFamilyLabel`) from skewing romantic gender priors.
   - **MMR Diversity Guard (`interleaveByGender`)**: prevents single-gender echo chambers by capping consecutive same-gender cards at 2 when tilted (~75/25) and alternating 1:1 when balanced (fixing the 8/8 male bias for `they`/unset users on `For you` stories).
   - Wired into `src/app/(tabs)/find.tsx` (Featured carousel, Circle member order & faces, Talk Now voice pills, Family sheet candidates), `src/components/stories/stories-shelf.tsx`, `src/components/stories/group-stories.tsx`, `src/app/stories.tsx`, and `src/app/world/[series].tsx`.
-- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1141/1141 pass (including 10 new tests in `src/lib/discovery-rank.test.ts`), `npm run check:locales` PASS, `npm run check:content` PASS.
+- **Checked & Published**: `npx tsc --noEmit` 0 errors, `npm test` 1141/1141 pass (including 10 new tests in `src/lib/discovery-rank.test.ts`), `npm run check:locales` PASS, `npm run check:content` PASS. Published Preview OTA `26c25a19-e303-4d38-8406-87a97021ac86` (Android `01a1fee4-74c6-7368-8d7d-aace4ff7be31`, iOS `01a1fee4-74c6-7ca7-a3fa-d25944200cb9`, runtime 1.3.0; A51 unplugged at publish time).
 
 ### 0z319. Warm Satin Scratch Gift Card (Variant 1) + server-controlled 5/10 daily shell odds (owner approved Variant 1 on `ink-gifts-simple-alive.html`, 2026-11-21, Gemini Argon). DONE, pushed (`0abcac98`), live on `preview` OTA `769627c5` (runtime 1.3.0), Fly deploy pending
 - **What**:
