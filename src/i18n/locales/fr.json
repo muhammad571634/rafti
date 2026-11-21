@@ -1192,6 +1192,7 @@
     "new": "Nouveau",
     "trending": "Tendance",
     "makeOwn": "En faire le tien",
+    "details": "Détails de l'histoire",
     "owns_one": "{{count}} l’a adopté",
     "owns_other": "{{count}} l’ont adopté",
     "tropes": {

@@ -1192,6 +1192,7 @@
     "new": "Neu",
     "trending": "Im Trend",
     "makeOwn": "Zu deinem machen",
+    "details": "Details zur Story",
     "owns_one": "{{count}} hat es übernommen",
     "owns_other": "{{count}} haben es übernommen",
     "tropes": {

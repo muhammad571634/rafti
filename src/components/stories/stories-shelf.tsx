@@ -57,7 +57,7 @@ export function StoriesShelf({ gender, title }: { gender?: CharacterGender; titl
     <>
       {title(t('stories.title'), all)}
       <StoryChips value={trope} onChange={setTrope} />
-      <StoryGrid items={list.slice(0, 6)} stats={stats} trending={trending} onOpen={setOpen} />
+      <StoryGrid items={list.slice(0, 8)} stats={stats} trending={trending} onOpen={setOpen} />
       <View style={styles.more}>
         <PillButton label={t('stories.seeAll')} kind="quiet" onPress={all} />
       </View>
@@ -66,7 +66,18 @@ export function StoriesShelf({ gender, title }: { gender?: CharacterGender; titl
   );
 }
 
-/** Two columns of story cards. */
+/** Say hi to a story: the private copy (made once per template) and its chat, opened at once. */
+function useStartStory() {
+  const router = useRouter();
+  const addTemplateCharacter = useAppStore((s) => s.addTemplateCharacter);
+  return (template: StoryTemplate) => {
+    haptic.success();
+    const { conversationId } = addTemplateCharacter(template);
+    router.push(`/chat/${conversationId}`);
+  };
+}
+
+/** Two columns of story cards: a tap opens the chat (PolyBuzz's one tap), the book opens the story. */
 export function StoryGrid({
   items,
   stats,
@@ -80,10 +91,19 @@ export function StoryGrid({
 }) {
   const { width } = useWindowDimensions();
   const cardWidth = (width - inkGutter * 2 - GAP) / 2;
+  const start = useStartStory();
   return (
     <View style={styles.grid}>
       {items.map((item) => (
-        <StoryCard key={item.id} item={item} width={cardWidth} stats={stats[item.id]} trending={trending.has(item.id)} onPress={() => onOpen(item)} />
+        <StoryCard
+          key={item.id}
+          item={item}
+          width={cardWidth}
+          stats={stats[item.id]}
+          trending={trending.has(item.id)}
+          onPress={() => start(localTemplate(item))}
+          onStory={() => onOpen(item)}
+        />
       ))}
     </View>
   );
@@ -103,13 +123,33 @@ function CountBadge({ stats, trending }: { stats?: TemplateStats; trending: bool
   );
 }
 
-function StoryCard({ item: written, width, stats, trending, onPress }: { item: StoryTemplate; width: number; stats?: TemplateStats; trending: boolean; onPress: () => void }) {
+function StoryCard({
+  item: written,
+  width,
+  stats,
+  trending,
+  onPress,
+  onStory,
+}: {
+  item: StoryTemplate;
+  width: number;
+  stats?: TemplateStats;
+  trending: boolean;
+  onPress: () => void;
+  onStory: () => void;
+}) {
   const { t } = useTranslation();
   const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
   return (
-    <PressableScale scaleTo={0.97} accessibilityRole="button" accessibilityLabel={`${card.name}. ${item.hook}`} onPress={onPress} style={[styles.card, { width }]}>
+    <PressableScale
+      scaleTo={0.97}
+      accessibilityRole="button"
+      accessibilityLabel={`${card.name}. ${item.hook}. ${card.tagline ?? ''}`}
+      onPress={onPress}
+      style={[styles.card, { width }]}
+    >
       <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.face}>
         <InkText variant="numeralSmall" color="rgba(255,255,255,0.92)" maxFontSizeMultiplier={1}>
           {card.name.slice(0, 1)}
@@ -117,14 +157,23 @@ function StoryCard({ item: written, width, stats, trending, onPress }: { item: S
         <CountBadge stats={stats} trending={trending} />
       </LinearGradient>
       <View style={styles.body}>
-        <InkText variant="bodyStrong" lines={1}>
-          {card.name}
-        </InkText>
+        <View style={styles.nameRow}>
+          <InkText variant="bodyStrong" lines={1} style={styles.grow}>
+            {card.name}
+          </InkText>
+          <PressableScale accessibilityRole="button" accessibilityLabel={t('stories.details')} hitSlop={12} onPress={onStory}>
+            <Ionicons name="book-outline" size={18} color={ink.text2} />
+          </PressableScale>
+        </View>
+        {/* Who they are to you, then the knot: PolyBuzz's three-line hook. */}
         <InkText variant="footnote" color={ink.text2} lines={3}>
-          {item.hook}
+          <InkText variant="footnote" color={ink.text}>
+            {item.hook}
+          </InkText>
+          {card.tagline ? ` — ${card.tagline}` : ''}
         </InkText>
         <View style={styles.tags}>
-          {(card.tags ?? []).slice(0, 2).map((tag) => (
+          {(card.tags ?? []).slice(0, 3).map((tag) => (
             <View key={tag} style={styles.tag}>
               <InkText variant="caption" color={ink.text2} lines={1}>
                 {t(`createCharacter.traitNames.${tag}`)}
@@ -141,7 +190,7 @@ function StoryCard({ item: written, width, stats, trending, onPress }: { item: S
 export function StorySheet({ template: written, stats, onClose }: { template: StoryTemplate | null; stats?: TemplateStats; onClose: () => void }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const addTemplateCharacter = useAppStore((s) => s.addTemplateCharacter);
+  const start = useStartStory();
   // In the screen language: the copy Say hi keeps is in their words too.
   const template = written ? localTemplate(written) : null;
   const card = template?.card;
@@ -149,10 +198,8 @@ export function StorySheet({ template: written, stats, onClose }: { template: St
 
   const sayHi = () => {
     if (!template) return;
-    haptic.success();
-    const { conversationId } = addTemplateCharacter(template);
     onClose();
-    router.push(`/chat/${conversationId}`);
+    start(template);
   };
   const makeOwn = () => {
     if (!template) return;
@@ -208,7 +255,9 @@ const styles = StyleSheet.create({
   chips: { gap: 8, paddingHorizontal: inkGutter, paddingBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: inkGutter },
   card: { borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
-  face: { height: 132, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', padding: 12 },
+  // The initial up top, the count bottom left (where PolyBuzz keeps it).
+  face: { height: 132, alignItems: 'flex-start', justifyContent: 'space-between', padding: 12 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
   body: { gap: 6, padding: 12 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
