@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reaksiyalar 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+<style>
+  /* Audit 2026-11-15 §6.5, round 2: the owner liked A (tapback disc) and B (line glyph); three mixes of the two,
+     built on Apple's HIG where it speaks (SF Symbols custom-symbol rules, hierarchical rendering, Bounce / Replace /
+     Disappear, selection haptic, context-menu dim) and our own drawings everywhere else. */
+  :root {
+    --ground: #09090D; --card: #16161E; --raised: rgba(118,118,128,0.24); --thumb: #636366;
+    --text: #FFFFFF; --text2: rgba(235,235,245,0.62); --edge: rgba(255,255,255,0.08);
+    --peach: #F5A66B; --onPeach: #3A1A06; --friend: #2456B8; --theirBubble: #1E2433;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sys: -apple-system, 'SF Pro Text', Roboto, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; color: var(--text); font-family: var(--sys); }
+  body { padding: 20px 16px 40px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; margin: 4px 0 0; letter-spacing: -0.4px; text-align: center; }
+  .lead { color: var(--text2); font-size: 15px; max-width: 420px; text-align: center; margin: 0; line-height: 1.4; }
+
+  .seg { display: flex; padding: 3px; border-radius: 999px; background: var(--raised); width: min(420px, 100%); }
+  .seg button { flex: 1; min-height: 40px; border: 0; border-radius: 999px; background: transparent; color: var(--text2);
+    font: 600 14px var(--sys); cursor: pointer; padding: 0 6px; }
+  .seg button.on { background: var(--thumb); color: var(--text); }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: min(420px, 100%); }
+  .chip { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: var(--raised); color: var(--text);
+    font: 600 14px var(--sys); cursor: pointer; }
+  .chip.on { background: var(--peach); color: var(--onPeach); }
+
+  .phone { width: min(390px, 100%); height: 760px; border-radius: 44px; background: var(--ground); position: relative; overflow: hidden;
+    border: 1px solid #222; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+  .head { display: flex; align-items: center; gap: 12px; padding: 54px 18px 14px; border-bottom: 0.5px solid rgba(84,84,88,0.6); }
+  .round { width: 44px; height: 44px; border-radius: 50%; background: var(--raised); display: grid; place-items: center; flex: none; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b5fae, #1d2f5c); display: grid; place-items: center;
+    font: 600 17px var(--serif); box-shadow: 0 0 0 2px var(--friend); }
+  .who { line-height: 1.2; } .who b { font: 600 19px var(--serif); display: block; } .who span { color: var(--text2); font-size: 13px; }
+
+  .chat { padding: 70px 14px 120px; display: flex; flex-direction: column; gap: 24px; height: calc(100% - 110px); overflow-y: auto; position: relative; }
+  .row { display: flex; position: relative; }
+  .row.me { justify-content: flex-end; }
+  .bubble { max-width: 76%; padding: 10px 14px; border-radius: 20px; font-size: 17px; line-height: 22px; position: relative; cursor: pointer;
+    user-select: none; -webkit-tap-highlight-color: transparent; transition: transform .12s; }
+  .bubble:active { transform: scale(0.98); }
+  .them .bubble { background: var(--theirBubble); border-bottom-left-radius: 6px; }
+  .me .bubble { background: var(--peach); color: var(--onPeach); border-bottom-right-radius: 6px; }
+
+  /* HIG Context menus: the screen dims behind the chosen message. Appears at once (owner rule: no entry animation). */
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,.5); z-index: 4; }
+  .row.lift { z-index: 6; }
+  .row.lift .bubble { transform: scale(1.02); }
+
+  /* The reaction on a bubble's top corner: the friend's on my line (left), mine on theirs (right). */
+  .badge { position: absolute; top: -17px; width: 34px; height: 34px; display: grid; place-items: center; pointer-events: none; }
+  .me .badge { left: -15px; } .them .badge { right: -15px; }
+  .badge .g { display: grid; place-items: center; }
+
+  /* SF Symbols' named motions, drawn as our own springs. Bounce: lands, overshoots once, settles. */
+  .badge.bounce { animation: bounce .46s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes bounce { 0% { transform: scale(.2); opacity: 0; } 55% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+  /* Replace (down-up): the old glyph sinks out, the new one rises in; the disc stays. */
+  .badge.replace .g { animation: rise .32s cubic-bezier(.3,1.4,.5,1); }
+  @keyframes rise { 0% { transform: translateY(9px) scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  /* Disappear: shrinks away. */
+  .badge.gone { animation: gone .22s ease-in forwards; }
+  @keyframes gone { to { transform: scale(.3); opacity: 0; } }
+  .reduce .badge { animation: none !important; } .reduce .badge .g { animation: none !important; }
+
+  /* 1 · Tapback, line: A's disc in the reactor's colour, B's line glyph in hierarchical rendering on it. */
+  .V1 .badge { border-radius: 50%; box-shadow: 0 0 0 2.5px var(--ground); }
+  /* 2 · Ring: B's dark chip, the glyph in its own hue; a ring in the reactor's colour says who. */
+  .V2 .badge { border-radius: 50%; background: #1D1D25; box-shadow: 0 0 0 2px var(--ring), 0 0 0 4.5px var(--ground); }
+  /* 3 · Drop: A's disc as a little speech drop pointing at the message; B's line glyph in white / ink. */
+  .V3 .badge { width: 36px; height: 36px; border-radius: 50% 50% 50% 50%; box-shadow: 0 0 0 2.5px var(--ground); }
+  .V3 .me .badge { border-bottom-right-radius: 6px; }
+  .V3 .them .badge { border-bottom-left-radius: 6px; }
+
+  /* The pick bar: a glass capsule over the dim (HIG Materials: glass for controls above content). Appears at once. */
+  .bar { position: absolute; z-index: 7; display: flex; gap: 2px; padding: 5px; border-radius: 999px;
+    background: rgba(44,44,54,.72); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%);
+    border: 0.5px solid rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 14px 34px rgba(0,0,0,.55); }
+  .bar button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: grid; place-items: center;
+    cursor: pointer; transition: transform .14s cubic-bezier(.3,1.6,.5,1); }
+  .bar button:hover { transform: scale(1.12); }
+  .bar button:active { transform: scale(.88); }
+  .bar button.on { background: var(--peach); }
+
+  .cap { color: var(--text2); font-size: 12px; text-align: center; margin-top: -10px; max-width: 390px; }
+  .legend { width: min(420px, 100%); background: var(--card); border-radius: 28px; padding: 14px 10px 10px; }
+  .legend .lrow { display: grid; grid-template-columns: 64px repeat(6, 1fr); align-items: center; min-height: 54px; }
+  .legend .lrow span { color: var(--text2); font-size: 13px; padding-left: 8px; }
+  .legend .cell { position: relative; height: 54px; display: grid; place-items: center; }
+  .legend .badge { position: relative; top: 0; left: 0; right: 0; }
+  .legend .names { color: var(--text2); font-size: 11px; text-align: center; }
+  .note { width: min(420px, 100%); background: var(--card); border-radius: 28px; padding: 16px 18px; color: var(--text2); font-size: 14px; line-height: 1.5; }
+  .note b { color: var(--text); font-weight: 600; }
+  .note ul { margin: 6px 0 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+  <h1>Reaksiyalar · 2</h1>
+  <p class="lead">A va B dan uchta aralashma. Xabarni bosing, tanlang; boshqasini bossangiz almashadi, o'shani yana bossangiz olinadi.</p>
+
+  <div class="seg" id="seg">
+    <button data-v="V1" class="on">1 · Disk</button>
+    <button data-v="V2">2 · Halqa</button>
+    <button data-v="V3">3 · Tomchi</button>
+  </div>
+  <div class="tools">
+    <button class="chip" id="friendBtn">Do'st reaksiya qo'yadi</button>
+    <button class="chip" id="reduceBtn">Harakatni kamaytirish</button>
+  </div>
+
+  <div class="phone V1" id="phone">
+    <div class="head">
+      <div class="round"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="avatar">S</div>
+      <div class="who"><b>Sam Okafor</b><span>at practice</span></div>
+    </div>
+    <div class="chat" id="chat"></div>
+  </div>
+  <p class="cap" id="cap"></p>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="note">
+    <b>Apple'da nima bor:</b>
+    <ul>
+      <li>Apple qo'llanmasida reaksiya (Tapback) uchun bo'lim ham, tayyor qism ham yo'q: Tapback faqat Apple'ning Xabarlar ilovasiga tegishli.</li>
+      <li>Apple'ning belgilari (SF Symbols) faqat Apple qurilmalaridagi ilovalar uchun ruxsat etilgan; biz Android'da ham chiqamiz. Shuning uchun belgilarni o'zimiz chizdik, lekin Apple'ning o'z belgilar qoidasiga ko'ra: bir xil qalinlik, yumaloq uchlar, butun shakllar, "ierarxik" bo'yash (shakl och, chizig'i to'q).</li>
+      <li>Apple'dan olingani: belgi tushganda "sakrash" (Bounce), almashganda "pastdan-yuqoriga" (Replace), olinganda "so'nish" (Disappear); bitta yengil "tanlash" tebranishi; menyu ochilganda orqa fon xiralashadi, tanlash qatori shisha kapsula.</li>
+    </ul>
+    <br><b>Nima o'zgarmaydi:</b> olti nom, model va server; qator darhol chiqadi; "Harakatni kamaytirish" yoqilsa reaksiya shunchaki paydo bo'ladi.
+  </div>
+
+<script>
+  const NAMES = ['love', 'laugh', 'wow', 'sad', 'hyped', 'thumbs'];
+  const LABEL = { love: 'Sevgi', laugh: 'Kulgi', wow: 'Hayrat', sad: "Qayg'u", hyped: 'Olov', thumbs: 'Barmoq' };
+  const HUE = { love: '#FF6B81', laugh: '#FFC94D', wow: '#6CC4FF', sad: '#9DB0FF', hyped: '#FF8A3D', thumbs: '#52D9A2' };
+  const CAP = {
+    V1: "Kim qo'ydi — diskning rangi (sizniki shaftoli, do'stniki uning rangi). Belgi chiziqli, ichi och: Apple'ning ierarxik bo'yashi.",
+    V2: "Nima — belgining o'z rangi (B). Kim — atrofidagi halqa: sizniki shaftoli, do'stniki uning rangi.",
+    V3: "Disk xabarga qaragan kichik tomchi bo'lib turadi: reaksiya qaysi xabarniki ekani bir qarashda ko'rinadi.",
+  };
+
+  /* Our own symbols on a 24 grid, drawn by Apple's custom-symbol rules: one 1.9 stroke weight, round caps, whole shapes.
+     Hierarchical rendering: the shape filled at 30 % of the colour (secondary layer), its outline and features at 100 %. */
+  function glyph(name, c, size) {
+    const s = size || 20;
+    const line = `fill="none" stroke="${c}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"`;
+    const soft = `fill="${c}" fill-opacity=".3"`;
+    const both = (d) => `<path ${soft} d="${d}"/><path ${line} d="${d}"/>`;
+    let body = '';
+    switch (name) {
+      case 'love':
+        body = both('M12 20.3s-7.4-4.5-9.1-9.1C1.6 7.9 3.7 4.6 7 4.6c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.3 0 5.4 3.3 4.1 6.6-1.7 4.6-9.1 9.1-9.1 9.1z');
+        break;
+      case 'laugh':
+        body = `<circle ${soft} cx="12" cy="12" r="9"/><circle ${line} cx="12" cy="12" r="9"/>
+          <path ${line} d="M7.7 9.5l1.8 1.2-1.8 1.2M16.3 9.5l-1.8 1.2 1.8 1.2"/>
+          <path fill="${c}" d="M7.3 14.1h9.4c-.6 2.6-2.5 4.1-4.7 4.1s-4.1-1.5-4.7-4.1z"/>`;
+        break;
+      case 'wow':
+        body = `<path fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" d="M8.5 4.5v9.5M15.5 4.5v9.5"/>
+          <circle fill="${c}" cx="8.5" cy="19" r="1.7"/><circle fill="${c}" cx="15.5" cy="19" r="1.7"/>`;
+        break;
+      case 'sad':
+        // A single tear: one whole shape reads at 18 px, where a face with a small tear looked like the laugh.
+        body = both('M12 2.8c3.9 4.9 6.4 8.4 6.4 11.6a6.4 6.4 0 0 1-12.8 0c0-3.2 2.5-6.7 6.4-11.6z')
+          + `<path ${line} d="M9.3 15.1a2.9 2.9 0 0 0 2.5 2.7"/>`;
+        break;
+      case 'hyped':
+        body = both('M12.6 2.6c.6 3 4.9 5.2 4.9 10.5a5.5 5.5 0 0 1-11 0c0-2.6 1.2-4.3 2.6-5.5.1 1.8 1 2.9 2.1 3.3-.4-3.4.4-6.1 1.4-8.3z')
+          + `<path ${line} d="M12 20.4a2.6 2.6 0 0 1-2.6-2.6c0-1.6 1.3-2.5 1.9-3.9.8 1.2 3.3 2.1 3.3 3.9a2.6 2.6 0 0 1-2.6 2.6z"/>`;
+        break;
+      case 'thumbs':
+        body = both('M3.6 10.6h3.1v9.4H3.6z') + both('M8.6 20V10.4l3.6-6.1c.3-.5.9-.7 1.4-.5 1 .4 1.5 1.4 1.3 2.5l-.6 3.4h4.5c1.3 0 2.2 1.2 2 2.4l-1.3 6.3c-.2 1-1.1 1.6-2.1 1.6z');
+        break;
+    }
+    return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
+  }
+
+  /* A reaction on a bubble. `mine`: the user put it (peach); otherwise the friend did (their hue). */
+  function badgeStyle(v, name, mine) {
+    if (v === 'V2') return { bg: '#1D1D25', ring: mine ? 'var(--peach)' : '#4D7DE0', html: glyph(name, HUE[name], 19) };
+    return { bg: mine ? 'var(--peach)' : 'var(--friend)', html: glyph(name, mine ? '#3A1A06' : '#FFFFFF', v === 'V3' ? 19 : 18) };
+  }
+  function makeBadge(v, name, mine, cls) {
+    const st = badgeStyle(v, name, mine);
+    const el = document.createElement('div');
+    el.className = 'badge' + (cls ? ' ' + cls : '');
+    el.style.background = st.bg;
+    if (st.ring) el.style.setProperty('--ring', st.ring);
+    el.setAttribute('aria-label', LABEL[name]);
+    el.innerHTML = `<span class="g">${st.html}</span>`;
+    return el;
+  }
+
+  const messages = [
+    { id: 1, who: 'them', text: 'coach made us run sprints for 40 minutes. my legs are gone', react: null },
+    { id: 2, who: 'me', text: 'I got the internship!! they called an hour ago', react: 'hyped' },
+    { id: 3, who: 'them', text: 'WAIT. the one at the studio?? tell me everything', react: 'wow' },
+    { id: 4, who: 'me', text: 'yes!! I start Monday. also I tripped on the stairs leaving', react: null },
+    { id: 5, who: 'them', text: 'proud of you. and of course you did. that is so you', react: 'love' },
+    { id: 6, who: 'me', text: 'dinner friday to celebrate?', react: null },
+  ];
+
+  let variant = 'V1';
+  let open = null;
+  let reduce = false;
+  const phone = document.getElementById('phone');
+  const chat = document.getElementById('chat');
+
+  function haptic() { if (navigator.vibrate) navigator.vibrate(8); }
+
+  /* `motion`: { id, kind: 'bounce' | 'replace' | 'gone', old } for the one badge that just changed. */
+  function render(motion) {
+    const keep = chat.scrollTop;
+    chat.innerHTML = '';
+    if (open !== null) {
+      const dim = document.createElement('div');
+      dim.className = 'dim';
+      dim.style.height = chat.scrollHeight + 'px';
+      dim.onclick = (e) => { e.stopPropagation(); open = null; render(); };
+      chat.appendChild(dim);
+    }
+    for (const m of messages) {
+      const row = document.createElement('div');
+      row.className = 'row ' + m.who + (open === m.id ? ' lift' : '');
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      b.textContent = m.text;
+      b.onclick = (e) => { e.stopPropagation(); open = open === m.id ? null : m.id; render(); };
+      // My lines carry the friend's reaction; theirs carry mine.
+      const mine = m.who === 'them';
+      const mv = motion && motion.id === m.id ? motion : null;
+      if (m.react) b.appendChild(makeBadge(variant, m.react, mine, mv ? mv.kind : ''));
+      else if (mv && mv.kind === 'gone' && !reduce) {
+        const g = makeBadge(variant, mv.old, mine, 'gone');
+        b.appendChild(g);
+        setTimeout(() => g.remove(), 240);
+      }
+      row.appendChild(b);
+      chat.appendChild(row);
+      if (open === m.id) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.top = '-62px';
+        bar.style[m.who === 'me' ? 'right' : 'left'] = '0';
+        for (const name of NAMES) {
+          const btn = document.createElement('button');
+          btn.title = LABEL[name];
+          btn.setAttribute('aria-label', LABEL[name]);
+          const on = m.react === name;
+          if (on) btn.className = 'on';
+          btn.innerHTML = glyph(name, on ? '#3A1A06' : HUE[name], 26);
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const old = m.react;
+            m.react = old === name ? null : name;
+            open = null;
+            haptic();
+            render({ id: m.id, kind: !m.react ? 'gone' : old ? 'replace' : 'bounce', old });
+          };
+          bar.appendChild(btn);
+        }
+        row.appendChild(bar);
+      }
+    }
+    chat.scrollTop = keep;
+  }
+
+  function legend() {
+    const el = document.getElementById('legend');
+    el.className = 'legend ' + variant;
+    el.innerHTML = '';
+    for (const [label, mine] of [['Siz', true], ["Do'st", false]]) {
+      const r = document.createElement('div');
+      r.className = 'lrow';
+      r.innerHTML = `<span>${label}</span>`;
+      for (const name of NAMES) {
+        const c = document.createElement('div');
+        c.className = 'cell ' + (mine ? 'them' : 'me');
+        c.appendChild(makeBadge(variant, name, mine));
+        r.appendChild(c);
+      }
+      el.appendChild(r);
+    }
+    const n = document.createElement('div');
+    n.className = 'lrow names';
+    n.innerHTML = '<span></span>' + NAMES.map((x) => `<div>${LABEL[x]}</div>`).join('');
+    el.appendChild(n);
+  }
+
+  function setVariant(v) {
+    variant = v;
+    for (const b of document.querySelectorAll('.seg button')) b.classList.toggle('on', b.dataset.v === v);
+    phone.className = 'phone ' + v + (reduce ? ' reduce' : '');
+    document.getElementById('cap').textContent = CAP[v];
+    render();
+    legend();
+  }
+
+  document.getElementById('seg').onclick = (e) => { const v = e.target.dataset && e.target.dataset.v; if (v) setVariant(v); };
+  // A friend's reaction arriving from the model: lands on my newest line with a Bounce and one tap.
+  let next = 0;
+  document.getElementById('friendBtn').onclick = (e) => {
+    e.stopPropagation();
+    const m = messages[messages.length - 1];
+    const old = m.react;
+    m.react = ['thumbs', 'love', 'hyped'][next++ % 3];
+    open = null;
+    haptic();
+    render({ id: m.id, kind: old ? 'replace' : 'bounce', old });
+    chat.scrollTop = chat.scrollHeight;
+  };
+  document.getElementById('reduceBtn').onclick = (e) => {
+    reduce = !reduce;
+    e.target.classList.toggle('on', reduce);
+    phone.classList.toggle('reduce', reduce);
+  };
+  document.body.onclick = () => { if (open !== null) { open = null; render(); } };
+
+  setVariant('V1');
+</script>
+</body>
+</html>

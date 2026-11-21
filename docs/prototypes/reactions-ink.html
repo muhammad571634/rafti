@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reaksiyalar prototipi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+<style>
+  /* Sigmazam night (Ink): ground, card, raised, text roles. Prototype for audit 2026-11-15 §6.5. */
+  :root {
+    --ground: #09090D; --card: #16161E; --raised: rgba(118,118,128,0.24); --thumb: #636366;
+    --text: #FFFFFF; --text2: rgba(235,235,245,0.62); --edge: rgba(255,255,255,0.08);
+    --peach: #F5A66B; --onPeach: #3A1A06; --friend: #2456B8;
+    --love: #FF6B81; --laugh: #FFC94D; --wow: #6CC4FF; --sad: #9DB0FF; --hyped: #FF8A3D; --thumbs: #52D9A2;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sys: -apple-system, 'SF Pro Text', Roboto, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; color: var(--text); font-family: var(--sys); }
+  body { padding: 20px 16px 40px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; margin: 4px 0 0; letter-spacing: -0.4px; text-align: center; }
+  .lead { color: var(--text2); font-size: 15px; max-width: 420px; text-align: center; margin: 0; line-height: 1.4; }
+
+  .seg { display: flex; padding: 3px; border-radius: 999px; background: var(--raised); width: min(420px, 100%); }
+  .seg button { flex: 1; min-height: 38px; border: 0; border-radius: 999px; background: transparent; color: var(--text2);
+    font: 600 15px var(--sys); cursor: pointer; }
+  .seg button.on { background: var(--thumb); color: var(--text); }
+
+  .phone { width: min(390px, 100%); height: 760px; border-radius: 44px; background: var(--ground); position: relative; overflow: hidden;
+    border: 1px solid #222; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+  .head { display: flex; align-items: center; gap: 12px; padding: 54px 18px 14px; border-bottom: 0.5px solid rgba(84,84,88,0.6); }
+  .round { width: 44px; height: 44px; border-radius: 50%; background: var(--raised); display: grid; place-items: center; flex: none; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b5fae, #1d2f5c); display: grid; place-items: center;
+    font: 600 17px var(--serif); box-shadow: 0 0 0 2px var(--friend); }
+  .who { line-height: 1.2; } .who b { font: 600 19px var(--serif); display: block; } .who span { color: var(--text2); font-size: 13px; }
+
+  .chat { padding: 18px 14px 120px; display: flex; flex-direction: column; gap: 22px; height: calc(100% - 110px); overflow-y: auto; }
+  .row { display: flex; position: relative; }
+  .row.me { justify-content: flex-end; }
+  .bubble { max-width: 76%; padding: 10px 14px; border-radius: 20px; font-size: 17px; line-height: 22px; position: relative; cursor: pointer;
+    user-select: none; -webkit-tap-highlight-color: transparent; transition: transform .12s; }
+  .bubble:active { transform: scale(0.98); }
+  .them .bubble { background: #1E2433; border-bottom-left-radius: 6px; }
+  .me .bubble { background: var(--peach); color: var(--onPeach); border-bottom-right-radius: 6px; }
+
+  /* The reaction that sits on a bubble's top corner (theirs on my line: left; mine on theirs: right). */
+  .badge { position: absolute; top: -16px; display: grid; place-items: center; pointer-events: none; }
+  .me .badge { left: -14px; } .them .badge { right: -14px; }
+  .badge.pop { animation: pop .42s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { 0% { transform: scale(.2); opacity: 0; } 60% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+
+  /* A: tapback, a disc in the reactor's colour, a white glyph (iMessage's structure, our glyphs). */
+  .A .badge { width: 32px; height: 32px; border-radius: 50%; border: 2.5px solid var(--ground); }
+  /* B: line, a dark chip with a hairline, the glyph drawn in its own hue. */
+  .B .badge { width: 34px; height: 34px; border-radius: 50%; background: #23232B; border: 1px solid var(--edge); box-shadow: 0 0 0 2.5px var(--ground); }
+  /* C: glow, the glyph filled in its hue on a dark disc with its own light behind. */
+  .C .badge { width: 38px; height: 38px; border-radius: 50%; background: #17171F; box-shadow: 0 0 0 2.5px var(--ground); }
+  .C .badge::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; background: radial-gradient(circle, var(--glow) 0%, transparent 68%); opacity: .55; z-index: -1; }
+
+  /* The bar that opens on a tap (appears at once: owner rule, no entry animation). */
+  .bar { position: absolute; z-index: 5; display: flex; gap: 4px; padding: 6px; border-radius: 999px; background: #1F1F27;
+    border: 1px solid var(--edge); box-shadow: 0 12px 30px rgba(0,0,0,.55); }
+  .bar button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; }
+  .bar button.on { background: var(--raised); }
+  .bar button:active { transform: scale(.88); }
+  .A .bar button .disc { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; }
+
+  .cap { color: var(--text2); font-size: 12px; text-align: center; margin-top: -10px; }
+  .legend { width: min(420px, 100%); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .legend > div { background: var(--card); border-radius: 20px; padding: 12px 8px; text-align: center; font-size: 13px; color: var(--text2); }
+  .legend .g { height: 44px; display: grid; place-items: center; margin-bottom: 4px; }
+  .note { width: min(420px, 100%); background: var(--card); border-radius: 28px; padding: 16px 18px; color: var(--text2); font-size: 14px; line-height: 1.45; }
+  .note b { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+  <h1>Reaksiyalar</h1>
+  <p class="lead">Olti reaksiya, o'zimiz chizgan, uch xil uslubda. Xabarni bosing: tanlash qatori chiqadi; tanlang, u xabar burchagiga tushadi. Shu reaksiyani yana bossangiz, olib tashlanadi.</p>
+
+  <div class="seg" id="seg">
+    <button data-v="A" class="on">A · Tapback</button>
+    <button data-v="B">B · Chiziq</button>
+    <button data-v="C">C · Nur</button>
+  </div>
+
+  <div class="phone A" id="phone">
+    <div class="head">
+      <div class="round"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="avatar">S</div>
+      <div class="who"><b>Sam Okafor</b><span>at practice</span></div>
+    </div>
+    <div class="chat" id="chat"></div>
+  </div>
+  <p class="cap">Do'stning reaksiyasi uning rangida, sizniki shaftoli rangida (A). B va C da har reaksiya o'z rangida.</p>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="note">
+    <b>Nima o'zgarmaydi:</b> olti nom (sevgi, kulgi, hayrat, qayg'u, olov, barmoq) avvalgidek, shuning uchun model va server tegilmaydi. Reaksiya tushganda bitta yengil tebranish. Maskot faqat brend lahzalarida qoladi.<br><br>
+    <b>Tanlash:</b> A, B yoki C, yoki ularning aralashmasi (masalan, B ning chizig'i + A ning diski).
+  </div>
+
+<script>
+  const NAMES = ['love', 'laugh', 'wow', 'sad', 'hyped', 'thumbs'];
+  const LABEL = { love: 'Sevgi', laugh: 'Kulgi', wow: 'Hayrat', sad: "Qayg'u", hyped: 'Olov', thumbs: 'Barmoq' };
+  const HUE = { love: '#FF6B81', laugh: '#FFC94D', wow: '#6CC4FF', sad: '#9DB0FF', hyped: '#FF8A3D', thumbs: '#52D9A2' };
+
+  /* Each glyph on a 24 grid. `fill` mode: solid shape in `c`, features cut in `k`. `line` mode: 2 pt strokes in `c`. */
+  function glyph(name, mode, c, k, size) {
+    const s = size || 20;
+    const line = mode === 'line';
+    const st = line ? `fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"` : `fill="${c}"`;
+    const cut = line ? `fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round"` : `fill="none" stroke="${k}" stroke-width="2" stroke-linecap="round"`;
+    const dot = line ? `fill="${c}"` : `fill="${k}"`;
+    let body = '';
+    switch (name) {
+      case 'love':
+        body = `<path ${st} d="M12 20.3s-7.4-4.5-9.1-9.1C1.6 7.9 3.7 4.6 7 4.6c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.3 0 5.4 3.3 4.1 6.6-1.7 4.6-9.1 9.1-9.1 9.1z"/>`;
+        break;
+      case 'laugh':
+        body = `<circle ${st} cx="12" cy="12" r="9"/>
+          <path ${cut} d="M7.6 9.6l1.9 1.2-1.9 1.2M16.4 9.6l-1.9 1.2 1.9 1.2"/>
+          <path ${line ? `fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"` : `fill="${k}"`} d="M7.3 14.2h9.4c-.6 2.6-2.5 4.1-4.7 4.1s-4.1-1.5-4.7-4.1z"/>`;
+        break;
+      case 'wow':
+        body = `<path ${line ? `fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"` : `fill="none" stroke="${c}" stroke-width="3.6" stroke-linecap="round"`} d="M8.5 4.5v9.5M15.5 4.5v9.5"/>
+          <circle ${line ? `fill="${c}"` : `fill="${c}"`} cx="8.5" cy="19" r="${line ? 1.6 : 2.1}"/><circle fill="${c}" cx="15.5" cy="19" r="${line ? 1.6 : 2.1}"/>`;
+        break;
+      case 'sad':
+        body = `<circle ${st} cx="12" cy="12" r="9"/>
+          <circle ${dot} cx="9" cy="10.2" r="1.25"/><circle ${dot} cx="15" cy="10.2" r="1.25"/>
+          <path ${cut} d="M8.6 16.4c.9-1.3 2-1.9 3.4-1.9s2.5.6 3.4 1.9"/>
+          <path ${line ? `fill="none" stroke="${c}" stroke-width="1.6"` : `fill="${k}"`} d="M16.6 12.6c.5.8.9 1.4.9 1.9a.9.9 0 0 1-1.8 0c0-.5.4-1.1.9-1.9z"/>`;
+        break;
+      case 'hyped':
+        body = `<path ${st} d="M12.6 2.6c.6 3 4.9 5.2 4.9 10.5a5.5 5.5 0 0 1-11 0c0-2.6 1.2-4.3 2.6-5.5.1 1.8 1 2.9 2.1 3.3-.4-3.4.4-6.1 1.4-8.3z"/>
+          ${line ? '' : `<path fill="${k}" opacity=".35" d="M12 21a3 3 0 0 1-3-3c0-1.9 1.6-2.9 2.3-4.6.9 1.4 3.7 2.4 3.7 4.6a3 3 0 0 1-3 3z"/>`}`;
+        break;
+      case 'thumbs':
+        body = `<path ${st} d="M3.5 10.5h3.2v9.6H3.5zM8.6 20.1V10.3l3.6-6.1c.3-.5.9-.7 1.4-.5 1 .4 1.5 1.4 1.3 2.5l-.6 3.4h4.6c1.3 0 2.2 1.2 2 2.4l-1.3 6.4c-.2 1-1.1 1.7-2.1 1.7z"/>`;
+        break;
+    }
+    return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
+  }
+
+  /* How a reaction looks in each variant; `mine` decides the tapback disc's colour. */
+  function badgeInner(v, name, mine) {
+    // Mine: the dark peach ink on the peach disc (white on peach is too faint); theirs: white on their colour.
+    if (v === 'A') return mine ? { html: glyph(name, 'fill', '#3A1A06', '#F5A66B', 18), bg: 'var(--peach)' } : { html: glyph(name, 'fill', '#FFFFFF', '#2456B8', 18), bg: 'var(--friend)' };
+    if (v === 'B') return { html: glyph(name, 'line', HUE[name], null, 19) };
+    return { html: glyph(name, 'fill', HUE[name], '#17171F', 22), glow: HUE[name] };
+  }
+  function barInner(v, name) {
+    // The bar is the user's own pick: their peach.
+    if (v === 'A') return `<span class="disc" style="background:var(--peach)">${glyph(name, 'fill', '#3A1A06', '#F5A66B', 19)}</span>`;
+    if (v === 'B') return glyph(name, 'line', HUE[name], null, 24);
+    return glyph(name, 'fill', HUE[name], '#1F1F27', 26);
+  }
+
+  const messages = [
+    { id: 1, who: 'them', text: 'coach made us run sprints for 40 minutes. my legs are gone', react: null },
+    { id: 2, who: 'me', text: 'I got the internship!! they called an hour ago', react: 'hyped', by: 'them' },
+    { id: 3, who: 'them', text: 'WAIT. the one at the studio?? tell me everything', react: 'wow', by: 'me' },
+    { id: 4, who: 'me', text: 'yes!! I start Monday. also I tripped on the stairs leaving', react: 'laugh', by: 'them' },
+    { id: 5, who: 'them', text: 'proud of you. and of course you did 😂 that is so you', react: 'love', by: 'me' },
+  ];
+
+  let variant = 'A';
+  let open = null;
+  const phone = document.getElementById('phone');
+  const chat = document.getElementById('chat');
+
+  function render(popId) {
+    chat.innerHTML = '';
+    for (const m of messages) {
+      const row = document.createElement('div');
+      row.className = 'row ' + m.who;
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      b.textContent = m.text;
+      b.onclick = (e) => { e.stopPropagation(); open = open === m.id ? null : m.id; render(); };
+      if (m.react) {
+        // On my line the friend reacted; on theirs, I did (a demo of both directions).
+        const mine = m.who === 'them';
+        const inner = badgeInner(variant, m.react, mine);
+        const badge = document.createElement('div');
+        badge.className = 'badge' + (popId === m.id ? ' pop' : '');
+        if (inner.bg) badge.style.background = inner.bg;
+        if (inner.glow) badge.style.setProperty('--glow', inner.glow);
+        badge.innerHTML = inner.html;
+        b.appendChild(badge);
+      }
+      row.appendChild(b);
+      chat.appendChild(row);
+      if (open === m.id) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.top = '-62px';
+        bar.style[m.who === 'me' ? 'right' : 'left'] = '0';
+        for (const name of NAMES) {
+          const btn = document.createElement('button');
+          btn.title = LABEL[name];
+          btn.setAttribute('aria-label', LABEL[name]);
+          if (m.react === name) btn.className = 'on';
+          btn.innerHTML = barInner(variant, name);
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            m.react = m.react === name ? null : name;
+            open = null;
+            if (navigator.vibrate) navigator.vibrate(8);
+            render(m.react ? m.id : null);
+          };
+          bar.appendChild(btn);
+        }
+        row.appendChild(bar);
+      }
+    }
+  }
+
+  function legend() {
+    const el = document.getElementById('legend');
+    el.innerHTML = '';
+    for (const name of NAMES) {
+      const inner = badgeInner(variant, name, false);
+      const d = document.createElement('div');
+      d.innerHTML = `<div class="g"><div class="badge" style="position:relative;top:0;left:0;right:0;${inner.bg ? `background:${inner.bg};` : ''}${inner.glow ? `--glow:${inner.glow};` : ''}">${inner.html}</div></div>${LABEL[name]}`;
+      el.appendChild(d);
+    }
+  }
+
+  document.getElementById('seg').onclick = (e) => {
+    const v = e.target.dataset && e.target.dataset.v;
+    if (!v) return;
+    variant = v;
+    for (const b of document.querySelectorAll('.seg button')) b.classList.toggle('on', b.dataset.v === v);
+    phone.className = 'phone ' + v;
+    document.getElementById('legend').className = 'legend ' + v;
+    render();
+    legend();
+  };
+  document.body.onclick = () => { if (open !== null) { open = null; render(); } };
+
+  document.getElementById('legend').className = 'legend A';
+  render();
+  legend();
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+import type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  GrantRequest,
+  MessageCharge,
+  MemoriesState,
+  MemorySyncRequest,
+  MessageSyncRequest,
+  MessagesPage,
+  ReportRequest,
+  ShareResult,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+} from '../../../src/ai/session-types.ts';
+import type { PlanId } from '../../../src/types/index.ts';
+import type { CleanBatch } from '../../../src/lib/analytics-events.ts';
+import type { CommunityCard, CommunityItem, CommunityReason, CommunitySort, CommunityStatus } from '../../../src/lib/community.ts';
+import type { TemplateStats, TemplateUse } from '../../../src/lib/templates.ts';
+
+export type {
+  BootstrapInput,
+  BootstrapResult,
+  CheckInResult,
+  GrantRequest,
+  MessageCharge,
+  MemoriesState,
+  MemorySyncRequest,
+  MessageSyncRequest,
+  MessagesPage,
+  ReportRequest,
+  ShareResult,
+  SpendRequest,
+  SpinResult,
+  WalletState,
+};
+
+/** A wallet call the database refused: too few shells, no wallet yet (before bootstrap), a bad amount. */
+export class WalletError extends Error {
+  // A plain field: Node runs this file by stripping types, which parameter properties defeat.
+  readonly code: 'noShells' | 'noWallet' | 'badAmount';
+  constructor(code: 'noShells' | 'noWallet' | 'badAmount') {
+    super(code);
+    this.code = code;
+  }
+}
+
+/**
+ * The database behind the API (backend-plan §1.4: every provider sits behind an interface).
+ * Supabase today (`supabase.ts`); tests pass a fake.
+ */
+/** A subscription as the plan rules read it (`src/economy/plans.ts`). */
+export interface LiveSubscription {
+  plan: PlanId;
+  status: 'trial' | 'active';
+  termStart: string;
+  willRenew: boolean;
+}
+
+export interface Db {
+  name: string;
+  /**
+   * The signed-in user behind an access token, or null when the token is not valid. It throws when
+   * the sign-in service could not be asked: that says nothing about the token (`accountOf` in app.ts).
+   */
+  userIdFromToken(token: string): Promise<string | null>;
+  /**
+   * How many times the user spent shells since the UTC day began, for the reply allowance (`mayReply` in app.ts).
+   * Messages (chat, voice, photo) are left out: the server counts those itself (`takeMessage`).
+   */
+  spendsToday?(userId: string): Promise<number>;
+  /** A cheap read that fails when the database is away, for `/health`. */
+  ping?(): Promise<void>;
+  /** What the model cost since the UTC day began, at list price, for the day's budget (`llm/gate.ts`); null when it cannot be read. */
+  modelSpendToday?(): Promise<number | null>;
+  /** First call creates the profile and wallet and pays the welcome gift; later calls only read. */
+  bootstrap(userId: string, input: BootstrapInput): Promise<BootstrapResult>;
+  /** One row of the cost log (`usage_events`, server only, never shown to users). */
+  logUsage(event: UsageEvent): Promise<void>;
+
+  // The wallet (B1.2, supabase/migrations/*_b1_wallet.sql). Each throws WalletError when refused.
+  walletState(userId: string): Promise<WalletState>;
+  walletSpend(userId: string, request: SpendRequest): Promise<WalletState>;
+  /** Earnings: `free` ones go to today's bucket and burn at midnight, the rest are kept. */
+  walletCredit(userId: string, request: GrantRequest & { free: boolean }): Promise<WalletState>;
+  walletCheckIn(userId: string, rules: { ladder: readonly number[]; top: number }): Promise<CheckInResult>;
+  walletSpin(userId: string, rules: { segments: readonly number[]; weights: readonly number[]; freeSpins: number }): Promise<SpinResult>;
+  /** A shared card: `amount` free shells for each of the first `perDay` shares of the user's day, then nothing. */
+  walletShare(userId: string, rules: { amount: number; perDay: number }): Promise<ShareResult>;
+  /**
+   * Decides one line the user sends (0z260, `take_message` in supabase/migrations/*_b12_message_charges.sql):
+   * today's free messages, then a shell under `spend:<key>`; once per key. `charge` false records the
+   * decision without moving a shell (`ENFORCE_WALLET` off); `use` counts a reply under the key.
+   */
+  takeMessage?(userId: string, request: TakeMessage): Promise<MessageCharge>;
+
+  // Plans (0z142): the server holds the subscription and pays its monthly shells (`payPlanShells` in app.ts).
+  /** The live subscription (trial, active or grace, before its term ends); null when none. */
+  currentSubscription?(userId: string): Promise<LiveSubscription | null>;
+  /** A plan with no store behind it (allow-listed testers, before billing): the user's earlier test plans end. */
+  startTestSubscription?(userId: string, plan: PlanId, trial: boolean, now: Date): Promise<void>;
+
+  // The chats (B1.3b, supabase/migrations/*_b1_message_sync.sql).
+  /** One sync, all or nothing; answers the user's newest `seq`. */
+  syncMessages(userId: string, request: MessageSyncRequest): Promise<number | null>;
+  /** The user's messages after `after`, in `seq` order. */
+  messagesAfter(userId: string, after: number, limit: number): Promise<MessagesPage>;
+
+  // The memory (B2.3, supabase/migrations/*_b2_memory_sync.sql).
+  /** One sync, all or nothing: each character sent replaces its list, each chat its row. */
+  syncMemories(userId: string, request: MemorySyncRequest): Promise<void>;
+  /** Everything the server keeps of the user's memory. */
+  memoriesOf(userId: string): Promise<MemoriesState>;
+
+  /** Keeps a report for review (supabase/migrations/*_b3_reports.sql); one sent twice is kept once. */
+  saveReport(userId: string, report: ReportRequest): Promise<void>;
+
+  /**
+   * Keeps a batch of app events (supabase/migrations/*_b13_app_events.sql, product analytics); an
+   * event sent twice is kept once. Absent: the server takes no events (`/v1/events` says 503).
+   */
+  saveEvents?(userId: string, batch: CleanBatch): Promise<void>;
+
+  /**
+   * The community library (supabase/migrations/*_b14_community_characters.sql). Absent: the routes
+   * say 503. Publishing again (same owner, same local id) updates the row and its review.
+   */
+  community?: {
+    publish(userId: string, localId: string, card: CommunityCard, status: CommunityStatus, reason: CommunityReason | null): Promise<{ id: string }>;
+    unpublish(userId: string, localId: string): Promise<void>;
+    list(sort: CommunitySort, limit: number, offset: number): Promise<CommunityItem[]>;
+    get(id: string): Promise<CommunityItem | null>;
+    /** Counts the user once; null when it is not live. */
+    add(userId: string, id: string): Promise<number | null>;
+    /** Once per user; answers the status after it, or null when there is no such character. */
+    report(userId: string, id: string, reason: string, hideAt: number): Promise<CommunityStatus | null>;
+  };
+
+  /**
+   * Real counts for the story templates (supabase/migrations/*_b15_template_adds.sql). Absent: the
+   * routes say 503 and the shelves show "New" everywhere.
+   */
+  templates?: {
+    /** Once per account per template; `own` upgrades an earlier `hi`. */
+    add(userId: string, id: string, how: TemplateUse): Promise<void>;
+    /** Every used template's numbers, keyed by id. */
+    stats(): Promise<Record<string, TemplateStats>>;
+  };
+
+  /** Deletes the account and, through the foreign keys, every row it owns (App Store 5.1.1(v)). */
+  deleteUser(userId: string): Promise<void>;
+}
+
+export interface TakeMessage {
+  key: string;
+  reason: 'chat' | 'voice' | 'photo';
+  cost: number;
+  freeLimit: number;
+  planLimit: number;
+  /** A photo always takes its shell. */
+  mayBeFree: boolean;
+  maxUses: number;
+  use: boolean;
+  charge: boolean;
+  characterId?: string;
+}
+
+/** What one model or voice call cost (backend-plan §1.5, §9: the unit economics come from these rows). */
+export interface UsageEvent {
+  /** Null when the call came without a signed-in user. */
+  userId: string | null;
+  kind: 'llm' | 'tts' | 'stt' | 'call' | 'image';
+  /** What the call was for: 'chat' now; 'brief', 'quickCreate'… as those move to the server. */
+  mode?: string;
+  model?: string;
+  promptVersion?: string;
+  inputTokens?: number;
+  cachedTokens?: number;
+  outputTokens?: number;
+  seconds?: number;
+  /** At the paid tier's list price; null for a model with no price on file. */
+  costUsd?: number | null;
+}

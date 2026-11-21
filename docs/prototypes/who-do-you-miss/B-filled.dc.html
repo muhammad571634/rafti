@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Breathing seats filled</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:440px;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif;overflow:hidden;position:relative}
+.feat{position:absolute;left:20px;top:-150px;width:262px;height:240px;border-radius:28px;background:linear-gradient(180deg,#3a2a20,#1a1410)}
+.sec{position:absolute;left:20px;font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:22px;line-height:28px;letter-spacing:-.25px}
+.row{position:absolute;left:20px;top:176px;display:flex;gap:12px}
+.seat{width:70px;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;color:inherit;font:inherit}
+.ring{width:64px;height:64px;border-radius:32px;border:3px solid;padding:2px;box-sizing:border-box}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.disc{width:64px;height:64px;border-radius:32px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;animation:breathe 4.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+.lab{font-size:12px;line-height:16px;color:rgba(235,235,245,.62);text-align:center}
+.on{color:#fff;font-weight:600}
+.tag{position:absolute;top:110px;right:16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#09090D;background:#FFC497;border-radius:10px;padding:3px 8px}
+</style>
+</helmet>
+<div class="ph">
+  <div class="feat"></div>
+  <div class="sec" style="top:124px">Who do you miss?</div>
+  <div class="row">
+    <button class="seat" aria-label="Onam, your Mom"><div class="ring" style="border-color:#E8749C"><img src="/_blob/87e8c4655373b5c2fcfeb54bac36daf9" alt=""></div><div class="lab on">Onam</div></button>
+    <button class="seat" aria-label="Choose your Dad"><div class="disc" style="background:radial-gradient(circle at 50% 70%,#6E9BFF40,#6E9BFF14 70%)"><svg width="46" height="52" viewBox="0 0 60 68" aria-hidden="true"><defs><linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E9BFF"></stop><stop offset="1" stop-color="#6E9BFF" stop-opacity=".2"></stop></linearGradient></defs><circle cx="30" cy="22" r="12" fill="url(#d1)"></circle><path d="M6 68 C6 49 17 40 30 40 C43 40 54 49 54 68 Z" fill="url(#d1)"></path></svg></div><div class="lab">Dad</div></button>
+    <button class="seat" aria-label="Opa, your Big sister"><div class="ring" style="border-color:#A893F0"><img src="/_blob/fc4936998c5c98ec0086163f86314e52" alt=""></div><div class="lab on">Opa</div></button>
+    <button class="seat" aria-label="Choose your Big brother"><div class="disc" style="background:radial-gradient(circle at 50% 70%,#5FC3D340,#5FC3D314 70%);animation-delay:1.4s"><svg width="46" height="52" viewBox="0 0 60 68" aria-hidden="true"><defs><linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FC3D3"></stop><stop offset="1" stop-color="#5FC3D3" stop-opacity=".2"></stop></linearGradient></defs><circle cx="30" cy="22" r="12" fill="url(#d2)"></circle><path d="M6 68 C6 49 17 40 30 40 C43 40 54 49 54 68 Z" fill="url(#d2)"></path></svg></div><div class="lab">Big brother</div></button>
+    <button class="seat" aria-label="Choose your Little sister"><div class="disc" style="background:radial-gradient(circle at 50% 70%,#FF9F4A40,#FF9F4A14 70%);animation-delay:2.8s"><svg width="46" height="52" viewBox="0 0 60 68" aria-hidden="true"><defs><linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9F4A"></stop><stop offset="1" stop-color="#FF9F4A" stop-opacity=".2"></stop></linearGradient></defs><circle cx="30" cy="22" r="14" fill="url(#d3)"></circle><path d="M6 68 C6 49 17 40 30 40 C43 40 54 49 54 68 Z" fill="url(#d3)"></path></svg></div><div class="lab">Little sister</div></button>
+  </div>
+  <div class="sec" style="top:330px">Relationships</div>
+  <div class="tag">B · filled</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

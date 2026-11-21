@@ -1,10 +1,16 @@
+import type { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { colors, space } from '@/theme';
+import { space, useTokens } from '@/theme';
 
+import { FriendFaces } from '../friend-faces';
 import { Button } from './button';
-import { BrandArt } from './mascot';
+import { SFIcon } from './symbol';
 import { Txt } from './text';
+
+/** A search that found nothing: iOS's magnifying glass (ContentUnavailableView.search). */
+export const NO_RESULTS = { ios: 'magnifyingglass', icon: 'search' } as const satisfies EmptyStateProps['symbol'];
 
 export interface EmptyStateProps {
   title: string;
@@ -12,6 +18,12 @@ export interface EmptyStateProps {
   actionLabel?: string;
   onAction?: () => void;
   compact?: boolean;
+  /**
+   * What is missing, as a large grey SF Symbol (an Ionicon off iPhone), the way iOS's
+   * ContentUnavailableView draws it; without one your friends' faces stand there (owner,
+   * 2026-11-18: no mascot in the app).
+   */
+  symbol?: { ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap };
 }
 
 export function EmptyState({
@@ -20,10 +32,16 @@ export function EmptyState({
   actionLabel,
   onAction,
   compact,
+  symbol,
 }: EmptyStateProps) {
+  const { colors } = useTokens();
   return (
-    <View style={[styles.root, compact && styles.compact]}>
-      <BrandArt name="empty" width={compact ? 132 : 200} bob />
+    <View style={[styles.root, compact ? styles.compact : styles.fill]}>
+      {symbol ? (
+        <SFIcon ios={symbol.ios} icon={symbol.icon} size={compact ? 44 : 56} color={colors.textMuted} />
+      ) : (
+        <FriendFaces size={compact ? 48 : 64} />
+      )}
       <Txt variant="title" center style={styles.title}>
         {title}
       </Txt>
@@ -33,7 +51,7 @@ export function EmptyState({
         </Txt>
       ) : null}
       {actionLabel && onAction ? (
-        <Button label={actionLabel} onPress={onAction} size="sm" variant="soft" style={styles.action} />
+        <Button label={actionLabel} onPress={onAction} size="sm" variant="secondary" style={styles.action} />
       ) : null}
     </View>
   );
@@ -41,17 +59,16 @@ export function EmptyState({
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.xxxl,
     paddingVertical: space.huge,
     gap: space.xs,
   },
-  compact: {
-    flex: 0,
-    paddingVertical: space.xxl,
-  },
+  // Full-screen states fill their parent. Compact ones size to their content: `flex: 0`
+  // would become `flex-basis: 0%` on web, collapse the box and let the art spill upward.
+  fill: { flex: 1 },
+  compact: { paddingVertical: space.xxl },
   title: { marginTop: space.md },
   action: { marginTop: space.lg },
 });

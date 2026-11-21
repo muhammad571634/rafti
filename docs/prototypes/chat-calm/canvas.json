@@ -1,0 +1,27 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-17T17:20:00Z" },
+  "title": "Chat calm",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "Before: today on the A51", "radius": 40 },
+    "After-A.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "After A: picture ground, two buttons", "radius": 40 },
+    "After-B.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "After B: night ground, quiet row of five", "radius": 40 },
+    "Scene-open.dc.html": { "x": 470, "y": 1084, "w": 390, "h": 844, "title": "A scene card tapped: the rest opens", "radius": 40 },
+    "Hold-menu.dc.html": { "x": 940, "y": 1084, "w": 390, "h": 844, "title": "A: hold the newest reply", "radius": 40 }
+  },
+  "order": ["Main.dc.html", "After-A.dc.html", "After-B.dc.html", "Scene-open.dc.html", "Hold-menu.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Chat screen: calm it down", "kind": "title1", "maxW": 1330 },
+    "how": {
+      "x": -560,
+      "y": 0,
+      "w": 480,
+      "size": "m",
+      "fill": "blue",
+      "text": "Suhbat ekrani: tinchroq (bir xil Milo suhbati, oldin va keyin)\n\n1. Sahnalar (A va B da bir xil): yangi sahna boshlansa, oldingisining \"Scene ended\" qatori chiqmaydi — yangi karta buni aytib turibdi. Sahna kartasi: nomi va bitta qator; bossangiz qolgani ochiladi (pastki qatordagi rasm). Yolg'iz \"Scene ended\" bitta jim qator bo'lib qoladi. Xotira va model hammasini avvalgidek o'qiydi.\n\n2. Javob ostidagi tugmalar — tanlang:\nA: faqat ↻ va rangli Share. 👍 — reaksiyalar panelidagi har qanday quvnoq belgi (hozir ham shunday hisoblanadi). 👎 va \"Davom et\" bosib turish menyusiga o'tadi.\nB: beshtasi qoladi, lekin kichikroq va xiraroq; Share kichikroq shaftoli doira.\n\n3. Fon — tanlang:\nRasm (A): Milo rasmi butun ekranda bir tekis qoraytirilgan, pastdagi jigarrang loyqa yo'q — rasm rasm bo'lib ko'rinadi.\nTun (B): boshqa ekranlardagi qora fon, tepada Miloning rangidan yengil nur.\n\nAralashtirsa bo'ladi: masalan A tugmalar + Tun fon. O'zgarmaydi: pufakchalar, yozish nuqtalari, ovoz to'lqini, reaksiyalar paneli, foydalanuvchi tanlagan fon rasmi."
+    }
+  },
+  "designSystems": []
+}

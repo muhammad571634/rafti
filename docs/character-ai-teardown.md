@@ -1,0 +1,276 @@
+# Character.AI teardown (2026-10-24)
+
+Owner's ask: study how Character.AI builds chat, character creation and its character
+architecture, and report what Sigmazam can use. Sources: the owner's Android phone (Galaxy A51,
+app `ai.character.app` 1.17.4, versionCode 162) over adb, the app's JS bundle, and Character.AI's
+own public blog and Prompt Poet repo.
+
+Rules, as for BIMOBIMO (`AGENTS.md`): take structure and logic only, never their code, text,
+names (the "Squeak" model names), icons or images. Their discovery feed is full of characters of
+real people (pop idols); Sigmazam keeps its no-real-people rule. Nothing was created, saved, sent
+or generated on the owner's account; the create flow was left before the photo step. Work files
+(APK set, decoded strings, screenshots) are in `C:\Users\joray\rea-work\cai\`, outside every repo;
+never commit them.
+
+## 1. Client stack
+
+- React Native, new architecture, Hermes bytecode v98 (`assets/index.android.bundle`, 38 MB,
+  ~204k strings, 82k functions). Reanimated + worklets, Skia, react-native-screens, MMKV, Nitro
+  modules (player), WebRTC (`libjingle`, voice calls), an enriched-markdown text renderer.
+- SDKs: Sentry, Amplitude (session replay), Braze, AppsFlyer, AppLovin + Meta Audience Network
+  ads, Google Play integrity (PairIP).
+- UI strings are i18n keys (`CreateCharacter.Screen.tagline` …); English copy is not in the bundle,
+  so it is likely fetched at runtime. Phone locale was Russian.
+- Hermes v98 note for later teardowns: function headers are 12 bytes, not the 16 of older
+  versions; parse the string table from the end of the overflow table backwards.
+
+## 2. Feature map (from i18n namespaces and screens)
+
+Create menu (the "+" tab): Character, Persona, Lorebook (beta, editor web-only), Scene, Group
+chat, Video, Voice, Stream, Comic. Other areas: Feed and social posts, Library ((c.ai) series and
+books with an episode player), Charms (a soft currency earned by claiming, spent on Imagine, an
+ad-free pass), Character Boost (creators promote a character in discovery and see impressions,
+clicks, chats started, messages sent), parental controls, age verification, self-harm support,
+muted words.
+
+## 3. Character creation
+
+- **Guided create**, one question per screen: "What's your character's name?" → "What do they
+  look like?" (describe → generate an avatar, or upload; Next stays off until there is a photo) →
+  details. Bundle keys for the later steps: tagline ("in a few words, how would you describe
+  {name}"), description, definition (with placeholder and help text), greeting, tags (counter,
+  "all tags"), visibility rows (public / unlisted / private), link or create a Lorebook.
+- **Vibe create**: describe a character in a sentence, pick or shuffle "personality" pills, the
+  server generates the character and its avatar (`/character/v1/generate_character`); quota-limited
+  with a paywall when exceeded.
+- **Per-field AI help**: `chat/character/generate/field`, `generate_greeting`,
+  `generate-avatar-options`.
+- **Remix**: fork an existing character with chosen personalities (`/character/v1/remix_character`).
+- **Greetings**: a main greeting plus additional greetings (reorder, delete, constraints), and
+  "allow dynamic greetings" (the model varies the opening).
+- **Editor extras**: definition visibility (`definition_visibility`), chat wallpaper presets
+  generated per character, archive (blocked for popular characters), safety errors on create/edit.
+- **Persona** (who the user plays): avatar required, name 0/20, description 0/750 ("backstory
+  details you want characters to remember about you"; c.ai+ triples it), topic chips (gender,
+  appearance, species, likes, dislikes, personality, backstory, clothing, eyes, hair, skin),
+  "default for all chats", and a per-chat persona switch. Taken 2026-10-25 (flows.md D71,
+  `src/lib/personas.ts`): photo optional, name 30, about 750, six topic chips, up to 5 personas,
+  the profile always the first one.
+
+## 4. Chat
+
+- **Turn / candidate model.** A chat is turns; an AI turn holds candidates (`candidates`,
+  `primary_candidate_id`, `update_primary_candidate`, `swipe_candidate`). Regenerate (↻ under the
+  last reply) adds a candidate; swiping moves between them. Calls seen: `create_and_generate_turn`,
+  `generate_turn_candidate`, `edit_turn_candidate`, `remove_turns` (delete / rewind), `/turn/pin`.
+- **Long-press a reply**: Copy, Play voice, New chat from here (branch), Edit, Pin (to memory),
+  Delete, Report. Rewind to a point and duplicate chat exist too.
+- **Long-press the send-area "»" button**: Continue (generate the next reply without a user
+  message), Reply in <language> (the phone's language), Time skip (move the story forward).
+- **Header**: Memory, voice replies on/off, voice call. Tapping the name opens a sheet: tagline,
+  chats and likes, created / updated, like, share, character profile, creator profile, away
+  messages switch, refresh chat, start new chat.
+- **Omni menu** (the persona button left of the input), a tile grid: Memory, History (past chats
+  by day), Voice, Layout, Wallpaper, Chat style, Persona, Imagine.
+- **Chat style = model picker.** Premium (c.ai+): DeepSqueak ("deeper memory, richer roleplay"),
+  LongSqueak ("Memory 4x", longer narration). Free: PipSqueak 3 (general roleplay), ShortSqueak
+  (texting style). Legacy models behind a row. "Personalization" per style (c.ai+): response length
+  (short / normal / long) and response style (+dialogue / default / +narration).
+- Rendering: roleplay prose, actions in italics, speech in quotes (markdown). A voice chip sits on
+  each reply; "imagine" under the last reply draws the scene. Suggested replies are a paid tray.
+  Under the input: "This is AI, not a real person. Treat everything it says as fiction."
+- **Group chat** ("rooms"): several characters and humans, invoke a named or random character,
+  reset the AI conversation.
+
+## 5. Memory (shipped 2026-05-21, "Smarter Memory for Smarter Chats")
+
+- Memory screen per chat with three tabs: Story (key moments; written by the user or pinned from a
+  message), the Character, and You (facts about the persona). Side characters get facts too.
+- **Facts** are extracted automatically while chatting, grouped in categories (hairstyle, eye
+  colour …); the user can add, edit, disable, restore or delete them. Facts are c.ai+ only. A new
+  chat can copy facts over or start fresh.
+- **Memory usage bar**: the context budget split into Always remembered (story memories + facts),
+  Chat history, My persona and Character information, with a warning when space runs low; free
+  users see a simplified bar.
+- **Auto-compaction**: long chats condense older context in the background (c.ai+ perk).
+- What the user wrote or pinned "stays put regardless of how full the bar gets", so pinned and
+  story memories have the top truncation priority.
+
+## 6. Lorebook (beta, 2026-07-24)
+
+World knowledge as entries (side characters, places, items, events, factions, rules) with
+keywords. When a keyword comes up, the character gets that entry for its reply; lore stays out of
+the prompt until then. One Lorebook links to many characters so they share a canon (a +Lore tag on
+discovery). An in-chat viewer lets users browse entries mid-scene. Subscribers first; bundle keys
+show a metered "lorebook chat" allowance with an upgrade prompt.
+
+## 7. Server architecture (public sources)
+
+- **Prompt as ordered parts** (Prompt Poet, their open-source templating: YAML + Jinja2). Each part
+  has a name, role, content and `truncation_priority`; the chat history is a loop of message parts.
+  When over the token limit, the lowest-priority parts are cut oldest first.
+- **Cache-aware truncation**: cut to a fixed point that moves only every k turns (for example a
+  128k limit with a 4k step), so the prompt prefix stays the same between turns and the GPU prefix
+  cache is reused. A bigger step means more cache hits but more history dropped.
+- Likely prompt order, combining the above with the memory bar: rules → character definition →
+  persona → always-remembered (story memories, pins, facts) → triggered lore → compacted summary →
+  recent turns → reply cue.
+- Their models (the "Squeak" family) are in-house; the app lets the user pick one.
+
+## 8. Plans (blog 2026-09-28)
+
+Free: PipSqueak 3 and ShortSqueak unlimited, with ads. (c.ai) lite, $4.99/month or $2.49/week: a
+daily allowance on premium styles, fewer ads, customisation, extra pins and the memory bar. c.ai+:
+unlimited premium styles, no ads, the full memory suite, style control, Lorebook.
+
+## 9. Company status
+
+Character.AI's blog (2026-10-12, "An Update on Character.ai") says it started a voluntary
+Chapter 11 process to support a court-supervised sale. The app may change hands or change course.
+
+## 10. What Sigmazam can take (proposal, owner to choose)
+
+Ordered by value to the owner's companion app, with what exists today:
+
+1. **Regenerate, swipe and edit replies** (chat; done 2026-10-24, flows.md D68): keep candidates per AI message; ↻ under the last
+   reply, swipe between versions, edit your own last message and resend, rewind to a point, "new
+   chat from here". Works with the mock provider now; backend: `turns` + `candidates` tables.
+2. **Memory in three scopes** (done 2026-10-25, flows.md D69; `character/[id]/memories.tsx`, backend-plan §7, §12.1–12.2): Story /
+   them / you tabs, Pin in the message long-press menu (`message-menu.tsx`), fact categories, and a
+   memory-left bar as a Pro perk. Our plan already has extraction, importance and lifecycle.
+3. **Quick create** (done 2026-10-25, §11, flows.md D70; `create-character.tsx`): describe the character in a sentence → the server
+   fills name, tagline, bio, greeting, sample lines and draws the avatar; keep the current form as
+   "advanced". Add a tagline (card line) separate from the bio, a private "sample lines" field
+   (`persona.sampleLines`, backend-plan §12.3), more than one greeting, per-field "write it for me".
+4. **World book** (done 2026-10-25, flows.md D73; `src/lib/lorebook.ts`, backend-plan §12.19) for our worlds (Seaside Academy, Moonlit Realm …): keyword-triggered entries
+   shared by every character of a world (`persona.world`, backend-plan §12.3), and the user's own books for any friend.
+5. **Continue and time skip** (done 2026-10-25, flows.md D75; `src/lib/chat-steer.ts`, backend-plan §12.21): » next to ↻
+   under their newest reply, and Time skip in the chat "+" menu; reply language already exists
+   (`src/ai/reply-language.ts`).
+6. **Personalization** (done 2026-10-25, flows.md D76; `src/lib/reply-engine/`, `src/ai/reply-style.ts`, backend-plan §12.22):
+   reply length (Short / Auto / Long) and style (Talk / Mixed / Story), per chat, free for everyone, plus a mood that
+   carries between turns. Note: backend-plan §13.6 keeps the model invisible; length and style controls fit that rule, a
+   visible model picker does not.
+7. **Prompt layout for caching** (done 2026-10-25, flows.md D77; `src/ai/prompt-layout.ts`, `src/ai/chat-prompt.ts`,
+   backend-plan §12.23): build the server prompt as ordered parts with priorities, stable parts first, history last, and
+   truncate in steps so the provider's prompt cache hits. Ours: parts in four tiers by how often they change (rules →
+   persona → chat → turn), the history between the chat tier and the turn tier, cut on whole 20-turn steps; what changes
+   between replies (bond, scene, lore notes, recalled facts, cues, hints) goes after the history. The parts are capped
+   where they are written, so the history is the only part that yields.
+
+8. **Stream** (done 2026-10-25, flows.md D74; `src/lib/streams.ts`, backend-plan §12.20): two characters
+   talk about a topic the user picks while the user watches, one model call per line, rounds that
+   keep it going, and "talk to both" carries it on as a group chat. The owner took it after all.
+
+Skip: ads and ad passes (owner: no ads), real-person characters, a public creator economy (boosts,
+charms) until there is an audience, video.
+
+## 11. Creation chain, deep dive (2026-10-25)
+
+The owner's ask: take Character.AI's creation logic for the back end; the front end stays
+Sigmazam's own. Sources: the bundle (endpoints, payload keys, i18n keys, analytics events), the
+Character Book (`book.character.ai/llms-full.txt`, saved in `rea-work/cai/docs/`), Prompt Poet and
+the blog. The phone account shows only the guided create; Vibe Create sits behind the
+`mobile_vibe_create` flag, so its order comes from the bundle, not from screens.
+
+**Their character record** (Character Book, bundle keys `has_tagline`, `has_definition`,
+`additional_greetings`, `definition_visibility` …):
+
+| Field | Limit | What it does |
+| --- | --- | --- |
+| name | 3-20, letters, digits, space, `-`, `_` | identity; a famous name alone defines a lot |
+| title (tagline) | 0-50 | card line under the name; "how they would describe themselves" |
+| description | 0-500 | longer self-description, ideally in their own voice |
+| greeting | 0-500 (4096 in newer builds) | first message; can carry the whole scene; `{{user}}` slot |
+| additional greetings | a few, reorderable | a new chat opens with one; "dynamic greetings" lets the model vary it |
+| definition | 0-32000, about 3200 used | free text, mostly example dialog; the end is cut first as the chat grows |
+| suggested starters | up to 3 × 200 | lines the user can tap to begin |
+| categories / tags | up to 3 | discovery only, no effect on replies |
+| avatar + `avatar_generation_prompt` / `base_img_prompt` | 512² | drawn from "what do they look like", or uploaded; moderated |
+| voice, visibility (public / unlisted / private), definition visibility, lorebook link | | |
+
+**Definition format.** One turn per `name: text` at the start of a line; lines below carry on that
+turn. Slots: `{{char}}`, `{{user}}`, `{{random_user_N}}` (a made-up other person, so examples do not
+read as things this user said). Uses: example dialog (voice and topics), setting a scene with a
+third voice (a producer, a director), negative guidance (the director tells them what to refuse),
+strict patterns (games). "Insert a chat" turns a test chat into definition lines, swapping the
+names for slots.
+
+**The chains.**
+1. *Guided create*: name → look (describe and generate, or upload; Next stays off without a
+   picture) → tagline → description → definition → greeting(s) → tags → visibility → lorebook.
+2. *Vibe create*: a sentence about the character plus personality pills (shuffle, capped) →
+   the client joins them into one description (`buildVibeCreateDescription`) →
+   `/character/v1/generate_character`, a daily quota with a paywall (`vibe_create_quota`) → the
+   app shows steps "creating", "generating avatar", "saving avatar", "finishing up" → visibility
+   picked after → "create manually" falls back to the guided form. The pills are two-sided traits
+   (a strength with its catch) and story tropes.
+3. *Per-field help*: `chat/character/generate/field` with `field_to_generate`, and
+   `generate_greeting`; each uses what is already filled.
+4. *Remix*: fork a character with chosen personalities (`remix_character`, streamed).
+5. Every create and edit passes content safety (`content-safety-create-*` errors); an avatar
+   upload has its own check; editing a very popular character is paused for a while
+   (`high-interactions-edit-temp-disabled`), so thousands of chats do not change under people.
+
+**Prompt side.** The definition sits after the rules and before the persona and memory; the end of
+a long definition is cut first; parts carry truncation priorities (Prompt Poet), cut in steps so
+the prefix cache holds (§7).
+
+**What Sigmazam took** (code `src/ai/character-draft.ts`, mock `src/mock/character-drafts.ts`,
+tested; server side in `backend-plan.md` §12.17):
+
+- New character fields: `tagline` (50), `look` (300), `definition` (3200, `{{char}}` /
+  `{{random_user_1}}` lines), `greetings` (3 more openings), `starters` (3 × 100). Our older limits
+  stay: name 30, bio 400, greeting 200, age 18+.
+- Quick create: an idea of up to 300 characters and up to 3 sparks (our own twelve two-sided
+  traits, `SPARKS`) → `ideaText` → `buildDraftPrompt` (one JSON call, refusals for real people,
+  owned characters, minors, explicit) → `parseDraft` (clips at a word, drops unknown tags and
+  choices, removes duplicate openings, runs the minors / explicit check, refuses under 18) → the
+  picture from `look` → the form for review → save.
+- Write one field again: `buildFieldPrompt` + `parseField`.
+- The persona prompt carries the tagline, the look and the definition (names filled, whole turns
+  from the start while they fit, marked as examples with other people). A new chat opens with the
+  greeting or one of the extra ones (`pickOpening`), `{{user}}` filled in.
+- Not taken: unlisted links, remix, public definition viewing, tags as discovery (no public
+  creator feed yet), the "Squeak" names, their pill texts.
+- Owner's call (2026-10-25): 3 quick creates free a day, one setting so it can change with the
+  unit economics. Front end coded straight in the form's own look (owner: no prototype, design
+  later; the canvas row "Quick create" stays as a sketch): flows.md D70.
+
+Sources: [blog index](https://blog.character.ai/), [memory](https://blog.character.ai/memory/),
+[Lorebook](https://blog.character.ai/lorebook/), [styles and plans](https://blog.character.ai/new-styles-new-plan/),
+[April update](https://blog.character.ai/pipsqueak2-and-more/), [Prompt Poet](https://github.com/character-ai/prompt-poet),
+[Character Book: attributes](https://book.character.ai/character-book/character-attributes).
+
+## 12. Live check on the phone (2026-10-27)
+
+The owner's ask: study how their chats and characters work, and take what works better than ours.
+Character.AI 1.17.4 and BIMOBIMO 2.53.0 on the Galaxy A51, through their normal screens (adb taps,
+screenshots and screen recordings in the session scratchpad, not in any repo); one harmless test
+line in each app, the owner's own test accounts.
+
+- **Character.AI chat.** Sending turns the send button into ■ (stop, `abort_generation` in the
+  bundle); "•••" shows for about 3 s, then the reply grows word by word for 6-7 s (streamed:
+  websocket, `create_and_generate_turn`, `is_final`). Under the finished reply: 👍 👎, draw a
+  picture, ↻; after ↻ the new candidate streams in place and ‹ › step between versions. The reply
+  followed the greeting's language (Russian) although the test line was English.
+- **Character.AI loading and errors.** Lists show skeleton rows while loading; a failed list says
+  "Something went wrong" with a full-width "Try again" above the empty state.
+- **Character.AI create.** "+" opens a sheet: Character, Persona, Lorebook (beta), Scenario, Group
+  chat, Video (off), Voice, Stream, Comic (new). Character starts with one question per screen
+  (the name; Next stays off until filled). A greeting can be a whole scene that gives the user a
+  role ("You are a 10th grader who…").
+- **Character.AI feed.** Two columns of rounded, near-square cards: picture, name or a scenario
+  title, one-line tagline, chat count, creator. Pictures run dark: monochrome or desaturated photos,
+  often faceless (backs, hands, suits), and semi-realistic manhwa art with side light.
+- **BIMOBIMO chat.** The reply came as six short bubbles, each whole (no word-by-word), within the
+  same minute; "Read" under the user's line; one acorn per message; the status changed from
+  "Disconnected" to "Talking 1 day in a row", the guilt banner ("the chat broke, closeness at risk")
+  left, and a full-screen level-up card covered the reply. Every chat row carried a sad-face badge.
+- **Store listings** (Google Play US, 12 companion apps, 2026-10): 8 of 12 on dark grounds; glossy
+  semi-realistic anime ("2.5D") leads, Linky and Kindroid photoreal; tall ~3:4 cards in two
+  columns; chats over the character's full picture.
+
+Taken (flows.md D108): replies revealed word by word, ■ Stop, "Not Delivered · Tap to try again".
+Kept from BIMOBIMO: short bubbles one by one. Not taken: guilt banners and sad faces, a level-up
+card over the chat (our chat stays calm, D100), a model picker, ads.

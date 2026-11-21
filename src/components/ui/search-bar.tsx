@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextInput, View, ViewStyle, type TextInputInstance } from 'react-native';
 
 import { colors, radius, space, type } from '@/theme';
 
@@ -13,7 +13,9 @@ export interface SearchBarProps {
   style?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
   autoFocus?: boolean;
-  /** `light`: white field with a hairline border, as on Find. */
+  onFocus?: () => void;
+  inputRef?: React.Ref<TextInputInstance>;
+  /** `light`: white field with a hairline border. */
   tone?: 'filled' | 'light';
 }
 
@@ -24,18 +26,23 @@ export function SearchBar({
   style,
   onSubmit,
   autoFocus,
+  onFocus,
+  inputRef,
   tone = 'filled',
 }: SearchBarProps) {
   const { t } = useTranslation();
+  const faint = colors.textFaint;
 
   return (
     <View style={[styles.base, tone === 'light' && styles.light, style]}>
-      <Ionicons name="search" size={17} color={colors.textFaint} />
+      <Ionicons name="search" size={17} color={faint} />
       <TextInput
+        ref={inputRef}
+        onFocus={onFocus}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={colors.textFaint}
+        placeholderTextColor={faint}
         style={styles.input}
         returnKeyType="search"
         onSubmitEditing={onSubmit}
@@ -48,7 +55,7 @@ export function SearchBar({
           scaleTo={0.85}
           hitSlop={14}
           accessibilityLabel={t('a11y.clearSearch')}>
-          <Ionicons name="close-circle" size={17} color={colors.textFaint} />
+          <Ionicons name="close-circle" size={17} color={faint} />
         </PressableScale>
       ) : null}
     </View>

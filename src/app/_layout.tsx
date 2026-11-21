@@ -1,21 +1,50 @@
+import { Caveat_600SemiBold } from '@expo-google-fonts/caveat';
 import { Fredoka_600SemiBold, Fredoka_700Bold, useFonts } from '@expo-google-fonts/fredoka';
-import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import { Nunito_800ExtraBold, Nunito_900Black } from '@expo-google-fonts/nunito';
+// One file per weight, so only these two faces are bundled.
+import { SourceSerif4_600SemiBold } from '@expo-google-fonts/source-serif-4/600SemiBold';
+import { SourceSerif4_600SemiBold_Italic } from '@expo-google-fonts/source-serif-4/600SemiBold_Italic';
+import { Stack, useRootNavigationState, useRouter, useSegments, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Appearance, AppState, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { Button, Mascot, Txt } from '@/components/ui';
+import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
+import { LaunchIntro } from '@/components/launch/launch-intro';
+import { useAiConsent } from '@/components/privacy/use-ai-consent';
+import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
+import { useAnalytics } from '@/hooks/use-analytics';
+import { startAnalytics } from '@/lib/analytics';
+import { startAwayClock } from '@/lib/away-clock';
+import { noDuplicatePush } from '@/lib/no-duplicate-push';
+import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
+import { KeyboardRoot } from '@/lib/keyboard-native';
+import { applyDarkNavigationBar } from '@/lib/navigation-bar-native';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+// A short fade: the launch intro (or the first screen) is already drawn under the splash.
+SplashScreen.setOptions({ duration: 200, fade: true });
+// Today's welcome back needs to know how long the app was away (src/lib/welcome-back.ts).
+startAwayClock();
+// Product analytics: the session and its `app_open` begin with the launch (`src/lib/analytics.ts`).
+startAnalytics();
+/** Longest the splash waits for saved data before it lets go anyway. */
+const SPLASH_LIMIT_MS = 8000;
+// Night only (theme/colors.ts): the native side (keyboard, pickers, system bars) is dark too, and
+// the window behind every screen (keyboard, transitions) is the night ground.
+if (Platform.OS !== 'web') Appearance.setColorScheme('dark');
+SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
+applyDarkNavigationBar();
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
-  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold });
+  const [fontsLoaded, fontError] = useFonts({ Fredoka_600SemiBold, Fredoka_700Bold, Caveat_600SemiBold, Nunito_800ExtraBold, Nunito_900Black, SourceSerif4_600SemiBold, SourceSerif4_600SemiBold_Italic });
   // A font that fails to load falls back to the system face rather than blocking launch.
   const ready = i18nReady && (fontsLoaded || !!fontError);
 
@@ -25,33 +54,144 @@ export default function RootLayout() {
       .finally(() => setI18nReady(true));
   }, []);
 
+  // Keep the Android 3-button / gesture nav bar dark after returning from background, calls or OS theme switches (0z292).
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync().catch(() => {});
-  }, [ready]);
+    if (Platform.OS !== 'android') return;
+    applyDarkNavigationBar();
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') applyDarkNavigationBar();
+    });
+    return () => sub.remove();
+  }, []);
 
-  if (!ready) return null;
+  // The splash stays up until the first real screen is there (OnboardingGate lets it go); this
+  // only keeps a launch that never finishes loading from sitting on the splash for good.
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => SplashScreen.hideAsync().catch(() => {}), SPLASH_LIMIT_MS);
+    return () => clearTimeout(timer);
+  }, [ready]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.bg },
-            animation: 'slide_from_right',
-          }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
-          <Stack.Screen
-            name="call/incoming/[id]"
-            options={{ animation: 'fade', presentation: 'fullScreenModal', gestureEnabled: false }}
-          />
-          <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
-        </Stack>
-      </SafeAreaProvider>
+      {ready ? (
+        <KeyboardRoot>
+          <AppRoot />
+        </KeyboardRoot>
+      ) : null}
+      {/* From the first render, so it plays while fonts, words and saved data load. */}
+      <LaunchIntro ready={ready} />
     </GestureHandlerRootView>
   );
+}
+
+function AppRoot() {
+  useAnalytics();
+  return (
+    <SafeAreaProvider>
+      <Stack
+        // A double tap on a row or icon opens its screen once, not twice (every push in the app).
+        UNSTABLE_router={noDuplicatePush}
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.bg },
+          animation: 'slide_from_right',
+        }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="call/[id]" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="group/[id]/call" options={{ animation: 'fade', presentation: 'fullScreenModal' }} />
+        <Stack.Screen
+          name="call/incoming/[id]"
+          options={{ animation: 'fade', presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
+        <Stack.Screen name="create-character" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="alarms/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="personas/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="scenes/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="lore/edit" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="lore/entry" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="streams/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        {/* A ringing alarm is not swiped away: Reply, Snooze or hold to turn off. */}
+        <Stack.Screen name="alarms/ring" options={{ presentation: 'fullScreenModal', animation: 'fade', gestureEnabled: false }} />
+        {/* A chat photo full screen: see-through, so a drag down shows the chat fading back in. */}
+        <Stack.Screen name="photo/view" options={{ presentation: 'transparentModal', animation: 'fade', gestureEnabled: false }} />
+        <Stack.Screen name="diary/write" options={{ animation: 'slide_from_bottom' }} />
+        {/* A swipe must not end a date by accident; the close button asks first. */}
+        <Stack.Screen name="date/[placeId]" options={{ gestureEnabled: false }} />
+        {/* iOS 26 swipes back from anywhere on a screen (native default, like Telegram). These
+            screens swipe sideways themselves (a reply's versions, the diary's pages), both ways,
+            so they go back from the edge only, as on iOS 18; the sideways swipe stays theirs. */}
+        {/* The first chat after onboarding fades in over the pill that became its message field (`via=welcome`, 0z250). */}
+        <Stack.Screen
+          name="chat/[id]"
+          options={({ route }) => ({ fullScreenGestureEnabled: false, animation: (route.params as { via?: string } | undefined)?.via === 'welcome' ? 'fade' : 'default' })}
+        />
+        <Stack.Screen name="group/[id]/index" options={{ fullScreenGestureEnabled: false }} />
+        <Stack.Screen name="diary/mine" options={{ fullScreenGestureEnabled: false }} />
+      </Stack>
+      <AlarmRuntime />
+      <OnboardingGate />
+      <AiConsentGate />
+      {/* The app's own dialog on Android and the web (`showAlert`); iPhone shows Apple's. */}
+      <AlertHost />
+    </SafeAreaProvider>
+  );
+}
+
+/**
+ * The 18+ gate for every route, not only the tabs (business-plan §7): until onboarding is done
+ * (birth year 18+, name, first friend) any deep link (a push, `/chat/...`, `/store/...`,
+ * `/character/...`) is sent to onboarding first. A blank cover hides the screen underneath until
+ * saved data is loaded and the redirect has happened, so nothing shows before the age check.
+ * New routes are covered without listing them (unlike `Stack.Protected`).
+ */
+function OnboardingGate() {
+  const router = useRouter();
+  const segments = useSegments();
+  const navReady = !!useRootNavigationState()?.key;
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+  const outside = segments[0] !== 'onboarding';
+  const blocked = !onboarded && outside;
+
+  useEffect(() => {
+    if (navReady && hydrated && blocked) router.replace('/onboarding');
+  }, [navReady, hydrated, blocked, router]);
+
+  // The splash goes once saved data is in and the right first screen is underneath, so launch
+  // goes straight from the splash to content, without a blank cover in between.
+  const released = hydrated && !blocked;
+  useEffect(() => {
+    if (released) SplashScreen.hideAsync().catch(() => {});
+  }, [released]);
+
+  if (released) return null;
+  return <View style={styles.cover} pointerEvents="auto" />;
+}
+
+/**
+ * Someone who was chatting before the AI ask existed (onboarded, no answer yet) gets it once a launch,
+ * a beat after the first screen shows. It has no "Not now": what they write already goes to the model,
+ * so agreeing is the way on (deleting the account in Profile is the way out).
+ */
+function AiConsentGate() {
+  const hydrated = useAppStore((s) => s.hydrated);
+  const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+  const { agreed, ask } = useAiConsent();
+  const [asked, setAsked] = useState(false);
+  const due = hydrated && onboarded && !agreed && !asked;
+
+  useEffect(() => {
+    if (!due) return;
+    const id = setTimeout(() => {
+      setAsked(true);
+      ask(() => {}, false);
+    }, 900);
+    return () => clearTimeout(id);
+  }, [due, ask]);
+
+  return null;
 }
 
 /**
@@ -62,13 +202,18 @@ export default function RootLayout() {
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   const { t } = useTranslation();
 
+  // An error during launch must not stay hidden behind the splash.
+  useEffect(() => {
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
+
   if (__DEV__) console.error(error);
 
   return (
     <View style={styles.error}>
       <Mascot size={120} />
       <Txt variant="h3" center>
-        {t('errors.crashTitle', { defaultValue: 'Rafti tripped over a pebble' })}
+        {t('errors.crashTitle', { defaultValue: 'Sigmazam tripped over a pebble' })}
       </Txt>
       <Txt variant="body" color={colors.textSecondary} center>
         {t('errors.crashBody', {
@@ -81,6 +226,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 const styles = StyleSheet.create({
+  cover: { ...StyleSheet.absoluteFill, backgroundColor: colors.bg },
   error: {
     flex: 1,
     alignItems: 'center',

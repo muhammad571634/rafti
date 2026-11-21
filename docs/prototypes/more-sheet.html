@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ko'proq prototipi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<style>
+  /* Audit 2026-11-15 §6.2: five things in front of the chat's "+", the rest behind one "More" sheet
+     (Apple's own pattern: Messages' "+" lists a few apps and a More row that opens the long list). */
+  :root {
+    --ground: #09090D; --card: #16161E; --sheet: #1C1C22; --raised: rgba(118,118,128,0.24); --thumb: #636366;
+    --text: #FFFFFF; --text2: rgba(235,235,245,0.62); --line: rgba(84,84,88,0.6); --edge: rgba(255,255,255,0.08);
+    --peach: #F5A66B; --onPeach: #3A1A06;
+    --blue: #0A84FF; --green: #30D158; --indigo: #5E5CE6; --orange: #FF9F0A; --pink: #FF375F; --purple: #BF5AF2;
+    --red: #FF453A; --teal: #40C8E0; --yellow: #FFD60A; --brown: #AC8E68; --gray: #8E8E93; --cyan: #64D2FF;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sys: -apple-system, 'SF Pro Text', Roboto, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; color: var(--text); font-family: var(--sys); }
+  body { padding: 20px 16px 40px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 30px; margin: 4px 0 0; text-align: center; }
+  .lead { color: var(--text2); font-size: 15px; max-width: 420px; text-align: center; margin: 0; line-height: 1.4; }
+  .seg { display: flex; padding: 3px; border-radius: 999px; background: var(--raised); width: min(300px, 100%); }
+  .seg button { flex: 1; min-height: 40px; border: 0; border-radius: 999px; background: transparent; color: var(--text2); font: 600 14px var(--sys); cursor: pointer; }
+  .seg button.on { background: var(--thumb); color: var(--text); }
+
+  .phone { width: min(390px, 100%); height: 800px; border-radius: 44px; background: var(--ground); position: relative; overflow: hidden;
+    border: 1px solid #222; box-shadow: 0 30px 80px rgba(0,0,0,0.6); display: flex; flex-direction: column; }
+  .head { display: flex; align-items: center; gap: 12px; padding: 54px 18px 12px; border-bottom: 0.5px solid var(--line); flex: none; }
+  .round { width: 44px; height: 44px; border-radius: 50%; background: var(--raised); display: grid; place-items: center; flex: none; color: #fff; font-size: 22px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b5fae, #1d2f5c); display: grid; place-items: center;
+    font: 600 17px var(--serif); box-shadow: 0 0 0 2px #2456B8; }
+  .who b { font: 600 19px var(--serif); display: block; } .who span { color: var(--text2); font-size: 13px; }
+
+  .chat { flex: 1; padding: 16px 14px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; overflow: hidden; }
+  .bubble { max-width: 76%; padding: 10px 14px; border-radius: 20px; font-size: 17px; line-height: 22px; }
+  .them { background: #1E2433; align-self: flex-start; border-bottom-left-radius: 6px; }
+  .me { background: var(--peach); color: var(--onPeach); align-self: flex-end; border-bottom-right-radius: 6px; }
+
+  .composer { display: flex; align-items: center; gap: 10px; padding: 8px 12px 10px; flex: none; }
+  .plus { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--raised); color: #fff; display: grid; place-items: center; cursor: pointer; font-size: 26px; }
+  .field { flex: 1; min-height: 44px; border-radius: 22px; background: var(--raised); color: var(--text2); display: flex; align-items: center; padding: 0 16px; font-size: 17px; }
+
+  /* The "+" panel: a dark card in the keyboard's place (as today), now five tiles and More. Appears at once. */
+  .panel { display: none; flex: none; padding: 22px 14px 30px; border-radius: 28px 28px 0 0; background: var(--card); }
+  .panel.open { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 8px; }
+  .tile { border: 0; background: none; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 0; }
+  .tile:active .ic { transform: scale(.94); }
+  .ic { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 27px; transition: transform .12s; }
+  .ic.more { background: var(--raised); }
+  .tile span { font: 600 13px/16px var(--sys); min-height: 32px; text-align: center; overflow-wrap: anywhere; max-width: 104px; }
+
+  /* The More sheet: Apple's grouped list on a sheet, coloured icon tiles (design-style: colour, not just text).
+     Appears at once; never taller than the screen, it scrolls inside. */
+  .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.5); display: none; z-index: 5; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: calc(100% - 60px); background: var(--sheet); border-radius: 34px 34px 0 0;
+    display: none; flex-direction: column; z-index: 6; }
+  .open-sheet .scrim { display: block; } .open-sheet .sheet { display: flex; }
+  .grab { width: 36px; height: 5px; border-radius: 3px; background: rgba(235,235,245,.3); margin: 8px auto 0; flex: none; }
+  .shead { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 6px 20px; flex: none; }
+  .shead h2 { font: 600 28px var(--serif); margin: 0; }
+  .close { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--raised); color: #fff; display: grid; place-items: center; cursor: pointer; font-size: 20px; }
+  .scroll { overflow-y: auto; padding: 4px 16px 34px; }
+  .group h3 { color: var(--text2); font: 600 13px var(--sys); text-transform: uppercase; letter-spacing: .3px; margin: 18px 4px 8px; }
+  .rows { background: var(--card); border-radius: 20px; overflow: hidden; }
+  .row { width: 100%; min-height: 52px; border: 0; background: none; color: var(--text); display: flex; align-items: center; gap: 14px; padding: 8px 14px; cursor: pointer; text-align: left; font: 17px var(--sys); }
+  .row:active { background: rgba(255,255,255,.06); }
+  .row { position: relative; }
+  /* iOS inset separator: starts after the icon tile. */
+  .row + .row::before { content: ''; position: absolute; top: 0; left: 60px; right: 0; height: 0.5px; background: var(--line); }
+  .sq { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: #fff; font-size: 19px; flex: none; }
+  .row .name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .row .chev { color: rgba(235,235,245,.3); font-size: 18px; flex: none; }
+
+  .toast { position: absolute; left: 50%; top: 110px; transform: translateX(-50%); background: rgba(44,44,54,.92); padding: 10px 18px; border-radius: 999px;
+    font: 600 14px var(--sys); z-index: 9; display: none; white-space: nowrap; }
+
+  .note { width: min(420px, 100%); background: var(--card); border-radius: 28px; padding: 16px 18px; color: var(--text2); font-size: 14px; line-height: 1.5; }
+  .note b { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+  <h1>Ko'proq</h1>
+  <p class="lead">"+" ni bosing: oldinda beshta narsa va "Ko'proq". "Ko'proq" qolganini bitta ro'yxatda ochadi.</p>
+  <div class="seg" id="lang">
+    <button data-l="uz" class="on">O'zbekcha</button>
+    <button data-l="de">Nemischa (eng uzun)</button>
+  </div>
+
+  <div class="phone" id="phone">
+    <div class="head">
+      <div class="round"><ion-icon name="chevron-back"></ion-icon></div>
+      <div class="avatar">S</div>
+      <div class="who"><b>Sam Okafor</b><span>at practice</span></div>
+    </div>
+    <div class="chat">
+      <div class="bubble them">ok I'm bored. entertain me</div>
+      <div class="bubble me">want to play something?</div>
+      <div class="bubble them">yes. surprise me</div>
+    </div>
+    <div class="composer">
+      <button class="plus" id="plus" aria-label="+"><ion-icon name="add" id="plusIcon"></ion-icon></button>
+      <div class="field">Message</div>
+    </div>
+    <div class="panel" id="panel"></div>
+
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet" role="dialog">
+      <div class="grab"></div>
+      <div class="shead"><h2 id="sheetTitle"></h2><button class="close" id="close" aria-label="close"><ion-icon name="close"></ion-icon></button></div>
+      <div class="scroll" id="groups"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="note">
+    <b>Oldinda:</b> rasm, maxfiy xat, kundalik, uchrashuv, qo'ng'iroqlar.<br>
+    <b>"Ko'proq" ichida:</b> o'yinlar, hikoya, tinglash va ko'rish, personalar. Hech narsa o'chmaydi, faqat bir qadam ichkarida.<br>
+    <b>Qayerdan ochiladi:</b> chatdagi "+" va "Biz" bo'limidagi bitta "Ko'proq" qatori: ikkalasi shu bitta ro'yxat.<br>
+    Bugun ekranidagi oltita belgi §6.1 da (oxirida) alohida gaplashiladi.
+  </div>
+
+<script>
+  const T = {
+    uz: { more: "Ko'proq", photo: 'Rasm', note: 'Maxfiy xat', diary: 'Kundalik', date: 'Uchrashuv', calls: "Qo'ng'iroqlar",
+      gPlay: "Birga o'ynash", gStory: 'Hikoya', gWatch: "Tinglash va ko'rish", gYou: 'Siz',
+      tod: 'Haqiqat yoki jasorat', quiz: 'Viktorina', booth: 'Fotobudka', scene: 'Sahna', skip: "Vaqtni o'tkazish", lore: 'Dunyo hikoyasi',
+      radio: 'Radio', streams: 'Efirlar', board: 'Doska', personas: 'Personalar', opens: 'ochiladi' },
+    de: { more: 'Mehr', photo: 'Foto', note: 'Geheime Notiz', diary: 'Tagebuch', date: 'Date', calls: 'Tägliche Anrufe',
+      gPlay: 'Zusammen spielen', gStory: 'Geschichte', gWatch: 'Hören und sehen', gYou: 'Du',
+      tod: 'Wahrheit oder Pflicht', quiz: 'Quiz', booth: 'Fotokabine', scene: 'Szene', skip: 'Zeitsprung', lore: 'Weltgeschichte',
+      radio: 'Radio', streams: 'Livestreams', board: 'Pinnwand', personas: 'Personas', opens: 'öffnet' },
+  };
+  const FRONT = [
+    ['photo', 'image', 'var(--blue)'], ['note', 'mail', 'var(--yellow)'], ['diary', 'book', 'var(--brown)'],
+    ['date', 'heart', 'var(--pink)'], ['calls', 'call', 'var(--green)'],
+  ];
+  const GROUPS = [
+    ['gPlay', [['tod', 'dice', 'var(--purple)'], ['quiz', 'help', 'var(--indigo)'], ['booth', 'camera', 'var(--orange)']]],
+    ['gStory', [['scene', 'film', 'var(--teal)'], ['skip', 'time', 'var(--gray)'], ['lore', 'library', 'var(--brown)']]],
+    ['gWatch', [['radio', 'radio', 'var(--red)'], ['streams', 'videocam', 'var(--pink)'], ['board', 'reader', 'var(--yellow)']]],
+    ['gYou', [['personas', 'people-circle', 'var(--cyan)']]],
+  ];
+  let lang = 'uz';
+  const phone = document.getElementById('phone');
+  const panel = document.getElementById('panel');
+
+  function toast(name) {
+    const el = document.getElementById('toast');
+    el.textContent = `${name} ${T[lang].opens}`;
+    el.style.display = 'block';
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => { el.style.display = 'none'; }, 1100);
+  }
+  function render() {
+    const t = T[lang];
+    panel.innerHTML = '';
+    for (const [k, icon, fill] of FRONT) {
+      const b = document.createElement('button');
+      b.className = 'tile';
+      b.innerHTML = `<div class="ic" style="background:${fill}"><ion-icon name="${icon}"></ion-icon></div><span>${t[k]}</span>`;
+      b.onclick = () => { toast(t[k]); setPanel(false); };
+      panel.appendChild(b);
+    }
+    const m = document.createElement('button');
+    m.className = 'tile';
+    m.innerHTML = `<div class="ic more"><ion-icon name="ellipsis-horizontal"></ion-icon></div><span>${t.more}</span>`;
+    m.onclick = () => { setPanel(false); phone.classList.add('open-sheet'); };
+    panel.appendChild(m);
+
+    document.getElementById('sheetTitle').textContent = t.more;
+    const groups = document.getElementById('groups');
+    groups.innerHTML = '';
+    for (const [title, rows] of GROUPS) {
+      const g = document.createElement('div');
+      g.className = 'group';
+      g.innerHTML = `<h3>${t[title]}</h3>`;
+      const box = document.createElement('div');
+      box.className = 'rows';
+      for (const [k, icon, fill] of rows) {
+        const r = document.createElement('button');
+        r.className = 'row';
+        r.innerHTML = `<div class="sq" style="background:${fill}"><ion-icon name="${icon}"></ion-icon></div><span class="name">${t[k]}</span><ion-icon class="chev" name="chevron-forward"></ion-icon>`;
+        r.onclick = () => { phone.classList.remove('open-sheet'); toast(t[k]); };
+        box.appendChild(r);
+      }
+      g.appendChild(box);
+      groups.appendChild(g);
+    }
+  }
+  function setPanel(open) {
+    panel.classList.toggle('open', open);
+    document.getElementById('plusIcon').setAttribute('name', open ? 'close' : 'add');
+  }
+  document.getElementById('plus').onclick = () => setPanel(!panel.classList.contains('open'));
+  document.getElementById('scrim').onclick = () => phone.classList.remove('open-sheet');
+  document.getElementById('close').onclick = () => phone.classList.remove('open-sheet');
+  document.getElementById('lang').onclick = (e) => {
+    const l = e.target.dataset && e.target.dataset.l;
+    if (!l) return;
+    lang = l;
+    for (const b of document.querySelectorAll('#lang button')) b.classList.toggle('on', b.dataset.l === l);
+    render();
+  };
+  render();
+  setPanel(true);
+</script>
+</body>
+</html>

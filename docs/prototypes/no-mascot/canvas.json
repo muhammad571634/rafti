@@ -1,0 +1,28 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-18T20:40:00Z" },
+  "title": "No mascot",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 867, "title": "Before: Today (A51 today)", "radius": 40 },
+    "TodayAfter.dc.html": { "x": 470, "y": 0, "w": 390, "h": 867, "title": "After: Today, no mascot", "radius": 40 },
+    "ProfileBefore.dc.html": { "x": 1080, "y": 0, "w": 390, "h": 867, "title": "Before: Profile (A51 today)", "radius": 40 },
+    "ProfileAfter.dc.html": { "x": 1550, "y": 0, "w": 390, "h": 867, "title": "After: Profile, your initial", "radius": 40 },
+    "EmptyAfter.dc.html": { "x": 470, "y": 987, "w": 390, "h": 844, "title": "After: an empty screen shows the friends", "radius": 40 },
+    "GiftsAfter.dc.html": { "x": 1080, "y": 987, "w": 390, "h": 844, "title": "After: daily gift from a friend", "radius": 40 }
+  },
+  "order": ["Main.dc.html", "TodayAfter.dc.html", "ProfileBefore.dc.html", "ProfileAfter.dc.html", "EmptyAfter.dc.html", "GiftsAfter.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "No mascot: the friends are the face of the app", "kind": "title1", "maxW": 1940 },
+    "how": {
+      "x": -560,
+      "y": 0,
+      "w": 480,
+      "size": "m",
+      "fill": "blue",
+      "text": "Maskotsiz Sigmazam\n\nQunduz faqat ilova belgisi va ochilish ekranida qoladi. Ilova ichida yuz — do'stlar.\n\n1. Today: chapdagi qunduz-logo olib tashlandi. O'ngda sizning bosh harfingiz (rasm qo'ysangiz, rasmingiz) — iOS Kontaktlardagidek. Qolgani o'zgarmaydi.\n\n2. Profil: katta qunduz o'rniga bosh harf doirasi va kamera belgisi. Chig'anoq 3D rasm emas, chiziqli belgi.\n\n3. Bo'sh ekran (masalan hali chat yo'q): qunduz o'rniga do'stlarning yuzlari va bitta tugma.\n\n4. Kunlik sovg'a: qunduz chiqib turmaydi; sovg'ani do'st beradi (uning yuzi va bir og'iz gapi).\n\nOnboarding'da maskot allaqachon yo'q. Uyqu ekranidagi uxlayotgan qunduz ham do'stning yuziga almashadi (chizilmagan, mantiq o'sha).\n\nRang: bitta asosiy tugma rangi — shaftoli. Oq tugma faqat ikkinchi darajali."
+    }
+  },
+  "designSystems": []
+}

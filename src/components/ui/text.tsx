@@ -1,6 +1,6 @@
 import { Text as RNText, TextProps as RNTextProps, StyleSheet } from 'react-native';
 
-import { colors, type as typeScale, type TypeVariant } from '@/theme';
+import { type as typeScale, type TypeVariant, useTokens } from '@/theme';
 
 export interface TxtProps extends RNTextProps {
   variant?: TypeVariant;
@@ -21,6 +21,8 @@ export function Txt({
   style,
   ...rest
 }: TxtProps) {
+  // Inside an always-dark screen the default ink is the night one (`NightScope`).
+  const { colors } = useTokens();
   return (
     <RNText
       numberOfLines={lines}

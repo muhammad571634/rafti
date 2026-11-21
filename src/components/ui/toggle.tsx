@@ -1,33 +1,44 @@
 import { Platform, Switch } from 'react-native';
 
-import { colors } from '@/theme';
+import { haptic } from '@/lib/haptics';
+import { useTokens } from '@/theme';
 
 /**
- * An ink switch with a white thumb: settings stay neutral, apricot is kept for the
- * main action. react-native-web colours the "on" thumb from its own
+ * The app's one switch, as iOS draws UISwitch: a green track and a white thumb in light and dark,
+ * on both platforms (Android's own switch would tint its thumb blue). react-native-web colours the "on" thumb from its own
  * `activeThumbColor` prop, which the native typings don't know about.
  */
+/** The UISwitch thumb is white in both modes. */
+const THUMB = '#FFFFFF';
+
 export function Toggle({
   value,
   onChange,
   disabled,
   accessibilityLabel,
+  onColor,
 }: {
   value: boolean;
   onChange: (v: boolean) => void;
   disabled?: boolean;
   accessibilityLabel?: string;
+  /** The "on" track; the iOS green by default. */
+  onColor?: string;
 }) {
-  const webProps = Platform.OS === 'web' ? ({ activeThumbColor: colors.surface } as object) : {};
+  const { colors, systemColors } = useTokens();
+  const webProps = Platform.OS === 'web' ? ({ activeThumbColor: THUMB } as object) : {};
 
   return (
     <Switch
       value={value}
       disabled={disabled}
-      onValueChange={onChange}
+      onValueChange={(v) => {
+        haptic.toggle(v);
+        onChange(v);
+      }}
       accessibilityLabel={accessibilityLabel}
-      trackColor={{ true: colors.text, false: colors.borderStrong }}
-      thumbColor={colors.surface}
+      trackColor={{ true: onColor ?? systemColors.green, false: colors.borderStrong }}
+      thumbColor={THUMB}
       ios_backgroundColor={colors.borderStrong}
       {...webProps}
     />

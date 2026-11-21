@@ -1,0 +1,468 @@
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { InkGlassPill, InkIconButton, InkNavBar, InkSegmented, tileTint } from '@/components/ink';
+import { CircleCard } from '@/components/find/circle-card';
+import { useEarlyAccess } from '@/components/plans/early-access';
+import {
+  Button,
+  CharacterAvatar,
+  EmptyState,
+  LargeTitle,
+  NO_RESULTS,
+  PressableScale,
+  Screen,
+  SearchBar,
+  SFIcon,
+  Txt,
+  useScrolledPast,
+} from '@/components/ui';
+import { isReleased } from '@/economy/early-access';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
+import { phrase } from '@/i18n';
+import { localCharacter, localized } from '@/i18n/content';
+import { rankCharactersForUser } from '@/lib/discovery-rank';
+import { shortName } from '@/lib/format';
+import { chapterAt, chapterState, isEventOn, worldJoinedAt } from '@/lib/world-story';
+import { groupBySeries } from '@/mock';
+import { WORLDS, type World } from '@/mock/worlds';
+import { useAppStore } from '@/store/use-app-store';
+import { colors, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import type { Character, CharacterGender, WorldEvent, WorldStory } from '@/types';
+
+type Who = CharacterGender | 'everyone';
+const WHO: Who[] = ['everyone', 'male', 'female'];
+
+/**
+ * A circle from Find (Friends, Partners, It's complicated, Around you) in the Ink Night+ look:
+ * ambient circle wash matching Find's CircleTile, pinned sticky Apple HIG navigation bar with
+ * scroll-edge title + search toggle, tabular count + dark-glass "Surprise me", Everyone / Him / Her,
+ * and wide cinema-aligned `CircleCard`s. A world with a story keeps its role, season, events and ties.
+ */
+export default function WorldScreen() {
+  const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { series } = useLocalSearchParams<{ series: string }>();
+  const { scrolled, onScroll } = useScrolledPast(34);
+
+  const characters = useAppStore((s) => s.characters);
+  const conversations = useAppStore((s) => s.conversations);
+  const blockedIds = useAppStore((s) => s.blockedIds);
+  const rememberViewed = useAppStore((s) => s.rememberViewed);
+  const relationships = useAppStore((s) => s.relationships);
+  const enterWorld = useAppStore((s) => s.enterWorld);
+  const startWorldGroup = useAppStore((s) => s.startWorldGroup);
+  const early = useEarlyAccess();
+  const world = useMemo(() => localized('worlds', WORLDS).find((w) => w.series === series), [series]);
+
+  const [who, setWho] = useState<Who>('everyone');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+
+  // Match the exact tileTint index that Find's CircleTile uses for this circle.
+  const circleGlow = useMemo(() => {
+    const visible = characters.filter((c) => !blockedIds.includes(c.id) && isReleased(c, Date.now()));
+    const groups = groupBySeries(visible);
+    const idx = groups.findIndex((g) => g.series === series);
+    return tileTint(Math.max(0, idx))[0];
+  }, [characters, blockedIds, series]);
+
+  const weights = useDiscoveryWeights();
+  const people = useMemo(
+    () =>
+      rankCharactersForUser(
+        characters.filter(
+          (c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id) && isReleased(c, Date.now()),
+        ),
+        weights,
+      ),
+    [characters, series, blockedIds, weights],
+  );
+  const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
+  const q = query.trim().toLowerCase();
+  const shown = useMemo(
+    () =>
+      people.filter((c) => {
+        if (who !== 'everyone' && c.gender !== who) return false;
+        if (!q) return true;
+        const loc = localCharacter(c);
+        return (
+          c.name.toLowerCase().includes(q) ||
+          (loc.relation?.toLowerCase().includes(q) ?? false) ||
+          (loc.greeting?.toLowerCase().includes(q) ?? false)
+        );
+      }),
+    [people, who, q],
+  );
+
+  // The whole cast, as the chat and the pushes count it: blocking a friend does not rewind the season.
+  const joinedAt = world ? worldJoinedAt(characters.filter((c) => c.series === world.series).map((c) => c.id), relationships) : undefined;
+  const friendsHere = people.filter((c) => friendIds.has(c.id));
+  const host = world ? characters.find((c) => c.id === world.story.entry.characterId) : undefined;
+  const begin = () => {
+    if (!world) return;
+    const conversationId = enterWorld(world.key);
+    if (conversationId) router.push(`/chat/${conversationId}`);
+  };
+  const openGroup = () => {
+    if (!world) return;
+    const groupId = startWorldGroup(world.key, phrase(world.series));
+    if (groupId) router.push({ pathname: '/group/[id]', params: { id: groupId } });
+  };
+  const open = (c: Character) => {
+    rememberViewed(c.id);
+    router.push(`/character/${c.id}`);
+  };
+  const surprise = () => {
+    if (shown.length > 0) open(shown[Math.floor(Math.random() * shown.length)]);
+  };
+
+  const act = (c: Character) => {
+    const chat = conversations.find((v) => v.characterId === c.id)?.id;
+    if (chat) router.push(`/chat/${chat}`);
+    else early.add(c);
+  };
+
+  const titleText = phrase(series ?? '');
+
+  return (
+    <Screen background={ink.ground}>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[`${circleGlow}88`, `${circleGlow}00`]}
+        start={{ x: 0.25, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+      />
+
+      <InkNavBar
+        backLabel={t('a11y.back')}
+        onBack={() => router.back()}
+        title={titleText}
+        scrolled={scrolled}
+        right={
+          <InkIconButton
+            icon={searchOpen ? 'close' : 'search'}
+            accessibilityLabel={t('find.searchWorld', { world: titleText })}
+            onPress={() => {
+              if (searchOpen) setQuery('');
+              setSearchOpen((v) => !v);
+            }}
+          />
+        }
+      />
+
+      <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}>
+        <View style={styles.titleWrap}>
+          <LargeTitle>{titleText}</LargeTitle>
+        </View>
+
+        <View style={styles.meta}>
+          <View style={styles.count} accessible accessibilityLabel={`${people.length}`}>
+            <Ionicons name="people" size={14} color={ink.text2} />
+            <Txt style={styles.countText}>{people.length}</Txt>
+          </View>
+          {shown.length > 0 ? (
+            <InkGlassPill
+              label={t('find.surprise')}
+              icon="sparkles"
+              iconColor={ink.accent}
+              onPress={surprise}
+            />
+          ) : null}
+        </View>
+
+        {world ? (
+          <>
+            <RoleCard
+              role={world.story.userRole}
+              started={!!host && friendIds.has(host.id)}
+              onBegin={host && !blockedIds.includes(host.id) ? begin : undefined}
+            />
+            <SeasonCard season={world.story.season} joinedAt={joinedAt} />
+          </>
+        ) : null}
+
+        {searchOpen ? (
+          <SearchBar
+            autoFocus
+            value={query}
+            onChangeText={setQuery}
+            placeholder={t('find.searchWorld', { world: titleText })}
+            style={styles.search}
+          />
+        ) : null}
+
+        <InkSegmented
+          options={WHO.map((value) => ({ value, label: t(`find.who.${value}`) }))}
+          value={who}
+          onChange={setWho}
+          style={styles.who}
+        />
+
+        {shown.length === 0 ? (
+          <EmptyState symbol={NO_RESULTS} title={t('find.noResults')} />
+        ) : (
+          <View style={styles.cards}>
+            {shown.map((c) => (
+              <CircleCard
+                key={c.id}
+                character={c}
+                friend={friendIds.has(c.id)}
+                fresh={!!early.fresh(c)}
+                onOpen={() => open(c)}
+                onAct={() => act(c)}
+              />
+            ))}
+          </View>
+        )}
+
+        {world ? <WorldFoot world={world} people={people} canGroup={friendsHere.length >= 2} onGroup={openGroup} /> : null}
+      </ScrollView>
+      {early.sheet}
+    </Screen>
+  );
+}
+
+/** Who the user is in this world, and the way in: the scene that starts the story. */
+function RoleCard({ role, started, onBegin }: { role: WorldStory['userRole']; started: boolean; onBegin?: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <View style={[styles.card, styles.firstCard]}>
+      <Txt style={styles.overline}>{t('world.yourRole')}</Txt>
+      <Txt style={styles.roleTitle} accessibilityRole="header">
+        {role.title}
+      </Txt>
+      <Txt style={styles.body}>{role.hook}</Txt>
+      {onBegin ? (
+        <Button
+          label={t(started ? 'world.continue' : 'world.start')}
+          variant="primary"
+          full
+          onPress={onBegin}
+          style={styles.begin}
+        />
+      ) : null}
+    </View>
+  );
+}
+
+/** The season: where the story is now; the rest unfolds under it, later chapters locked until their day. */
+function SeasonCard({ season, joinedAt }: { season: WorldStory['season']; joinedAt?: string }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const current = chapterAt(season, joinedAt, new Date());
+  const index = current ? season.chapters.indexOf(current) : 0;
+  return (
+    <View style={styles.card}>
+      <PressableScale
+        scaleTo={0.99}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen((v) => !v)}>
+        <View style={styles.seasonHead}>
+          <View style={styles.flex}>
+            <Txt style={styles.overline}>{t('world.season')}</Txt>
+            <Txt style={styles.seasonTitle} lines={2}>
+              {season.title}
+            </Txt>
+          </View>
+          <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={18} color={ink.text2} />
+        </View>
+        <View style={styles.seasonBars}>
+          {season.chapters.map((chapter, i) => (
+            <View key={chapter.id} style={[styles.seasonBar, i <= index && styles.seasonBarOn]} />
+          ))}
+        </View>
+        {current ? (
+          <>
+            <Txt style={styles.chapterMeta}>{t('world.chapterOf', { n: index + 1, total: season.chapters.length })}</Txt>
+            <Txt style={styles.chapterTitle}>{current.title}</Txt>
+            <Txt style={styles.body}>{current.beat}</Txt>
+          </>
+        ) : null}
+      </PressableScale>
+      {open
+        ? season.chapters.map((chapter) => {
+            const state = chapterState(chapter, current);
+            return (
+              <View key={chapter.id} style={styles.chapterRow}>
+                <View style={styles.chapterIcon}>
+                  <SFIcon
+                    ios={state === 'locked' ? 'lock.fill' : state === 'now' ? 'circle.fill' : 'checkmark.circle.fill'}
+                    icon={state === 'locked' ? 'lock-closed' : state === 'now' ? 'ellipse' : 'checkmark-circle'}
+                    size={state === 'now' ? 10 : 16}
+                    color={state === 'locked' ? ink.text3 : ink.accent}
+                  />
+                </View>
+                <Txt style={[styles.chapterName, state === 'locked' && styles.locked]} lines={2}>
+                  {chapter.title}
+                </Txt>
+                {state === 'locked' ? <Txt style={styles.chapterDay}>{t('world.day', { n: chapter.opensOnDay + 1 })}</Txt> : null}
+              </View>
+            );
+          })
+        : null}
+    </View>
+  );
+}
+
+/** Under the cast: what comes round here, how its people stand with each other, the group chat. */
+function WorldFoot({ world, people, canGroup, onGroup }: { world: World; people: Character[]; canGroup: boolean; onGroup: () => void }) {
+  const { t } = useTranslation();
+  const now = new Date();
+  const byId = new Map(people.map((c) => [c.id, c]));
+  const ties = world.story.ties.filter((tie) => byId.has(tie.a) && byId.has(tie.b));
+  return (
+    <>
+      {canGroup ? (
+        <View style={[styles.card, styles.flush]}>
+          <PressableScale scaleTo={0.99} accessibilityRole="button" onPress={onGroup} style={styles.groupRow}>
+            <SFIcon ios="person.2.fill" icon="people" size={20} color={ink.accent} />
+            <Txt style={[styles.groupLabel, styles.flex]}>{t('world.crew')}</Txt>
+            <Ionicons name="chevron-forward" size={16} color={ink.text2} />
+          </PressableScale>
+        </View>
+      ) : null}
+
+      <Txt style={styles.section} accessibilityRole="header">
+        {t('world.events')}
+      </Txt>
+      <View style={[styles.card, styles.flush]}>
+        {world.story.events.map((event, i) => (
+          <EventRow key={event.id} event={event} on={isEventOn(event, now)} last={i === world.story.events.length - 1} />
+        ))}
+      </View>
+
+      {ties.length ? (
+        <>
+          <Txt style={styles.section} accessibilityRole="header">
+            {t('world.ties')}
+          </Txt>
+          <View style={[styles.card, styles.flush]}>
+            {ties.map((tie, i) => {
+              const a = byId.get(tie.a)!;
+              const b = byId.get(tie.b)!;
+              return (
+                <View key={`${tie.a}+${tie.b}`} style={[styles.tieRow, i < ties.length - 1 && styles.rowLine]}>
+                  <View style={styles.tieFaces}>
+                    <CharacterAvatar character={a} size={40} />
+                    <CharacterAvatar character={b} size={40} ring ringColor={ink.card} style={styles.tieSecond} />
+                  </View>
+                  <View style={styles.flex}>
+                    <Txt style={styles.tieNames} lines={1}>
+                      {`${shortName(a.name)} & ${shortName(b.name)}`}
+                    </Txt>
+                    <Txt style={styles.tieKind}>{t(`world.kinds.${tie.kind}`)}</Txt>
+                    <Txt style={styles.tieNote}>{tie.note}</Txt>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </>
+      ) : null}
+    </>
+  );
+}
+
+function EventRow({ event, on, last }: { event: WorldEvent; on: boolean; last: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <View style={[styles.eventRow, !last && styles.rowLine]}>
+      <SFIcon ios="calendar" icon="calendar" size={20} color={on ? systemColors.pink : ink.text2} />
+      <View style={styles.flex}>
+        <View style={styles.rowTop}>
+          <Txt style={styles.eventTitle}>{event.title}</Txt>
+          {on ? (
+            <View style={styles.nowPill}>
+              <Txt style={styles.nowText}>{t('world.now')}</Txt>
+            </View>
+          ) : null}
+        </View>
+        <Txt style={styles.tieKind}>{event.when}</Txt>
+        <Txt style={styles.tieNote}>{event.note}</Txt>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 240 },
+  flex: { flex: 1, minWidth: 0 },
+  titleWrap: { marginHorizontal: inkGutter - space.lg },
+  meta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.md,
+    marginHorizontal: inkGutter,
+    marginTop: 8,
+  },
+  count: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  countText: { ...inkFace('subStrong'), color: ink.text2, fontVariant: ['tabular-nums'] },
+  search: { marginHorizontal: inkGutter, marginTop: 14 },
+  who: { marginHorizontal: inkGutter, marginTop: 14 },
+  cards: { marginHorizontal: inkGutter, marginTop: 16, gap: 12 },
+  card: {
+    marginHorizontal: inkGutter,
+    marginTop: space.md,
+    padding: space.lg,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  firstCard: { marginTop: space.lg },
+  flush: { padding: 0, overflow: 'hidden' },
+  overline: { ...inkFace('caption'), color: ink.text2 },
+  roleTitle: { ...inkFace('figure'), marginTop: 2, color: ink.text },
+  body: { ...inkFace('sub'), marginTop: 6, color: ink.text2 },
+  begin: { marginTop: 14 },
+  seasonHead: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },
+  seasonTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: ink.text },
+  seasonBars: { flexDirection: 'row', gap: 4, marginTop: 12 },
+  seasonBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: ink.hairlineFill },
+  seasonBarOn: { backgroundColor: ink.accent },
+  chapterMeta: { ...inkFace('footnote'), marginTop: 12, color: ink.text2 },
+  chapterTitle: { ...inkFace('bodyStrong'), marginTop: 2, color: ink.text },
+  chapterRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 40, marginTop: 4 },
+  chapterIcon: { width: 18, alignItems: 'center' },
+  chapterName: { ...inkFace('sub'), flex: 1, color: ink.text },
+  chapterDay: { ...inkFace('footnote'), color: ink.text2, fontVariant: ['tabular-nums'] },
+  locked: { color: ink.text2 },
+  section: {
+    ...inkFace('card'),
+    marginTop: space.xl,
+    marginHorizontal: inkGutter,
+    color: ink.text,
+  },
+  groupRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: 54, paddingHorizontal: space.lg },
+  groupLabel: { ...inkFace('body'), color: ink.text },
+  eventRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, padding: space.lg },
+  eventTitle: { ...inkFace('bodyStrong'), flexShrink: 1, color: ink.text },
+  nowPill: { borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2, backgroundColor: systemColors.pink },
+  nowText: { ...inkFace('caption'), color: colors.white },
+  tieRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, padding: space.lg },
+  tieFaces: { flexDirection: 'row', width: 66 },
+  tieSecond: { marginLeft: -14 },
+  tieNames: { ...inkFace('bodyStrong'), color: ink.text },
+  tieKind: { ...inkFace('footnote'), color: ink.text2 },
+  tieNote: { ...inkFace('sub'), marginTop: 4, color: ink.text },
+  rowTop: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.edge },
+});

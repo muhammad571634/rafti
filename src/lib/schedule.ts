@@ -1,30 +1,146 @@
-import { dayKeyFromToday } from '@/mock/time';
+import { dateFromKey } from '../mock/time';
+import type { ScheduleItem } from '@/types';
 
 export interface DetectedPlan {
   title: string;
   /** Day key the plan falls on */
   date: string;
+  /** "HH:MM" when the message named a time */
+  time?: string;
   /** The time phrase as the user said it, e.g. "tomorrow", "on Friday" */
   when: string;
 }
+
+/** The character texts this long before a timed plan starts. */
+export const REMIND_BEFORE_MIN = 10;
+/** A timed plan is taken to be over this long after it starts. */
+const PLAN_LENGTH_MIN = 120;
+/** Plans without a time: a morning reminder and an evening "how did it go?". */
+const UNTIMED_REMIND_HOUR = 8;
+const UNTIMED_FOLLOW_UP_HOUR = 20;
+/** Asking about a plan days later sounds odd, so a late follow-up is dropped. */
+const FOLLOW_UP_WINDOW_MS = 36 * 3_600_000;
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+function at(dateKey: string, hours: number, minutes = 0) {
+  const d = dateFromKey(dateKey);
+  d.setHours(hours, minutes, 0, 0);
+  return d;
+}
+
+/** When the plan starts; a plan without a time starts with the day. */
+export function planStart(item: Pick<ScheduleItem, 'date' | 'time'>) {
+  if (!item.time) return at(item.date, 0);
+  const [h, m] = item.time.split(':').map(Number);
+  return at(item.date, h, m);
+}
+
+export function reminderAt(item: Pick<ScheduleItem, 'date' | 'time' | 'remindAt'>) {
+  // A time the user picked in the morning chain ("text me at 9:10").
+  if (item.remindAt) {
+    const [h, m] = item.remindAt.split(':').map(Number);
+    return at(item.date, h, m);
+  }
+  if (!item.time) return at(item.date, UNTIMED_REMIND_HOUR);
+  return new Date(planStart(item).getTime() - REMIND_BEFORE_MIN * 60_000);
+}
+
+export function followUpAt(item: Pick<ScheduleItem, 'date' | 'time'>) {
+  if (!item.time) return at(item.date, UNTIMED_FOLLOW_UP_HOUR);
+  return new Date(planStart(item).getTime() + PLAN_LENGTH_MIN * 60_000);
+}
+
+export type PlanStep = 'remind' | 'followUp' | 'skipRemind' | 'skipFollowUp' | null;
+
+/**
+ * What a plan needs right now. A reminder only goes out between its moment and
+ * the start (a plan added after that moment was already acknowledged in chat);
+ * a follow-up only inside its window.
+ */
+export function planStep(item: ScheduleItem, now = new Date()): PlanStep {
+  const t = now.getTime();
+  if (!item.reminded) {
+    const remind = reminderAt(item).getTime();
+    const end = item.time ? planStart(item).getTime() : followUpAt(item).getTime();
+    if (t >= remind) {
+      const addedLate = new Date(item.createdAt).getTime() > remind;
+      return t < end && !addedLate ? 'remind' : 'skipRemind';
+    }
+    return null;
+  }
+  if (!item.followedUp) {
+    const follow = followUpAt(item).getTime();
+    if (t >= follow) return t - follow < FOLLOW_UP_WINDOW_MS ? 'followUp' : 'skipFollowUp';
+  }
+  return null;
+}
+
+/** "3pm", "at 15:30", "at 7" (an hour from 1 to 7 alone reads as the afternoon). */
+function findTime(lower: string): { time: string; phrase: string } | null {
+  let m = lower.match(/\b(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)/);
+  if (m) {
+    let h = Number(m[1]) % 12;
+    if (m[3].startsWith('p')) h += 12;
+    const min = Number(m[2] ?? 0);
+    if (Number(m[1]) > 12 || min > 59) return null;
+    return { time: `${pad(h)}:${pad(min)}`, phrase: m[0] };
+  }
+  m = lower.match(/\b(?:at\s+)?([01]?\d|2[0-3]):([0-5]\d)\b/);
+  if (m) return { time: `${pad(Number(m[1]))}:${m[2]}`, phrase: m[0] };
+  m = lower.match(/\bat\s+(\d{1,2})\b/);
+  if (m) {
+    let h = Number(m[1]);
+    if (h > 23) return null;
+    if (h >= 1 && h <= 7) h += 12;
+    return { time: `${pad(h)}:00`, phrase: m[0] };
+  }
+  return null;
+}
+
+/** "Tonight at 8" is 20:00, not 08:00: an evening word turns a morning hour into the evening. */
+function evening(clock: { time: string; phrase: string } | null, lower: string) {
+  if (!clock || !/\b(tonight|evening|night)\b/.test(lower) || /\b(am|a\.m\.|morning)\b/.test(lower)) return clock;
+  const [h, m] = clock.time.split(':').map(Number);
+  return h < 12 ? { ...clock, time: `${pad(h + 12)}:${pad(m)}` } : clock;
+}
+
+/** The day key `offset` days after `now` (the caller's clock, so tests can pin it). */
+function dayKeyFrom(now: Date, offset: number) {
+  const d = new Date(now);
+  d.setDate(d.getDate() + offset);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 /** Only first-person plans count — "what are you doing tomorrow?" is not a schedule. */
 const LEAD_IN =
-  /^\s*(?:and\s+|so\s+|well\s+)?(?:i have|i've got|i got|i'm going to|i am going to|i'm going|i am going|i'll|i will|i need to|i have to|i must|we have|we're going to|we're going|my)\b\s*/i;
+  /^\s*(?:and\s+|so\s+|well\s+|ugh\s+|omg\s+)?(?:i have|i've got|i got|i'm going to|i am going to|i'm going|i am going|im going|i'm meeting|i'm seeing|i'm flying|i'm leaving|i'm starting|i start|i'll|i will|i need to|i have to|i must|i gotta|gotta|got to|need to|have to|going to|heading to|we have|we're going to|we're going|my)\b\s*/i;
 
-const FILLER_START = /^(?:to|a|an|the|my|our)\s+/i;
+/**
+ * A plan said without "I": "Exam tomorrow at 9", "Job interview on Friday at 10am", "date tonight at
+ * 7". It starts with the thing itself (a word or two before it at most).
+ */
+const EVENT_LEAD =
+  /^\s*(?:(?:big|final|first|the|a|an|another|important)\s+)?(?:[\w']+\s+){0,2}?(exam|exams|test|quiz|midterm|final|interview|meeting|appointment|doctor|dentist|flight|presentation|date|class|lecture|match|game|shift|deadline|party|wedding|concert|gym|practice|training|surgery|audition|call)\b/i;
+
+/** Not a plan of the user's: a question, or about the other person. */
+const NOT_MINE = /\?\s*$|^\s*(what|when|where|why|how|do|does|did|are|is|will|would|can|could)\b|\byou(r|'re)?\b/i;
+
+const FILLER_START = /^(?:to|a|an|the|my|our|for)\s+/i;
 const FILLER_END = /\s+(?:is|are|at|on|in|will be|coming up)$/i;
 
 function findWhen(lower: string, now: Date): { offset: number; phrase: string; when: string } | null {
   let m = lower.match(/\bday after tomorrow\b/);
   if (m) return { offset: 2, phrase: m[0], when: 'the day after tomorrow' };
 
-  m = lower.match(/\b(tonight|today|this evening)\b/);
-  if (m) return { offset: 0, phrase: m[0], when: m[1] };
+  m = lower.match(/\b(tonight|today|this (?:morning|afternoon|evening))\b/);
+  if (m) return { offset: 0, phrase: m[0], when: m[1] === 'tonight' || m[1] === 'today' ? m[1] : 'today' };
 
-  m = lower.match(/\b(tomorrow|tmrw|tmr)\b/);
+  m = lower.match(/\b(?:tomorrow|tmrw|tmr)(?:\s+(?:morning|afternoon|evening|night))?\b/);
   if (m) return { offset: 1, phrase: m[0], when: 'tomorrow' };
 
   m = lower.match(/\bnext week\b/);
@@ -52,13 +168,24 @@ function findWhen(lower: string, now: Date): { offset: number; phrase: string; w
  */
 export function detectPlan(text: string, now = new Date()): DetectedPlan | null {
   const sentence = text.trim();
-  if (!LEAD_IN.test(sentence)) return null;
+  const mine = LEAD_IN.test(sentence);
+  if (!mine && (!EVENT_LEAD.test(sentence) || NOT_MINE.test(sentence))) return null;
+  if (mine && /\?\s*$/.test(sentence)) return null;
 
-  const found = findWhen(sentence.toLowerCase(), now);
+  const lower = sentence.toLowerCase();
+  const clock = evening(findTime(lower), lower);
+  let found = findWhen(lower, now);
+  // "I have a meeting at 5pm": today, or tomorrow once that time has passed.
+  if (!found && clock) {
+    const [h, m] = clock.time.split(':').map(Number);
+    const passed = now.getHours() * 60 + now.getMinutes() >= h * 60 + m;
+    found = passed ? { offset: 1, phrase: '', when: 'tomorrow' } : { offset: 0, phrase: '', when: 'today' };
+  }
   if (!found) return null;
 
   let title = sentence
-    .replace(new RegExp(found.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), ' ')
+    .replace(found.phrase ? new RegExp(escape(found.phrase), 'i') : '', ' ')
+    .replace(clock ? new RegExp(escape(clock.phrase), 'i') : '', ' ')
     .replace(LEAD_IN, '')
     .replace(/[!?.,~]+/g, ' ')
     .replace(/\s+/g, ' ')
@@ -73,7 +200,8 @@ export function detectPlan(text: string, now = new Date()): DetectedPlan | null 
 
   return {
     title: title[0].toUpperCase() + title.slice(1),
-    date: dayKeyFromToday(found.offset),
-    when: found.when,
+    date: dayKeyFrom(now, found.offset),
+    time: clock?.time,
+    when: clock ? `${found.when} at ${clock.time}` : found.when,
   };
 }

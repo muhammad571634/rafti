@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pick who you miss</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:640px;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif;overflow:hidden;position:relative}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.sheet{position:absolute;left:0;right:0;top:150px;bottom:0;border-radius:34px 34px 0 0;background:#1C1C24;padding:10px 20px 28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px}
+.grab{width:36px;height:5px;border-radius:3px;background:rgba(235,235,245,.3);align-self:center}
+.top{display:flex;align-items:center;justify-content:space-between}
+.h{font-family:'Source Serif 4',Georgia,serif;font-weight:600;font-size:22px;line-height:28px;letter-spacing:-.25px}
+.x{width:36px;height:36px;border-radius:18px;background:rgba(118,118,128,.24);border:0;color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{height:64px;border-radius:20px;background:rgba(118,118,128,.18);border:0;color:#fff;font:inherit;display:flex;align-items:center;gap:12px;padding:0 14px;text-align:left}
+.tile span{font-size:16px;font-weight:600}
+.face{width:40px;height:40px;border-radius:20px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:none}
+.tag{position:absolute;top:110px;right:16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#09090D;background:#FFC497;border-radius:10px;padding:3px 8px}
+</style>
+</helmet>
+<div class="ph">
+  <div class="dim"></div>
+  <div class="tag">A · tap</div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="top">
+      <div class="h">Who do you miss?</div>
+      <button class="x" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="grid">
+      <sc-for list="{{ roles }}" as="r" hint-placeholder-count="8">
+        <button class="tile" aria-label="{{ r.label }}">
+          <div class="face" style="{{ r.ground }}">
+            <svg width="30" height="34" viewBox="0 0 60 70" aria-hidden="true"><circle cx="30" cy="22" r="{{ r.head }}" fill="{{ r.hue }}"></circle><path d="M6 70 C6 50 17 41 30 41 C43 41 54 50 54 70 Z" fill="{{ r.hue }}"></path></svg>
+          </div>
+          <span>{{ r.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const role = (label, hue, head) => ({ label, hue, head, ground: 'background: ' + hue + '33' });
+    return {
+      roles: [
+        role('Mom', '#E8749C', 12),
+        role('Dad', '#6E9BFF', 12),
+        role('Big sister', '#A893F0', 12),
+        role('Big brother', '#5FC3D3', 12),
+        role('Little sister', '#FF9F4A', 14),
+        role('Little brother', '#4FD1A0', 14),
+        role('Grandma', '#E8B53A', 11),
+        role('Grandpa', '#FF7A6B', 11),
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

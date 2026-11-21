@@ -1,0 +1,353 @@
+import { createClient } from '@supabase/supabase-js';
+
+import { PLANS, TRIAL } from '../../../src/economy/plans.ts';
+import type { CommunityItem, CommunityStatus } from '../../../src/lib/community.ts';
+
+import {
+  WalletError,
+  type BootstrapInput,
+  type BootstrapResult,
+  type CheckInResult,
+  type Db,
+  type LiveSubscription,
+  type MessageCharge,
+  type MemoriesState,
+  type MessagesPage,
+  type ShareResult,
+  type SpinResult,
+  type UsageEvent,
+  type WalletState,
+} from './types.ts';
+
+/** The API's own cap on the rows one read answers. */
+const MEMORY_PAGE = 1000;
+
+/**
+ * Supabase with the server's secret key (service role): RLS does not apply to it, so every write
+ * goes through here and through the SQL functions that keep the ledger and the wallet together
+ * (`book_shells`, `bootstrap_user` in supabase/migrations). The key never leaves the server.
+ */
+export function supabaseDb(opts: { url: string; secretKey: string }): Db {
+  const client = createClient(opts.url, opts.secretKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+
+  /** A wallet function; its own refusals (`raise exception 'noShells'` …) come back as WalletError. */
+  async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
+    const { data, error } = await client.rpc(fn, args);
+    if (!error) return data as T;
+    if (error.message === 'noShells' || error.message === 'noWallet' || error.message === 'badAmount') throw new WalletError(error.message);
+    throw new Error(`${fn}: ${error.message}`);
+  }
+
+  return {
+    name: 'supabase',
+
+    // Checked here, against the project's public signing keys (fetched once and kept): no round trip
+    // to the sign-in service per request. A token signed the old way (a shared secret) is still
+    // asked about over the network, inside `getClaims`. Not valid is null; could not ask throws.
+    async userIdFromToken(token) {
+      const { data, error } = await client.auth.getClaims(token);
+      if (error) {
+        const status = (error as { status?: number }).status;
+        if (error.name === 'AuthRetryableFetchError' || (typeof status === 'number' && status >= 500)) throw new Error(`auth: ${error.message}`);
+        return null;
+      }
+      const sub = data?.claims?.sub;
+      return typeof sub === 'string' && sub ? sub : null;
+    },
+
+    async spendsToday(userId) {
+      const dayStart = new Date(Math.floor(Date.now() / 86_400_000) * 86_400_000).toISOString();
+      const { count, error } = await client.from('shell_ledger').select('id', { count: 'exact', head: true }).eq('user_id', userId).lt('delta', 0).not('reason', 'in', '(expired,chat,voice,photo)').gte('created_at', dayStart);
+      if (error) throw new Error(`shell_ledger: ${error.message}`);
+      return count ?? 0;
+    },
+
+    async ping() {
+      const { error } = await client.from('profiles').select('id').limit(1);
+      if (error) throw new Error(`ping: ${error.message}`);
+    },
+
+    // `model_spend_today` comes with the usage_daily migration; until it is applied this answers
+    // null and the gate counts only its own process.
+    async modelSpendToday() {
+      const { data, error } = await client.rpc('model_spend_today');
+      if (error) {
+        if (error.code === 'PGRST202') return null;
+        throw new Error(`model_spend_today: ${error.message}`);
+      }
+      return data == null ? 0 : Number(data);
+    },
+
+    async bootstrap(userId, input: BootstrapInput) {
+      const { data, error } = await client.rpc('bootstrap_user', {
+        p_user: userId,
+        p_locale: input.locale ?? null,
+        p_time_zone: input.timeZone ?? null,
+      });
+      if (error) throw new Error(`bootstrap_user: ${error.message}`);
+      return data as BootstrapResult;
+    },
+
+    async logUsage(event: UsageEvent) {
+      const { error } = await client.from('usage_events').insert({
+        user_id: event.userId,
+        kind: event.kind,
+        mode: event.mode ?? null,
+        model: event.model ?? null,
+        prompt_version: event.promptVersion ?? null,
+        input_tokens: event.inputTokens ?? null,
+        cached_tokens: event.cachedTokens ?? null,
+        output_tokens: event.outputTokens ?? null,
+        seconds: event.seconds ?? null,
+        cost_usd: event.costUsd ?? null,
+      });
+      if (error) throw new Error(`usage_events: ${error.message}`);
+    },
+
+    walletState: (userId) => rpc<WalletState>('wallet_state', { p_user: userId }),
+
+    walletSpend: (userId, { amount, reason, key, characterId }) =>
+      rpc<WalletState>('wallet_spend', { p_user: userId, p_amount: amount, p_reason: reason, p_key: key, p_character_id: characterId ?? null }),
+
+    walletCredit: (userId, { amount, reason, key, free }) =>
+      rpc<WalletState>('wallet_credit', { p_user: userId, p_amount: amount, p_reason: reason, p_key: key, p_free: free }),
+
+    walletCheckIn: (userId, { ladder, top }) => rpc<CheckInResult>('wallet_check_in', { p_user: userId, p_ladder: ladder, p_top: top }),
+
+    walletSpin: (userId, { segments, weights, freeSpins }) =>
+      rpc<SpinResult>('wallet_spin', { p_user: userId, p_segments: segments, p_weights: weights, p_free_spins: freeSpins }),
+
+    takeMessage: (userId, r) =>
+      rpc<MessageCharge>('take_message', {
+        p_user: userId,
+        p_key: r.key,
+        p_reason: r.reason,
+        p_cost: r.cost,
+        p_free_limit: r.freeLimit,
+        p_plan_limit: r.planLimit,
+        p_may_be_free: r.mayBeFree,
+        p_max_uses: r.maxUses,
+        p_use: r.use,
+        p_charge: r.charge,
+        p_character_id: r.characterId ?? null,
+      }),
+
+    // The day's paid shares are its `share:<day>:<n>` rows. Two shares at once take the same key, and
+    // `wallet_credit` books a key once: a race can only pay less, never more than the cap.
+    async walletShare(userId, { amount, perDay }): Promise<ShareResult> {
+      const before = await rpc<WalletState>('wallet_state', { p_user: userId });
+      const { count, error } = await client
+        .from('shell_ledger')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .like('idempotency_key', `share:${before.today}:%`);
+      if (error) throw new Error(`shell_ledger: ${error.message}`);
+      const used = count ?? 0;
+      if (used >= perDay) return { amount: 0, left: 0, wallet: before };
+      const wallet = await rpc<WalletState>('wallet_credit', {
+        p_user: userId,
+        p_amount: amount,
+        p_reason: 'share',
+        p_key: `share:${before.today}:${used + 1}`,
+        p_free: true,
+      });
+      const paid = wallet.shells > before.shells ? amount : 0;
+      return { amount: paid, left: Math.max(0, perDay - used - (paid ? 1 : 0)), wallet };
+    },
+
+    async currentSubscription(userId): Promise<LiveSubscription | null> {
+      const { data, error } = await client
+        .from('subscriptions')
+        .select('plan_id, status, term_start, will_renew')
+        .eq('user_id', userId)
+        .in('status', ['trial', 'active', 'grace'])
+        .gt('term_end', new Date().toISOString())
+        .order('term_end', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw new Error(`subscriptions: ${error.message}`);
+      if (!data) return null;
+      return { plan: data.plan_id, status: data.status === 'trial' ? 'trial' : 'active', termStart: new Date(data.term_start).toISOString(), willRenew: data.will_renew };
+    },
+
+    async startTestSubscription(userId, plan, trial, now) {
+      const ended = await client
+        .from('subscriptions')
+        .update({ status: 'expired', will_renew: false, updated_at: now.toISOString() })
+        .eq('user_id', userId)
+        .eq('store', 'test')
+        .in('status', ['trial', 'active', 'grace']);
+      if (ended.error) throw new Error(`subscriptions: ${ended.error.message}`);
+      const days = trial ? TRIAL.days : PLANS[plan].termDays;
+      const { error } = await client.from('subscriptions').insert({
+        user_id: userId,
+        plan_id: trial ? TRIAL.plan : plan,
+        store: 'test',
+        original_tx_id: `test:${userId}:${now.getTime()}`,
+        status: trial ? 'trial' : 'active',
+        term_start: now.toISOString(),
+        term_end: new Date(now.getTime() + days * 86_400_000).toISOString(),
+        will_renew: true,
+      });
+      if (error) throw new Error(`subscriptions: ${error.message}`);
+    },
+
+    async syncMessages(userId, { droppedChats, deletedIds, upserts }) {
+      const seq = await rpc<number | null>('sync_messages', {
+        p_user: userId,
+        p_dropped: droppedChats,
+        p_deleted: deletedIds,
+        p_upserts: upserts,
+      });
+      return seq == null ? null : Number(seq);
+    },
+
+    async messagesAfter(userId, after, limit) {
+      const { data, error } = await client
+        .from('messages')
+        .select('chat_id, seq, body')
+        .eq('user_id', userId)
+        .gt('seq', after)
+        .order('seq')
+        .limit(limit);
+      if (error) throw new Error(`messages: ${error.message}`);
+      const rows = (data ?? []) as { chat_id: string; seq: number; body: MessagesPage['messages'][number]['message'] }[];
+      return {
+        messages: rows.map((r) => ({ chatId: r.chat_id, seq: Number(r.seq), message: r.body })),
+        next: rows.length === limit ? Number(rows[rows.length - 1].seq) : null,
+      };
+    },
+
+    async syncMemories(userId, { characters, chats }) {
+      await rpc<null>('sync_memories', { p_user: userId, p_characters: characters, p_chats: chats });
+    },
+
+    async memoriesOf(userId) {
+      // The API answers at most 1000 rows a call, so the memories come in pages.
+      const items: { character_id: string; body: MemoriesState['characters'][number]['items'][number] }[] = [];
+      for (let from = 0; ; from += MEMORY_PAGE) {
+        const { data, error } = await client
+          .from('memories')
+          .select('character_id, body')
+          .eq('user_id', userId)
+          .order('created_at')
+          .order('client_id')
+          .range(from, from + MEMORY_PAGE - 1);
+        if (error) throw new Error(`memories: ${error.message}`);
+        items.push(...((data ?? []) as typeof items));
+        if ((data ?? []).length < MEMORY_PAGE) break;
+      }
+      const { data, error } = await client.from('chat_memory').select('chat_id, summary, mark').eq('user_id', userId).limit(MEMORY_PAGE);
+      if (error) throw new Error(`chat_memory: ${error.message}`);
+
+      const lists = new Map<string, MemoriesState['characters'][number]['items']>();
+      for (const row of items) lists.set(row.character_id, [...(lists.get(row.character_id) ?? []), row.body]);
+      return {
+        characters: [...lists].map(([characterId, list]) => ({ characterId, items: list })),
+        chats: ((data ?? []) as { chat_id: string; summary: string | null; mark: string | null }[]).map((r) => ({
+          chatId: r.chat_id,
+          ...(r.summary ? { summary: r.summary } : {}),
+          ...(r.mark ? { mark: r.mark } : {}),
+        })),
+      };
+    },
+
+    async saveReport(userId, report) {
+      const { error } = await client.from('reports').upsert(
+        {
+          user_id: userId,
+          client_id: report.id,
+          character_id: report.characterId,
+          reason: report.reason,
+          message_text: report.text,
+          context: report.context,
+        },
+        { onConflict: 'user_id,client_id', ignoreDuplicates: true },
+      );
+      if (error) throw new Error(`reports: ${error.message}`);
+    },
+
+    async saveEvents(userId, batch) {
+      if (!batch.events.length) return;
+      const { error } = await client.from('app_events').upsert(
+        batch.events.map((e) => ({
+          user_id: userId,
+          client_id: e.id,
+          name: e.name,
+          props: e.props ?? {},
+          session_id: e.session,
+          at: e.at.toISOString(),
+          app_version: batch.app.version,
+          channel: batch.app.channel,
+          platform: batch.app.platform,
+          locale: batch.app.locale,
+          bucket: batch.bucket,
+        })),
+        { onConflict: 'user_id,client_id', ignoreDuplicates: true },
+      );
+      if (error) throw new Error(`app_events: ${error.message}`);
+    },
+
+    community: {
+      async publish(userId, localId, card, status, reason) {
+        const { data, error } = await client
+          .from('community_characters')
+          .upsert({ owner_id: userId, local_id: localId, card, status, reason, updated_at: new Date().toISOString() }, { onConflict: 'owner_id,local_id' })
+          .select('id')
+          .single();
+        if (error) throw new Error(`community publish: ${error.message}`);
+        return { id: (data as { id: string }).id };
+      },
+      async unpublish(userId, localId) {
+        const { error } = await client.from('community_characters').delete().eq('owner_id', userId).eq('local_id', localId);
+        if (error) throw new Error(`community unpublish: ${error.message}`);
+      },
+      async list(sort, limit, offset) {
+        let query = client.from('community_characters').select('id, card, chats, created_at').eq('status', 'live');
+        query = sort === 'popular' ? query.order('chats', { ascending: false }).order('created_at', { ascending: false }) : query.order('created_at', { ascending: false });
+        const { data, error } = await query.range(offset, offset + limit - 1);
+        if (error) throw new Error(`community list: ${error.message}`);
+        return (data ?? []).map((r: { id: string; card: CommunityItem['card']; chats: number; created_at: string }) => ({ id: r.id, card: r.card, chats: r.chats, createdAt: r.created_at }));
+      },
+      async get(id) {
+        const { data, error } = await client.from('community_characters').select('id, card, chats, created_at').eq('id', id).eq('status', 'live').maybeSingle();
+        if (error) throw new Error(`community get: ${error.message}`);
+        const r = data as { id: string; card: CommunityItem['card']; chats: number; created_at: string } | null;
+        return r ? { id: r.id, card: r.card, chats: r.chats, createdAt: r.created_at } : null;
+      },
+      async add(userId, id) {
+        const { data, error } = await client.rpc('community_add', { p_user: userId, p_id: id });
+        if (error) throw new Error(`community add: ${error.message}`);
+        return typeof data === 'number' ? data : null;
+      },
+      async report(userId, id, reason, hideAt) {
+        const { data, error } = await client.rpc('community_report', { p_user: userId, p_id: id, p_reason: reason, p_hide_at: hideAt });
+        if (error) throw new Error(`community report: ${error.message}`);
+        return (data as CommunityStatus | null) ?? null;
+      },
+    },
+
+    templates: {
+      async add(userId, id, how) {
+        const { error } = await client.rpc('template_add', { p_user: userId, p_id: id, p_how: how });
+        if (error) throw new Error(`template add: ${error.message}`);
+      },
+      async stats() {
+        const { data, error } = await client.rpc('template_stats');
+        if (error) throw new Error(`template stats: ${error.message}`);
+        const out: Record<string, { chats: number; week: number; owns: number }> = {};
+        for (const r of (data ?? []) as { template_id: string; chats: number | string; week: number | string; owns: number | string }[]) {
+          out[r.template_id] = { chats: Number(r.chats), week: Number(r.week), owns: Number(r.owns) };
+        }
+        return out;
+      },
+    },
+
+    async deleteUser(userId) {
+      const { error } = await client.auth.admin.deleteUser(userId);
+      if (error) throw new Error(`deleteUser: ${error.message}`);
+    },
+  };
+}

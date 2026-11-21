@@ -1,56 +1,65 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {
-  Card,
-  CharacterAvatar,
-  Divider,
-  EmptyState,
-  IconTile,
-  ListRow,
-  PressableScale,
-  Screen,
-  SectionLabel,
-  Txt,
-  UserAvatar,
-} from '@/components/ui';
-import { daysBetween, relativeStamp } from '@/lib/format';
-import { dateFromKey, levelForIntimacy, todayKey } from '@/mock';
-import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, radius, space, TAB_BAR_HEIGHT } from '@/theme';
-import type { MomentKind } from '@/types';
+import { InkText } from '@/components/ink';
+import { MoreSheet } from '@/components/more-sheet';
+import { PaywallSheet } from '@/components/paywall-sheet';
+import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIcon } from '@/components/ui';
+import { BondShareSheet } from '@/components/us/bond-share-sheet';
+import { LivingBondHero } from '@/components/us/living-bond-hero';
+import { OurMoments } from '@/components/us/moments';
+import { PlanCalendar } from '@/components/us/plan-calendar';
+import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
+import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
+import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
+import { useDayKey } from '@/hooks/use-day-key';
+import { useInboxUnread } from '@/hooks/use-inbox-unread';
+import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
+import { daysBetween, shortName } from '@/lib/format';
+import { reminderAt } from '@/lib/schedule';
+import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
+import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
+import { colors, friendAccent, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+/** The friend strip's portrait size and ring spacing. */
+const STORY = 50;
+const STORY_RING = 2;
+const STORY_GAP = 2;
+const WHITE = '#FFFFFF';
 
-const MOMENT_PAGE = 20;
-const ROW_ICON = 38;
-const ROW_INSET = space.lg + ROW_ICON + space.md;
-
-const MOMENT_ICON: Record<MomentKind, IoniconName> = {
-  met: 'sparkles-outline',
-  levelUp: 'heart-outline',
-  call: 'call-outline',
-  diary: 'book-outline',
-  secretNote: 'mail-outline',
-  dating: 'cafe-outline',
-  photo: 'camera-outline',
-};
-
-/** [Us]: one bond at a time — how long, how close, what's next and what you've shared. */
+/**
+ * [Us]: one bond at a time — Living Bond Hero on top, unified Week/Month & Plans card in the
+ * middle, editorial Our Moments below, and a quiet Month Circle + More at the foot.
+ */
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollViewInstance>(null);
+  useScrollToTop(scrollRef);
 
-  const user = useAppStore((s) => s.user);
   const relationships = useAppStore((s) => s.relationships);
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
-  const moments = useAppStore((s) => s.moments);
   const schedules = useAppStore((s) => s.schedules);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
+  const addSchedule = useAppStore((s) => s.addSchedule);
+  const spendShells = useAppStore((s) => s.spendShells);
+  const wallet = useAppStore((s) => s.wallet);
+  const [paywall, setPaywall] = useState<number | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const today = useDayKey();
+  const [day, setDay] = useState(today);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const unread = useInboxUnread();
 
   const bonds = useMemo(
     () =>
@@ -62,38 +71,123 @@ export default function UsScreen() {
   );
 
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  // Opened for one friend and day (a plan set from the chat, a plan in Notifications): the tab stays
+  // mounted, so each open carries `at` and is applied once, while rendering (no effect, no flash).
+  const opened = useLocalSearchParams<{ friend?: string; day?: string; at?: string }>();
+  const [openedAt, setOpenedAt] = useState<string | undefined>(undefined);
+  if (opened.at && opened.at !== openedAt) {
+    setOpenedAt(opened.at);
+    if (opened.friend) setSelectedId(opened.friend);
+    if (opened.day && /^\d{4}-\d{2}-\d{2}$/.test(opened.day)) setDay(opened.day);
+  }
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
-  // Moments pile up for as long as a bond lasts; render them a page at a time.
-  const [momentLimit, setMomentLimit] = useState({ id: selected?.character.id, count: MOMENT_PAGE });
-  const visibleMoments = momentLimit.id === selected?.character.id ? momentLimit.count : MOMENT_PAGE;
+  const activeId = selected?.character.id;
+  const reward = useAppStore((s) => shareReward(s.daily, activeId ? `bond:${activeId}` : undefined));
 
-  const timeline = useMemo(
-    () =>
-      moments
-        .filter((m) => m.characterId === selected?.character.id)
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    [moments, selected],
+  // A plan in the moments opens its day in the calendar: the day is picked and the screen scrolls up to it.
+  const calendarY = useRef(0);
+  const toCalendar = () => scrollRef.current?.scrollTo({ y: Math.max(0, calendarY.current - space.md), animated: true });
+  const openDay = (key: string) => {
+    setDay(key);
+    toCalendar();
+  };
+  useEffect(() => {
+    if (openedAt && opened.day) toCalendar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openedAt]);
+
+  const selectFromCircle = useCallback(
+    (characterId: string) => {
+      if (!bonds.some((b) => b.character.id === characterId)) return;
+      setSelectedId(characterId);
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
+    },
+    [bonds],
   );
 
-  const today = todayKey();
-  const upcoming = useMemo(
-    () =>
-      schedules
-        .filter((x) => x.characterId === selected?.character.id && x.date >= today)
-        .sort((a, b) => a.date.localeCompare(b.date)),
-    [schedules, selected, today],
+  const plans = useMemo(() => schedules.filter((x) => x.characterId === activeId), [schedules, activeId]);
+  // The wake-ups this friend gives you sit on their day too; they stay alarms (a tap opens the alarm).
+  const alarms = useAppStore((s) => s.alarms);
+  const friendAlarms = useMemo(() => alarms.filter((a) => a.enabled && a.characterId === activeId), [alarms, activeId]);
+  const dayAlarms = useMemo(
+    () => friendAlarms.filter((a) => ringsOnDay(a, day, new Date())).sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute)),
+    [friendAlarms, day],
   );
+  // A dot for a one-time wake-up's day; a repeating one would dot every week.
+  const planDays = useMemo(() => {
+    const days = new Set(plans.map((x) => x.date));
+    for (const a of friendAlarms) if (!a.repeat.length) days.add(dayKey(nextAlarmAt(a, new Date())));
+    return days;
+  }, [plans, friendAlarms]);
+  // Days you talked with this friend: a dot in their colour on the calendar.
+  const friendChatId = useMemo(() => conversations.find((c) => c.characterId === activeId)?.id, [conversations, activeId]);
+  const friendMessages = useAppStore((s) => (friendChatId ? s.messages[friendChatId] : undefined));
+  const talkedDays = useMemo(() => {
+    const days = new Set<string>();
+    for (const m of friendMessages ?? []) {
+      if ((m.kind === 'text' || m.kind === 'voice' || m.kind === 'image') && !m.failed && !m.pending) days.add(dayKey(m.createdAt));
+    }
+    return days;
+  }, [friendMessages]);
+  const shares = useTalkShares();
+  const talkColor = talkHue(shares, activeId) ?? (activeId ? friendAccent(activeId).strong : undefined);
+  const dayPlans = useMemo(
+    () => plans.filter((x) => x.date === day).sort((a, b) => (a.time ?? '').localeCompare(b.time ?? '')),
+    [plans, day],
+  );
+
+  const pickPublish = (kind: PublishKind) => {
+    setPublishOpen(false);
+    if (kind === 'plan') setPlanOpen(true);
+    else if (kind === 'diary' && selected) router.push({ pathname: '/diary/write', params: { characterId: selected.character.id } });
+    else if (kind === 'diary') router.push('/diary/write');
+    else if (selected) router.push({ pathname: '/board/write', params: { characterId: selected.character.id } });
+  };
+
+  const submitPlan = (plan: NewPlan) => {
+    if (!selected) return;
+    if (wallet.shells < shellCosts.planSetup) {
+      setPlanOpen(false);
+      setPaywall(shellCosts.planSetup);
+      return;
+    }
+    if (addSchedule({ characterId: selected.character.id, ...plan })) spendShells(shellCosts.planSetup, 'setup', selected.character.id);
+    setPlanOpen(false);
+    setDay(plan.date);
+  };
+
+  const bell = (
+    <View>
+      <GlassButton
+        icon="notifications-outline"
+        accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
+        onPress={() => router.push('/notifications')}
+      />
+      {unread > 0 ? (
+        <View style={styles.badge} pointerEvents="none">
+          <InkText variant="caption" color={WHITE}>
+            {unread > 99 ? '99+' : unread}
+          </InkText>
+        </View>
+      ) : null}
+    </View>
+  );
+
+  const addButton = <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />;
 
   if (!selected) {
     return (
-      <Screen background={colors.bgPlain}>
-        <Txt variant="h1" style={styles.head}>
-          {t('us.title')}
-        </Txt>
+      <Screen background={ink.ground}>
+        <View style={styles.head}>
+          <InkText variant="display" style={styles.grow}>
+            {t('us.title')}
+          </InkText>
+          {bell}
+        </View>
         <EmptyState
           title={t('us.noRelationships')}
           hint={t('us.noRelationshipsHint')}
-          actionLabel={t('find.title')}
+          actionLabel={t('common.findSomeone')}
           onAction={() => router.push('/(tabs)/find')}
         />
       </Screen>
@@ -104,20 +198,100 @@ export default function UsScreen() {
   const { progress } = levelForIntimacy(relationship.intimacy);
   const conversation = conversations.find((c) => c.characterId === character.id);
   const days = daysBetween(relationship.anniversary) + 1;
-  const shownMoments = timeline.slice(0, visibleMoments);
+
+  const daySchedule = (
+    <View style={styles.scheduleWrap}>
+      {day !== today ? (
+        <InkText variant="caption" color={ink.text3} style={styles.pickedDayLabel}>
+          {dayTitle(day, i18n.language)}
+        </InkText>
+      ) : null}
+
+      {dayAlarms.map((alarm, i) => (
+        <PressableScale
+          key={alarm.id}
+          scaleTo={0.98}
+          dimOnPress={false}
+          accessibilityRole="button"
+          accessibilityLabel={`${clock(new Date(2000, 0, 1, alarm.hour, alarm.minute))}, ${alarm.label || t('alarms.defaultLabel')}`}
+          onPress={() => router.push({ pathname: '/alarms/edit', params: { id: alarm.id } })}
+          style={styles.planRow}>
+          <TimeTile time={clock(new Date(2000, 0, 1, alarm.hour, alarm.minute))} accent />
+          <View style={[styles.planBody, (i < dayAlarms.length - 1 || dayPlans.length > 0) && styles.line]}>
+            <InkText variant="sub" color={ink.text} lines={2} style={styles.grow}>
+              {alarm.label || t('alarms.defaultLabel')}
+            </InkText>
+            <Ionicons name="alarm-outline" size={17} color={ink.text3} />
+          </View>
+        </PressableScale>
+      ))}
+
+      {dayPlans.length === 0 && dayAlarms.length === 0 ? (
+        <View style={styles.free}>
+          <InkText variant="sub" style={styles.grow}>
+            {t('us.nothingPlanned')}
+          </InkText>
+          <PressableScale style={styles.planPill} scaleTo={0.94} accessibilityRole="button" onPress={() => setPlanOpen(true)}>
+            <Ionicons name="add" size={15} color={ink.accent} />
+            <InkText variant="footnoteStrong" color={ink.accent}>
+              {t('us.plan')}
+            </InkText>
+          </PressableScale>
+        </View>
+      ) : (
+        dayPlans.map((item, i) => {
+          const pending = !item.reminded && reminderAt(item).getTime() > Date.now();
+          return (
+            <View key={item.id} style={styles.planRow}>
+              <TimeTile time={item.time} />
+              <View style={[styles.planBody, i < dayPlans.length - 1 && styles.line]}>
+                <InkText variant="sub" color={ink.text} lines={2} style={styles.grow}>
+                  {item.title}
+                </InkText>
+                {pending ? (
+                  <View style={styles.remind}>
+                    <Ionicons name="notifications-outline" size={12} color={ink.text3} />
+                    <InkText variant="footnote" color={ink.text3} style={styles.tabular}>
+                      {clock(reminderAt(item))}
+                    </InkText>
+                  </View>
+                ) : item.followedUp ? (
+                  <Ionicons name="checkmark-circle" size={17} color={colors.success} />
+                ) : null}
+                <PressableScale
+                  hitSlop={hitSlop}
+                  scaleTo={0.85}
+                  accessibilityLabel={t('a11y.removePlan')}
+                  onPress={() => removeSchedule(item.id)}>
+                  <Ionicons name="close-circle" size={19} color={ink.text3} />
+                </PressableScale>
+              </View>
+            </View>
+          );
+        })
+      )}
+    </View>
+  );
 
   return (
-    <Screen background={colors.bgPlain}>
-      <Txt variant="h1" style={styles.head}>
-        {t('us.title')}
-      </Txt>
+    <Screen background={ink.ground}>
+      <View style={styles.head}>
+        <InkText variant="display" style={styles.grow}>
+          {t('us.title')}
+        </InkText>
+        {bell}
+        {addButton}
+      </View>
 
       <ScrollView
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + space.xxl }}>
+        contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
+        {/* 1. Quiet Friend Strip: active friend glows in their own accent, others recede calmly. */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>
           {bonds.map(({ character: c, relationship: r }) => {
             const active = c.id === character.id;
+            const accent = friendAccent(c.id);
             return (
               <PressableScale
                 key={c.id}
@@ -126,177 +300,205 @@ export default function UsScreen() {
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 onPress={() => setSelectedId(c.id)}>
-                <CharacterAvatar character={c} size={50} ring={active} ringColor={colors.text} />
-                <Txt
-                  variant="tiny"
-                  lines={1}
-                  color={active ? colors.text : colors.textMuted}
-                  style={active && styles.pickActive}>
-                  {displayName(c, r)}
-                </Txt>
+                <View
+                  style={[
+                    styles.storyRing,
+                    active
+                      ? { borderColor: accent.strong, backgroundColor: accent.soft }
+                      : styles.storyRingIdle,
+                  ]}>
+                  <CharacterAvatar character={c} size={STORY} />
+                </View>
+                <InkText variant="caption" color={active ? ink.text : ink.text3} lines={1}>
+                  {shortName(displayName(c, r))}
+                </InkText>
               </PressableScale>
             );
           })}
         </ScrollView>
 
-        <Card
-          variant="outlined"
-          style={styles.hero}
-          onPress={conversation ? () => router.push(`/chat/${conversation.id}`) : undefined}>
-          <View style={styles.together}>
-            <View style={styles.pair}>
-              <UserAvatar user={user} size={40} />
-              <CharacterAvatar character={character} size={40} ring ringColor={colors.surface} style={styles.overlap} />
-            </View>
-            <Txt variant="display">{days}</Txt>
-            <Txt variant="small" color={colors.textMuted}>
-              {t('us.daysLabel', { count: days })}
-            </Txt>
-          </View>
+        {/* 2. Living Bond Hero Card */}
+        <LivingBondHero
+          character={character}
+          relationship={relationship}
+          days={days}
+          progress={progress}
+          reward={reward}
+          canChat={Boolean(conversation)}
+          onOpenChat={() => conversation && router.push(`/chat/${conversation.id}`)}
+          onShare={() => setSharing(true)}
+        />
 
-          <View style={styles.levelRow}>
-            <Txt variant="smallStrong" style={styles.grow}>
-              {t('characterProfile.levelLine', { level: relationship.level, title: relationship.levelTitle })}
-            </Txt>
-            <Txt variant="caption" color={colors.textMuted}>
-              {t('characterProfile.progress', { current: relationship.intimacy, next: relationship.nextLevelAt })}
-            </Txt>
-          </View>
-          <View style={styles.track}>
-            <View style={[styles.fill, { width: `${Math.min(100, Math.round(progress * 100))}%` }]} />
-          </View>
-
-          <View style={styles.stats}>
-            <Stat value={String(relationship.intimacy)} label={t('us.statIntimacy')} />
-            <Stat value={String(relationship.streakDays)} label={t('us.statStreak')} divided />
-            <Stat
-              value={new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
-              label={t('us.statMet')}
-            />
-          </View>
-        </Card>
-
-        <SectionLabel title={t('us.upcoming')} />
-        {upcoming.length === 0 ? (
-          <ListRow
-            title={t('us.nothingPlanned')}
-            subtitle={t('us.upcomingHint')}
-            left={<IconTile icon="calendar-outline" size={ROW_ICON} />}
+        {/* 3. Unified Week / Month & Plans Card */}
+        <View onLayout={(e) => (calendarY.current = e.nativeEvent.layout.y)}>
+          <PlanCalendar
+            value={day}
+            onChange={setDay}
+            today={today}
+            marked={planDays}
+            talked={talkedDays}
+            talkColor={talkColor}
+            title={t('us.yourDays')}
+            footer={daySchedule}
           />
-        ) : (
-          upcoming.map((item, i) => (
-            <View key={item.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={item.title}
-                subtitle={item.date === today ? t('common.today') : relativeDay(item.date, t, i18n.language)}
-                left={<DateTile dateKey={item.date} locale={i18n.language} />}
-                right={
-                  <PressableScale
-                    hitSlop={hitSlop}
-                    scaleTo={0.85}
-                    accessibilityLabel={t('a11y.removePlan')}
-                    onPress={() => removeSchedule(item.id)}>
-                    <Ionicons name="close-circle-outline" size={20} color={colors.textFaint} />
-                  </PressableScale>
-                }
-              />
-            </View>
-          ))
-        )}
+        </View>
 
-        <SectionLabel title={t('us.moments')} />
-        {timeline.length === 0 ? (
-          <Txt variant="small" color={colors.textMuted} style={styles.hint}>
-            {t('us.noMoments')}
-          </Txt>
-        ) : (
-          shownMoments.map((moment, i) => (
-            <View key={moment.id}>
-              {i > 0 ? <Divider inset={ROW_INSET} /> : null}
-              <ListRow
-                title={t(`us.momentText.${moment.kind}`, moment.params ?? {})}
-                meta={relativeStamp(moment.createdAt)}
-                left={<IconTile icon={MOMENT_ICON[moment.kind]} size={ROW_ICON} />}
-              />
-            </View>
-          ))
-        )}
-        {timeline.length > visibleMoments ? (
+        {/* 4. Editorial Our Moments */}
+        <OurMoments character={character} relationship={relationship} today={today} onOpenDay={openDay} />
+
+        {/* 5. Quiet Month Circle */}
+        <TalkedWith selectedId={character.id} onSelectFriend={selectFromCircle} />
+
+        {/* 6. Quiet More Row */}
+        <View style={[styles.card, styles.moreCard]}>
           <PressableScale
-            style={styles.showMore}
-            scaleTo={1}
-            onPress={() => setMomentLimit({ id: selected.character.id, count: visibleMoments + MOMENT_PAGE })}>
-            <Txt variant="smallStrong" color={colors.textSecondary}>
-              {t('us.showMore', { count: Math.min(MOMENT_PAGE, timeline.length - visibleMoments) })}
-            </Txt>
+            scaleTo={0.98}
+            dimOnPress={false}
+            accessibilityRole="button"
+            accessibilityLabel={t('more.title')}
+            onPress={() => setMoreOpen(true)}
+            style={styles.moreRow}>
+            <View style={styles.moreTile}>
+              <Ionicons name="ellipsis-horizontal" size={19} color={ink.text} />
+            </View>
+            <InkText style={styles.grow}>{t('more.title')}</InkText>
+            <Ionicons name="chevron-forward" size={16} color={ink.text3} />
           </PressableScale>
-        ) : null}
+        </View>
       </ScrollView>
+
+      <PublishSheet
+        visible={publishOpen}
+        onClose={() => setPublishOpen(false)}
+        onPick={pickPublish}
+        name={shortName(displayName(character, relationship))}
+      />
+      <PlanSheet
+        visible={planOpen}
+        onClose={() => setPlanOpen(false)}
+        day={day}
+        character={character}
+        onSubmit={submitPlan}
+        cost={shellCosts.planSetup}
+      />
+      <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
+      <MoreSheet
+        visible={moreOpen}
+        onClose={() => setMoreOpen(false)}
+        // From a friend's page the quiz and a scene are with that friend; truth or dare and a time skip play inside the chat.
+        hide={friendChatId ? ['truthOrDare', 'timeSkip', 'twist'] : ['truthOrDare', 'timeSkip', 'twist', 'scene']}
+        onChatPick={(key) => {
+          if (key === 'quiz') router.push({ pathname: '/quiz/[characterId]', params: { characterId: character.id } });
+          else if (key === 'scene' && friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });
+        }}
+      />
+      <BondShareSheet
+        visible={sharing}
+        onClose={() => setSharing(false)}
+        character={character}
+        relationship={relationship}
+        days={days}
+      />
     </Screen>
   );
 }
 
-function relativeDay(key: string, t: (k: string) => string, locale: string) {
-  const days = Math.round((dateFromKey(key).getTime() - dateFromKey(todayKey()).getTime()) / 86_400_000);
-  if (days === 1) return t('common.tomorrow');
-  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'long' });
+const clock = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+function dayTitle(key: string, locale: string) {
+  return dateFromKey(key).toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-/** A plan's date as a small calendar leaf, the same size as an IconTile. */
-function DateTile({ dateKey, locale }: { dateKey: string; locale: string }) {
-  const date = dateFromKey(dateKey);
+/** A plan's time in bold beside the title; the iOS Calendar glyph when it has none. */
+function TimeTile({ time, accent }: { time?: string; accent?: boolean }) {
+  if (!time) {
+    return (
+      <View style={[styles.planIcon, { backgroundColor: systemColors.red }]}>
+        <SFIcon ios="calendar" icon="calendar" size={15} color={colors.white} />
+      </View>
+    );
+  }
   return (
-    <View style={styles.dateTile}>
-      <Txt variant="tiny" color={colors.textMuted}>
-        {date.toLocaleDateString(locale, { month: 'short' })}
-      </Txt>
-      <Txt variant="title">{date.getDate()}</Txt>
-    </View>
-  );
-}
-
-function Stat({ value, label, divided }: { value: string; label: string; divided?: boolean }) {
-  return (
-    <View style={[styles.stat, divided && styles.statDivided]}>
-      <Txt variant="bodyStrong">{value}</Txt>
-      <Txt variant="caption" color={colors.textMuted}>
-        {label}
-      </Txt>
+    <View style={styles.timeTile}>
+      <InkText variant="subStrong" color={accent ? ink.accent : ink.text} style={styles.tabular}>
+        {time}
+      </InkText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  grow: { flex: 1 },
-  head: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  picker: { gap: space.lg, paddingHorizontal: space.lg, paddingVertical: space.xs },
-  pick: { alignItems: 'center', gap: space.xs, width: 56 },
-  pickActive: { fontWeight: '600' },
-  hero: { marginHorizontal: space.lg, marginTop: space.md },
-  together: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  pair: { flexDirection: 'row', marginRight: space.xs },
-  overlap: { marginLeft: -space.md },
-  levelRow: { flexDirection: 'row', alignItems: 'center', marginTop: space.lg },
-  track: {
-    height: 4,
-    borderRadius: radius.pill,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
-    marginTop: space.md,
+  grow: { flex: 1, minWidth: 0 },
+  tabular: { fontVariant: ['tabular-nums'] },
+  head: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    paddingTop: space.sm,
+    paddingBottom: space.xs,
   },
-  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.bond },
-  stats: { flexDirection: 'row', marginTop: space.lg },
-  stat: { flex: 1, alignItems: 'center', gap: 2 },
-  statDivided: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
-  dateTile: {
-    width: ROW_ICON,
-    height: ROW_ICON,
-    borderRadius: radius.sm + 2,
-    backgroundColor: colors.surfaceAlt,
+  // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -5,
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 5,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: ink.danger,
+    borderWidth: 2,
+    borderColor: ink.ground,
   },
-  hint: { paddingHorizontal: space.lg, paddingTop: space.xs },
-  showMore: { alignSelf: 'center', minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg },
+  picker: { gap: 12, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xs },
+  pick: { alignItems: 'center', gap: 5, width: STORY + (STORY_RING + STORY_GAP) * 2 + 4 },
+  storyRing: {
+    padding: STORY_GAP,
+    borderWidth: STORY_RING,
+    borderRadius: inkRadius.pill,
+  },
+  storyRingIdle: {
+    borderColor: ink.edge,
+    opacity: 0.65,
+  },
+  scheduleWrap: { paddingVertical: 4 },
+  pickedDayLabel: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 2,
+    textTransform: 'capitalize',
+  },
+  line: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },
+  free: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingLeft: 16, paddingRight: 12 },
+  // Planning costs shells, so the pill uses the calm night peach.
+  planPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    minHeight: 32,
+    paddingLeft: 10,
+    paddingRight: 12,
+    borderRadius: inkRadius.pill,
+    backgroundColor: colors.primarySoft,
+  },
+  planRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 16 },
+  planBody: { flex: 1, minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 10, paddingRight: 14, paddingVertical: 8 },
+  planIcon: { width: 28, height: 28, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  timeTile: { minWidth: 46, justifyContent: 'center' },
+  remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  card: {
+    marginHorizontal: 14,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+    overflow: 'hidden',
+  },
+  moreCard: { marginTop: 16 },
+  moreRow: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, minHeight: 56 },
+  moreTile: { width: 32, height: 32, borderRadius: 8, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
 });
