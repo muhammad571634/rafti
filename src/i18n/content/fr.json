@@ -4751,15 +4751,15 @@
   "groupStories": {
     "g_dorm214": {
       "name": "Chambre 214",
-      "hook": "Ta nouvelle chambre en résidence, déjà occupée par trois filles",
+      "hook": "Ta nouvelle chambre en résidence, avec déjà trois filles dedans",
       "knot": "Elles ont parié sur celle dont tu vas tomber amoureux.",
-      "userRole": "Toi : le nouveau colocataire",
+      "userRole": "Toi : la nouvelle recrue de la coloc",
       "members": {
         "mia": {
-          "who": "A écrit le règlement de la chambre. Le brise pour toi."
+          "who": "A écrit les règles de la chambre. Les enfreint pour toi."
         },
         "zara": {
-          "who": "Dit qu'elle n'est pas dans le pari. Vraiment ?"
+          "who": "Dit qu’elle ne participe pas au pari. Vraiment ?"
         },
         "lina": {
           "who": "A lancé le pari. Compte bien le gagner."
@@ -4767,20 +4767,20 @@
       },
       "beats": [
         {
-          "title": "La nuit de l'emménagement",
-          "setting": "Vendredi soir, chambre 214. Tu entres avec un carton. Trois filles se taisent en pleine dispute."
+          "title": "Soir d’emménagement",
+          "setting": "Vendredi soir, chambre 214. Tu entres avec un carton. Trois filles s’arrêtent de se disputer net."
         },
         {
           "title": "Une seule salle de bain",
-          "setting": "7 h 40. Une salle de bain, quatre personnes, un cours à huit heures."
+          "setting": "7 h 40. Une salle de bain, quatre personnes, cours à huit heures."
         },
         {
-          "title": "Soirée à l'étage",
-          "setting": "Samedi, une soirée au quatrième. Musique forte, un couloir plein de monde."
+          "title": "Soirée à l’étage",
+          "setting": "Samedi, fête au quatrième. Musique à fond, couloir bondé."
         },
         {
           "title": "Le tableau blanc",
-          "setting": "Dimanche matin. Sur le tableau près de la porte, de l'écriture de Mia : SCORE."
+          "setting": "Dimanche matin. Sur le tableau près de la porte, c’est écrit SCORE de l’écriture de Mia."
         },
         {
           "title": "La 214 vote",
@@ -4789,64 +4789,64 @@
       ]
     },
     "g_cafe": {
-      "name": "Le café des trois frères",
+      "name": "Café des Trois Frères",
       "hook": "Ton premier job, dans un café tenu par trois frères",
-      "knot": "La règle de mamie : celui que tu préfères aura le café. Règle deux : on ne sort pas avec la nouvelle recrue.",
+      "knot": "Règle de mamie : celui que tu notes le mieux garde le café. Règle deux : interdit de sortir avec la nouvelle recrue.",
       "userRole": "Toi : la nouvelle recrue",
       "members": {
         "rio": {
-          "who": "Prend le café au sérieux. Toi, encore plus."
+          "who": "Prend le café très au sérieux. Te prend encore plus au sérieux."
         },
         "eli": {
-          "who": "Charme chaque client. Tente sa chance avec toi."
+          "who": "Charme chaque client. Essaie son numéro sur toi."
         },
         "max": {
-          "who": "Casse une tasse par jour. Veut quand même t'impressionner."
+          "who": "Casse une tasse par jour. Veut quand même t’impressionner."
         }
       },
       "beats": [
         {
           "title": "Premier service",
-          "setting": "6 h. Le café n'est pas encore ouvert. Mamie t'a laissé avec trois frères et un mot."
+          "setting": "6 h du matin. Le café n’est pas encore ouvert. Mamie t’a laissé avec trois frères et un mot."
         },
         {
-          "title": "Le coup de feu",
-          "setting": "8 h 15. Une file jusque dans la rue, et la machine à espresso fume."
+          "title": "Le rush",
+          "setting": "8 h 15. La queue jusque dehors, et la machine à expresso qui fume."
         },
         {
-          "title": "La fermeture",
-          "setting": "Tard le soir. Les chaises sur les tables. Un des frères est resté."
+          "title": "Fermeture",
+          "setting": "Fin de soirée. Chaises sur les tables. Un frère est resté."
         },
         {
           "title": "Mamie arrive",
-          "setting": "Vendredi, 9 h. Mamie arrive dans une heure."
+          "setting": "Vendredi, 9 h. Mamie débarque dans une heure."
         },
         {
           "title": "Le verdict",
-          "setting": "Mamie est assise à la table du coin. Tout le monde te regarde."
+          "setting": "Mamie s’assoit à la table du coin. Tout le monde te fixe."
         }
       ]
     },
     "g_ring": {
       "name": "Opération Bague",
-      "hook": "On t'a ajouté au mauvais groupe",
-      "knot": "Trois inconnus préparent une demande en mariage pour samedi. Maintenant, tu es dans le coup.",
-      "userRole": "Toi : l'inconnu ajouté par erreur",
+      "hook": "On t’a ajouté dans le mauvais groupe",
+      "knot": "Trois inconnus préparent une demande en mariage pour samedi. Maintenant tu es dans le coup.",
+      "userRole": "Toi : l’inconnu ajouté par erreur",
       "members": {
         "oscar": {
-          "who": "Fait sa demande samedi. Panique depuis lundi."
+          "who": "Fait sa demande samedi. En panique depuis lundi."
         },
         "bea": {
-          "who": "Dirige le plan. Ne te fait pas encore confiance."
+          "who": "Gère le plan. Ne te fait pas encore confiance."
         },
         "remy": {
-          "who": "Trouve que tu es ce qu'il y a de mieux dans ce groupe."
+          "who": "Pense que tu es la meilleure chose de ce chat."
         }
       },
       "beats": [
         {
           "title": "Mauvais numéro",
-          "setting": "Mardi, 23 h 47. On vient de t'ajouter à un groupe nommé OPÉRATION BAGUE."
+          "setting": "Mardi, 23 h 47. On vient de t’ajouter à un groupe nommé OPÉRATION BAGUE."
         },
         {
           "title": "Le plan",
@@ -4854,15 +4854,15 @@
         },
         {
           "title": "Où est la bague",
-          "setting": "Jeudi soir. Oscar ne trouve plus la bague."
+          "setting": "Jeudi soir. Oscar ne retrouve plus la bague."
         },
         {
-          "title": "Il faut qu'on parle",
-          "setting": "Vendredi. Nina vient d'écrire à Oscar : « Il faut qu'on parle. »"
+          "title": "Il faut qu’on parle",
+          "setting": "Vendredi. Nina vient d’envoyer à Oscar : « Il faut qu’on parle. »"
         },
         {
           "title": "Samedi",
-          "setting": "Samedi, coucher de soleil, la jetée. Tout le monde se cache derrière un bateau."
+          "setting": "Samedi, coucher de soleil, sur la jetée. Tout le monde est caché derrière un bateau."
         }
       ]
     },
