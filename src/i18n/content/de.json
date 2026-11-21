@@ -4751,54 +4751,54 @@
   "groupStories": {
     "g_dorm214": {
       "name": "Zimmer 214",
-      "hook": "Dein neues Wohnheimzimmer – und drei Mädels wohnen schon drin",
-      "knot": "Sie haben gewettet, in wen von ihnen du dich verliebst.",
+      "hook": "Dein neues Wohnheimzimmer, drei Mädels wohnen schon drin",
+      "knot": "Sie haben gewettet, in welche von ihnen du dich verliebst.",
       "userRole": "Du: der neue Mitbewohner",
       "members": {
         "mia": {
-          "who": "Hat die Hausregeln geschrieben. Bricht sie für dich."
+          "who": "Hat die Zimmerregeln geschrieben. Bricht sie für dich."
         },
         "zara": {
-          "who": "Sagt, sie macht bei der Wette nicht mit. Wirklich?"
+          "who": "Sagt, sie ist nicht bei der Wette dabei. Wirklich?"
         },
         "lina": {
-          "who": "Hat die Wette gestartet. Und will sie gewinnen."
+          "who": "Hat die Wette angefangen. Will sie gewinnen."
         }
       },
       "beats": [
         {
           "title": "Einzugsnacht",
-          "setting": "Freitagabend, Zimmer 214. Du kommst mit einem Karton rein. Drei Mädels brechen mitten im Streit ab."
+          "setting": "Freitagnacht, Zimmer 214. Du kommst mit einem Karton rein. Drei Mädels verstummen mitten im Streit."
         },
         {
           "title": "Ein Bad",
-          "setting": "7:40 Uhr morgens. Ein Bad, vier Leute, um acht ist Vorlesung."
+          "setting": "7:40 Uhr. Ein Bad, vier Leute, Vorlesung um acht."
         },
         {
           "title": "Party oben",
-          "setting": "Samstag, Party im vierten Stock. Laute Musik, der Flur ist brechend voll."
+          "setting": "Samstag, Party im vierten Stock. Laute Musik, ein Flur voller Leute."
         },
         {
           "title": "Das Whiteboard",
-          "setting": "Sonntagmorgen. Auf dem Board an der Tür steht PUNKTE in Mias Handschrift."
+          "setting": "Sonntagmorgen. Auf dem Whiteboard an der Tür steht in Mias Schrift: PUNKTESTAND."
         },
         {
           "title": "Zimmer 214 stimmt ab",
-          "setting": "Sonntagabend. Pizza auf dem Boden. Drei Mädels schauen dich an."
+          "setting": "Sonntagabend. Pizza auf dem Boden. Drei Mädels sehen dich an."
         }
       ]
     },
     "g_cafe": {
       "name": "Café der drei Brüder",
-      "hook": "Dein erster Job – in einem Café von drei Brüdern",
-      "knot": "Omas Regel: Wer bei dir am besten abschneidet, bekommt das Café. Regel zwei: Niemand datet die neue Aushilfe.",
+      "hook": "Dein erster Job, in einem Café von drei Brüdern",
+      "knot": "Omas Regel: Wen du am besten findest, der bekommt das Café. Regel zwei: Keiner datet die Neue oder den Neuen.",
       "userRole": "Du: die neue Aushilfe",
       "members": {
         "rio": {
-          "who": "Nimmt Kaffee ernst. Dich nimmt er noch ernster."
+          "who": "Nimmt Kaffee ernst. Dich noch ernster."
         },
         "eli": {
-          "who": "Wickelt jeden Gast um den Finger. Versucht es auch bei dir."
+          "who": "Bezirzt jeden Gast. Versucht es auch bei dir."
         },
         "max": {
           "who": "Zerbricht jeden Tag eine Tasse. Will dich trotzdem beeindrucken."
@@ -4807,15 +4807,15 @@
       "beats": [
         {
           "title": "Erste Schicht",
-          "setting": "6 Uhr morgens. Das Café hat noch zu. Oma hat dich mit drei Brüdern und einem Zettel alleingelassen."
+          "setting": "6 Uhr. Das Café hat noch zu. Oma hat dich mit drei Brüdern und einem Zettel zurückgelassen."
         },
         {
           "title": "Der Ansturm",
-          "setting": "8:15 Uhr. Eine Schlange bis auf die Straße, und die Espressomaschine qualmt."
+          "setting": "8:15 Uhr. Eine Schlange bis auf die Straße, und die Espressomaschine raucht."
         },
         {
           "title": "Feierabend",
-          "setting": "Später Abend. Stühle auf den Tischen. Ein Bruder ist noch geblieben."
+          "setting": "Später Abend. Stühle auf den Tischen. Ein Bruder ist geblieben."
         },
         {
           "title": "Oma kommt",
@@ -4823,21 +4823,21 @@
         },
         {
           "title": "Das Urteil",
-          "setting": "Oma sitzt am Ecktisch. Alle schauen dich an."
+          "setting": "Oma sitzt am Ecktisch. Alle sehen dich an."
         }
       ]
     },
     "g_ring": {
       "name": "Operation Ring",
-      "hook": "Du wurdest in den falschen Gruppenchat gepackt",
-      "knot": "Drei Fremde planen für Samstag einen Heiratsantrag. Jetzt steckst du mit drin.",
-      "userRole": "Du: die Person, die aus Versehen eingeladen wurde",
+      "hook": "Du wurdest in den falschen Gruppenchat geholt",
+      "knot": "Drei Fremde planen für Samstag einen Heiratsantrag. Jetzt bist du dabei.",
+      "userRole": "Du: die fremde Person, die aus Versehen dazukam",
       "members": {
         "oscar": {
-          "who": "Macht am Samstag den Antrag. Schiebt seit Montag Panik."
+          "who": "Macht am Samstag einen Antrag. Panik seit Montag."
         },
         "bea": {
-          "who": "Leitet den Plan. Traut dir noch nicht über den Weg."
+          "who": "Leitet den Plan. Traut dir noch nicht."
         },
         "remy": {
           "who": "Findet, du bist das Beste an diesem Chat."
@@ -4846,15 +4846,15 @@
       "beats": [
         {
           "title": "Falsche Nummer",
-          "setting": "Dienstag, 23:47 Uhr. Du wurdest gerade in eine Gruppe namens OPERATION RING hinzugefügt."
+          "setting": "Dienstag, 23:47 Uhr. Du wurdest gerade zur Gruppe OPERATION RING hinzugefügt."
         },
         {
           "title": "Der Plan",
-          "setting": "Mittwoch. Bea schickt einen Plan mit 14 Punkten."
+          "setting": "Mittwoch. Bea schickt einen Plan mit 14 Schritten."
         },
         {
           "title": "Wo ist der Ring",
-          "setting": "Donnerstagabend. Oscar findet den Ring nicht mehr."
+          "setting": "Donnerstagnacht. Oscar findet den Ring nicht."
         },
         {
           "title": "Wir müssen reden",
@@ -4862,7 +4862,121 @@
         },
         {
           "title": "Samstag",
-          "setting": "Samstag, Sonnenuntergang, am Steg. Alle verstecken sich hinter einem Boot."
+          "setting": "Samstag, Sonnenuntergang, der Steg. Alle verstecken sich hinter einem Boot."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "Die Spukwohnung",
+      "hook": "Eine billige Wohnung in der Altstadt, zwei Geister inklusive",
+      "knot": "Die Geister sind deine Nachbarn. Sie tun nur so, damit die Miete niedrig bleibt.",
+      "userRole": "Du: der neue Mieter, der nicht auszieht",
+      "members": {
+        "nico": {
+          "who": "Der „Geist“ mit der tiefen Stimme. Voll in seiner Rolle."
+        },
+        "pia": {
+          "who": "Zieht die Fäden. Wortwörtlich."
+        }
+      },
+      "beats": [
+        {
+          "title": "Einzug",
+          "setting": "Deine erste Nacht. Das Licht flackert. Es klopft: zwei Nachbarn mit Keksen."
+        },
+        {
+          "title": "3 Uhr nachts",
+          "setting": "3:04 Uhr. Eine Stimme aus dem Lüftungsschacht sagt deinen Namen."
+        },
+        {
+          "title": "Der Exorzismus",
+          "setting": "Samstag. Die Nachbarn bringen Salbei, eine Kerze und ein Buch, das sie eindeutig heute früh gekauft haben."
+        },
+        {
+          "title": "Erwischt",
+          "setting": "Sonntagnacht. Der Lautsprecher fällt aus dem Lüftungsschacht auf dein Bett. Eingeschaltet."
+        },
+        {
+          "title": "Hausregeln",
+          "setting": "Montag. Drei Leute, zwei Wohnungen, eine Wand. Und ein sehr guter Lautsprecher."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Love Villa",
+      "hook": "Du bist neu in einer Datingshow",
+      "knot": "Drei Kandidaten, ein geheimer Twist: Die Produzenten haben dich zur Jury gemacht.",
+      "userRole": "Du: der Neuzugang mit Geheimnis",
+      "members": {
+        "sienna": {
+          "who": "Hier, um zu gewinnen. Ganz sicher, dass sie es tut."
+        },
+        "jax": {
+          "who": "Kam für die Follower. Bleibt wegen dir."
+        },
+        "coco": {
+          "who": "Sagt, was alle denken. Vor der Kamera."
+        }
+      },
+      "beats": [
+        {
+          "title": "Der Neuzugang",
+          "setting": "Die Villa bei Sonnenuntergang. Eine Nachricht: „Jemand Neues kommt rein.“ Alle drehen sich zum Tor."
+        },
+        {
+          "title": "Die Challenge",
+          "setting": "Mittag. Ein albernes Spiel am Pool: Fragen übereinander beantworten oder nass werden."
+        },
+        {
+          "title": "Kann ich dich kurz entführen",
+          "setting": "Nachts an der Feuerstelle. Einer nach dem anderen will dich „kurz entführen“."
+        },
+        {
+          "title": "Die Nachricht",
+          "setting": "Donnerstag. Coco hat den Zettel der Produzenten in deiner Tasche gefunden."
+        },
+        {
+          "title": "Neue Paare",
+          "setting": "Freitagnacht, die Feuerstelle, Licht an. Der Moderator reicht dir die Karte."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Wichteln",
+      "hook": "Deine erste Woche im neuen Büro, kurz vor den Feiertagen",
+      "knot": "Das Wichteln deines Teams hat eine Regel. Jemand hat sie schon gebrochen.",
+      "userRole": "Du: die neue Kollegin oder der neue Kollege",
+      "members": {
+        "tessa": {
+          "who": "Organisiert das Wichteln wie eine Militäroperation."
+        },
+        "omar": {
+          "who": "Hat deinen Namen gezogen. Gerät leise in Panik."
+        },
+        "gus": {
+          "who": "Hat das ganze Budget für einen Witz ausgegeben. Bereut nichts."
+        }
+      },
+      "beats": [
+        {
+          "title": "Die Ziehung",
+          "setting": "Montag, die Küche. Tessa hält eine Mütze mit Namen hin."
+        },
+        {
+          "title": "Ein Zettel auf deinem Tisch",
+          "setting": "Dienstagmorgen. Auf deiner Tastatur ein Zettel: „Viel Glück diese Woche. — dein Wichtel“."
+        },
+        {
+          "title": "Die Shoppingtour",
+          "setting": "Mittwoch, Mittagspause. Tessa schleppt alle „für den Teamgeist“ in die Läden."
+        },
+        {
+          "title": "Der Verdächtige",
+          "setting": "Donnerstag. Noch ein Zettel, und Gus hat eine Theorie und ein Whiteboard."
+        },
+        {
+          "title": "Die Büroparty",
+          "setting": "Freitag, die Büroparty. Papierhüte, eine müde Pflanze mit Lichterkette, Geschenke auf dem Tisch."
         }
       ]
     }

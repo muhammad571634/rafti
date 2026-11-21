@@ -4752,117 +4752,231 @@
     "g_dorm214": {
       "name": "Kamar 214",
       "hook": "Kamar asrama barumu, sudah ada tiga cewek di dalamnya",
-      "knot": "Mereka taruhan siapa di antara mereka yang bakal bikin kamu jatuh hati.",
+      "knot": "Mereka taruhan siapa di antara mereka yang bakal bikin kamu jatuh cinta.",
       "userRole": "Kamu: teman sekamar baru",
       "members": {
         "mia": {
-          "who": "Yang bikin aturan kamar. Yang melanggarnya demi kamu."
+          "who": "Menulis aturan kamar. Melanggarnya demi kamu."
         },
         "zara": {
-          "who": "Bilang dia nggak ikut taruhan. Masa sih?"
+          "who": "Katanya nggak ikut taruhan. Yakin?"
         },
         "lina": {
-          "who": "Yang mulai taruhan. Niat banget buat menang."
+          "who": "Yang memulai taruhan. Berniat menang."
         }
       },
       "beats": [
         {
           "title": "Malam pindahan",
-          "setting": "Jumat malam, kamar 214. Kamu masuk bawa kardus. Tiga cewek langsung berhenti debat di tengah kalimat."
+          "setting": "Jumat malam, kamar 214. Kamu masuk membawa kardus. Tiga cewek berhenti bertengkar di tengah kalimat."
         },
         {
           "title": "Satu kamar mandi",
-          "setting": "Jam 7:40 pagi. Satu kamar mandi, empat orang, kelas jam delapan."
+          "setting": "07.40 pagi. Satu kamar mandi, empat orang, kuliah jam delapan."
         },
         {
-          "title": "Pesta di atas",
-          "setting": "Sabtu, pesta di lantai empat. Musik kencang, lorong penuh orang."
+          "title": "Pesta di lantai atas",
+          "setting": "Sabtu, pesta di lantai empat. Musik keras, lorong penuh orang."
         },
         {
           "title": "Papan tulis",
-          "setting": "Minggu pagi. Di papan dekat pintu tertulis SKOR pakai tulisan tangan Mia."
+          "setting": "Minggu pagi. Di papan tulis dekat pintu tertulis SKOR dengan tulisan tangan Mia."
         },
         {
-          "title": "Kamar 214 memilih",
+          "title": "214 memutuskan",
           "setting": "Minggu malam. Pizza di lantai. Tiga cewek menatapmu."
         }
       ]
     },
     "g_cafe": {
       "name": "Kafe Tiga Bersaudara",
-      "hook": "Kerjaan pertamamu, di kafe milik tiga bersaudara",
-      "knot": "Aturan Nenek: siapa yang kamu nilai paling baik bakal dapat kafe ini. Aturan kedua: dilarang pacaran sama anak baru.",
-      "userRole": "Kamu: anak baru",
+      "hook": "Pekerjaan pertamamu, di kafe milik tiga bersaudara",
+      "knot": "Aturan Nenek: yang kamu pilih sebagai yang terbaik dapat kafenya. Aturan kedua: tidak boleh pacaran dengan karyawan baru.",
+      "userRole": "Kamu: karyawan baru",
       "members": {
         "rio": {
-          "who": "Serius banget soal kopi. Lebih serius lagi soal kamu."
+          "who": "Serius soal kopi. Lebih serius soal kamu."
         },
         "eli": {
-          "who": "Bikin semua pelanggan klepek-klepek. Nyoba jurusnya ke kamu juga."
+          "who": "Memikat setiap pelanggan. Mencobanya juga padamu."
         },
         "max": {
-          "who": "Mecahin satu cangkir tiap hari. Tetap pengen bikin kamu terkesan."
+          "who": "Memecahkan satu cangkir tiap hari. Tetap ingin membuatmu terkesan."
         }
       },
       "beats": [
         {
-          "title": "Shift pertama",
-          "setting": "Jam 6 pagi. Kafe belum buka. Nenek ninggalin kamu bareng tiga bersaudara dan sepucuk catatan."
+          "title": "Sif pertama",
+          "setting": "Jam 6 pagi. Kafe belum buka. Nenek meninggalkanmu dengan tiga bersaudara dan sebuah catatan."
         },
         {
           "title": "Jam sibuk",
-          "setting": "Jam 8:15 pagi. Antrean sampai luar pintu, dan mesin espreso mulai berasap."
+          "setting": "08.15. Antrean sampai ke jalan, dan mesin espresso berasap."
         },
         {
-          "title": "Jam tutup",
-          "setting": "Larut malam. Kursi sudah naik ke meja. Satu saudara masih tinggal."
+          "title": "Waktu tutup",
+          "setting": "Larut malam. Kursi di atas meja. Salah satu saudara masih tinggal."
         },
         {
           "title": "Nenek datang",
           "setting": "Jumat, jam 9 pagi. Nenek tiba sejam lagi."
         },
         {
-          "title": "Putusan akhir",
-          "setting": "Nenek duduk di meja pojok. Semua orang menatapmu."
+          "title": "Keputusan",
+          "setting": "Nenek duduk di meja pojok. Semua menatapmu."
         }
       ]
     },
     "g_ring": {
       "name": "Operasi Cincin",
       "hook": "Kamu dimasukkan ke grup chat yang salah",
-      "knot": "Tiga orang asing lagi nyiapin lamaran buat hari Sabtu. Sekarang kamu ikut terlibat.",
-      "userRole": "Kamu: orang asing yang salah diundang",
+      "knot": "Tiga orang asing merencanakan lamaran untuk hari Sabtu. Sekarang kamu ikut terlibat.",
+      "userRole": "Kamu: orang asing yang dimasukkan karena salah",
       "members": {
         "oscar": {
-          "who": "Mau melamar hari Sabtu. Panik dari hari Senin."
+          "who": "Melamar hari Sabtu. Panik sejak Senin."
         },
         "bea": {
-          "who": "Yang ngatur rencana. Belum percaya sama kamu."
+          "who": "Memimpin rencana. Belum percaya padamu."
         },
         "remy": {
-          "who": "Ngerasa kamu hal terbaik di grup chat ini."
+          "who": "Menganggapmu hal terbaik di chat ini."
         }
       },
       "beats": [
         {
-          "title": "Salah sambung",
-          "setting": "Selasa, 23:47 malam. Kamu baru saja dimasukkan ke grup bernama OPERASI CINCIN."
+          "title": "Salah nomor",
+          "setting": "Selasa, 23.47. Kamu baru saja dimasukkan ke grup bernama OPERASI CINCIN."
         },
         {
           "title": "Rencananya",
-          "setting": "Rabu. Bea ngirim rencana dengan 14 langkah."
+          "setting": "Rabu. Bea mengirim rencana 14 langkah."
         },
         {
-          "title": "Mana cincinnya",
-          "setting": "Kamis malam. Oscar nggak nemu cincinnya."
+          "title": "Cincinnya di mana",
+          "setting": "Kamis malam. Oscar tidak bisa menemukan cincinnya."
         },
         {
           "title": "Kita perlu bicara",
-          "setting": "Jumat. Nina baru aja nge-chat Oscar: \"Kita perlu bicara.\""
+          "setting": "Jumat. Nina baru saja mengirim pesan ke Oscar: \"Kita perlu bicara.\""
         },
         {
           "title": "Sabtu",
-          "setting": "Sabtu, matahari terbenam, di dermaga. Semua sembunyi di balik perahu."
+          "setting": "Sabtu, matahari terbenam, dermaga. Semua bersembunyi di balik perahu."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "Apartemen Berhantu",
+      "hook": "Apartemen murah di kota tua, bonus dua hantu",
+      "knot": "Hantunya adalah tetanggamu yang pura-pura, supaya sewa tetap murah.",
+      "userRole": "Kamu: penyewa baru yang menolak pergi",
+      "members": {
+        "nico": {
+          "who": "\"Hantu\" bersuara berat. Sangat menjiwai."
+        },
+        "pia": {
+          "who": "Yang menarik talinya. Secara harfiah."
+        }
+      },
+      "beats": [
+        {
+          "title": "Pindahan",
+          "setting": "Malam pertamamu. Lampu berkedip. Ada yang mengetuk: dua tetangga membawa kue kering."
+        },
+        {
+          "title": "Jam 3 pagi",
+          "setting": "03.04. Suara dari ventilasi menyebut namamu."
+        },
+        {
+          "title": "Pengusiran setan",
+          "setting": "Sabtu. Para tetangga membawa sage, lilin, dan buku yang jelas baru dibeli tadi pagi."
+        },
+        {
+          "title": "Ketahuan",
+          "setting": "Minggu malam. Speaker jatuh dari ventilasi ke kasurmu. Masih menyala."
+        },
+        {
+          "title": "Aturan rumah",
+          "setting": "Senin. Tiga orang, dua apartemen, satu dinding. Dan satu speaker yang sangat bagus."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Vila Cinta",
+      "hook": "Kamu peserta baru di acara kencan reality",
+      "knot": "Tiga peserta, satu kejutan rahasia: produser menjadikanmu juri.",
+      "userRole": "Kamu: pendatang baru yang punya rahasia",
+      "members": {
+        "sienna": {
+          "who": "Datang untuk menang. Yakin akan menang."
+        },
+        "jax": {
+          "who": "Datang demi followers. Bertahan demi kamu."
+        },
+        "coco": {
+          "who": "Mengatakan yang dipikirkan semua orang. Di depan kamera."
+        }
+      },
+      "beats": [
+        {
+          "title": "Pendatang baru",
+          "setting": "Vila saat matahari terbenam. Sebuah notifikasi: \"Ada yang baru akan masuk.\" Semua menoleh ke gerbang."
+        },
+        {
+          "title": "Tantangan",
+          "setting": "Siang hari. Permainan konyol di tepi kolam: jawab pertanyaan tentang satu sama lain atau kena siram."
+        },
+        {
+          "title": "Boleh pinjam kamu sebentar?",
+          "setting": "Malam, di api unggun. Satu per satu mereka minta \"pinjam kamu sebentar\"."
+        },
+        {
+          "title": "Catatan itu",
+          "setting": "Kamis. Coco menemukan catatan produser di tasmu."
+        },
+        {
+          "title": "Pasangan baru",
+          "setting": "Jumat malam, api unggun, lampu menyala. Pembawa acara menyerahkan kartu padamu."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Secret Santa",
+      "hook": "Minggu pertamamu di kantor baru, tepat sebelum liburan",
+      "knot": "Secret Santa timmu punya satu aturan. Seseorang sudah melanggarnya.",
+      "userRole": "Kamu: rekan kerja baru",
+      "members": {
+        "tessa": {
+          "who": "Mengatur Secret Santa seperti operasi militer."
+        },
+        "omar": {
+          "who": "Mendapat namamu. Panik diam-diam."
+        },
+        "gus": {
+          "who": "Menghabiskan seluruh anggaran untuk lelucon. Tidak menyesal."
+        }
+      },
+      "beats": [
+        {
+          "title": "Undian",
+          "setting": "Senin, pantry. Tessa menyodorkan topi berisi nama-nama."
+        },
+        {
+          "title": "Catatan di mejamu",
+          "setting": "Selasa pagi. Ada catatan di keyboardmu: \"Semoga sukses minggu ini. — Santamu\"."
+        },
+        {
+          "title": "Belanja",
+          "setting": "Rabu, jam makan siang. Tessa menyeret semua orang ke toko \"demi semangat tim\"."
+        },
+        {
+          "title": "Tersangka",
+          "setting": "Kamis. Satu catatan lagi, dan Gus punya teori dan papan tulis."
+        },
+        {
+          "title": "Pesta kantor",
+          "setting": "Jumat, pesta kantor. Topi kertas, tanaman lesu berhias lampu, kado di atas meja."
         }
       ]
     }

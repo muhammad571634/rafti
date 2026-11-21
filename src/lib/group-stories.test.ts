@@ -40,7 +40,10 @@ describe('group stories (docs/group-stories.md)', () => {
     state = nextBeat({ id: story.id, beat: story.beats.length - 1, turns: 2 }, story);
     assert.equal(state.done, true);
     assert.equal(countTurn(state, story).cut, false);
-    assert.deepEqual(storyCue(story, state, { title: '', setting: '', userRole: '' }), []);
+    // Ended: one line of shared past, so they still remember it.
+    const after = storyCue(story, state, { title: '', setting: '', userRole: '' });
+    assert.equal(after.length, 1);
+    assert.match(after[0], /it is over now/);
   });
 
   it('cue fits the server’s eight lines with a turn’s own cue', () => {

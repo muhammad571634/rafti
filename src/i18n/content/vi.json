@@ -4756,101 +4756,101 @@
       "userRole": "Bạn: bạn cùng phòng mới",
       "members": {
         "mia": {
-          "who": "Người viết nội quy phòng. Phá lệ vì bạn."
+          "who": "Viết nội quy phòng. Phá lệ vì bạn."
         },
         "zara": {
-          "who": "Bảo mình không tham gia cá cược. Thật không đấy?"
+          "who": "Bảo mình không tham gia vụ cá cược. Thật không?"
         },
         "lina": {
-          "who": "Người khơi mào kèo cược. Quyết tâm thắng cho bằng được."
+          "who": "Người khởi xướng vụ cá cược. Quyết thắng."
         }
       },
       "beats": [
         {
-          "title": "Đêm dọn vào",
-          "setting": "Tối thứ Sáu, phòng 214. Bạn bê thùng đồ bước vào. Ba cô gái im bặt giữa chừng cuộc cãi vã."
+          "title": "Đêm dọn đến",
+          "setting": "Tối thứ Sáu, phòng 214. Bạn bước vào với một thùng đồ. Ba cô gái im bặt giữa lúc cãi nhau."
         },
         {
           "title": "Một phòng tắm",
-          "setting": "7:40 sáng. Một nhà tắm, bốn con người, tám giờ vào lớp."
+          "setting": "7:40 sáng. Một phòng tắm, bốn người, tám giờ có tiết."
         },
         {
           "title": "Tiệc tầng trên",
-          "setting": "Thứ Bảy, tiệc ở tầng bốn. Nhạc ầm ĩ, hành lang chật kín người."
+          "setting": "Thứ Bảy, tiệc ở tầng bốn. Nhạc ầm ĩ, hành lang chật người."
         },
         {
-          "title": "Bảng trắng",
-          "setting": "Sáng Chủ nhật. Tấm bảng cạnh cửa ghi chữ ĐIỂM SỐ bằng nét chữ của Mia."
+          "title": "Tấm bảng trắng",
+          "setting": "Sáng Chủ nhật. Trên tấm bảng cạnh cửa có chữ ĐIỂM SỐ, nét chữ của Mia."
         },
         {
           "title": "Phòng 214 bỏ phiếu",
-          "setting": "Tối Chủ nhật. Pizza đặt dưới sàn. Ba cô gái nhìn chằm chằm vào bạn."
+          "setting": "Tối Chủ nhật. Pizza trên sàn. Ba cô gái nhìn bạn."
         }
       ]
     },
     "g_cafe": {
-      "name": "Quán Cà Phê Ba Anh Em",
-      "hook": "Công việc đầu tiên của bạn, tại quán cà phê của ba anh em",
-      "knot": "Luật của bà: ai được bạn chấm điểm cao nhất sẽ thừa kế quán. Luật hai: cấm hẹn hò với nhân viên mới.",
+      "name": "Quán cà phê Ba Anh Em",
+      "hook": "Công việc đầu tiên của bạn, ở quán cà phê của ba anh em",
+      "knot": "Luật của bà: ai được bạn chọn là giỏi nhất sẽ được quán. Luật hai: không ai được hẹn hò với nhân viên mới.",
       "userRole": "Bạn: nhân viên mới",
       "members": {
         "rio": {
-          "who": "Nghiêm túc với cà phê. Với bạn còn nghiêm túc hơn."
+          "who": "Nghiêm túc với cà phê. Còn nghiêm túc với bạn hơn."
         },
         "eli": {
-          "who": "Thả thính mọi khách hàng. Thử chiêu đó với cả bạn."
+          "who": "Làm say lòng mọi khách. Thử luôn với bạn."
         },
         "max": {
-          "who": "Mỗi ngày làm vỡ một cái cốc. Vẫn muốn gây ấn tượng với bạn."
+          "who": "Ngày nào cũng làm vỡ một cái tách. Vẫn muốn gây ấn tượng với bạn."
         }
       },
       "beats": [
         {
           "title": "Ca đầu tiên",
-          "setting": "6 giờ sáng. Quán chưa mở cửa. Bà để bạn lại với ba anh em và một mảnh giấy nhắn."
+          "setting": "6 giờ sáng. Quán chưa mở. Bà để bạn lại với ba anh em và một mẩu giấy."
         },
         {
           "title": "Giờ cao điểm",
-          "setting": "8:15 sáng. Khách xếp hàng dài ra tận cửa, còn máy pha cà phê thì bốc khói."
+          "setting": "8:15 sáng. Hàng người kéo ra tận đường, máy pha espresso bốc khói."
         },
         {
           "title": "Giờ đóng cửa",
-          "setting": "Đêm muộn. Ghế đã xếp lên bàn. Một trong ba anh em vẫn nán lại."
+          "setting": "Tối muộn. Ghế lật trên bàn. Một người anh ở lại."
         },
         {
-          "title": "Bà sắp tới",
-          "setting": "Thứ Sáu, 9 giờ sáng. Một tiếng nữa bà sẽ đến."
+          "title": "Bà sắp đến",
+          "setting": "Thứ Sáu, 9 giờ sáng. Một tiếng nữa bà tới."
         },
         {
           "title": "Phán quyết",
-          "setting": "Bà ngồi ở bàn góc. Mọi ánh mắt đều đổ dồn về phía bạn."
+          "setting": "Bà ngồi ở bàn trong góc. Mọi người nhìn bạn."
         }
       ]
     },
     "g_ring": {
-      "name": "Chiến Dịch Nhẫn",
+      "name": "Chiến dịch Nhẫn",
       "hook": "Bạn bị thêm nhầm vào một nhóm chat",
-      "knot": "Ba người lạ đang lên kế hoạch cầu hôn vào thứ Bảy. Giờ bạn cũng ở trong cuộc.",
+      "knot": "Ba người lạ đang lên kế hoạch cầu hôn vào thứ Bảy. Giờ bạn cũng có phần.",
       "userRole": "Bạn: người lạ bị thêm nhầm",
       "members": {
         "oscar": {
-          "who": "Thứ Bảy cầu hôn. Hoảng loạn từ tận thứ Hai."
+          "who": "Cầu hôn vào thứ Bảy. Hoảng loạn từ thứ Hai."
         },
         "bea": {
-          "who": "Điều phối kế hoạch. Vẫn chưa tin tưởng bạn."
+          "who": "Chỉ huy kế hoạch. Chưa tin bạn."
         },
         "remy": {
-          "who": "Nghĩ bạn là điều tuyệt nhất trong nhóm chat này."
+          "who": "Thấy bạn là điều tuyệt nhất trong nhóm này."
         }
       },
       "beats": [
         {
-          "title": "Nhầm số rồi",
-          "setting": "Thứ Ba, 23:47. Bạn vừa bị thêm vào nhóm tên là CHIẾN DỊCH NHẪN."
+          "title": "Nhầm số",
+          "setting": "Thứ Ba, 23:47. Bạn vừa bị thêm vào nhóm CHIẾN DỊCH NHẪN."
         },
         {
           "title": "Kế hoạch",
-          "setting": "Thứ Tư. Bea gửi một kế hoạch gồm 14 bước."
+          "setting": "Thứ Tư. Bea gửi một kế hoạch 14 bước."
         },
         {
           "title": "Nhẫn đâu rồi",
@@ -4862,7 +4862,121 @@
         },
         {
           "title": "Thứ Bảy",
-          "setting": "Thứ Bảy, hoàng hôn, trên bến tàu. Mọi người đang trốn sau một chiếc thuyền."
+          "setting": "Thứ Bảy, hoàng hôn, cầu tàu. Mọi người núp sau một chiếc thuyền."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "Căn hộ ma ám",
+      "hook": "Căn hộ giá rẻ ở phố cổ, tặng kèm hai con ma",
+      "knot": "Ma chính là hàng xóm của bạn, giả vờ để tiền thuê vẫn rẻ.",
+      "userRole": "Bạn: người thuê mới nhất quyết không đi",
+      "members": {
+        "nico": {
+          "who": "\"Con ma\" giọng trầm. Nhập vai cực sâu."
+        },
+        "pia": {
+          "who": "Người giật dây. Theo đúng nghĩa đen."
+        }
+      },
+      "beats": [
+        {
+          "title": "Dọn đến",
+          "setting": "Đêm đầu tiên. Đèn chập chờn. Có tiếng gõ cửa: hai người hàng xóm mang bánh quy."
+        },
+        {
+          "title": "3 giờ sáng",
+          "setting": "3:04 sáng. Một giọng nói từ ống thông gió gọi tên bạn."
+        },
+        {
+          "title": "Trừ tà",
+          "setting": "Thứ Bảy. Hàng xóm mang xô thơm, một cây nến và cuốn sách rõ ràng vừa mua sáng nay."
+        },
+        {
+          "title": "Bị bắt quả tang",
+          "setting": "Tối Chủ nhật. Chiếc loa rơi từ ống thông gió xuống giường bạn. Vẫn đang bật."
+        },
+        {
+          "title": "Nội quy nhà",
+          "setting": "Thứ Hai. Ba người, hai căn hộ, một bức tường. Và một chiếc loa rất xịn."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Biệt thự Tình yêu",
+      "hook": "Bạn là người mới vào một show hẹn hò thực tế",
+      "knot": "Ba thí sinh, một cú twist bí mật: nhà sản xuất cho bạn làm giám khảo.",
+      "userRole": "Bạn: người mới đến mang một bí mật",
+      "members": {
+        "sienna": {
+          "who": "Đến để thắng. Chắc chắn mình sẽ thắng."
+        },
+        "jax": {
+          "who": "Đến vì follower. Ở lại vì bạn."
+        },
+        "coco": {
+          "who": "Nói điều ai cũng nghĩ. Trước ống kính."
+        }
+      },
+      "beats": [
+        {
+          "title": "Người mới đến",
+          "setting": "Biệt thự lúc hoàng hôn. Một thông báo: \"Sắp có người mới vào.\" Tất cả quay về phía cổng."
+        },
+        {
+          "title": "Thử thách",
+          "setting": "Buổi trưa. Một trò ngớ ngẩn bên hồ bơi: trả lời câu hỏi về nhau hoặc bị té nước."
+        },
+        {
+          "title": "Cho mình mượn bạn một chút nhé",
+          "setting": "Buổi tối, bên đống lửa. Lần lượt từng người xin \"mượn bạn một chút\"."
+        },
+        {
+          "title": "Mẩu giấy",
+          "setting": "Thứ Năm. Coco tìm thấy mẩu giấy của nhà sản xuất trong túi bạn."
+        },
+        {
+          "title": "Ghép đôi lại",
+          "setting": "Tối thứ Sáu, bên đống lửa, đèn bật sáng. Người dẫn chương trình đưa tấm thẻ cho bạn."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Ông già Noel bí mật",
+      "hook": "Tuần đầu tiên ở văn phòng mới, ngay trước kỳ nghỉ lễ",
+      "knot": "Trò Ông già Noel bí mật của nhóm bạn chỉ có một luật. Đã có người phạm luật.",
+      "userRole": "Bạn: đồng nghiệp mới",
+      "members": {
+        "tessa": {
+          "who": "Tổ chức trò tặng quà như một chiến dịch quân sự."
+        },
+        "omar": {
+          "who": "Bốc trúng tên bạn. Đang hoảng loạn trong im lặng."
+        },
+        "gus": {
+          "who": "Tiêu hết ngân sách cho một trò đùa. Không hối hận."
+        }
+      },
+      "beats": [
+        {
+          "title": "Bốc thăm",
+          "setting": "Thứ Hai, phòng bếp. Tessa chìa ra một chiếc mũ đựng các tên."
+        },
+        {
+          "title": "Mẩu giấy trên bàn",
+          "setting": "Sáng thứ Ba. Trên bàn phím có mẩu giấy: \"Chúc may mắn tuần này. — Ông già Noel của bạn\"."
+        },
+        {
+          "title": "Đi mua sắm",
+          "setting": "Thứ Tư, giờ nghỉ trưa. Tessa kéo cả nhóm đi mua sắm \"vì tinh thần đồng đội\"."
+        },
+        {
+          "title": "Nghi phạm",
+          "setting": "Thứ Năm. Thêm một mẩu giấy, và Gus có một giả thuyết cùng một tấm bảng trắng."
+        },
+        {
+          "title": "Tiệc văn phòng",
+          "setting": "Thứ Sáu, tiệc văn phòng. Mũ giấy, một chậu cây mệt mỏi quấn đèn, quà trên bàn."
         }
       ]
     }

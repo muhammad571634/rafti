@@ -4751,93 +4751,93 @@
   "groupStories": {
     "g_dorm214": {
       "name": "Stanza 214",
-      "hook": "La tua nuova stanza al dormitorio, con già tre ragazze dentro",
+      "hook": "La tua nuova stanza allo studentato, con tre ragazze già dentro",
       "knot": "Hanno scommesso su chi di loro ti farà innamorare.",
-      "userRole": "Tu: la persona appena arrivata in stanza",
+      "userRole": "Tu: il nuovo coinquilino",
       "members": {
         "mia": {
-          "who": "Ha scritto le regole della casa. Le infrange per te."
+          "who": "Ha scritto le regole della stanza. Le infrange per te."
         },
         "zara": {
-          "who": "Dice che non partecipa alla scommessa. Sarà vero?"
+          "who": "Dice di non essere nella scommessa. Sicuro?"
         },
         "lina": {
-          "who": "Ha iniziato la scommessa. Conta di vincerla."
+          "who": "Ha iniziato la scommessa. Vuole vincerla."
         }
       },
       "beats": [
         {
-          "title": "Notte del trasloco",
-          "setting": "Venerdì sera, stanza 214. Entri con uno scatolone. Tre ragazze smettono di litigare a metà frase."
+          "title": "La notte del trasloco",
+          "setting": "Venerdì notte, stanza 214. Entri con uno scatolone. Tre ragazze si zittiscono a metà litigio."
         },
         {
           "title": "Un solo bagno",
           "setting": "7:40 del mattino. Un bagno, quattro persone, lezione alle otto."
         },
         {
-          "title": "Festa di sopra",
-          "setting": "Sabato, festa al quarto piano. Musica alta, corridoio pieno di gente."
+          "title": "Festa al piano di sopra",
+          "setting": "Sabato, una festa al quarto piano. Musica alta, un corridoio pieno di gente."
         },
         {
           "title": "La lavagna",
-          "setting": "Domenica mattina. Sulla lavagna vicino alla porta c’è scritto PUNTEGGIO con la grafia di Mia."
+          "setting": "Domenica mattina. Sulla lavagna vicino alla porta c'è scritto PUNTEGGIO con la calligrafia di Mia."
         },
         {
           "title": "La 214 vota",
-          "setting": "Domenica sera. Pizza sul pavimento. Tre ragazze ti fissano."
+          "setting": "Domenica sera. Pizza sul pavimento. Tre ragazze ti guardano."
         }
       ]
     },
     "g_cafe": {
-      "name": "Caffetteria Tre Fratelli",
-      "hook": "Il tuo primo lavoro, in un bar gestito da tre fratelli",
-      "knot": "Regola della nonna: chi voti come migliore si prende il bar. Regola due: niente storie con chi è appena arrivato.",
-      "userRole": "Tu: la persona nuova",
+      "name": "Il caffè dei tre fratelli",
+      "hook": "Il tuo primo lavoro, in un caffè gestito da tre fratelli",
+      "knot": "La regola della nonna: chi sceglierai come il migliore avrà il caffè. Regola due: niente appuntamenti con il nuovo arrivato.",
+      "userRole": "Tu: il nuovo assunto",
       "members": {
         "rio": {
-          "who": "Prende sul serio il caffè. Te ancora più sul serio."
+          "who": "Prende il caffè sul serio. Te ancora di più."
         },
         "eli": {
           "who": "Incanta ogni cliente. Ci prova anche con te."
         },
         "max": {
-          "who": "Rompe una tazza al giorno. Vuole comunque colpirti."
+          "who": "Rompe una tazza al giorno. Vuole comunque fare colpo su di te."
         }
       },
       "beats": [
         {
           "title": "Primo turno",
-          "setting": "6 del mattino. Il bar è ancora chiuso. La nonna ti ha lasciato con tre fratelli e un biglietto."
+          "setting": "Le 6. Il caffè non è ancora aperto. La nonna ti ha lasciato con tre fratelli e un biglietto."
         },
         {
-          "title": "L’ora di punta",
-          "setting": "8:15 del mattino. Fila fuori dalla porta e macchina del caffè che fuma."
+          "title": "L'ora di punta",
+          "setting": "8:15. Una fila fino in strada e la macchina dell'espresso che fuma."
         },
         {
           "title": "Chiusura",
-          "setting": "Tarda sera. Sedie sui tavoli. Un fratello è rimasto."
+          "setting": "Tarda sera. Sedie sui tavoli. Uno dei fratelli è rimasto."
         },
         {
           "title": "Arriva la nonna",
-          "setting": "Venerdì, ore 9. La nonna arriva tra un’ora."
+          "setting": "Venerdì, ore 9. La nonna arriva tra un'ora."
         },
         {
           "title": "Il verdetto",
-          "setting": "La nonna si siede al tavolo d’angolo. Tutti ti guardano."
+          "setting": "La nonna siede al tavolo d'angolo. Tutti guardano te."
         }
       ]
     },
     "g_ring": {
       "name": "Operazione Anello",
-      "hook": "Ti hanno aggiunto nella chat di gruppo sbagliata",
-      "knot": "Tre sconosciuti stanno organizzando una proposta per sabato. Ora ci sei dentro anche tu.",
-      "userRole": "Tu: la persona aggiunta per errore",
+      "hook": "Ti hanno aggiunto alla chat di gruppo sbagliata",
+      "knot": "Tre sconosciuti preparano una proposta di matrimonio per sabato. Ora ci sei dentro anche tu.",
+      "userRole": "Tu: lo sconosciuto aggiunto per sbaglio",
       "members": {
         "oscar": {
-          "who": "Fa la proposta sabato. Nel panico da lunedì."
+          "who": "Fa la proposta sabato. In panico da lunedì."
         },
         "bea": {
-          "who": "Dirige il piano. Non si fida ancora di te."
+          "who": "Guida il piano. Non si fida ancora di te."
         },
         "remy": {
           "who": "Pensa che tu sia la cosa migliore di questa chat."
@@ -4853,16 +4853,130 @@
           "setting": "Mercoledì. Bea manda un piano in 14 punti."
         },
         {
-          "title": "Dov’è l’anello",
-          "setting": "Giovedì sera. Oscar non trova più l’anello."
+          "title": "Dov'è l'anello",
+          "setting": "Giovedì notte. Oscar non trova l'anello."
         },
         {
           "title": "Dobbiamo parlare",
-          "setting": "Venerdì. Nina ha appena scritto a Oscar: «Dobbiamo parlare.»"
+          "setting": "Venerdì. Nina ha appena scritto a Oscar: «Dobbiamo parlare»."
         },
         {
           "title": "Sabato",
-          "setting": "Sabato, tramonto, al molo. Tutti nascosti dietro una barca."
+          "setting": "Sabato, tramonto, il molo. Tutti nascosti dietro una barca."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "L'appartamento infestato",
+      "hook": "Un appartamento economico in centro storico, due fantasmi inclusi",
+      "knot": "I fantasmi sono i tuoi vicini, che fingono per tenere basso l'affitto.",
+      "userRole": "Tu: il nuovo inquilino che non se ne va",
+      "members": {
+        "nico": {
+          "who": "Il «fantasma» dalla voce profonda. Molto calato nella parte."
+        },
+        "pia": {
+          "who": "Tira i fili. Letteralmente."
+        }
+      },
+      "beats": [
+        {
+          "title": "Il trasloco",
+          "setting": "La tua prima notte. La luce tremola. Bussano: due vicini con i biscotti."
+        },
+        {
+          "title": "Le 3 di notte",
+          "setting": "Le 3:04. Una voce dalla ventilazione pronuncia il tuo nome."
+        },
+        {
+          "title": "L'esorcismo",
+          "setting": "Sabato. I vicini portano salvia, una candela e un libro chiaramente comprato stamattina."
+        },
+        {
+          "title": "Beccati",
+          "setting": "Domenica notte. La cassa cade dalla ventilazione sul tuo letto. Accesa."
+        },
+        {
+          "title": "Regole di casa",
+          "setting": "Lunedì. Tre persone, due appartamenti, un muro. E una cassa molto buona."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Love Villa",
+      "hook": "Sei il nuovo arrivo in un reality di appuntamenti",
+      "knot": "Tre concorrenti, un colpo di scena segreto: i produttori ti hanno fatto giudice.",
+      "userRole": "Tu: il nuovo arrivo con un segreto",
+      "members": {
+        "sienna": {
+          "who": "È qui per vincere. Sicurissima di farcela."
+        },
+        "jax": {
+          "who": "Venuto per i follower. Resta per te."
+        },
+        "coco": {
+          "who": "Dice quello che tutti pensano. Davanti alla telecamera."
+        }
+      },
+      "beats": [
+        {
+          "title": "Il nuovo arrivo",
+          "setting": "La villa al tramonto. Un messaggio: «Sta arrivando qualcuno di nuovo». Tutti si girano verso il cancello."
+        },
+        {
+          "title": "La sfida",
+          "setting": "Mezzogiorno. Un gioco sciocco a bordo piscina: rispondi a domande sugli altri o ti bagni."
+        },
+        {
+          "title": "Posso rubarti un attimo?",
+          "setting": "Notte, intorno al fuoco. Uno alla volta ti chiedono di «rubarti un attimo»."
+        },
+        {
+          "title": "Il biglietto",
+          "setting": "Giovedì. Coco ha trovato il biglietto dei produttori nella tua borsa."
+        },
+        {
+          "title": "Nuove coppie",
+          "setting": "Venerdì sera, il fuoco, luci accese. Il conduttore ti porge il cartoncino."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Babbo Natale segreto",
+      "hook": "La tua prima settimana in un nuovo ufficio, poco prima delle feste",
+      "knot": "Il Babbo Natale segreto del tuo team ha una sola regola. Qualcuno l'ha già infranta.",
+      "userRole": "Tu: il nuovo collega",
+      "members": {
+        "tessa": {
+          "who": "Organizza il Babbo Natale segreto come un'operazione militare."
+        },
+        "omar": {
+          "who": "Ha pescato il tuo nome. Va nel panico in silenzio."
+        },
+        "gus": {
+          "who": "Ha speso tutto il budget per uno scherzo. Nessun rimpianto."
+        }
+      },
+      "beats": [
+        {
+          "title": "L'estrazione",
+          "setting": "Lunedì, la cucina. Tessa porge un cappello pieno di nomi."
+        },
+        {
+          "title": "Un biglietto sulla scrivania",
+          "setting": "Martedì mattina. Un biglietto sulla tastiera: «Buona fortuna questa settimana. — il tuo Babbo Natale»."
+        },
+        {
+          "title": "Lo shopping",
+          "setting": "Mercoledì, pausa pranzo. Tessa trascina tutti per negozi «per lo spirito di squadra»."
+        },
+        {
+          "title": "Il sospettato",
+          "setting": "Giovedì. Un altro biglietto, e Gus ha una teoria e una lavagna."
+        },
+        {
+          "title": "La festa dell'ufficio",
+          "setting": "Venerdì, la festa dell'ufficio. Cappellini di carta, una pianta stanca con le lucine, regali sul tavolo."
         }
       ]
     }

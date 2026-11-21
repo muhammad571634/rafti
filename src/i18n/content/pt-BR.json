@@ -4751,118 +4751,232 @@
   "groupStories": {
     "g_dorm214": {
       "name": "Quarto 214",
-      "hook": "Seu novo quarto no alojamento, e já tem três garotas morando lá",
+      "hook": "Seu novo quarto no alojamento, com três garotas já morando lá",
       "knot": "Elas apostaram em qual delas você vai se apaixonar.",
-      "userRole": "Você: quem acabou de chegar no quarto",
+      "userRole": "Você: o novo colega de quarto",
       "members": {
         "mia": {
-          "who": "Escreveu as regras da casa. Quebra todas por você."
+          "who": "Escreveu as regras do quarto. Quebra todas por você."
         },
         "zara": {
-          "who": "Diz que não está na aposta. Será mesmo?"
+          "who": "Diz que não está na aposta. Será?"
         },
         "lina": {
-          "who": "Começou a aposta. E pretende ganhar."
+          "who": "Começou a aposta. Quer ganhar."
         }
       },
       "beats": [
         {
           "title": "Noite da mudança",
-          "setting": "Sexta à noite, quarto 214. Você entra com uma caixa. Três garotas param de discutir no meio da frase."
+          "setting": "Sexta à noite, quarto 214. Você entra com uma caixa. Três garotas param a briga no meio da frase."
         },
         {
           "title": "Um banheiro só",
-          "setting": "7h40 da manhã. Um banheiro, quatro pessoas, aula às oito."
+          "setting": "7h40. Um banheiro, quatro pessoas, aula às oito."
         },
         {
           "title": "Festa lá em cima",
-          "setting": "Sábado, festa no quarto andar. Música alta, corredor lotado."
+          "setting": "Sábado, festa no quarto andar. Música alta, um corredor cheio de gente."
         },
         {
           "title": "O quadro branco",
-          "setting": "Domingo de manhã. No quadro perto da porta está escrito PLACAR na letra da Mia."
+          "setting": "Domingo de manhã. No quadro ao lado da porta está escrito PLACAR, com a letra da Mia."
         },
         {
-          "title": "O 214 vota",
-          "setting": "Domingo à noite. Pizza no chão. Três garotas olham pra você."
+          "title": "O 214 decide",
+          "setting": "Domingo à noite. Pizza no chão. Três garotas olhando para você."
         }
       ]
     },
     "g_cafe": {
-      "name": "Café Três Irmãos",
-      "hook": "Seu primeiro emprego, num café tocado por três irmãos",
-      "knot": "Regra da vó: quem você avaliar melhor fica com o café. Regra dois: ninguém namora quem acabou de entrar.",
-      "userRole": "Você: quem acabou de entrar",
+      "name": "O café dos três irmãos",
+      "hook": "Seu primeiro emprego, num café de três irmãos",
+      "knot": "A regra da avó: quem você escolher como o melhor fica com o café. Regra dois: ninguém namora quem acabou de chegar.",
+      "userRole": "Você: quem acabou de ser contratado",
       "members": {
         "rio": {
           "who": "Leva café a sério. Leva você mais a sério ainda."
         },
         "eli": {
-          "who": "Encanta cada cliente. Tenta o mesmo charme com você."
+          "who": "Encanta todo cliente. Tenta com você também."
         },
         "max": {
-          "who": "Quebra uma xícara por dia. Quer te impressionar mesmo assim."
+          "who": "Quebra uma xícara por dia. Mesmo assim quer te impressionar."
         }
       },
       "beats": [
         {
           "title": "Primeiro turno",
-          "setting": "6h da manhã. O café ainda não abriu. A vó te deixou com três irmãos e um bilhete."
+          "setting": "6h. O café ainda não abriu. A avó deixou você com três irmãos e um bilhete."
         },
         {
-          "title": "O movimento",
-          "setting": "8h15 da manhã. Fila dobrando a porta e a máquina de expresso soltando fumaça."
+          "title": "A correria",
+          "setting": "8h15. Uma fila até a rua e a máquina de espresso soltando fumaça."
         },
         {
           "title": "Hora de fechar",
-          "setting": "Fim de noite. Cadeiras nas mesas. Um irmão ficou."
+          "setting": "Fim da noite. Cadeiras em cima das mesas. Um dos irmãos ficou."
         },
         {
-          "title": "A vó está chegando",
-          "setting": "Sexta, 9h. A vó chega em uma hora."
+          "title": "A avó está chegando",
+          "setting": "Sexta, 9h. A avó chega em uma hora."
         },
         {
           "title": "O veredito",
-          "setting": "A vó senta na mesa do canto. Todo mundo olha pra você."
+          "setting": "A avó está na mesa do canto. Todo mundo olhando para você."
         }
       ]
     },
     "g_ring": {
       "name": "Operação Aliança",
-      "hook": "Colocaram você no grupo errado",
-      "knot": "Três desconhecidos estão planejando um pedido de casamento pro sábado. Agora você faz parte.",
-      "userRole": "Você: quem caiu ali por engano",
+      "hook": "Te adicionaram no grupo errado",
+      "knot": "Três desconhecidos planejam um pedido de casamento para sábado. Agora você faz parte.",
+      "userRole": "Você: a pessoa adicionada por engano",
       "members": {
         "oscar": {
-          "who": "Vai pedir em casamento no sábado. Em pânico desde segunda."
+          "who": "Vai pedir no sábado. Em pânico desde segunda."
         },
         "bea": {
           "who": "Comanda o plano. Ainda não confia em você."
         },
         "remy": {
-          "who": "Acha você a melhor coisa desse grupo."
+          "who": "Acha que você é a melhor coisa deste grupo."
         }
       },
       "beats": [
         {
           "title": "Número errado",
-          "setting": "Terça, 23h47. Acabaram de te colocar num grupo chamado OPERAÇÃO ALIANÇA."
+          "setting": "Terça, 23h47. Você acabou de ser adicionado a um grupo chamado OPERAÇÃO ALIANÇA."
         },
         {
           "title": "O plano",
-          "setting": "Quarta. Bea manda um plano com 14 passos."
+          "setting": "Quarta. A Bea manda um plano com 14 etapas."
         },
         {
           "title": "Cadê a aliança",
-          "setting": "Quinta à noite. Oscar não acha a aliança."
+          "setting": "Quinta à noite. O Oscar não acha a aliança."
         },
         {
           "title": "Precisamos conversar",
-          "setting": "Sexta. Nina acabou de mandar pro Oscar: \"Precisamos conversar.\""
+          "setting": "Sexta. A Nina acabou de mandar para o Oscar: \"Precisamos conversar.\""
         },
         {
           "title": "Sábado",
-          "setting": "Sábado, pôr do sol, no píer. Todo mundo escondido atrás de um barco."
+          "setting": "Sábado, pôr do sol, o píer. Todo mundo escondido atrás de um barco."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "O apartamento assombrado",
+      "hook": "Um apê barato no centro antigo, com dois fantasmas inclusos",
+      "knot": "Os fantasmas são seus vizinhos fingindo, para o aluguel continuar baixo.",
+      "userRole": "Você: o novo inquilino que se recusa a sair",
+      "members": {
+        "nico": {
+          "who": "O \"fantasma\" da voz grave. Muito dedicado."
+        },
+        "pia": {
+          "who": "Puxa as cordinhas. Literalmente."
+        }
+      },
+      "beats": [
+        {
+          "title": "A mudança",
+          "setting": "Sua primeira noite. A luz pisca. Batem na porta: dois vizinhos com biscoitos."
+        },
+        {
+          "title": "3 da manhã",
+          "setting": "3h04. Uma voz saindo da ventilação diz o seu nome."
+        },
+        {
+          "title": "O exorcismo",
+          "setting": "Sábado. Os vizinhos trazem sálvia, uma vela e um livro claramente comprado hoje de manhã."
+        },
+        {
+          "title": "Pegos no flagra",
+          "setting": "Domingo à noite. A caixa de som cai da ventilação na sua cama. Ligada."
+        },
+        {
+          "title": "Regras da casa",
+          "setting": "Segunda. Três pessoas, dois apês, uma parede. E uma caixa de som muito boa."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Vila do Amor",
+      "hook": "Você é a novidade num reality de namoro",
+      "knot": "Três participantes, uma reviravolta secreta: os produtores te fizeram juiz.",
+      "userRole": "Você: a novidade com um segredo",
+      "members": {
+        "sienna": {
+          "who": "Veio para ganhar. Certeza de que vai."
+        },
+        "jax": {
+          "who": "Veio pelos seguidores. Fica por você."
+        },
+        "coco": {
+          "who": "Fala o que todo mundo pensa. Na frente da câmera."
+        }
+      },
+      "beats": [
+        {
+          "title": "A novidade",
+          "setting": "A vila ao pôr do sol. Um aviso: \"Tem alguém novo chegando.\" Todos se viram para o portão."
+        },
+        {
+          "title": "O desafio",
+          "setting": "Meio-dia. Um jogo bobo na piscina: responda perguntas sobre os outros ou leve um banho."
+        },
+        {
+          "title": "Posso te roubar um minuto?",
+          "setting": "Noite, na fogueira. Um por um, pedem para \"te roubar um minuto\"."
+        },
+        {
+          "title": "O bilhete",
+          "setting": "Quinta. A Coco achou o bilhete dos produtores na sua bolsa."
+        },
+        {
+          "title": "Novos casais",
+          "setting": "Sexta à noite, a fogueira, luzes acesas. O apresentador te entrega o cartão."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Amigo secreto",
+      "hook": "Sua primeira semana num escritório novo, logo antes das festas",
+      "knot": "O amigo secreto da sua equipe tem uma regra. Alguém já quebrou.",
+      "userRole": "Você: o novo colega",
+      "members": {
+        "tessa": {
+          "who": "Organiza o amigo secreto como uma operação militar."
+        },
+        "omar": {
+          "who": "Tirou o seu nome. Em pânico, em silêncio."
+        },
+        "gus": {
+          "who": "Gastou todo o orçamento numa piada. Zero arrependimento."
+        }
+      },
+      "beats": [
+        {
+          "title": "O sorteio",
+          "setting": "Segunda, a copa. A Tessa segura um gorro cheio de nomes."
+        },
+        {
+          "title": "Um bilhete na sua mesa",
+          "setting": "Terça de manhã. Um bilhete no seu teclado: \"Boa sorte esta semana. — seu amigo secreto\"."
+        },
+        {
+          "title": "As compras",
+          "setting": "Quarta, hora do almoço. A Tessa arrasta todo mundo para as lojas \"pelo espírito de equipe\"."
+        },
+        {
+          "title": "O suspeito",
+          "setting": "Quinta. Mais um bilhete, e o Gus tem uma teoria e um quadro branco."
+        },
+        {
+          "title": "A festa do escritório",
+          "setting": "Sexta, a festa do escritório. Chapéus de papel, uma planta cansada com pisca-pisca, presentes na mesa."
         }
       ]
     }

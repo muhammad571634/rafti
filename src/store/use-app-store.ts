@@ -6983,12 +6983,12 @@ function openStoryScene(set: Setter, get: Getter, groupId: string) {
   ]);
 }
 
-/** The story's lines for a member's turn while it plays (none after a crisis or once it ended). */
+/** The story's lines for a member's turn: the scene while it plays, one line of shared past once it ended (none after a crisis). */
 function storyCueFor(state: AppState, group: GroupChat): string[] {
-  const story = group.story && !group.story.done ? groupStoryById(group.story.id) : undefined;
+  const story = group.story ? groupStoryById(group.story.id) : undefined;
   if (!group.story || !story) return [];
   const words = localGroupStory(story);
-  const beat = words.beats[group.story.beat];
+  const beat = words.beats[Math.min(group.story.beat, words.beats.length - 1)];
   return storyCue(story, group.story, { title: beat.title, setting: beat.setting, userRole: words.userRole });
 }
 

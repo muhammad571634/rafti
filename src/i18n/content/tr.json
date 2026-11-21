@@ -4751,71 +4751,71 @@
   "groupStories": {
     "g_dorm214": {
       "name": "Oda 214",
-      "hook": "Yeni yurt odan, içinde şimdiden üç kız yaşıyor",
-      "knot": "Hangisine âşık olacağın üstüne bahse girdiler.",
+      "hook": "Yurttaki yeni odan, içinde zaten üç kız var",
+      "knot": "Hangisine âşık olacağına dair iddiaya girmişler.",
       "userRole": "Sen: yeni oda arkadaşı",
       "members": {
         "mia": {
-          "who": "Ev kurallarını yazdı. Senin için hepsini bozuyor."
+          "who": "Oda kurallarını o yazdı. Senin için çiğniyor."
         },
         "zara": {
-          "who": "Bahiste olmadığını söylüyor. Öyle mi dersin?"
+          "who": "İddiada olmadığını söylüyor. Gerçekten mi?"
         },
         "lina": {
-          "who": "Bahsi başlattı. Kazanmaya kararlı."
+          "who": "İddiayı o başlattı. Kazanmaya kararlı."
         }
       },
       "beats": [
         {
           "title": "Taşınma gecesi",
-          "setting": "Cuma gecesi, oda 214. Elinde bir koliyle içeri giriyorsun. Üç kız tartışmayı yarıda kesiyor."
+          "setting": "Cuma gecesi, oda 214. Elinde bir koliyle giriyorsun. Üç kız tartışmanın ortasında susuyor."
         },
         {
           "title": "Tek banyo",
-          "setting": "Sabah 7:40. Tek banyo, dört kişi, saat sekizde ders var."
+          "setting": "Sabah 7.40. Tek banyo, dört kişi, sekizde ders."
         },
         {
-          "title": "Üst katta parti",
-          "setting": "Cumartesi, dördüncü katta parti. Yüksek müzik, koridor tıklım tıklım."
+          "title": "Üst kattaki parti",
+          "setting": "Cumartesi, dördüncü katta parti. Yüksek müzik, insanlarla dolu bir koridor."
         },
         {
-          "title": "Yazı tahtası",
-          "setting": "Pazar sabahı. Kapının yanındaki tahtada Mia’nın el yazısıyla SKOR yazıyor."
+          "title": "Beyaz tahta",
+          "setting": "Pazar sabahı. Kapının yanındaki tahtada Mia'nın el yazısıyla SKOR yazıyor."
         },
         {
-          "title": "214 oy veriyor",
-          "setting": "Pazar gecesi. Yerde pizza. Üç kız sana bakıyor."
+          "title": "214 oyluyor",
+          "setting": "Pazar akşamı. Yerde pizza. Üç kız sana bakıyor."
         }
       ]
     },
     "g_cafe": {
       "name": "Üç Kardeş Kafe",
       "hook": "İlk işin, üç kardeşin işlettiği bir kafede",
-      "knot": "Büyükanne kuralı: en yüksek puanı verdiğin kişi kafeyi alır. İkinci kural: yeni gelenle çıkmak yasak.",
-      "userRole": "Sen: yeni işe alınan kişi",
+      "knot": "Büyükannenin kuralı: kimi en iyi seçersen kafe onun. İkinci kural: yeni gelenle kimse çıkmaz.",
+      "userRole": "Sen: yeni çalışan",
       "members": {
         "rio": {
-          "who": "Kahveyi ciddiye alır. Seni daha da ciddiye alıyor."
+          "who": "Kahveyi ciddiye alır. Seni daha da çok."
         },
         "eli": {
-          "who": "Her müşteriyi etkiler. Sende de şansını deniyor."
+          "who": "Her müşteriyi büyüler. Sende de deniyor."
         },
         "max": {
-          "who": "Günde bir fincan kırar. Yine de gözüne girmek istiyor."
+          "who": "Günde bir fincan kırar. Yine de seni etkilemek istiyor."
         }
       },
       "beats": [
         {
           "title": "İlk vardiya",
-          "setting": "Sabah 6. Kafe henüz açılmadı. Büyükanne seni üç kardeşle ve bir notla bıraktı."
+          "setting": "Sabah 6. Kafe henüz açık değil. Büyükanne seni üç kardeş ve bir notla bıraktı."
         },
         {
-          "title": "Yoğun saat",
-          "setting": "Sabah 8:15. Kapıdan taşan bir sıra ve duman çıkaran espresso makinesi."
+          "title": "Yoğunluk",
+          "setting": "Sabah 8.15. Sokağa taşan bir kuyruk ve tüten bir espresso makinesi."
         },
         {
-          "title": "Kapanış vakti",
-          "setting": "Geç saat. Sandalyeler masaların üstünde. Kardeşlerden biri kaldı."
+          "title": "Kapanış",
+          "setting": "Gece geç saat. Sandalyeler masaların üstünde. Kardeşlerden biri kaldı."
         },
         {
           "title": "Büyükanne geliyor",
@@ -4823,18 +4823,18 @@
         },
         {
           "title": "Karar",
-          "setting": "Büyükanne köşe masaya oturuyor. Herkes sana bakıyor."
+          "setting": "Büyükanne köşedeki masada oturuyor. Herkes sana bakıyor."
         }
       ]
     },
     "g_ring": {
       "name": "Yüzük Operasyonu",
-      "hook": "Yanlış grup sohbetine eklendin",
-      "knot": "Üç yabancı cumartesi günü için evlilik teklifi planlıyor. Artık sen de işin içindesin.",
+      "hook": "Seni yanlış grup sohbetine eklediler",
+      "knot": "Üç yabancı cumartesi için evlilik teklifi planlıyor. Artık sen de işin içindesin.",
       "userRole": "Sen: yanlışlıkla eklenen yabancı",
       "members": {
         "oscar": {
-          "who": "Cumartesi evlenme teklif ediyor. Pazartesiden beri panikte."
+          "who": "Cumartesi evlenme teklif edecek. Pazartesiden beri panikte."
         },
         "bea": {
           "who": "Planı yönetiyor. Sana henüz güvenmiyor."
@@ -4846,11 +4846,11 @@
       "beats": [
         {
           "title": "Yanlış numara",
-          "setting": "Salı, 23:47. Az önce YÜZÜK OPERASYONU adlı bir gruba eklendin."
+          "setting": "Salı, 23.47. Az önce YÜZÜK OPERASYONU adlı bir gruba eklendin."
         },
         {
           "title": "Plan",
-          "setting": "Çarşamba. Bea 14 adımlı bir plan gönderiyor."
+          "setting": "Çarşamba. Bea 14 adımlık bir plan gönderiyor."
         },
         {
           "title": "Yüzük nerede",
@@ -4858,11 +4858,125 @@
         },
         {
           "title": "Konuşmamız lazım",
-          "setting": "Cuma. Nina az önce Oscar’a yazdı: \"Konuşmamız lazım.\""
+          "setting": "Cuma. Nina az önce Oscar'a yazdı: \"Konuşmamız lazım.\""
         },
         {
           "title": "Cumartesi",
-          "setting": "Cumartesi, gün batımı, iskele. Herkes bir teknenin arkasına saklanıyor."
+          "setting": "Cumartesi, gün batımı, iskele. Herkes bir teknenin arkasına saklanmış."
+        }
+      ]
+    },
+    "g_haunted": {
+      "name": "Perili Daire",
+      "hook": "Eski şehirde ucuz bir daire, iki hayalet dahil",
+      "knot": "Hayaletler aslında komşuların; kira düşük kalsın diye rol yapıyorlar.",
+      "userRole": "Sen: taşınmayı reddeden yeni kiracı",
+      "members": {
+        "nico": {
+          "who": "Kalın sesli \"hayalet\". Rolüne fazlasıyla gömülmüş."
+        },
+        "pia": {
+          "who": "İpleri o çekiyor. Kelimenin tam anlamıyla."
+        }
+      },
+      "beats": [
+        {
+          "title": "Taşınma",
+          "setting": "İlk gecen. Işıklar titriyor. Kapı çalıyor: kurabiyeli iki komşu."
+        },
+        {
+          "title": "Gece 3",
+          "setting": "03.04. Havalandırmadan gelen bir ses adını söylüyor."
+        },
+        {
+          "title": "Kovma ayini",
+          "setting": "Cumartesi. Komşular adaçayı, bir mum ve belli ki bu sabah aldıkları bir kitap getiriyor."
+        },
+        {
+          "title": "Yakalandılar",
+          "setting": "Pazar gecesi. Hoparlör havalandırmadan yatağına düşüyor. Açık halde."
+        },
+        {
+          "title": "Ev kuralları",
+          "setting": "Pazartesi. Üç kişi, iki daire, bir duvar. Ve çok iyi bir hoparlör."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Aşk Villası",
+      "hook": "Bir flört yarışmasının yeni gelenisin",
+      "knot": "Üç yarışmacı, gizli bir sürpriz: yapımcılar seni jüri yaptı.",
+      "userRole": "Sen: sırrı olan yeni gelen",
+      "members": {
+        "sienna": {
+          "who": "Kazanmaya geldi. Kazanacağından çok emin."
+        },
+        "jax": {
+          "who": "Takipçi için geldi. Senin için kalıyor."
+        },
+        "coco": {
+          "who": "Herkesin düşündüğünü söyler. Kameranın önünde."
+        }
+      },
+      "beats": [
+        {
+          "title": "Yeni gelen",
+          "setting": "Gün batımında villa. Bir bildirim: \"İçeri yeni biri geliyor.\" Herkes kapıya dönüyor."
+        },
+        {
+          "title": "Görev",
+          "setting": "Öğlen. Havuz başında saçma bir oyun: birbirinizle ilgili soruları cevapla ya da ıslan."
+        },
+        {
+          "title": "Seni bir dakika kaçırabilir miyim?",
+          "setting": "Gece, ateş başı. Sırayla seni \"bir dakika kaçırmak\" istiyorlar."
+        },
+        {
+          "title": "Not",
+          "setting": "Perşembe. Coco yapımcıların notunu çantanda buldu."
+        },
+        {
+          "title": "Yeni çiftler",
+          "setting": "Cuma gecesi, ateş başı, ışıklar açık. Sunucu kartı sana uzatıyor."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Gizli Noel Baba",
+      "hook": "Yeni ofisteki ilk haftan, bayramlardan hemen önce",
+      "knot": "Ekibinin Gizli Noel Babası'nın tek bir kuralı var. Biri onu çoktan çiğnedi.",
+      "userRole": "Sen: yeni iş arkadaşı",
+      "members": {
+        "tessa": {
+          "who": "Gizli Noel Baba'yı askerî operasyon gibi yönetiyor."
+        },
+        "omar": {
+          "who": "Senin adını çekti. Sessizce panikte."
+        },
+        "gus": {
+          "who": "Tüm bütçeyi bir şakaya harcadı. Hiç pişman değil."
+        }
+      },
+      "beats": [
+        {
+          "title": "Çekiliş",
+          "setting": "Pazartesi, mutfak. Tessa içinde isimler olan bir bere uzatıyor."
+        },
+        {
+          "title": "Masandaki not",
+          "setting": "Salı sabahı. Klavyende bir not: \"Bu hafta bol şans. — Gizli Noel Baban\"."
+        },
+        {
+          "title": "Alışveriş",
+          "setting": "Çarşamba, öğle arası. Tessa herkesi \"takım ruhu için\" mağazalara sürüklüyor."
+        },
+        {
+          "title": "Şüpheli",
+          "setting": "Perşembe. Bir not daha, ve Gus'ın bir teorisi ve bir beyaz tahtası var."
+        },
+        {
+          "title": "Ofis partisi",
+          "setting": "Cuma, ofis partisi. Kâğıt şapkalar, ışıklarla süslenmiş yorgun bir bitki, masada hediyeler."
         }
       ]
     }

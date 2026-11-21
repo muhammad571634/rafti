@@ -4865,6 +4865,120 @@
           "setting": "Saturday, sunset, the pier. Everyone is hiding behind a boat."
         }
       ]
+    },
+    "g_haunted": {
+      "name": "The Haunted Flat",
+      "hook": "A cheap flat in the old town, two ghosts included",
+      "knot": "The ghosts are your neighbours, pretending, to keep the rent low.",
+      "userRole": "You: the new tenant who refuses to leave",
+      "members": {
+        "nico": {
+          "who": "The \"ghost\" with the deep voice. Very committed."
+        },
+        "pia": {
+          "who": "Pulls the strings. Literally."
+        }
+      },
+      "beats": [
+        {
+          "title": "Moving in",
+          "setting": "Your first night. The lights flicker. Someone knocks next door: two neighbours with cookies."
+        },
+        {
+          "title": "3 a.m.",
+          "setting": "3:04 a.m. A voice from the vent says your name."
+        },
+        {
+          "title": "The exorcism",
+          "setting": "Saturday. The neighbours bring sage, a candle and a book they clearly bought this morning."
+        },
+        {
+          "title": "Caught",
+          "setting": "Sunday night. The speaker in the vent falls out and lands on your bed, still on."
+        },
+        {
+          "title": "House rules",
+          "setting": "Monday. Three people, two flats, one wall. And one very good speaker."
+        }
+      ]
+    },
+    "g_villa": {
+      "name": "Love Villa",
+      "hook": "You are the new arrival on a dating show",
+      "knot": "Three contestants, one secret twist: the producers made you the judge.",
+      "userRole": "You: the new arrival with a secret",
+      "members": {
+        "sienna": {
+          "who": "Here to win. Very sure she will."
+        },
+        "jax": {
+          "who": "Came for the followers. Staying for you."
+        },
+        "coco": {
+          "who": "Says what everyone is thinking. On camera."
+        }
+      },
+      "beats": [
+        {
+          "title": "The new arrival",
+          "setting": "The villa, sunset. A text alert: \"Someone new is coming in.\" Everyone turns to the gate."
+        },
+        {
+          "title": "The challenge",
+          "setting": "Noon. A silly game by the pool: answer questions about each other, or get splashed."
+        },
+        {
+          "title": "Can I steal you for a chat",
+          "setting": "Night, the fire pit. One by one they ask to \"steal you for a chat\"."
+        },
+        {
+          "title": "The text",
+          "setting": "Thursday. Coco found the producers' note in your bag."
+        },
+        {
+          "title": "Recoupling",
+          "setting": "Friday night, the fire pit, lights on. The host hands you the card."
+        }
+      ]
+    },
+    "g_santa": {
+      "name": "Secret Santa",
+      "hook": "Your first week at a new office, just before the holidays",
+      "knot": "Your team's Secret Santa has one rule. Someone has already broken it.",
+      "userRole": "You: the new colleague",
+      "members": {
+        "tessa": {
+          "who": "Runs Secret Santa like a military operation."
+        },
+        "omar": {
+          "who": "Drew your name. Panicking quietly."
+        },
+        "gus": {
+          "who": "Spent the whole budget on a joke. Regrets nothing."
+        }
+      },
+      "beats": [
+        {
+          "title": "The draw",
+          "setting": "Monday, the kitchen. Tessa holds out a hat with names in it."
+        },
+        {
+          "title": "A note on your desk",
+          "setting": "Tuesday morning. A note on your keyboard: \"Good luck this week. — your Santa\"."
+        },
+        {
+          "title": "The shopping trip",
+          "setting": "Wednesday, lunch break. Tessa drags everyone to the shops \"for team spirit\"."
+        },
+        {
+          "title": "The suspect",
+          "setting": "Thursday. Another note, and Gus has a theory and a whiteboard."
+        },
+        {
+          "title": "The office party",
+          "setting": "Friday, the office party. Paper hats, a tired plant with lights on it, gifts on the table."
+        }
+      ]
     }
   }
 }
