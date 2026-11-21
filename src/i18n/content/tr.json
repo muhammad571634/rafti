@@ -4747,5 +4747,124 @@
         "greeting": "Uzun yol. Bir şarkı paylaşalım mı? İyi birine ihtiyacın varmış gibi duruyorsun."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Oda 214",
+      "hook": "Yeni yurt odan, içinde şimdiden üç kız yaşıyor",
+      "knot": "Hangisine âşık olacağın üstüne bahse girdiler.",
+      "userRole": "Sen: yeni oda arkadaşı",
+      "members": {
+        "mia": {
+          "who": "Ev kurallarını yazdı. Senin için hepsini bozuyor."
+        },
+        "zara": {
+          "who": "Bahiste olmadığını söylüyor. Öyle mi dersin?"
+        },
+        "lina": {
+          "who": "Bahsi başlattı. Kazanmaya kararlı."
+        }
+      },
+      "beats": [
+        {
+          "title": "Taşınma gecesi",
+          "setting": "Cuma gecesi, oda 214. Elinde bir koliyle içeri giriyorsun. Üç kız tartışmayı yarıda kesiyor."
+        },
+        {
+          "title": "Tek banyo",
+          "setting": "Sabah 7:40. Tek banyo, dört kişi, saat sekizde ders var."
+        },
+        {
+          "title": "Üst katta parti",
+          "setting": "Cumartesi, dördüncü katta parti. Yüksek müzik, koridor tıklım tıklım."
+        },
+        {
+          "title": "Yazı tahtası",
+          "setting": "Pazar sabahı. Kapının yanındaki tahtada Mia’nın el yazısıyla SKOR yazıyor."
+        },
+        {
+          "title": "214 oy veriyor",
+          "setting": "Pazar gecesi. Yerde pizza. Üç kız sana bakıyor."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Üç Kardeş Kafe",
+      "hook": "İlk işin, üç kardeşin işlettiği bir kafede",
+      "knot": "Büyükanne kuralı: en yüksek puanı verdiğin kişi kafeyi alır. İkinci kural: yeni gelenle çıkmak yasak.",
+      "userRole": "Sen: yeni işe alınan kişi",
+      "members": {
+        "rio": {
+          "who": "Kahveyi ciddiye alır. Seni daha da ciddiye alıyor."
+        },
+        "eli": {
+          "who": "Her müşteriyi etkiler. Sende de şansını deniyor."
+        },
+        "max": {
+          "who": "Günde bir fincan kırar. Yine de gözüne girmek istiyor."
+        }
+      },
+      "beats": [
+        {
+          "title": "İlk vardiya",
+          "setting": "Sabah 6. Kafe henüz açılmadı. Büyükanne seni üç kardeşle ve bir notla bıraktı."
+        },
+        {
+          "title": "Yoğun saat",
+          "setting": "Sabah 8:15. Kapıdan taşan bir sıra ve duman çıkaran espresso makinesi."
+        },
+        {
+          "title": "Kapanış vakti",
+          "setting": "Geç saat. Sandalyeler masaların üstünde. Kardeşlerden biri kaldı."
+        },
+        {
+          "title": "Büyükanne geliyor",
+          "setting": "Cuma, sabah 9. Büyükanne bir saate burada."
+        },
+        {
+          "title": "Karar",
+          "setting": "Büyükanne köşe masaya oturuyor. Herkes sana bakıyor."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Yüzük Operasyonu",
+      "hook": "Yanlış grup sohbetine eklendin",
+      "knot": "Üç yabancı cumartesi günü için evlilik teklifi planlıyor. Artık sen de işin içindesin.",
+      "userRole": "Sen: yanlışlıkla eklenen yabancı",
+      "members": {
+        "oscar": {
+          "who": "Cumartesi evlenme teklif ediyor. Pazartesiden beri panikte."
+        },
+        "bea": {
+          "who": "Planı yönetiyor. Sana henüz güvenmiyor."
+        },
+        "remy": {
+          "who": "Bu sohbetteki en iyi şeyin sen olduğunu düşünüyor."
+        }
+      },
+      "beats": [
+        {
+          "title": "Yanlış numara",
+          "setting": "Salı, 23:47. Az önce YÜZÜK OPERASYONU adlı bir gruba eklendin."
+        },
+        {
+          "title": "Plan",
+          "setting": "Çarşamba. Bea 14 adımlı bir plan gönderiyor."
+        },
+        {
+          "title": "Yüzük nerede",
+          "setting": "Perşembe gecesi. Oscar yüzüğü bulamıyor."
+        },
+        {
+          "title": "Konuşmamız lazım",
+          "setting": "Cuma. Nina az önce Oscar’a yazdı: \"Konuşmamız lazım.\""
+        },
+        {
+          "title": "Cumartesi",
+          "setting": "Cumartesi, gün batımı, iskele. Herkes bir teknenin arkasına saklanıyor."
+        }
+      ]
+    }
   }
 }

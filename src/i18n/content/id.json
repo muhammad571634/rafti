@@ -4747,5 +4747,124 @@
         "greeting": "Perjalanan jauh. Mau dengar lagu? Kamu kelihatan butuh lagu yang enak."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Kamar 214",
+      "hook": "Kamar asrama barumu, sudah ada tiga cewek di dalamnya",
+      "knot": "Mereka taruhan siapa di antara mereka yang bakal bikin kamu jatuh hati.",
+      "userRole": "Kamu: teman sekamar baru",
+      "members": {
+        "mia": {
+          "who": "Yang bikin aturan kamar. Yang melanggarnya demi kamu."
+        },
+        "zara": {
+          "who": "Bilang dia nggak ikut taruhan. Masa sih?"
+        },
+        "lina": {
+          "who": "Yang mulai taruhan. Niat banget buat menang."
+        }
+      },
+      "beats": [
+        {
+          "title": "Malam pindahan",
+          "setting": "Jumat malam, kamar 214. Kamu masuk bawa kardus. Tiga cewek langsung berhenti debat di tengah kalimat."
+        },
+        {
+          "title": "Satu kamar mandi",
+          "setting": "Jam 7:40 pagi. Satu kamar mandi, empat orang, kelas jam delapan."
+        },
+        {
+          "title": "Pesta di atas",
+          "setting": "Sabtu, pesta di lantai empat. Musik kencang, lorong penuh orang."
+        },
+        {
+          "title": "Papan tulis",
+          "setting": "Minggu pagi. Di papan dekat pintu tertulis SKOR pakai tulisan tangan Mia."
+        },
+        {
+          "title": "Kamar 214 memilih",
+          "setting": "Minggu malam. Pizza di lantai. Tiga cewek menatapmu."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Kafe Tiga Bersaudara",
+      "hook": "Kerjaan pertamamu, di kafe milik tiga bersaudara",
+      "knot": "Aturan Nenek: siapa yang kamu nilai paling baik bakal dapat kafe ini. Aturan kedua: dilarang pacaran sama anak baru.",
+      "userRole": "Kamu: anak baru",
+      "members": {
+        "rio": {
+          "who": "Serius banget soal kopi. Lebih serius lagi soal kamu."
+        },
+        "eli": {
+          "who": "Bikin semua pelanggan klepek-klepek. Nyoba jurusnya ke kamu juga."
+        },
+        "max": {
+          "who": "Mecahin satu cangkir tiap hari. Tetap pengen bikin kamu terkesan."
+        }
+      },
+      "beats": [
+        {
+          "title": "Shift pertama",
+          "setting": "Jam 6 pagi. Kafe belum buka. Nenek ninggalin kamu bareng tiga bersaudara dan sepucuk catatan."
+        },
+        {
+          "title": "Jam sibuk",
+          "setting": "Jam 8:15 pagi. Antrean sampai luar pintu, dan mesin espreso mulai berasap."
+        },
+        {
+          "title": "Jam tutup",
+          "setting": "Larut malam. Kursi sudah naik ke meja. Satu saudara masih tinggal."
+        },
+        {
+          "title": "Nenek datang",
+          "setting": "Jumat, jam 9 pagi. Nenek tiba sejam lagi."
+        },
+        {
+          "title": "Putusan akhir",
+          "setting": "Nenek duduk di meja pojok. Semua orang menatapmu."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operasi Cincin",
+      "hook": "Kamu dimasukkan ke grup chat yang salah",
+      "knot": "Tiga orang asing lagi nyiapin lamaran buat hari Sabtu. Sekarang kamu ikut terlibat.",
+      "userRole": "Kamu: orang asing yang salah diundang",
+      "members": {
+        "oscar": {
+          "who": "Mau melamar hari Sabtu. Panik dari hari Senin."
+        },
+        "bea": {
+          "who": "Yang ngatur rencana. Belum percaya sama kamu."
+        },
+        "remy": {
+          "who": "Ngerasa kamu hal terbaik di grup chat ini."
+        }
+      },
+      "beats": [
+        {
+          "title": "Salah sambung",
+          "setting": "Selasa, 23:47 malam. Kamu baru saja dimasukkan ke grup bernama OPERASI CINCIN."
+        },
+        {
+          "title": "Rencananya",
+          "setting": "Rabu. Bea ngirim rencana dengan 14 langkah."
+        },
+        {
+          "title": "Mana cincinnya",
+          "setting": "Kamis malam. Oscar nggak nemu cincinnya."
+        },
+        {
+          "title": "Kita perlu bicara",
+          "setting": "Jumat. Nina baru aja nge-chat Oscar: \"Kita perlu bicara.\""
+        },
+        {
+          "title": "Sabtu",
+          "setting": "Sabtu, matahari terbenam, di dermaga. Semua sembunyi di balik perahu."
+        }
+      ]
+    }
   }
 }

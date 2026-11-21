@@ -4747,5 +4747,124 @@
         "greeting": "Viaggio lungo. Vuoi condividere una canzone? Hai l'aria di averne bisogno."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Stanza 214",
+      "hook": "La tua nuova stanza al dormitorio, con già tre ragazze dentro",
+      "knot": "Hanno scommesso su chi di loro ti farà innamorare.",
+      "userRole": "Tu: la persona appena arrivata in stanza",
+      "members": {
+        "mia": {
+          "who": "Ha scritto le regole della casa. Le infrange per te."
+        },
+        "zara": {
+          "who": "Dice che non partecipa alla scommessa. Sarà vero?"
+        },
+        "lina": {
+          "who": "Ha iniziato la scommessa. Conta di vincerla."
+        }
+      },
+      "beats": [
+        {
+          "title": "Notte del trasloco",
+          "setting": "Venerdì sera, stanza 214. Entri con uno scatolone. Tre ragazze smettono di litigare a metà frase."
+        },
+        {
+          "title": "Un solo bagno",
+          "setting": "7:40 del mattino. Un bagno, quattro persone, lezione alle otto."
+        },
+        {
+          "title": "Festa di sopra",
+          "setting": "Sabato, festa al quarto piano. Musica alta, corridoio pieno di gente."
+        },
+        {
+          "title": "La lavagna",
+          "setting": "Domenica mattina. Sulla lavagna vicino alla porta c’è scritto PUNTEGGIO con la grafia di Mia."
+        },
+        {
+          "title": "La 214 vota",
+          "setting": "Domenica sera. Pizza sul pavimento. Tre ragazze ti fissano."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Caffetteria Tre Fratelli",
+      "hook": "Il tuo primo lavoro, in un bar gestito da tre fratelli",
+      "knot": "Regola della nonna: chi voti come migliore si prende il bar. Regola due: niente storie con chi è appena arrivato.",
+      "userRole": "Tu: la persona nuova",
+      "members": {
+        "rio": {
+          "who": "Prende sul serio il caffè. Te ancora più sul serio."
+        },
+        "eli": {
+          "who": "Incanta ogni cliente. Ci prova anche con te."
+        },
+        "max": {
+          "who": "Rompe una tazza al giorno. Vuole comunque colpirti."
+        }
+      },
+      "beats": [
+        {
+          "title": "Primo turno",
+          "setting": "6 del mattino. Il bar è ancora chiuso. La nonna ti ha lasciato con tre fratelli e un biglietto."
+        },
+        {
+          "title": "L’ora di punta",
+          "setting": "8:15 del mattino. Fila fuori dalla porta e macchina del caffè che fuma."
+        },
+        {
+          "title": "Chiusura",
+          "setting": "Tarda sera. Sedie sui tavoli. Un fratello è rimasto."
+        },
+        {
+          "title": "Arriva la nonna",
+          "setting": "Venerdì, ore 9. La nonna arriva tra un’ora."
+        },
+        {
+          "title": "Il verdetto",
+          "setting": "La nonna si siede al tavolo d’angolo. Tutti ti guardano."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operazione Anello",
+      "hook": "Ti hanno aggiunto nella chat di gruppo sbagliata",
+      "knot": "Tre sconosciuti stanno organizzando una proposta per sabato. Ora ci sei dentro anche tu.",
+      "userRole": "Tu: la persona aggiunta per errore",
+      "members": {
+        "oscar": {
+          "who": "Fa la proposta sabato. Nel panico da lunedì."
+        },
+        "bea": {
+          "who": "Dirige il piano. Non si fida ancora di te."
+        },
+        "remy": {
+          "who": "Pensa che tu sia la cosa migliore di questa chat."
+        }
+      },
+      "beats": [
+        {
+          "title": "Numero sbagliato",
+          "setting": "Martedì, 23:47. Ti hanno appena aggiunto a un gruppo chiamato OPERAZIONE ANELLO."
+        },
+        {
+          "title": "Il piano",
+          "setting": "Mercoledì. Bea manda un piano in 14 punti."
+        },
+        {
+          "title": "Dov’è l’anello",
+          "setting": "Giovedì sera. Oscar non trova più l’anello."
+        },
+        {
+          "title": "Dobbiamo parlare",
+          "setting": "Venerdì. Nina ha appena scritto a Oscar: «Dobbiamo parlare.»"
+        },
+        {
+          "title": "Sabato",
+          "setting": "Sabato, tramonto, al molo. Tutti nascosti dietro una barca."
+        }
+      ]
+    }
   }
 }

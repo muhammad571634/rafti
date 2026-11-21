@@ -4747,5 +4747,124 @@
         "greeting": "Viagem longa. Quer ouvir uma música? Com essa cara, você precisa de uma boa."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Quarto 214",
+      "hook": "Seu novo quarto no alojamento, e já tem três garotas morando lá",
+      "knot": "Elas apostaram em qual delas você vai se apaixonar.",
+      "userRole": "Você: quem acabou de chegar no quarto",
+      "members": {
+        "mia": {
+          "who": "Escreveu as regras da casa. Quebra todas por você."
+        },
+        "zara": {
+          "who": "Diz que não está na aposta. Será mesmo?"
+        },
+        "lina": {
+          "who": "Começou a aposta. E pretende ganhar."
+        }
+      },
+      "beats": [
+        {
+          "title": "Noite da mudança",
+          "setting": "Sexta à noite, quarto 214. Você entra com uma caixa. Três garotas param de discutir no meio da frase."
+        },
+        {
+          "title": "Um banheiro só",
+          "setting": "7h40 da manhã. Um banheiro, quatro pessoas, aula às oito."
+        },
+        {
+          "title": "Festa lá em cima",
+          "setting": "Sábado, festa no quarto andar. Música alta, corredor lotado."
+        },
+        {
+          "title": "O quadro branco",
+          "setting": "Domingo de manhã. No quadro perto da porta está escrito PLACAR na letra da Mia."
+        },
+        {
+          "title": "O 214 vota",
+          "setting": "Domingo à noite. Pizza no chão. Três garotas olham pra você."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Café Três Irmãos",
+      "hook": "Seu primeiro emprego, num café tocado por três irmãos",
+      "knot": "Regra da vó: quem você avaliar melhor fica com o café. Regra dois: ninguém namora quem acabou de entrar.",
+      "userRole": "Você: quem acabou de entrar",
+      "members": {
+        "rio": {
+          "who": "Leva café a sério. Leva você mais a sério ainda."
+        },
+        "eli": {
+          "who": "Encanta cada cliente. Tenta o mesmo charme com você."
+        },
+        "max": {
+          "who": "Quebra uma xícara por dia. Quer te impressionar mesmo assim."
+        }
+      },
+      "beats": [
+        {
+          "title": "Primeiro turno",
+          "setting": "6h da manhã. O café ainda não abriu. A vó te deixou com três irmãos e um bilhete."
+        },
+        {
+          "title": "O movimento",
+          "setting": "8h15 da manhã. Fila dobrando a porta e a máquina de expresso soltando fumaça."
+        },
+        {
+          "title": "Hora de fechar",
+          "setting": "Fim de noite. Cadeiras nas mesas. Um irmão ficou."
+        },
+        {
+          "title": "A vó está chegando",
+          "setting": "Sexta, 9h. A vó chega em uma hora."
+        },
+        {
+          "title": "O veredito",
+          "setting": "A vó senta na mesa do canto. Todo mundo olha pra você."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operação Aliança",
+      "hook": "Colocaram você no grupo errado",
+      "knot": "Três desconhecidos estão planejando um pedido de casamento pro sábado. Agora você faz parte.",
+      "userRole": "Você: quem caiu ali por engano",
+      "members": {
+        "oscar": {
+          "who": "Vai pedir em casamento no sábado. Em pânico desde segunda."
+        },
+        "bea": {
+          "who": "Comanda o plano. Ainda não confia em você."
+        },
+        "remy": {
+          "who": "Acha você a melhor coisa desse grupo."
+        }
+      },
+      "beats": [
+        {
+          "title": "Número errado",
+          "setting": "Terça, 23h47. Acabaram de te colocar num grupo chamado OPERAÇÃO ALIANÇA."
+        },
+        {
+          "title": "O plano",
+          "setting": "Quarta. Bea manda um plano com 14 passos."
+        },
+        {
+          "title": "Cadê a aliança",
+          "setting": "Quinta à noite. Oscar não acha a aliança."
+        },
+        {
+          "title": "Precisamos conversar",
+          "setting": "Sexta. Nina acabou de mandar pro Oscar: \"Precisamos conversar.\""
+        },
+        {
+          "title": "Sábado",
+          "setting": "Sábado, pôr do sol, no píer. Todo mundo escondido atrás de um barco."
+        }
+      ]
+    }
   }
 }

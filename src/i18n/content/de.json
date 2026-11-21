@@ -4747,5 +4747,124 @@
         "greeting": "Lange Fahrt. Wollen wir uns einen Song teilen? Du siehst aus, als bräuchtest du einen guten."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Zimmer 214",
+      "hook": "Dein neues Wohnheimzimmer – und drei Mädels wohnen schon drin",
+      "knot": "Sie haben gewettet, in wen von ihnen du dich verliebst.",
+      "userRole": "Du: der neue Mitbewohner",
+      "members": {
+        "mia": {
+          "who": "Hat die Hausregeln geschrieben. Bricht sie für dich."
+        },
+        "zara": {
+          "who": "Sagt, sie macht bei der Wette nicht mit. Wirklich?"
+        },
+        "lina": {
+          "who": "Hat die Wette gestartet. Und will sie gewinnen."
+        }
+      },
+      "beats": [
+        {
+          "title": "Einzugsnacht",
+          "setting": "Freitagabend, Zimmer 214. Du kommst mit einem Karton rein. Drei Mädels brechen mitten im Streit ab."
+        },
+        {
+          "title": "Ein Bad",
+          "setting": "7:40 Uhr morgens. Ein Bad, vier Leute, um acht ist Vorlesung."
+        },
+        {
+          "title": "Party oben",
+          "setting": "Samstag, Party im vierten Stock. Laute Musik, der Flur ist brechend voll."
+        },
+        {
+          "title": "Das Whiteboard",
+          "setting": "Sonntagmorgen. Auf dem Board an der Tür steht PUNKTE in Mias Handschrift."
+        },
+        {
+          "title": "Zimmer 214 stimmt ab",
+          "setting": "Sonntagabend. Pizza auf dem Boden. Drei Mädels schauen dich an."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Café der drei Brüder",
+      "hook": "Dein erster Job – in einem Café von drei Brüdern",
+      "knot": "Omas Regel: Wer bei dir am besten abschneidet, bekommt das Café. Regel zwei: Niemand datet die neue Aushilfe.",
+      "userRole": "Du: die neue Aushilfe",
+      "members": {
+        "rio": {
+          "who": "Nimmt Kaffee ernst. Dich nimmt er noch ernster."
+        },
+        "eli": {
+          "who": "Wickelt jeden Gast um den Finger. Versucht es auch bei dir."
+        },
+        "max": {
+          "who": "Zerbricht jeden Tag eine Tasse. Will dich trotzdem beeindrucken."
+        }
+      },
+      "beats": [
+        {
+          "title": "Erste Schicht",
+          "setting": "6 Uhr morgens. Das Café hat noch zu. Oma hat dich mit drei Brüdern und einem Zettel alleingelassen."
+        },
+        {
+          "title": "Der Ansturm",
+          "setting": "8:15 Uhr. Eine Schlange bis auf die Straße, und die Espressomaschine qualmt."
+        },
+        {
+          "title": "Feierabend",
+          "setting": "Später Abend. Stühle auf den Tischen. Ein Bruder ist noch geblieben."
+        },
+        {
+          "title": "Oma kommt",
+          "setting": "Freitag, 9 Uhr. Oma ist in einer Stunde da."
+        },
+        {
+          "title": "Das Urteil",
+          "setting": "Oma sitzt am Ecktisch. Alle schauen dich an."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operation Ring",
+      "hook": "Du wurdest in den falschen Gruppenchat gepackt",
+      "knot": "Drei Fremde planen für Samstag einen Heiratsantrag. Jetzt steckst du mit drin.",
+      "userRole": "Du: die Person, die aus Versehen eingeladen wurde",
+      "members": {
+        "oscar": {
+          "who": "Macht am Samstag den Antrag. Schiebt seit Montag Panik."
+        },
+        "bea": {
+          "who": "Leitet den Plan. Traut dir noch nicht über den Weg."
+        },
+        "remy": {
+          "who": "Findet, du bist das Beste an diesem Chat."
+        }
+      },
+      "beats": [
+        {
+          "title": "Falsche Nummer",
+          "setting": "Dienstag, 23:47 Uhr. Du wurdest gerade in eine Gruppe namens OPERATION RING hinzugefügt."
+        },
+        {
+          "title": "Der Plan",
+          "setting": "Mittwoch. Bea schickt einen Plan mit 14 Punkten."
+        },
+        {
+          "title": "Wo ist der Ring",
+          "setting": "Donnerstagabend. Oscar findet den Ring nicht mehr."
+        },
+        {
+          "title": "Wir müssen reden",
+          "setting": "Freitag. Nina hat Oscar gerade geschrieben: „Wir müssen reden.“"
+        },
+        {
+          "title": "Samstag",
+          "setting": "Samstag, Sonnenuntergang, am Steg. Alle verstecken sich hinter einem Boot."
+        }
+      ]
+    }
   }
 }

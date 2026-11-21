@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z318. Group stories translated into all 12 remaining languages (owner's "next" on full-app translation audit, 2026-11-21, Gemini). DONE, pushed to `local-work`
+- **What**: Translated `groupStories` (`g_dorm214`, `g_cafe`, `g_ring` — 51 strings per language across card hooks, knots, `userRole`, member bios, and 5 scene beats each) into `src/i18n/content/{de,es,fr,id,it,ja,ko,pt-BR,th,tr,vi,zh-Hant}.json` per `docs/agent-tasks/translate-group-stories.md` (`ru` was already complete). Member names stay in Latin letters; informal "you" and warm comedy tone preserved.
+- **Full-app audit**: Verified all `src/i18n/locales/*.json` (2,480 UI keys x 13 languages) and all `src/i18n/content/*.json` (2,580 content keys x 13 languages) are translated with 0 missing non-plural strings and 0 multi-word untranslated UI/content strings in production screens (only brand names and 5 dev-only test buttons remain in English).
+- **Checked**: `npm run check:content` PASS (all 13 languages, 0 warnings), `npm run check:locales` PASS, `npx tsc --noEmit` 0 errors, `npm test` 1131/1131 pass.
+
 ### 0z317. Group stories: a comedy in scenes with 2-3 friends (owner approved the prototype: "kino kabi, jarayon oldinga borsin", 2026-11-21, Claude 1, Opus 5.5). DONE, OTA preview (`5a967b46`, `b64ed02f`), seen on the A51
 - **What**: Find → Stories → Groups chip, three stories (Dorm 214, Three Brothers Café, Operation Ring), each 2-3 members and 5 scenes; a card tap makes the members and a story group chat that opens on scene 1 (scene card, then two members talk before the user); every member turn carries the story cue (premise, scene, goal, sitcom tone) through the existing group cue, so no server deploy; Next scene chip (lit after 6 messages); after the last scene the group goes on. Design: `docs/group-stories.md`; cost rows in `docs/cost-ledger.md`.
 - **Seen on the A51 (Russian)**: Groups chip and cards; Operation Ring playing scene 2 with in-character Russian lines from Bea and Oscar, Next scene chip over the input.

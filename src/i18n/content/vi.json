@@ -4747,5 +4747,124 @@
         "greeting": "Chuyến đi dài nhỉ. Muốn nghe chung nhạc không? Trông cậu có vẻ cần một bài hay đấy."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Phòng 214",
+      "hook": "Phòng ký túc xá mới của bạn, đã có ba cô gái ở sẵn",
+      "knot": "Họ cá cược xem bạn sẽ phải lòng ai trong ba người.",
+      "userRole": "Bạn: bạn cùng phòng mới",
+      "members": {
+        "mia": {
+          "who": "Người viết nội quy phòng. Phá lệ vì bạn."
+        },
+        "zara": {
+          "who": "Bảo mình không tham gia cá cược. Thật không đấy?"
+        },
+        "lina": {
+          "who": "Người khơi mào kèo cược. Quyết tâm thắng cho bằng được."
+        }
+      },
+      "beats": [
+        {
+          "title": "Đêm dọn vào",
+          "setting": "Tối thứ Sáu, phòng 214. Bạn bê thùng đồ bước vào. Ba cô gái im bặt giữa chừng cuộc cãi vã."
+        },
+        {
+          "title": "Một phòng tắm",
+          "setting": "7:40 sáng. Một nhà tắm, bốn con người, tám giờ vào lớp."
+        },
+        {
+          "title": "Tiệc tầng trên",
+          "setting": "Thứ Bảy, tiệc ở tầng bốn. Nhạc ầm ĩ, hành lang chật kín người."
+        },
+        {
+          "title": "Bảng trắng",
+          "setting": "Sáng Chủ nhật. Tấm bảng cạnh cửa ghi chữ ĐIỂM SỐ bằng nét chữ của Mia."
+        },
+        {
+          "title": "Phòng 214 bỏ phiếu",
+          "setting": "Tối Chủ nhật. Pizza đặt dưới sàn. Ba cô gái nhìn chằm chằm vào bạn."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Quán Cà Phê Ba Anh Em",
+      "hook": "Công việc đầu tiên của bạn, tại quán cà phê của ba anh em",
+      "knot": "Luật của bà: ai được bạn chấm điểm cao nhất sẽ thừa kế quán. Luật hai: cấm hẹn hò với nhân viên mới.",
+      "userRole": "Bạn: nhân viên mới",
+      "members": {
+        "rio": {
+          "who": "Nghiêm túc với cà phê. Với bạn còn nghiêm túc hơn."
+        },
+        "eli": {
+          "who": "Thả thính mọi khách hàng. Thử chiêu đó với cả bạn."
+        },
+        "max": {
+          "who": "Mỗi ngày làm vỡ một cái cốc. Vẫn muốn gây ấn tượng với bạn."
+        }
+      },
+      "beats": [
+        {
+          "title": "Ca đầu tiên",
+          "setting": "6 giờ sáng. Quán chưa mở cửa. Bà để bạn lại với ba anh em và một mảnh giấy nhắn."
+        },
+        {
+          "title": "Giờ cao điểm",
+          "setting": "8:15 sáng. Khách xếp hàng dài ra tận cửa, còn máy pha cà phê thì bốc khói."
+        },
+        {
+          "title": "Giờ đóng cửa",
+          "setting": "Đêm muộn. Ghế đã xếp lên bàn. Một trong ba anh em vẫn nán lại."
+        },
+        {
+          "title": "Bà sắp tới",
+          "setting": "Thứ Sáu, 9 giờ sáng. Một tiếng nữa bà sẽ đến."
+        },
+        {
+          "title": "Phán quyết",
+          "setting": "Bà ngồi ở bàn góc. Mọi ánh mắt đều đổ dồn về phía bạn."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Chiến Dịch Nhẫn",
+      "hook": "Bạn bị thêm nhầm vào một nhóm chat",
+      "knot": "Ba người lạ đang lên kế hoạch cầu hôn vào thứ Bảy. Giờ bạn cũng ở trong cuộc.",
+      "userRole": "Bạn: người lạ bị thêm nhầm",
+      "members": {
+        "oscar": {
+          "who": "Thứ Bảy cầu hôn. Hoảng loạn từ tận thứ Hai."
+        },
+        "bea": {
+          "who": "Điều phối kế hoạch. Vẫn chưa tin tưởng bạn."
+        },
+        "remy": {
+          "who": "Nghĩ bạn là điều tuyệt nhất trong nhóm chat này."
+        }
+      },
+      "beats": [
+        {
+          "title": "Nhầm số rồi",
+          "setting": "Thứ Ba, 23:47. Bạn vừa bị thêm vào nhóm tên là CHIẾN DỊCH NHẪN."
+        },
+        {
+          "title": "Kế hoạch",
+          "setting": "Thứ Tư. Bea gửi một kế hoạch gồm 14 bước."
+        },
+        {
+          "title": "Nhẫn đâu rồi",
+          "setting": "Tối thứ Năm. Oscar không tìm thấy chiếc nhẫn."
+        },
+        {
+          "title": "Mình cần nói chuyện",
+          "setting": "Thứ Sáu. Nina vừa nhắn cho Oscar: \"Mình cần nói chuyện.\""
+        },
+        {
+          "title": "Thứ Bảy",
+          "setting": "Thứ Bảy, hoàng hôn, trên bến tàu. Mọi người đang trốn sau một chiếc thuyền."
+        }
+      ]
+    }
   }
 }

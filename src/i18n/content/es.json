@@ -4747,5 +4747,124 @@
         "greeting": "Viaje largo. ¿Quieres compartir una canción? Pareces necesitar una buena."
       }
     }
+  },
+  "groupStories": {
+    "g_dorm214": {
+      "name": "Cuarto 214",
+      "hook": "Tu nuevo cuarto de residencia, y ya viven tres chicas ahí",
+      "knot": "Hicieron una apuesta a ver de cuál te enamoras.",
+      "userRole": "Tú: quien acaba de mudarse",
+      "members": {
+        "mia": {
+          "who": "Escribió las reglas del cuarto. Se las salta por ti."
+        },
+        "zara": {
+          "who": "Dice que no entró en la apuesta. ¿Seguro?"
+        },
+        "lina": {
+          "who": "Empezó la apuesta. Piensa ganarla."
+        }
+      },
+      "beats": [
+        {
+          "title": "Noche de mudanza",
+          "setting": "Viernes por la noche, cuarto 214. Entras con una caja. Tres chicas se callan a mitad de una discusión."
+        },
+        {
+          "title": "Un solo baño",
+          "setting": "7:40 a. m. Un baño, cuatro personas y clase a las ocho."
+        },
+        {
+          "title": "Fiesta arriba",
+          "setting": "Sábado, fiesta en el cuarto piso. Música a tope y el pasillo lleno de gente."
+        },
+        {
+          "title": "La pizarra",
+          "setting": "Domingo por la mañana. En la pizarra de la puerta pone MARCADOR con la letra de Mia."
+        },
+        {
+          "title": "El cuarto 214 vota",
+          "setting": "Domingo por la noche. Pizza en el suelo. Tres chicas te miran fijamente."
+        }
+      ]
+    },
+    "g_cafe": {
+      "name": "Café Tres Hermanos",
+      "hook": "Tu primer trabajo, en una cafetería de tres hermanos",
+      "knot": "Regla de la abuela: quien saque mejor nota tuya se queda el café. Regla dos: nada de ligar con quien acaba de entrar.",
+      "userRole": "Tú: quien acaba de empezar",
+      "members": {
+        "rio": {
+          "who": "Se toma el café en serio. A ti, más en serio aún."
+        },
+        "eli": {
+          "who": "Encanta a toda la clientela. Lo intenta contigo también."
+        },
+        "max": {
+          "who": "Rompe una taza al día. Igual quiere impresionarte."
+        }
+      },
+      "beats": [
+        {
+          "title": "Primer turno",
+          "setting": "6:00 a. m. El café aún no abre. La abuela te dejó con tres hermanos y una nota."
+        },
+        {
+          "title": "Hora pico",
+          "setting": "8:15 a. m. Fila hasta la calle y la cafetera echando humo."
+        },
+        {
+          "title": "Hora de cierre",
+          "setting": "Ya de noche. Sillas sobre las mesas. Uno de los hermanos se quedó."
+        },
+        {
+          "title": "Viene la abuela",
+          "setting": "Viernes, 9:00 a. m. La abuela llega en una hora."
+        },
+        {
+          "title": "El veredicto",
+          "setting": "La abuela se sienta en la mesa del rincón. Todos te miran."
+        }
+      ]
+    },
+    "g_ring": {
+      "name": "Operación Anillo",
+      "hook": "Te metieron al grupo equivocado",
+      "knot": "Tres desconocidos planean una propuesta de matrimonio para el sábado. Ahora estás dentro.",
+      "userRole": "Tú: quien entró por error al chat",
+      "members": {
+        "oscar": {
+          "who": "Propone matrimonio el sábado. En pánico desde el lunes."
+        },
+        "bea": {
+          "who": "Dirige el plan. Todavía no confía en ti."
+        },
+        "remy": {
+          "who": "Cree que eres lo mejor de este chat."
+        }
+      },
+      "beats": [
+        {
+          "title": "Número equivocado",
+          "setting": "Martes, 11:47 p. m. Te acaban de añadir a un grupo llamado OPERACIÓN ANILLO."
+        },
+        {
+          "title": "El plan",
+          "setting": "Miércoles. Bea manda un plan de 14 pasos."
+        },
+        {
+          "title": "¿Dónde está el anillo?",
+          "setting": "Jueves por la noche. Oscar no encuentra el anillo."
+        },
+        {
+          "title": "Tenemos que hablar",
+          "setting": "Viernes. Nina le acaba de escribir a Oscar: «Tenemos que hablar»."
+        },
+        {
+          "title": "Sábado",
+          "setting": "Sábado, atardecer, en el muelle. Todos escondidos detrás de un bote."
+        }
+      ]
+    }
   }
 }
