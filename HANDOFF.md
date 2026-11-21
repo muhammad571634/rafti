@@ -5,7 +5,8 @@
 - **Dev**: Profile > Development > "Keepsake note" (preview builds) makes one now for the friend talked with last (fix `637cb07c` opens it by the friend's id; that fix is not in an OTA yet, it rides the next one).
 - **Seen on the A51**: Milo's keepsake opened with the kicker and "Free"; after the swap his note recalled the lake recording from memory. No paywall.
 - **Checked**: tsc 0, `npm test` 1125/1125, `check:locales` PASS.
-- **Still to do**: (1) a small "new keepsake" mark on Today's note card could make it more visible (owner's taste, design freeze); (2) the paid-key items from 0z312.
+- **Today mark (owner's "qilaver", 2026-11-21)**: a waiting keepsake's row on Today says "{n} messages together" with a small sparkle in the note's warm colour instead of "Sealed" (`036b3bb8`, OTA `da461c40`, also carries the dev-row fix). NOT seen on the A51: the phone disconnected; check it via Profile > Development > Keepsake note, then Today.
+- **Still to do**: see the Today mark on the A51; the paid-key items from 0z312.
 
 ### 0z312. START HERE: Promises group on Memories + PolyBuzz live side-by-side (owner's "Va'dalar alohida guruh", 2026-11-20, Claude 1, Opus 5.5). DONE, OTA `8263cc5c` (preview, runtime 1.3.0), seen on the A51
 - **Promises group** (`src/lib/memory-groups.ts`, `src/app/character/[id]/memories.tsx`): every `promise` memory (any `about`, not a pinned chat quote) now leads the Story tab under "Promises" (`tabOf`), instead of hiding in You > Plans; counts follow (`countByTab`). Plans set with this friend from today on (`upcomingPlans`, soonest first, all-day before timed) lead the group as calendar rows; a tap opens the chat's `PlanDetailSheet` (who, when, reminder, Us, Delete). A promise with `until` shows that day (Today / Tomorrow / short date). New key `memories.groups.promises` in 14 locales. Tests in `memory-groups.test.ts`.
