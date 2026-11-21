@@ -17,8 +17,7 @@ bill, the launch key will. Plans and prices live in `src/economy/plans.ts`, the 
 | Moment / first text (`[moment]`) | the friend writes first: plan added, reminder, "how did it go?", alarm set, care, quest, greetings | ~2,900 | 0 | 150-220 | ~$0.0010 |
 | Thread text (touch) | each text the friend planned to send later (up to 4 per thread) | not measured yet | | | ~a moment |
 | A friend's moments for the week (`moments` write, 0z262) | once a week per friend whose page (or the chat's scene list) is opened, per app language; nothing for a stranger | ~3,300 | 0 | ~425 | ~$0.0005 (measured on the free key, 2026-11-17, flash-lite, 2.4-3.3 s) |
-| Group story turn (`[group]`, 0z317, docs/group-stories.md) | each user message in a story group: two member replies (a second member always joins in) | a group reply's + ~180 story-cue tokens each (turn part, not cached) | | | ~2 group replies; not measured yet |
-| Group story scene (`[group]`, 0z317) | each scene opening (5 per story; the first on the card tap): lead + one reaction, before the user writes | as above | | | ~2 group replies; not measured yet |
+| Group member reply in a story (`usage_events` mode `group`, 0z317, docs/group-stories.md) | one member's line; a story turn is two of them (a second member always joins in), a scene opening two more | 4,034 avg (5 calls, 2026-11-21 08:05-08:29 UTC, flash-lite) | 0 | 160 avg | $0.00125 avg; a story turn ~$0.0025; a whole story (5 scenes × (2 openings + 6 turns × 2)) ~70 calls ≈ **$0.09** |
 | A scene's first line (`[moment]`, `sceneOpenCue`, 0z262) | each app scene started with the model on (a friend's own moment and a user's scene with its line cost nothing) | ~a moment | | | ~$0.0010 |
 
 On 2026-10-31 a reply was $0.0010-0.0014 and a memory pass ~$0.0005: the prompt grew since (clock,

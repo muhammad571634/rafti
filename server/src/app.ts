@@ -1303,7 +1303,11 @@ export function createApp(
           costUsd: costUsd(call.result.model, call.result.usage),
         });
       }
-      console.log(`[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms calls=${calls.length}${blocked ? ` safety=${blocked}` : ''}`);
+      // Tokens and $ as `[reply]` logs them (cost ledger: group stories, 0z317); no chat words.
+      const cost = costUsd(result.model, result.usage);
+      console.log(
+        `[group] ${input.character.name} ${result.model ?? provider.name} ${Date.now() - started}ms in=${result.usage.input ?? '?'} cached=${result.usage.cached ?? 0} out=${result.usage.output ?? '?'} $${cost?.toFixed(6) ?? '?'} cue=${input.cue?.length ?? 0} calls=${calls.length}${blocked ? ` safety=${blocked}` : ''}`,
+      );
       const lines = cleanGroupLines(reply.bubbles, input.character, input.others);
       if (!lines.length) return c.json({ error: 'empty' }, 502);
       return c.json({ messages: lines, crisis, ...(reply.minor ? { minor: true } : {}), photos: reply.photos, day: crisis ? undefined : reply.day, model: result.model ?? provider.name, charge: paid?.charge });
