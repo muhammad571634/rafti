@@ -39,7 +39,7 @@ describe('a double tap opens a screen once', () => {
   it('answers a repeat as handled with the state unchanged, and passes the rest to the stack router', () => {
     const calls: string[] = [];
     const original = { getStateForAction: (s: typeof state, a: { type: string }) => (calls.push(a.type), { state: s, affectedRouteKey: 'new' }) };
-    const router = noDuplicatePush(original);
+    const router = noDuplicatePush<typeof state, ReturnType<typeof push>, typeof original>(original);
     const repeat = router.getStateForAction(state, push('chat/[id]', { id: 'sam' }), undefined as never);
     assert.deepEqual(repeat, { state, affectedRouteKey: 'chat-1' });
     assert.deepEqual(calls, []);

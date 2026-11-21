@@ -25,6 +25,13 @@ const empty: CreateForm = {
   dislikes: '',
   opinions: [],
   category: 'original',
+  relation: '',
+  mask: '',
+  secret: '',
+  history: '',
+  exception: '',
+  arcBeats: [],
+  arcFor: '',
 };
 
 describe('the create chain (0z149)', () => {

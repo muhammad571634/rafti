@@ -41,12 +41,12 @@ describe('temper', () => {
 
   it('writes the ask, its answer and the first comeback days in their voice', () => {
     for (const temper of TEMPERS) {
-      assert.match(askLine(temper, false, 's'), /text|message|wr(i|o)te/i);
-      assert.notEqual(askLine(temper, true, 's'), askLine(temper, false, 's'));
-      assert.ok(askAnswer(temper, true, 's') && askAnswer(temper, false, 's'));
-      assert.ok(temperComeback(temper, 1, 'my exam', 's'));
-      assert.ok(temperComeback(temper, 2, '', 's'));
-      assert.equal(temperComeback(temper, 5, '', 's'), null);
+      assert.match(askLine(temper, false, 's', undefined), /text|message|wr(i|o)te/i);
+      assert.notEqual(askLine(temper, true, 's', undefined), askLine(temper, false, 's', undefined));
+      assert.ok(askAnswer(temper, true, 's', undefined) && askAnswer(temper, false, 's', undefined));
+      assert.ok(temperComeback(temper, 1, 'my exam', 's', undefined));
+      assert.ok(temperComeback(temper, 2, '', 's', undefined));
+      assert.equal(temperComeback(temper, 5, '', 's', undefined), null);
     }
   });
 });

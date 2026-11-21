@@ -156,7 +156,7 @@ describe('threads: the stand-in until the server', () => {
 
   it('quotes the user instead of knowing the topic', () => {
     const t = thread({ quote: 'I have to finish the report' });
-    const line = mockTouchLine(t, { id: 'th1:0', at: at(0, 14), why: 'check', phase: 'check' }, 'teasing', 'th1:0');
+    const line = mockTouchLine(t, { id: 'th1:0', at: at(0, 14), why: 'check', phase: 'check' }, 'teasing', 'th1:0', undefined);
     assert.ok(line.startsWith('Oi! '));
   });
 });

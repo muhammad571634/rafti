@@ -27,7 +27,7 @@ describe('plural forms on an engine without Intl.PluralRules', () => {
       assert.deepEqual(rules.resolvedOptions().pluralCategories, ['one', 'few', 'many', 'other']);
       assert.equal(new Intl.PluralRules('ja').resolvedOptions().pluralCategories.length, 1);
     } finally {
-      Intl.PluralRules = real;
+      (Intl as unknown as { PluralRules: unknown }).PluralRules = real;
     }
   });
 });

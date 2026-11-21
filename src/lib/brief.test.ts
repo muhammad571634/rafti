@@ -91,9 +91,9 @@ describe('morning brief', () => {
       { title: 'exam', time: '09:00' },
       { title: 'gym', time: '18:00' },
     ];
-    const line = briefLine(items, 'warm', 'seed');
+    const line = briefLine(items, 'warm', 'seed', undefined);
     assert.match(line, /Today: exam at 09:00 and gym at 18:00\./);
-    assert.equal(line, briefLine(items, 'warm', 'seed'));
-    assert.match(briefLine([{ title: 'exam', time: '09:00' }], 'shy', 'x'), /Exam at 09:00 today\./);
+    assert.equal(line, briefLine(items, 'warm', 'seed', undefined));
+    assert.match(briefLine([{ title: 'exam', time: '09:00' }], 'shy', 'x', undefined), /Exam at 09:00 today\./);
   });
 });

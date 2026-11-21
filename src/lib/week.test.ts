@@ -71,12 +71,12 @@ describe('weekly recap', () => {
   });
 
   it('says what happened, in their temper, and never what did not', () => {
-    const line = weekLine({ days: 5, messages: 40, wins: ['the exam', 'the report'], winCount: 2, quests: 1, pages: 2, mood: 'happy' }, 'warm', 's');
+    const line = weekLine({ days: 5, messages: 40, wins: ['the exam', 'the report'], winCount: 2, quests: 1, pages: 2, mood: 'happy' }, 'warm', 's', undefined);
     assert.match(line, /We talked 5 days out of 7\./);
     assert.match(line, /Your wins: the exam and the report 🎉/);
     assert.match(line, /1 real-life quest too/);
     assert.match(line, /happy one/);
-    const quiet = weekLine({ days: 2, messages: 3, wins: [], winCount: 0, quests: 0, pages: 0 }, 'shy', 's');
+    const quiet = weekLine({ days: 2, messages: 3, wins: [], winCount: 0, quests: 0, pages: 0 }, 'shy', 's', undefined);
     assert.doesNotMatch(quiet, /wins|quest|diary/i);
   });
 });

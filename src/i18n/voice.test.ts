@@ -19,7 +19,7 @@ describe('voice and fill', () => {
 
   test('setVoiceSource provides translated mock pools', () => {
     const en = { hello: 'Hello' };
-    setVoiceSource((section, def) => (section === 'test' ? { hello: 'Hola' } : def));
+    setVoiceSource((section, def) => (section === 'test' ? ({ hello: 'Hola' } as typeof def) : def));
     assert.deepEqual(voice('test', en), { hello: 'Hola' });
     assert.deepEqual(voice('other', en), en);
     // Reset to default

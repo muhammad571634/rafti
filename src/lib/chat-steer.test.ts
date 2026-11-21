@@ -81,9 +81,9 @@ describe('what the model is told', () => {
   it('has words for every skip, and mock lines for each', () => {
     for (const skip of TIME_SKIPS) {
       assert.ok(SKIP_TEXT[skip]);
-      assert.ok(mockSteerLines('skip', skip, 'seed').length > 0);
+      assert.ok(mockSteerLines('skip', skip, 'seed', undefined).length > 0);
     }
-    assert.deepEqual(mockSteerLines('continue', undefined, 'a'), mockSteerLines('continue', undefined, 'a'));
+    assert.deepEqual(mockSteerLines('continue', undefined, 'a', undefined), mockSteerLines('continue', undefined, 'a', undefined));
   });
 });
 
@@ -144,7 +144,7 @@ describe('own and scene time skips', () => {
   });
 
   it('has mock lines for every kind of skip', () => {
-    for (const skip of ['scene', 'own'] as const) assert.ok(mockSteerLines('skip', skip, 'seed').length > 0);
+    for (const skip of ['scene', 'own'] as const) assert.ok(mockSteerLines('skip', skip, 'seed', undefined).length > 0);
   });
 });
 

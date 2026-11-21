@@ -111,7 +111,7 @@ describe('a change and where each offer stands (0z136, seen on the A51)', () => 
   });
 
   it('reads cards from Us and Alarms in the history, where they happened, not as offers (0z139)', () => {
-    const mine = (setup: object, id: string) => ({ ...card({ from: 'app', ...setup }, id), author: 'me' }) as never;
+    const mine = (setup: Record<string, unknown>, id: string) => ({ ...(card({ from: 'app', ...setup }, id) as object), author: 'me' }) as never;
     const set = mine({ kind: 'plan', title: 'Sinema', date: '2026-11-13', time: '20:00', madeId: 'sch_1', removed: true }, 'm1');
     const off = mine({ kind: 'plan', title: 'Sinema', date: '2026-11-13', time: '20:00', madeId: 'sch_1', cancelled: true }, 'm2');
     const wake = mine({ kind: 'alarm', title: '', date: '2026-11-08', time: '07:24', repeat: [1, 2], madeId: 'alarm_1' }, 'm3');

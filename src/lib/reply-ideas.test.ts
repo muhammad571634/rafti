@@ -38,7 +38,7 @@ describe('reply ideas', () => {
       for (const idea of ideas) {
         assert.ok(idea.intent, reach);
         assert.ok(idea.label.length <= 18, `${reach}: ${idea.label}`);
-        assert.ok(ideaAnswer(reach, idea.intent!, 'seed').length > 0);
+        assert.ok(ideaAnswer(reach, idea.intent!, 'seed', undefined).length > 0);
       }
     }
     assert.deepEqual(ideasFor('unknown:thing'), []);

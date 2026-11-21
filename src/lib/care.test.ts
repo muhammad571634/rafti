@@ -68,8 +68,8 @@ describe('check-ins', () => {
 
   it('has a line and a server cue for every kind, the same line for the same check-in', () => {
     for (const kind of CARE_KINDS) {
-      assert.ok(careLine(kind, 'x').length > 0);
-      assert.equal(careLine(kind, 'seed'), careLine(kind, 'seed'));
+      assert.ok(careLine(kind, 'x', undefined).length > 0);
+      assert.equal(careLine(kind, 'seed', undefined), careLine(kind, 'seed', undefined));
       assert.match(careCue(kind).join('\n'), /You are writing first/);
     }
   });

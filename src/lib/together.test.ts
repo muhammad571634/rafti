@@ -20,11 +20,11 @@ describe('togetherWith: what the user set up with this friend', () => {
     { characterId: 'hana', title: 'Today', date: '2026-11-07', time: '09:00' },
     { characterId: 'erik', title: 'Not hers', date: '2026-11-08' },
   ];
-  const alarms = [
+  const alarms: Parameters<typeof togetherWith>[0]['alarms'] = [
     { characterId: 'hana', enabled: true, hour: 7, minute: 0, repeat: [1, 2, 3, 4, 5], label: 'Gym' },
-    { characterId: 'hana', enabled: false, hour: 9, minute: 0, repeat: [] },
-    { characterId: 'erik', enabled: true, hour: 6, minute: 0, repeat: [] },
-    { enabled: true, hour: 8, minute: 0, repeat: [] },
+    { characterId: 'hana', enabled: false, hour: 9, minute: 0, repeat: [], label: '' },
+    { characterId: 'erik', enabled: true, hour: 6, minute: 0, repeat: [], label: '' },
+    { enabled: true, hour: 8, minute: 0, repeat: [], label: '' },
   ];
 
   it('keeps her plans from yesterday on, soonest first, and the alarms she wakes them with', () => {

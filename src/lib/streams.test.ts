@@ -141,10 +141,10 @@ describe('mock lines', () => {
     // Rounds end on lines 8, 14, 20 and 26.
     const ends = new Set([7, 13, 19, 25]);
     for (const id of ['s1', 's2', 'stream_abc']) {
-      const lines = Array.from({ length: STREAM_MAX_LINES }, (_, i) => mockStreamLine(id, i, ends.has(i), 'Theo', 'Pizza'));
+      const lines = Array.from({ length: STREAM_MAX_LINES }, (_, i) => mockStreamLine(id, i, ends.has(i), 'Theo', 'Pizza', undefined));
       assert.match(lines[0], /Pizza/);
       assert.equal(new Set(lines).size, lines.length, id);
-      assert.equal(mockStreamLine(id, 3, false, 'Theo', 'Pizza'), lines[3]);
+      assert.equal(mockStreamLine(id, 3, false, 'Theo', 'Pizza', undefined), lines[3]);
     }
   });
 });

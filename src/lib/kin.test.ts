@@ -27,8 +27,8 @@ describe('family labels', () => {
 
   it('say the same line for the same moment', () => {
     const key = lifeKey('2026-10-26', 'c_kai', 'lunch');
-    assert.equal(lifeLine('parent', 'lunch', key), lifeLine('parent', 'lunch', key));
-    assert.match(lifeLine('parent', 'lunch', key), /lunch|eat/i);
+    assert.equal(lifeLine('parent', 'lunch', key, undefined), lifeLine('parent', 'lunch', key, undefined));
+    assert.match(lifeLine('parent', 'lunch', key, undefined), /lunch|eat/i);
   });
 
   it('tell the model it is family and never romantic', () => {
@@ -61,7 +61,7 @@ describe('family labels', () => {
   });
 
   it('say hello like family', () => {
-    assert.equal(familyHello('parent', 'c_kai'), familyHello('parent', 'c_kai'));
-    assert.ok(familyHello('grandparent', 'x').length > 0);
+    assert.equal(familyHello('parent', 'c_kai', undefined), familyHello('parent', 'c_kai', undefined));
+    assert.ok(familyHello('grandparent', 'x', undefined).length > 0);
   });
 });

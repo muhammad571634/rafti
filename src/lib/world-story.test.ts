@@ -27,7 +27,7 @@ const arc: CharacterArc = {
 };
 
 const chapter = (id: string, opensOnDay: number): WorldChapter => ({ id, title: id, beat: `${id} beat`, opensOnDay });
-const round = { line: 'x', choices: [] };
+const round = { line: 'x', choices: [] } as unknown as WorldEvent['round'];
 const event = (over: Partial<WorldEvent>): WorldEvent => ({ id: 'e', title: 'E', when: 'w', note: 'n', every: 'week', days: 1, line: 'l', round, ...over });
 
 const story: WorldStory = {

@@ -26,7 +26,7 @@ describe('first texts (B1.4a): one request shape for the four kinds', () => {
     for (const request of requests) {
       const text = joinParts(firstTextParts(request));
       assert.match(text, /Kai Arden/, request.kind);
-      assert.ok(text.includes(expected[request.kind]), request.kind);
+      assert.ok(text.includes(expected[request.kind as keyof typeof expected]), request.kind);
       assert.ok(text.includes(TOUCH_SHAPE), request.kind);
     }
   });
@@ -64,7 +64,7 @@ describe('first texts (B1.4a): one request shape for the four kinds', () => {
   it('keeps only the last lines of a long chat', () => {
     const long = Array.from({ length: 100 }, (_, i) => line('me', `line ${i}`));
     const clean = cleanFirstText({ kind: 'day', input: { ...requests[2].input, today: long } });
-    assert.equal((clean?.input as { today: unknown[] }).today.length, 40);
+    assert.equal((clean?.input as unknown as { today: unknown[] }).today.length, 40);
   });
 });
 

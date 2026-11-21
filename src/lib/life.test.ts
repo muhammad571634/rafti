@@ -90,14 +90,14 @@ describe('real life first', () => {
   });
 
   it('gives a small quest with an offer, and pays for it', () => {
-    const { quest, offer } = mockQuest('th42');
+    const { quest, offer } = mockQuest('th42', undefined);
     assert.ok(offer.includes(quest));
     assert.ok(QUEST_REWARD > 0);
     assert.deepEqual(
       ideasFor('quest:th42').map((i) => i.intent),
       ['yes', 'no'],
     );
-    assert.match(ideaAnswer('quest:th42', 'yes', 's'), /\w/);
+    assert.match(ideaAnswer('quest:th42', 'yes', 's', undefined), /\w/);
   });
 
   it('asks when to remind of a plan, a break and sleep, each with answers that fit', () => {
@@ -106,10 +106,10 @@ describe('real life first', () => {
       ['lead30', 'lead60', 'off'],
     );
     assert.equal(ideasFor('pause:night').length, 2);
-    assert.match(ideaAnswer('pause:night', 'rough', 's'), /stay|here/i);
-    assert.match(ideaAnswer('thread:goal:th1', 'rough', 's'), /okay|happens/i);
+    assert.match(ideaAnswer('pause:night', 'rough', 's', undefined), /stay|here/i);
+    assert.match(ideaAnswer('thread:goal:th1', 'rough', 's', undefined), /okay|happens/i);
     for (const temper of TEMPERS) {
-      assert.ok(mockBreakLine(temper, 's') && mockNightLine(temper, 's'));
+      assert.ok(mockBreakLine(temper, 's', undefined) && mockNightLine(temper, 's', undefined));
     }
   });
 
