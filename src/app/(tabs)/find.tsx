@@ -30,11 +30,13 @@ import { useEarlyAccess } from '@/components/plans/early-access';
 import { CharacterAvatar, EmptyState, GlassButton, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon } from '@/components/ui';
 import { characterImage } from '@/components/ui/avatar';
 import { isNewCharacter, isReleased } from '@/economy/early-access';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
+import { rankCharactersForUser, rankFeaturedForUser } from '@/lib/discovery-rank';
 import { shortName } from '@/lib/format';
 import { familyOf, type FamilyLabel } from '@/lib/kin';
-import { leadFirst, partOfDay } from '@/lib/night-hour';
+import { partOfDay } from '@/lib/night-hour';
 import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
@@ -96,12 +98,19 @@ export default function FindScreen() {
     return () => cancelAnimationFrame(frame);
   }, [searching]);
 
+  const weights = useDiscoveryWeights();
+  // The hour, read again on each visit: the personalized friend of the hour leads Find (audit §8.2.4).
+  const [hour, setHour] = useState(() => new Date().getHours());
+  useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
+  const part = partOfDay(hour);
+
   const chatOf = useMemo(() => new Map(conversations.map((c) => [c.characterId, c.id])), [conversations]);
   const q = query.trim().toLowerCase();
-  const shown = useMemo(
+  const filteredByWho = useMemo(
     () => (who === 'everyone' ? characters : characters.filter((c) => c.gender === who)),
     [characters, who],
   );
+  const shown = useMemo(() => rankCharactersForUser(filteredByWho, weights, part), [filteredByWho, weights, part]);
   const groups = useMemo(() => groupBySeries(shown), [shown]);
 
   const results = useMemo(
@@ -124,20 +133,14 @@ export default function FindScreen() {
   );
   const worldHits = useMemo(() => (q ? groups.filter((g) => g.series.toLowerCase().includes(q)) : []), [groups, q]);
 
-  // The hour, read again on each visit: the friend it belongs to leads the row (audit §8.2.4).
-  const [hour, setHour] = useState(() => new Date().getHours());
-  useFocusEffect(useCallback(() => setHour(new Date().getHours()), []));
-  // New releases first; without any, one face from each circle keeps the row alive.
-  const featured = useMemo(() => {
-    const fresh = shown
-      .filter((c) => isNewCharacter(c, Date.now()))
-      .sort((a, b) => Date.parse(b.releasedAt!) - Date.parse(a.releasedAt!));
-    const row = (fresh.length > 0 ? fresh : groups.map((g) => g.characters[0])).filter((c) => !!c && !!heroOf(c));
-    return leadFirst(row, (c) => c.id, partOfDay(hour), shown.filter((c) => !!heroOf(c)));
-  }, [shown, groups, hour]);
+  // New releases first; without any, one ranked face from each circle keeps the row alive.
+  const featured = useMemo(
+    () => rankFeaturedForUser(shown, groups, weights, part, Date.now(), (c) => !!heroOf(c)),
+    [shown, groups, weights, part],
+  );
   const callable = useMemo(() => shown.filter((c) => c.voiceReady).slice(0, 12), [shown]);
 
-  // Who do you miss? One person per role; the sheet offers friends first, then everyone else.
+  // Who do you miss? One person per role; the sheet offers ranked friends first, then everyone else.
   const family = useMemo(() => familyOf(relationships, (id) => characters.some((c) => c.id === id)), [relationships, characters]);
   const seats = useMemo(
     () =>
@@ -148,9 +151,10 @@ export default function FindScreen() {
     [family, characters, relationships],
   );
   const kinIds = useMemo(() => new Set(Object.values(family)), [family]);
-  const kinFriends = useMemo(() => characters.filter((c) => chatOf.has(c.id) && !kinIds.has(c.id)), [characters, chatOf, kinIds]);
+  const rankedAll = useMemo(() => rankCharactersForUser(characters, weights, part), [characters, weights, part]);
+  const kinFriends = useMemo(() => rankedAll.filter((c) => chatOf.has(c.id) && !kinIds.has(c.id)), [rankedAll, chatOf, kinIds]);
   // A character still Pro-only (New characters first) is added from its card, not here.
-  const kinOthers = characters.filter((c) => !chatOf.has(c.id) && !early.locked(c));
+  const kinOthers = rankedAll.filter((c) => !chatOf.has(c.id) && !early.locked(c));
 
   const viewed = useMemo(
     () => recentlyViewed.map((id) => characters.find((c) => c.id === id)).filter((c): c is Character => !!c),

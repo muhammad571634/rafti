@@ -7,6 +7,7 @@ import { InkScreen } from '@/components/ink';
 import { StoryChips, StoryGrid, type StoryShelf, StorySheet, storiesFor } from '@/components/stories/stories-shelf';
 import { GroupStoryGrid } from '@/components/stories/group-stories';
 import { useTemplateStats } from '@/components/stories/use-template-stats';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { type StoryTemplate, TROPES, trendingIds } from '@/lib/templates';
 import { inkGutter } from '@/theme/ink';
 
@@ -20,7 +21,8 @@ export default function StoriesScreen() {
   const [trope, setTrope] = useState<StoryShelf>(start);
   const [open, setOpen] = useState<StoryTemplate | null>(null);
   const stats = useTemplateStats();
-  const list = storiesFor(trope, undefined, stats);
+  const weights = useDiscoveryWeights();
+  const list = storiesFor(trope, undefined, stats, weights);
   return (
     <InkScreen title={t('stories.title')} overlays={<StorySheet template={open} stats={open ? stats[open.id] : undefined} onClose={() => setOpen(null)} />}>
       <View style={styles.bleed}>

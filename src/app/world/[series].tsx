@@ -23,8 +23,10 @@ import {
   useScrolledPast,
 } from '@/components/ui';
 import { isReleased } from '@/economy/early-access';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { phrase } from '@/i18n';
 import { localCharacter, localized } from '@/i18n/content';
+import { rankCharactersForUser } from '@/lib/discovery-rank';
 import { shortName } from '@/lib/format';
 import { chapterAt, chapterState, isEventOn, worldJoinedAt } from '@/lib/world-story';
 import { groupBySeries } from '@/mock';
@@ -72,12 +74,16 @@ export default function WorldScreen() {
     return tileTint(Math.max(0, idx))[0];
   }, [characters, blockedIds, series]);
 
+  const weights = useDiscoveryWeights();
   const people = useMemo(
     () =>
-      characters.filter(
-        (c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id) && isReleased(c, Date.now()),
+      rankCharactersForUser(
+        characters.filter(
+          (c) => (c.series ?? 'Other') === series && !blockedIds.includes(c.id) && isReleased(c, Date.now()),
+        ),
+        weights,
       ),
-    [characters, series, blockedIds],
+    [characters, series, blockedIds, weights],
   );
   const friendIds = useMemo(() => new Set(conversations.map((c) => c.characterId)), [conversations]);
   const q = query.trim().toLowerCase();

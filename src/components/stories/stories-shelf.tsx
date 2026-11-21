@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { InkChip, InkText, PillButton } from '@/components/ink';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { localTemplate } from '@/i18n/content';
 import { Avatar, PressableScale, Sheet } from '@/components/ui';
+import { type DiscoveryWeights, rankTemplatesForUser } from '@/lib/discovery-rank';
 import { haptic } from '@/lib/haptics';
 import { shortCount } from '@/lib/format';
 import { NEW_BELOW, shelf, type StoryTemplate, TROPES, type Trope, trendingIds, type TemplateStats } from '@/lib/templates';
@@ -26,10 +28,16 @@ const GAP = 12;
 const TAG_GAP = 4;
 
 /** The templates a shelf shows for Find's Everyone / Him / Her switch; templates with no gender fit both. */
-export function storiesFor(trope: StoryShelf, gender: CharacterGender | undefined, stats: Readonly<Record<string, TemplateStats>>) {
+export function storiesFor(
+  trope: StoryShelf,
+  gender: CharacterGender | undefined,
+  stats: Readonly<Record<string, TemplateStats>>,
+  weights?: DiscoveryWeights,
+) {
   // Group stories have their own grid (`GroupStoryGrid`).
   if (trope === 'groups') return [];
-  return shelf(trope, stats).filter((t) => !gender || !t.card.gender || t.card.gender === gender);
+  const filtered = shelf(trope, stats).filter((t) => !gender || !t.card.gender || t.card.gender === gender);
+  return weights ? rankTemplatesForUser(filtered, stats, weights) : filtered;
 }
 
 /** The trope chips: For you first, then the ten shelves (template-library.md §2). */
@@ -52,9 +60,10 @@ export function StoriesShelf({ gender, title }: { gender?: CharacterGender; titl
   const { t } = useTranslation();
   const router = useRouter();
   const stats = useTemplateStats();
+  const weights = useDiscoveryWeights();
   const [trope, setTrope] = useState<StoryShelf>('forYou');
   const [open, setOpen] = useState<StoryTemplate | null>(null);
-  const list = storiesFor(trope, gender, stats);
+  const list = storiesFor(trope, gender, stats, weights);
   const trending = trendingIds(list, stats);
   // The route is new to the typed-routes list until Metro writes it again.
   const all = () => router.push(`/stories?trope=${trope}` as Href);

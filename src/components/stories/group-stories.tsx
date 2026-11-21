@@ -7,7 +7,9 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { InkText } from '@/components/ink';
 import { Avatar, PressableScale, Sheet } from '@/components/ui';
+import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { localGroupStory } from '@/i18n/content';
+import { rankGroupStoriesForUser } from '@/lib/discovery-rank';
 import { haptic } from '@/lib/haptics';
 import { GROUP_STORIES, type GroupStory, storyFits } from '@/lib/group-stories';
 import { useAppStore } from '@/store/use-app-store';
@@ -26,8 +28,13 @@ export function GroupStoryGrid({ gender }: { gender?: CharacterGender }) {
   const { width } = useWindowDimensions();
   const router = useRouter();
   const startGroupStory = useAppStore((s) => s.startGroupStory);
+  const weights = useDiscoveryWeights();
   const [open, setOpen] = useState<GroupStory | null>(null);
   const cardWidth = (width - inkGutter * 2 - GAP) / 2;
+  const stories = rankGroupStoriesForUser(
+    GROUP_STORIES.filter((s) => storyFits(s, gender)),
+    weights,
+  );
   const start = (story: GroupStory) => {
     const id = startGroupStory(story.id);
     if (!id) return;
@@ -37,7 +44,7 @@ export function GroupStoryGrid({ gender }: { gender?: CharacterGender }) {
   return (
     <>
       <View style={styles.grid}>
-        {GROUP_STORIES.filter((s) => storyFits(s, gender)).map((story) => (
+        {stories.map((story) => (
           <GroupStoryCard key={story.id} story={story} width={cardWidth} onPress={() => start(story)} onStory={() => setOpen(story)} />
         ))}
       </View>
