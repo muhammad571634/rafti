@@ -994,7 +994,13 @@
     "shareTitle": "Поделиться Sigmazam",
     "inviteTitle": "Пригласить друга",
     "inviteSub": "+{{count}} каждому · {{done}} из {{total}} на этой неделе",
-    "yourCode": "Ваш код"
+    "yourCode": "Ваш код",
+    "scratchTitle": "Сюрприз дня",
+    "scratchFree": "1 бесплатно сегодня",
+    "scratchPrompt": "Сотри, чтобы открыть",
+    "scratchHint": "Проведи пальцем по карточке",
+    "scratchQuick": "Открыть",
+    "scratchNext": "Новая карточка через {{time}}"
   },
   "contacts": {
     "title": "Контакты",

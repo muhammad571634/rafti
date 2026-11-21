@@ -938,7 +938,13 @@
     "shareTitle": "Sigmazam teilen",
     "inviteTitle": "Freund einladen",
     "inviteSub": "+{{count}} für beide · {{done}} von {{total}} diese Woche",
-    "yourCode": "Dein Code"
+    "yourCode": "Dein Code",
+    "scratchTitle": "Heutige Überraschung",
+    "scratchFree": "1× gratis heute",
+    "scratchPrompt": "Freirubbeln",
+    "scratchHint": "Über die Karte wischen",
+    "scratchQuick": "Öffnen",
+    "scratchNext": "Nächste Karte in {{time}}"
   },
   "contacts": {
     "title": "Kontakte",

@@ -917,7 +917,13 @@
     "shareTitle": "分享Sigmazam",
     "inviteTitle": "邀請好友",
     "inviteSub": "每人各得+{{count}} · 本週已達成 {{done}} / {{total}}",
-    "yourCode": "你的邀請碼"
+    "yourCode": "你的邀請碼",
+    "scratchTitle": "今日驚喜",
+    "scratchFree": "今日免費 1 次",
+    "scratchPrompt": "刮開揭曉",
+    "scratchHint": "在卡片上滑動",
+    "scratchQuick": "打開",
+    "scratchNext": "下一張卡倒數 {{time}}"
   },
   "contacts": {
     "title": "通訊錄",

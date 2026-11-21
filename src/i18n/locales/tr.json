@@ -938,7 +938,13 @@
     "shareTitle": "Sigmazam'ı Paylaş",
     "inviteTitle": "Bir arkadaşını davet et",
     "inviteSub": "Kişi başı +{{count}} · bu hafta {{total}} üzerinden {{done}}",
-    "yourCode": "Senin kodun"
+    "yourCode": "Senin kodun",
+    "scratchTitle": "Günün sürprizi",
+    "scratchFree": "Bugün 1 ücretsiz",
+    "scratchPrompt": "Kazıyarak aç",
+    "scratchHint": "Parmağını kartın üzerinde gezdir",
+    "scratchQuick": "Aç",
+    "scratchNext": "Yeni kart {{time}} sonra"
   },
   "contacts": {
     "title": "Kişiler",

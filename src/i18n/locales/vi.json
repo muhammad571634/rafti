@@ -917,7 +917,13 @@
     "shareTitle": "Chia sẻ Sigmazam",
     "inviteTitle": "Mời bạn bè",
     "inviteSub": "+{{count}} mỗi người · {{done}} / {{total}} tuần này",
-    "yourCode": "Mã của bạn"
+    "yourCode": "Mã của bạn",
+    "scratchTitle": "Bất ngờ hôm nay",
+    "scratchFree": "1 lần miễn phí hôm nay",
+    "scratchPrompt": "Cào để mở quà",
+    "scratchHint": "Lướt tay trên thẻ",
+    "scratchQuick": "Mở",
+    "scratchNext": "Thẻ mới sau {{time}}"
   },
   "contacts": {
     "title": "Danh bạ",

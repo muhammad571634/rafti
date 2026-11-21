@@ -10,7 +10,6 @@ import {
   type ScrollViewInstance,
   StyleSheet,
   TextInput,
-  useWindowDimensions,
   View,
   type ViewInstance,
 } from 'react-native';
@@ -20,7 +19,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { CoinDropReward, type Point, wobbleAt } from '@/components/coin-drop';
 import { InkNavBar, InkText } from '@/components/ink';
-import { LuckyWheel } from '@/components/lucky-wheel';
+import { ScratchGiftCard } from '@/components/scratch-gift-card';
 import {
   Anim,
   Button,
@@ -44,11 +43,11 @@ import { shareText } from '@/lib/share';
 import {
   DAILY_CHECK_IN,
   DAILY_CHECK_IN_TOP,
+  dayKey,
   FREE_SPINS_PER_DAY,
   INVITE_REWARD,
   INVITES_PER_WEEK,
   todayKey,
-  WHEEL_SEGMENTS,
 } from '@/mock';
 import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
@@ -87,13 +86,13 @@ const PEACH_SOFT = 'rgba(235,173,132,0.14)';
  */
 export default function GiftsScreen() {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
   const { t } = useTranslation();
   const router = useRouter();
   const { scrolled, onScroll: onScrollPast } = useScrolledPast(34);
 
   const shells = useAppStore((s) => s.wallet.shells);
   const daily = useAppStore((s) => s.daily);
+  const ledger = useAppStore((s) => s.ledger);
   const spinWheel = useAppStore((s) => s.spinWheel);
   const { spin: spinParam } = useLocalSearchParams<{ spin?: string }>();
   const user = useAppStore((s) => s.user);
@@ -106,6 +105,7 @@ export default function GiftsScreen() {
   const steps = useFirstSteps(pushOn);
 
   const [reward, setReward] = useState<number | null>(null);
+  const [scratching, setScratching] = useState(false);
   const [copied, setCopied] = useState(false);
   const [redeemOpen, setRedeemOpen] = useState(false);
   const [codeInput, setCodeInput] = useState('');
@@ -169,7 +169,6 @@ export default function GiftsScreen() {
 
   const code = inviteCodeFor(user);
   const invited = Math.min(INVITES_PER_WEEK, invitesThisWeek(user.inviteCredits));
-  const wheelSize = Math.max(0, Math.min(212, width - inkGutter * 2 - space.md * 2));
 
   const copyCode = async () => {
     await Clipboard.setStringAsync(code);
@@ -225,7 +224,8 @@ export default function GiftsScreen() {
   const checkedInToday = daily.lastLoginDay === today;
   const spinsUsed = daily.spinDay === today ? daily.spinsUsed : 0;
   const canSpin = spinsUsed < FREE_SPINS_PER_DAY;
-  const spinStatus = canSpin ? t('gifts.spinsFree') : t('gifts.spinsNone');
+  const spinStatus = canSpin ? t('gifts.scratchFree') : t('gifts.spinsNone');
+  const todaySpinReward = ledger.find((e) => e.reason === 'spin' && dayKey(e.at) === today)?.amount ?? null;
 
   return (
     <Screen background={ink.ground}>
@@ -259,6 +259,7 @@ export default function GiftsScreen() {
 
       <ScrollView
         ref={scroll}
+        scrollEnabled={!scratching}
         onScroll={(e) => {
           scrollY.current = e.nativeEvent.contentOffset.y;
           onScrollPast(e);
@@ -357,18 +358,19 @@ export default function GiftsScreen() {
         ) : null}
 
         <View style={styles.labelRow}>
-          <Txt style={styles.sectionLabel}>{t('gifts.wheel')}</Txt>
+          <Txt style={styles.sectionLabel}>{t('gifts.scratchTitle')}</Txt>
           <View style={styles.statusPill}>
             <Txt style={styles.statusText}>{spinStatus}</Txt>
           </View>
         </View>
-        <View ref={wheelCard} collapsable={false} style={[styles.inkCard, styles.wheel]}>
-          <LuckyWheel
-            size={wheelSize}
+        <View ref={wheelCard} collapsable={false} style={styles.inkCard}>
+          <ScratchGiftCard
             disabled={!canSpin}
-            onSpin={() => spinWheel().then((result) => result?.index ?? null)}
-            onStop={(index) => prizeWon(WHEEL_SEGMENTS[index])}
-            autoSpin={spinParam === '1'}
+            todayReward={todaySpinReward}
+            onDraw={() => spinWheel().then((result) => result?.reward ?? null)}
+            onRevealed={(amount) => prizeWon(amount)}
+            autoReveal={spinParam === '1'}
+            onScratchingChange={setScratching}
           />
         </View>
 
@@ -630,12 +632,6 @@ const styles = StyleSheet.create({
     backgroundColor: PEACH_SOFT,
   },
   statusText: { ...inkFace('caption'), color: ink.accent },
-  wheel: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: space.md,
-  },
   info: { marginBottom: 6, marginRight: inkGutter + 2, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },

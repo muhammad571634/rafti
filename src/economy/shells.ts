@@ -19,10 +19,10 @@ export const FREE_SPINS_PER_DAY = 1;
 export const SHARE_REWARD = 5;
 export const PAID_SHARES_PER_DAY = 3;
 
-/** Lucky Wheel segments, clockwise from the pointer. */
-export const WHEEL_SEGMENTS = [5, 20, 10, 50, 5, 30, 10, 100] as const;
-/** Relative odds per segment: the big prizes are rare, and a spin pays about 8 shells on average. */
-export const WHEEL_WEIGHTS = [75, 8, 55, 2, 75, 2, 30, 1] as const;
+/** Daily surprise card rewards (server-drawn via `wallet_spin`): always 5 or 10 shells. */
+export const WHEEL_SEGMENTS = [5, 10] as const;
+/** Relative odds per reward: 60% get 5 shells, 40% get 10 shells (7 shells on average). */
+export const WHEEL_WEIGHTS = [60, 40] as const;
 
 /**
  * Free shells (check-in, wheel, ads, share, invite) live in today's free bucket:

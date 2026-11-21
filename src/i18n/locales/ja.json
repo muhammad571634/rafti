@@ -917,7 +917,13 @@
     "shareTitle": "Sigmazamをシェア",
     "inviteTitle": "友達を招待",
     "inviteSub": "お互いに+{{count}} · 今週{{done}}/{{total}}人",
-    "yourCode": "あなたのコード"
+    "yourCode": "あなたのコード",
+    "scratchTitle": "今日のサプライズ",
+    "scratchFree": "本日1回無料",
+    "scratchPrompt": "こすって開く",
+    "scratchHint": "カードをなぞってみて",
+    "scratchQuick": "開く",
+    "scratchNext": "次のカードまで {{time}}"
   },
   "contacts": {
     "title": "連絡先",

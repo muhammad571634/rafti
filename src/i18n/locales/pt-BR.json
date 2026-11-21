@@ -938,7 +938,13 @@
     "shareTitle": "Compartilhar Sigmazam",
     "inviteTitle": "Convidar amigo",
     "inviteSub": "+{{count}} cada · {{done}} de {{total}} esta semana",
-    "yourCode": "Seu código"
+    "yourCode": "Seu código",
+    "scratchTitle": "Surpresa de hoje",
+    "scratchFree": "1 grátis hoje",
+    "scratchPrompt": "Raspe para revelar",
+    "scratchHint": "Deslize o dedo pelo cartão",
+    "scratchQuick": "Abrir",
+    "scratchNext": "Próximo cartão em {{time}}"
   },
   "contacts": {
     "title": "Contatos",

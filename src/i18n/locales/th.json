@@ -917,7 +917,13 @@
     "shareTitle": "แชร์ Sigmazam",
     "inviteTitle": "เชิญเพื่อน",
     "inviteSub": "คนละ +{{count}} · สำเร็จ {{done}} จาก {{total}} ในสัปดาห์นี้",
-    "yourCode": "รหัสของคุณ"
+    "yourCode": "รหัสของคุณ",
+    "scratchTitle": "เซอร์ไพรส์วันนี้",
+    "scratchFree": "ฟรีวันนี้ 1 ครั้ง",
+    "scratchPrompt": "ขูดเพื่อเปิดดู",
+    "scratchHint": "ปัดนิ้วบนการ์ด",
+    "scratchQuick": "เปิด",
+    "scratchNext": "การ์ดถัดไปใน {{time}}"
   },
   "contacts": {
     "title": "รายชื่อ",

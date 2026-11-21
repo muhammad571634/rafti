@@ -917,7 +917,13 @@
     "shareTitle": "Sigmazam 공유하기",
     "inviteTitle": "친구 초대",
     "inviteSub": "각자 +{{count}} · 이번 주 {{done}}/{{total}}명 완료",
-    "yourCode": "내 코드"
+    "yourCode": "내 코드",
+    "scratchTitle": "오늘의 서프라이즈",
+    "scratchFree": "오늘 1회 무료",
+    "scratchPrompt": "긁어서 확인하기",
+    "scratchHint": "카드 위를 문질러 보세요",
+    "scratchQuick": "열기",
+    "scratchNext": "다음 카드까지 {{time}}"
   },
   "contacts": {
     "title": "연락처",

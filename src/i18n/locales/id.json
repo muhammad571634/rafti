@@ -917,7 +917,13 @@
     "shareTitle": "Bagikan Sigmazam",
     "inviteTitle": "Undang teman",
     "inviteSub": "+{{count}} masing-masing · {{done}} dari {{total}} minggu ini",
-    "yourCode": "Kodemu"
+    "yourCode": "Kodemu",
+    "scratchTitle": "Kejutan hari ini",
+    "scratchFree": "1 gratis hari ini",
+    "scratchPrompt": "Gosok untuk membuka",
+    "scratchHint": "Usap permukaan kartu",
+    "scratchQuick": "Buka",
+    "scratchNext": "Kartu berikutnya dalam {{time}}"
   },
   "contacts": {
     "title": "Kontak",
