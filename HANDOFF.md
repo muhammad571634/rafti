@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z323. Prompt size cap at the model gate (audit P1-2, 2026-11-21, Claude 1, Opus 5.5). DONE, pushed; Fly deploy pending (owner)
+### 0z323. Prompt size cap at the model gate (audit P1-2, 2026-11-21, Claude 1, Opus 5.5). DONE, pushed, deployed by the owner 2026-11-21 (`/health` 200 after)
 - **Why**: the app sends the character, memory and chat itself; nothing clipped those texts, and a reply body may hold ~2 MB of text besides photos, so one modified client could buy million-token calls (300 a day per account). The audit's "unlock `arc.secret` by spoofing `relationship.level`" is moot: the whole character, secret included, ships in the app bundle.
 - **What**: `GateLimits.maxPromptChars` (120,000) in `server/src/llm/gate.ts`: every model call through the gate (all routes, voice too) counts its text (`promptChars`: system tiers + history + turn; pictures apart) and is refused before the model with `LlmTooLargeError`, an `[alert] prompt too large` log line and the turned-away count. `/v1/chat/reply` and the write routes answer 413 `tooLarge`; the others answer their usual 502; the app shows Not delivered either way. The number: the largest real prompt in 30 days was ~9,700 tokens (~40,000 chars, `usage_events`, chat reply); 3x headroom for long user-made characters and lore.
 - **Not done (later, not a launch blocker)**: official characters from the server's own copy instead of the client's (needs the content on the server); clipping single fields.
