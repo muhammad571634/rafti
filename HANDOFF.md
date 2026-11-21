@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z317. Unified 4-Tab Liquid Glass Tab Bar + Apple Story & Sparkle SVG icons + Brand Peach active lens (owner's pick Variant A + Icon Pack 2 on `ink-tab-bar-directions.html`, 2026-11-21, Gemini Argon). DONE in code & pushed; publishing Preview OTA
+- **What (`src/app/(tabs)/_layout.tsx`, `src/app/(tabs)/_layout.ios.tsx`)**:
+  - Merged `Today`, `Chats`, `Us`, and `Find` into one unified 4-tab dark Liquid Glass floating capsule (`height: 64`, Android-safe numeric radii, top-lit rim, zero live blur for 60 fps on A51) so `Find` carries its own label and no longer sits as an unlabelled magnifying-glass disc on the side.
+  - Active tab sits inside a warm Sigmazam brand-peach lens (`rgba(235,173,132,0.22)` -> `0.10`, `0.5 pt` `rgba(235,173,132,0.38)` rim) with `#EBAD84` (`ink.accent`) icon and bold label.
+  - Replaced chunky Ionicons with custom `react-native-svg` **Apple Story & Sparkle** vector glyphs (`TabGlyph`): dual 4-point sparkles for `Today`, smooth single speech bubble with 3 dots for `Chats`, Apple heart for `Us`, and 2x2 rounded discovery grid for `Find`; iOS `NativeTabs` updated to match (`tintColor={ink.accent}`, `sparkles`, `ellipsis.bubble`, `heart`, `square.grid.2x2`).
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm test` 1131/1131 pass.
+
 ### 0z316. Find Stories cards work like PolyBuzz Explore (owner: "shu polybuzz kabi ishlashi kerak", after reviewing Gemini's plan, 2026-11-21, Claude 1, Opus 5.5). DONE, OTA preview (commit `8662d592`), seen on the A51 in Russian
 - **What (`src/components/stories/stories-shelf.tsx`)**: a tap on a story card says hi and opens the chat at once (`useStartStory`, shared with the sheet's Say hi; `addTemplateCharacter` already reuses one private copy per template, so repeat taps add no rows). A book button next to the name opens the story sheet (scene, first message, Make it yours; label `stories.details` in 14 locales). The card shows the hook in ink and the knot (`card.tagline`) after a dash, four lines; up to three tags in at most two rows (a tag that would start a third row is clipped); the count sits bottom left; Find shows 8 cards (was 6).
 - **Review of Gemini's plan** (`find_stories_polybuzz_plan.md` in Gemini's brain folder): no template has a portrait (`TEMPLATE_PORTRAITS` does not exist), so the 3:4 photo cards wait for art; a "scene quote" block on the card was dropped (too much text, design freeze).

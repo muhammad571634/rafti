@@ -3,16 +3,14 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useTranslation } from 'react-i18next';
 
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
-import { playful, systemGround } from '@/theme';
+import { playful } from '@/theme';
+import { ink } from '@/theme/ink';
 
 /**
- * iOS: the system tab bar, Liquid Glass on iOS 26 and later (approved prototype
- * https://claude.ai/artifact/WTWWPXiX17USrgcgYAdRQg). Find is the search tab, set apart on its
- * own; labels are bold. The tint is the playful ink, as the Android bar's current tab (four-tab
- * prototype); Chats carries the number of chats waiting in the system's red badge, the same number
- * Today and Chats show. (The badge had no text before, and a NativeTabs badge without text is not
- * drawn: iPhone showed no unread mark at all.) Android and web draw the same layout themselves
- * (`_layout.tsx`).
+ * iOS: the system tab bar, Liquid Glass on iOS 26 and later (approved Variant A + Apple Story &
+ * Sparkle icons, 2026-11-21). All four tabs sit in one unified bar with Sigmazam's brand-peach
+ * tint (`ink.accent`) and matching SF Symbols (`sparkles`, `ellipsis.bubble`, `heart`,
+ * `square.grid.2x2`).
  */
 export default function TabsLayout() {
   const { t } = useTranslation();
@@ -24,15 +22,13 @@ export default function TabsLayout() {
   if (gate === 'onboarding') return <Redirect href="/onboarding" />;
 
   return (
-    <NativeTabs tintColor={systemGround.label} labelStyle={{ fontWeight: '700' }} badgeBackgroundColor={playful.red}>
+    <NativeTabs tintColor={ink.accent} labelStyle={{ fontWeight: '700' }} badgeBackgroundColor={playful.red}>
       <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />
+        <NativeTabs.Trigger.Icon sf={{ default: 'sparkles', selected: 'sparkles' }} />
         <NativeTabs.Trigger.Label>{t('tabs.home')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="chat">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'bubble.left.and.bubble.right', selected: 'bubble.left.and.bubble.right.fill' }}
-        />
+        <NativeTabs.Trigger.Icon sf={{ default: 'ellipsis.bubble', selected: 'ellipsis.bubble.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.chat')}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Badge hidden={unread === 0}>{badgeText(unread)}</NativeTabs.Trigger.Badge>
       </NativeTabs.Trigger>
@@ -40,8 +36,8 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Icon sf={{ default: 'heart', selected: 'heart.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.us')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="find" role="search">
-        <NativeTabs.Trigger.Icon sf="magnifyingglass" />
+      <NativeTabs.Trigger name="find">
+        <NativeTabs.Trigger.Icon sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.find')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
