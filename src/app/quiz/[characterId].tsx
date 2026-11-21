@@ -406,7 +406,7 @@ export default function QuizScreen() {
               <InkText variant="caption" color={same ? colors.bondText : ink.text2}>
                 {same ? t('games.same', { count: matches, n: index + 1 }) : t('games.differ', { name })}
               </InkText>
-              <InkText variant="body">{line}</InkText>
+              {line ? <InkText variant="body">{line}</InkText> : null}
             </View>
           </View>
         ) : null}

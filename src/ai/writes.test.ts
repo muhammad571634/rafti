@@ -6,7 +6,7 @@ import type { Character, User } from '@/types';
 import { cleanFirstText, firstTextParts } from './first-text';
 import { birthdayCue } from './moment-prompt';
 import { joinParts } from './prompt-layout';
-import { cleanWrite, parseWrite, writeDayNotes, writeParts, type WriteRequest } from './writes';
+import { cleanWrite, guessesTheirPick, parseWrite, writeDayNotes, writeParts, type WriteRequest } from './writes';
 
 const kai = { id: 'c_kai', name: 'Kai Arden', series: 'Seaside Academy', bio: 'Swims at dawn.', gender: 'male', tags: ['kind'] } as unknown as Character;
 const sam = { displayName: 'Sam', locale: 'ru-RU' } as User;
@@ -61,6 +61,19 @@ describe('what a friend writes on a screen of its own', () => {
     const diary: WriteRequest & { kind: 'diary' } = { kind: 'diary', input, day: { lines: [] } };
     assert.deepEqual(parseWrite(diary, '{"mood":"angry","paragraphs":["One."]}'), { mood: 'soft', body: ['One.'] });
     assert.equal(parseWrite(diary, '{"mood":"happy","paragraphs":[]}'), null);
+  });
+
+  it('a "differ" line that guesses the answer of the user is dropped, so only the verdict shows', () => {
+    const dinner = [{ text: 'Perfect first date?', options: ['A fancy dinner', 'A long walk', 'Movie marathon', 'Arcade, loser pays'] }];
+    const picks: WriteRequest & { kind: 'quizPicks' } = { kind: 'quizPicks', input, title: 'First date', questions: dinner };
+    const guessed = { answer: 3, same: 'Loser pays!', differ: 'A fancy dinner? You would fall asleep waiting.' };
+    assert.deepEqual(parseWrite(picks, JSON.stringify({ picks: [guessed] })), { picks: [{ ...guessed, differ: '' }] });
+    // Its own answer may be named; a line that names none stays.
+    const own = { ...guessed, differ: 'Arcade, loser pays, every time. Your loss.' };
+    assert.deepEqual(parseWrite(picks, JSON.stringify({ picks: [own] })), { picks: [own] });
+    assert.equal(guessesTheirPick('Не то. Изысканный ужин? Серьёзно?', ['Изысканный ужин', 'Прогулка'], 1), true);
+    assert.equal(guessesTheirPick('Tea, really?', ['Tea', 'Coffee'], 1), false);
+    assert.match(joinParts(writeParts(picks)), /never name, quote or guess their answer/);
   });
 
   it('a quiz answer must fit its question, or the whole answer goes', () => {

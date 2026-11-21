@@ -29,7 +29,7 @@ export interface QuizPick {
   answer: number;
   /** What they say when the user picked the same. */
   same: string;
-  /** What they say when the user picked another. */
+  /** What they say when the user picked another; '' when the model's line guessed which (`guessesTheirPick`): the verdict shows alone. */
   differ: string;
 }
 
@@ -119,7 +119,7 @@ export const WRITE_MODE: Record<WriteKind, PromptMode> = {
 };
 
 const JSON_ONLY = 'Answer with JSON only, no other text. Write every string in the REPLY LANGUAGE.';
-const QUIZ_LINES = 'For each one, "same" is what you would say if the user picked your answer, and "differ" what you would say if they picked another: one short line each (max 20 words), in your voice, as if texting them.';
+const QUIZ_LINES = 'For each one, "same" is what you would say if the user picked your answer, and "differ" what you would say if they picked another: one short line each (max 20 words), in your voice, as if texting them. You do not know which other answer they picked, so "differ" must fit every one of them: never name, quote or guess their answer; you may stand by yours.';
 /** How many moments one answer is asked for (`MOMENTS_COUNT`, src/lib/friend-moments.ts). */
 const MOMENTS_ASKED = 4;
 const numbered = (options: readonly string[]) => options.map((o, i) => `  ${i}. ${o}`);
@@ -242,11 +242,25 @@ function jsonOf(raw: string): Record<string, unknown> | null {
   }
 }
 
-function pickOf(v: unknown, options: number): QuizPick | null {
-  if (!isObject(v) || !Number.isInteger(v.answer) || (v.answer as number) < 0 || (v.answer as number) >= options) return null;
+/**
+ * The "differ" line is written before the user answers, so it must fit any other answer. One that names
+ * another option ("A fancy dinner? Seriously?") guessed their pick and is wrong two times in three.
+ * Options of under 4 letters are not looked for (they turn up inside other words).
+ */
+export function guessesTheirPick(line: string, options: readonly string[], answer: number): boolean {
+  const said = line.toLocaleLowerCase();
+  return options.some((option, i) => {
+    const o = option.trim().toLocaleLowerCase();
+    return i !== answer && o.length >= 4 && said.includes(o);
+  });
+}
+
+function pickOf(v: unknown, options: readonly string[]): QuizPick | null {
+  if (!isObject(v) || !Number.isInteger(v.answer) || (v.answer as number) < 0 || (v.answer as number) >= options.length) return null;
+  const answer = v.answer as number;
   const same = text(v.same, LINE_MAX);
   const differ = text(v.differ, LINE_MAX);
-  return same && differ ? { answer: v.answer as number, same, differ } : null;
+  return same && differ ? { answer, same, differ: guessesTheirPick(differ, options, answer) ? '' : differ } : null;
 }
 
 function allOf<T>(list: unknown, read: (v: unknown, i: number) => T | null, count?: number): T[] | null {
@@ -284,7 +298,7 @@ export function parseWrite(request: WriteRequest, raw: string): WriteResults[Wri
       return reply ? { reply } : null;
     }
     case 'quizPicks': {
-      const picks = allOf(json.picks, (v, i) => pickOf(v, request.questions[i]?.options.length ?? 0), request.questions.length);
+      const picks = allOf(json.picks, (v, i) => pickOf(v, request.questions[i]?.options ?? []), request.questions.length);
       return picks ? { picks } : null;
     }
     case 'selfQuiz': {
@@ -292,7 +306,7 @@ export function parseWrite(request: WriteRequest, raw: string): WriteResults[Wri
         if (!isObject(v)) return null;
         const q = text(v.text, 120);
         const options = allOf(v.options, (o) => text(o, 60) || null, 4);
-        const pick = pickOf(v, 4);
+        const pick = options && pickOf(v, options);
         return q && options && pick ? { text: q, options, ...pick } : null;
       });
       return questions && questions.length >= 3 ? { questions: questions.slice(0, 5) } : null;

@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z326. Quiz "differ" lines no longer guess the user's answer (found in 0z325, owner's "fix it", 2026-11-21, Claude 1, Opus 5.5). DONE, pushed, preview OTA; Fly deploy pending (owner)
+- **Bug**: `quizPicks` / `selfQuiz` write the friend's "differ" line before the user answers; the model guessed which other option they would pick and named it ("A fancy dinner? Seriously?" after the user picked the walk).
+- **Fix, two layers, every character**: `QUIZ_LINES` (`src/ai/writes.ts`) now says the line must fit every other answer and never name, quote or guess theirs; `pickOf` drops a "differ" that still names another option (`guessesTheirPick`, options of 4+ letters, case-insensitive) to '' and the quiz screen then shows the verdict alone (no stock line, model-first). Tests in `writes.test.ts`.
+- **Measured** (owner's Gemini key, flash-lite, Milo, 3 Russian questions x 3 runs): 0 of 9 lines named an option; ~2,800 tokens in, ~210 out a call, as before (+~35 prompt tokens, no new call).
+- **Checked**: tsc 0, typecheck:test 0, app tests 1142/1142, server 136/136.
+- **Owner**: Fly deploy (the server builds and parses this prompt): `$env:FLY_NO_UPDATE_CHECK='1'; & "C:\Users\joray\.fly\bin-prev\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`. Prompt change: a second agent reads `QUIZ_LINES` / `guessesTheirPick`.
+
 ### 0z325. Last feature screens to Ink (audit P1-3; owner: "start from 5, leave 1-4", 2026-11-21, Claude 1, Opus 5.5). DONE, pushed, preview OTA
 - **Screens**: couple quiz (`quiz/[characterId]`), world quiz (`quiz/world/[world]`), make a clip (`radio/make`), clip player (`radio/[id]`, a moment: only its buttons and type changed), frame editor (`frame/edit`), new group (`group/new`), and the tab bar's fade (`ink.groundFade`). Each: `InkNavBar` (scroll-edge title) + display serif title, `InkText` roles, Ink cards with the hairline rim, `systemGround`/`STORE`/`featureStyles`/`RoundButton`/`StoreBuyBar` gone. Logic, handlers, a11y labels and strings unchanged; no new strings.
 - **Kit**: `InkDock` (+ `INK_DOCK_SPACE`, `ink.dock`), the bottom bar with the screen's pill (Dating's dock made shared); `inFlow` puts it last in a `KeyboardAvoidingView` so it rides up with the keys (an absolute dock stayed behind them on the A51).
