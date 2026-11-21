@@ -2493,7 +2493,8 @@ export const useAppStore = create<AppState>()(
       },
 
       addTemplateCharacter: (template) => {
-        const known = get().characters.find((c) => c.fromTemplate === template.id && !c.isOfficial);
+        // Their hi copy only (`@stories`), never one they made their own in Create from the same story.
+        const known = get().characters.find((c) => c.fromTemplate === template.id && c.handle === '@stories' && !c.isOfficial);
         if (known) {
           const conversationId = get().conversations.find((c) => c.characterId === known.id)?.id ?? get().addFriend(known.id);
           return { characterId: known.id, conversationId };

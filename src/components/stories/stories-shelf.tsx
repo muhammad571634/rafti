@@ -21,7 +21,7 @@ import { useTemplateStats } from './use-template-stats';
 export type StoryShelf = Trope | 'forYou';
 const SHELVES: readonly StoryShelf[] = ['forYou', ...TROPES];
 const GAP = 12;
-const TAG_GAP = 6;
+const TAG_GAP = 4;
 
 /** The templates a shelf shows for Find's Everyone / Him / Her switch; templates with no gender fit both. */
 export function storiesFor(trope: StoryShelf, gender: CharacterGender | undefined, stats: Readonly<Record<string, TemplateStats>>) {
@@ -143,7 +143,6 @@ function StoryCard({
   const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
-  const [tagH, setTagH] = useState(0);
   return (
     <PressableScale
       scaleTo={0.97}
@@ -174,11 +173,11 @@ function StoryCard({
           </InkText>
           {card.tagline ? ` — ${card.tagline}` : ''}
         </InkText>
-        {/* Up to three tags in at most two rows: a tag that would start a third row is left out. */}
-        <View style={[styles.tags, tagH ? { maxHeight: tagH * 2 + TAG_GAP } : null]}>
-          {(card.tags ?? []).slice(0, 3).map((tag, i) => (
-            <View key={tag} style={styles.tag} onLayout={i === 0 && !tagH ? (e) => setTagH(e.nativeEvent.layout.height) : undefined}>
-              <InkText variant="caption" color={ink.text2} lines={1}>
+        {/* Every tag, small and side by side (PolyBuzz), wrapping only when a row is full. */}
+        <View style={styles.tags}>
+          {(card.tags ?? []).map((tag) => (
+            <View key={tag} style={styles.tag}>
+              <InkText variant="tag" color={ink.text2} lines={1}>
                 {t(`createCharacter.traitNames.${tag}`)}
               </InkText>
             </View>
@@ -189,21 +188,16 @@ function StoryCard({
   );
 }
 
-/** One story: who they are, how it starts, Say hi, or Make it yours in Create. */
+/** One story (the card's book): who they are, how it starts, and Make it yours in Create. */
 export function StorySheet({ template: written, stats, onClose }: { template: StoryTemplate | null; stats?: TemplateStats; onClose: () => void }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const start = useStartStory();
-  // In the screen language: the copy Say hi keeps is in their words too.
+  // In the screen language, as Create will fill it in.
   const template = written ? localTemplate(written) : null;
   const card = template?.card;
   const fill = (text: string) => text.replace(/\{\{user\}\}/g, t('community.you')).replace(/\{\{char\}\}/g, card?.name ?? '');
 
-  const sayHi = () => {
-    if (!template) return;
-    onClose();
-    start(template);
-  };
+  // The card itself says hi; the book is for reading the story and making it yours.
   const makeOwn = () => {
     if (!template) return;
     onClose();
@@ -246,8 +240,7 @@ export function StorySheet({ template: written, stats, onClose }: { template: St
             </InkText>
             <InkText variant="sub">{fill(card.greeting)}</InkText>
           </View>
-          <PillButton label={t('community.sayHi')} onPress={sayHi} />
-          <PillButton label={t('stories.makeOwn')} kind="quiet" onPress={makeOwn} />
+          <PillButton label={t('stories.makeOwn')} onPress={makeOwn} />
         </View>
       ) : null}
     </Sheet>
@@ -263,8 +256,8 @@ const styles = StyleSheet.create({
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
   body: { gap: 6, padding: 12 },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP, overflow: 'hidden' },
-  tag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.raised, maxWidth: '100%' },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP },
+  tag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: inkRadius.chip, backgroundColor: ink.raised, maxWidth: '100%' },
   more: { alignItems: 'center', paddingTop: 12 },
   sheet: { gap: 14, paddingBottom: 8 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 14 },

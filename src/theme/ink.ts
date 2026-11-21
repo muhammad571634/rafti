@@ -113,6 +113,8 @@ export const inkType = StyleSheet.create({
   footnoteStrong: system(13, 17, '600', ink.text2),
   /** Capsules, icon labels (Caption 1). */
   caption: system(12, 16, '600', ink.text2),
+  /** Small trait tags on a two-column card, side by side as PolyBuzz's (Caption 2, Apple's 11 pt floor). */
+  tag: system(11, 14, '500', ink.text2),
   /** Editorial serif italic line: a friend's quote in a moment, an opening hook, a voice caption. */
   quote: {
     fontFamily: fonts.serifItalic,
