@@ -3,31 +3,31 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FriendRow, useFriends } from '@/components/group/friend-row';
-import { Group, TitleTop, TopButton, useProfileStyles } from '@/components/character/kit';
-import { CharacterAvatar, EmptyState, PressableScale, Screen, Txt } from '@/components/ui';
+import { Group } from '@/components/character/kit';
+import { InkDock, InkNavBar, InkText, PillButton } from '@/components/ink';
+import { CharacterAvatar, EmptyState, PressableScale, Screen, useScrolledPast } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import { GROUP_MAX, GROUP_MIN, groupTitle } from '@/lib/group-chat';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, space, systemGround, type } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { space } from '@/theme';
+import { ink, inkFace, inkGutter } from '@/theme/ink';
 
 /** What the user may call a group. */
 const NAME_MAX = 40;
 
 /**
- * New group in the merged look (0z155; flow from the approved prototype): pick 2 or 3 friends the user already chats with, an
- * optional name, then one primary button. The first member says hello in the new chat.
+ * New group, in Ink (0z325; flow from the approved prototype, 0z155): pick 2 or 3 friends the user
+ * already chats with, an optional name, then the one pill at the bottom. The first member says hello
+ * in the new chat.
  */
 export default function NewGroupScreen() {
-  const profileStyles = useProfileStyles();
   const { t } = useTranslation();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const friends = useFriends();
   const createGroup = useAppStore((s) => s.createGroup);
+  const { scrolled, onScroll } = useScrolledPast(44);
 
   const [picked, setPicked] = useState<string[]>([]);
   const [name, setName] = useState('');
@@ -44,10 +44,15 @@ export default function NewGroupScreen() {
     if (id) router.replace({ pathname: '/group/[id]', params: { id } });
   };
 
+  const nav = <InkNavBar backLabel={t('common.back')} onBack={() => router.back()} title={t('group.newGroup')} scrolled={scrolled} />;
+
   if (friends.length < GROUP_MIN) {
     return (
-      <Screen background={systemGround.ground}>
-        <TitleTop title={t('group.newGroup')} onBack={() => router.back()} />
+      <Screen background={ink.ground}>
+        {nav}
+        <InkText variant="display" style={styles.title}>
+          {t('group.newGroup')}
+        </InkText>
         <EmptyState
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('group.noFriends')}
@@ -62,28 +67,20 @@ export default function NewGroupScreen() {
   const pickedFriends = friends.filter((f) => picked.includes(f.character.id));
 
   return (
-    // The merged look (0z155): Apple's white ground, a heavy title with Create beside it (peach once two
-    // friends are picked), white cards for the name and the friends.
-    <Screen background={systemGround.ground}>
-      <TitleTop
-        title={t('group.newGroup')}
-        onBack={() => router.back()}
-        right={
-          <TopButton
-            label={t('group.createShort')}
-            accessibilityLabel={ready ? t('group.create') : t('group.pickOneMore')}
-            peach
-            disabled={!ready}
-            onPress={create}
-          />
-        }
-      />
+    <Screen background={ink.ground}>
+      {nav}
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: insets.bottom + space.huge }}
+          contentContainerStyle={{ paddingBottom: space.xl }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag">
+          <InkText variant="display" style={styles.title}>
+            {t('group.newGroup')}
+          </InkText>
+
           {/* Who is in so far, in GROUP_MAX seats that are always there, so the list below never
               jumps under the finger when the first friend is picked; a tap on a face takes them
               out again (iOS Messages' "To:" faces). */}
@@ -107,23 +104,30 @@ export default function NewGroupScreen() {
                   <View>
                     <CharacterAvatar character={f.character} size={60} />
                     <View style={styles.unpick}>
-                      <Ionicons name="close" size={12} color={colors.white} />
+                      <Ionicons name="close" size={12} color={ink.text} />
                     </View>
                   </View>
-                  <Txt style={styles.faceName} lines={1}>
+                  <InkText variant="caption" color={ink.text} lines={1}>
                     {shortName(f.name)}
-                  </Txt>
+                  </InkText>
                 </PressableScale>
               );
             })}
           </View>
 
-          <Group title={t('group.nameLabel')} right={<Txt style={styles.optional}>{t('group.optional')}</Txt>}>
+          <Group
+            title={t('group.nameLabel')}
+            right={
+              <InkText variant="footnote" color={ink.text2}>
+                {t('group.optional')}
+              </InkText>
+            }>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder={ready ? fallback : t('group.nameLabel')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor={ink.placeholder}
+              selectionColor={ink.accent}
               accessibilityLabel={t('group.nameLabel')}
               maxLength={NAME_MAX}
               style={styles.input}
@@ -146,8 +150,19 @@ export default function NewGroupScreen() {
               );
             })}
           </Group>
-          <Txt style={profileStyles.footer}>{t('group.costNote')}</Txt>
+          <InkText variant="footnote" color={ink.text2} style={styles.footer}>
+            {t('group.costNote')}
+          </InkText>
         </ScrollView>
+
+        <InkDock inFlow>
+          <PillButton
+            label={t('group.create')}
+            accessibilityLabel={ready ? t('group.create') : t('group.pickOneMore')}
+            disabled={!ready}
+            onPress={create}
+          />
+        </InkDock>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -155,11 +170,12 @@ export default function NewGroupScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  title: { marginTop: 2, marginHorizontal: inkGutter },
   faces: {
     flexDirection: 'row',
     gap: space.lg,
-    paddingHorizontal: space.lg + space.xs,
-    paddingTop: space.sm,
+    paddingHorizontal: inkGutter + space.xs,
+    paddingTop: space.md,
     paddingBottom: space.xs,
   },
   face: { alignItems: 'center', gap: 6, width: 68, minHeight: 86 },
@@ -171,29 +187,21 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: systemGround.ground,
-    backgroundColor: colors.textSecondary,
+    borderColor: ink.ground,
+    backgroundColor: ink.thumb,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  faceName: { ...inkFace('caption'), color: systemGround.label },
-  // An empty seat: the dashed ring the playful layer uses for a slot waiting to be filled.
+  // An empty seat: a dashed ring, a slot waiting to be filled.
   seat: {
     width: 60,
     height: 60,
     borderRadius: 30,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: systemGround.dash,
-    backgroundColor: systemGround.well,
+    borderColor: ink.placeholder,
+    backgroundColor: ink.hairlineFill,
   },
-  optional: { ...inkFace('footnote'), color: colors.textSecondary },
-  input: {
-    ...inkFace('body'),
-    minHeight: 54,
-    paddingHorizontal: 18,
-    paddingBottom: 4,
-    color: colors.text,
-    ...type.body,
-  },
+  input: { ...inkFace('body'), minHeight: 54, paddingHorizontal: 18, paddingBottom: 4, color: ink.text },
+  footer: { marginTop: 10, marginHorizontal: inkGutter + 6 },
 });

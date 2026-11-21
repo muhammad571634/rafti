@@ -14,16 +14,16 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { RoundButton } from '@/components/feature/feature-kit';
+import { InkIconButton, InkText } from '@/components/ink';
 import { CARD_SHADOW } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
-import { CharacterAvatar, characterImage, DotMatrix, EmptyState, MODULE_GLYPH, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, characterImage, DotMatrix, EmptyState, MODULE_GLYPH, PressableScale, Screen } from '@/components/ui';
 import { duration } from '@/lib/format';
 import { lineAt } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { bottomRoom, colors, friendAccent, immersive, space, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { bottomRoom, colors, friendAccent, immersive, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 import { confirmAlert as confirm } from '@/lib/alert';
 
 const COVER = 220;
@@ -85,15 +85,12 @@ export default function ClipPlayerScreen() {
   }, [playing, reduced, breath]);
   const coverStyle = useAnimatedStyle(() => ({ transform: [{ scale: breath.value }] }));
 
-  const back = <RoundButton dark icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
+  const back = <InkIconButton icon="chevron-down" size={22} accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
 
   if (!clip || clip.locked) {
     return (
-      // The empty state's words are themed, so it stays on the phone's own ground.
-      <Screen background={systemGround.ground}>
-        <View style={styles.bar}>
-          <RoundButton icon="chevron-down" accessibilityLabel={t('common.back')} onPress={() => router.back()} />
-        </View>
+      <Screen background={ink.ground}>
+        <View style={styles.bar}>{back}</View>
         <EmptyState symbol={MODULE_GLYPH.radio} title={t('radio.gone')} actionLabel={t('common.backToRadio')} onAction={() => router.back()} />
       </Screen>
     );
@@ -131,17 +128,12 @@ export default function ClipPlayerScreen() {
         {back}
         <View style={styles.barRight}>
           {/* The clip as a wake-up voice: a new alarm with this friend and this clip. */}
-          <RoundButton
-            dark
+          <InkIconButton
             icon="alarm"
             accessibilityLabel={t('radio.wakeWith')}
             onPress={() => router.push({ pathname: '/alarms/edit', params: { characterId: clip.character.id, clipId: clip.id } })}
           />
-          {clip.mine ? (
-            <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('radio.delete')} onPress={remove} style={styles.round}>
-              <Ionicons name="trash" size={19} color={systemColors.red} />
-            </PressableScale>
-          ) : null}
+          {clip.mine ? <InkIconButton icon="trash" color={systemColors.red} accessibilityLabel={t('radio.delete')} onPress={remove} /> : null}
         </View>
       </View>
 
@@ -155,19 +147,19 @@ export default function ClipPlayerScreen() {
               <CharacterAvatar character={clip.character} size={COVER * 0.6} />
             )}
           </Animated.View>
-          <Txt style={styles.title} center accessibilityRole="header">
+          <InkText variant="card" center accessibilityRole="header">
             {clip.title}
-          </Txt>
-          <Txt style={[styles.by, { color: accent.strong }]} center>
+          </InkText>
+          <InkText variant="bodyStrong" color={accent.strong} center>
             {clip.mine ? t('radio.madeBy', { name: clip.name }) : t('radio.from', { name: clip.name })}
-          </Txt>
+          </InkText>
         </View>
 
         <View style={styles.words}>
           {clip.lines.map((line, i) => (
-            <Txt key={i} style={[styles.line, i === current && styles.lineNow]}>
+            <InkText key={i} variant={i === current ? 'bodyStrong' : 'body'} color={i === current ? immersive.label : immersive.secondaryLabel}>
               {line}
-            </Txt>
+            </InkText>
           ))}
         </View>
       </ScrollView>
@@ -178,8 +170,12 @@ export default function ClipPlayerScreen() {
             <View style={[styles.fill, { backgroundColor: accent.strong, width: `${Math.round(progress * 100)}%` }]} />
           </View>
           <View style={styles.times}>
-            <Txt style={styles.clock}>{duration(elapsed)}</Txt>
-            <Txt style={styles.clock}>{`-${duration(Math.max(0, clip.durationSec - elapsed))}`}</Txt>
+            <InkText variant="caption" color={immersive.secondaryLabel} style={styles.clock}>
+              {duration(elapsed)}
+            </InkText>
+            <InkText variant="caption" color={immersive.secondaryLabel} style={styles.clock}>
+              {`-${duration(Math.max(0, clip.durationSec - elapsed))}`}
+            </InkText>
           </View>
         </View>
 
@@ -213,7 +209,9 @@ export default function ClipPlayerScreen() {
       {sent ? (
         <View style={[styles.toast, { bottom: bottomRoom(insets.bottom, space.lg) + 170 }]} accessibilityLiveRegion="polite">
           <Ionicons name="checkmark-circle" size={18} color={systemColors.green} />
-          <Txt style={styles.toastText}>{t('radio.sent', { name: clip.name })}</Txt>
+          <InkText variant="subStrong" color={immersive.label}>
+            {t('radio.sent', { name: clip.name })}
+          </InkText>
         </View>
       ) : null}
     </Screen>
@@ -229,7 +227,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: immersive.fill },
   barRight: { flexDirection: 'row', gap: space.sm },
   body: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xl, gap: 22 },
   head: { alignItems: 'center', gap: 4, paddingHorizontal: space.lg, paddingTop: (FIELD - COVER) / 2 - space.md },
@@ -249,17 +246,13 @@ const styles = StyleSheet.create({
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },
   },
-  title: { ...inkFace('card'), color: immersive.label },
-  by: { ...inkFace('bodyStrong') },
   words: { gap: 10, padding: 18, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: immersive.card },
-  line: { ...inkFace('body'), color: immersive.secondaryLabel },
-  lineNow: { ...inkFace('bodyStrong'), color: immersive.label },
   controls: { gap: 18, paddingHorizontal: space.xl, paddingTop: space.md },
   meter: { gap: 6 },
   track: { height: 5, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: immersive.fill },
   fill: { height: '100%', borderRadius: 3 },
   times: { flexDirection: 'row', justifyContent: 'space-between' },
-  clock: { ...inkFace('caption'), color: immersive.secondaryLabel, fontVariant: ['tabular-nums'] },
+  clock: { fontVariant: ['tabular-nums'] },
   buttons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   side: { width: 52, height: 52, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   sideFill: { backgroundColor: immersive.fill },
@@ -286,5 +279,4 @@ const styles = StyleSheet.create({
     backgroundColor: immersive.card,
     ...CARD_SHADOW,
   },
-  toastText: { ...inkFace('subStrong'), color: immersive.label },
 });

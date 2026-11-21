@@ -8,7 +8,7 @@ import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { InkText } from '@/components/ink';
 import { badgeText, useTabsGate, useUnreadChats } from '@/hooks/use-tabs-gate';
-import { colors, space, systemGround } from '@/theme';
+import { colors, space } from '@/theme';
 import { ink, inkGlass } from '@/theme/ink';
 
 /** expo-router ships its own bottom-tab types; derive them from the component. */
@@ -202,7 +202,7 @@ function PlayfulTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   return (
     <>
       <LinearGradient
-        colors={systemGround.groundFade}
+        colors={ink.groundFade}
         pointerEvents="none"
         style={[styles.fade, { height: bottom + BAR + FADE_ABOVE }]}
       />

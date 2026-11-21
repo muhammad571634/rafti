@@ -8,6 +8,7 @@ export { listReorder } from './motion';
 export { InkScreen, type InkScreenProps } from './ink-screen';
 export { InkSegmented, type InkSegmentedOption, type InkSegmentedProps } from './ink-segmented';
 export { InkChip, type InkChipProps } from './ink-chip';
+export { INK_DOCK_SPACE, InkDock } from './ink-dock';
 export {
   InkFriendPill,
   type InkFriendPillProps,

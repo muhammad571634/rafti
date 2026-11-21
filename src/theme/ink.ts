@@ -33,6 +33,10 @@ export const ink = {
   photoBadgeRim: 'rgba(255,255,255,0.16)',
   /** Subtle progress bar track on cards and over photos. */
   hairlineFill: 'rgba(255,255,255,0.12)',
+  /** A bar pinned over the ground (the bottom dock): nearly opaque, so rows under it never ghost through. */
+  dock: 'rgba(9,9,13,0.94)',
+  /** The ground fading in from clear, under something floating at the bottom (the tab bar). */
+  groundFade: ['rgba(9,9,13,0)', 'rgba(9,9,13,0.94)'] as readonly [string, string],
   /** Calm night rose pill for bond streaks. */
   streakFill: 'rgba(255,140,192,0.16)',
   streakText: '#FFA8D0',

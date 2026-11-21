@@ -1,16 +1,12 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { InkSegmented } from '@/components/ink';
+import { InkDock, InkIconButton, InkNavBar, InkSegmented, InkText, PillButton } from '@/components/ink';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
-import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
-import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
 import { StickerGlyph } from '@/components/photo-booth/frame-sticker';
-import { LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { PressableScale, Screen, useScrolledPast } from '@/components/ui';
 import {
   FRAME_CAPTION_MAX,
   FRAME_COLORS,
@@ -21,22 +17,20 @@ import {
   toggleSticker,
 } from '@/lib/frames';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, signature, space, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { signature, space, systemColors } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 import type { UserFrame } from '@/types';
 import { confirmAlert as confirm } from '@/lib/alert';
 
-const GUTTER = space.lg;
 const CARD_PAD = 14;
 
 /**
- * Make a Photo Booth frame (F29): a color, a pattern, up to two stickers and a caption, with the
- * picture updating as you pick. Only pieces, no uploads; free and private. `id` edits a saved
- * frame; pictures already taken keep the frame they were shot in. Photo Booth's look on Apple's
- * white ground (design-style §10): grey cards, Photos' blue for what is picked and for Save.
+ * Make a Photo Booth frame (F29), in Ink (0z325): a color, a pattern, up to two stickers and a
+ * caption, with the picture updating as you pick. Only pieces, no uploads; free and private. `id`
+ * edits a saved frame; pictures already taken keep the frame they were shot in. Photos' blue marks
+ * what is picked; the dock holds Save.
  */
 export default function FrameEditScreen() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -46,6 +40,7 @@ export default function FrameEditScreen() {
   const conversations = useAppStore((s) => s.conversations);
   const saveFrame = useAppStore((s) => s.saveFrame);
   const deleteFrame = useAppStore((s) => s.deleteFrame);
+  const { scrolled, onScroll } = useScrolledPast(44);
 
   const [name, setName] = useState(editing?.name ?? '');
   const [color, setColor] = useState(editing?.color ?? 'pink');
@@ -62,7 +57,8 @@ export default function FrameEditScreen() {
   const [createdAt] = useState(() => new Date().toISOString());
 
   // Six stickers in one row inside the card: the card's inner width less five gaps.
-  const stickerSize = Math.min(56, (width - GUTTER * 2 - CARD_PAD * 2 - space.sm * 5) / 6);
+  const stickerSize = Math.min(56, (width - inkGutter * 2 - CARD_PAD * 2 - space.sm * 5) / 6);
+  const title = editing ? t('frames.titleEdit') : t('frames.titleNew');
 
   const save = () => {
     saveFrame({ name: name || t('frames.namePlaceholder'), color, pattern, stickers, caption }, editing?.id);
@@ -83,26 +79,26 @@ export default function FrameEditScreen() {
     );
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
+      <InkNavBar
+        backLabel={t('common.back')}
+        onBack={() => router.back()}
+        title={title}
+        scrolled={scrolled}
+        right={editing ? <InkIconButton icon="trash" color={systemColors.red} accessibilityLabel={t('frames.delete')} onPress={remove} /> : undefined}
+      />
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
-          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingBottom: space.xl }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <FeatureBar
-            backLabel={t('common.back')}
-            onBack={() => router.back()}
-            right={
-              editing ? (
-                <PressableScale scaleTo={0.9} accessibilityRole="button" accessibilityLabel={t('frames.delete')} onPress={remove} style={styles.round}>
-                  <Ionicons name="trash" size={19} color={systemColors.red} />
-                </PressableScale>
-              ) : undefined
-            }
-          />
-          <LargeTitle>{editing ? t('frames.titleEdit') : t('frames.titleNew')}</LargeTitle>
+          <InkText variant="display" style={styles.title}>
+            {title}
+          </InkText>
 
-          <View style={[featureStyles.card, styles.previewCard]}>
+          <View style={[styles.card, styles.previewCard]}>
             <View style={styles.preview}>
               {model ? (
                 <BoothPicture
@@ -115,8 +111,10 @@ export default function FrameEditScreen() {
             </View>
           </View>
 
-          <GroupLabel>{t('frames.color')}</GroupLabel>
-          <View style={[featureStyles.card, styles.pad, styles.wrap]}>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {t('frames.color')}
+          </InkText>
+          <View style={[styles.card, styles.pad, styles.wrap]}>
             {FRAME_COLORS.map((c) => {
               const on = c.id === color;
               return (
@@ -134,7 +132,9 @@ export default function FrameEditScreen() {
             })}
           </View>
 
-          <GroupLabel>{t('frames.pattern')}</GroupLabel>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {t('frames.pattern')}
+          </InkText>
           <InkSegmented
             options={FRAME_PATTERNS.map((p) => ({ value: p, label: t(`frames.patterns.${p}`) }))}
             value={pattern}
@@ -143,10 +143,14 @@ export default function FrameEditScreen() {
           />
 
           <View style={styles.labelRow}>
-            <GroupLabel>{t('frames.stickers')}</GroupLabel>
-            <Txt style={styles.labelValue}>{t('frames.upTo')}</Txt>
+            <InkText variant="footnoteStrong" color={ink.text2} style={[styles.section, styles.flex]} lines={1}>
+              {t('frames.stickers')}
+            </InkText>
+            <InkText variant="footnote" color={ink.text2} style={styles.labelValue}>
+              {t('frames.upTo')}
+            </InkText>
           </View>
-          <View style={[featureStyles.card, styles.pad, styles.stickers]}>
+          <View style={[styles.card, styles.pad, styles.stickers]}>
             {FRAME_STICKERS.map((s) => {
               const on = stickers.includes(s);
               return (
@@ -164,26 +168,32 @@ export default function FrameEditScreen() {
             })}
           </View>
 
-          <GroupLabel>{t('frames.caption')}</GroupLabel>
-          <View style={featureStyles.card}>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {t('frames.caption')}
+          </InkText>
+          <View style={styles.card}>
             <TextInput
               value={caption}
               onChangeText={setCaption}
               placeholder={t('frames.captionPlaceholder')}
-              placeholderTextColor={systemGround.secondaryLabel}
+              placeholderTextColor={ink.placeholder}
+              selectionColor={signature.photo.strong}
               accessibilityLabel={t('frames.caption')}
               maxLength={FRAME_CAPTION_MAX}
               style={styles.input}
             />
           </View>
 
-          <GroupLabel>{t('frames.name')}</GroupLabel>
-          <View style={featureStyles.card}>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {t('frames.name')}
+          </InkText>
+          <View style={styles.card}>
             <TextInput
               value={name}
               onChangeText={setName}
               placeholder={t('frames.namePlaceholder')}
-              placeholderTextColor={systemGround.secondaryLabel}
+              placeholderTextColor={ink.placeholder}
+              selectionColor={signature.photo.strong}
               accessibilityLabel={t('frames.name')}
               maxLength={FRAME_NAME_MAX}
               style={styles.input}
@@ -191,7 +201,12 @@ export default function FrameEditScreen() {
           </View>
         </ScrollView>
 
-        <StoreBuyBar label={t('frames.save')} caption={t('frames.saveHint')} onPress={save} look={signature.photo} />
+        <InkDock inFlow>
+          <PillButton label={t('frames.save')} onPress={save} />
+          <InkText variant="footnote" color={ink.text2} center style={styles.caption}>
+            {t('frames.saveHint')}
+          </InkText>
+        </InkDock>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -199,29 +214,40 @@ export default function FrameEditScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: systemGround.fill },
-  previewCard: { marginTop: 18, padding: CARD_PAD, borderRadius: inkRadius.card, borderCurve: 'continuous' },
-  // The picture's stage: the white ground set into the grey card.
-  preview: { height: 236, borderRadius: 16, borderCurve: 'continuous', backgroundColor: systemGround.ground, alignItems: 'center', justifyContent: 'center' },
+  title: { marginTop: 2, marginHorizontal: inkGutter },
+  section: { paddingHorizontal: inkGutter + 6, paddingTop: 20, paddingBottom: 8 },
+  card: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  previewCard: { marginTop: 18, padding: CARD_PAD },
+  // The picture's stage: the ground set into the card.
+  preview: { height: 236, borderRadius: 16, borderCurve: 'continuous', backgroundColor: ink.ground, alignItems: 'center', justifyContent: 'center' },
   tilt: { transform: [{ rotate: '-2deg' }] },
   pad: { padding: CARD_PAD },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  gutter: { marginHorizontal: GUTTER },
-  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  gutter: { marginHorizontal: inkGutter },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end' },
+  labelValue: { marginBottom: 8, marginRight: inkGutter + 6 },
   swatchRing: { width: 46, height: 46, borderRadius: inkRadius.pill, borderWidth: 2.5, borderColor: 'transparent', padding: 3 },
   swatchOn: { borderColor: signature.photo.strong },
-  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderStrong },
+  swatch: { flex: 1, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: ink.line },
   stickers: { flexDirection: 'row', justifyContent: 'space-between' },
   sticker: {
     borderRadius: 14,
     borderCurve: 'continuous',
     borderWidth: 2.5,
     borderColor: 'transparent',
-    backgroundColor: systemGround.ground,
+    backgroundColor: ink.ground,
     alignItems: 'center',
     justifyContent: 'center',
   },
   stickerOn: { borderColor: signature.photo.strong },
-  input: { minHeight: 50, paddingHorizontal: GUTTER, ...inkFace('body'), color: systemGround.label },
+  input: { minHeight: 50, paddingHorizontal: inkGutter, ...inkFace('body'), color: ink.text },
+  caption: { marginTop: 6 },
 });

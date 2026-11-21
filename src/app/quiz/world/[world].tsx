@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { INK_DOCK_SPACE, InkDock, InkIconButton, InkNavBar, InkText, PillButton } from '@/components/ink';
 import { BoothPicture } from '@/components/photo-booth/booth-picture';
-import { RoundButton } from '@/components/feature/feature-kit';
-import { BUY_BAR_SPACE, STORE, StoreBuyBar } from '@/components/plans/store-look';
-import { CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, EmptyState, PressableScale, Screen } from '@/components/ui';
 import { shortName } from '@/lib/format';
 import type { WriteResults } from '@/ai/writes';
 import { lineFor, pickSome, WORLD_PASS, WORLD_QUESTIONS } from '@/lib/quiz';
@@ -16,15 +15,16 @@ import { phrase } from '@/i18n';
 import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
-import { colors, space, systemColors, systemGround } from '@/theme';
+import { space, systemColors } from '@/theme';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 type Phase = 'intro' | 'play' | 'done';
 
 /**
- * A world quiz (F29), on Apple's white ground like Find and the World page: a friend from that world asks
- * 5 questions about it and its people, in their voice. 4 right wins the world's Photo Booth frame; a miss can try again at once, with
- * other questions. The host is the friend the user came from, else their closest friend there.
+ * A world quiz (F29), in Ink (0z325): a friend from that world asks 5 questions about it and its
+ * people, in their voice. 4 right wins the world's Photo Booth frame; a miss can try again at once,
+ * with other questions. The host is the friend the user came from, else their closest friend there.
  */
 export default function WorldQuizScreen() {
   const { t } = useTranslation();
@@ -83,15 +83,15 @@ export default function WorldQuizScreen() {
     };
   }, [world, hostId, questions]);
 
-  const back = (onPress: () => void = () => router.back(), icon: 'chevron-back' | 'close' = 'chevron-back') => (
-    <RoundButton icon={icon} accessibilityLabel={icon === 'close' ? t('common.close') : t('common.back')} onPress={onPress} />
-  );
+  const nav = <InkNavBar backLabel={t('common.back')} onBack={() => router.back()} />;
 
   if (!world) {
     return (
-      <Screen background={systemGround.ground}>
-        <View style={styles.bar}>{back()}</View>
-        <LargeTitle>{t('games.quiz')}</LargeTitle>
+      <Screen background={ink.ground}>
+        {nav}
+        <InkText variant="display" style={styles.title}>
+          {t('games.quiz')}
+        </InkText>
       </Screen>
     );
   }
@@ -100,9 +100,11 @@ export default function WorldQuizScreen() {
 
   if (!host) {
     return (
-      <Screen background={systemGround.ground}>
-        <View style={styles.bar}>{back()}</View>
-        <LargeTitle>{title}</LargeTitle>
+      <Screen background={ink.ground}>
+        {nav}
+        <InkText variant="display" style={styles.title}>
+          {title}
+        </InkText>
         <EmptyState
           symbol={{ ios: 'safari.fill', icon: 'compass' }}
           title={t('worldQuiz.noHost', { world: phrase(world.series) })}
@@ -130,19 +132,23 @@ export default function WorldQuizScreen() {
   // 1. The host's intro and the prize.
   if (phase === 'intro') {
     return (
-      <Screen background={systemGround.ground}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
-          <View style={styles.bar}>{back()}</View>
-          <LargeTitle>{title}</LargeTitle>
+      <Screen background={ink.ground}>
+        {nav}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: INK_DOCK_SPACE + insets.bottom }}>
+          <InkText variant="display" style={styles.title}>
+            {title}
+          </InkText>
           <View style={styles.prize}>
             <BoothPicture photo={framed} character={host} width={176} style={styles.tilt} />
           </View>
           {modelIsOn() ? said ? <Says host={host} text={said.intro} /> : null : <Says host={host} text={world.intro} />}
-          <Txt style={styles.rule} center>
+          <InkText variant="footnote" color={ink.text2} center style={styles.rule}>
             {already ? t('worldQuiz.alreadyBody') : t('worldQuiz.rule')}
-          </Txt>
+          </InkText>
         </ScrollView>
-        <StoreBuyBar label={t('worldQuiz.start')} onPress={startPlay} />
+        <InkDock>
+          <PillButton label={t('worldQuiz.start')} onPress={startPlay} />
+        </InkDock>
       </Screen>
     );
   }
@@ -151,9 +157,9 @@ export default function WorldQuizScreen() {
   if (phase === 'done') {
     const total = questions.length;
     return (
-      <Screen background={systemGround.ground}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}>
-          <View style={styles.bar}>{back()}</View>
+      <Screen background={ink.ground}>
+        {nav}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: INK_DOCK_SPACE + insets.bottom }}>
           <View style={styles.result}>
             {result === 'lost' ? (
               <View style={styles.ring}>
@@ -162,35 +168,39 @@ export default function WorldQuizScreen() {
             ) : (
               <BoothPicture photo={framed} character={host} width={192} develop={result === 'won'} style={styles.tilt} />
             )}
-            <Txt style={styles.resultTitle} center accessibilityRole="header">
+            <InkText variant="title" center accessibilityRole="header" style={styles.resultTitle}>
               {result === 'won'
                 ? t('worldQuiz.wonTitle', { world: phrase(world.series) })
                 : result === 'again'
                   ? t('worldQuiz.alreadyTitle', { score, total })
                   : t('worldQuiz.lostTitle', { score, total })}
-            </Txt>
-            <Txt style={styles.resultBody} center>
+            </InkText>
+            <InkText variant="body" color={ink.text2} center>
               {result === 'won'
                 ? t('worldQuiz.wonBody')
                 : result === 'again'
                   ? t('worldQuiz.alreadyBody')
                   : t('worldQuiz.lostBody')}
-            </Txt>
+            </InkText>
             <PressableScale scaleTo={0.96} accessibilityRole="button" onPress={() => router.back()} style={styles.secondary}>
-              <Txt style={styles.secondaryText}>{t('worldQuiz.back')}</Txt>
+              <InkText variant="subStrong" color={ink.accent}>
+                {t('worldQuiz.back')}
+              </InkText>
             </PressableScale>
           </View>
         </ScrollView>
-        {result === 'lost' ? (
-          <StoreBuyBar label={t('worldQuiz.again')} onPress={restart} />
-        ) : (
-          <StoreBuyBar
-            label={t('worldQuiz.toBooth')}
-            onPress={() =>
-              router.replace({ pathname: '/photo-booth', params: { frame: `w:${world.key}`, partner: host.id } })
-            }
-          />
-        )}
+        <InkDock>
+          {result === 'lost' ? (
+            <PillButton label={t('worldQuiz.again')} onPress={restart} />
+          ) : (
+            <PillButton
+              label={t('worldQuiz.toBooth')}
+              onPress={() =>
+                router.replace({ pathname: '/photo-booth', params: { frame: `w:${world.key}`, partner: host.id } })
+              }
+            />
+          )}
+        </InkDock>
       </Screen>
     );
   }
@@ -219,9 +229,9 @@ export default function WorldQuizScreen() {
   };
 
   return (
-    <Screen background={systemGround.ground}>
-      <View style={[styles.bar, styles.playBar]}>
-        {back(() => setPhase('intro'), 'close')}
+    <Screen background={ink.ground}>
+      <View style={styles.playBar}>
+        <InkIconButton icon="close" size={22} accessibilityLabel={t('common.close')} onPress={() => setPhase('intro')} />
         <View style={styles.dots} accessible accessibilityLabel={`${index + 1} / ${questions.length}`}>
           {questions.map((_, i) => (
             <View key={i} style={[styles.dot, i <= index && styles.dotOn]} />
@@ -234,13 +244,13 @@ export default function WorldQuizScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: picked != null ? BUY_BAR_SPACE + insets.bottom : insets.bottom + space.xl }}>
-        <Txt style={styles.progress}>
+        contentContainerStyle={{ paddingBottom: picked != null ? INK_DOCK_SPACE + insets.bottom : insets.bottom + space.xl }}>
+        <InkText variant="caption" color={ink.text2} style={styles.progress}>
           {t('worldQuiz.progress', { world: phrase(world.series), n: index + 1, total: questions.length })}
-        </Txt>
-        <Txt style={styles.question} accessibilityRole="header">
+        </InkText>
+        <InkText variant="title" accessibilityRole="header" style={styles.question}>
           {question.text}
-        </Txt>
+        </InkText>
         <View style={styles.options}>
           {question.options.map((text, option) => {
             const isRight = picked != null && option === question.answer;
@@ -252,14 +262,12 @@ export default function WorldQuizScreen() {
                 scaleTo={picked != null ? 1 : 0.97}
                 accessibilityRole="button"
                 accessibilityState={{ selected: picked === option, disabled: picked != null }}
-                style={[
-                  styles.option,
-                  isRight && styles.right,
-                  isWrongPick && styles.wrong,
-                ]}
+                style={[styles.option, isRight && styles.right, isWrongPick && styles.wrong]}
                 onPress={() => pick(option)}>
                 {/* The other answers fade by their text: PressableScale owns the card's opacity. */}
-                <Txt style={[styles.optionText, picked != null && !isRight && !isWrongPick && styles.dim]}>{text}</Txt>
+                <InkText variant="bodyStrong" style={[styles.flex, picked != null && !isRight && !isWrongPick && styles.dim]}>
+                  {text}
+                </InkText>
                 {isRight ? <Ionicons name="checkmark-circle" size={24} color={systemColors.green} /> : null}
                 {isWrongPick ? <Ionicons name="close-circle" size={24} color={systemColors.red} /> : null}
               </PressableScale>
@@ -281,14 +289,16 @@ export default function WorldQuizScreen() {
             }
           />
         ) : (
-          <Txt style={styles.rule} center>
+          <InkText variant="footnote" color={ink.text2} center style={styles.rule}>
             {t('worldQuiz.rule')} · {name}
-          </Txt>
+          </InkText>
         )}
       </ScrollView>
 
       {picked != null ? (
-        <StoreBuyBar label={last ? t('worldQuiz.seeResult') : t('worldQuiz.next')} onPress={next} />
+        <InkDock>
+          <PillButton label={last ? t('worldQuiz.seeResult') : t('worldQuiz.next')} onPress={next} />
+        </InkDock>
       ) : null}
     </Screen>
   );
@@ -300,19 +310,24 @@ function Says({ host, text, label, labelColor }: { host: Character; text: string
     <View style={styles.says} accessibilityLiveRegion="polite">
       <CharacterAvatar character={host} size={32} />
       <View style={styles.bubble}>
-        {label ? <Txt style={[styles.verdict, { color: labelColor }]}>{label}</Txt> : null}
-        {text ? <Txt style={styles.bubbleText}>{text}</Txt> : null}
+        {label ? (
+          <InkText variant="footnoteStrong" color={labelColor}>
+            {label}
+          </InkText>
+        ) : null}
+        {text ? <InkText variant="body">{text}</InkText> : null}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bar: { height: 44, paddingHorizontal: space.lg, paddingTop: space.xs, flexDirection: 'row', alignItems: 'center' },
-  playBar: { height: 56, gap: space.md },
+  flex: { flex: 1 },
+  title: { marginTop: 2, marginHorizontal: inkGutter },
+  playBar: { minHeight: 56, paddingHorizontal: inkGutter, paddingTop: 4, flexDirection: 'row', alignItems: 'center', gap: space.md },
   prize: { alignItems: 'center', paddingTop: space.xxl, paddingBottom: space.lg },
   tilt: { transform: [{ rotate: '-2deg' }] },
-  says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, marginHorizontal: space.lg, marginTop: space.lg },
+  says: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, marginHorizontal: inkGutter, marginTop: space.lg },
   bubble: {
     flexShrink: 1,
     gap: 2,
@@ -320,24 +335,20 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderBottomLeftRadius: 6,
-    backgroundColor: systemGround.card,
+    backgroundColor: ink.card,
   },
-  verdict: { fontSize: 13, fontWeight: '700', letterSpacing: 0.1 },
-  bubbleText: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: colors.text },
-  rule: { marginTop: space.lg, marginHorizontal: space.xl, fontSize: 13, lineHeight: 18, color: systemGround.secondaryLabel },
+  rule: { marginTop: space.lg, marginHorizontal: space.xl },
   result: { alignItems: 'center', gap: space.md, paddingTop: space.xl, paddingHorizontal: space.xl },
-  ring: { padding: 4, borderRadius: 52, backgroundColor: systemGround.fill },
-  resultTitle: { marginTop: space.md, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
-  resultBody: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4, color: systemGround.secondaryLabel },
-  secondary: { marginTop: space.sm, height: 40, paddingHorizontal: space.lg, borderRadius: 20, justifyContent: 'center', backgroundColor: STORE.peachSoft },
-  secondaryText: { fontSize: 15, fontWeight: '700', color: STORE.peachInk },
+  ring: { padding: 4, borderRadius: 52, backgroundColor: ink.hairlineFill },
+  resultTitle: { marginTop: space.md },
+  secondary: { marginTop: space.sm, minHeight: 44, paddingHorizontal: space.lg, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: ink.raised },
   dots: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 5 },
-  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: 3, backgroundColor: systemGround.fill },
-  dotOn: { backgroundColor: colors.brandText },
-  hostRing: { padding: 2, borderRadius: 20, backgroundColor: systemGround.fill },
-  progress: { marginTop: space.md, marginHorizontal: space.lg, fontSize: 13, fontWeight: '600', letterSpacing: 0.2, color: systemGround.secondaryLabel, textTransform: 'uppercase' },
-  question: { marginTop: 6, marginHorizontal: space.lg, fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: 0.2, color: colors.text },
-  options: { gap: 10, marginTop: space.xl, marginHorizontal: space.lg },
+  dot: { flex: 1, maxWidth: 34, height: 6, borderRadius: inkRadius.pill, backgroundColor: ink.hairlineFill },
+  dotOn: { backgroundColor: ink.accent },
+  hostRing: { padding: 2, borderRadius: 20, backgroundColor: ink.hairlineFill },
+  progress: { marginTop: space.md, marginHorizontal: inkGutter, textTransform: 'uppercase' },
+  question: { marginTop: 6, marginHorizontal: inkGutter },
+  options: { gap: 10, marginTop: space.xl, marginHorizontal: inkGutter },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -345,12 +356,12 @@ const styles = StyleSheet.create({
     minHeight: 58,
     paddingHorizontal: space.lg,
     paddingVertical: 14,
-    borderRadius: 20,
+    borderRadius: inkRadius.row,
+    borderCurve: 'continuous',
     borderWidth: 2,
-    borderColor: 'transparent',
-    backgroundColor: systemGround.card,
+    borderColor: ink.edge,
+    backgroundColor: ink.card,
   },
-  optionText: { flex: 1, fontSize: 17, fontWeight: '600', letterSpacing: -0.4, color: colors.text },
   right: { borderColor: systemColors.green },
   wrong: { borderColor: systemColors.red },
   dim: { opacity: 0.4 },

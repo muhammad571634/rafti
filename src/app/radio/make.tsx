@@ -3,33 +3,29 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Linking, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HELPLINE_URL } from '@/ai/safety';
 import { useFriends } from '@/components/group/friend-row';
+import { InkDock, InkNavBar, InkText, PillButton } from '@/components/ink';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { featureStyles, FeatureBar } from '@/components/feature/feature-kit';
-import { BUY_BAR_SPACE, GroupLabel, StoreBuyBar } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
-import { Anim, Button, CharacterAvatar, EmptyState, LargeTitle, PressableScale, Screen, Txt } from '@/components/ui';
+import { Anim, CharacterAvatar, EmptyState, PressableScale, Screen, useScrolledPast } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { CLIP_LINE_MAX, CLIP_MAX_LINES, CLIP_TITLE_MAX, checkClip, cleanLines, clipCost } from '@/lib/radio-clips';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, signature, space, systemGround } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { signature, space } from '@/theme';
+import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 
 /** How long the "is recording" moment lasts in the mock; real builds wait for the voiced file. */
 const RECORD_MS = 1800;
 const PAD = 14;
 
 /**
- * Make a clip (F27): pick a friend, write up to 5 lines, name it, and the friend records it in
- * their voice. 5 lines cost 1 shell (owner decision 2026-10-15). A feature screen on Apple's white
- * ground in Radio's purple (design-style §10): friends with a purple ring, the lines as one grey card
- * of fields, and the buy bar with Record and what it costs.
+ * Make a clip (F27), in Ink (0z325): pick a friend, write up to 5 lines, name it, and the friend
+ * records it in their voice. 5 lines cost 1 shell (owner decision 2026-10-15). Radio's purple marks
+ * the chosen friend and the add row; the dock holds Record and what it costs.
  */
 export default function MakeClipScreen() {
-  const insets = useSafeAreaInsets();
   const friendName = useFriendName();
   const { t } = useTranslation();
   const router = useRouter();
@@ -37,6 +33,7 @@ export default function MakeClipScreen() {
   const friends = useFriends();
   const makeRadioClip = useAppStore((s) => s.makeRadioClip);
   const play = useRadioPlayer((s) => s.play);
+  const { scrolled, onScroll } = useScrolledPast(44);
 
   const [who, setWho] = useState(params.characterId);
   const [lines, setLines] = useState<string[]>(['']);
@@ -58,13 +55,15 @@ export default function MakeClipScreen() {
   const clean = cleanLines(lines);
   const cost = clipCost(clean.length);
 
-  const back = <FeatureBar backLabel={t('common.back')} onBack={() => router.back()} />;
+  const nav = <InkNavBar backLabel={t('common.back')} onBack={() => router.back()} title={t('radio.make')} scrolled={scrolled} />;
 
   if (!friend) {
     return (
-      <Screen background={systemGround.ground}>
-        {back}
-        <LargeTitle>{t('radio.make')}</LargeTitle>
+      <Screen background={ink.ground}>
+        {nav}
+        <InkText variant="display" style={styles.title}>
+          {t('radio.make')}
+        </InkText>
         <EmptyState
           symbol={{ ios: 'person.2.fill', icon: 'people' }}
           title={t('radio.noFriends')}
@@ -103,16 +102,22 @@ export default function MakeClipScreen() {
   };
 
   return (
-    <Screen background={systemGround.ground}>
+    <Screen background={ink.ground}>
+      {nav}
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
-          contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE + insets.bottom }}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ paddingBottom: space.xl }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          {back}
-          <LargeTitle>{t('radio.make')}</LargeTitle>
+          <InkText variant="display" style={styles.title}>
+            {t('radio.make')}
+          </InkText>
 
-          <GroupLabel>{t('radio.who')}</GroupLabel>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {t('radio.who')}
+          </InkText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.friends}>
             {friends.map((f) => {
               const on = f.character.id === friend.character.id;
@@ -129,27 +134,34 @@ export default function MakeClipScreen() {
                   <View style={[styles.ring, on && styles.ringOn]}>
                     <CharacterAvatar character={f.character} size={52} />
                   </View>
-                  <Txt style={[styles.friendName, on && styles.friendNameOn]} lines={1} center>
+                  <InkText variant={on ? 'footnoteStrong' : 'footnote'} color={on ? ink.text : ink.text2} lines={1} center>
                     {friendName(f.character, true)}
-                  </Txt>
+                  </InkText>
                 </PressableScale>
               );
             })}
           </ScrollView>
 
           <View style={styles.labelRow}>
-            <GroupLabel>{t('radio.says', { name })}</GroupLabel>
-            <Txt style={styles.labelValue}>{t('radio.lineCount', { count: clean.length, max: CLIP_MAX_LINES })}</Txt>
+            <InkText variant="footnoteStrong" color={ink.text2} style={[styles.section, styles.flex]} lines={1}>
+              {t('radio.says', { name })}
+            </InkText>
+            <InkText variant="footnote" color={ink.text2} style={styles.labelValue}>
+              {t('radio.lineCount', { count: clean.length, max: CLIP_MAX_LINES })}
+            </InkText>
           </View>
-          <View style={featureStyles.card}>
+          <View style={styles.card}>
             {lines.map((line, i) => (
               <View key={i} style={[styles.line, i > 0 && styles.divider]}>
-                <Txt style={styles.lineNo}>{i + 1}</Txt>
+                <InkText variant="subStrong" color={ink.text2} style={styles.lineNo}>
+                  {String(i + 1)}
+                </InkText>
                 <TextInput
                   value={line}
                   onChangeText={(text) => edit(i, text)}
                   placeholder={t('radio.linePlaceholder', { n: i + 1 })}
-                  placeholderTextColor={systemGround.secondaryLabel}
+                  placeholderTextColor={ink.placeholder}
+                  selectionColor={signature.radio.strong}
                   accessibilityLabel={t('radio.linePlaceholder', { n: i + 1 })}
                   maxLength={CLIP_LINE_MAX}
                   multiline
@@ -163,7 +175,7 @@ export default function MakeClipScreen() {
                     scaleTo={0.88}
                     accessibilityRole="button"
                     accessibilityLabel={t('radio.removeLine', { n: i + 1 })}>
-                    <Ionicons name="close-circle" size={20} color={systemGround.secondaryLabel} />
+                    <Ionicons name="close-circle" size={20} color={ink.text3} />
                   </PressableScale>
                 ) : null}
               </View>
@@ -176,29 +188,40 @@ export default function MakeClipScreen() {
                 accessibilityLabel={t('radio.addLine')}
                 style={[styles.line, styles.divider]}>
                 <Ionicons name="add-circle" size={22} color={signature.radio.strong} />
-                <Txt style={styles.addText}>{t('radio.addLine')}</Txt>
+                <InkText variant="bodyStrong" color={signature.radio.strong}>
+                  {t('radio.addLine')}
+                </InkText>
               </PressableScale>
             ) : null}
           </View>
-          <Txt style={styles.footnote}>{t('radio.rules', { name })}</Txt>
+          <InkText variant="footnote" color={ink.text2} style={styles.footnote}>
+            {t('radio.rules', { name })}
+          </InkText>
 
           {crisis ? (
-            <View style={[featureStyles.card, styles.crisis]} accessibilityLiveRegion="polite">
-              <Txt variant="title">{t('radio.crisisTitle', { name })}</Txt>
-              <Txt variant="small" color={colors.textSecondary}>
-                {t('radio.crisisBody')}
-              </Txt>
-              <Button label={t('safety.helplineAction')} variant="secondary" size="sm" onPress={() => void Linking.openURL(HELPLINE_URL)} />
+            <View style={[styles.card, styles.crisis]} accessibilityLiveRegion="polite">
+              <InkText variant="bodyStrong">{t('radio.crisisTitle', { name })}</InkText>
+              <InkText variant="sub">{t('radio.crisisBody')}</InkText>
+              <PillButton
+                label={t('safety.helplineAction')}
+                kind="secondary"
+                size="md"
+                full={false}
+                onPress={() => void Linking.openURL(HELPLINE_URL)}
+              />
             </View>
           ) : null}
 
-          <GroupLabel>{`${t('radio.nameLabel')} · ${t('radio.optional')}`}</GroupLabel>
-          <View style={featureStyles.card}>
+          <InkText variant="footnoteStrong" color={ink.text2} style={styles.section}>
+            {`${t('radio.nameLabel')} · ${t('radio.optional')}`}
+          </InkText>
+          <View style={styles.card}>
             <TextInput
               value={title}
               onChangeText={setTitle}
               placeholder={clean[0] ?? t('radio.nameLabel')}
-              placeholderTextColor={systemGround.secondaryLabel}
+              placeholderTextColor={ink.placeholder}
+              selectionColor={signature.radio.strong}
               accessibilityLabel={t('radio.nameLabel')}
               maxLength={CLIP_TITLE_MAX}
               editable={!recording}
@@ -207,21 +230,23 @@ export default function MakeClipScreen() {
           </View>
         </ScrollView>
 
-        {/* The buy bar in Radio's purple: Record, then what it costs; while recording, the friend at work. */}
-        <StoreBuyBar
-          label={recording ? t('radio.recording', { name }) : clean.length ? t('radio.record', { name }) : t('radio.writeFirst')}
-          caption={recording ? t('radio.recordingHint') : t('radio.cost', { lines: clean.length, count: cost })}
-          disabled={recording || !clean.length || crisis}
-          onPress={record}
-         
-          look={signature.radio}
-          left={recording ? <CharacterAvatar character={friend.character} size={28} /> : undefined}>
+        {/* Record, then what it costs; while recording, the friend at work. */}
+        <InkDock inFlow>
           {recording ? (
             <View style={styles.recording} accessibilityLiveRegion="polite">
+              <CharacterAvatar character={friend.character} size={28} />
               <Anim name="voiceWave" size={28} tint={signature.radio.strong} />
             </View>
           ) : null}
-        </StoreBuyBar>
+          <PillButton
+            label={recording ? t('radio.recording', { name }) : clean.length ? t('radio.record', { name }) : t('radio.writeFirst')}
+            disabled={recording || !clean.length || crisis}
+            onPress={record}
+          />
+          <InkText variant="footnote" color={ink.text2} center style={styles.caption}>
+            {recording ? t('radio.recordingHint') : t('radio.cost', { lines: clean.length, count: cost })}
+          </InkText>
+        </InkDock>
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
@@ -231,21 +256,30 @@ export default function MakeClipScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  friends: { gap: 14, paddingHorizontal: space.lg },
+  title: { marginTop: 2, marginHorizontal: inkGutter },
+  section: { paddingHorizontal: inkGutter + 6, paddingTop: 20, paddingBottom: 8 },
+  friends: { gap: 14, paddingHorizontal: inkGutter },
   friend: { width: 64, alignItems: 'center', gap: 6 },
   ring: { padding: 2, borderRadius: 30, borderWidth: 2.5, borderColor: 'transparent' },
   ringOn: { borderColor: signature.radio.strong },
-  friendName: { ...inkFace('footnote'), color: systemGround.secondaryLabel },
-  friendNameOn: { fontWeight: '700', color: systemGround.label },
-  labelRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  labelValue: { marginBottom: 6, marginRight: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  line: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 52, paddingHorizontal: PAD },
-  divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderStrong },
-  lineNo: { width: 18, ...inkFace('subStrong'), color: systemGround.secondaryLabel, fontVariant: ['tabular-nums'] },
-  lineInput: { flex: 1, paddingVertical: 14, ...inkFace('body'), color: systemGround.label },
-  addText: { ...inkFace('bodyStrong'), color: signature.radio.text },
-  footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
+  labelRow: { flexDirection: 'row', alignItems: 'flex-end' },
+  labelValue: { marginBottom: 8, marginRight: inkGutter + 6, fontVariant: ['tabular-nums'] },
+  card: {
+    marginHorizontal: inkGutter,
+    borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  line: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 52, paddingHorizontal: PAD + 2 },
+  divider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: ink.line },
+  lineNo: { width: 18, fontVariant: ['tabular-nums'] },
+  lineInput: { flex: 1, paddingVertical: 14, ...inkFace('body'), color: ink.text },
+  footnote: { marginTop: 8, marginHorizontal: inkGutter + 6 },
   crisis: { marginTop: 22, gap: space.sm, padding: space.lg, alignItems: 'flex-start' },
-  input: { minHeight: 50, paddingHorizontal: PAD + 2, ...inkFace('body'), color: systemGround.label },
-  recording: { alignItems: 'center' },
+  input: { minHeight: 50, paddingHorizontal: PAD + 4, ...inkFace('body'), color: ink.text },
+  recording: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 },
+  caption: { marginTop: 6 },
 });
