@@ -704,6 +704,8 @@ export interface AppState {
   addCommunityCharacter: (item: CommunityItem) => { characterId: string; conversationId: string };
   /** Say hi to a story template on Find: their own copy (once) and its chat, counted once on the server. */
   addTemplateCharacter: (template: StoryTemplate) => { characterId: string; conversationId: string };
+  /** After Make it yours: the story's hi copy goes if they never wrote to it, so the story leaves one friend in Chats. */
+  dropStoryHi: (templateId: string) => void;
   /** Reports a community character (one per user); false when the server did not take it. */
   reportCommunity: (communityId: string, reason: string) => Promise<boolean>;
   resetRelationship: (characterId: string) => void;
@@ -2493,8 +2495,12 @@ export const useAppStore = create<AppState>()(
       },
 
       addTemplateCharacter: (template) => {
-        // Their hi copy only (`@stories`), never one they made their own in Create from the same story.
-        const known = get().characters.find((c) => c.fromTemplate === template.id && c.handle === '@stories' && !c.isOfficial);
+        // One friend per story: the one they made their own in Create wins (their picture, their edits), else the hi copy.
+        const mine = get().characters.filter((c) => c.fromTemplate === template.id && !c.isOfficial);
+        const own = mine.filter((c) => c.handle !== '@stories').at(-1);
+        const known = own ?? mine.find((c) => c.handle === '@stories');
+        // Tidies a hi copy left from before Make it yours tidied it itself.
+        if (own) get().dropStoryHi(template.id);
         if (known) {
           const conversationId = get().conversations.find((c) => c.characterId === known.id)?.id ?? get().addFriend(known.id);
           return { characterId: known.id, conversationId };
@@ -2515,6 +2521,16 @@ export const useAppStore = create<AppState>()(
         });
         void withAccount((token) => serverTemplates.add(token, template.id, 'hi')).catch(() => null);
         return ids;
+      },
+
+      dropStoryHi: (templateId) => {
+        const s = get();
+        const hi = s.characters.find((c) => c.fromTemplate === templateId && c.handle === '@stories' && !c.isOfficial);
+        if (!hi) return;
+        const chat = s.conversations.find((c) => c.characterId === hi.id)?.id;
+        // A chat they wrote in is their story: it stays beside the new one.
+        if (chat && s.messages[chat]?.some((m) => m.author === 'me')) return;
+        s.deleteCharacter(hi.id);
       },
 
       reportCommunity: async (communityId, reason) => {

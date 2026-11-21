@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { type Href, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -143,6 +144,9 @@ function StoryCard({
   const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
+  // Made their own in Create: the card shows their friend (picture and name), as a tap opens that one.
+  const own = useAppStore((s) => s.characters.filter((c) => c.fromTemplate === written.id && c.handle !== '@stories' && !c.isOfficial).at(-1));
+  const name = own?.name || card.name;
   return (
     <PressableScale
       scaleTo={0.97}
@@ -151,16 +155,25 @@ function StoryCard({
       onPress={onPress}
       style={[styles.card, { width }]}
     >
-      <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.face}>
-        <InkText variant="numeralSmall" color="rgba(255,255,255,0.92)" maxFontSizeMultiplier={1}>
-          {card.name.slice(0, 1)}
-        </InkText>
-        <CountBadge stats={stats} trending={trending} />
-      </LinearGradient>
+      {own?.avatarUri ? (
+        // A picture: PolyBuzz's tall 3:4 photo with a scrim under the count.
+        <View style={styles.photo}>
+          <Image source={own.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <LinearGradient colors={['transparent', ink.scrim]} style={styles.scrim} />
+          <CountBadge stats={stats} trending={trending} />
+        </View>
+      ) : (
+        <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.face}>
+          <InkText variant="numeralSmall" color="rgba(255,255,255,0.92)" maxFontSizeMultiplier={1}>
+            {name.slice(0, 1)}
+          </InkText>
+          <CountBadge stats={stats} trending={trending} />
+        </LinearGradient>
+      )}
       <View style={styles.body}>
         <View style={styles.nameRow}>
           <InkText variant="bodyStrong" lines={1} style={styles.grow}>
-            {card.name}
+            {name}
           </InkText>
           <PressableScale accessibilityRole="button" accessibilityLabel={t('stories.details')} hitSlop={12} onPress={onStory}>
             <Ionicons name="book-outline" size={18} color={ink.text2} />
@@ -254,6 +267,8 @@ const styles = StyleSheet.create({
   // The initial up top, the count bottom left (where PolyBuzz keeps it).
   face: { height: 132, alignItems: 'flex-start', justifyContent: 'space-between', padding: 12 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  photo: { aspectRatio: 3 / 4, justifyContent: 'flex-end', alignItems: 'flex-start', padding: 12, backgroundColor: ink.raised },
+  scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '40%' },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
   body: { gap: 6, padding: 12 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP },

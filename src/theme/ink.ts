@@ -28,6 +28,8 @@ export const ink = {
   photoGlassRim: 'rgba(255,255,255,0.26)',
   /** Floating metadata badge over photography (level, mood). */
   photoBadge: 'rgba(9,9,13,0.52)',
+  /** The dark fade at the foot of a photo card, under its badge. */
+  scrim: 'rgba(9,9,13,0.6)',
   photoBadgeRim: 'rgba(255,255,255,0.16)',
   /** Subtle progress bar track on cards and over photos. */
   hairlineFill: 'rgba(255,255,255,0.12)',

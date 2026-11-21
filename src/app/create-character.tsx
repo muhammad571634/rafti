@@ -265,6 +265,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   const keyboardUp = useKeyboardVisible();
   const { scrolled, onScroll } = useScrolledPast(34);
   const addCharacter = useAppStore((s) => s.addCharacter);
+  const dropStoryHi = useAppStore((s) => s.dropStoryHi);
   const ownWorlds = useAppStore((s) => s.lorebooks);
   const setLoreLink = useAppStore((s) => s.setLoreLink);
   const updateCharacter = useAppStore((s) => s.updateCharacter);
@@ -649,7 +650,10 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
       fromTemplate: template?.id,
     });
     // Made a story template their own: counted once on the server (Find's real numbers).
-    if (template) void withAccount((token) => serverTemplates.add(token, template.id, 'own')).catch(() => null);
+    if (template) {
+      void withAccount((token) => serverTemplates.add(token, template.id, 'own')).catch(() => null);
+      dropStoryHi(template.id);
+    }
     if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
     if (canShare && share) void shareCharacter(ids.characterId, true);
     void clearCreation();
