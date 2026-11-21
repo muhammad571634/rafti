@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z314. START HERE: Not Delivered after a model spike, fallback budget fixed (owner's "Ha, boshla", 2026-11-21, Claude 1, Opus 5.5). DONE in code (`572ad6cb`), NEEDS THE OWNER'S SERVER DEPLOY
+### 0z314. START HERE: Not Delivered after a model spike, fallback budget fixed (owner's "Ha, boshla", 2026-11-21, Claude 1, Opus 5.5). DONE, deployed (Fly v75, 2026-11-21, `/health` 200); the busy path not yet seen live (needs a real spike)
 - **Cause (server log 2026-11-20 17:53, seen as Not Delivered on the A51)**: `gemini-3.1-flash-lite` answered 503 "high demand" at once, then every fallback got only `max(5 s, timeout/4)` and was aborted mid-reply (preview, latest, lite, preview), so after ~18 s the reply was `busy`.
 - **Fix (`server/src/llm/gemini.ts`)**: each try gets `attemptMs(left)` = half of what is left but at least `ANSWER_MIN_MS` (8 s), never past the deadline: on a 20 s budget after a fast 503 that is 9.75 s + 8 s + a short last try, instead of four 5 s cut-offs. A model that turned a call away at once goes last for `BUSY_FOR_MS` (20 s) for every call of the provider (`freshFirst`), so during a spike calls start on a free model. Fewer aborted calls also waste fewer tokens. Tests: `server/src/llm/gemini.test.ts`.
 - **Checked**: server tests 135/135, app tsc 0. Not yet seen live: needs the deploy, then a chat during a busy spike (log lines `[gemini] ...` then `[reply]`).
