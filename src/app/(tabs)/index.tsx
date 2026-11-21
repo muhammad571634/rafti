@@ -401,7 +401,7 @@ export default function HomeScreen() {
                 the finger that just started editing. */}
             {editing ? (
               <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-                <InkText variant="bodyStrong" color={ink.onPill}>
+                <InkText variant="bodyStrong" color={ink.onAccent}>
                   {t('home.widget.done')}
                 </InkText>
               </PressableScale>
@@ -417,7 +417,7 @@ export default function HomeScreen() {
           onPress={() => setMoreOpen(true)}
           style={[styles.card, styles.row, styles.moreRow, !waiting && !anyWidget && !editing && !!hero && styles.firstCard]}>
           <View style={styles.moreIcon}>
-            <Ionicons name="apps" size={19} color={ink.text} />
+            <Ionicons name="apps" size={19} color={ink.accent} />
           </View>
           <InkText variant="bodyStrong" lines={1} style={styles.flex}>
             {t('more.title')}
@@ -708,9 +708,9 @@ const styles = StyleSheet.create({
     marginTop: space.md,
     marginRight: space.lg,
     paddingHorizontal: 18,
-    borderRadius: inkRadius.pill,
+    borderRadius: 22,
     justifyContent: 'center',
-    backgroundColor: ink.pill,
+    backgroundColor: ink.accent,
   },
 
   // One card on the night ground, its rows inset like Apple's grouped lists.

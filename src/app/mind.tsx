@@ -136,7 +136,7 @@ export default function MindScreen() {
               accessibilityState={{ selected: filterId === 'all' }}
               onPress={() => setFilterId('all')}
               style={[styles.chip, filterId === 'all' && styles.chipOn]}>
-              <InkText variant="footnoteStrong" color={filterId === 'all' ? ink.onPill : ink.text2}>
+              <InkText variant="footnoteStrong" color={filterId === 'all' ? ink.onAccent : ink.text2}>
                 {t('contacts.all')}
               </InkText>
             </PressableScale>
@@ -154,7 +154,7 @@ export default function MindScreen() {
                   <View style={[styles.chipRing, { borderColor: on ? 'transparent' : acc }]}>
                     <CharacterAvatar character={c} size={22} />
                   </View>
-                  <InkText variant="footnoteStrong" color={on ? ink.onPill : ink.text2} lines={1}>
+                  <InkText variant="footnoteStrong" color={on ? ink.onAccent : ink.text2} lines={1}>
                     {shortName(displayName(c, relationships[c.id]))}
                   </InkText>
                 </PressableScale>
@@ -186,14 +186,14 @@ const styles = StyleSheet.create({
   chip: {
     height: 34,
     paddingHorizontal: 14,
-    borderRadius: inkRadius.pill,
+    borderRadius: 17,
     backgroundColor: ink.raised,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   friendChip: { paddingLeft: 4, paddingRight: 12 },
-  chipOn: { backgroundColor: ink.pill },
+  chipOn: { backgroundColor: ink.accent },
   chipRing: {
     width: 26,
     height: 26,

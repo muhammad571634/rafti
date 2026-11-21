@@ -183,7 +183,7 @@ export default function CharacterSettingsScreen() {
 
   const quick: { key: ActionKey; icon: IoniconName; color: string; label: string; badge?: number }[] = [
     { key: 'voiceCall', icon: 'call', color: systemColors.green, label: t('characterSettings.quickCall') },
-    { key: 'searchHistory', icon: 'search', color: ink.text, label: t('characterSettings.quickSearch') },
+    { key: 'searchHistory', icon: 'search', color: systemColors.blue, label: t('characterSettings.quickSearch') },
     {
       key: 'characterMemories',
       icon: 'bookmark',

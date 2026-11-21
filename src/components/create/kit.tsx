@@ -345,7 +345,7 @@ export function BottomBar({
         accessibilityLabel={label}
         accessibilityState={{ disabled: isDisabled, busy: !!busy }}
         style={[styles.cta, disabled && !busy && styles.ctaOff]}>
-        {busy ? <ActivityIndicator color={ink.onPill} /> : left}
+        {busy ? <ActivityIndicator color={ink.onAccent} /> : left}
         <Txt style={[styles.ctaText, disabled && !busy && styles.ctaTextOff]} maxFontSizeMultiplier={1.2}>
           {label}
         </Txt>
@@ -403,9 +403,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modePillOn: { backgroundColor: ink.pill },
+  modePillOn: { backgroundColor: ink.accent },
   modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
-  modeTextOn: { color: ink.ground },
+  modeTextOn: { color: ink.onAccent },
   card: {
     marginHorizontal: inkGutter,
     marginTop: 14,
@@ -461,9 +461,9 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.edge,
   },
-  chipOn: { backgroundColor: ink.pill, borderColor: ink.pill },
+  chipOn: { backgroundColor: 'rgba(235,173,132,0.18)', borderColor: ink.accent, borderWidth: 1.5 },
   chipText: { ...inkFace('footnoteStrong'), fontSize: 13, color: 'rgba(235,235,245,0.82)' },
-  chipTextOn: { color: ink.ground },
+  chipTextOn: { color: ink.accent },
   rewrite: {
     width: 32,
     height: 32,
@@ -498,10 +498,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: ink.pill,
+    backgroundColor: ink.accent,
   },
   ctaOff: { backgroundColor: ink.raised },
-  ctaText: { ...inkFace('bodyStrong'), color: ink.onPill },
+  ctaText: { ...inkFace('bodyStrong'), color: ink.onAccent },
   ctaTextOff: { color: ink.text3 },
   footRow: {
     flexDirection: 'row',

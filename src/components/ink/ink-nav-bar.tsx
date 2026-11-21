@@ -30,9 +30,10 @@ export function InkIconButton({
   accessibilityLabel,
   onPress,
   size = 20,
-  color = ink.text,
+  color,
   style,
 }: InkIconButtonProps) {
+  const glyphColor = color ?? (icon === 'add' ? ink.accent : ink.text);
   return (
     <PressableScale
       scaleTo={0.9}
@@ -41,7 +42,7 @@ export function InkIconButton({
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
       style={[styles.circle, style]}>
-      <Ionicons name={icon} size={size} color={color} style={icon === 'chevron-back' && styles.backNudge} />
+      <Ionicons name={icon} size={size} color={glyphColor} style={icon === 'chevron-back' && styles.backNudge} />
     </PressableScale>
   );
 }
@@ -55,11 +56,11 @@ export interface InkGlassPillProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Quiet 36 pt dark-glass action capsule (e.g. "Surprise me", "New question"). */
+/** Quiet 36 pt dark-glass action capsule (e.g. "Surprise me", "New question", "Edit"). */
 export function InkGlassPill({
   label,
   icon,
-  iconColor = ink.text,
+  iconColor = ink.accent,
   onPress,
   accessibilityLabel,
   style,
@@ -73,7 +74,7 @@ export function InkGlassPill({
       onPress={onPress}
       style={[styles.pill, style]}>
       {icon ? <Ionicons name={icon} size={14} color={iconColor} /> : null}
-      <InkText variant="footnoteStrong" color={ink.text} lines={1} style={styles.pillText}>
+      <InkText variant="footnoteStrong" color={ink.accent} lines={1} style={styles.pillText}>
         {label}
       </InkText>
     </PressableScale>

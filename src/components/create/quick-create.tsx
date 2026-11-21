@@ -226,9 +226,9 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.edge,
   },
-  smallOn: { backgroundColor: ink.pill, borderColor: ink.pill },
+  smallOn: { backgroundColor: ink.accent, borderColor: ink.accent },
   smallText: { ...inkFace('footnoteStrong'), fontSize: 14, color: ink.text },
-  smallTextOn: { color: ink.onPill },
+  smallTextOn: { color: ink.onAccent },
   // The writing wait, centred in the page.
   wait: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: space.huge },
   waitTitle: { marginTop: 22, fontFamily: fonts.serifItalic, fontSize: 28, lineHeight: 36, letterSpacing: -0.3, color: WAIT_DOTS, textAlign: 'center' },

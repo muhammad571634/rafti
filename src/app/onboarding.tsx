@@ -500,14 +500,14 @@ function Radio({ on }: { on: boolean }) {
   return (
     <View style={styles.radio}>
       <Animated.View style={[styles.radioOn, style]}>
-        <Ionicons name="checkmark" size={15} color={ink.onPill} />
+        <Ionicons name="checkmark" size={15} color={ink.onAccent} />
       </Animated.View>
     </View>
   );
 }
 
 /**
- * The one white pill, kept across every step (its words change in place). On "Say hi" its plate
+ * The one brand pill, kept across every step (its words change in place). On "Say hi" its plate
  * becomes the chat's message field: it slides to the field's place and colour, then the chat
  * fades in on top of it. The plate is absolute and childless, so animating its edges lays out nothing else.
  */
@@ -523,7 +523,7 @@ function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { 
     right: interpolate(m.get(), [0, 1], [0, space.md - inkGutter]),
     top: interpolate(m.get(), [0, 1], [0, 2 + bottomShift]),
     bottom: interpolate(m.get(), [0, 1], [0, -bottomShift]),
-    backgroundColor: interpolateColor(m.get(), [0, 1], [ink.pill, field]),
+    backgroundColor: interpolateColor(m.get(), [0, 1], [ink.accent, field]),
   }));
   const words = useAnimatedStyle(() => ({ opacity: 1 - Math.min(1, m.get() * 3) }));
   return (
@@ -539,7 +539,7 @@ function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { 
         style={styles.pillHit}>
         <Animated.View style={words}>
           <Animated.View key={label} entering={FadeIn.duration(180)}>
-            <InkText variant="bodyStrong" color={ink.onPill} lines={1}>
+            <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
               {label}
             </InkText>
           </Animated.View>
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
   rowBody: { minHeight: 56, paddingRight: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rowLine: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: ink.line },
   radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: 'rgba(235,235,245,0.35)', alignItems: 'center', justifyContent: 'center' },
-  radioOn: { position: 'absolute', left: -1.5, top: -1.5, width: 24, height: 24, borderRadius: 12, backgroundColor: ink.pill, alignItems: 'center', justifyContent: 'center' },
+  radioOn: { position: 'absolute', left: -1.5, top: -1.5, width: 24, height: 24, borderRadius: 12, backgroundColor: ink.accent, alignItems: 'center', justifyContent: 'center' },
   buddy: { position: 'absolute', left: inkGutter, width: BUDDY, height: BUDDY, borderRadius: BUDDY / 2, borderWidth: 2, padding: 2, zIndex: 4 },
   buddyImage: { flex: 1, borderRadius: BUDDY / 2 },
   bubbleRow: { position: 'absolute', left: inkGutter + BUDDY + 12, right: inkGutter, flexDirection: 'row', zIndex: 4 },

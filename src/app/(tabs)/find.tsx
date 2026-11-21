@@ -425,7 +425,7 @@ function Results({
               accessibilityLabel={`${t('find.sayHi')}, ${top.name}`}
               onPress={() => onSayHi(top)}
               style={styles.topButton}>
-              <InkText variant="subStrong" color={ink.onPill}>
+              <InkText variant="subStrong" color={ink.onAccent}>
                 {t('find.sayHi')}
               </InkText>
             </PressableScale>
@@ -655,9 +655,9 @@ const styles = StyleSheet.create({
   topButton: {
     minHeight: 38,
     paddingHorizontal: space.lg,
-    borderRadius: inkRadius.pill,
+    borderRadius: 19,
     justifyContent: 'center',
-    backgroundColor: ink.pill,
+    backgroundColor: ink.accent,
   },
   list: {
     marginHorizontal: space.lg,

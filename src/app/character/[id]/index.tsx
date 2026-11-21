@@ -24,7 +24,7 @@ import { daysBetween, shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { friendAccent, hitSlop, space } from '@/theme';
+import { friendAccent, hitSlop, space, systemColors } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
 import type { Character, Relationship, Scene } from '@/types';
 
@@ -114,7 +114,7 @@ export default function CharacterProfileScreen() {
           />
 
           <View style={styles.body}>
-            {/* Unified Single-Row Action Bar: crisp white primary pill + round Call & Secret Note */}
+            {/* Unified Single-Row Action Bar: warm brand peach primary pill + round Call & Secret Note */}
             <View style={styles.actionsRow}>
               <PressableScale
                 scaleTo={0.97}
@@ -122,8 +122,8 @@ export default function CharacterProfileScreen() {
                 accessibilityLabel={isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
                 onPress={openChat}
                 style={styles.primaryPill}>
-                <Ionicons name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'} size={18} color={ink.onPill} />
-                <InkText variant="bodyStrong" color={ink.onPill} lines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.shrink}>
+                <Ionicons name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'} size={18} color={ink.onAccent} />
+                <InkText variant="bodyStrong" color={ink.onAccent} lines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.shrink}>
                   {isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
                 </InkText>
               </PressableScale>
@@ -138,7 +138,7 @@ export default function CharacterProfileScreen() {
                     accessibilityState={{ disabled: !voiceReady }}
                     onPress={() => router.push(`/call/${character.id}`)}
                     style={[styles.circleAction, !voiceReady && styles.disabled]}>
-                    <Ionicons name="call-outline" size={21} color={ink.text} />
+                    <Ionicons name="call-outline" size={21} color={systemColors.green} />
                   </PressableScale>
                   <PressableScale
                     scaleTo={0.92}
@@ -146,7 +146,7 @@ export default function CharacterProfileScreen() {
                     accessibilityLabel={t('characterProfile.secretNote')}
                     onPress={() => router.push(`/secret-note/${character.id}`)}
                     style={styles.circleAction}>
-                    <Ionicons name="mail-outline" size={21} color={ink.text} />
+                    <Ionicons name="mail-outline" size={21} color={ink.accent} />
                   </PressableScale>
                 </>
               ) : null}
@@ -274,10 +274,10 @@ function BondStrip({
           accessibilityLabel={memoryCount > 0 ? `${t('characterProfile.memories')}, ${memoryCount}` : t('characterProfile.memories')}
           onPress={onMemories}
           style={styles.memoriesBtn}>
-          <InkText variant="footnoteStrong" color={ink.text} style={styles.tabular}>
+          <InkText variant="footnoteStrong" color={ink.accent} style={styles.tabular}>
             {memoryCount > 0 ? `${t('characterProfile.memories')} · ${memoryCount}` : t('characterProfile.memories')}
           </InkText>
-          <Ionicons name="chevron-forward" size={14} color={ink.text2} />
+          <Ionicons name="chevron-forward" size={14} color={ink.accent} />
         </PressableScale>
       </View>
     </View>
@@ -394,9 +394,9 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 50,
     paddingHorizontal: 18,
-    borderRadius: inkRadius.pill,
+    borderRadius: 25,
     borderCurve: 'continuous',
-    backgroundColor: ink.pill,
+    backgroundColor: ink.accent,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   circleAction: {
     width: 50,
     height: 50,
-    borderRadius: inkRadius.pill,
+    borderRadius: 25,
     backgroundColor: ink.card,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.edge,

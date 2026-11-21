@@ -624,14 +624,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   segBtnOn: {
-    backgroundColor: ink.pill,
+    backgroundColor: ink.accent,
     ...Platform.select({
       ios: { shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
       default: { elevation: 2 },
     }),
   },
   segText: { ...inkFace('sub'), fontSize: 14, lineHeight: 18, fontWeight: '600', color: ink.text2 },
-  segTextOn: { color: ink.onPill, fontWeight: '700' },
+  segTextOn: { color: ink.onAccent, fontWeight: '700' },
 
   dangerRow: {
     flexDirection: 'row',

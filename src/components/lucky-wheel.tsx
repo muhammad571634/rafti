@@ -158,7 +158,7 @@ export function LuckyWheel({
         {/* One word on one line: Russian "Крутить" stays crisp inside the hub. */}
         <Txt
           variant="smallStrong"
-          color={spinning || disabled ? ink.text2 : ink.onPill}
+          color={spinning || disabled ? ink.text2 : ink.onAccent}
           lines={1}
           adjustsFontSizeToFit
           minimumFontScale={0.58}
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 60,
     height: 60,
-    borderRadius: radius.pill,
-    backgroundColor: ink.pill,
+    borderRadius: 30,
+    backgroundColor: ink.accent,
     borderWidth: 3.5,
     borderColor: ink.card,
     alignItems: 'center',

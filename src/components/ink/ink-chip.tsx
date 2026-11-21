@@ -20,7 +20,7 @@ export interface InkChipProps {
  * A pick among several (design-ink §1.7, polish §2): a grey pill; a chosen one takes a faint fill, a
  * 1.5 pt ring and its label in the hue, never a white fill (white means only "the primary action").
  */
-export function InkChip({ label, on, onPress, hue = ink.text, count = 0 }: InkChipProps) {
+export function InkChip({ label, on, onPress, hue = ink.accent, count = 0 }: InkChipProps) {
   return (
     <PressableScale
       scaleTo={0.95}

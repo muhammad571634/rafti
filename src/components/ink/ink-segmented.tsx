@@ -48,10 +48,10 @@ export function InkSegmented<T extends string | number>({ options, value, onChan
             accessibilityState={{ selected: on }}
             aria-selected={on}
             style={[styles.segment, on && styles.on]}>
-            {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? ink.text : ink.text2} /> : null}
+            {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? ink.onAccent : ink.text2} /> : null}
             <InkText
               variant={on ? 'subStrong' : 'sub'}
-              color={on ? ink.text : ink.text2}
+              color={on ? ink.onAccent : ink.text2}
               lines={1}
               adjustsFontSizeToFit
               minimumFontScale={0.75}
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
   },
   on: {
-    backgroundColor: ink.thumb,
-    ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
+    backgroundColor: ink.accent,
+    ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
   },
 });

@@ -112,12 +112,13 @@ export default function GroupInfoScreen() {
     router.push(withCalls ? '/store/shell?tab=shells' : '/store/shell?tab=plans&plan=pro');
   };
 
-  const quick: { key: string; icon: IoniconName; label: string; onPress: () => void; off?: boolean }[] = [
-    { key: 'call', icon: 'call', label: t('characterSettings.quickCall'), onPress: startCall },
-    { key: 'add', icon: 'person-add', label: t('group.add'), onPress: () => setAdding(true), off: !roomLeft },
+  const quick: { key: string; icon: IoniconName; color: string; label: string; onPress: () => void; off?: boolean }[] = [
+    { key: 'call', icon: 'call', color: systemColors.green, label: t('characterSettings.quickCall'), onPress: startCall },
+    { key: 'add', icon: 'person-add', color: ink.accent, label: t('group.add'), onPress: () => setAdding(true), off: !roomLeft },
     {
       key: 'search',
       icon: 'search',
+      color: systemColors.blue,
       label: t('characterSettings.quickSearch'),
       onPress: () => router.push({ pathname: '/group/[id]/search', params: { id: groupId } }),
     },
@@ -190,7 +191,7 @@ export default function GroupInfoScreen() {
               accessibilityLabel={q.label}
               onPress={q.onPress}
               style={[styles.quickBtn, q.off && styles.off]}>
-              <Ionicons name={q.icon} size={20} color={ink.text} />
+              <Ionicons name={q.icon} size={20} color={q.color} />
               <InkText variant="caption" color={ink.text2} lines={1}>
                 {q.label}
               </InkText>
@@ -344,6 +345,7 @@ export default function GroupInfoScreen() {
             <View style={styles.ways}>
               <SheetRow
                 icon="person-outline"
+                iconColor={systemColors.indigo}
                 label={t('group.openProfile')}
                 onPress={() => {
                   setMember(null);
@@ -351,7 +353,7 @@ export default function GroupInfoScreen() {
                 }}
               />
               {conversations.some((c) => c.characterId === member.id) ? (
-                <SheetRow icon="chatbubble-outline" label={t('group.openChat')} onPress={() => openChat(member)} />
+                <SheetRow icon="chatbubble-outline" iconColor={ink.accent} label={t('group.openChat')} onPress={() => openChat(member)} />
               ) : null}
               <SheetRow
                 icon="person-remove-outline"
@@ -373,6 +375,7 @@ export default function GroupInfoScreen() {
 /** A row in a sheet's Ink group: the action and a line icon on the right, as in iOS menus. */
 function SheetRow({
   icon,
+  iconColor,
   label,
   onPress,
   danger,
@@ -380,6 +383,7 @@ function SheetRow({
   last,
 }: {
   icon: IoniconName;
+  iconColor?: string;
   label: string;
   onPress: () => void;
   danger?: boolean;
@@ -398,7 +402,7 @@ function SheetRow({
       <Txt style={[styles.memberName, styles.flex]} color={tint}>
         {label}
       </Txt>
-      <Ionicons name={icon} size={19} color={tint} />
+      <Ionicons name={icon} size={19} color={danger ? ink.danger : iconColor ?? tint} />
     </Pressable>
   );
 }

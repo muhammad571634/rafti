@@ -945,7 +945,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
         {phase === 'idea' && !keyboardUp ? (
           <BottomBar
             label={quickUpsell ? t('createCharacter.quick.more') : t('createCharacter.quick.write')}
-            left={<Ionicons name="sparkles" size={17} color={!quickUpsell && (!idea.trim() || quickLeft === 0) ? ink.text3 : ink.onPill} />}
+            left={<Ionicons name="sparkles" size={17} color={!quickUpsell && (!idea.trim() || quickLeft === 0) ? ink.text3 : ink.onAccent} />}
             disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
             error={error}
             onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}
@@ -1074,7 +1074,7 @@ function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number
           </Txt>
         </Animated.View>
       </View>
-      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={ink.onPill} />} />
+      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={ink.onAccent} />} />
     </Screen>
   );
 }

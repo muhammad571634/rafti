@@ -334,6 +334,6 @@ const styles = StyleSheet.create({
   noteRow: { flexDirection: 'row', alignItems: 'center', gap: 8, maxWidth: '100%', marginTop: -8 },
   note: { flexShrink: 1, fontSize: 14, lineHeight: 19, color: 'rgba(235,235,245,0.62)' },
   foot: { paddingHorizontal: MARGIN, paddingTop: 12 },
-  cta: { height: CTA_HEIGHT, borderRadius: CTA_HEIGHT / 2, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-  ctaLabel: { fontSize: 16, lineHeight: 20, fontWeight: '600', color: '#000' },
+  cta: { height: CTA_HEIGHT, borderRadius: CTA_HEIGHT / 2, backgroundColor: palette.apricotCalm, alignItems: 'center', justifyContent: 'center' },
+  ctaLabel: { fontSize: 16, lineHeight: 20, fontWeight: '600', color: '#3A1A06' },
 });

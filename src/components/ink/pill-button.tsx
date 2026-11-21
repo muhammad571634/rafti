@@ -27,8 +27,8 @@ export interface PillButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const FILL: Record<PillKind, string> = { primary: ink.pill, secondary: ink.raised, accent: ink.accent, quiet: 'transparent' };
-const WORDS: Record<PillKind, string> = { primary: ink.onPill, secondary: ink.text, accent: ink.onAccent, quiet: ink.text2 };
+const FILL: Record<PillKind, string> = { primary: ink.accent, secondary: ink.raised, accent: ink.accent, quiet: 'transparent' };
+const WORDS: Record<PillKind, string> = { primary: ink.onAccent, secondary: ink.text, accent: ink.onAccent, quiet: ink.text2 };
 
 /**
  * The Ink button (polish §4: one filled pill per screen, a press state on every button). Disabled
