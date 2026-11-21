@@ -69,7 +69,8 @@ function GroupStoryCard({ story: written, width, onPress, onStory }: { story: Gr
       </LinearGradient>
       <View style={styles.body}>
         <View style={styles.nameRow}>
-          <InkText variant="bodyStrong" lines={1} style={styles.grow}>
+          {/* A long name wraps to a second line, never "…" (HIG text rule, 2026-11-16). */}
+          <InkText variant="bodyStrong" lines={2} style={styles.grow}>
             {story.name}
           </InkText>
           <PressableScale accessibilityRole="button" accessibilityLabel={t('stories.details')} hitSlop={12} onPress={onStory}>
