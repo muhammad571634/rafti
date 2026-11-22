@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { PressableScale } from '@/components/ui/pressable-scale';
 import { haptic } from '@/lib/haptics';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 import { InkText } from './ink-text';
 
@@ -32,6 +33,12 @@ export interface InkSegmentedProps<T extends string | number> {
 export function InkSegmented<T extends string | number>({ options, value, onChange, accessibilityLabel, style }: InkSegmentedProps<T>) {
   return (
     <View style={[styles.track, style]} accessibilityRole="tablist" accessibilityLabel={accessibilityLabel}>
+      <LinearGradient
+        colors={inkPeachGlass.trackFill}
+        locations={inkPeachGlass.trackStops}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       {options.map((option) => {
         const on = option.value === value;
         return (
@@ -48,10 +55,11 @@ export function InkSegmented<T extends string | number>({ options, value, onChan
             accessibilityState={{ selected: on }}
             aria-selected={on}
             style={[styles.segment, on && styles.on]}>
-            {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? ink.onAccent : ink.text2} /> : null}
+            {on ? <LinearGradient colors={inkPeachGlass.fill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+            {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? inkPeachGlass.text : ink.text2} /> : null}
             <InkText
               variant={on ? 'subStrong' : 'sub'}
-              color={on ? ink.onAccent : ink.text2}
+              color={on ? inkPeachGlass.text : ink.text2}
               lines={1}
               adjustsFontSizeToFit
               minimumFontScale={0.75}
@@ -66,7 +74,14 @@ export function InkSegmented<T extends string | number>({ options, value, onChan
 }
 
 const styles = StyleSheet.create({
-  track: { flexDirection: 'row', padding: 3, borderRadius: inkRadius.pill, backgroundColor: ink.raised },
+  track: {
+    flexDirection: 'row',
+    padding: 3,
+    borderRadius: inkRadius.pill,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkPeachGlass.trackRim,
+  },
   // 38 + the track's 3 + 3 = a 44 pt control.
   segment: {
     flex: 1,
@@ -77,9 +92,11 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 8,
     borderRadius: inkRadius.pill,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'transparent',
   },
   on: {
-    backgroundColor: ink.accent,
-    ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 5, shadowOffset: { width: 0, height: 2 } }, default: { elevation: 1 } }),
+    borderColor: inkPeachGlass.rim,
   },
 });

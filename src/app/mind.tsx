@@ -13,7 +13,7 @@ import { shortName } from '@/lib/format';
 import { mindSections, nextTouch } from '@/lib/mind';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, space } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Thread } from '@/types';
 
 const NEXT_PILL_BG = 'rgba(235,173,132,0.14)';
@@ -136,7 +136,7 @@ export default function MindScreen() {
               accessibilityState={{ selected: filterId === 'all' }}
               onPress={() => setFilterId('all')}
               style={[styles.chip, filterId === 'all' && styles.chipOn]}>
-              <InkText variant="footnoteStrong" color={filterId === 'all' ? ink.onAccent : ink.text2}>
+              <InkText variant="footnoteStrong" color={filterId === 'all' ? inkPeachGlass.text : ink.text2}>
                 {t('contacts.all')}
               </InkText>
             </PressableScale>
@@ -154,7 +154,7 @@ export default function MindScreen() {
                   <View style={[styles.chipRing, { borderColor: on ? 'transparent' : acc }]}>
                     <CharacterAvatar character={c} size={22} />
                   </View>
-                  <InkText variant="footnoteStrong" color={on ? ink.onAccent : ink.text2} lines={1}>
+                  <InkText variant="footnoteStrong" color={on ? inkPeachGlass.text : ink.text2} lines={1}>
                     {shortName(displayName(c, relationships[c.id]))}
                   </InkText>
                 </PressableScale>
@@ -193,7 +193,11 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   friendChip: { paddingLeft: 4, paddingRight: 12 },
-  chipOn: { backgroundColor: ink.accent },
+  chipOn: {
+    backgroundColor: inkPeachGlass.flat,
+    borderWidth: 0.75,
+    borderColor: inkPeachGlass.rim,
+  },
   chipRing: {
     width: 26,
     height: 26,

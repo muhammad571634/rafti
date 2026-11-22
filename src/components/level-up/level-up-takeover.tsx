@@ -29,6 +29,7 @@ import { hourVolume } from '@/lib/night-hour';
 import { tierForLevel } from '@/mock/user';
 import type { LevelUpEvent } from '@/store/use-app-store';
 import { fonts, night, palette } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 import type { Character } from '@/types';
 
 import { easeOut, seg, spring } from './motion';
@@ -281,6 +282,7 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
 
           <Animated.View style={[styles.foot, { paddingBottom: insets.bottom + 20 }, ctaStyle]}>
             <PressableScale onPress={close} scaleTo={0.97} accessibilityRole="button" accessibilityLabel={cta} style={styles.cta}>
+              <ExpoLinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
               <Text style={styles.ctaLabel} numberOfLines={1} maxFontSizeMultiplier={1.3}>
                 {cta}
               </Text>
@@ -334,6 +336,14 @@ const styles = StyleSheet.create({
   noteRow: { flexDirection: 'row', alignItems: 'center', gap: 8, maxWidth: '100%', marginTop: -8 },
   note: { flexShrink: 1, fontSize: 14, lineHeight: 19, color: 'rgba(235,235,245,0.62)' },
   foot: { paddingHorizontal: MARGIN, paddingTop: 12 },
-  cta: { height: CTA_HEIGHT, borderRadius: CTA_HEIGHT / 2, backgroundColor: palette.apricotCalm, alignItems: 'center', justifyContent: 'center' },
-  ctaLabel: { fontSize: 16, lineHeight: 20, fontWeight: '600', color: '#3A1A06' },
+  cta: {
+    height: CTA_HEIGHT,
+    borderRadius: CTA_HEIGHT / 2,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ctaLabel: { fontSize: 16, lineHeight: 20, fontWeight: '600', color: inkPeachGlass.ctaText },
 });

@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { PressableScale } from '@/components/ui/pressable-scale';
-import { ink } from '@/theme/ink';
+import { ink, inkPeachGlass } from '@/theme/ink';
 
 import { InkText } from './ink-text';
 
@@ -12,8 +13,8 @@ export interface PillButtonProps {
   label: string;
   onPress: () => void;
   /**
-   * `primary`: the one filled white pill of a screen. `secondary`: a tinted pill beside it.
-   * `accent`: peach, only where money is spent. `quiet`: a way out, text only.
+   * `primary`: the one filled pill of a screen. `secondary`: a tinted pill beside it.
+   * `accent`: peach glass, only where money is spent. `quiet`: a way out, text only.
    */
   kind?: PillKind;
   /** 56 (the screen's main action) or 48. */
@@ -27,15 +28,16 @@ export interface PillButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const FILL: Record<PillKind, string> = { primary: ink.accent, secondary: ink.raised, accent: ink.accent, quiet: 'transparent' };
-const WORDS: Record<PillKind, string> = { primary: ink.onAccent, secondary: ink.text, accent: ink.onAccent, quiet: ink.text2 };
+const FILL: Record<PillKind, string> = { primary: 'transparent', secondary: ink.raised, accent: 'transparent', quiet: 'transparent' };
+const WORDS: Record<PillKind, string> = { primary: inkPeachGlass.ctaText, secondary: ink.text, accent: inkPeachGlass.ctaText, quiet: ink.text2 };
 
 /**
- * The Ink button (polish §4: one filled pill per screen, a press state on every button). Disabled
+ * The Ink button (polish §4: one primary pill per screen, a press state on every button). Disabled
  * keeps its shape at 40 %, so it never reads as broken, and says so to VoiceOver.
  */
 export function PillButton({ label, onPress, kind = 'primary', size = 'lg', disabled, icon, full = true, accessibilityLabel, accessibilityHint, style }: PillButtonProps) {
   const color = WORDS[kind];
+  const peach = kind === 'primary' || kind === 'accent';
   return (
     <PressableScale
       scaleTo={0.97}
@@ -45,7 +47,16 @@ export function PillButton({ label, onPress, kind = 'primary', size = 'lg', disa
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: !!disabled }}
-      style={[styles.pill, size === 'lg' ? styles.lg : styles.md, { backgroundColor: FILL[kind] }, !full && styles.hug, disabled && styles.off, style]}>
+      style={[
+        styles.pill,
+        size === 'lg' ? styles.lg : styles.md,
+        { backgroundColor: FILL[kind] },
+        peach && styles.peachRim,
+        !full && styles.hug,
+        disabled && styles.off,
+        style,
+      ]}>
+      {peach ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
       <View style={styles.row}>
         {icon ? <Ionicons name={icon} size={19} color={color} /> : null}
         <InkText variant={kind === 'quiet' ? 'body' : 'bodyStrong'} color={color} lines={1} style={styles.label}>
@@ -57,7 +68,8 @@ export function PillButton({ label, onPress, kind = 'primary', size = 'lg', disa
 }
 
 const styles = StyleSheet.create({
-  pill: { borderRadius: 999, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 22 },
+  pill: { borderRadius: 999, borderCurve: 'continuous', overflow: 'hidden', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 22 },
+  peachRim: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   lg: { minHeight: 56 },
   md: { minHeight: 48 },
   hug: { alignSelf: 'center' },

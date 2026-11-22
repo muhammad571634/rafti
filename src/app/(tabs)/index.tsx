@@ -36,7 +36,7 @@ import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
 import { useFirstSteps } from '@/hooks/use-first-steps';
 import { colors, hitSlop, night, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
-import { ink, inkRadius, inkTints } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius, inkTints } from '@/theme/ink';
 import type { Character, Conversation, WidgetKind } from '@/types';
 
 /** The sealed note: the sun's deep tint, its light for the envelope. */
@@ -401,7 +401,7 @@ export default function HomeScreen() {
                 the finger that just started editing. */}
             {editing ? (
               <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
-                <InkText variant="bodyStrong" color={ink.onAccent}>
+                <InkText variant="bodyStrong" color={inkPeachGlass.ctaText}>
                   {t('home.widget.done')}
                 </InkText>
               </PressableScale>
@@ -710,7 +710,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 22,
     justifyContent: 'center',
-    backgroundColor: ink.accent,
+    backgroundColor: inkPeachGlass.flat,
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
   },
 
   // One card on the night ground, its rows inset like Apple's grouped lists.

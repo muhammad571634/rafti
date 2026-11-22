@@ -25,7 +25,7 @@ import { hourVolume } from '@/lib/night-hour';
 import { DAILY_CHECK_IN, isSurpriseDay } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { radius } from '@/theme';
-import { ink, inkFace, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
@@ -341,8 +341,9 @@ export function DailyRewardSheet() {
               disabled={!!flight || got}
               onPress={collect}
               style={({ pressed }) => [styles.cta, (flight || got) && styles.ctaOff, pressed && styles.ctaPressed]}>
+              <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
               <Txt style={styles.ctaText}>{t('dailyReward.collectAmount', { count: amount })}</Txt>
-              <ShellIcon size={22} tintColor={ink.onAccent} />
+              <ShellIcon size={22} tintColor={inkPeachGlass.ctaText} />
             </Pressable>
           </View>
 
@@ -445,9 +446,19 @@ const styles = StyleSheet.create({
   ring: { width: 16, height: 16, borderRadius: inkRadius.pill, borderWidth: 2, borderColor: ink.line },
   surprise: { ...inkFace('subStrong'), color: ink.text2 },
   rule: { marginTop: 12, marginBottom: 14, ...inkFace('footnote'), color: ink.text2, textAlign: 'center' },
-  cta: { height: 54, borderRadius: inkRadius.pill, backgroundColor: ink.accent, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  cta: {
+    height: 54,
+    borderRadius: inkRadius.pill,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
   ctaOff: { opacity: 0.55 },
   ctaPressed: { transform: [{ scale: 0.97 }] },
-  ctaText: { ...inkFace('bodyStrong'), color: ink.onAccent },
+  ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
   flying: { position: 'absolute', left: 0, top: 0, width: SHELL, height: SHELL },
 });

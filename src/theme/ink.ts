@@ -191,3 +191,25 @@ export const inkGlass = {
   on: '#FFFFFF',
   off: 'rgba(255,255,255,0.55)',
 } as const;
+
+/**
+ * Liquid Peach Glass (approved prototype `find-liquid-peach-prototype.html`, 2026-11-22):
+ * Matches the Android Liquid Glass tab bar's active peach lens for segments, filter chips,
+ * and primary CTAs across the app (`+` icon buttons stay in their existing style per owner).
+ */
+export const inkPeachGlass = {
+  /** Segments, filter chips, active lenses (matches Tab Bar `PEACH_LENS`). */
+  fill: ['rgba(235,173,132,0.23)', 'rgba(235,173,132,0.10)'] as readonly [string, string],
+  rim: 'rgba(235,173,132,0.40)',
+  text: palette.apricotCalm,
+  /** Primary CTAs ("Seç", "Create", "Continue"): slightly brighter luminous peach glass. */
+  ctaFill: ['rgba(235,173,132,0.34)', 'rgba(235,173,132,0.15)'] as readonly [string, string],
+  ctaRim: 'rgba(235,173,132,0.54)',
+  ctaText: '#FCE2CE',
+  /** Dark capsule track behind a segmented control. */
+  trackFill: ['#252530', '#16161D', '#111117'] as readonly [string, string, string],
+  trackStops: [0, 0.56, 1] as readonly [number, number, number],
+  trackRim: 'rgba(255,255,255,0.13)',
+  /** Flat tint when a gradient layer isn't used. */
+  flat: 'rgba(235,173,132,0.18)',
+} as const;

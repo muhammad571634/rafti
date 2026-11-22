@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, type KeyboardTypeOptions, type LayoutChangeEvent, Pressable, StyleSheet, TextInput, View } from 'react-native';
@@ -9,7 +10,7 @@ import { InkNavBar } from '@/components/ink';
 import { PressableScale, Txt } from '@/components/ui';
 import type { CoachLevel, CoachResult } from '@/lib/greeting-coach';
 import { bottomRoom, space, systemColors } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 const GLASS_RIM = 'rgba(255,255,255,0.11)';
 const FIELD_BG = '#0E0E14';
@@ -345,7 +346,8 @@ export function BottomBar({
         accessibilityLabel={label}
         accessibilityState={{ disabled: isDisabled, busy: !!busy }}
         style={[styles.cta, disabled && !busy && styles.ctaOff]}>
-        {busy ? <ActivityIndicator color={ink.onAccent} /> : left}
+        {!disabled || busy ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+        {busy ? <ActivityIndicator color={inkPeachGlass.ctaText} /> : left}
         <Txt style={[styles.ctaText, disabled && !busy && styles.ctaTextOff]} maxFontSizeMultiplier={1.2}>
           {label}
         </Txt>
@@ -402,10 +404,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'transparent',
   },
-  modePillOn: { backgroundColor: ink.accent },
+  modePillOn: { backgroundColor: inkPeachGlass.flat, borderColor: inkPeachGlass.rim },
   modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
-  modeTextOn: { color: ink.onAccent },
+  modeTextOn: { color: inkPeachGlass.text },
   card: {
     marginHorizontal: inkGutter,
     marginTop: 14,
@@ -494,14 +498,16 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 26,
     borderCurve: 'continuous',
+    overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: ink.accent,
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
   },
-  ctaOff: { backgroundColor: ink.raised },
-  ctaText: { ...inkFace('bodyStrong'), color: ink.onAccent },
+  ctaOff: { backgroundColor: ink.raised, borderColor: 'transparent' },
+  ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
   ctaTextOff: { color: ink.text3 },
   footRow: {
     flexDirection: 'row',

@@ -9,7 +9,7 @@ import { InkText } from '@/components/ink';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { colors, friendColor, hitSlop, systemColors, type Accent } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 export type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -624,14 +624,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   segBtnOn: {
-    backgroundColor: ink.accent,
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
-      default: { elevation: 2 },
-    }),
+    backgroundColor: inkPeachGlass.flat,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkPeachGlass.rim,
   },
   segText: { ...inkFace('sub'), fontSize: 14, lineHeight: 18, fontWeight: '600', color: ink.text2 },
-  segTextOn: { color: ink.onAccent, fontWeight: '700' },
+  segTextOn: { color: inkPeachGlass.text, fontWeight: '700' },
 
   dangerRow: {
     flexDirection: 'row',

@@ -11,7 +11,7 @@ import { GroupAvatar } from '@/components/group-avatar';
 import { InkSegmented } from '@/components/ink';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { gradients, gradientStops, hitSlop, space, themed, type Accent, useThemed, useTokens } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 /**
@@ -325,10 +325,10 @@ export function QuickRow({ center, children }: { center?: boolean; children: Rea
 /** The screen's one peach button. */
 export function PeachButton({ label, icon, onPress }: { label: string; icon: keyof typeof Ionicons.glyphMap; onPress: () => void }) {
   const styles = useThemed(sheet);
-  const { colors } = useTokens();
   return (
     <PressableScale onPress={onPress} scaleTo={0.97} accessibilityRole="button" accessibilityLabel={label} style={styles.peach}>
-      <Ionicons name={icon} size={20} color={colors.textOnPrimary} />
+      <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <Ionicons name={icon} size={20} color={inkPeachGlass.ctaText} />
       <Txt style={styles.peachText} lines={1} maxFontSizeMultiplier={1.2}>
         {label}
       </Txt>
@@ -741,9 +741,20 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     badgeText: { ...inkFace('caption'), color: colors.textOnPrimary },
     badgeTextOnAccent: { color: colors.white },
     off: { opacity: 0.42 },
-    peach: { minHeight: 56, marginHorizontal: SIDE, borderRadius: inkRadius.pill, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.primaryFill },
+    peach: {
+      minHeight: 56,
+      marginHorizontal: SIDE,
+      borderRadius: inkRadius.pill,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: inkPeachGlass.ctaRim,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: space.sm,
+    },
     // System bold: the button's words come in every script.
-    peachText: { ...inkFace('bodyStrong'), color: colors.textOnPrimary },
+    peachText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
     group: { marginTop: 14, marginHorizontal: SIDE, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: systemGround.card, overflow: 'hidden' },
     groupHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 4 },
     groupTitle: { ...inkFace('cardSmall'), color: systemGround.label },

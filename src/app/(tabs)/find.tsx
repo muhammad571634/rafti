@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,7 +42,7 @@ import { groupBySeries, type CharacterGroup } from '@/mock';
 import { WORLDS } from '@/mock/worlds';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character, CharacterGender } from '@/types';
 
 /** Who to show; characters without a gender (some user creations) show under "Everyone" only. */
@@ -429,7 +430,8 @@ function Results({
               accessibilityLabel={`${t('find.sayHi')}, ${top.name}`}
               onPress={() => onSayHi(top)}
               style={styles.topButton}>
-              <InkText variant="subStrong" color={ink.onAccent}>
+              <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+              <InkText variant="subStrong" color={inkPeachGlass.ctaText}>
                 {t('find.sayHi')}
               </InkText>
             </PressableScale>
@@ -660,8 +662,10 @@ const styles = StyleSheet.create({
     minHeight: 38,
     paddingHorizontal: space.lg,
     borderRadius: 19,
+    overflow: 'hidden',
     justifyContent: 'center',
-    backgroundColor: ink.accent,
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
   },
   list: {
     marginHorizontal: space.lg,

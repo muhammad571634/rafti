@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
@@ -11,7 +12,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { REMIND_BEFORE_MIN } from '@/lib/schedule';
 import { dateFromKey, dayKeyFromToday } from '@/mock';
 import { colors, space, systemColors } from '@/theme';
-import { ink, inkRadius, inkType } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius, inkType } from '@/theme/ink';
 import type { Character } from '@/types';
 
 const STEP_MIN = 15;
@@ -214,13 +215,14 @@ export function PlanSheet({
         accessibilityState={{ disabled: !title.trim() }}
         accessibilityLabel={cost ? `${t('chat.setup.add')}, ${cost} ${t('common.shells')}` : t('chat.setup.add')}
         style={[styles.cta, !title.trim() && styles.ctaOff]}>
-        <InkText variant="bodyStrong" color={ink.onAccent}>
+        <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <InkText variant="bodyStrong" color={inkPeachGlass.ctaText}>
           {t('chat.setup.add')}
         </InkText>
         {cost ? (
           <View style={styles.cost}>
-            <ShellIcon size={15} tintColor={ink.onAccent} />
-            <InkText variant="subStrong" color={ink.onAccent} style={styles.tabular}>
+            <ShellIcon size={15} tintColor={inkPeachGlass.ctaText} />
+            <InkText variant="subStrong" color={inkPeachGlass.ctaText} style={styles.tabular}>
               {cost}
             </InkText>
           </View>
@@ -300,14 +302,16 @@ const styles = StyleSheet.create({
   cta: {
     minHeight: 56,
     borderRadius: inkRadius.pill,
+    overflow: 'hidden',
     marginTop: space.lg,
     marginHorizontal: space.lg,
-    backgroundColor: ink.accent,
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: space.sm,
   },
   ctaOff: { opacity: 0.45 },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: inkRadius.pill, backgroundColor: 'rgba(42,26,18,0.12)' },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: inkRadius.pill, backgroundColor: 'rgba(235,173,132,0.16)' },
 });

@@ -1,6 +1,8 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { radius, space, themed, useThemed, useTokens } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -41,7 +43,8 @@ export function Button({
   style,
 }: ButtonProps) {
   const styles = useThemed(sheet);
-  const fg = foreground(variant);
+  const peachGlass = variant === 'primary';
+  const fg = peachGlass ? inkPeachGlass.ctaText : foreground(variant);
 
   return (
     <PressableScale
@@ -54,12 +57,14 @@ export function Button({
           height: heights[size],
           borderRadius: size === 'sm' ? radius.sm : radius.md,
           paddingHorizontal: size === 'sm' ? space.md : space.xl,
-          backgroundColor: background(variant),
+          backgroundColor: peachGlass ? 'transparent' : background(variant),
         },
+        peachGlass && styles.peachRim,
         bordered(variant) && styles.border,
         full && styles.full,
         style,
       ]}>
+      {peachGlass ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
       <View style={styles.row}>
         {loading ? (
           <ActivityIndicator size="small" color={fg} />
@@ -126,6 +131,10 @@ const sheet = themed(({ colors }) =>
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
+    },
+    peachRim: {
+      borderWidth: 1,
+      borderColor: inkPeachGlass.ctaRim,
     },
     border: {
       borderWidth: 1,
