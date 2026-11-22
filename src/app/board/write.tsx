@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +22,7 @@ import { haptic } from '@/lib/haptics';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, fonts, paperRoom, space } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { BoardStyleId } from '@/types';
 
 const MAX_LENGTH = 300;
@@ -94,11 +95,12 @@ export default function BoardWriteScreen() {
           accessibilityState={{ disabled: !ready }}
           accessibilityLabel={`${t('board.post')}, ${shellCosts.boardNote} ${t('common.shells')}`}
           style={[styles.post, ready ? styles.postOn : glassStyle]}>
-          <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
+          {ready ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+          <Txt style={styles.postText} color={ready ? inkPeachGlass.ctaText : colors.textFaint}>
             {t('board.post')}
           </Txt>
-          <ShellIcon size={15} tintColor={ready ? colors.textOnPrimary : colors.textFaint} />
-          <Txt style={styles.postText} color={ready ? colors.textOnPrimary : colors.textFaint}>
+          <ShellIcon size={15} tintColor={ready ? inkPeachGlass.ctaText : colors.textFaint} />
+          <Txt style={styles.postText} color={ready ? inkPeachGlass.ctaText : colors.textFaint}>
             {shellCosts.boardNote}
           </Txt>
         </PressableScale>
@@ -217,8 +219,8 @@ const styles = StyleSheet.create({
     paddingBottom: space.sm,
   },
   barTitle: { ...inkFace('bodyStrong') },
-  post: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.lg, borderRadius: inkRadius.pill },
-  postOn: { backgroundColor: colors.primaryFill },
+  post: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.lg, borderRadius: inkRadius.pill, overflow: 'hidden' },
+  postOn: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   postText: { ...inkFace('bodyStrong') },
   scroll: { paddingTop: space.sm },
   toGroup: { marginBottom: space.lg },

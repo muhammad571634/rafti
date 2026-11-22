@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -12,6 +13,7 @@ import { dropSelfie } from '@/lib/booth-selfies';
 import { confirmAction } from '@/lib/confirm';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, space } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 
 /**
  * One kept Photo Booth picture, opened from the album, the chat or Us. iOS Photos look
@@ -83,8 +85,9 @@ export default function PhotoScreen() {
             else if (chat) router.push(`/chat/${chat.id}`);
           }}
           style={[styles.send, sent ? glassStyle : styles.sendOn]}>
-          <Ionicons name={sent ? 'checkmark' : 'arrow-up'} size={16} color={sent ? colors.bondText : colors.textOnPrimary} />
-          <Txt style={styles.sendText} color={sent ? colors.bondText : colors.textOnPrimary}>
+          {!sent ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+          <Ionicons name={sent ? 'checkmark' : 'arrow-up'} size={16} color={sent ? colors.bondText : inkPeachGlass.ctaText} />
+          <Txt style={styles.sendText} color={sent ? colors.bondText : inkPeachGlass.ctaText}>
             {sent ? t('photoBooth.sent') : t('photoBooth.send')}
           </Txt>
         </PressableScale>
@@ -129,8 +132,8 @@ const styles = StyleSheet.create({
   titles: { position: 'absolute', left: 120, right: 120, alignItems: 'center' },
   date: { fontSize: 15, fontWeight: '600' },
   with: { fontSize: 12, color: colors.textSecondary },
-  send: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg, borderRadius: 22 },
-  sendOn: { backgroundColor: colors.primaryFill },
+  send: { height: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.lg, borderRadius: 22, overflow: 'hidden' },
+  sendOn: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   sendText: { fontSize: 17, fontWeight: '600' },
   stage: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xxxl },
   shadow: { shadowColor: colors.black, shadowOpacity: 0.16, shadowRadius: 20, shadowOffset: { width: 0, height: 14 }, elevation: 8 },

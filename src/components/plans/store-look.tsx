@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PressableScale, Txt } from '@/components/ui';
 import { bottomRoom, aurora, colors, gradients, isDark, space, storeColors, systemColors, systemGround, type Look } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 /** The Store's colours (`storeColors` in the theme) and the parts both tabs share. */
 export const STORE = storeColors;
@@ -107,7 +107,8 @@ export function StoreBuyBar({
         disabled={disabled}
         accessibilityRole="button"
         accessibilityState={{ disabled: !!disabled }}
-        style={[styles.cta, look && { backgroundColor: look.strong }, disabled && styles.ctaOff]}>
+        style={[styles.cta, !look && !disabled && styles.ctaPeach, look && { backgroundColor: look.strong }, disabled && styles.ctaOff]}>
+        {!look && !disabled ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
         {left}
         <Txt style={[styles.ctaText, look && styles.ctaTextOnLook, disabled && styles.ctaTextOff]} lines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
           {label}
@@ -151,16 +152,17 @@ const styles = StyleSheet.create({
   cta: {
     height: 52,
     borderRadius: inkRadius.pill,
+    overflow: 'hidden',
     flexDirection: 'row',
     gap: space.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: STORE.cta,
   },
+  ctaPeach: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   // iOS's disabled prominent button: a grey fill and a faint label, not a faded accent. Opaque, so
   // the rows scrolling under the bar never show through the button.
   ctaOff: { backgroundColor: systemGround.fillSolid },
-  ctaText: { flexShrink: 1, ...inkFace('bodyStrong'), color: STORE.ctaInk },
+  ctaText: { flexShrink: 1, ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
   ctaTextOnLook: { color: colors.white },
   ctaTextOff: { color: colors.textFaint },
   caption: { ...inkFace('footnote'), color: aurora.textMuted },

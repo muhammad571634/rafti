@@ -25,7 +25,7 @@ import { haptic } from '@/lib/haptics';
 import { levelForIntimacy } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { friendAccent, hitSlop, space, systemColors } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character, Relationship, Scene } from '@/types';
 
 /**
@@ -122,8 +122,9 @@ export default function CharacterProfileScreen() {
                 accessibilityLabel={isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
                 onPress={openChat}
                 style={styles.primaryPill}>
-                <Ionicons name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'} size={18} color={ink.onAccent} />
-                <InkText variant="bodyStrong" color={ink.onAccent} lines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.shrink}>
+                <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                <Ionicons name={isFriend ? 'chatbubble' : locked ? 'lock-closed' : 'person-add'} size={18} color={inkPeachGlass.ctaText} />
+                <InkText variant="bodyStrong" color={inkPeachGlass.ctaText} lines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={styles.shrink}>
                   {isFriend ? t('us.messageFriend', { name: first }) : t('characterProfile.addFriend')}
                 </InkText>
               </PressableScale>
@@ -396,7 +397,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 25,
     borderCurve: 'continuous',
-    backgroundColor: ink.accent,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

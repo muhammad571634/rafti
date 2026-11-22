@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   tileValue: { ...inkFace('figure'), color: systemGround.label },
   tilePill: { alignSelf: 'flex-start', maxWidth: '100%', minHeight: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
   tilePillText: { ...inkFace('caption'), color: systemGround.label },
-  peachPill: { backgroundColor: colors.primarySofter },
+  peachPill: { backgroundColor: 'rgba(235,173,132,0.16)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(235,173,132,0.40)' },
   peachInk: { color: colors.brandText },
   violetPill: { backgroundColor: storeColors.violetSoft },
   violetInk: { color: storeColors.violetInk },

@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,7 @@ import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -217,6 +218,7 @@ export default function MyPlanScreen() {
             <Txt style={styles.footnote}>{note}</Txt>
             <View style={styles.cta}>
               <PressableScale scaleTo={0.97} accessibilityRole="button" onPress={startTrial} style={styles.ctaButton}>
+                <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
                 <Txt style={styles.ctaText} lines={1}>
                   {wallet.trialUsed
                     ? t('plans.get', { plan: t('plans.name.proAnnual'), price: PLANS.proAnnual.price })
@@ -406,8 +408,8 @@ const styles = StyleSheet.create({
   buyText: { ...inkFace('subStrong'), color: STORE.peachInk, fontVariant: ['tabular-nums'] },
   footnote: { marginTop: 8, marginHorizontal: space.lg * 2, ...inkFace('footnote'), color: systemGround.secondaryLabel },
   cta: { gap: space.sm, marginTop: 22, marginHorizontal: space.lg },
-  ctaButton: { height: 52, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: STORE.cta },
-  ctaText: { ...inkFace('bodyStrong'), color: STORE.ctaInk },
+  ctaButton: { height: 52, borderRadius: inkRadius.pill, overflow: 'hidden', borderWidth: 1, borderColor: inkPeachGlass.ctaRim, alignItems: 'center', justifyContent: 'center' },
+  ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
   ctaCaption: { ...inkFace('footnote'), textAlign: 'center', color: systemGround.secondaryLabel },
   done: { alignItems: 'center', gap: space.lg },
 });

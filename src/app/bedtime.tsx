@@ -20,7 +20,7 @@ import { callClock } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, friendAccent, space, systemColors } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
 /** Sleep timer steps for -/+, in minutes. */
@@ -175,7 +175,8 @@ export default function BedtimeScreen() {
               style={[styles.control, styles.controlWarm]}
               accessibilityRole="button"
               accessibilityLabel={paused ? t('bedtime.resume') : t('bedtime.pause')}>
-              <Ionicons name={paused ? 'play' : 'pause'} size={28} color={ink.onAccent} />
+              <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+              <Ionicons name={paused ? 'play' : 'pause'} size={28} color={inkPeachGlass.ctaText} />
             </PressableScale>
           </View>
 
@@ -504,13 +505,13 @@ const styles = StyleSheet.create({
   ring: { alignItems: 'center', justifyContent: 'center' },
   countdown: { ...inkFace('numeralMid'), color: ink.text },
   controls: { flexDirection: 'row', gap: 36 },
-  control: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center' },
+  control: { width: 68, height: 68, borderRadius: 34, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   controlGlass: {
     backgroundColor: ink.raised,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.12)',
   },
-  controlWarm: { backgroundColor: ink.accent },
+  controlWarm: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   stopGlyph: { width: 18, height: 18, borderRadius: 4, backgroundColor: ink.text },
   wakePill: {
     height: 38,

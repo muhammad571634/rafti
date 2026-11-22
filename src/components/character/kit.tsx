@@ -98,7 +98,7 @@ export function TopButton({
   const styles = useThemed(sheet);
   const { colors, ground: systemGround } = useTokens();
   const on = peach && !disabled;
-  const ink = disabled ? colors.textFaint : on ? colors.textOnPrimary : systemGround.label;
+  const ink = disabled ? colors.textFaint : on ? inkPeachGlass.ctaText : systemGround.label;
   return (
     <PressableScale
       onPress={onPress}
@@ -681,7 +681,7 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     roundSpace: { width: ROUND },
     pill: { paddingHorizontal: 16 },
     pillText: { ...inkFace('subStrong'), color: systemGround.label },
-    pillPeach: { backgroundColor: colors.primaryFill },
+    pillPeach: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
     backGlyph: { marginLeft: -2 },
     bigTitle: { flex: 1, minWidth: 0, ...inkFace('title'), color: systemGround.label },
     topTitle: { flex: 1, textAlign: 'center', ...inkFace('bodyStrong'), color: systemGround.label },

@@ -55,7 +55,7 @@ import {
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
 import { avatarGradients, colors, space, systemColors } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character, CharacterCategory, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 import { keepCharacterPicture } from '@/lib/character-picture';
@@ -949,7 +949,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
         {phase === 'idea' && !keyboardUp ? (
           <BottomBar
             label={quickUpsell ? t('createCharacter.quick.more') : t('createCharacter.quick.write')}
-            left={<Ionicons name="sparkles" size={17} color={!quickUpsell && (!idea.trim() || quickLeft === 0) ? ink.text3 : ink.onAccent} />}
+            left={<Ionicons name="sparkles" size={17} color={!quickUpsell && (!idea.trim() || quickLeft === 0) ? ink.text3 : inkPeachGlass.ctaText} />}
             disabled={!quickUpsell && (!idea.trim() || quickLeft === 0)}
             error={error}
             onPress={() => (quickUpsell ? router.push('/store/shell?tab=plans') : void writeDraft())}
@@ -1078,7 +1078,7 @@ function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number
           </Txt>
         </Animated.View>
       </View>
-      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={ink.onAccent} />} />
+      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={inkPeachGlass.ctaText} />} />
     </Screen>
   );
 }

@@ -27,6 +27,7 @@ import { dateFromKey } from '@/mock';
 import { confirmAction } from '@/lib/confirm';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, avatarGradients, colors, isDark, palette, radius, space } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 import type { CharacterGender, DiaryEntry } from '@/types';
 
 const MOOD_EMOJI: Record<DiaryEntry['mood'], string> = {
@@ -170,7 +171,7 @@ export default function MyDiaryScreen() {
             label={t('diary.writeToday')}
             size="lg"
             full
-            left={<Ionicons name="pencil-outline" size={18} color={colors.textOnPrimary} />}
+            left={<Ionicons name="pencil-outline" size={18} color={inkPeachGlass.ctaText} />}
             onPress={() => router.push('/diary/write')}
           />
         </View>

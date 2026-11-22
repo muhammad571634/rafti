@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +22,7 @@ import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
 import { alarmSetupCost, useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Alarm, AlarmSound, Character } from '@/types';
 
 type Page = 'main' | 'sound';
@@ -245,7 +246,7 @@ export default function AlarmEditScreen() {
               {melodyChoice ? (
                 <Face name={t('alarms.melodyOnly')} on={melody} size={melody ? FACE_ON : FACE} onPress={() => pick(undefined)}>
                   <View style={[styles.bell, melody ? styles.bellOn : null]}>
-                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? night.textOnPrimary : night.textSecondary} />
+                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? inkPeachGlass.ctaText : night.textSecondary} />
                   </View>
                 </Face>
               ) : null}
@@ -315,7 +316,7 @@ export default function AlarmEditScreen() {
                   accessibilityState={{ checked: tile.on, disabled: tile.off }}
                   accessibilityLabel={tile.label}
                   style={[styles.tile, tile.on && styles.tileOn, tile.off && styles.tileOff]}>
-                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? night.textOnPrimary : night.textSecondary} />
+                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? inkPeachGlass.ctaText : night.textSecondary} />
                   <Txt style={[styles.tileText, tile.on && styles.tileTextOn]} lines={1} maxFontSizeMultiplier={1.2}>
                     {tile.label}
                   </Txt>
@@ -409,12 +410,13 @@ export default function AlarmEditScreen() {
             accessibilityRole="button"
             accessibilityLabel={cost ? `${cta}, ${cost} ${t('common.shells')}` : cta}
             style={styles.cta}>
+            <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
             <Txt style={styles.ctaText} maxFontSizeMultiplier={1.2}>
               {cta}
             </Txt>
             {cost ? (
               <View style={styles.price}>
-                <ShellIcon size={15} tintColor={night.textOnPrimary} />
+                <ShellIcon size={15} tintColor={inkPeachGlass.ctaText} />
                 <Txt style={styles.priceText}>{cost}</Txt>
               </View>
             ) : null}
@@ -493,7 +495,7 @@ const styles = StyleSheet.create({
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
   bell: { width: FACE, height: FACE, borderRadius: inkRadius.pill, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
-  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: night.primary },
+  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
@@ -503,15 +505,15 @@ const styles = StyleSheet.create({
   until: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   days: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: space.lg },
   day: { width: 44, height: 44, borderRadius: inkRadius.pill, backgroundColor: night.well, alignItems: 'center', justifyContent: 'center' },
-  dayOn: { backgroundColor: night.primary },
+  dayOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   dayText: { ...inkFace('subStrong'), color: night.textSecondary },
-  dayTextOn: { color: night.textOnPrimary },
+  dayTextOn: { color: inkPeachGlass.text },
   tiles: { flexDirection: 'row', gap: space.sm + 2, marginHorizontal: space.lg },
   tile: { flex: 1, height: 92, borderRadius: 20, backgroundColor: night.surface, alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  tileOn: { backgroundColor: night.primary },
+  tileOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   tileOff: { opacity: 0.4 },
   tileText: { ...inkFace('subStrong'), color: night.textSecondary },
-  tileTextOn: { color: night.textOnPrimary },
+  tileTextOn: { color: inkPeachGlass.ctaText },
   group: {
     marginHorizontal: space.lg,
     borderRadius: radius.sm + 1,
@@ -534,11 +536,11 @@ const styles = StyleSheet.create({
   labelInput: { flex: 1, textAlign: 'right', color: night.textMuted, paddingVertical: space.sm, ...type.body },
   lead: { flexDirection: 'row', alignItems: 'center', gap: space.md, flexShrink: 1 },
   footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
-  cta: { height: 56, borderRadius: inkRadius.pill, backgroundColor: night.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
+  cta: { height: 56, borderRadius: inkRadius.pill, overflow: 'hidden', borderWidth: 1, borderColor: inkPeachGlass.ctaRim, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
   // System bold, not Fredoka: the button's words come in every script (Fredoka has Latin only).
-  ctaText: { ...inkFace('bodyStrong'), color: night.textOnPrimary },
-  price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(42,26,18,0.12)' },
-  priceText: { ...inkFace('subStrong'), color: night.textOnPrimary },
+  ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
+  price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(235,173,132,0.16)' },
+  priceText: { ...inkFace('subStrong'), color: inkPeachGlass.ctaText },
   moment: { alignItems: 'center', justifyContent: 'center' },
   momentBody: { alignItems: 'center', gap: space.lg },
   momentBadge: {

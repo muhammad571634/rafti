@@ -11,7 +11,7 @@ import { ReactionGlyph } from '@/components/ink';
 import { PressableScale, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { colors, isDark, shadows, space } from '@/theme';
-import { ink, inkReaction } from '@/theme/ink';
+import { ink, inkPeachGlass, inkReaction } from '@/theme/ink';
 import type { Message } from '@/types';
 
 const REACTIONS: readonly ReactionName[] = REACTS;
@@ -132,7 +132,7 @@ export function MessageMenu({
               onReact(message, on ? undefined : name);
             }}>
             {/* Each in its own hue; the one you put is on your peach. */}
-            <ReactionGlyph name={name} color={on ? ink.onAccent : inkReaction[name]} size={GLYPH} />
+            <ReactionGlyph name={name} color={inkReaction[name]} size={GLYPH} />
           </PressableScale>
         );
       })}
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   },
   reactions: { height: 62, borderRadius: 31, flexDirection: 'row', alignItems: 'center', gap: 2, paddingHorizontal: 7 },
   reaction: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
-  reactionOn: { backgroundColor: ink.accent },
+  reactionOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   inset: { marginLeft: THEIRS_INSET },
   at: { position: 'absolute' },
   // The held line, lifted a little off the blur.

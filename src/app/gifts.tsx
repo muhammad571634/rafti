@@ -52,7 +52,7 @@ import {
 import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, hitSlop, palette, radius, space, systemColors } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
 
@@ -311,7 +311,7 @@ export default function GiftsScreen() {
                   accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                   <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
                     {claimed ? (
-                      <Ionicons name="checkmark" size={16} color={ink.onAccent} />
+                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.ctaText} />
                     ) : (
                       <Txt style={styles.dayNumber}>{day}</Txt>
                     )}
@@ -513,13 +513,15 @@ export default function GiftsScreen() {
 }
 
 function StepPill({ kind, label, onPress }: { kind: 'peach' | 'glass'; label: string; onPress: () => void }) {
+  const peach = kind === 'peach';
   return (
     <PressableScale
       scaleTo={0.94}
       accessibilityRole="button"
       onPress={onPress}
-      style={[styles.stepPill, kind === 'peach' ? styles.stepPillPeach : styles.stepPillGlass]}>
-      <InkText variant="caption" color={kind === 'peach' ? ink.onAccent : ink.text} lines={1}>
+      style={[styles.stepPill, peach ? styles.stepPillPeach : styles.stepPillGlass]}>
+      {peach ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+      <InkText variant="caption" color={peach ? inkPeachGlass.ctaText : ink.text} lines={1}>
         {label}
       </InkText>
     </PressableScale>
@@ -599,7 +601,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayClaimed: { backgroundColor: ink.accent, borderColor: ink.accent },
+  dayClaimed: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   dayNext: { backgroundColor: 'rgba(235,173,132,0.22)', borderWidth: 1.5, borderColor: ink.accent },
   dayNumber: { ...inkFace('caption'), color: ink.text },
   dayAmount: { ...inkFace('caption'), fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.58)', fontVariant: ['tabular-nums'] },
@@ -651,10 +653,11 @@ const styles = StyleSheet.create({
     height: 30,
     paddingHorizontal: 13,
     borderRadius: inkRadius.pill,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepPillPeach: { backgroundColor: ink.accent },
+  stepPillPeach: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   stepPillGlass: {
     backgroundColor: ink.raised,
     borderWidth: StyleSheet.hairlineWidth,

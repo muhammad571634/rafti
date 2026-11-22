@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.edge,
   },
-  chipOn: { backgroundColor: 'rgba(235,173,132,0.18)', borderColor: ink.accent, borderWidth: 1.5 },
+  chipOn: { backgroundColor: inkPeachGlass.flat, borderColor: inkPeachGlass.rim, borderWidth: 0.75 },
   chipText: { ...inkFace('footnoteStrong'), fontSize: 13, color: 'rgba(235,235,245,0.82)' },
   chipTextOn: { color: ink.accent },
   rewrite: {

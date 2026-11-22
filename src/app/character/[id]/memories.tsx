@@ -20,7 +20,7 @@ import { countByTab, groupMemories, MEMORY_TABS, tabOf, upcomingPlans } from '@/
 import { dateFromKey, dayKeyFromToday, todayKey } from '@/mock/time';
 import { memoryAccess, useAppStore } from '@/store/use-app-store';
 import { bottomRoom, night, space, type } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { MemoryAbout, MemoryItem, ScheduleItem } from '@/types';
 
 const { colors, friendAccent } = night;
@@ -243,8 +243,9 @@ export default function MemoriesScreen() {
               accessibilityLabel={t('memories.unlock')}
               onPress={() => setUnlocking(true)}
               style={styles.unlockPill}>
-              <Ionicons name="lock-open" size={16} color={ink.onAccent} />
-              <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+              <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+              <Ionicons name="lock-open" size={16} color={inkPeachGlass.ctaText} />
+              <InkText variant="bodyStrong" color={inkPeachGlass.ctaText} lines={1}>
                 {t('memories.unlock')}
               </InkText>
             </PressableScale>
@@ -300,7 +301,8 @@ export default function MemoriesScreen() {
               accessibilityRole="button"
               onPress={unlock}
               style={styles.unlockPill}>
-              <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+              <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+              <InkText variant="bodyStrong" color={inkPeachGlass.ctaText} lines={1}>
                 {t('plans.get', { plan: t('plans.name.basic'), price: PLANS.basic.price })}
               </InkText>
             </PressableScale>
@@ -730,7 +732,9 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderCurve: 'continuous',
-    backgroundColor: ink.accent,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

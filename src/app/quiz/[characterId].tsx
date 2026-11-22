@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,7 @@ import { localized } from '@/i18n/content';
 import { WORLDS } from '@/mock/worlds';
 import { askSelfQuiz, displayName, modelIsOn, useAppStore, writeBase, writeWithModel } from '@/store/use-app-store';
 import { colors, friendAccent, hitSlop, moduleFills, space, systemColors } from '@/theme';
-import { ink, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 /** One play: a pack, the friend's weekly quiz about themselves, or a quiz the user wrote. */
@@ -194,7 +195,8 @@ export default function QuizScreen() {
               <InkText variant="card">{t('quizHome.selfTitle', { name })}</InkText>
               <InkText variant="sub">{t('quizHome.selfBody', { name, context: character?.gender })}</InkText>
               <View style={styles.cta}>
-                <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+                <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                <InkText variant="bodyStrong" color={inkPeachGlass.ctaText} lines={1}>
                   {t('quizHome.selfPlay', { name })}
                 </InkText>
               </View>
@@ -491,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selfBody: { padding: space.lg, paddingTop: 14, gap: 4 },
-  cta: { marginTop: 12, height: 50, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16, backgroundColor: ink.accent },
+  cta: { marginTop: 12, height: 50, borderRadius: inkRadius.pill, overflow: 'hidden', borderWidth: 1, borderColor: inkPeachGlass.ctaRim, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 },
   worldRow: { marginTop: space.md },
   row: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space.lg, paddingVertical: 8 },
   rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },

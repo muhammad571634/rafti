@@ -9,7 +9,8 @@ import { AuroraBackground, BrandArt, Button, ShellIcon, SFIcon, Sheet, Txt } fro
 import { haptic } from '@/lib/haptics';
 import { shareImage } from '@/lib/share';
 import { shareReward, useAppStore } from '@/store/use-app-store';
-import { aurora, colors, gradients, palette, radius, space } from '@/theme';
+import { aurora, colors, palette, radius, space } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 
 const LOGO_HEIGHT = 22;
 /** The mascot's width; its 720px art stays sharp well past this on a 3x screen. */
@@ -122,7 +123,7 @@ export function ShareCardSheet({
             ios={paid ? 'checkmark.circle.fill' : 'square.and.arrow.up'}
             icon={paid ? 'checkmark-circle' : 'share-outline'}
             size={18}
-            color={colors.textOnPrimary}
+            color={inkPeachGlass.ctaText}
           />
         }
         right={reward > 0 || paid ? <RewardChip amount={reward || undefined} /> : null}
@@ -158,12 +159,12 @@ export function SharePill({
   style?: StyleProp<ViewStyle>;
 }) {
   return (
-    <LinearGradient colors={gradients.primary} style={[styles.pill, label ? styles.pillWide : null, style]}>
-      <SFIcon ios="square.and.arrow.up" icon="share-outline" size={17} color={colors.textOnPrimary} />
+    <LinearGradient colors={inkPeachGlass.ctaFill} style={[styles.pill, label ? styles.pillWide : null, style]}>
+      <SFIcon ios="square.and.arrow.up" icon="share-outline" size={17} color={inkPeachGlass.ctaText} />
       {label ? <Txt style={styles.pillLabel}>{label}</Txt> : null}
       {reward && label ? <RewardChip amount={amount ? reward : undefined} /> : null}
       {reward && !label && amount ? <Txt style={styles.pillAmount}>{`+${reward}`}</Txt> : null}
-      {reward && !label ? <ShellIcon size={15} tintColor={colors.textOnPrimary} /> : null}
+      {reward && !label ? <ShellIcon size={15} tintColor={inkPeachGlass.ctaText} /> : null}
     </LinearGradient>
   );
 }
@@ -205,8 +206,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 17,
     borderCurve: 'continuous',
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
   },
   pillWide: { gap: space.sm, height: 44, borderRadius: 22 },
-  pillLabel: { fontSize: 16, fontWeight: '700', color: colors.textOnPrimary },
-  pillAmount: { fontSize: 14, fontWeight: '700', color: colors.textOnPrimary, fontVariant: ['tabular-nums'] },
+  pillLabel: { fontSize: 16, fontWeight: '700', color: inkPeachGlass.ctaText },
+  pillAmount: { fontSize: 14, fontWeight: '700', color: inkPeachGlass.ctaText, fontVariant: ['tabular-nums'] },
 });

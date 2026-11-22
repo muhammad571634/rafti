@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTilt';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +14,7 @@ import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useFreeGone, useLeftNote } from '@/lib/use-free-messages';
 import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 import type { MessageTone, ReplyTo } from '@/types';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
@@ -309,23 +311,23 @@ export function ChatInput({
                 <IconButton
                   icon="checkmark"
                   size={23}
-                  color={hasText ? colors.textOnPrimary : colors.textFaint}
-                  background={hasText ? colors.primaryFill : colors.surfaceAlt}
+                  color={hasText ? inkPeachGlass.ctaText : colors.textFaint}
+                  background={hasText ? inkPeachGlass.flat : colors.surfaceAlt}
                   haptic={hasText}
                   accessibilityLabel={t('chat.saveEdit')}
                   onPress={() => submit()}
-                  style={styles.action}
+                  style={[styles.action, hasText && styles.sendRim]}
                 />
               ) : onStop && !hasText && !voiceBusy ? (
                 // Typing a new line brings send back; the reply then answers both.
                 <IconButton
                   icon="stop"
                   size={16}
-                  color={colors.textOnPrimary}
-                  background={colors.primaryFill}
+                  color={inkPeachGlass.ctaText}
+                  background={inkPeachGlass.flat}
                   accessibilityLabel={t('a11y.stopReply')}
                   onPress={onStop}
-                  style={styles.action}
+                  style={[styles.action, styles.sendRim]}
                 />
               ) : hasText ? (
                 <PressableScale
@@ -338,7 +340,8 @@ export function ChatInput({
                   accessibilityLabel={t('a11y.send')}
                   accessibilityHint={onHoldSend ? t('chat.toneTip') : undefined}
                   style={[styles.action, styles.send]}>
-                  <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+                  <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                  <PaperPlaneTiltIcon size={25} weight="bold" color={inkPeachGlass.ctaText} style={styles.plane} />
                 </PressableScale>
               ) : Platform.OS === 'web' || !onVoiceNote ? (
                 <IconButton
@@ -386,7 +389,8 @@ export function ChatInput({
                         haptic
                         accessibilityLabel={t('a11y.send')}
                         style={[styles.action, styles.send]}>
-                        <PaperPlaneTiltIcon size={25} weight="bold" color={colors.textOnPrimary} style={styles.plane} />
+                        <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                        <PaperPlaneTiltIcon size={25} weight="bold" color={inkPeachGlass.ctaText} style={styles.plane} />
                       </PressableScale>
                     </>
                   ) : (
@@ -452,8 +456,9 @@ const styles = StyleSheet.create({
   // The action's place: the old and the new button overlap here while they swap.
   actionSlot: { width: ACTION, height: ACTION, marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth },
   actionFill: { position: 'absolute', top: 0, left: 0 },
-  action: { width: ACTION, height: ACTION, borderRadius: ACTION / 2, marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
-  send: { backgroundColor: colors.primaryFill },
+  action: { width: ACTION, height: ACTION, borderRadius: ACTION / 2, overflow: 'hidden', marginBottom: (FIELD - ACTION) / 2 - StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
+  send: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
+  sendRim: { borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   // The plane points up and right; nudged so it looks centred in its circle.
   plane: { marginLeft: -2, marginTop: 1 },
   mic: { backgroundColor: playful.round },

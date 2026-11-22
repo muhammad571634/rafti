@@ -8,6 +8,7 @@ import { Button, PressableScale, Txt } from '@/components/ui';
 import { monthCells, startOfMonth, WEEK, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
 import { colors, radius, shadows, space } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 
 const PAD = space.lg;
 
@@ -121,7 +122,7 @@ export function CalendarPopover({ visible, onClose, value, onChange, marked, top
                       variant={selected || isToday ? 'bodyStrong' : 'body'}
                       color={
                         selected
-                          ? colors.textOnPrimary
+                          ? inkPeachGlass.ctaText
                           : disabled
                             ? colors.textFaint
                             : isToday
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   cell: { alignItems: 'center', justifyContent: 'center' },
   day: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
-  daySelected: { backgroundColor: colors.primaryFill },
+  daySelected: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
   dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: 'transparent' },
   dotOn: { backgroundColor: colors.primary },
   foot: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: space.lg },

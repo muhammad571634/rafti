@@ -14,6 +14,7 @@ import { dateFromKey, dayKeyFromToday, todayKey } from '@/mock/time';
 import { shellCosts } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, shadows, space } from '@/theme';
+import { inkPeachGlass } from '@/theme/ink';
 import type { Message } from '@/types';
 
 /**
@@ -110,8 +111,8 @@ export function SetupCard({ message }: { message: Message }) {
               right={
                 cost ? (
                   <View style={styles.price} accessibilityLabel={`${cost} ${t('common.shells')}`}>
-                    <ShellIcon size={14} tintColor={colors.textOnPrimary} />
-                    <Txt variant="smallStrong" color={colors.textOnPrimary}>
+                    <ShellIcon size={14} tintColor={inkPeachGlass.ctaText} />
+                    <Txt variant="smallStrong" color={inkPeachGlass.ctaText}>
                       {cost}
                     </Txt>
                   </View>

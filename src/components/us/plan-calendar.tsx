@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
@@ -9,7 +10,7 @@ import { PressableScale } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
 import { colors, radius, space, systemColors } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 export interface PlanCalendarProps {
   /** Selected day key */
@@ -140,9 +141,10 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
                       onPress={() => onChange(key)}>
                       {/* Never flattened so Android preserves rounded corners when selected fill toggles. */}
                       <View collapsable={false} style={[styles.monthCircle, selected && styles.selectedFill]}>
+                        {selected ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
                         <InkText
                           variant={selected || isToday ? 'subStrong' : 'sub'}
-                          color={!inMonth ? ink.text3 : selected ? ink.onAccent : isToday ? ink.accent : ink.text}
+                          color={!inMonth ? ink.text3 : selected ? inkPeachGlass.ctaText : isToday ? ink.accent : ink.text}
                           style={styles.tabular}>
                           {dateFromKey(key).getDate()}
                         </InkText>
@@ -172,20 +174,21 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
                     accessibilityState={{ selected }}
                     onPress={() => onChange(key)}>
                     <View collapsable={false} style={[styles.weekPill, selected && styles.selectedFill]}>
+                      {selected ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
                       <InkText
                         variant="caption"
-                        color={selected ? ink.onAccent : ink.text3}
+                        color={selected ? inkPeachGlass.text : ink.text3}
                         style={[styles.weekday, selected && styles.weekDayOn]}>
                         {weekdays[i % weekdays.length]}
                       </InkText>
                       <InkText
                         variant="subStrong"
-                        color={selected ? ink.onAccent : isToday ? ink.accent : ink.text}
+                        color={selected ? inkPeachGlass.ctaText : isToday ? ink.accent : ink.text}
                         style={styles.tabular}>
                         {dateFromKey(key).getDate()}
                       </InkText>
                       <View style={styles.dots}>
-                        {spoke ? <View style={[styles.dot, { backgroundColor: selected ? ink.onAccent : (talkColor ?? ink.text2) }]} /> : null}
+                        {spoke ? <View style={[styles.dot, { backgroundColor: selected ? inkPeachGlass.ctaText : (talkColor ?? ink.text2) }]} /> : null}
                         {plan ? (
                           <View
                             style={[
@@ -270,11 +273,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 16,
     borderCurve: 'continuous',
+    overflow: 'hidden',
     alignItems: 'center',
     gap: 4,
     backgroundColor: 'transparent',
   },
-  weekDayOn: { opacity: 0.78 },
+  weekDayOn: { opacity: 0.9 },
   monthWrap: { paddingHorizontal: 10, paddingBottom: 12 },
   weekdayRow: { flexDirection: 'row', marginBottom: 6 },
   weekday: { textTransform: 'uppercase' },
@@ -285,16 +289,20 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  selectedFill: { backgroundColor: ink.accent },
+  selectedFill: {
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
+  },
   tabular: { fontVariant: ['tabular-nums'] },
   dots: { height: 6, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3, marginTop: 1 },
   dot: { width: 5, height: 5, borderRadius: inkRadius.pill },
   dotPlan: { width: 5.5, height: 5.5, borderRadius: inkRadius.pill, borderWidth: 1.5, borderColor: systemColors.pink },
-  dotPlanOn: { borderColor: ink.onAccent },
+  dotPlanOn: { borderColor: inkPeachGlass.ctaText },
   dotPast: { borderColor: ink.text3 },
   footer: {
     borderTopWidth: StyleSheet.hairlineWidth,

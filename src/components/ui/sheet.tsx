@@ -9,7 +9,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { radius, shadows, space, themed, useThemed, useTokens } from '@/theme';
-import { inkFace } from '@/theme/ink';
+import { inkFace, inkPeachGlass } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -160,7 +160,7 @@ export function Sheet({
             accessibilityLabel={t('common.done')}
             accessibilityState={{ disabled: !!doneDisabled }}
             style={[styles.done, doneDisabled && styles.doneOff]}>
-            <Ionicons name="checkmark" size={19} color={colors.textOnPrimary} />
+            <Ionicons name="checkmark" size={19} color={inkPeachGlass.ctaText} />
           </PressableScale>
         ) : (
           <View style={styles.side} />
@@ -289,7 +289,9 @@ const sheet = themed(({ colors }) =>
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: colors.primaryFill,
+      backgroundColor: inkPeachGlass.flat,
+      borderWidth: 1,
+      borderColor: inkPeachGlass.ctaRim,
       alignItems: 'center',
       justifyContent: 'center',
     },

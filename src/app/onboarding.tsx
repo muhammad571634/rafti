@@ -46,7 +46,7 @@ import { deckForHour, greetingKeys, isQuietHour, partOfDay } from '@/lib/night-h
 import { firstName, NAME_MAX } from '@/lib/profile';
 import { useAppStore, WELCOME_SHELLS } from '@/store/use-app-store';
 import { bottomRoom, night, NightScope, space } from '@/theme';
-import { ink, inkGutter, inkRadius, inkType } from '@/theme/ink';
+import { ink, inkGutter, inkPeachGlass, inkRadius, inkType } from '@/theme/ink';
 import type { Character, Pronouns } from '@/types';
 import { track } from '@/lib/analytics';
 
@@ -528,7 +528,9 @@ function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { 
     right: interpolate(m.get(), [0, 1], [0, space.md - inkGutter]),
     top: interpolate(m.get(), [0, 1], [0, 2 + bottomShift]),
     bottom: interpolate(m.get(), [0, 1], [0, -bottomShift]),
-    backgroundColor: interpolateColor(m.get(), [0, 1], [ink.accent, field]),
+    backgroundColor: interpolateColor(m.get(), [0, 1], ['rgba(235,173,132,0.26)', field]),
+    borderWidth: 1,
+    borderColor: interpolateColor(m.get(), [0, 1], [inkPeachGlass.ctaRim, 'rgba(235,173,132,0)']),
   }));
   const words = useAnimatedStyle(() => ({ opacity: 1 - Math.min(1, m.get() * 3) }));
   return (
@@ -544,7 +546,7 @@ function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { 
         style={styles.pillHit}>
         <Animated.View style={words}>
           <Animated.View key={label} entering={FadeIn.duration(180)}>
-            <InkText variant="bodyStrong" color={ink.onAccent} lines={1}>
+            <InkText variant="bodyStrong" color={inkPeachGlass.ctaText} lines={1}>
               {label}
             </InkText>
           </Animated.View>

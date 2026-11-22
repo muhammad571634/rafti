@@ -6,7 +6,7 @@ import { Button, Chip, PressableScale, Sheet, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { INTEREST_OPTIONS, MAX_INTERESTS, birthdayKey, daysInMonth, monthNames } from '@/lib/profile';
 import { colors, radius, space, type } from '@/theme';
-import { inkRadius } from '@/theme/ink';
+import { inkPeachGlass, inkRadius } from '@/theme/ink';
 
 /** One text field and Save. Cleared to the saved value each time it opens. */
 export function TextFieldSheet({
@@ -157,7 +157,7 @@ export function BirthdaySheet({
               accessibilityState={{ selected: on }}
               style={styles.dayCell}>
               <View collapsable={false} style={[styles.day, on && styles.dayOn]}>
-                <Txt variant="smallStrong" color={on ? colors.textOnPrimary : colors.text}>
+                <Txt variant="smallStrong" color={on ? inkPeachGlass.ctaText : colors.text}>
                   {d}
                 </Txt>
               </View>
@@ -267,5 +267,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayOn: { backgroundColor: colors.primaryFill },
+  dayOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
 });
