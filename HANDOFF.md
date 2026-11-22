@@ -1,6 +1,6 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z329. Liquid Peach Glass full-app sweep — Round 2 (owner spotted Us calendar & Character Profile + asked for exhaustive audit, 2026-11-22, Gemini Argon). DONE, pushed, preview OTA publishing
+### 0z329. Liquid Peach Glass full-app sweep — Round 2 (owner spotted Us calendar & Character Profile + asked for exhaustive audit, 2026-11-22, Gemini Argon). DONE, pushed, live on `preview` OTA `3963969a` (runtime 1.3.0)
 - **Why Round 2 was needed**: PowerShell's `Select-String -Path` skipped dynamic bracket routes (`[id]`, `[characterId]`, `[series]`), and several screens used custom `ink.accent` / `colors.primaryFill` / `night.primary` / `STORE.cta` styles directly instead of shared primitives.
 - **Exhaustive Node.js audit (136 -> 66 remaining intentional tiny badges/dots/`+` buttons/approved diary)**:
   - **Character Profile & Memories & Quiz & Photo (`[id]` / `[characterId]` routes)**: `primaryPill` (`Message` / `Add friend`), `unlockPill` (Memories bottom bar & sheet), Quiz `Play` CTA, and Photo `Send` pill -> `LinearGradient colors={inkPeachGlass.ctaFill}` + `ctaRim` + `ctaText`.
