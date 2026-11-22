@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z327. Published missing 0z326 Preview OTA + second-reader check on 0z326 & 0z323 (owner's "tekshir va ota chiqar", 2026-11-22, Gemini Argon). DONE, pushed, live on `preview` OTA `5cb60131` (runtime 1.3.0)
+- **OTA**: Verified EAS `preview` branch — `0z325` (`39aa3e3c`) was the latest published update and `0z326` (`b7cca669`) had not been published to EAS yet. Ran `npx tsc --noEmit` (0 errors) and published Preview OTA `5cb60131-5e3c-43a5-9508-19fd482d2662` (Android `01a2016c-e4ec-7110-8d08-59884c3b93cb`, iOS `01a2016c-e4ec-76a5-95b9-117a9828a671`, runtime 1.3.0).
+- **Second-reader review**: Checked `0z326` (`QUIZ_LINES` / `guessesTheirPick` / `pickOf` in `src/ai/writes.ts` & `src/ai/writes.test.ts`) and `0z323` (`maxPromptChars` / `promptChars` in `server/src/llm/gate.ts`). Both pass review with 0 issues.
+- **Owner**: Fly deploy still pending for `0z326` (so the server builds and parses the updated quiz prompt): `$env:FLY_NO_UPDATE_CHECK='1'; & "C:\Users\joray\.fly\bin-prev\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+
 ### 0z326. Quiz "differ" lines no longer guess the user's answer (found in 0z325, owner's "fix it", 2026-11-21, Claude 1, Opus 5.5). DONE, pushed, preview OTA; Fly deploy pending (owner)
 - **Bug**: `quizPicks` / `selfQuiz` write the friend's "differ" line before the user answers; the model guessed which other option they would pick and named it ("A fancy dinner? Seriously?" after the user picked the walk).
 - **Fix, two layers, every character**: `QUIZ_LINES` (`src/ai/writes.ts`) now says the line must fit every other answer and never name, quote or guess theirs; `pickOf` drops a "differ" that still names another option (`guessesTheirPick`, options of 4+ letters, case-insensitive) to '' and the quiz screen then shows the verdict alone (no stock line, model-first). Tests in `writes.test.ts`.
