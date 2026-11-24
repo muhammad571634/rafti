@@ -1,5 +1,16 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z336. Colour fix by the HIG audit: one peach, neutral ladder, red count badges (owner: "one brand colour, the rest by Apple's rules" → audit → "Yes, start", 2026-11-24, Claude 1, Opus 5.5). DONE, pushed (`1e87e662`), preview OTA `2539351b` (runtime 1.3.0)
+- **Audit**: `docs/color-audit-2026-11-24.md` (HIG Color, Dark Mode, Accessibility read today; scan of 273 files; A51 screenshots). Fixed items 1-4, 7-8.
+- **One peach `#EBAD84`**: night `brandText` (was `apricot300` `#FFC497`, 39 uses), `palette.apricot300` in 6 chat/level-up files, `inkPeachGlass.ctaFill` and `signature.shells.hero` gradients made flat, `moduleFills.store` (was `#F79E63`) with the brand's ink glyph via new `glyphOn(fill)` (ledger, shell costs, my plan, plan picker).
+- **No brown**: `bubbleSelf` solid peach + `bubbleSelfText` `#2B1305` (was `#5C3A28` + white; night and sleep palettes); `primarySoft` / `primarySofter` → neutral glass fills; peach washes `rgba(235,173,132,≤0.22)` in 14 screens → `ink.tintFill` (rims kept peach; scratch card art and gradient washes untouched).
+- **Greys**: night `textSecondary` 0.62, `textMuted` / `textFaint` 0.55 (Apple label ladder), `border` / `divider` `rgba(84,84,88,0.6)`, `track` `#2A2A38`, `bubbleOther` `#1F1F2B`.
+- **Unread**: every count is one red badge (`ink.badge` / `onBadge`: Today rows, "+N", hero, pinned faces; tab and chip were red); unread rows' time goes neutral (`ink.text2`), the peach dot stays; blue `ink.unread` retired.
+- **A11y**: `src/theme/a11y.ts` `useReduceTransparency` (iOS); `PhotoGlassPill` turns solid. **Guard**: `src/theme/colour-literals.test.ts` ratchet (baseline 739 literals; a file may not grow, a new file holds none).
+- **Seen on the A51** after the OTA: Chats dates neutral, peach dots, red Unread badge. The phone dropped off USB before the chat, Us and Today shots.
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1153/1153.
+- **Still to do**: see your bubble (peach, dark text), Us "+ Plan", Store tiles on the A51; Gifts' signature off red (owner picks pink or orange); Reduce Transparency on `chat-header` and `profile-hero` glass; lower the literal baseline file by file (orbit, stationery, ticket are art); second reader (25 files) — Gemini.
+
 ### 0z335. Variant 2 Apple iOS 26 Clear Crystal Liquid Glass + Pure Brand Peach ink (owner approved Variant 2 on `sigmazam-peach-glass-lab.html` to eliminate brownish tint, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
 - **Why**: Low-alpha translucent peach (`0.28 -> 0.13`) over obsidian `#16161D` physically blends into muddy brown (`#53423C`). Per owner's pick of Variant 2 (Apple iOS 26 standard): neutral clear crystal glass lenses paired with 100% pure Sigmazam peach (`#EBAD84`) labels, icons, and chip rims — zero brown shift anywhere.
 - **Tokens (`src/theme/ink.ts`)**:
