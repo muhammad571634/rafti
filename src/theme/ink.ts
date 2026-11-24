@@ -168,7 +168,8 @@ export const inkEm = (color: string): TextStyle => ({ fontFamily: fonts.serifIta
 export const inkTints = [
   ['#22364C', '#1B2C40'],
   ['#183B39', '#14312F'],
-  ['#3E3322', '#342A1B'],
+  // Slate, not sun (audit 2026-11-24): a warm low wash read brown on the night ground.
+  ['#2A3140', '#232A37'],
   ['#2E2944', '#272239'],
   ['#25294A', '#1F233F'],
   ['#40263A', '#361F31'],

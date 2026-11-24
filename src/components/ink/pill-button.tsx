@@ -38,6 +38,9 @@ const WORDS: Record<PillKind, string> = { primary: inkPeachGlass.ctaText, second
 export function PillButton({ label, onPress, kind = 'primary', size = 'lg', disabled, icon, full = true, accessibilityLabel, accessibilityHint, style }: PillButtonProps) {
   const color = WORDS[kind];
   const peach = kind === 'primary' || kind === 'accent';
+  // A peach button that cannot be pressed goes grey, as iOS does: peach at 40% read brown on the night ground.
+  const peachOff = peach && !!disabled;
+  const words = peachOff ? ink.text3 : color;
   return (
     <PressableScale
       scaleTo={0.97}
@@ -51,15 +54,15 @@ export function PillButton({ label, onPress, kind = 'primary', size = 'lg', disa
         styles.pill,
         size === 'lg' ? styles.lg : styles.md,
         { backgroundColor: FILL[kind] },
-        peach && styles.peachRim,
+        peach && !peachOff && styles.peachRim,
         !full && styles.hug,
-        disabled && styles.off,
+        peachOff ? styles.peachOff : disabled && styles.off,
         style,
       ]}>
-      {peach ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+      {peach && !peachOff ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
       <View style={styles.row}>
-        {icon ? <Ionicons name={icon} size={19} color={color} /> : null}
-        <InkText variant={kind === 'quiet' ? 'body' : 'bodyStrong'} color={color} lines={1} style={styles.label}>
+        {icon ? <Ionicons name={icon} size={19} color={words} /> : null}
+        <InkText variant={kind === 'quiet' ? 'body' : 'bodyStrong'} color={words} lines={1} style={styles.label}>
           {label}
         </InkText>
       </View>
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
   md: { minHeight: 48 },
   hug: { alignSelf: 'center' },
   off: { opacity: 0.4 },
+  peachOff: { backgroundColor: ink.raised },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8, maxWidth: '100%' },
   label: { flexShrink: 1, textAlign: 'center' },
 });

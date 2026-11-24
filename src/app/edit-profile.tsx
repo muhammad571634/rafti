@@ -32,7 +32,8 @@ const AVATAR = 112;
 const FILL = {
   name: systemColors.blue,
   pronouns: systemColors.purple,
-  birthday: systemColors.red,
+  // A gift glyph wears Gifts' pink (red is for delete and errors, audit 2026-11-24).
+  birthday: systemColors.pink,
   born: systemColors.gray,
   job: systemColors.brown,
 };

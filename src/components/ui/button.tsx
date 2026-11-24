@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { radius, space, themed, useThemed, useTokens } from '@/theme';
-import { inkPeachGlass } from '@/theme/ink';
+import { ink, inkPeachGlass } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -43,8 +43,10 @@ export function Button({
   style,
 }: ButtonProps) {
   const styles = useThemed(sheet);
-  const peachGlass = variant === 'primary';
-  const fg = peachGlass ? inkPeachGlass.ctaText : foreground(variant);
+  // A primary that cannot be pressed goes grey, as iOS does (peach at low opacity read brown at night).
+  const off = variant === 'primary' && !!disabled && !loading;
+  const peachGlass = variant === 'primary' && !off;
+  const fg = off ? ink.text3 : peachGlass ? inkPeachGlass.ctaText : foreground(variant);
 
   return (
     <PressableScale
@@ -57,7 +59,7 @@ export function Button({
           height: heights[size],
           borderRadius: size === 'sm' ? radius.sm : radius.md,
           paddingHorizontal: size === 'sm' ? space.md : space.xl,
-          backgroundColor: peachGlass ? 'transparent' : background(variant),
+          backgroundColor: off ? ink.raised : peachGlass ? 'transparent' : background(variant),
         },
         peachGlass && styles.peachRim,
         bordered(variant) && styles.border,
