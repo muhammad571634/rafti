@@ -53,6 +53,16 @@ describe('the model’s reply', () => {
     assert.equal(parseModelReply('{"emotion":"furious","messages":["Hm."]}').emotion, undefined);
   });
 
+  it('keeps the messages of JSON that broke after them, and never shows raw JSON', () => {
+    // Seen on flash-lite (0z333): the list closed, then a stray array before the brace.
+    const broken = '{"crisis":false,"emotion":"shy","messages":[{"action":"pulls the apron tighter"},{"speech":"just... I got used to seeing you."}],["not much else to tell."]}';
+    const reply = parseModelReply(broken);
+    assert.ok(reply.bubbles.length > 0);
+    assert.ok(reply.bubbles.every((b) => !b.includes('{') && !b.includes('"speech"')), reply.bubbles.join(' | '));
+    assert.equal(reply.emotion, 'shy');
+    assert.deepEqual(parseModelReply('{"emotion":"shy","messages":["Hi", oops}').bubbles, []);
+  });
+
   it('holds Talk to no narration', () => {
     assert.deepEqual(enforceStyle(['*grins* Hey.', '*waves*'], 'talk'), ['Hey.']);
     assert.deepEqual(enforceStyle(['*grins* Hey.'], 'mix'), ['*grins* Hey.']);

@@ -17,6 +17,12 @@ Tick items off here as they land; add new postponed items under the right headin
    vagueness, Hana's repeated confession, photo replies on the paid model (0z187).
 6. Telegram-style in-app banner with our sound (owner paused it "until the paid API, maybe on an iPhone").
 7. Explicit prompt caching (cost ledger row 1) once traffic is real.
+8. Story template stories (0z332-0z333), the probe the free key could not finish (`npm run probe:templates` in
+   `server/`, pass ids as one comma list): (a) the 80 templates never probed and the gaps of the 20 that were
+   (`t_robin` "have we met", `t_lucas` / `t_hugo` level 6, `t_aiko` / `t_raven` level 1); (b) each question 3 runs,
+   since one pass can be luck; (c) the level-6 beat said plainly only 8 of 18 times on flash-lite (5 hinted, 5 held):
+   if the ship model is no better, make the "just became possible" line in `arcLines` firmer; (d) 2-3 templates in
+   Russian and Turkish. Results so far: HANDOFF 0z333.
 
 ## 2. Waits for a few days of real traffic (from 2026-11-10)
 

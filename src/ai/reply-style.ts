@@ -229,8 +229,60 @@ function parseJson(json: string): unknown {
     return JSON.parse(json);
   } catch (error) {
     const mended = json.replace(/"\]\s*,\s*\["/g, '","');
-    if (mended === json) throw error;
-    return JSON.parse(mended);
+    if (mended !== json) {
+      try {
+        return JSON.parse(mended);
+      } catch {
+        // Try the messages alone below.
+      }
+    }
+    const kept = messagesOnly(json);
+    if (kept) return kept;
+    throw error;
+  }
+}
+
+/** Where the bracket opened at `open` closes, skipping strings; -1 when it never does. */
+function closingAt(text: string, open: number) {
+  let depth = 0;
+  let inString = false;
+  for (let i = open; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (ch === '\\') i++;
+      else if (ch === '"') inString = false;
+    } else if (ch === '"') inString = true;
+    else if (ch === '[' || ch === '{') depth++;
+    else if (ch === ']' || ch === '}') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * A reply whose JSON broke after its messages (0z333: flash-lite closed the list and wrote a stray
+ * `["…"]` before the brace): the fields before the list and the list itself, so the bubbles still land
+ * and raw JSON never does.
+ */
+function messagesOnly(json: string): Record<string, unknown> | undefined {
+  const key = json.search(/"messages"\s*:\s*\[/);
+  if (key < 0) return undefined;
+  const open = json.indexOf('[', key);
+  const close = closingAt(json, open);
+  if (close < 0) return undefined;
+  try {
+    const messages = JSON.parse(json.slice(open, close + 1)) as unknown;
+    let head: Record<string, unknown> = {};
+    try {
+      head = JSON.parse(`${json.slice(0, key).replace(/,\s*$/, '')}}`) as Record<string, unknown>;
+    } catch {
+      // The fields before it are a bonus; the messages are what the user sees.
+    }
+    return { ...head, messages };
+  } catch {
+    return undefined;
   }
 }
 
@@ -271,6 +323,9 @@ export function parseModelReply(raw: string): ModelReply {
     } catch {
       // Not JSON after all: read it as prose.
     }
+    // A reply that was meant as JSON and cannot be read is no reply: raw JSON never reaches a bubble
+    // (the route then says Not Delivered, model-first).
+    if (/"messages"\s*:/.test(json)) return { bubbles: [] };
   }
   const bubbles = raw
     .split(/\n\s*\n/)
