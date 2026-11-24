@@ -225,7 +225,7 @@ export default function LedgerScreen() {
 const REASON: Record<LedgerReason, { fill: string; ios: SFSymbol; icon: IoniconName }> = {
   welcome: { fill: moduleFills.store, ios: 'sparkles', icon: 'sparkles' },
   plan: { fill: systemColors.purple, ios: 'crown.fill', icon: 'diamond' },
-  daily: { fill: systemColors.red, ios: 'calendar', icon: 'calendar' },
+  daily: { fill: moduleFills.gifts, ios: 'calendar', icon: 'calendar' },
   expired: { fill: systemColors.gray, ios: 'moon.fill', icon: 'moon' },
   ad: { fill: systemColors.indigo, ios: 'play.fill', icon: 'play' },
   spin: moduleTile('gifts'),

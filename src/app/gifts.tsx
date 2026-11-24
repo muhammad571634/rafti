@@ -51,7 +51,7 @@ import {
 } from '@/mock';
 import { pushesAllowed, pushPermission, requestPushPermission } from '@/notifications/sync';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, hitSlop, palette, radius, space, systemColors } from '@/theme';
+import { colors, hitSlop, palette, radius, signature, space, systemColors } from '@/theme';
 import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 type TileLook = { fill: string; ios: SFSymbol; icon: React.ComponentProps<typeof Ionicons>['name'] };
@@ -311,7 +311,7 @@ export default function GiftsScreen() {
                   accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                   <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
                     {claimed ? (
-                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.text} />
+                      <Ionicons name="checkmark" size={16} color={colors.white} />
                     ) : (
                       <Txt style={styles.dayNumber}>{day}</Txt>
                     )}
@@ -601,12 +601,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayClaimed: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
-  dayNext: { backgroundColor: ink.tintFill, borderWidth: 1.5, borderColor: ink.accent },
+  // A day done is filled in Gifts' own pink, today ringed in it (HIG: colour for status, the feature's one colour; peach washes read brown here).
+  dayClaimed: { backgroundColor: signature.gifts.strong, borderColor: signature.gifts.strong },
+  dayNext: { backgroundColor: ink.tintFill, borderWidth: 1.5, borderColor: signature.gifts.strong },
   dayNumber: { ...inkFace('caption'), color: ink.text },
   dayAmount: { ...inkFace('caption'), fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.58)', fontVariant: ['tabular-nums'] },
   dayAmountOn: { color: ink.text, fontWeight: '700' },
-  dayAmountTop: { color: ink.accent, fontWeight: '700' },
+  dayAmountTop: { color: signature.gifts.text, fontWeight: '700' },
   sectionLabel: {
     marginTop: 20,
     marginBottom: 8,
@@ -633,7 +634,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: PEACH_SOFT,
   },
-  statusText: { ...inkFace('caption'), color: ink.accent },
+  // A status, not a button: neutral text (HIG: the brand colour marks what you can tap).
+  statusText: { ...inkFace('caption'), color: ink.text2 },
   info: { marginBottom: 6, marginRight: inkGutter + 2, width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
   tile: { alignItems: 'center', justifyContent: 'center' },
   way: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 },
