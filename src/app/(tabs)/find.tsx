@@ -291,25 +291,15 @@ export default function FindScreen() {
                 </ScrollView>
               ) : null}
 
-              <Section title={t('find.missTitle')} first={featured.length === 0} />
-              <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
-
+              {/* Order (audit #3): hero, stories, who you miss, the community, who can talk now, folders last. */}
               {/* Story templates by trope (template-library.md): real counts, Say hi or make it yours. */}
-              <StoriesShelf gender={who === 'everyone' ? undefined : who} title={(text) => <Section title={text} />} />
+              <StoriesShelf gender={who === 'everyone' ? undefined : who} title={(text) => <Section title={text} first={featured.length === 0} />} />
+
+              <Section title={t('find.missTitle')} />
+              <MissCard seats={seats} onOpen={openFamily} onAdd={() => setRolesOpen(true)} />
 
               {/* Characters other users shared (0z300); dev and preview builds only for now. */}
               {COMMUNITY_OPEN ? <CommunityShelf title={(text) => <Section title={text} />} /> : null}
-
-              {groups.length > 0 ? (
-                <>
-                  <Section title={t('find.worlds')} count={groups.length} />
-                  <View style={styles.circles}>
-                    {groups.map((g, i) => (
-                      <CircleTile key={g.series} group={g} index={i} width={tileWidth} onOpen={openWorld} />
-                    ))}
-                  </View>
-                </>
-              ) : null}
 
               {callable.length > 0 ? (
                 <>
@@ -334,6 +324,17 @@ export default function FindScreen() {
                       </PressableScale>
                     ))}
                   </ScrollView>
+                </>
+              ) : null}
+
+              {groups.length > 0 ? (
+                <>
+                  <Section title={t('find.worlds')} count={groups.length} />
+                  <View style={styles.circles}>
+                    {groups.map((g, i) => (
+                      <CircleTile key={g.series} group={g} index={i} width={tileWidth} onOpen={openWorld} />
+                    ))}
+                  </View>
                 </>
               ) : null}
             </>

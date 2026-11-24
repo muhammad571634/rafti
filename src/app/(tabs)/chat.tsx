@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurTargetView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter, useScrollToTop } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -593,8 +592,7 @@ function useRowLabel(item: ChatItem, level: number | null, typing: boolean) {
 }
 
 /**
- * A pinned chat as a glowing night friend card (approved Ink+ prototype): soft friend-hue wash,
- * ringed avatar with live green dot & unread count badge, short name, and live mood or typing dots.
+ * A pinned chat as a night friend card (approved Ink+ prototype; neutral since 0z339): ringed avatar with live green dot & unread count badge, short name, and live mood or typing dots.
  */
 function PinnedTile({
   item,
@@ -631,13 +629,7 @@ function PinnedTile({
         accessibilityRole="button"
         accessibilityLabel={label}
         style={styles.pinnedTile}>
-        <LinearGradient
-          colors={[`${accent}34`, `${accent}00`]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.78 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
+        {/* Neutral card; the friend's hue only on the ring (audit #4: red and orange washes read brown on night). */}
         <View style={styles.pinnedFaceWrap}>
           <View style={[styles.pinnedRing, { borderColor: accent }]}>
             {item.kind === 'chat' ? (

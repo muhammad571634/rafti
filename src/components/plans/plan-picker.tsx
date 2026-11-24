@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
@@ -76,7 +76,6 @@ export function PlanPicker({
   onRestore: () => void;
 }) {
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
   const wallet = useAppStore((s) => s.wallet);
   const subscribe = useAppStore((s) => s.subscribe);
 
@@ -113,13 +112,6 @@ export function PlanPicker({
   const basic = PLANS.basic;
   const time = (seconds: number): Cell => (seconds > 0 ? shortTime(t, seconds) : false);
 
-  const tiles: { key: string; value: string; label: string; glyph: CompareRow['glyph'] }[] = [
-    { key: 'calls', value: shortTime(t, pro.callSeconds), label: t('plans.compare.calls'), glyph: { ios: 'phone.fill', icon: 'call' } },
-    { key: 'voice', value: shortTime(t, pro.voiceSeconds), label: t('plans.compare.voice'), glyph: { ios: 'waveform', icon: 'pulse' } },
-    { key: 'photos', value: String(pro.photos), label: t('plans.compare.photos'), glyph: { ios: 'camera.fill', icon: 'camera' } },
-    { key: 'shells', value: count(pro.shells), label: t('plans.compare.shells'), glyph: 'shell' },
-  ];
-
   const rows: CompareRow[] = [
     { key: 'shells', fill: moduleFills.store, glyph: 'shell', basic: count(basic.shells), pro: count(pro.shells) },
     { key: 'calls', fill: moduleFills.calls, glyph: MODULE_GLYPH.calls, basic: time(basic.callSeconds), pro: time(pro.callSeconds) },
@@ -150,9 +142,6 @@ export function PlanPicker({
     { key: 'memory', fill: systemColors.gray, glyph: { ios: 'bookmark.fill', icon: 'bookmark' }, basic: true, pro: true },
   ];
 
-  // Two tiles a row inside the Pro card: the screen less both gutters, the card's padding and the gap.
-  const tileWidth = (width - GUTTER * 4 - space.sm) / 2;
-
   return (
     <>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: BUY_BAR_SPACE }}>
@@ -173,21 +162,7 @@ export function PlanPicker({
               </View>
             ) : null}
           </View>
-          <View style={styles.tiles}>
-            {tiles.map((tile) => (
-              <View key={tile.key} style={[styles.proTile, { width: tileWidth }]} accessible accessibilityLabel={`${tile.value} ${tile.label}`}>
-                <Txt style={styles.proTileValue} lines={1}>
-                  {tile.value}
-                </Txt>
-                <View style={styles.proTileLabel}>
-                  <Glyph glyph={tile.glyph} size={14} />
-                  <Txt style={styles.proTileText} lines={2}>
-                    {tile.label}
-                  </Txt>
-                </View>
-              </View>
-            ))}
-          </View>
+          {/* No figure tiles here: the table below says each number once (audit #18). */}
         </ProGradient>
 
         <View style={styles.card}>
@@ -346,11 +321,6 @@ const styles = StyleSheet.create({
   proTitle: { flex: 1, ...inkFace('title'), color: colors.white },
   freePill: { height: 26, paddingHorizontal: 10, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: colors.white },
   freePillText: { ...inkFace('caption'), color: '#5B3FD9' },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: 14 },
-  proTile: { paddingVertical: 10, paddingHorizontal: 12, gap: 2, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.16)' },
-  proTileValue: { ...inkFace('figureSmall'), color: colors.white },
-  proTileLabel: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  proTileText: { flexShrink: 1, ...inkFace('caption'), color: 'rgba(255,255,255,0.88)' },
   card: {
     marginHorizontal: GUTTER,
     marginTop: 22,

@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z339. UX audit B list, all six (owner: "All of B", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA
+- **#4**: Chats' pinned tiles lose the friend-hue wash (red/orange read brown); hue stays on the ring. `LinearGradient` import gone from `(tabs)/chat.tsx`.
+- **#5**: Gifts' scratch card foil, sheen, satin lines, prize layer and done badge go neutral crystal (white alphas, cool greys); peach rims and peach prize stay. Same literal count (ratchet).
+- **#8**: Bedtime's wake "+" is neutral glass (`inkPeachGlass.flat` + peach rim) with a peach glyph; "Sleep together" is the one filled action.
+- **#18**: Store's Pro hero drops its four figure tiles; the compare table says each number once.
+- **#15**: Profile's long list split into three untitled iOS groups: you (gifts, personas), friends (keeping in mind, world books), app (notifications, language, switches). No new strings.
+- **#3**: Find order: hero, Stories, Who do you miss, community, Talk now, folders last. Community shelf was already a horizontal row (one card = data), unchanged.
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1163/1163.
+- **Still to do**: #2 compact story card (parked by the owner); #9 Dates selected/locked, #10 Today "+N", #14 Calls grouping; portraits (owner).
+
 ### 0z338. UX audit easy batch, A list (owner: "A boshla hozir; #2 qolsin; keyin B", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA; B picks next
 - **#1 Not Delivered**: `serverReply` goes through `retryBusy` (`src/ai/retry-busy.ts`): a 429/5xx or network failure within 15 s gets one more try 8 s later (typing stays on); a timeout, 402 or 4xx does not. `call` now wraps `attemptCall`. The `pay` line keeps the server from counting the line twice. Softer "busy" text not added (the retry hides the first failure; Not Delivered stays as iOS Messages).
 - **#6**: Find hero's opening line 2 → 3 lines (no "…" in long languages). Story card hooks left with #2 (owner parked it).

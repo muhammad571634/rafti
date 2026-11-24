@@ -269,6 +269,9 @@ export default function ProfileScreen() {
       onPress: () => router.push('/gifts'),
     },
     { key: 'personas', label: t('personas.title'), icon: 'people' as IoniconName, fill: FILL.personas, meta: personaName, onPress: () => router.push('/personas') },
+  ];
+  // Three iOS Settings groups (audit #15): you, what your friends keep, the app.
+  const friendRows = [
     {
       key: 'mind',
       label: t('mind.title'),
@@ -285,6 +288,8 @@ export default function ProfileScreen() {
       meta: ownBooks ? String(ownBooks) : undefined,
       onPress: () => router.push('/lore'),
     },
+  ];
+  const appRows = [
     { key: 'notifications', label: t('notifications.title'), icon: 'notifications' as IoniconName, fill: FILL.notifications, onPress: () => router.push('/notifications/settings') },
     ...(canPickLanguage
       ? [{ key: 'language', label: t('profile.language'), icon: 'globe-outline' as IoniconName, fill: FILL.language, meta: currentLocale, onPress: () => router.push('/language') }]
@@ -377,7 +382,19 @@ export default function ProfileScreen() {
         </View>
 
         <Group>
-          {groupA.map(({ key, ...row }) => (
+          {groupA.map(({ key, ...row }, i) => (
+            <LinkRow key={key} {...row} last={i === groupA.length - 1} />
+          ))}
+        </Group>
+
+        <Group>
+          {friendRows.map(({ key, ...row }, i) => (
+            <LinkRow key={key} {...row} last={i === friendRows.length - 1} />
+          ))}
+        </Group>
+
+        <Group>
+          {appRows.map(({ key, ...row }) => (
             <LinkRow key={key} {...row} />
           ))}
           <SwitchRow icon="volume-high" fill={FILL.sound} label={t('profile.messageSound')} value={settings.messageSound} onChange={(v) => setSetting('messageSound', v)} />

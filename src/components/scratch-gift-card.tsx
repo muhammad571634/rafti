@@ -44,7 +44,8 @@ function countdownToMidnight(): string {
 
 /**
  * Warm Satin Foil Scratch Card (approved Variant 1, 2026-11-21): replaces the casino roulette wheel
- * with a calm, tactile Apple-minimalist daily gift card.
+ * with a calm, tactile Apple-minimalist daily gift card. Since 0z339 (audit #5) the foil is neutral
+ * crystal glass with a peach rim and peach prize, as the Store widget: the warm satin read brown.
  *
  * - Real finger scratching via Skia `<Group layer>` + `blendMode="clear"` (60 fps on Galaxy A51).
  * - Server draws the reward (`onDraw` -> `POST /v1/wallet/spin`) on the very first touch or quick open.
@@ -281,7 +282,7 @@ export function ScratchGiftCard({
       <View style={styles.doneCard}>
         <LinearGradient
           pointerEvents="none"
-          colors={['rgba(235,173,132,0.14)', 'rgba(22,22,30,0)']}
+          colors={['rgba(255,255,255,0.07)', 'rgba(22,22,30,0)']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 0.85 }}
           style={StyleSheet.absoluteFill}
@@ -329,7 +330,7 @@ export function ScratchGiftCard({
           accessibilityHint={t('gifts.scratchHint')}>
           {/* Underneath: Hidden Prize Layer */}
           <LinearGradient
-            colors={['rgba(235,173,132,0.20)', '#121219']}
+            colors={['rgba(255,255,255,0.10)', '#121219']}
             start={{ x: 0.5, y: 0.1 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -356,11 +357,11 @@ export function ScratchGiftCard({
                     <Skia.LinearGradient
                       start={Skia.vec(0, 0)}
                       end={Skia.vec(size.w, size.h)}
-                      colors={['#2E2936', '#221F2B', '#2F272D']}
+                      colors={['#2E2E38', '#22222B', '#2C2C36']}
                     />
                   </Skia.RoundedRect>
                   {satinLinesPath ? (
-                    <Skia.Path path={satinLinesPath} style="stroke" strokeWidth={1} color="rgba(235,173,132,0.08)" />
+                    <Skia.Path path={satinLinesPath} style="stroke" strokeWidth={1} color="rgba(255,255,255,0.06)" />
                   ) : null}
                   {pathD ? (
                     <Skia.Path
@@ -383,7 +384,7 @@ export function ScratchGiftCard({
           {/* Soft animated light sheen + centered editorial prompt (fades out the instant user touches) */}
           <Animated.View pointerEvents="none" style={[styles.sheenBar, sheenStyle]}>
             <LinearGradient
-              colors={['rgba(235,173,132,0)', 'rgba(235,173,132,0.16)', 'rgba(235,173,132,0)']}
+              colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.14)', 'rgba(255,255,255,0)']}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={StyleSheet.absoluteFill}
@@ -439,7 +440,7 @@ const styles = StyleSheet.create({
   prizeLayer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   prizeRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   prizeNum: { ...inkFace('numeralSmall'), fontSize: 40, lineHeight: 46, color: ink.accent },
-  webFoil: { backgroundColor: '#26222E', borderRadius: CARD_R },
+  webFoil: { backgroundColor: '#26262F', borderRadius: CARD_R },
   sheenBar: { position: 'absolute', top: 0, bottom: 0, width: 120 },
   foilPrompt: {
     alignItems: 'center',
@@ -467,7 +468,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: 'rgba(235,173,132,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.13)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(235,173,132,0.38)',
     alignItems: 'center',

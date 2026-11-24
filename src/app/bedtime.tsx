@@ -290,7 +290,7 @@ export default function BedtimeScreen() {
                   {t('home.widget.setWake')}
                 </Txt>
                 <View style={styles.plus}>
-                  <Ionicons name="add" size={20} color={ink.onAccent} />
+                  <Ionicons name="add" size={20} color={ink.accent} />
                 </View>
               </PressableScale>
             )}
@@ -466,7 +466,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  plus: { width: 34, height: 34, borderRadius: 17, backgroundColor: ink.accent, alignItems: 'center', justifyContent: 'center' },
+  // Neutral round glass with a peach glyph: "Sleep together" stays the screen's one filled action (audit #8).
+  plus: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: inkPeachGlass.flat,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkPeachGlass.rim,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   dock: {
     position: 'absolute',
     left: 0,
