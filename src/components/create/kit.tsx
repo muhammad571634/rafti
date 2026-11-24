@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: inkPeachGlass.rim,
+    borderColor: inkPeachGlass.lensRim,
   },
   modePill: {
     height: 30,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
-  modeTextOn: { color: inkPeachGlass.textBright },
+  modeTextOn: { color: inkPeachGlass.text },
   card: {
     marginHorizontal: inkGutter,
     marginTop: 14,

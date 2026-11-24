@@ -246,7 +246,7 @@ export default function AlarmEditScreen() {
               {melodyChoice ? (
                 <Face name={t('alarms.melodyOnly')} on={melody} size={melody ? FACE_ON : FACE} onPress={() => pick(undefined)}>
                   <View style={[styles.bell, melody ? styles.bellOn : null]}>
-                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? inkPeachGlass.textBright : night.textSecondary} />
+                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? inkPeachGlass.text : night.textSecondary} />
                   </View>
                 </Face>
               ) : null}
@@ -316,7 +316,7 @@ export default function AlarmEditScreen() {
                   accessibilityState={{ checked: tile.on, disabled: tile.off }}
                   accessibilityLabel={tile.label}
                   style={[styles.tile, tile.on && styles.tileOn, tile.off && styles.tileOff]}>
-                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? inkPeachGlass.textBright : night.textSecondary} />
+                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? inkPeachGlass.text : night.textSecondary} />
                   <Txt style={[styles.tileText, tile.on && styles.tileTextOn]} lines={1} maxFontSizeMultiplier={1.2}>
                     {tile.label}
                   </Txt>
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   tileOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   tileOff: { opacity: 0.4 },
   tileText: { ...inkFace('subStrong'), color: night.textSecondary },
-  tileTextOn: { color: inkPeachGlass.textBright },
+  tileTextOn: { color: inkPeachGlass.text },
   group: {
     marginHorizontal: space.lg,
     borderRadius: radius.sm + 1,

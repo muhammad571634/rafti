@@ -22,8 +22,8 @@ const ITEM_H = BAR - 8;
 /** How far above the bar the content starts to fade. */
 const FADE_ABOVE = 28;
 
-const PEACH_LENS = ['rgba(235,173,132,0.28)', 'rgba(235,173,132,0.13)'] as const;
-const PEACH_LENS_RIM = 'rgba(235,173,132,0.48)';
+const PEACH_LENS = ['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.09)'] as const;
+const PEACH_LENS_RIM = 'rgba(255,255,255,0.24)';
 const BAR_FILL = ['#282832', '#17171E', '#121218'] as const;
 const BAR_STOPS = [0, 0.52, 1] as const;
 

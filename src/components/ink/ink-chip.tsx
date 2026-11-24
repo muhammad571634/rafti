@@ -36,7 +36,7 @@ export function InkChip({ label, on, onPress, hue = ink.accent, count = 0 }: Ink
         styles.chip,
         on && (isPeach ? styles.peachOn : { borderWidth: 1.5, borderColor: hue, backgroundColor: `${hue}1F` }),
       ]}>
-      {on && isPeach ? <LinearGradient colors={inkPeachGlass.fill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
+      {on && isPeach ? <LinearGradient colors={inkPeachGlass.chipFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
       <InkText variant={on ? 'subStrong' : 'sub'} color={on ? hue : ink.text} lines={1}>
         {label}
       </InkText>

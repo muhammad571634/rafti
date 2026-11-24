@@ -137,10 +137,10 @@ export function InkSegmented<T extends string | number>({ options, value, onChan
               accessibilityState={{ selected: on }}
               aria-selected={on}
               style={styles.segment}>
-              {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? inkPeachGlass.textBright : ink.text2} /> : null}
+              {option.locked ? <Ionicons name="lock-closed" size={12} color={on ? inkPeachGlass.text : ink.text2} /> : null}
               <InkText
                 variant={on ? 'subStrong' : 'sub'}
-                color={on ? inkPeachGlass.textBright : ink.text2}
+                color={on ? inkPeachGlass.text : ink.text2}
                 lines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.75}
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: inkPeachGlass.rim,
+    borderColor: inkPeachGlass.lensRim,
   },
   segmentWrap: {
     flex: 1,

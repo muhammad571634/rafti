@@ -1,6 +1,14 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z334. Apple Dark Mode Elevated sheets/modals + WCAG AA contrast + palette polish on 5 legacy screens + second-reader PASS on 0z332/0z333 (owner approved audit #1 + palette-only on the 5 untouched screens, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
+### 0z335. Variant 2 Apple iOS 26 Clear Crystal Liquid Glass + Pure Brand Peach ink (owner approved Variant 2 on `sigmazam-peach-glass-lab.html` to eliminate brownish tint, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
+- **Why**: Low-alpha translucent peach (`0.28 -> 0.13`) over obsidian `#16161D` physically blends into muddy brown (`#53423C`). Per owner's pick of Variant 2 (Apple iOS 26 standard): neutral clear crystal glass lenses paired with 100% pure Sigmazam peach (`#EBAD84`) labels, icons, and chip rims — zero brown shift anywhere.
+- **Tokens (`src/theme/ink.ts`)**:
+  - `inkPeachGlass.fill`: `['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.09)']` (crystal lens), `chipFill`: `['rgba(255,255,255,0.18)', 'rgba(255,255,255,0.07)']`, `lensRim`: `'rgba(255,255,255,0.24)'`, `rim`: `'rgba(235,173,132,0.52)'`, `flat`: `'rgba(255,255,255,0.13)'`.
+  - Tier 1 prominent solid peach CTAs (`ctaFill` / `ctaSolid` / `ctaText`) remain unchanged.
+- **Wired across controls**: Unified 4-tab `TabBar` (`src/app/(tabs)/_layout.tsx`), `InkSegmented` (`src/components/ink/ink-segmented.tsx`), `InkChip` (`src/components/ink/ink-chip.tsx`), Create `ModeSwitch` (`src/components/create/kit.tsx`), plus active crystal tiles in `alarms/edit.tsx` and `gifts.tsx` (all using pure `#EBAD84` peach glyphs/labels on crystal glass; contrast 4.48–7.08:1 on lens, 5.18–7.8:1 on chips).
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm run typecheck:test` 0 errors, `npm test` 1152/1152 pass, `npm run check:locales` PASS, `npm run check:content` PASS.
+
+### 0z334. Apple Dark Mode Elevated sheets/modals + WCAG AA contrast + palette polish on 5 legacy screens + second-reader PASS on 0z332/0z333 (owner approved audit #1 + palette-only on the 5 untouched screens, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA (`63b88961`)
 - **Apple Dark Mode Elevated Depth (`src/theme/ink.ts`, `src/theme/colors.ts`)**:
   - Added semantic elevated surface tokens one perceptual step lighter than base cards (`#09090D` ground → `#16161E` card → `#1F1F2B` elevated sheet/modal → `#2A2A38` inner elevated control, plus `rgba(255,255,255,0.16)` crisp specular rim and deeper `rgba(0,0,0,0.56)` modal scrim).
   - Upgraded `Sheet` (`bottomCard`, `centerCard`, `close`, crisp `0.34` grabber), `CalendarPopover`, `DailyRewardSheet`, `AttachMenu`, `ToneMenu`, and `AlertHost` hairline rim to use the Elevated depth tier.

@@ -311,7 +311,7 @@ export default function GiftsScreen() {
                   accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                   <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
                     {claimed ? (
-                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.textBright} />
+                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.text} />
                     ) : (
                       <Txt style={styles.dayNumber}>{day}</Txt>
                     )}

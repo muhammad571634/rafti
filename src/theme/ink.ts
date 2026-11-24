@@ -199,19 +199,26 @@ export const inkGlass = {
 } as const;
 
 /**
- * Apple HIG 3-Tier Brand Peach System — Variant A (Store Sokin `#EBAD84`, owner approved 2026-11-24):
- * - Tier 1 (Prominent primary CTAs & hero cards): opaque tactile brand peach (`ctaFill` / `ctaSolid`)
- *   with high-contrast espresso ink (`ctaText`, 7.6:1 WCAG AAA).
- * - Tier 2 (Liquid Glass navigation & active controls — Tab Bar, Segmented, filter chips): luminous
- *   translucent peach glass (`fill` + `rim`) with crisp peach/cream labels (`text` / `textBright`).
- * - Tier 3 (Inline tints — `+`, links, wave, sphere, caret): `ink.accent` (`#EBAD84`, 9.9:1 on night).
+ * Apple HIG 3-Tier Brand Peach System — Variant A (`#EBAD84`) + Variant 2 Crystal Glass (owner approved 2026-11-24):
+ * - Tier 1 (Prominent primary CTAs & Store Hero): opaque tactile brand peach (`ctaFill` / `ctaSolid`)
+ *   with high-contrast espresso ink (`ctaText`, 7.9–10.1:1 WCAG AAA).
+ * - Tier 2 (Apple iOS 26 Clear Crystal Liquid Glass — Tab Bar, Segmented, filter chips, active tiles):
+ *   pure neutral white crystal glass (`fill` / `chipFill` / `flat`, zero brown shift on obsidian!) paired
+ *   with crisp crystal specular edge (`lensRim`) or brand peach rim (`rim`) and 100% pure `#EBAD84` peach ink.
+ * - Tier 3 (Inline tints — `+`, links, wave, sphere, caret): `ink.accent` (`#EBAD84`, 10.26:1 on night).
  */
 export const inkPeachGlass = {
-  /** Tier 2 — Liquid Glass navigation & active lenses (Tab Bar, Segmented, filter chips). */
-  fill: ['rgba(235,173,132,0.28)', 'rgba(235,173,132,0.13)'] as readonly [string, string],
-  rim: 'rgba(235,173,132,0.48)',
+  /** Tier 2 — Pure neutral crystal Liquid Glass lens (Tab Bar, Segmented, ModeSwitch; never turns brown on dark). */
+  fill: ['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.09)'] as readonly [string, string],
+  /** Tier 2 — Slightly lighter crystal glass fill for filter chips (`InkChip`). */
+  chipFill: ['rgba(255,255,255,0.18)', 'rgba(255,255,255,0.07)'] as readonly [string, string],
+  /** Specular crystal edge on neutral lenses (Tab Bar, Segmented Control, ModeSwitch). */
+  lensRim: 'rgba(255,255,255,0.24)',
+  /** Pure brand peach rim for active filter chips, glass tiles, and pills. */
+  rim: 'rgba(235,173,132,0.52)',
+  /** Pure Sigmazam brand peach (`#EBAD84`) text & icon on crystal glass (7.4:1 contrast). */
   text: palette.apricotCalm,
-  /** Luminous cream-peach label/glyph on dark glass surfaces (active segments, thinking, Morph Island). */
+  /** Luminous cream-peach label/glyph on dark tracks (Morph Island, TypingRow, played voice wave). */
   textBright: '#FFF3EA',
   /** Tier 1 — Prominent primary CTAs ("Say hi", "Message", "Send", "Create", "Buy"): opaque brand peach. */
   ctaFill: ['#F0BA95', '#E39E72'] as readonly [string, string],
@@ -222,6 +229,6 @@ export const inkPeachGlass = {
   trackFill: ['#252530', '#16161D', '#111117'] as readonly [string, string, string],
   trackStops: [0, 0.56, 1] as readonly [number, number, number],
   trackRim: 'rgba(255,255,255,0.13)',
-  /** Tier 2 flat glass tint when a gradient layer isn't used (active dark glass chips, tiles). */
-  flat: 'rgba(235,173,132,0.20)',
+  /** Tier 2 flat neutral crystal glass tint when a gradient layer isn't used (active chips, tiles, pills). */
+  flat: 'rgba(255,255,255,0.13)',
 } as const;
