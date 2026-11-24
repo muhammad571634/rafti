@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useOnPhoto } from '@/components/chat/chat-ground';
 import { IconButton, PressableScale, Txt } from '@/components/ui';
 import { colors, fonts, hitSlop, space, systemColors } from '@/theme';
+import { SOLID_GLASS, useReduceTransparency } from '@/theme/a11y';
 import { ink, inkRadius } from '@/theme/ink';
 
 /** Room the header takes under the status bar: one row of round glass buttons and the face. */
@@ -72,7 +73,9 @@ export function ChatHeader({
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const onPhoto = useOnPhoto();
-  const round = [styles.round, onPhoto && styles.photoRound];
+  // Reduce Transparency (iOS): the glass over the chat's photo turns solid, as `PhotoGlassPill` does.
+  const solid = useReduceTransparency();
+  const round = [styles.round, onPhoto && styles.photoRound, onPhoto && solid && styles.solid];
   const fg = onPhoto ? colors.onMedia : ink.text;
 
   return (
@@ -149,6 +152,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.photoGlassRim,
   },
+  solid: { backgroundColor: SOLID_GLASS },
   backGlyph: { marginLeft: -2 },
   identity: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm + 2 },
   avatarRing: { padding: 1.5, borderWidth: 1.5, borderRadius: inkRadius.pill },

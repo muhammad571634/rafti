@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z341. Reduce Transparency on the chat header and profile hero (0z336 leftover; owner: "next", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + OTA
+- `chat-header.tsx` (round buttons on a chat photo) and `profile-hero.tsx` (back button, Voice and AI pills) turn `SOLID_GLASS` while iOS Reduce Transparency is on (`useReduceTransparency`), as `PhotoGlassPill` does. Android has no such setting: no change there, so not checkable on the A51.
+- **Checked**: tsc 0, `npm test` 1166/1166.
+- **Owner, one deploy for all pending server work** (0z326 quiz lines, 0z333 broken-JSON guard, 0z319 shell odds): `$env:FLY_NO_UPDATE_CHECK='1'; & "C:\Users\joray\.fly\bin-prev\flyctl.exe" deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false --remote-only`
+- **Still to do**: lower the colour-literal baseline file by file; #2 compact story card (parked); portraits (owner).
+
 ### 0z340. UX audit #9, #10, #14 (owner: "ha boshla uchalasini qil", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA
 - **#9 Dates** (`src/app/dating.tsx`): picked tile gets a 2 pt peach rim and a peach check (was a white rim and a dot); locked tiles at 0.5 with the lock and "Lv N" in bodyStrong in the meta row (lock moved off the top corner).
 - **#10 Today**: "All chats" shows a plain grey tabular count before the chevron (iOS Mail), no red "+N"; the Chats tab badge keeps the red count. No new strings.

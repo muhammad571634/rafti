@@ -11,6 +11,7 @@ import { portraitPosition } from '@/components/chat/chat-ground';
 import { InkText } from '@/components/ink';
 import { CharacterAvatar, characterImage, PressableScale } from '@/components/ui';
 import { friendAccent, friendColor, hitSlop, systemColors } from '@/theme';
+import { SOLID_GLASS, useReduceTransparency } from '@/theme/a11y';
 import { ink, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
@@ -36,6 +37,8 @@ export function ProfileHero({ character, name, eyebrow, tagline, voiceReady, top
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [broken, setBroken] = useState(false);
+  // Reduce Transparency (iOS): the back button and pills over the photo turn solid.
+  const solid = useReduceTransparency();
 
   const accent = friendAccent(character.id);
   const hue = friendColor(character.id);
@@ -82,20 +85,20 @@ export function ProfileHero({ character, name, eyebrow, tagline, voiceReady, top
           hitSlop={hitSlop}
           accessibilityRole="button"
           accessibilityLabel={t('a11y.back')}
-          style={styles.backBtn}>
+          style={[styles.backBtn, solid && styles.solid]}>
           <Ionicons name="chevron-back" size={22} color={ink.text} style={styles.backGlyph} />
         </PressableScale>
 
         <View style={styles.badges}>
           {voiceReady ? (
-            <View style={styles.pill} accessibilityLabel={t('find.voiceReady')}>
+            <View style={[styles.pill, solid && styles.solid]} accessibilityLabel={t('find.voiceReady')}>
               <View style={styles.liveDot} />
               <InkText variant="caption" color={ink.text} lines={1}>
                 {t('find.voiceReady')}
               </InkText>
             </View>
           ) : null}
-          <View style={styles.pill} accessibilityLabel={t('safety.ai')}>
+          <View style={[styles.pill, solid && styles.solid]} accessibilityLabel={t('safety.ai')}>
             <InkText variant="caption" color={ink.text} lines={1}>
               {t('safety.ai')}
             </InkText>
@@ -144,6 +147,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.photoGlassRim,
   },
+  solid: { backgroundColor: SOLID_GLASS },
   backGlyph: { marginLeft: -2 },
   badges: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 },
   pill: {
