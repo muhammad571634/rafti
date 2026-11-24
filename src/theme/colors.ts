@@ -211,7 +211,7 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   accentSoft: '#163F3A',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
-  bubbleSelf: '#56392F',
+  bubbleSelf: '#5C3A28',
   bubbleSelfText: '#FFFFFF',
   bubbleOther: '#262628',
   bubbleOtherRim: 'rgba(255,255,255,0.06)',
@@ -257,7 +257,7 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   accentSoft: '#163F3A',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
-  bubbleSelf: '#56392F',
+  bubbleSelf: '#5C3A28',
   bubbleSelfText: '#FFFFFF',
   bubbleOther: '#1A1A22',
   bubbleOtherRim: 'rgba(255,255,255,0.06)',
@@ -595,8 +595,8 @@ export const signature = {
   radio: look(systemColors.purple, isDark ? '#DA8FFF' : '#8944AB', isDark ? ['#B05CF0', '#6A2BB0'] : ['#C77DFF', '#8E3FD6']),
   board: look(systemColors.cyan, isDark ? '#70D7FF' : '#0071A4', isDark ? ['#4FC3F7', '#1A6FA0'] : ['#5AC8FA', '#1E9BD7']),
   photo: look(systemColors.blue, isDark ? '#409CFF' : '#0062CC', isDark ? ['#3D8BFF', '#1550B8'] : ['#4FA3FF', '#0A6CFF']),
-  // Flat calm peach at night (owner 2026-11-18: the gradient was the brightest peach left on screen).
-  shells: { hero: isDark ? ([palette.apricotCalm, palette.apricotCalm] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#3A1A06' },
+  // Tier 1 Store Sokin brand peach (Variant A, owner 2026-11-24): matches primary CTAs across the app.
+  shells: { hero: isDark ? (['#F0BA95', '#E39E72'] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#2B1305' },
 };
 
 /**

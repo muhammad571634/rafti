@@ -311,7 +311,7 @@ export default function GiftsScreen() {
                   accessibilityLabel={`${isToday ? t('common.today') : t('gifts.day', { count: day })}, ${worth}`}>
                   <View style={[styles.dayDot, claimed ? styles.dayClaimed : next && styles.dayNext]}>
                     {claimed ? (
-                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.ctaText} />
+                      <Ionicons name="checkmark" size={16} color={inkPeachGlass.textBright} />
                     ) : (
                       <Txt style={styles.dayNumber}>{day}</Txt>
                     )}
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayClaimed: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
+  dayClaimed: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   dayNext: { backgroundColor: 'rgba(235,173,132,0.22)', borderWidth: 1.5, borderColor: ink.accent },
   dayNumber: { ...inkFace('caption'), color: ink.text },
   dayAmount: { ...inkFace('caption'), fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.58)', fontVariant: ['tabular-nums'] },

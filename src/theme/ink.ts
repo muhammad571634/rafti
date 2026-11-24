@@ -52,7 +52,7 @@ export const ink = {
   onPill: '#000000',
   /** The user's side and money: the brand's peach, the calm night tone (no glare). */
   accent: palette.apricotCalm,
-  onAccent: '#3A1A06',
+  onAccent: '#2B1305',
   danger: '#FF453A',
   unread: '#0A84FF',
 } as const;
@@ -193,23 +193,29 @@ export const inkGlass = {
 } as const;
 
 /**
- * Liquid Peach Glass (approved prototype `find-liquid-peach-prototype.html`, 2026-11-22):
- * Matches the Android Liquid Glass tab bar's active peach lens for segments, filter chips,
- * and primary CTAs across the app (`+` icon buttons stay in their existing style per owner).
+ * Apple HIG 3-Tier Brand Peach System — Variant A (Store Sokin `#EBAD84`, owner approved 2026-11-24):
+ * - Tier 1 (Prominent primary CTAs & hero cards): opaque tactile brand peach (`ctaFill` / `ctaSolid`)
+ *   with high-contrast espresso ink (`ctaText`, 7.6:1 WCAG AAA).
+ * - Tier 2 (Liquid Glass navigation & active controls — Tab Bar, Segmented, filter chips): luminous
+ *   translucent peach glass (`fill` + `rim`) with crisp peach/cream labels (`text` / `textBright`).
+ * - Tier 3 (Inline tints — `+`, links, wave, sphere, caret): `ink.accent` (`#EBAD84`, 9.9:1 on night).
  */
 export const inkPeachGlass = {
-  /** Segments, filter chips, active lenses (matches Tab Bar `PEACH_LENS`). */
-  fill: ['rgba(235,173,132,0.23)', 'rgba(235,173,132,0.10)'] as readonly [string, string],
-  rim: 'rgba(235,173,132,0.40)',
+  /** Tier 2 — Liquid Glass navigation & active lenses (Tab Bar, Segmented, filter chips). */
+  fill: ['rgba(235,173,132,0.28)', 'rgba(235,173,132,0.13)'] as readonly [string, string],
+  rim: 'rgba(235,173,132,0.48)',
   text: palette.apricotCalm,
-  /** Primary CTAs ("Seç", "Create", "Continue"): slightly brighter luminous peach glass. */
-  ctaFill: ['rgba(235,173,132,0.34)', 'rgba(235,173,132,0.15)'] as readonly [string, string],
-  ctaRim: 'rgba(235,173,132,0.54)',
-  ctaText: '#FCE2CE',
-  /** Dark capsule track behind a segmented control. */
+  /** Luminous cream-peach label/glyph on dark glass surfaces (active segments, thinking, Morph Island). */
+  textBright: '#FFF3EA',
+  /** Tier 1 — Prominent primary CTAs ("Say hi", "Message", "Send", "Create", "Buy"): opaque brand peach. */
+  ctaFill: ['#F0BA95', '#E39E72'] as readonly [string, string],
+  ctaSolid: palette.apricotCalm,
+  ctaRim: 'rgba(255,228,206,0.36)',
+  ctaText: '#2B1305',
+  /** Dark capsule track behind a segmented control or Morph Island. */
   trackFill: ['#252530', '#16161D', '#111117'] as readonly [string, string, string],
   trackStops: [0, 0.56, 1] as readonly [number, number, number],
   trackRim: 'rgba(255,255,255,0.13)',
-  /** Flat tint when a gradient layer isn't used. */
-  flat: 'rgba(235,173,132,0.18)',
+  /** Tier 2 flat glass tint when a gradient layer isn't used (active dark glass chips, tiles). */
+  flat: 'rgba(235,173,132,0.20)',
 } as const;

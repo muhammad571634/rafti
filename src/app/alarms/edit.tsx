@@ -246,7 +246,7 @@ export default function AlarmEditScreen() {
               {melodyChoice ? (
                 <Face name={t('alarms.melodyOnly')} on={melody} size={melody ? FACE_ON : FACE} onPress={() => pick(undefined)}>
                   <View style={[styles.bell, melody ? styles.bellOn : null]}>
-                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? inkPeachGlass.ctaText : night.textSecondary} />
+                    <Ionicons name="musical-notes" size={melody ? 34 : 24} color={melody ? inkPeachGlass.textBright : night.textSecondary} />
                   </View>
                 </Face>
               ) : null}
@@ -316,7 +316,7 @@ export default function AlarmEditScreen() {
                   accessibilityState={{ checked: tile.on, disabled: tile.off }}
                   accessibilityLabel={tile.label}
                   style={[styles.tile, tile.on && styles.tileOn, tile.off && styles.tileOff]}>
-                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? inkPeachGlass.ctaText : night.textSecondary} />
+                  <Ionicons name={tile.on ? tile.icon : (`${tile.icon}-outline` as typeof tile.icon)} size={26} color={tile.on ? inkPeachGlass.textBright : night.textSecondary} />
                   <Txt style={[styles.tileText, tile.on && styles.tileTextOn]} lines={1} maxFontSizeMultiplier={1.2}>
                     {tile.label}
                   </Txt>
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
   groupTitle: { marginHorizontal: space.lg + space.lg, marginBottom: -space.sm, letterSpacing: 0.4 },
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
   bell: { width: FACE, height: FACE, borderRadius: inkRadius.pill, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
-  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
+  bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   tileOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   tileOff: { opacity: 0.4 },
   tileText: { ...inkFace('subStrong'), color: night.textSecondary },
-  tileTextOn: { color: inkPeachGlass.ctaText },
+  tileTextOn: { color: inkPeachGlass.textBright },
   group: {
     marginHorizontal: space.lg,
     borderRadius: radius.sm + 1,

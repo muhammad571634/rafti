@@ -1000,7 +1000,7 @@ const styles = StyleSheet.create({
   action: { fontStyle: 'italic' },
   actionTheirs: { color: ink.text2 },
   actionMine: { color: colors.bubbleSelfText, opacity: 0.8 },
-  bubbleMine: { backgroundColor: colors.bubbleSelf },
+  bubbleMine: { backgroundColor: colors.bubbleSelf, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(235,173,132,0.34)' },
   // White on the cream with a faint rim, so it holds on a white or light wallpaper too.
   bubbleTheirs: { backgroundColor: colors.bubbleOther, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.bubbleOtherRim },
   // A run's last bubble points down at its sender's side.

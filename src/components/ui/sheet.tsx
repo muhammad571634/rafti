@@ -289,7 +289,7 @@ const sheet = themed(({ colors }) =>
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: inkPeachGlass.flat,
+      backgroundColor: inkPeachGlass.ctaSolid,
       borderWidth: 1,
       borderColor: inkPeachGlass.ctaRim,
       alignItems: 'center',

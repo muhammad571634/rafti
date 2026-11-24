@@ -681,7 +681,7 @@ const sheet = themed(({ colors, ground: systemGround, systemColors }) =>
     roundSpace: { width: ROUND },
     pill: { paddingHorizontal: 16 },
     pillText: { ...inkFace('subStrong'), color: systemGround.label },
-    pillPeach: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
+    pillPeach: { backgroundColor: inkPeachGlass.ctaSolid, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
     backGlyph: { marginLeft: -2 },
     bigTitle: { flex: 1, minWidth: 0, ...inkFace('title'), color: systemGround.label },
     topTitle: { flex: 1, textAlign: 'center', ...inkFace('bodyStrong'), color: systemGround.label },

@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 22,
     justifyContent: 'center',
-    backgroundColor: inkPeachGlass.flat,
+    backgroundColor: inkPeachGlass.ctaSolid,
     borderWidth: 1,
     borderColor: inkPeachGlass.ctaRim,
   },

@@ -1,6 +1,17 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
-### 0z330. Four Apple-style motion upgrades (owner approved #1, #2, #4, #5 on `sigmazam-motion-prototype.html`; #3 kept as-is, #6/#7 deferred, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
+### 0z331. Apple HIG 3-Tier Brand Peach System — Variant A (Store Sokin `#EBAD84`, owner approved on `sigmazam-brand-color-study.html`, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
+- **Why**: Owner noticed the Store → Shells screen clearly carried Sigmazam's brand peach while the rest of the app looked washed out/brownish after `0z328`/`0z329` made primary CTAs translucent (`0.34 -> 0.15` over dark). Per Apple HIG (Color, Dark Mode, Liquid Glass): Liquid Glass stays on navigation/control layers while primary prominent CTAs use full opaque accent fills.
+- **Tokens (`src/theme/ink.ts`, `src/theme/colors.ts`)**:
+  - **Tier 1 (Prominent primary CTAs & Store Hero)**: `inkPeachGlass.ctaFill: ['#F0BA95', '#E39E72']`, `ctaSolid: '#EBAD84'`, `ctaRim: 'rgba(255,228,206,0.36)'`, `ctaText: '#2B1305'` (7.6:1 WCAG AAA contrast); aligned `ink.onAccent` and `signature.shells` to match identically.
+  - **Tier 2 (Liquid Glass navigation & active controls)**: `inkPeachGlass.fill: ['rgba(235,173,132,0.28)', 'rgba(235,173,132,0.13)']`, `rim: 'rgba(235,173,132,0.48)'`, `flat: 'rgba(235,173,132,0.20)'`, added `textBright: '#FFF3EA'` for luminous labels/glyphs on dark glass.
+  - **Tier 3 (Inline tints & user side)**: `ink.accent` (`#EBAD84`), warmed `nightColors.bubbleSelf` to `'#5C3A28'` with a subtle `rgba(235,173,132,0.34)` hairline rim on `bubbleMine`.
+- **Full-app contrast & tier alignment (17 consumer files)**:
+  - Prominent Tier 1 opaque peach backing (`ctaSolid`) wired into Today `Done`, Onboarding `MorphPill`, `Sheet` Done checkmark, `character/kit` `pillPeach`, `ChatInput` edit/stop circles, `CalendarPopover`, and `BirthdaySheet`, plus fixed `PlanCalendar` selected weekday text to `ctaText`.
+  - Dark Liquid Glass Tier 2 consumers (`InkSegmented`, `ModeSwitch`, `Tab Bar`, `MorphIsland`, `TypingRow`, `LiveVoiceWave` played bars, `alarms/edit` tiles/bell, `gifts` claimed checkmarks) switched to `textBright` / updated glass opacity (`0.28 -> 0.13`, `0.48` rim) so zero dark-on-dark labels exist anywhere.
+- **Checked**: Automated contrast audit (0 potential dark-on-dark issues across `src/`), `npx tsc --noEmit` 0 errors, `npm run typecheck:test` 0 errors, `npm test` 1142/1142 pass, `npm run check:locales` PASS, `npm run check:content` PASS.
+
+### 0z330. Four Apple-style motion upgrades (owner approved #1, #2, #4, #5 on `sigmazam-motion-prototype.html`; #3 kept as-is, #6/#7 deferred, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA (`3e700315`)
 - **#1 Liquid Spring Segmented Controls (`src/components/ink/ink-segmented.tsx`, `src/components/create/kit.tsx`)**: Replaced static active segment background with a single floating Liquid Peach Glass lens driven by asymmetric Reanimated springs (leading edge `620/36`, trailing edge `190/19`) so the lens physically stretches in the direction of travel across Find, Memories, Moments, Photo Booth, Radio, Store, and Create (`ModeSwitch`). Respects Reduce Motion and `value === undefined` (`noSegment`).
 - **#2 Live Voice Waveform + Pre-Send Review (`src/components/chat/live-voice-wave.tsx`, `use-voice-note.ts`, `voice-player.ts`, `chat-input.tsx`)**:
   - Hands-free recording (mic tap or slide-up lock) now shows a pulsing record dot + 28-bar live scrolling peach waveform driven by real microphone dB metering (70ms visual poll; silence gate still calibrated on ~210ms cadence) and a Stop (`■`) button that transitions into a new `'review'` phase instead of immediately uploading.

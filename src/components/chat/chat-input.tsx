@@ -323,7 +323,7 @@ export function ChatInput({
                   icon="checkmark"
                   size={23}
                   color={hasText ? inkPeachGlass.ctaText : colors.textFaint}
-                  background={hasText ? inkPeachGlass.flat : colors.surfaceAlt}
+                  background={hasText ? inkPeachGlass.ctaSolid : colors.surfaceAlt}
                   haptic={hasText}
                   accessibilityLabel={t('chat.saveEdit')}
                   onPress={() => submit()}
@@ -335,7 +335,7 @@ export function ChatInput({
                   icon="stop"
                   size={16}
                   color={inkPeachGlass.ctaText}
-                  background={inkPeachGlass.flat}
+                  background={inkPeachGlass.ctaSolid}
                   accessibilityLabel={t('a11y.stopReply')}
                   onPress={onStop}
                   style={[styles.action, styles.sendRim]}

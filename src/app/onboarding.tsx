@@ -528,7 +528,7 @@ function MorphPill({ label, disabled, onPress, leaving, bottomShift, quiet }: { 
     right: interpolate(m.get(), [0, 1], [0, space.md - inkGutter]),
     top: interpolate(m.get(), [0, 1], [0, 2 + bottomShift]),
     bottom: interpolate(m.get(), [0, 1], [0, -bottomShift]),
-    backgroundColor: interpolateColor(m.get(), [0, 1], ['rgba(235,173,132,0.26)', field]),
+    backgroundColor: interpolateColor(m.get(), [0, 1], [inkPeachGlass.ctaSolid, field]),
     borderWidth: 1,
     borderColor: interpolateColor(m.get(), [0, 1], [inkPeachGlass.ctaRim, 'rgba(235,173,132,0)']),
   }));

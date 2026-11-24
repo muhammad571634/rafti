@@ -177,7 +177,7 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
                       {selected ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
                       <InkText
                         variant="caption"
-                        color={selected ? inkPeachGlass.text : ink.text3}
+                        color={selected ? inkPeachGlass.ctaText : ink.text3}
                         style={[styles.weekday, selected && styles.weekDayOn]}>
                         {weekdays[i % weekdays.length]}
                       </InkText>

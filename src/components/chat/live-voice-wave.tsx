@@ -34,7 +34,7 @@ export const LiveVoiceWave = memo(function LiveVoiceWave({ bars, progress }: Liv
             ? 1
             : 0.34
           : 0.32 + (idx / Math.max(1, count - 1)) * 0.68;
-        const backgroundColor = isReview && idx <= playedUntil && progress > 0 ? inkPeachGlass.ctaText : ink.accent;
+        const backgroundColor = isReview && idx <= playedUntil && progress > 0 ? inkPeachGlass.textBright : ink.accent;
         return <View key={idx} style={[styles.bar, { height, opacity, backgroundColor }]} />;
       })}
     </View>

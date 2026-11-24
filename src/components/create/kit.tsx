@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
-  modeTextOn: { color: inkPeachGlass.text },
+  modeTextOn: { color: inkPeachGlass.textBright },
   card: {
     marginHorizontal: inkGutter,
     marginTop: 14,

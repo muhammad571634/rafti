@@ -30,7 +30,7 @@ export function TypingRow({ characters, label, accentColor }: { characters: Char
   const bubble = (
     <View style={[styles.bubble, onPhoto && styles.photoBubble]}>
       <ThinkingSphere size={22} color={sphereColor} />
-      <Txt variant="smallStrong" color={accentColor ?? inkPeachGlass.ctaText} style={styles.thinkingText} lines={1}>
+      <Txt variant="smallStrong" color={accentColor ?? inkPeachGlass.textBright} style={styles.thinkingText} lines={1}>
         {thinkingText}
       </Txt>
     </View>

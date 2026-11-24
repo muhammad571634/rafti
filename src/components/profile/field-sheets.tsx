@@ -267,5 +267,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dayOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
+  dayOn: { backgroundColor: inkPeachGlass.ctaSolid, borderWidth: 1, borderColor: inkPeachGlass.ctaRim },
 });

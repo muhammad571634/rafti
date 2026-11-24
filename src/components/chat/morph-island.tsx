@@ -118,7 +118,7 @@ export function MorphIsland({ state, top }: MorphIslandProps) {
       {shown.kind === 'thinking' ? (
         <View style={styles.rowCenter}>
           <ThinkingSphere size={18} color={shown.accent ?? ink.accent} />
-          <Txt variant="caption" color={inkPeachGlass.ctaText} style={styles.label} lines={1}>
+          <Txt variant="caption" color={inkPeachGlass.textBright} style={styles.label} lines={1}>
             {shown.label}
           </Txt>
         </View>
@@ -128,7 +128,7 @@ export function MorphIsland({ state, top }: MorphIslandProps) {
             <Ionicons name="sparkles" size={15} color={ink.accent} />
           </View>
           <View style={styles.memoryText}>
-            <Txt variant="caption" color={inkPeachGlass.ctaText} style={styles.memoryTitle} lines={1}>
+            <Txt variant="caption" color={inkPeachGlass.textBright} style={styles.memoryTitle} lines={1}>
               {shown.title}
             </Txt>
             <Txt variant="caption" color={ink.text2} style={styles.memorySub} lines={1}>
@@ -139,14 +139,14 @@ export function MorphIsland({ state, top }: MorphIslandProps) {
       ) : shown.kind === 'pin' ? (
         <View style={styles.rowCenter}>
           <Ionicons name="pin" size={14} color={ink.accent} />
-          <Txt variant="caption" color={inkPeachGlass.ctaText} style={styles.label} lines={1}>
+          <Txt variant="caption" color={inkPeachGlass.textBright} style={styles.label} lines={1}>
             {shown.text}
           </Txt>
         </View>
       ) : (
         <View style={styles.rowCenter}>
           <Ionicons name="arrow-up-circle" size={15} color={ink.accent} />
-          <Txt variant="caption" color={inkPeachGlass.ctaText} style={styles.label} lines={1}>
+          <Txt variant="caption" color={inkPeachGlass.textBright} style={styles.label} lines={1}>
             {shown.label}
           </Txt>
         </View>
