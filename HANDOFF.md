@@ -5,6 +5,8 @@
 - **Fixed in one batch**: disabled peach buttons were peach at 40% (brown): now Apple fill + tertiary text (`PillButton`, `Button`); `inkTints[2]` sun → slate (Find's Stories folder, Today's note tile, date cards read brown); edit-profile birthday gift tile pink; earlier today: daily check-in pink, quote in your bubble 0.85.
 - **Audit**: `docs/ux-audit-2026-11-24.md`: 18 items, P0 = Not Delivered on the free key (retry once), empty letter story cards (compact card until portraits), Find too long; owner picks needed for 3, 4, 5, 8, 15, 18.
 - **Checked**: tsc 0, `npm test` 1153/1153.
+- **Seen on the A51** after OTA `a9bd7504`: Create group grey, birthday pink, Find's Stories folder slate.
+- **Still to do (owner stopped here, new session next)**: easy audit fixes without design change, one batch and one OTA: #1 retry once before Not Delivered + softer busy text, #2 compact story card until portraits, #6 short tagline on cards, #7 Alarms empty state, #12 group story names localised, #16, #17. Owner's yes needed for #3 Find order, #4 pinned cards neutral, #5 scratch card glass, #8 Bedtime +, #15 Profile sections, #18 Store. Portraits: owner.
 
 ### 0z336. Colour fix by the HIG audit: one peach, neutral ladder, red count badges (owner: "one brand colour, the rest by Apple's rules" → audit → "Yes, start", 2026-11-24, Claude 1, Opus 5.5). DONE, pushed (`1e87e662`), preview OTA `2539351b` (runtime 1.3.0)
 - **Audit**: `docs/color-audit-2026-11-24.md` (HIG Color, Dark Mode, Accessibility read today; scan of 273 files; A51 screenshots). Fixed items 1-4, 7-8.
