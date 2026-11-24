@@ -3,9 +3,9 @@
 ### 0z340. UX audit #9, #10, #14 (owner: "ha boshla uchalasini qil", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA
 - **#9 Dates** (`src/app/dating.tsx`): picked tile gets a 2 pt peach rim and a peach check (was a white rim and a dot); locked tiles at 0.5 with the lock and "Lv N" in bodyStrong in the meta row (lock moved off the top corner).
 - **#10 Today**: "All chats" shows a plain grey tabular count before the chevron (iOS Mail), no red "+N"; the Chats tab badge keeps the red count. No new strings.
-- **#14 Calls** (`src/app/call-history.tsx`, `src/lib/call-runs.ts` + tests): back-to-back calls with one friend of one kind fold into one row "Milo (3)" (iOS Recents); tap opens its calls inline (time + length each), the face opens the profile, long press deletes the whole run; missed stays red.
+- **#14 Calls** (`src/app/call-history.tsx`, `src/lib/call-runs.ts` + tests): back-to-back calls with one friend of one kind fold into one row "Milo (3)" (iOS Recents); tap opens its calls inline (day, hour + length each), the face opens the profile, long press deletes the whole run; missed stays red.
 - **Process**: appllama design skill loaded first (owner: use skills unasked).
-- **Checked**: tsc 0, typecheck:test 0, `npm test` 1166/1166.
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1166/1166. **Seen on the A51** (Russian): Today grey "3", Calls "Milo (2)" opens and closes (double tap stable), Dates picked peach check, locked tile picked = grey rim + disabled "reach level 10".
 - **Still to do**: #2 compact story card (parked); portraits (owner).
 
 ### 0z339. UX audit B list, all six (owner: "All of B", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA

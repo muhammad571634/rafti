@@ -244,7 +244,8 @@ function CallRow({
         <View style={styles.runList}>
           {run.map((c) => (
             <View key={c.id} style={styles.runRow}>
-              <Txt style={styles.runWhen}>{stamp(c)}</Txt>
+              {/* An earlier day's call also says its hour, so two calls on one day read apart. */}
+              <Txt style={styles.runWhen}>{stamp(c) === clockTime(c.startedAt) ? stamp(c) : `${stamp(c)}, ${clockTime(c.startedAt)}`}</Txt>
               <Txt style={styles.metaText}>{c.missed ? t('call.missed') : length(c)}</Txt>
             </View>
           ))}
