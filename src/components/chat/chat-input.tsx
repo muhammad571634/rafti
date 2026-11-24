@@ -4,21 +4,31 @@ import { PaperPlaneTiltIcon } from 'phosphor-react-native/src/icons/PaperPlaneTi
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
-import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  ZoomIn,
+  ZoomOut,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Anim, IconButton, PressableScale, Txt } from '@/components/ui';
+import { IconButton, PressableScale, Txt } from '@/components/ui';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { hasKeyboardController } from '@/lib/keyboard-native';
 import { duration as fmtDuration } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useFreeGone, useLeftNote } from '@/lib/use-free-messages';
 import { bottomRoom, colors, playful, radius, shadows, space, systemColors } from '@/theme';
-import { inkPeachGlass } from '@/theme/ink';
+import { ink as inkTokens, inkPeachGlass } from '@/theme/ink';
 import type { MessageTone, ReplyTo } from '@/types';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
 import { HoldMic } from './hold-mic';
+import { LiveVoiceWave } from './live-voice-wave';
 import { ReplyBar } from './reply-quote';
 import { useKeptDraft } from './use-kept-draft';
 import { useToneTip } from './use-tone-tip';
@@ -174,6 +184,7 @@ export function ChatInput({
   const toneTip = useToneTip(hasText && !editing && !!onHoldSend);
   const voice = useVoiceNote(draftId, (note) => onVoiceNote?.(note), canRecord);
   const recording = voice.phase === 'recording';
+  const reviewing = voice.phase === 'review';
   const voiceBusy = voice.phase !== 'idle';
   /** Recording without a finger on the mic: started with a tap, or a hold slid up to the lock. */
   const [handsFree, setHandsFree] = useState(false);
@@ -234,11 +245,11 @@ export function ChatInput({
   }
 
   const leftButton =
-    handsFree && recording ? (
-      // Recording hands free: the trash takes the "+" place and drops what was said.
+    (handsFree && recording) || reviewing ? (
+      // Recording hands free or reviewing: trash takes the "+" place and drops the clip.
       <PressableScale
         scaleTo={0.9}
-        onPress={() => voice.finish(false)}
+        onPress={() => (reviewing ? voice.discard() : voice.finish(false))}
         accessibilityRole="button"
         accessibilityLabel={t('common.delete')}
         style={[...surface, styles.plus]}>
@@ -372,25 +383,26 @@ export function ChatInput({
 
           {/* Over the empty field while a voice message is made; a hold leaves the mic under the finger uncovered. */}
           {voiceBusy || voice.notice ? (
-            <View style={[styles.voiceRow, onPhoto && styles.photoVoiceRow, handsFree && recording && styles.voiceRowFull]}>
+            <View style={[styles.voiceRow, onPhoto && styles.photoVoiceRow, ((handsFree && recording) || reviewing) && styles.voiceRowFull]}>
               {recording ? (
                 <>
-                  <View style={styles.recDot} />
+                  <PulsingRecDot />
                   <Txt style={[styles.voiceClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
                   {handsFree ? (
                     <>
-                      <View style={styles.voiceWave}>
-                        <Anim name="voiceWave" size={40} tint={systemColors.red} />
-                      </View>
+                      <LiveVoiceWave bars={voice.liveBars} />
                       <PressableScale
-                        onPress={() => voice.finish(true)}
+                        onPress={() => {
+                          haptic.selection();
+                          voice.review();
+                        }}
                         hitSlop={8}
                         scaleTo={0.88}
-                        haptic
-                        accessibilityLabel={t('a11y.send')}
-                        style={[styles.action, styles.send]}>
+                        accessibilityRole="button"
+                        accessibilityLabel={t('bedtime.stop')}
+                        style={[styles.action, styles.send, styles.voiceEndAction]}>
                         <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
-                        <PaperPlaneTiltIcon size={25} weight="bold" color={inkPeachGlass.ctaText} style={styles.plane} />
+                        <View style={styles.stopSquare} />
                       </PressableScale>
                     </>
                   ) : (
@@ -398,6 +410,39 @@ export function ChatInput({
                       {t('chat.voice.slideCancel')}
                     </Txt>
                   )}
+                </>
+              ) : reviewing ? (
+                <>
+                  <PressableScale
+                    onPress={() => {
+                      haptic.selection();
+                      voice.toggleReviewPlay();
+                    }}
+                    hitSlop={6}
+                    scaleTo={0.9}
+                    accessibilityRole="button"
+                    accessibilityLabel={voice.reviewPlaying ? t('bedtime.pause') : t('bedtime.resume')}
+                    style={styles.reviewPlayBtn}>
+                    <Ionicons
+                      name={voice.reviewPlaying ? 'pause' : 'play'}
+                      size={16}
+                      color={inkTokens.accent}
+                      style={voice.reviewPlaying ? undefined : styles.playGlyph}
+                    />
+                  </PressableScale>
+                  <LiveVoiceWave bars={voice.reviewLevels} progress={voice.reviewProgress} />
+                  <Txt style={[styles.voiceClock, styles.reviewClock, onPhoto && styles.photoInput]}>{fmtDuration(voice.seconds)}</Txt>
+                  <PressableScale
+                    onPress={() => void voice.sendReviewed()}
+                    hitSlop={8}
+                    scaleTo={0.88}
+                    haptic
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.send')}
+                    style={[styles.action, styles.send, styles.voiceEndAction]}>
+                    <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                    <PaperPlaneTiltIcon size={25} weight="bold" color={inkPeachGlass.ctaText} style={styles.plane} />
+                  </PressableScale>
                 </>
               ) : voice.phase === 'sending' ? (
                 <>
@@ -423,6 +468,20 @@ export function ChatInput({
       </View>
     </View>
   );
+}
+
+function PulsingRecDot() {
+  const reducedMotion = useReducedMotion();
+  const pulse = useSharedValue(1);
+  useEffect(() => {
+    if (reducedMotion) {
+      pulse.value = 1;
+      return;
+    }
+    pulse.value = withRepeat(withTiming(0.32, { duration: 680, easing: Easing.inOut(Easing.ease) }), -1, true);
+  }, [pulse, reducedMotion]);
+  const animStyle = useAnimatedStyle(() => ({ opacity: pulse.value }));
+  return <Animated.View style={[styles.recDot, animStyle]} />;
 }
 
 const styles = StyleSheet.create({
@@ -477,12 +536,25 @@ const styles = StyleSheet.create({
     borderRadius: FIELD / 2,
     backgroundColor: colors.surface,
   },
-  // Hands free there is no finger on the mic: the row takes the whole field, send included.
-  voiceRowFull: { right: 0, paddingRight: 4 },
+  // Hands free there is no finger on the mic: the row takes the whole field, send/stop included.
+  voiceRowFull: { right: 0, paddingLeft: space.md + 2, paddingRight: 4 },
   photoVoiceRow: { backgroundColor: colors.onMediaField },
-  recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: systemColors.red },
-  voiceClock: { fontSize: 17, fontWeight: '600', fontVariant: ['tabular-nums'], color: colors.text },
-  voiceWave: { flex: 1, alignItems: 'flex-start', overflow: 'hidden' },
+  recDot: { width: 9, height: 9, borderRadius: 5, backgroundColor: systemColors.red },
+  voiceClock: { fontSize: 15, fontWeight: '600', fontVariant: ['tabular-nums'], color: colors.text },
+  reviewClock: { fontSize: 13, opacity: 0.78 },
+  voiceEndAction: { marginBottom: 0 },
+  stopSquare: { width: 14, height: 14, borderRadius: 3.5, backgroundColor: inkPeachGlass.ctaText },
+  reviewPlayBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: inkPeachGlass.flat,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkPeachGlass.rim,
+  },
+  playGlyph: { marginLeft: 2 },
   voiceHint: { flex: 1 },
   voiceAction: { width: 34, height: 34 },
   // Over the mic while a hold records: where to slide to lock.

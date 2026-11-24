@@ -1,5 +1,19 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z330. Four Apple-style motion upgrades (owner approved #1, #2, #4, #5 on `sigmazam-motion-prototype.html`; #3 kept as-is, #6/#7 deferred, 2026-11-24, Gemini Neon). DONE, pushed, preview OTA
+- **#1 Liquid Spring Segmented Controls (`src/components/ink/ink-segmented.tsx`, `src/components/create/kit.tsx`)**: Replaced static active segment background with a single floating Liquid Peach Glass lens driven by asymmetric Reanimated springs (leading edge `620/36`, trailing edge `190/19`) so the lens physically stretches in the direction of travel across Find, Memories, Moments, Photo Booth, Radio, Store, and Create (`ModeSwitch`). Respects Reduce Motion and `value === undefined` (`noSegment`).
+- **#2 Live Voice Waveform + Pre-Send Review (`src/components/chat/live-voice-wave.tsx`, `use-voice-note.ts`, `voice-player.ts`, `chat-input.tsx`)**:
+  - Hands-free recording (mic tap or slide-up lock) now shows a pulsing record dot + 28-bar live scrolling peach waveform driven by real microphone dB metering (70ms visual poll; silence gate still calibrated on ~210ms cadence) and a Stop (`■`) button that transitions into a new `'review'` phase instead of immediately uploading.
+  - Review phase lets the user play/pause the recorded clip directly via new `playUri` in `voice-player.ts` with a peach progress sweep, discard with Trash, or tap Send to transcribe and deliver. Hold-and-release instant send remains unchanged.
+- **#4 3D Thinking Sphere + Streaming Reveal (`src/components/chat/thinking-sphere.tsx`, `typing-row.tsx`, `message-bubble.tsx`)**:
+  - Built a 22-dot Fibonacci 3D rotating sphere (`ThinkingSphere`) running 100% on the native UI thread via Reanimated worklets (zero JS-thread rAF, respects Reduce Motion), paired with `common.thinking` inside `TypingRow` for both 1-on-1 and group chats.
+  - Added a subtle peach streaming caret (`▍`) at the end of incoming bubbles while `useReveal` streams words in, plus a smooth `260ms` spring entrance (`damping: 22, stiffness: 280`).
+- **#5 Live Morph Island (`src/components/chat/morph-island.tsx`, `src/app/chat/[id].tsx`)**:
+  - Built a floating dark Liquid Glass status pill below `ChatHeader` with asymmetric springs (width `380/24`, height `300/22`, radius `340/24`) that morphs cleanly across real chat states: pinned toast (`hud`, replacing the old bottom `hudWrap`), newly saved memories (tap to open `/character/[id]/memories`, auto-dismisses after 3.2s), and active thinking (`ThinkingSphere` + friend name).
+- **Note**: Restored `assets/heroes/registry.ts` from `HEAD` (was locally deleted before this session, blocking `tsc` across 14 files). No new i18n strings added (reused existing 14-locale keys).
+- **Checked**: `npx tsc --noEmit` 0 errors, `npm run typecheck:test` 0 errors, `npm test` 1142/1142 pass, `npm run check:locales` PASS, `npm run check:content` PASS. A51 unplugged during session; verified via Preview OTA.
+- **Still to do**: #6 (Chat reaction Like Burst + odometer) and #7 (Hold-to-confirm + Notification stack) when owner is ready.
+
 ### 0z329. Liquid Peach Glass full-app sweep — Round 2 (owner spotted Us calendar & Character Profile + asked for exhaustive audit, 2026-11-22, Gemini Argon). DONE, pushed, live on `preview` OTA `3963969a` (runtime 1.3.0)
 - **Why Round 2 was needed**: PowerShell's `Select-String -Path` skipped dynamic bracket routes (`[id]`, `[characterId]`, `[series]`), and several screens used custom `ink.accent` / `colors.primaryFill` / `night.primary` / `STORE.cta` styles directly instead of shared primitives.
 - **Exhaustive Node.js audit (136 -> 66 remaining intentional tiny badges/dots/`+` buttons/approved diary)**:

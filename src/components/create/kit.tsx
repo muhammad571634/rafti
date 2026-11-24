@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, type KeyboardTypeOptions, type LayoutChangeEvent, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, useAnimatedStyle, useReducedMotion, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { InkNavBar } from '@/components/ink';
@@ -41,7 +41,10 @@ export function CreateHead({
   return <InkNavBar backLabel={t('common.back')} onBack={onBack} title={title} scrolled={scrolled} right={right} />;
 }
 
-/** Compact top-right dark-glass 2-segment toggle for switching between Idea and Form modes. */
+const MODE_LEAD = { stiffness: 620, damping: 36, mass: 1 } as const;
+const MODE_TRAIL = { stiffness: 190, damping: 19, mass: 1 } as const;
+
+/** Compact top-right dark-glass 2-segment toggle with asymmetric liquid peach spring stretch. */
 export function ModeSwitch({
   mode,
   ideaLabel,
@@ -53,30 +56,85 @@ export function ModeSwitch({
   formLabel: string;
   onChange: (next: 'idea' | 'form') => void;
 }) {
+  const reducedMotion = useReducedMotion();
   const options: { key: 'idea' | 'form'; label: string }[] = [
     { key: 'idea', label: ideaLabel },
     { key: 'form', label: formLabel },
   ];
+  const activeIdx = mode === 'idea' ? 0 : 1;
+  const rects = useRef<Record<number, { x: number; width: number }>>({});
+  const prevIdx = useRef<number>(activeIdx);
+  const measured = useRef(false);
+  const leftVal = useSharedValue(3);
+  const rightVal = useSharedValue(3);
+  const ready = useSharedValue(0);
+
+  const sync = useCallback(
+    (idx: number, animate: boolean) => {
+      const rect = rects.current[idx];
+      if (!rect || rect.width <= 0) return;
+      const targetLeft = rect.x;
+      const targetRight = rect.x + rect.width;
+      const movingRight = idx > prevIdx.current;
+      if (!animate || reducedMotion || !measured.current) {
+        leftVal.value = targetLeft;
+        rightVal.value = targetRight;
+      } else if (movingRight) {
+        rightVal.value = withSpring(targetRight, MODE_LEAD);
+        leftVal.value = withSpring(targetLeft, MODE_TRAIL);
+      } else {
+        leftVal.value = withSpring(targetLeft, MODE_LEAD);
+        rightVal.value = withSpring(targetRight, MODE_TRAIL);
+      }
+      ready.value = 1;
+      prevIdx.current = idx;
+      measured.current = true;
+    },
+    [leftVal, ready, reducedMotion, rightVal],
+  );
+
+  useEffect(() => {
+    sync(activeIdx, measured.current);
+  }, [activeIdx, sync]);
+
+  const lensStyle = useAnimatedStyle(() => ({
+    left: Math.min(leftVal.value, rightVal.value),
+    width: Math.max(0, Math.abs(rightVal.value - leftVal.value)),
+    opacity: ready.value,
+  }));
+
   return (
     <View style={styles.modeTrack} accessibilityRole="tablist">
-      {options.map(({ key, label }) => {
-        const active = mode === key;
+      <Animated.View pointerEvents="none" style={[styles.modeLens, lensStyle]}>
+        <LinearGradient colors={inkPeachGlass.fill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      </Animated.View>
+      {options.map(({ key, label }, idx) => {
+        const active = idx === activeIdx;
         return (
-          <PressableScale
+          <View
             key={key}
-            scaleTo={0.94}
-            dimOnPress={false}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-            accessibilityLabel={label}
-            onPress={() => {
-              if (!active) onChange(key);
-            }}
-            style={[styles.modePill, active && styles.modePillOn]}>
-            <Txt style={[styles.modeText, active && styles.modeTextOn]} lines={1} maxFontSizeMultiplier={1.15}>
-              {label}
-            </Txt>
-          </PressableScale>
+            onLayout={(e) => {
+              const { x, width } = e.nativeEvent.layout;
+              const prev = rects.current[idx];
+              if (prev && Math.abs(prev.x - x) < 0.5 && Math.abs(prev.width - width) < 0.5) return;
+              rects.current[idx] = { x, width };
+              if (idx === activeIdx) sync(activeIdx, false);
+            }}>
+            <PressableScale
+              scaleTo={0.94}
+              dimOnPress={false}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              accessibilityLabel={label}
+              onPress={() => {
+                if (!active) onChange(key);
+              }}
+              style={styles.modePill}>
+              <Txt style={[styles.modeText, active && styles.modeTextOn]} lines={1} maxFontSizeMultiplier={1.15}>
+                {label}
+              </Txt>
+            </PressableScale>
+          </View>
         );
       })}
     </View>
@@ -392,11 +450,21 @@ const styles = StyleSheet.create({
     padding: 3,
     borderRadius: 18,
     borderCurve: 'continuous',
+    overflow: 'hidden',
     backgroundColor: CHIP_BG,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GLASS_RIM,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  modeLens: {
+    position: 'absolute',
+    top: 3,
+    bottom: 3,
+    borderRadius: 15,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkPeachGlass.rim,
   },
   modePill: {
     height: 30,
@@ -404,10 +472,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'transparent',
   },
-  modePillOn: { backgroundColor: inkPeachGlass.flat, borderColor: inkPeachGlass.rim },
   modeText: { ...inkFace('caption'), fontSize: 12.5, color: 'rgba(235,235,245,0.68)' },
   modeTextOn: { color: inkPeachGlass.text },
   card: {

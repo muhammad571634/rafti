@@ -14,12 +14,13 @@ import { AppState, Platform } from 'react-native';
 import { accessToken } from '@/ai/account';
 import { apiBase, serverTranscribe } from '@/ai/server';
 import { VOICE_NO_WORDS, VOICE_SECONDS_MAX } from '@/ai/voice-prompt';
-import { waveFromMeter } from '@/lib/voice-wave';
+import { showAlert } from '@/lib/alert';
 import { dropClip, keepNote, readClip } from '@/lib/voice-files';
+import { resampleWave, waveFromMeter } from '@/lib/voice-wave';
 import { useAppStore } from '@/store/use-app-store';
 
-import { PLAYBACK_MODE, stopNote } from './voice-player';
-import { showAlert } from '@/lib/alert';
+import { LIVE_WAVE_COUNT } from './live-voice-wave';
+import { PLAYBACK_MODE, playUri, stopNote } from './voice-player';
 
 /** Small and clear enough for speech; a minute stays near 240 KB (`CLIP_CHARS_MAX`). Calls record the same. */
 export const OPTIONS: RecordingOptions = {
@@ -34,6 +35,15 @@ export const OPTIONS: RecordingOptions = {
 };
 
 const MIN_SECONDS = 1;
+const METER_TICK_MS = 70;
+const EMPTY_LIVE_BARS: readonly number[] = Array.from({ length: LIVE_WAVE_COUNT }, () => 0.12);
+
+/** Maps dBFS metering into a crisp 0.12..1 bar height for the live scrolling waveform. */
+function meterToBar(db: number): number {
+  if (!Number.isFinite(db)) return 0.14;
+  return Math.max(0.12, Math.min(1, (db + 58) / 46));
+}
+
 /**
  * Above this (dB) counts as a voice. The model invents a sentence for silence ("Hey, are you free to
  * talk?", 2026-11-02), so a clip that stays below it never leaves the phone. Android reports the peak
@@ -54,17 +64,14 @@ export interface VoiceNote {
   levels?: number[];
 }
 
-export type VoicePhase = 'idle' | 'recording' | 'sending' | 'failed';
+export type VoicePhase = 'idle' | 'recording' | 'review' | 'sending' | 'failed';
 /** Why nothing was sent, for a short line in the composer or the sheet. */
 export type VoiceNotice = 'tooShort' | 'noSpeech';
 
 /**
- * A real voice message: records from the microphone, has the server write out what was said, and
- * hands the chat the words and the file. The first time, with the model on, it asks whether the
- * voice may go to the AI service (App Store rule 5.1.2(i)); a hold that had to ask records nothing.
- * `canRecord` is asked first, so someone out of shells is told before anything is uploaded. A clip
- * the server could not take waits for a retry and costs nothing. Starting and stopping the recorder
- * take time and run strictly in turn: a recorder left prepared refuses every later start.
+ * A real voice message: records from the microphone, supports live scrolling waveform + pre-send
+ * playback review in hands-free mode, has the server write out what was said, and hands the chat
+ * the words and the file.
  */
 export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNote) => void, canRecord?: () => boolean) {
   const { t } = useTranslation();
@@ -76,6 +83,11 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   const [phase, setPhase] = useState<VoicePhase>('idle');
   const [seconds, setSeconds] = useState(0);
   const [notice, setNotice] = useState<VoiceNotice | null>(null);
+  const [liveBars, setLiveBars] = useState<readonly number[]>(EMPTY_LIVE_BARS);
+  const [reviewLevels, setReviewLevels] = useState<readonly number[]>(EMPTY_LIVE_BARS);
+  const [reviewPlaying, setReviewPlaying] = useState(false);
+  const [reviewProgress, setReviewProgress] = useState(0);
+
   /** The finger is still down: a release during the slow start must not leave it recording. */
   const wanted = useRef(false);
   const live = useRef(false);
@@ -106,6 +118,9 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   const deliver = async () => {
     const clip = waiting.current;
     if (!clip) return;
+    stopNote();
+    setReviewPlaying(false);
+    setReviewProgress(0);
     setPhase('sending');
     if (!modelOn) {
       waiting.current = null;
@@ -124,28 +139,47 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
   };
 
   const discard = () => {
+    stopNote();
+    setReviewPlaying(false);
+    setReviewProgress(0);
+    setLiveBars(EMPTY_LIVE_BARS);
     const clip = waiting.current;
     waiting.current = null;
     setPhase('idle');
     if (clip) void dropClip(clip.uri);
   };
 
+  const toggleReviewPlay = () => {
+    if (phase !== 'review') return;
+    if (reviewPlaying) {
+      stopNote();
+      return;
+    }
+    const clip = waiting.current;
+    if (!clip) return;
+    setReviewPlaying(true);
+    setReviewProgress(0);
+    void playUri(
+      clip.uri,
+      () => {
+        setReviewPlaying(false);
+        setReviewProgress(0);
+      },
+      { onProgress: (at) => setReviewProgress(at) },
+    ).then((ok) => {
+      if (!ok) setReviewPlaying(false);
+    });
+  };
+
   const begin = async () => {
     if (live.current || !wanted.current) return;
-    // Look before asking: asking opens a system screen even when the answer is already yes, which
-    // sends the app to the background and so throws the recording away (seen on the A51, 0z94).
     const { granted, canAskAgain } = await AudioModule.getRecordingPermissionsAsync();
     if (!granted) {
-      // The prompt takes the touch, so this hold records nothing and the next one does.
       wanted.current = false;
-      // Ask even when the answer says not to: an "only this time" yes that ran out reads as "never"
-      // on Android (seen on the A51), yet the system still shows its prompt. A real "never" returns
-      // at once, and then only Settings can help.
       const answer = await AudioModule.requestRecordingPermissionsAsync();
       if (!answer.granted && !answer.canAskAgain && !canAskAgain) showAlert(t('chat.voice.noMic'));
       return;
     }
-    // Let go while looking: nothing was meant.
     if (!wanted.current) return;
     try {
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
@@ -167,6 +201,7 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     loud.current = 0;
     peak.current = -Infinity;
     meter.current = [];
+    setLiveBars(EMPTY_LIVE_BARS);
     setSeconds(0);
     setPhase('recording');
   };
@@ -188,17 +223,16 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     inTurn(begin);
   };
 
-  const finish = (send: boolean) => {
+  const finish = (send: boolean, stopForReview = false) => {
     wanted.current = false;
     const liftedAt = Date.now();
     inTurn(async () => {
       if (!live.current) return;
       live.current = false;
       const held = Math.min(VOICE_SECONDS_MAX, Math.round((liftedAt - startedAt.current) / 1000));
-      // Levels only, no words: read off the A51 to set `VOICE_DB`; goes once it is set.
       console.log(`[voice] ${held}s, ${loud.current} of ${looks.current} looks above ${VOICE_DB} dB, peak ${peak.current.toFixed(1)}`);
-      // Sending from the moment the finger lifts, so the row does not blink away first.
-      setPhase(send ? 'sending' : 'idle');
+      // Sending from the moment the finger lifts (unless entering review), so the row does not blink away first.
+      setPhase(send ? (stopForReview ? 'review' : 'sending') : 'idle');
       await recorder.stop().catch((error: unknown) => {
         console.warn(`[voice] could not stop: ${String((error as Error)?.message).slice(0, 120)}`);
       });
@@ -212,42 +246,70 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
         if (uri) void dropClip(uri);
         return;
       }
-      waiting.current = { uri, seconds: held, levels: waveFromMeter(meter.current) };
+      const levels = waveFromMeter(meter.current);
+      waiting.current = { uri, seconds: held, levels };
+      setSeconds(held);
+      if (stopForReview) {
+        setReviewLevels(levels.length ? resampleWave(levels, LIVE_WAVE_COUNT) : EMPTY_LIVE_BARS);
+        setReviewProgress(0);
+        setReviewPlaying(false);
+        setPhase('review');
+        return;
+      }
       await deliver();
     });
   };
+
+  const review = () => finish(true, true);
 
   const latestFinish = useRef(finish);
   useEffect(() => {
     latestFinish.current = finish;
   });
 
-  // The clock, the meter, and the limit.
+  // The clock, live scrolling wave, loudness gate, and limit.
   useEffect(() => {
     if (phase !== 'recording') return;
+    let tickCount = 0;
     const tick = setInterval(() => {
+      tickCount += 1;
       const elapsed = (Date.now() - startedAt.current) / 1000;
-      setSeconds(Math.min(VOICE_SECONDS_MAX, Math.floor(elapsed)));
       const { metering } = recorder.getStatus();
-      if (typeof metering === 'number') {
-        looks.current += 1;
-        peak.current = Math.max(peak.current, metering);
-        meter.current.push(metering);
-        if (metering > VOICE_DB) loud.current += 1;
+      const bar = typeof metering === 'number' ? meterToBar(metering) : 0.14;
+      setLiveBars((prev) => [...prev.slice(1), bar]);
+
+      // Sample loudness at the calibrated ~210ms cadence so VOICE_MOMENTS stays exact.
+      if (tickCount % 3 === 0) {
+        setSeconds(Math.min(VOICE_SECONDS_MAX, Math.floor(elapsed)));
+        if (typeof metering === 'number') {
+          looks.current += 1;
+          peak.current = Math.max(peak.current, metering);
+          meter.current.push(metering);
+          if (metering > VOICE_DB) loud.current += 1;
+        }
       }
       if (elapsed >= VOICE_SECONDS_MAX) latestFinish.current(true);
-    }, 200);
+    }, METER_TICK_MS);
     return () => clearInterval(tick);
   }, [phase, recorder]);
 
-  // A call or leaving the app takes the microphone: what was said so far goes nowhere.
+  // A call or leaving the app takes the microphone: live recording stops; review playback pauses.
   useEffect(() => {
     const away = AppState.addEventListener('change', (state) => {
-      if (state !== 'active') latestFinish.current(false);
+      if (state !== 'active') {
+        stopNote();
+        latestFinish.current(false);
+      }
     });
     return () => away.remove();
   }, []);
-  useEffect(() => () => latestFinish.current(false), []);
+  useEffect(
+    () => () => {
+      stopNote();
+      latestFinish.current(false);
+    },
+    [],
+  );
 
   // A line that says why nothing went does not stay.
   useEffect(() => {
@@ -256,5 +318,20 @@ export function useVoiceNote(chatId: string | undefined, onNote: (note: VoiceNot
     return () => clearTimeout(timer);
   }, [notice]);
 
-  return { phase, seconds, notice, start, finish, retry: deliver, discard };
+  return {
+    phase,
+    seconds,
+    notice,
+    liveBars,
+    reviewLevels,
+    reviewPlaying,
+    reviewProgress,
+    start,
+    finish,
+    review,
+    toggleReviewPlay,
+    sendReviewed: deliver,
+    retry: deliver,
+    discard,
+  };
 }

@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurTargetView } from 'expo-blur';
@@ -10,7 +9,7 @@ import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform,
 import Animated, { FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChatInput, LevelUpModal, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, LevelUpModal, MessageBubble, MorphIsland, type MorphIslandState, TypingRow, VoiceSheet } from '@/components/chat';
 import { composerKeyboardOffset } from '@/components/chat/chat-input';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { MoreSheet } from '@/components/more-sheet';
@@ -49,7 +48,7 @@ import { useFreeOutGate } from '@/components/chat/free-used-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { OutOfMinutesSheet } from '@/components/plans/out-of-minutes-sheet';
-import { CharacterAvatar, Header, Screen, Txt } from '@/components/ui';
+import { CharacterAvatar, Header, Screen } from '@/components/ui';
 import { usePickPhoto } from '@/components/chat/use-pick-photo';
 import { takeFocus } from '@/lib/chat-focus';
 import { steerBlock } from '@/lib/chat-steer';
@@ -65,7 +64,7 @@ import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
-import { nightColors as colors, friendAccent, shadows, space } from '@/theme';
+import { nightColors as colors, friendAccent, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
 import type { Message, MessageTone, NextKind, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
@@ -352,6 +351,33 @@ export default function ChatRoomScreen() {
   // the list re-mounts when you scroll back up, appear without replaying it.
   const [openedAt] = useState(() => Date.now());
   const characterId = character?.id;
+  const freshMemory = useAppStore(
+    useShallow((s) => {
+      if (!characterId) return { id: '', text: '' };
+      let bestId = '';
+      let bestText = '';
+      let bestAt = openedAt;
+      for (const m of s.memories) {
+        if (m.characterId !== characterId || m.quote) continue;
+        const at = Date.parse(m.createdAt);
+        if (at > bestAt) {
+          bestAt = at;
+          bestId = m.id;
+          bestText = m.text;
+        }
+      }
+      return { id: bestId, text: bestText };
+    }),
+  );
+  const seenMemoryId = useRef('');
+  const [memoryNotice, setMemoryNotice] = useState<string | null>(null);
+  useEffect(() => {
+    if (!freshMemory.id || freshMemory.id === seenMemoryId.current) return;
+    seenMemoryId.current = freshMemory.id;
+    setMemoryNotice(freshMemory.text);
+    const timer = setTimeout(() => setMemoryNotice(null), 3200);
+    return () => clearTimeout(timer);
+  }, [freshMemory.id, freshMemory.text]);
   const callBack = useCallback(() => {
     if (characterId) router.push(`/call/${characterId}`);
   }, [characterId, router]);
@@ -584,6 +610,21 @@ export default function ChatRoomScreen() {
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
+  const islandState: MorphIslandState | null = hud
+    ? { kind: 'pin', text: hud }
+    : memoryNotice
+      ? {
+          kind: 'memory',
+          title: t('memories.title'),
+          subtitle: memoryNotice,
+          onPress: () => {
+            setMemoryNotice(null);
+            router.push(`/character/${character.id}/memories`);
+          },
+        }
+      : typing
+        ? { kind: 'thinking', label: `${name} · ${t('common.thinking')}`, accent: friendAccent(character.id).strong }
+        : null;
 
   // The keyboard (audit Step 3.4): with keyboard-controller in the APK the composer rides the keyboard
   // frame by frame, the list lifts its newest lines by the same distance, and a drag down on the chat
@@ -689,14 +730,6 @@ export default function ChatRoomScreen() {
                 accessibilityLabel={t('chat.cancelEdit')}
               />
             ) : null}
-            {hud ? (
-              <View pointerEvents="none" style={styles.hudWrap} accessibilityLiveRegion="polite">
-                <View style={styles.hud}>
-                  <Ionicons name="pin" size={15} color={colors.textOnInk} />
-                  <Txt style={styles.hudText}>{hud}</Txt>
-                </View>
-              </View>
-            ) : null}
             <ToneMenu
               visible={toneOpen}
               onClose={() => setToneOpen(false)}
@@ -763,6 +796,7 @@ export default function ChatRoomScreen() {
             ) : null
           }
         />
+        <MorphIsland state={islandState} top={headerRoom + (alarmRinging || conversation.scene ? ALARM_ROOM + 4 : 4)} />
       </BlurTargetView>
 
       {LevelUpTakeover ? (
@@ -1019,18 +1053,4 @@ const styles = StyleSheet.create({
   flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   list: { paddingTop: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
-  // iOS-style notice over the bottom of the chat, in ink with light text.
-  hudWrap: { position: 'absolute', left: 0, right: 0, bottom: space.md, alignItems: 'center' },
-  hud: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    height: 40,
-    paddingLeft: space.md,
-    paddingRight: space.lg,
-    borderRadius: 20,
-    backgroundColor: colors.text,
-    ...shadows.raised,
-  },
-  hudText: { fontSize: 15, fontWeight: '600', color: colors.textOnInk },
 });

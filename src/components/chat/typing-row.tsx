@@ -1,10 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useOnPhoto } from '@/components/chat/chat-ground';
-import { Anim, CharacterAvatar, Txt } from '@/components/ui';
+import { CharacterAvatar, Txt } from '@/components/ui';
 import { colors, space } from '@/theme';
+import { ink, inkPeachGlass } from '@/theme/ink';
 import type { Character } from '@/types';
+
+import { ThinkingSphere } from './thinking-sphere';
 
 const AVATAR = 28;
 /** Faces shown at most; a fourth typer is still named in the label. */
@@ -12,18 +16,23 @@ const MAX_FACES = 3;
 const SMALL = 22;
 
 /**
- * Left-side grey bubble with bouncing dots while replies are composed, with the avatar beside
- * it like a run's last bubble. In a group several members can type at once: one bubble, their
- * faces overlapping (up to three) and `label` naming them ("Kai and Elio are typing").
+ * Left-side dark glass pill with the rotating 3D dot-matrix ThinkingSphere while replies are composed,
+ * paired with the avatar beside it like a run's last bubble. In a group several members can type at
+ * once: one pill, their faces overlapping (up to three) and `label` naming them.
  */
 export function TypingRow({ characters, label, accentColor }: { characters: Character[]; label?: string; accentColor?: string }) {
+  const { t } = useTranslation();
   const onPhoto = useOnPhoto();
   if (characters.length === 0) return null;
   const faces = characters.slice(0, MAX_FACES);
-  const dotTint = accentColor ?? (onPhoto ? colors.onMediaSoft : colors.textSecondary);
+  const sphereColor = accentColor ?? ink.accent;
+  const thinkingText = t('common.thinking');
   const bubble = (
     <View style={[styles.bubble, onPhoto && styles.photoBubble]}>
-      <Anim name="typing" size={34} tint={dotTint} />
+      <ThinkingSphere size={22} color={sphereColor} />
+      <Txt variant="smallStrong" color={accentColor ?? inkPeachGlass.ctaText} style={styles.thinkingText} lines={1}>
+        {thinkingText}
+      </Txt>
     </View>
   );
   return (
@@ -32,7 +41,7 @@ export function TypingRow({ characters, label, accentColor }: { characters: Char
       exiting={FadeOut.duration(140)}
       style={styles.row}
       accessibilityLiveRegion="polite"
-      accessibilityLabel={label}>
+      accessibilityLabel={label ?? thinkingText}>
       {faces.length === 1 ? (
         accentColor ? (
           <View style={[styles.avatarRing, { borderColor: accentColor }]}>
@@ -95,10 +104,11 @@ const styles = StyleSheet.create({
   label: { paddingLeft: space.xs },
   labelAccented: { fontWeight: '600' },
   bubble: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     paddingHorizontal: space.md,
     height: 38,
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 19,
     borderBottomLeftRadius: 6,
     backgroundColor: colors.bubbleOther,
@@ -106,4 +116,5 @@ const styles = StyleSheet.create({
     borderColor: colors.bubbleOtherRim,
   },
   photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
+  thinkingText: { fontSize: 13, letterSpacing: -0.1 },
 });

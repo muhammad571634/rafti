@@ -281,7 +281,7 @@ export const MessageBubble = memo(function MessageBubble({
 
   return (
     <Animated.View
-      entering={animate ? FadeInDown.duration(220).springify().damping(18) : undefined}
+      entering={animate ? FadeInDown.duration(260).springify().damping(22).stiffness(280) : undefined}
       style={[styles.row, !!time && styles.timedRow, runEnd && styles.runEnd]}>
       {mine ? (
         // The user's side: no avatar, as in iOS Messages; the last message says Read or Delivered.
@@ -396,7 +396,10 @@ function TextBubble({
             block.kind === 'action' ? (
               <View key={i} style={styles.actionBlock}>
                 <View style={[styles.actionBar, mine ? styles.actionBarMine : accentColor ? { backgroundColor: accentColor, opacity: 0.9 } : styles.actionBarTheirs]} />
-                <Txt style={[styles.actionBlockText, actionStyle]}>{block.text}</Txt>
+                <Txt style={[styles.actionBlockText, actionStyle]}>
+                  {block.text}
+                  {revealing && !mine && i === visible.length - 1 ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
+                </Txt>
               </View>
             ) : (
               <Txt key={i} style={styles.text} color={speechColor}>
@@ -409,6 +412,7 @@ function TextBubble({
                     part.text
                   ),
                 )}
+                {revealing && !mine && i === visible.length - 1 ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
               </Txt>
             ),
           )}
@@ -432,6 +436,7 @@ function TextBubble({
                 )
               : [],
           )}
+          {revealing && !mine ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
         </Txt>
       )}
     </View>

@@ -30,18 +30,21 @@ export function stopNote() {
   playing.done();
 }
 
-/**
- * Plays a kept note; `done` runs when it ends or is stopped. False when its file is not on this phone.
- * `from` starts it part way (0-1, a scrub on a still note); `onProgress` hears how far it is (0-1).
- */
-export async function playNote(name: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
-  stopNote();
-  const mine = turn;
-  const uri = await noteUri(name);
-  if (!uri) return false;
+async function startUriPlayer(
+  uri: string,
+  mine: number,
+  done: () => void,
+  options: { from?: number; onProgress?: (at: number) => void } = {},
+): Promise<boolean> {
   await setAudioModeAsync(audioMode()).catch(() => {});
   if (mine !== turn) return true;
-  const player = createAudioPlayer(uri, { updateInterval: 100 });
+  let player: AudioPlayer;
+  try {
+    player = createAudioPlayer(uri, { updateInterval: 80 });
+  } catch {
+    done();
+    return false;
+  }
   current = { player, done };
   let started = false;
   player.addListener('playbackStatusUpdate', (status) => {
@@ -56,6 +59,29 @@ export async function playNote(name: string, done: () => void, options: { from?:
   });
   player.play();
   return true;
+}
+
+/**
+ * Plays a kept note; `done` runs when it ends or is stopped. False when its file is not on this phone.
+ * `from` starts it part way (0-1, a scrub on a still note); `onProgress` hears how far it is (0-1).
+ */
+export async function playNote(name: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
+  stopNote();
+  const mine = turn;
+  const uri = await noteUri(name);
+  if (!uri) return false;
+  return startUriPlayer(uri, mine, done, options);
+}
+
+/**
+ * Plays a local audio URI directly (e.g., an unsent voice note in review mode before sending).
+ * Shares the same single-player session so recording or another play stops it cleanly.
+ */
+export async function playUri(uri: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
+  stopNote();
+  const mine = turn;
+  if (!uri) return false;
+  return startUriPlayer(uri, mine, done, options);
 }
 
 /** Moves the playing note to `at` (0-1 of its length); nothing when none plays. */
