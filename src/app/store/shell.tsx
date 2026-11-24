@@ -36,7 +36,7 @@ import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, palette, signature, space, systemColors, systemGround } from '@/theme';
+import { colors, moduleFills, signature, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { PlanId, ShellPack } from '@/types';
 import { freeMessagesPerDay } from '@/economy/free-messages';
@@ -147,7 +147,7 @@ export default function StoreScreen() {
           ) : (
             <>
               <ShellIcon size={84} />
-              <Txt style={styles.purchased} color={palette.shellText} center>
+              <Txt style={styles.purchased} color={colors.primary} center>
                 {t('store.purchased', { count: success?.kind === 'pack' ? success.amount : 0 })}
               </Txt>
             </>
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(255,255,255,0.55)',
+    backgroundColor: 'rgba(255,255,255,0.34)',
   },
   freeText: { ...inkFace('subStrong'), color: signature.shells.heroInk },
   packRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: 14, paddingRight: space.lg },

@@ -76,7 +76,13 @@ export function AlertHost() {
 
 const styles = StyleSheet.create({
   scrim: { flex: 1, backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.32)', alignItems: 'center', justifyContent: 'center' },
-  card: { borderRadius: 16, backgroundColor: CARD, overflow: 'hidden' },
+  card: {
+    borderRadius: 16,
+    backgroundColor: CARD,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.08)',
+    overflow: 'hidden',
+  },
   textScroll: { flexGrow: 0, flexShrink: 1 },
   text: { paddingHorizontal: 18, paddingTop: 20, paddingBottom: 18, gap: 4 },
   title: { ...inkFace('bodyStrong'), textAlign: 'center', color: systemGround.label },

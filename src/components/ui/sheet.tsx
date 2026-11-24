@@ -242,9 +242,9 @@ const sheet = themed(({ colors }) =>
     scrim: { backgroundColor: colors.scrim },
     bottomWrap: { justifyContent: 'flex-end', paddingHorizontal: EDGE },
     centerWrap: { alignItems: 'center', justifyContent: 'center', padding: space.xxl },
-    // A floating card, inset from every edge; a darker hairline edge as iOS 27 draws its glass.
+    // Apple Dark Mode Elevated floating card: one perceptual step lighter than base cards (`colors.surface`) with a crisp top rim.
     bottomCard: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.elevated,
       borderRadius: CORNER,
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: colors.glassLine,
@@ -255,8 +255,10 @@ const sheet = themed(({ colors }) =>
     centerCard: {
       width: '100%',
       maxWidth: 340,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.elevated,
       borderRadius: radius.xxl,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.glassLine,
       padding: space.xl,
     },
     /** Never taller than the room left above the keyboard. */
@@ -271,7 +273,7 @@ const sheet = themed(({ colors }) =>
       width: 36,
       height: 5,
       borderRadius: radius.pill,
-      backgroundColor: colors.borderStrong,
+      backgroundColor: 'rgba(235,235,245,0.34)',
       marginBottom: space.xs + 2,
     },
     header: { flexDirection: 'row', alignItems: 'center', height: 44, marginBottom: space.md },
@@ -280,7 +282,7 @@ const sheet = themed(({ colors }) =>
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: colors.surfaceAlt,
+      backgroundColor: colors.elevatedAlt,
       alignItems: 'center',
       justifyContent: 'center',
     },

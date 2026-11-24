@@ -422,11 +422,11 @@ const styles = StyleSheet.create({
   // The paws rest on the card's top edge.
   mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center', zIndex: 2 },
   card: {
-    backgroundColor: ink.card,
+    backgroundColor: ink.elevated,
     borderRadius: inkRadius.sheet,
     borderCurve: 'continuous',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
+    borderColor: ink.elevatedRim,
     paddingTop: 26,
     paddingHorizontal: 18,
     paddingBottom: 18,

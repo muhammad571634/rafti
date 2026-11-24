@@ -15,6 +15,12 @@ export const ink = {
   ground: ground.ground,
   /** A card on the ground (records, groups of rows, tiles' frame). */
   card: ground.card,
+  /** Apple Dark Mode Elevated surface (bottom sheets, modals, popovers): one perceptual step above `card`. */
+  elevated: '#1F1F2B',
+  /** Controls, inputs, and inner cards sitting on top of an `elevated` sheet or modal. */
+  elevatedCard: '#2A2A38',
+  /** Crisp specular hairline edge on elevated surfaces. */
+  elevatedRim: 'rgba(255,255,255,0.16)',
   /** Chips, fields, round buttons, a secondary pill: Apple's fill on dark. */
   raised: 'rgba(118,118,128,0.24)',
   /** The chosen segment's thumb on a `raised` track (Apple's dark segmented control). */

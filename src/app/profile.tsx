@@ -44,7 +44,7 @@ import { flushMessages, messagesInDb, restoreFromServer, syncMessages } from '@/
 import { DEPTH_EVERY, myMessageCount } from '@/lib/daily-note';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, moduleFills, space, storeColors, systemColors, systemGround } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -560,8 +560,8 @@ const styles = StyleSheet.create({
   tileValue: { ...inkFace('figure'), color: systemGround.label },
   tilePill: { alignSelf: 'flex-start', maxWidth: '100%', minHeight: 28, marginTop: 4, paddingHorizontal: 12, borderRadius: inkRadius.pill, justifyContent: 'center', backgroundColor: systemGround.fill },
   tilePillText: { ...inkFace('caption'), color: systemGround.label },
-  peachPill: { backgroundColor: 'rgba(235,173,132,0.16)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(235,173,132,0.40)' },
-  peachInk: { color: colors.brandText },
+  peachPill: { backgroundColor: inkPeachGlass.flat, borderWidth: StyleSheet.hairlineWidth, borderColor: inkPeachGlass.rim },
+  peachInk: { color: inkPeachGlass.text },
   violetPill: { backgroundColor: storeColors.violetSoft },
   violetInk: { color: storeColors.violetInk },
   deleteBody: { marginBottom: space.xl },
