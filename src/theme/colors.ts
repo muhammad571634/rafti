@@ -376,7 +376,7 @@ export const moduleColors: Record<string, readonly [string, string]> = {
   store: ['#FFA36B', '#D96526'],
   photo: ['#4F8DFF', '#0052D9'],
   contacts: ['#A8A8B0', '#6B6B72'],
-  gifts: ['#FF6259', '#D92A20'],
+  gifts: ['#FF5C7A', '#D91E4A'],
   radio: ['#C86BF5', '#8A2FCC'],
   board: ['#5AC8FA', '#1A7FC9'],
   bond: ['#3CCFB4', '#13866F'],
@@ -445,7 +445,8 @@ export const moduleFills: Record<string, string> = {
   store: isDark ? palette.apricotCalm : palette.apricot600,
   photo: systemColors.blue,
   contacts: systemColors.gray,
-  gifts: systemColors.red,
+  // Pink, not red (owner, 2026-11-24): red stays for delete, errors and badges (HIG: one colour, one meaning).
+  gifts: systemColors.pink,
   radio: systemColors.purple,
   board: systemColors.cyan,
   bond: systemColors.mint,
@@ -611,7 +612,7 @@ const look = (strong: string, text: string, hero: readonly [string, string]): Lo
  * buttons and chips. Shells keep the Store's apricot, Plans the Pro gradient (`gradients.pro`).
  */
 export const signature = {
-  gifts: look(systemColors.red, isDark ? '#FF6961' : '#D70015', isDark ? ['#FF5E57', '#B3261E'] : ['#FF6B5B', '#FF3B30']),
+  gifts: look(systemColors.pink, isDark ? '#FF7A93' : '#D30F45', isDark ? ['#FF5C7A', '#B3194A'] : ['#FF6482', '#FF2D55']),
   radio: look(systemColors.purple, isDark ? '#DA8FFF' : '#8944AB', isDark ? ['#B05CF0', '#6A2BB0'] : ['#C77DFF', '#8E3FD6']),
   board: look(systemColors.cyan, isDark ? '#70D7FF' : '#0071A4', isDark ? ['#4FC3F7', '#1A6FA0'] : ['#5AC8FA', '#1E9BD7']),
   photo: look(systemColors.blue, isDark ? '#409CFF' : '#0062CC', isDark ? ['#3D8BFF', '#1550B8'] : ['#4FA3FF', '#0A6CFF']),
@@ -767,7 +768,7 @@ export const moduleTints: Record<string, string> = isDark
       store: '#4A2E1E',
       photo: '#1D2D4A',
       contacts: '#2E2E33',
-      gifts: '#4A2220',
+      gifts: '#4A1F2B',
       radio: '#37244A',
       board: '#163A44',
       bond: '#163F3A',
@@ -781,7 +782,7 @@ export const moduleTints: Record<string, string> = isDark
       store: '#FFE3CF',
       photo: '#D6E6FF',
       contacts: '#E6E6EA',
-      gifts: '#FFDAD7',
+      gifts: '#FFD9E1',
       radio: '#EEDCFA',
       board: '#C9EEF9',
       bond: '#CBF2E9',
@@ -810,7 +811,7 @@ export const moduleGlass: Record<string, StainedGlass> | null = isDark
       date: stained('244,63,94', '136,19,55', '251,113,133'),
       photo: stained('59,130,246', '30,64,175', '96,165,250'),
       contacts: stained('148,163,184', '51,65,85', '203,213,225'),
-      gifts: stained('239,68,68', '153,27,27', '248,113,113'),
+      gifts: stained('255,55,95', '150,20,55', '255,110,140'),
       board: stained('6,182,212', '21,94,117', '34,211,238'),
       note: stained('234,179,8', '133,77,14', '250,204,21'),
     }

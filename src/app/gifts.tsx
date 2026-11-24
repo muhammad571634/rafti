@@ -274,7 +274,7 @@ export default function GiftsScreen() {
         {/* Calm stained-glass Daily Check-In Hero */}
         <View style={styles.checkIn}>
           <LinearGradient
-            colors={['rgba(239,68,68,0.22)', 'rgba(153,27,27,0.10)']}
+            colors={['rgba(255,55,95,0.22)', 'rgba(150,20,55,0.10)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
