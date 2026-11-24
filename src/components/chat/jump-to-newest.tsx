@@ -28,7 +28,7 @@ export function JumpToNewest({ visible, unseen, onPress }: { visible: boolean; u
       </PressableScale>
       {unseen > 0 ? (
         <View style={styles.badge} pointerEvents="none">
-          <InkText variant="caption" color={ink.onAccent} style={styles.figure}>
+          <InkText variant="caption" color={ink.onBadge} style={styles.figure}>
             {unseen > 99 ? '99+' : String(unseen)}
           </InkText>
         </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.accent,
+    backgroundColor: ink.badge,
   },
   figure: { fontVariant: ['tabular-nums'] },
 });

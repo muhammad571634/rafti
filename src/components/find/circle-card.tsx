@@ -19,7 +19,7 @@ const CARD_SCRIM = ['rgba(9,9,13,0.24)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.44)', 
 const CARD_SCRIM_STOPS = [0, 0.28, 0.58, 1] as const;
 const SIDE_SCRIM = ['rgba(9,9,13,0.78)', 'rgba(9,9,13,0.38)', 'rgba(9,9,13,0)'] as const;
 const SIDE_SCRIM_STOPS = [0, 0.48, 0.78] as const;
-const NEW_FILL = ink.tintFill;
+const NEW_FILL = ink.photoBadge;
 const NEW_RIM = 'rgba(235,173,132,0.45)';
 
 /** Formats a character's opening line as a clean editorial whisper, keeping existing quotes intact. */

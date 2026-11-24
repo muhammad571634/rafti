@@ -3,11 +3,10 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { describe, it } from 'node:test';
 
-
 /**
  * Screens read colours from `src/theme` (audit 2026-11-24 #7, HIG Color: "avoid hard-coding"). A
  * ratchet: no file may hold more hex / rgba literals than it did when the guard came in, and a new
- * file holds none. Lower a file's number when you clean it (`npm test` prints what to write); art
+ * file holds none. Lower a file's number in the baseline when you clean it; art
  * that is drawn in code (the orbit, stationery, tickets, the mascot) keeps its own numbers.
  */
 const ROOTS = ['src/app', 'src/components'];

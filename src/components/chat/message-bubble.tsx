@@ -384,7 +384,7 @@ function TextBubble({
         !mine && onPhoto && styles.photoBubble,
         muted && styles.bubbleMuted,
       ]}>
-      {message.replyTo && quoteTitle ? <BubbleQuote quote={message.replyTo} title={quoteTitle} onPress={onQuotePress} /> : null}
+      {message.replyTo && quoteTitle ? <BubbleQuote quote={message.replyTo} title={quoteTitle} onPress={onQuotePress} mine={mine} /> : null}
       {hasActionBlock ? (
         <View
           style={styles.blockStack}

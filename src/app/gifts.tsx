@@ -76,7 +76,7 @@ const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook>
 };
 
 const GLASS_RIM = 'rgba(255,255,255,0.11)';
-const CHECKIN_RIM = 'rgba(248,113,113,0.28)';
+const CHECKIN_RIM = 'rgba(255,110,140,0.28)';
 const PEACH_SOFT = ink.tintFill;
 
 /**

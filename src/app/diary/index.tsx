@@ -24,6 +24,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { dateFromKey, dayKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, avatarGradients, colors, isDark, radius, shadows, space } from '@/theme';
+import { ink } from '@/theme/ink';
 import type { Character, CharacterDiaryPage } from '@/types';
 
 const GAP = space.md;
@@ -364,7 +365,7 @@ function CoverCard({
                   backgroundColor:
                     card.kind === 'character'
                       ? avatarGradients[card.character.accentIndex % avatarGradients.length][0]
-                      : colors.primarySofter,
+                      : ink.diaryCover,
                 },
               ]}
             />
@@ -430,7 +431,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     overflow: 'hidden',
   },
-  cover: { flex: 3, overflow: 'hidden', backgroundColor: colors.primarySofter },
+  cover: { flex: 3, overflow: 'hidden', backgroundColor: ink.diaryCover },
   lockedImage: { opacity: 0.55 },
   chip: {
     position: 'absolute',

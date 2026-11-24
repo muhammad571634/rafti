@@ -31,28 +31,28 @@ export function useQuoteWords(quote: ReplyTo): string {
  * The quoted line inside your reply (Telegram, iOS Messages inline reply): a peach bar, whose line it
  * was, then its words on up to two lines. A tap goes to the line while it is still in the chat.
  */
-export function BubbleQuote({ quote, title, onPress }: { quote: ReplyTo; title: string; onPress?: (id: string) => void }) {
+export function BubbleQuote({ quote, title, onPress, mine }: { quote: ReplyTo; title: string; onPress?: (id: string) => void; mine?: boolean }) {
   const words = useQuoteWords(quote);
   const body = (
     <>
-      <View style={styles.bar} />
+      <View style={[styles.bar, mine && styles.barMine]} />
       <View style={styles.quoteText}>
-        <Txt style={styles.title} lines={1}>
+        <Txt style={[styles.title, mine && styles.onMine]} lines={1}>
           {title}
         </Txt>
-        <Txt style={styles.words} lines={2}>
+        <Txt style={[styles.words, mine && styles.wordsMine]} lines={2}>
           {words}
         </Txt>
       </View>
     </>
   );
-  if (!onPress) return <View style={styles.quote}>{body}</View>;
+  if (!onPress) return <View style={[styles.quote, mine && styles.quoteMine]}>{body}</View>;
   return (
     <Pressable
       onPress={() => onPress(quote.id)}
       accessibilityRole="button"
       accessibilityLabel={`${title}: ${words}`}
-      style={({ pressed }) => [styles.quote, pressed && styles.quotePressed]}>
+      style={({ pressed }) => [styles.quote, mine && styles.quoteMine, pressed && styles.quotePressed]}>
       {body}
     </Pressable>
   );
@@ -152,6 +152,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.22)',
   },
   quotePressed: { opacity: 0.7 },
+  /** Inside your own peach bubble: the brand's ink on a faint ink wash (light words on peach read 1.6-2.5:1). */
+  quoteMine: { backgroundColor: ink.onAccentWash },
+  barMine: { backgroundColor: ink.onAccent },
+  onMine: { color: ink.onAccent },
+  wordsMine: { color: ink.onAccent, opacity: 0.75 },
   bar: { width: 3, alignSelf: 'stretch', borderRadius: 2, backgroundColor: ink.accent },
   quoteText: { flexShrink: 1, flexGrow: 1 },
   title: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: ink.accent },

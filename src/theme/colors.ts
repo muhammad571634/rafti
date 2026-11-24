@@ -373,7 +373,7 @@ export const moduleColors: Record<string, readonly [string, string]> = {
   diary: ['#C9A47A', '#8C6A44'],
   date: ['#FF5A7E', '#E0194B'],
   sleep: ['#7A77FF', '#3F3CC4'],
-  store: ['#FFA36B', '#D96526'],
+  store: [palette.apricotCalm, palette.apricotCalm],
   photo: ['#4F8DFF', '#0052D9'],
   contacts: ['#A8A8B0', '#6B6B72'],
   gifts: ['#FF5C7A', '#D91E4A'],
@@ -429,14 +429,14 @@ const systemColorsDay = {
 
 export const systemColors = isDark ? systemColorsNight : systemColorsDay;
 
+/** The glyph on a Settings-style tile: white on a system colour, the brand's ink on the brand's peach (white reads 1.9:1 there). */
+export const glyphOn = (fill: string) => (fill === palette.apricotCalm ? '#2B1305' : palette.white);
+
 /**
  * The same hues as flat iOS system colours, with their dark-mode variants, for Settings-style row
  * tiles (chat "+" menu, Us moments, notifications, Shell history, the publish sheet), as iOS pairs
  * a gradient app icon with a flat Settings icon of the same colour.
  */
-/** The glyph on a Settings-style tile: white on a system colour, the brand's ink on the brand's peach (white reads 1.9:1 there). */
-export const glyphOn = (fill: string) => (fill === palette.apricotCalm ? '#2B1305' : palette.white);
-
 export const moduleFills: Record<string, string> = {
   calls: systemColors.green,
   diary: systemColors.brown,
@@ -765,7 +765,7 @@ export const moduleTints: Record<string, string> = isDark
       diary: '#3A2E22',
       date: '#4A1F2B',
       sleep: '#26254A',
-      store: '#4A2E1E',
+      store: '#2A2A38',
       photo: '#1D2D4A',
       contacts: '#2E2E33',
       gifts: '#4A1F2B',

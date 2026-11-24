@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
-import { aurora, colors, moduleColors, moduleFills } from '@/theme';
+import { aurora, colors, glyphOn, moduleColors, moduleFills } from '@/theme';
 
 import { SFIcon } from './symbol';
 
@@ -88,7 +88,7 @@ export function ModuleIcon({ name, size }: { name: ModuleKey; size: number }) {
     <LinearGradient
       colors={moduleColors[name]}
       style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size / 4) }]}>
-      <SFIcon ios={glyph.ios} icon={glyph.icon} size={Math.round(size * 0.54)} color={colors.white} />
+      <SFIcon ios={glyph.ios} icon={glyph.icon} size={Math.round(size * 0.54)} color={glyphOn(moduleColors[name][0])} />
     </LinearGradient>
   );
 }
@@ -110,7 +110,7 @@ export function SymbolTile({
 }) {
   return (
     <View style={[styles.icon, { width: size, height: size, borderRadius: Math.round(size * 0.24), backgroundColor: deep ? `${fill}33` : fill }]}>
-      <SFIcon ios={ios} icon={icon} size={Math.round(size * 0.56)} color={deep ? fill : colors.white} />
+      <SFIcon ios={ios} icon={icon} size={Math.round(size * 0.56)} color={deep ? fill : glyphOn(fill)} />
     </View>
   );
 }

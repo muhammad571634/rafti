@@ -22,7 +22,7 @@ import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
 import { alarmSetupCost, useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
-import { inkFace, inkPeachGlass, inkRadius, ink } from '@/theme/ink';
+import { ink, inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Alarm, AlarmSound, Character } from '@/types';
 
 type Page = 'main' | 'sound';

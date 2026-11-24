@@ -59,6 +59,10 @@ export const ink = {
   /** The user's side and money: the brand's peach, the calm night tone (no glare). */
   accent: palette.apricotCalm,
   onAccent: '#2B1305',
+  /** A faint wash of the brand's ink on a peach surface (a quote inside your bubble). */
+  onAccentWash: 'rgba(43,19,5,0.10)',
+  /** The approved diary's warm cover placeholder (kept as approved when the peach washes went neutral, audit 2026-11-24). */
+  diaryCover: '#2E2422',
   danger: '#FF453A',
   /** Unread: the peach dot in a row; a count is a red badge, as iOS badges (audit #3). */
   unread: palette.apricotCalm,
