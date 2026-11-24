@@ -14,6 +14,8 @@ import th from './content/th.json';
 import tr from './content/tr.json';
 import vi from './content/vi.json';
 import zhHant from './content/zh-Hant.json';
+import { TEMPLATE_STORIES, type TemplateStory } from '@/lib/template-stories';
+
 import { phrase } from './index';
 import { overlay } from './overlay';
 import { setContentSource, setPhraseSource, setVoiceSource } from './voice';
@@ -82,6 +84,41 @@ export function localTemplate<T extends { id: string; hook: string; card: object
   const words = (CONTENT[lang]?.templates as Record<string, { hook?: string; card?: object }> | undefined)?.[template.id];
   if (!words) return template;
   return { ...template, hook: words.hook ?? template.hook, card: overlay(template.card, words.card) };
+}
+
+interface TemplateStoryWords {
+  likes?: string[];
+  dislikes?: string[];
+  arc?: { beats?: { title?: string }[] };
+}
+
+const templateWords = (lang: string, id: string) =>
+  (CONTENT[lang]?.templates as Record<string, { card?: { mask?: string }; story?: TemplateStoryWords }> | undefined)?.[id];
+
+/**
+ * A story template's story (`src/lib/template-stories`) with the words a screen shows (likes,
+ * dislikes, beat titles) in the screen language (content `templates.<id>.story`). What only the model
+ * reads stays English. Likes and dislikes not yet translated are left out away from English, so the
+ * friend's intro card never mixes languages; a beat title falls back to English, as a model-written arc does.
+ */
+export function localTemplateStory(id: string, lang = i18n.language || 'en'): TemplateStory | undefined {
+  const story = TEMPLATE_STORIES[id];
+  if (!story || lang === 'en') return story;
+  const words = templateWords(lang, id)?.story;
+  const translated = (list: string[] | undefined, english: string[]) => (list?.length && list.some((x, i) => x !== english[i]) ? list : []);
+  return {
+    ...story,
+    likes: translated(words?.likes, story.likes),
+    dislikes: translated(words?.dislikes, story.dislikes),
+    arc: { ...story.arc, beats: story.arc.beats.map((b, i) => ({ ...b, title: words?.arc?.beats?.[i]?.title?.trim() || b.title })) },
+  };
+}
+
+/** A template card's mask line in every language: a character still holding one of them never had its mask edited. */
+export function templateCardMasks(id: string): string[] {
+  return Object.keys(CONTENT)
+    .map((lang) => templateWords(lang, id)?.card?.mask?.trim())
+    .filter((m): m is string => !!m);
 }
 
 interface GroupStoryWords {

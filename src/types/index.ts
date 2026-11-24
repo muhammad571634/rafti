@@ -108,6 +108,8 @@ export interface Character {
   mask?: string;
   /** How that differs from how they are with everyone else. */
   exception?: string;
+  /** They have only just met the user (a story template's stranger): the prompt drops "you already know each other". */
+  justMet?: boolean;
 }
 
 /** The dynamic a character has with the user; a world never has two of the same. */

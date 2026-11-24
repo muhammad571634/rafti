@@ -39,7 +39,7 @@ import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, 
 import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
-import { localCharacter, localGroupStory, localized } from '@/i18n/content';
+import { localCharacter, localGroupStory, localized, localTemplateStory, templateCardMasks } from '@/i18n/content';
 import { beatOpenCue, countTurn, groupStoryById, memberMark, nextBeat, storyCue } from '@/lib/group-stories';
 import { bubblesSpeech, enforceStyleBubbles } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
@@ -52,6 +52,7 @@ import type { FirstTextRequest } from '@/ai/first-text';
 import { groupHelloCue, groupJoinCue, groupReactCue, type GroupPromptInput } from '@/ai/group-reply';
 import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverReports, serverStreamLine, serverStudio, serverWallet, serverWrite, serverCommunity, serverTemplates } from '@/ai/server';
 import { cardOf, knownCommunityCharacter, type CommunityItem } from '@/lib/community';
+import { withTemplateStory } from '@/lib/template-stories';
 import type { StoryTemplate } from '@/lib/templates';
 import { chatClock, togetherWith } from '@/lib/together';
 import { addDayNotes, ownDayOf } from '@/ai/own-day';
@@ -2496,7 +2497,8 @@ export const useAppStore = create<AppState>()(
 
       addCharacter: (character) => {
         const characterId = uid('c');
-        set((s) => ({ characters: [{ ...character, id: characterId }, ...s.characters] }));
+        // From a story template (Say hi, or Make it yours): the template's story fills what the form left out.
+        set((s) => ({ characters: [withStory({ ...character, id: characterId }), ...s.characters] }));
         const conversationId = get().addFriend(characterId);
         // Made by hand, with no draft: the model writes what they think (0z148).
         ensureOpinions(set, get, characterId);
@@ -4607,6 +4609,7 @@ async function finishHydration() {
   const saved = await getSavedLocale();
   const locale = saved ?? phoneLanguage();
   if (useAppStore.getState().user.locale !== locale) useAppStore.setState((s) => ({ user: { ...s.user, locale } }));
+  fillTemplateStories(locale);
   const { notes, diary } = useAppStore.getState();
   // With the model on, a note it had not written stays for it (Today or the note screen asks again):
   // a stock line in its place would be the silent stand-in the model-first rule forbids.
@@ -4631,6 +4634,23 @@ async function finishHydration() {
   refreshPreviews();
   useAppStore.setState({ hydrated: true });
   useAppStore.getState().writeDueDiaryPages();
+}
+
+/** A character from a story template, with the template's story where it has none (`withTemplateStory`). */
+function withStory<C extends Character>(character: C, lang?: string): C {
+  const id = character.fromTemplate;
+  return id ? withTemplateStory(character, localTemplateStory(id, lang), templateCardMasks(id)) : character;
+}
+
+/**
+ * Friends made from a story template before templates had stories (0z331) get theirs: history, mask,
+ * exception, likes and, when the model had not written one yet, the arc. Fills only what is empty.
+ */
+function fillTemplateStories(lang: string) {
+  useAppStore.setState((s) => {
+    const next = s.characters.map((c) => (c.isOfficial ? c : withStory(c, lang)));
+    return next.some((c, i) => c !== s.characters[i]) ? { characters: next } : s;
+  });
 }
 
 /**

@@ -77,8 +77,8 @@ export function personaStoryLines(character: Pick<Character, 'worldRole' | 'trop
  * official cast and for a character a user made; it never changes, so it sits in the character tier.
  * What they hide is the arc's secret, which only `arcLines` may tell.
  */
-export function relationLines(character: Pick<Character, 'relation' | 'history' | 'mask' | 'exception'>) {
-  const { relation, history, mask, exception } = character;
+export function relationLines(character: Pick<Character, 'relation' | 'history' | 'mask' | 'exception' | 'justMet'>) {
+  const { relation, history, mask, exception, justMet } = character;
   if (!relation && !history && !mask && !exception) return [];
   return [
     'YOU AND THE USER (true before this chat began; live it, never recite it):',
@@ -86,7 +86,9 @@ export function relationLines(character: Pick<Character, 'relation' | 'history' 
     ...(history ? [`- What is already between you: ${history}`] : []),
     ...(mask ? [`- How you act with them: ${mask}`] : []),
     ...(exception ? [`- Only with them: ${exception}`] : []),
-    '- You already know each other: never introduce yourself, never ask who they are, never act as if you had just met. If they play it another way, follow them.',
+    justMet
+      ? '- You have only just met, or barely know each other: learn who they are as you talk, never invent a past you do not share. If they play it another way, follow them.'
+      : '- You already know each other: never introduce yourself, never ask who they are, never act as if you had just met. If they play it another way, follow them.',
     '- Your closeness level says how far your guard is down with them, not how long you have known them. What you hold back comes out only as your own story opens.',
   ];
 }

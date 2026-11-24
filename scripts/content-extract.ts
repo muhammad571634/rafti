@@ -15,6 +15,7 @@ import { officialLorebooks } from '@/mock/lorebooks';
 import { radioGifts } from '@/mock/radio';
 import { officialScenes } from '@/mock/scenes';
 import { WORLDS } from '@/mock/worlds';
+import { TEMPLATE_STORIES } from '@/lib/template-stories';
 import { TEMPLATES } from '@/lib/templates';
 
 import { BRIEF_VOICE } from '@/mock/brief';
@@ -272,7 +273,13 @@ for (const sn of secretNotes) {
 const templatesSection: Record<string, unknown> = {};
 for (const t of TEMPLATES) {
   const { relation, tagline, bio, mask, scenario, opening, greeting } = t.card;
-  templatesSection[t.id] = { hook: t.hook, card: { relation, tagline, bio, mask, scenario, opening, greeting } };
+  // The story's shown words (src/lib/template-stories): likes, dislikes and the beat titles.
+  const story = TEMPLATE_STORIES[t.id];
+  templatesSection[t.id] = {
+    hook: t.hook,
+    card: { relation, tagline, bio, mask, scenario, opening, greeting },
+    ...(story ? { story: { likes: story.likes, dislikes: story.dislikes, arc: { beats: story.arc.beats.map((b) => ({ title: b.title })) } } } : {}),
+  };
 }
 
 const content = {

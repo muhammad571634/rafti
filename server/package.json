@@ -11,7 +11,8 @@
     "eval": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/evals/run.ts",
     "load": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/load-test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "db:seed-file": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/db/write-seed.ts"
+    "db:seed-file": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/db/write-seed.ts",
+    "probe:templates": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ../scripts/ts-test-hooks.mjs src/evals/template-probe.ts"
   },
   "dependencies": {
     "@google/genai": "2.28.0",
