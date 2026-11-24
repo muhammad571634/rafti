@@ -297,13 +297,15 @@ function StoryCard({
             <Ionicons name="book-outline" size={18} color={ink.text2} />
           </PressableScale>
         </View>
-        {/* Who they are to you, then the knot (PolyBuzz's hook); four lines so long languages still reach the knot. */}
-        <InkText variant="footnote" color={ink.text2} lines={4}>
-          <InkText variant="footnote" color={ink.text}>
-            {card.tagline ? item.hook.replace(/[.。]\s*$/, '') : item.hook}
-          </InkText>
-          {card.tagline ? ` — ${card.tagline}` : ''}
+        {/* Who they are to you, then the knot, each in full: short lines, never cut with "…" (audit #6). */}
+        <InkText variant="footnote" color={ink.text}>
+          {item.hook}
         </InkText>
+        {card.tagline ? (
+          <InkText variant="footnote" color={ink.text2}>
+            {card.tagline}
+          </InkText>
+        ) : null}
         {/* Every tag, small and side by side (PolyBuzz), wrapping only when a row is full. */}
         <View style={styles.tags}>
           {(card.tags ?? []).map((tag) => (

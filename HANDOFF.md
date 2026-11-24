@@ -2,9 +2,10 @@
 
 ### 0z342. Audit #2: compact story rows until portraits (owner: "hikoya kartalari boshla", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + OTA
 - `StoryGrid` (`src/components/stories/stories-shelf.tsx`, Find's shelf and See all): a story whose own copy has a picture keeps the 3:4 photo card; the rest are rows of one inset list (`StoryRow`): round initial (`Avatar`, story hue), name + book, hook and tagline each in full (no line cap, no "…"), tags. Tap says hi, book opens the sheet; row press = background highlight.
+- Photo cards also show hook and tagline in full (no 4-line cap).
 - "New" hides when every card of the list would say it (`allNew` in `src/lib/templates.ts`, tests); counts and Trending still show once real.
 - Server deploy by the owner checked: `/health` 200, `/v1/chat/reply` unauthenticated 401 (0z326, 0z333, 0z319 server parts live).
-- **Checked**: tsc 0, typecheck:test 0, `npm test` 1168/1168.
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1168/1168. **Seen on the A51** (Russian): Find shelf and See all, two photo cards then the rows, no "New", lines whole.
 - **Still to do**: group stories' own 3:4 letter cards (`GroupStoryGrid`) are unchanged; portraits (owner); colour-literal baseline.
 
 ### 0z341. Reduce Transparency on the chat header and profile hero (0z336 leftover; owner: "next", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + OTA
