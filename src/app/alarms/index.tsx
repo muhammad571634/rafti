@@ -92,13 +92,13 @@ export default function AlarmsScreen() {
           <InkText variant="display" accessibilityRole="header" style={styles.title}>
             {t('alarms.title')}
           </InkText>
+          {/* As iOS Clock: a grey status glyph (not tappable), one line, and Add right under it (audit #7). */}
           <View style={styles.empty}>
-            <View style={styles.emptyBell}>
-              <Ionicons name="alarm" size={44} color={ink.accent} />
-            </View>
-            <InkText variant="bodyStrong" color={ink.text}>
+            <Ionicons name="alarm-outline" size={48} color={ink.text3} />
+            <InkText variant="bodyStrong" color={ink.text2}>
               {t('alarms.empty')}
             </InkText>
+            <PillButton label={t('alarms.add')} icon="add" onPress={add} style={styles.emptyAdd} />
           </View>
         </View>
       ) : (
@@ -217,9 +217,11 @@ export default function AlarmsScreen() {
         </ScrollView>
       )}
 
-      <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
-        <PillButton label={t('alarms.add')} icon="add" onPress={add} />
-      </View>
+      {sorted.length ? (
+        <View style={[styles.dock, { paddingBottom: bottomRoom(insets.bottom, space.md) }]}>
+          <PillButton label={t('alarms.add')} icon="add" onPress={add} />
+        </View>
+      ) : null}
     </Screen>
   );
 }
@@ -309,17 +311,8 @@ const styles = StyleSheet.create({
   line: { ...inkFace('footnote'), color: ink.text2 },
   delete: { width: 92, backgroundColor: systemColors.red, alignItems: 'center', justifyContent: 'center', gap: 4 },
   deleteText: { ...inkFace('caption'), color: colors.white },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingBottom: 110 },
-  emptyBell: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: ink.tintFill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(235,173,132,0.32)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: inkGutter, paddingBottom: 140 },
+  emptyAdd: { marginTop: 8, alignSelf: 'stretch' },
   dock: {
     position: 'absolute',
     left: 0,

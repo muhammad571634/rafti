@@ -87,10 +87,12 @@ export default function NewGroupScreen() {
           <View style={styles.faces}>
             {Array.from({ length: GROUP_MAX }, (_, i) => {
               const f = pickedFriends[i];
+              // The seats keep their room but show no rings until the first pick: three empty
+              // circles with no words read as broken (audit #16); after it, the free ones say how many more fit.
               if (!f)
                 return (
                   <View key={`seat-${i}`} style={styles.face} accessible={false}>
-                    <View style={styles.seat} />
+                    <View style={[styles.seat, !pickedFriends.length && styles.seatHidden]} />
                   </View>
                 );
               return (
@@ -202,6 +204,7 @@ const styles = StyleSheet.create({
     borderColor: ink.placeholder,
     backgroundColor: ink.hairlineFill,
   },
+  seatHidden: { opacity: 0 },
   input: { ...inkFace('body'), minHeight: 54, paddingHorizontal: 18, paddingBottom: 4, color: ink.text },
   footer: { marginTop: 10, marginHorizontal: inkGutter + 6 },
 });

@@ -135,8 +135,7 @@ interface GroupStoryWords {
  * card, the members' lines and the scene cards. English, as in `src/lib/group-stories.ts`, until
  * translated. What only the model reads stays English.
  */
-export function localGroupStory<T extends { id: string; name: string; hook: string; knot: string; userRole: string; members: { id: string; who: string }[]; beats: { title: string; setting: string }[] }>(story: T): T {
-  const lang = i18n.language || 'en';
+export function localGroupStory<T extends { id: string; name: string; hook: string; knot: string; userRole: string; members: { id: string; who: string }[]; beats: { title: string; setting: string }[] }>(story: T, lang = i18n.language || 'en'): T {
   const words = (CONTENT[lang]?.groupStories as Record<string, GroupStoryWords> | undefined)?.[story.id];
   if (!words) return story;
   return {
@@ -148,6 +147,11 @@ export function localGroupStory<T extends { id: string; name: string; hook: stri
     members: story.members.map((m) => ({ ...m, who: words.members?.[m.id]?.who ?? m.who })),
     beats: story.beats.map((b, i) => ({ ...b, title: words.beats?.[i]?.title ?? b.title, setting: words.beats?.[i]?.setting ?? b.setting })),
   };
+}
+
+/** A group story's words in every language (English first): a saved label still equal to one of them was never renamed. */
+export function groupStoryEverywhere<T extends Parameters<typeof localGroupStory>[0]>(story: T): T[] {
+  return [story, ...Object.keys(CONTENT).filter((lang) => lang !== 'en').map((lang) => localGroupStory(story, lang))];
 }
 
 /** Overlay for a diary entry by id. */

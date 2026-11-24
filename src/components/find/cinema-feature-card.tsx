@@ -118,7 +118,8 @@ export const CinemaFeatureCard = memo(function CinemaFeatureCard({
             {character.name}
           </InkText>
           {hook ? (
-            <InkText variant="quote" color="rgba(255,255,255,0.84)" lines={2} style={styles.hook}>
+            // Three lines: the openings are short, so long languages still finish without "…" (audit #6).
+            <InkText variant="quote" color="rgba(255,255,255,0.84)" lines={3} style={styles.hook}>
               {hook}
             </InkText>
           ) : null}

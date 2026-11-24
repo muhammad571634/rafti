@@ -14,6 +14,7 @@ import { cleanNext } from './next-moment';
 import { cleanSetup } from './setup-prompt';
 import { cleanThreadOps, type ThreadOps } from './thread-prompt';
 import { cleanIdeas, EMOTIONS } from './reply-style';
+import { isTransientStatus, retryBusy, type Attempt } from './retry-busy';
 import { cleanSegments, type Segment } from '@/lib/reply-engine/narration';
 import type { CharacterArc, Emotion, NextKind, PlanId } from '@/types';
 import type { EventBatch } from '@/lib/analytics-events';
@@ -93,8 +94,13 @@ export function whenNoShells(listener: (refused: NoShells) => void): void {
 }
 
 async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T | null> {
+  return (await attemptCall<T>(path, init, timeoutMs)).value;
+}
+
+/** `call`, also saying whether a failure was busy or the network (worth one more try, `retryBusy`). */
+async function attemptCall<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<Attempt<T>> {
   const base = apiBase();
-  if (!base) return null;
+  if (!base) return { value: null, transient: false };
   try {
     const res = await fetch(`${base}${path}`, { ...init, signal: AbortSignal.timeout(timeoutMs) });
     if (res.status === 402) {
@@ -103,11 +109,13 @@ async function call<T>(path: string, init?: RequestInit, timeoutMs = TIMEOUT_MS)
         const free = typeof body.freeUsed === 'number' && typeof body.freeLimit === 'number' ? { used: body.freeUsed, limit: body.freeLimit } : undefined;
         noShellsListener?.({ wallet: body.wallet ?? null, free });
       }
-      return null;
+      return { value: null, transient: false };
     }
-    return res.ok ? ((await res.json()) as T) : null;
+    if (!res.ok) return { value: null, transient: isTransientStatus(res.status) };
+    return { value: (await res.json()) as T, transient: false };
   } catch {
-    return null;
+    // Offline, a dropped connection or the timeout (`retryBusy` skips a slow one).
+    return { value: null, transient: true };
   }
 }
 
@@ -263,15 +271,19 @@ export async function serverReply(
   accessToken?: string | null,
   pay?: PayLine,
 ): Promise<{ lines: string[]; parts?: (Segment[] | undefined)[]; crisis: boolean; minor?: boolean; photos?: string[]; voice?: (string | undefined)[]; setup?: SetupOffer; threads?: ThreadOps; day?: string[]; react?: React; thought?: string; ideas?: string[]; emotion?: Emotion; intensity?: number; charge?: MessageCharge; next?: NextKind } | null> {
-  const reply = await call<{ messages?: string[]; parts?: unknown; crisis?: boolean; minor?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
-    '/v1/chat/reply',
-    {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
-      // The line this reply answers, so the server counts it once (0z260).
-      body: JSON.stringify(pay ? { ...input, pay } : input),
-    },
-    TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+  // A busy model gets one more try before the chat says Not Delivered (0z338); the `pay` line
+  // keeps the server from counting the user's line twice.
+  const reply = await retryBusy(() =>
+    attemptCall<{ messages?: string[]; parts?: unknown; crisis?: boolean; minor?: boolean; photos?: string[]; voice?: unknown; setup?: unknown; threads?: unknown; day?: unknown; react?: unknown; thought?: unknown; ideas?: unknown; emotion?: unknown; intensity?: unknown; charge?: unknown; next?: unknown }>(
+      '/v1/chat/reply',
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}) },
+        // The line this reply answers, so the server counts it once (0z260).
+        body: JSON.stringify(pay ? { ...input, pay } : input),
+      },
+      TIMEOUT_MS + (input.images?.length ? PHOTO_TIMEOUT_EXTRA_MS : 0),
+    ),
   );
   // On a call the server signs each line it may read aloud (`voice`, one per message); the
   // signatures and optional structured narration `parts` stay paired with their lines.

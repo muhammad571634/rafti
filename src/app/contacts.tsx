@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   body: { flex: 1, minWidth: 0, gap: 2, paddingVertical: 10 },
   name: { ...inkFace('bodyStrong'), color: colors.text },
   bond: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  bondLabel: { ...inkFace('caption'), flexShrink: 1, color: colors.bondText },
+  // Secondary grey as the level beside it: mint read as "online" on every row (audit #17).
+  bondLabel: { ...inkFace('caption'), flexShrink: 1, color: colors.textSecondary },
   meta: { ...inkFace('footnote'), color: colors.textSecondary },
 });

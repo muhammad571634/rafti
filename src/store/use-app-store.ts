@@ -39,7 +39,8 @@ import { checkSkipTo, cleanSkipTo, gameAnswerCue, gameAskCue, groupContinueCue, 
 import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
-import { localCharacter, localGroupStory, localized, localTemplateStory, templateCardMasks } from '@/i18n/content';
+import { groupStoryEverywhere, localCharacter, localGroupStory, localized, localTemplateStory, templateCardMasks } from '@/i18n/content';
+import { relabelStoryGroups } from '@/lib/group-story-labels';
 import { beatOpenCue, countTurn, groupStoryById, memberMark, nextBeat, storyCue } from '@/lib/group-stories';
 import { bubblesSpeech, enforceStyleBubbles } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
@@ -4610,6 +4611,7 @@ async function finishHydration() {
   const locale = saved ?? phoneLanguage();
   if (useAppStore.getState().user.locale !== locale) useAppStore.setState((s) => ({ user: { ...s.user, locale } }));
   fillTemplateStories(locale);
+  relabelGroupStories(locale);
   const { notes, diary } = useAppStore.getState();
   // With the model on, a note it had not written stays for it (Today or the note screen asks again):
   // a stock line in its place would be the silent stand-in the model-first rule forbids.
@@ -4653,6 +4655,17 @@ function fillTemplateStories(lang: string) {
   });
 }
 
+/** Group stories' saved names and member lines in the screen language (`relabelStoryGroups`, audit #12). */
+function relabelGroupStories(lang = i18n.language || 'en') {
+  useAppStore.setState((s) => {
+    const out = relabelStoryGroups(s.groups, s.characters, (id) => {
+      const story = groupStoryById(id);
+      return story ? { local: localGroupStory(story, lang), all: groupStoryEverywhere(story) } : undefined;
+    });
+    return out.groups === s.groups && out.characters === s.characters ? s : out;
+  });
+}
+
 /**
  * One-to-one chats no longer get the 3-hourly "not a real person" line (owner, 2026-10-30): their
  * header's "AI character" says it. The lines saved before go too; a group keeps its own.
@@ -4689,7 +4702,9 @@ function refreshPreviews() {
 // A new screen language rewrites the previews Chats already shows ("🎤 Voice message").
 // Before hydration there is nothing saved to rewrite, and a write then would replace the save.
 i18n.on?.('languageChanged', () => {
-  if (useAppStore.getState().hydrated) refreshPreviews();
+  if (!useAppStore.getState().hydrated) return;
+  refreshPreviews();
+  relabelGroupStories();
 });
 
 /* ── selectors ─────────────────────────────────────────────────────────────── */

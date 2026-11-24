@@ -1,5 +1,15 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z338. UX audit easy batch, A list (owner: "A boshla hozir; #2 qolsin; keyin B", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + one OTA; B picks next
+- **#1 Not Delivered**: `serverReply` goes through `retryBusy` (`src/ai/retry-busy.ts`): a 429/5xx or network failure within 15 s gets one more try 8 s later (typing stays on); a timeout, 402 or 4xx does not. `call` now wraps `attemptCall`. The `pay` line keeps the server from counting the line twice. Softer "busy" text not added (the retry hides the first failure; Not Delivered stays as iOS Messages).
+- **#6**: Find hero's opening line 2 → 3 lines (no "…" in long languages). Story card hooks left with #2 (owner parked it).
+- **#7**: Alarms empty: grey `alarm-outline`, "No alarms", Add right under it; the dock shows only with alarms.
+- **#12**: `relabelStoryGroups` (`src/lib/group-story-labels.ts`, tests) on hydration and `languageChanged`: a story group's name, its members' `series` (Find folders) and `tagline` follow the screen language while they still equal the story's words in some language (a user's rename stays). `localGroupStory(story, lang?)`, `groupStoryEverywhere` in `src/i18n/content.ts`.
+- **#16**: New group's seats keep their room (owner's no-jump rule) but show no rings until the first pick.
+- **#17**: Contacts relation label in secondary grey (was mint `bondText`).
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1163/1163.
+- **Still to do**: owner's picks on B (#3 Find order, #4 pinned cards neutral, #5 scratch card glass, #8 Bedtime +, #15 Profile sections, #18 Store); #2 compact story card (parked); #9, #10, #14 from the audit; portraits (owner).
+
 ### 0z337. Full A51 sweep: colour batch + whole-app UX audit (owner: "check everything at once, then one OTA"; "find every bad place and how to fix it easily", 2026-11-24, Claude 1, Opus 5.5). Colour batch pushed (`c3458da8`) + one OTA; audit waits for the owner's picks
 - **Sweep**: 40 screens on the A51 by deep link (`sigmazam://<route>`), contact sheets in the scratchpad.
 - **Fixed in one batch**: disabled peach buttons were peach at 40% (brown): now Apple fill + tertiary text (`PillButton`, `Button`); `inkTints[2]` sun → slate (Find's Stories folder, Today's note tile, date cards read brown); edit-profile birthday gift tile pink; earlier today: daily check-in pink, quote in your bubble 0.85.
