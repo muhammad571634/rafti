@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { type Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { InkChip, InkText, PillButton } from '@/components/ink';
 import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
@@ -13,11 +13,11 @@ import { Avatar, PressableScale, Sheet } from '@/components/ui';
 import { type DiscoveryWeights, rankTemplatesForUser } from '@/lib/discovery-rank';
 import { haptic } from '@/lib/haptics';
 import { shortCount } from '@/lib/format';
-import { NEW_BELOW, shelf, type StoryTemplate, TROPES, type Trope, trendingIds, type TemplateStats } from '@/lib/templates';
+import { allNew, NEW_BELOW, shelf, type StoryTemplate, TROPES, type Trope, trendingIds, type TemplateStats } from '@/lib/templates';
 import { useAppStore } from '@/store/use-app-store';
 import { avatarGradients } from '@/theme';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
-import type { CharacterGender } from '@/types';
+import type { Character, CharacterGender } from '@/types';
 
 import { GroupStoryGrid } from './group-stories';
 import { useTemplateStats } from './use-template-stats';
@@ -26,6 +26,8 @@ export type StoryShelf = Trope | 'forYou' | 'groups';
 const SHELVES: readonly StoryShelf[] = ['forYou', 'groups', ...TROPES];
 const GAP = 12;
 const TAG_GAP = 4;
+/** The round initial of a story row: the list's face size. */
+const ROW_FACE = 48;
 
 /** The templates a shelf shows for Find's Everyone / Him / Her switch; templates with no gender fit both. */
 export function storiesFor(
@@ -108,29 +110,129 @@ export function StoryGrid({
   const { width } = useWindowDimensions();
   const cardWidth = (width - inkGutter * 2 - GAP) / 2;
   const start = useStartStory();
+  const characters = useAppStore((s) => s.characters);
+  // Made their own in Create: the card shows their friend (picture and name), as a tap opens that one.
+  const ownOf = (id: string) => characters.filter((c) => c.fromTemplate === id && c.handle !== '@stories' && !c.isOfficial).at(-1);
+  // A story with a picture keeps PolyBuzz's tall photo card; one without is a compact row until its
+  // portrait comes (audit #2: half of Find was flat 3:4 gradients with one letter).
+  const pictured = items.filter((item) => !!ownOf(item.id)?.avatarUri);
+  const plain = items.filter((item) => !ownOf(item.id)?.avatarUri);
+  const quiet = allNew(items, stats, trending);
   return (
-    <View style={styles.grid}>
-      {items.map((item) => (
-        <StoryCard
-          key={item.id}
-          item={item}
-          width={cardWidth}
-          stats={stats[item.id]}
-          trending={trending.has(item.id)}
-          onPress={() => start(localTemplate(item))}
-          onStory={() => onOpen(item)}
-        />
-      ))}
-    </View>
+    <>
+      {pictured.length ? (
+        <View style={styles.grid}>
+          {pictured.map((item) => (
+            <StoryCard
+              key={item.id}
+              item={item}
+              own={ownOf(item.id)}
+              width={cardWidth}
+              stats={stats[item.id]}
+              trending={trending.has(item.id)}
+              quiet={quiet}
+              onPress={() => start(localTemplate(item))}
+              onStory={() => onOpen(item)}
+            />
+          ))}
+        </View>
+      ) : null}
+      {plain.length ? (
+        <View style={[styles.list, pictured.length > 0 && styles.listAfterGrid]}>
+          {plain.map((item, i) => (
+            <StoryRow
+              key={item.id}
+              item={item}
+              own={ownOf(item.id)}
+              stats={stats[item.id]}
+              trending={trending.has(item.id)}
+              quiet={quiet}
+              last={i === plain.length - 1}
+              onPress={() => start(localTemplate(item))}
+              onStory={() => onOpen(item)}
+            />
+          ))}
+        </View>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * A story without a picture, as one row of an iOS list: a round initial in the story's hue, the name
+ * and the book, who they are to you and the knot in full (short lines, never cut), the tags. A tap
+ * says hi (as the photo card), the book opens the story.
+ */
+function StoryRow({
+  item: written,
+  own,
+  stats,
+  trending,
+  quiet,
+  last,
+  onPress,
+  onStory,
+}: {
+  item: StoryTemplate;
+  own?: Character;
+  stats?: TemplateStats;
+  trending: boolean;
+  quiet: boolean;
+  last: boolean;
+  onPress: () => void;
+  onStory: () => void;
+}) {
+  const { t } = useTranslation();
+  const item = localTemplate(written);
+  const { card } = item;
+  const name = own?.name || card.name;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${name}. ${item.hook}. ${card.tagline ?? ''}`}
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}>
+      <Avatar name={name} accentIndex={card.accentIndex ?? 0} size={ROW_FACE} />
+      <View style={[styles.rowBody, !last && styles.rowLine]}>
+        <View style={styles.nameRow}>
+          <InkText variant="bodyStrong" lines={1} style={styles.grow}>
+            {name}
+          </InkText>
+          {quiet ? null : <CountBadge stats={stats} trending={trending} inline />}
+          <PressableScale accessibilityRole="button" accessibilityLabel={t('stories.details')} hitSlop={12} onPress={onStory}>
+            <Ionicons name="book-outline" size={18} color={ink.text2} />
+          </PressableScale>
+        </View>
+        <InkText variant="footnote" color={ink.text}>
+          {item.hook}
+        </InkText>
+        {card.tagline ? (
+          <InkText variant="footnote" color={ink.text2}>
+            {card.tagline}
+          </InkText>
+        ) : null}
+        {card.tags?.length ? (
+          <View style={styles.tags}>
+            {card.tags.map((tag) => (
+              <View key={tag} style={styles.tag}>
+                <InkText variant="tag" color={ink.text2} lines={1}>
+                  {t(`createCharacter.traitNames.${tag}`)}
+                </InkText>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </View>
+    </Pressable>
   );
 }
 
 /** "12K chats" when there are enough people to say so, else "New" (never a made-up number). */
-function CountBadge({ stats, trending }: { stats?: TemplateStats; trending: boolean }) {
+function CountBadge({ stats, trending, inline = false }: { stats?: TemplateStats; trending: boolean; inline?: boolean }) {
   const { t } = useTranslation();
   const chats = stats?.chats ?? 0;
   return (
-    <View style={styles.badge}>
+    <View style={[styles.badge, inline && styles.badgeInline]}>
       {trending ? <Ionicons name="flame" size={12} color={ink.accent} /> : chats >= NEW_BELOW ? <Ionicons name="chatbubble" size={11} color={ink.text} /> : null}
       <InkText variant="caption" color={trending ? ink.accent : ink.text}>
         {trending ? t('stories.trending') : chats >= NEW_BELOW ? shortCount(chats) : t('stories.new')}
@@ -141,16 +243,20 @@ function CountBadge({ stats, trending }: { stats?: TemplateStats; trending: bool
 
 function StoryCard({
   item: written,
+  own,
   width,
   stats,
   trending,
+  quiet,
   onPress,
   onStory,
 }: {
   item: StoryTemplate;
+  own?: Character;
   width: number;
   stats?: TemplateStats;
   trending: boolean;
+  quiet: boolean;
   onPress: () => void;
   onStory: () => void;
 }) {
@@ -158,8 +264,6 @@ function StoryCard({
   const item = localTemplate(written);
   const { card } = item;
   const gradient = avatarGradients[(card.accentIndex ?? 0) % avatarGradients.length] as unknown as [string, string];
-  // Made their own in Create: the card shows their friend (picture and name), as a tap opens that one.
-  const own = useAppStore((s) => s.characters.filter((c) => c.fromTemplate === written.id && c.handle !== '@stories' && !c.isOfficial).at(-1));
   const name = own?.name || card.name;
   return (
     <PressableScale
@@ -174,14 +278,14 @@ function StoryCard({
         <View style={styles.photo}>
           <Image source={own.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
           <LinearGradient colors={['transparent', ink.scrim]} style={styles.scrim} />
-          <CountBadge stats={stats} trending={trending} />
+          {quiet ? <View /> : <CountBadge stats={stats} trending={trending} />}
         </View>
       ) : (
         <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.face}>
           <InkText variant="numeralSmall" color="rgba(255,255,255,0.92)" maxFontSizeMultiplier={1}>
             {name.slice(0, 1)}
           </InkText>
-          <CountBadge stats={stats} trending={trending} />
+          {quiet ? <View /> : <CountBadge stats={stats} trending={trending} />}
         </LinearGradient>
       )}
       <View style={styles.body}>
@@ -285,6 +389,14 @@ const styles = StyleSheet.create({
   photo: { aspectRatio: 3 / 4, justifyContent: 'flex-end', alignItems: 'flex-start', padding: 12, backgroundColor: ink.raised },
   scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '40%' },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
+  badgeInline: { backgroundColor: ink.raised },
+  // Stories without a picture: one inset list, rows with a hairline from the text edge (iOS).
+  list: { marginHorizontal: inkGutter, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
+  listAfterGrid: { marginTop: GAP },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, paddingLeft: 14 },
+  rowPressed: { backgroundColor: ink.raised },
+  rowBody: { flex: 1, minWidth: 0, gap: 4, paddingVertical: 12, paddingRight: 14 },
+  rowLine: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: ink.line },
   body: { gap: 6, padding: 12 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP },
   tag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: inkRadius.chip, backgroundColor: ink.raised, maxWidth: '100%' },

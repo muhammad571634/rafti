@@ -318,3 +318,11 @@ export function trendingIds(list: readonly StoryTemplate[], stats: Readonly<Reco
       .map((t) => t.id),
   );
 }
+
+/**
+ * Every card of a shelf would say "New" (nobody has used any yet, none trending): the mark then says
+ * nothing, so the cards leave it off (audit #2, 2026-11-24: eight "New" tags in a row read unfinished).
+ */
+export function allNew(list: readonly Pick<StoryTemplate, 'id'>[], stats: Readonly<Record<string, TemplateStats>>, trending: ReadonlySet<string>) {
+  return list.every((t) => !trending.has(t.id) && (stats[t.id]?.chats ?? 0) < NEW_BELOW);
+}

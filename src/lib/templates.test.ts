@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { BIO_MAX, contentProblems, GREETING_MAX, MASK_MAX, MIN_AGE, NAME_MAX, OPENING_MAX, RELATION_MAX, SCENARIO_MAX, TAGLINE_MAX, TRAITS } from './create-character';
-import { NEW_BELOW, shelf, TEMPLATES, TROPES, trendingIds, type TemplateStats } from './templates';
+import { allNew, NEW_BELOW, shelf, TEMPLATES, TROPES, trendingIds, type TemplateStats } from './templates';
 
 describe('story templates (template-library.md §2)', () => {
   it('are 100 with unique ids and names, split 55 him / 40 her / 5 any', () => {
@@ -64,5 +64,16 @@ describe('shelf order and trending (template-library.md §3)', () => {
     const marked = trendingIds(shelf('forYou', stats), stats);
     assert.deepEqual([...marked].sort(), ['t_ezra', 't_lucas']);
     assert.ok(![...marked].some((id) => (stats[id]?.week ?? 0) < NEW_BELOW));
+  });
+});
+
+describe('allNew', () => {
+  const list = [{ id: 'a' }, { id: 'b' }];
+  it('is true while nobody has used any card', () => {
+    assert.equal(allNew(list, {}, new Set()), true);
+  });
+  it('is false once one card has a count or a trending mark', () => {
+    assert.equal(allNew(list, { a: { chats: NEW_BELOW, owns: 0, week: 0 } as TemplateStats }, new Set()), false);
+    assert.equal(allNew(list, {}, new Set(['b'])), false);
   });
 });

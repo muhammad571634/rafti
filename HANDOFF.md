@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z342. Audit #2: compact story rows until portraits (owner: "hikoya kartalari boshla", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + OTA
+- `StoryGrid` (`src/components/stories/stories-shelf.tsx`, Find's shelf and See all): a story whose own copy has a picture keeps the 3:4 photo card; the rest are rows of one inset list (`StoryRow`): round initial (`Avatar`, story hue), name + book, hook and tagline each in full (no line cap, no "…"), tags. Tap says hi, book opens the sheet; row press = background highlight.
+- "New" hides when every card of the list would say it (`allNew` in `src/lib/templates.ts`, tests); counts and Trending still show once real.
+- Server deploy by the owner checked: `/health` 200, `/v1/chat/reply` unauthenticated 401 (0z326, 0z333, 0z319 server parts live).
+- **Checked**: tsc 0, typecheck:test 0, `npm test` 1168/1168.
+- **Still to do**: group stories' own 3:4 letter cards (`GroupStoryGrid`) are unchanged; portraits (owner); colour-literal baseline.
+
 ### 0z341. Reduce Transparency on the chat header and profile hero (0z336 leftover; owner: "next", 2026-11-24, Claude 1, Opus 5.5). Code done, pushed + OTA
 - `chat-header.tsx` (round buttons on a chat photo) and `profile-hero.tsx` (back button, Voice and AI pills) turn `SOLID_GLASS` while iOS Reduce Transparency is on (`useReduceTransparency`), as `PhotoGlassPill` does. Android has no such setting: no change there, so not checkable on the A51.
 - **Checked**: tsc 0, `npm test` 1166/1166.
