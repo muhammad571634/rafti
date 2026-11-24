@@ -19,6 +19,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
+import { callRuns } from '@/lib/call-runs';
 import { confirmAction } from '@/lib/confirm';
 import { clockTime, relativeStamp, shortName } from '@/lib/format';
 import { dayKey, dayKeyFromToday } from '@/mock';
@@ -51,8 +52,9 @@ export default function CallHistoryScreen() {
   const deleteCall = useAppStore((s) => s.deleteCall);
   const clearCalls = useAppStore((s) => s.clearCalls);
   // Hold a row to take that call off the list; "Clear" under the list takes them all (0z181).
-  const removeCall = (id: string) =>
-    confirmAction({ title: t('callHistory.deleteTitle'), action: t('common.delete'), cancel: t('common.cancel'), onConfirm: () => deleteCall(id) });
+  // A merged row ("Milo (3)") takes all its calls, as iOS Recents' delete does.
+  const removeCalls = (ids: string[]) =>
+    confirmAction({ title: t('callHistory.deleteTitle'), action: t('common.delete'), cancel: t('common.cancel'), onConfirm: () => ids.forEach(deleteCall) });
   const clearAll = () =>
     confirmAction({ title: t('callHistory.clearTitle'), action: t('callHistory.clear'), cancel: t('common.cancel'), onConfirm: clearCalls });
 
@@ -132,18 +134,20 @@ export default function CallHistoryScreen() {
             <View key={section.key}>
               <Txt style={styles.sectionLabel}>{section.title}</Txt>
               <InsetGroup style={styles.group}>
-                {section.calls.map((call, i) => {
+                {callRuns(section.calls).map((run, i, runs) => {
+                  const call = run[0];
                   const character = characters.find((c) => c.id === call.characterId)!;
+                  const stamp = (c: CallRecord) => (section.key === 'earlier' ? relativeStamp(c.startedAt) : clockTime(c.startedAt));
                   return (
                     <CallRow
                       key={call.id}
-                      call={call}
+                      run={run}
                       name={nameOf(character)}
                       character={character}
-                      when={section.key === 'earlier' ? relativeStamp(call.startedAt) : clockTime(call.startedAt)}
-                      last={i === section.calls.length - 1}
+                      stamp={stamp}
+                      last={i === runs.length - 1}
                       onOpen={() => router.push(`/character/${character.id}`)}
-                      onRemove={() => removeCall(call.id)}
+                      onRemove={() => removeCalls(run.map((c) => c.id))}
                       onCall={() => router.push(`/call/${character.id}`)}
                     />
                   );
@@ -162,69 +166,90 @@ export default function CallHistoryScreen() {
   );
 }
 
+/**
+ * One row of Recents: a single call, or a run of back-to-back calls with one friend of one kind
+ * ("Milo (3)", `callRuns`). A single call's row opens the friend's profile; a run's row opens its
+ * calls under it (time and length of each), and the friend's face still opens the profile.
+ */
 function CallRow({
-  call,
+  run,
   name,
   character,
-  when,
+  stamp,
   last,
   onOpen,
   onCall,
   onRemove,
 }: {
-  call: CallRecord;
+  run: CallRecord[];
   name: string;
   character: Character;
-  when: string;
+  stamp: (call: CallRecord) => string;
   last: boolean;
   onOpen: () => void;
   onCall: () => void;
   onRemove: () => void;
 }) {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const call = run[0];
+  const many = run.length > 1;
   const incoming = call.direction === 'incoming';
-  const line = call.missed
-    ? t('call.missed')
-    : `${t(`call.${call.direction}`)} · ${t('callHistory.min', { count: Math.max(1, Math.round(call.durationSec / 60)) })}`;
+  const length = (c: CallRecord) => t('callHistory.min', { count: Math.max(1, Math.round(c.durationSec / 60)) });
+  // A run says only its kind; the lengths are in its open list.
+  const line = call.missed ? t('call.missed') : many ? t(`call.${call.direction}`) : `${t(`call.${call.direction}`)} · ${length(call)}`;
   const tint = call.missed ? systemColors.red : colors.textSecondary;
+  const title = many ? `${name} (${run.length})` : name;
 
   return (
-    // The call-back button sits beside the row's tap area, not inside it.
-    <View style={styles.row}>
-      <Pressable
-        style={({ pressed }) => [styles.rowTap, pressed && styles.pressed]}
-        onPress={onOpen}
-        delayLongPress={400}
-        onLongPress={onRemove}
-        accessibilityRole="button"
-        accessibilityActions={[{ name: 'longpress', label: t('common.delete') }]}
-        onAccessibilityAction={onRemove}
-        accessibilityLabel={`${name}, ${line}, ${when}`}>
-        <CharacterAvatar character={character} size={AVATAR} />
-        <View style={styles.body}>
-          <Txt style={[styles.name, call.missed && { color: systemColors.red }]} lines={1}>
-            {name}
-          </Txt>
-          <View style={styles.meta}>
-            <Ionicons
-              name={incoming ? 'arrow-down' : 'arrow-up'}
-              size={12}
-              color={tint}
-              style={styles.arrow}
-            />
-            <Txt style={styles.metaText}>{line}</Txt>
+    <View>
+      {/* The call-back button sits beside the row's tap area, not inside it. */}
+      <View style={styles.row}>
+        <Pressable
+          style={({ pressed }) => [styles.rowTap, pressed && styles.pressed]}
+          onPress={many ? () => setOpen((v) => !v) : onOpen}
+          delayLongPress={400}
+          onLongPress={onRemove}
+          accessibilityRole="button"
+          accessibilityState={many ? { expanded: open } : undefined}
+          accessibilityActions={[{ name: 'longpress', label: t('common.delete') }]}
+          onAccessibilityAction={onRemove}
+          accessibilityLabel={`${title}, ${line}, ${stamp(call)}`}>
+          {many ? (
+            <Pressable onPress={onOpen} hitSlop={4} accessibilityRole="button" accessibilityLabel={name}>
+              <CharacterAvatar character={character} size={AVATAR} />
+            </Pressable>
+          ) : (
+            <CharacterAvatar character={character} size={AVATAR} />
+          )}
+          <View style={styles.body}>
+            <Txt style={[styles.name, call.missed && { color: systemColors.red }]} lines={1}>
+              {title}
+            </Txt>
+            <View style={styles.meta}>
+              <Ionicons name={incoming ? 'arrow-down' : 'arrow-up'} size={12} color={tint} style={styles.arrow} />
+              <Txt style={styles.metaText} lines={1}>
+                {line}
+              </Txt>
+            </View>
           </View>
+          <Txt style={styles.when}>{stamp(call)}</Txt>
+          {many ? <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={14} color={colors.textSecondary} /> : null}
+        </Pressable>
+        <PressableScale scaleTo={0.88} onPress={onCall} accessibilityRole="button" accessibilityLabel={t('a11y.callBack')} style={styles.callBack}>
+          <SFIcon ios="phone.fill" icon="call" size={17} color={systemColors.green} />
+        </PressableScale>
+      </View>
+      {many && open ? (
+        <View style={styles.runList}>
+          {run.map((c) => (
+            <View key={c.id} style={styles.runRow}>
+              <Txt style={styles.runWhen}>{stamp(c)}</Txt>
+              <Txt style={styles.metaText}>{c.missed ? t('call.missed') : length(c)}</Txt>
+            </View>
+          ))}
         </View>
-        <Txt style={styles.when}>{when}</Txt>
-      </Pressable>
-      <PressableScale
-        scaleTo={0.88}
-        onPress={onCall}
-        accessibilityRole="button"
-        accessibilityLabel={t('a11y.callBack')}
-        style={styles.callBack}>
-        <SFIcon ios="phone.fill" icon="call" size={17} color={systemColors.green} />
-      </PressableScale>
+      ) : null}
       {last ? null : <View style={styles.line} />}
     </View>
   );
@@ -263,6 +288,10 @@ const styles = StyleSheet.create({
   arrow: { transform: [{ rotate: '45deg' }] },
   metaText: { ...inkFace('footnote'), color: colors.textSecondary },
   when: { ...inkFace('sub'), color: colors.textSecondary },
+  // A run's calls, under its row, lined up with the name.
+  runList: { paddingLeft: 70, paddingRight: 60, paddingBottom: 10, gap: 6 },
+  runRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
+  runWhen: { ...inkFace('footnote'), color: colors.text, fontVariant: ['tabular-nums'] },
   callBack: {
     width: 36,
     height: 36,

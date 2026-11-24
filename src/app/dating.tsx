@@ -306,10 +306,11 @@ export default function DatingScreen() {
                   <View style={styles.tileIconBadge}>
                     <Ionicons name={tile.icon} size={16} color="rgba(255,255,255,0.90)" />
                   </View>
-                  {tile.locked ? (
-                    <Ionicons name="lock-closed" size={14} color={ink.text2} />
-                  ) : isPicked ? (
-                    <View style={styles.pickedDot} />
+                  {/* Picked: the app's selected state, a peach check (audit #9; was a white rim and a dot). */}
+                  {isPicked && !tile.locked ? (
+                    <View style={styles.pickedCheck}>
+                      <Ionicons name="checkmark" size={14} color={ink.onAccent} />
+                    </View>
                   ) : null}
                 </View>
 
@@ -317,12 +318,22 @@ export default function DatingScreen() {
                   <InkText variant="cardSmall" color={ink.text} lines={2} wordSafe>
                     {tile.name}
                   </InkText>
-                  <View style={styles.tileMeta}>
-                    <InkText variant="caption" color="rgba(255,255,255,0.68)" lines={1} style={styles.figure}>
-                      {meta}
-                    </InkText>
-                    {tile.locked ? null : <ShellIcon size={12} />}
-                  </View>
+                  {tile.locked ? (
+                    // Locked: the level it opens at, big enough to read at a glance, beside the lock.
+                    <View style={styles.tileMeta}>
+                      <Ionicons name="lock-closed" size={15} color={ink.text} />
+                      <InkText variant="bodyStrong" color={ink.text} lines={1} style={styles.figure}>
+                        {meta}
+                      </InkText>
+                    </View>
+                  ) : (
+                    <View style={styles.tileMeta}>
+                      <InkText variant="caption" color="rgba(255,255,255,0.68)" lines={1} style={styles.figure}>
+                        {meta}
+                      </InkText>
+                      <ShellIcon size={12} />
+                    </View>
+                  )}
                 </View>
               </PressableScale>
             );
@@ -495,9 +506,9 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.10)',
   },
-  tileLocked: { opacity: 0.62 },
-  tilePicked: { borderWidth: 1.8, borderColor: ink.text },
-  tilePickedLocked: { borderWidth: 1.8, borderColor: 'rgba(255,255,255,0.65)' },
+  tileLocked: { opacity: 0.5 },
+  tilePicked: { borderWidth: 2, borderColor: ink.accent },
+  tilePickedLocked: { borderWidth: 2, borderColor: ink.text3 },
   tileTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   tileIconBadge: {
     width: 32,
@@ -510,7 +521,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pickedDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: ink.accent },
+  pickedCheck: { width: 24, height: 24, borderRadius: 12, backgroundColor: ink.accent, alignItems: 'center', justifyContent: 'center' },
   tileMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   pastWrap: { alignItems: 'center', marginTop: 18 },
   pastPill: { height: 38, paddingHorizontal: 15 },

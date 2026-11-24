@@ -316,11 +316,11 @@ export default function HomeScreen() {
                     <InkText variant="bodyStrong" lines={1} style={styles.flex}>
                       {t('home.allChats')}
                     </InkText>
-                    <View style={styles.count}>
-                      <InkText variant="caption" color={ink.onBadge}>
-                        +{others.length}
-                      </InkText>
-                    </View>
+                    {/* A plain grey count before the chevron, as iOS Mail's mailbox rows: a red "+N" read
+                        like a price, and the Chats tab badge already carries the red count (audit #10). */}
+                    <InkText variant="body" color={ink.text3} style={styles.tabular}>
+                      {others.length}
+                    </InkText>
                     <Ionicons name="chevron-forward" size={18} color={ink.text3} />
                   </View>
                 </PressableScale>
@@ -741,6 +741,7 @@ const styles = StyleSheet.create({
   line: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: ink.line },
   faces: { width: FACE, flexDirection: 'row', alignItems: 'center' },
   overlap: { marginLeft: -18 },
+  tabular: { fontVariant: ['tabular-nums'] },
   count: {
     minWidth: 24,
     height: 24,
