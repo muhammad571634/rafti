@@ -805,7 +805,8 @@ export const moduleGlass: Record<string, StainedGlass> | null = isDark
       calls: stained('34,197,139', '20,83,61', '52,211,153'),
       bond: stained('20,184,166', '17,94,89', '45,212,191'),
       sleep: stained('139,92,246', '67,56,202', '167,139,250'),
-      store: stained('245,158,11', '180,83,9', '251,191,36'),
+      // The Store wears the brand as clear glass with a peach rim (owner, 2026-11-24): an amber stain read as a second, yellow peach.
+      store: stained('255,255,255', '255,255,255', '235,173,132'),
       radio: stained('236,72,153', '157,23,77', '244,114,182'),
       diary: stained('217,119,6', '120,53,15', '251,191,36'),
       date: stained('244,63,94', '136,19,55', '251,113,133'),
