@@ -18,7 +18,7 @@ import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { todayKey } from '@/mock';
 import { callsIncluded, minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
+import { colors, glyphOn, moduleFills, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
 import { FREE_MESSAGES_PER_DAY } from '@/economy/free-messages';
 
@@ -183,7 +183,7 @@ export default function MyPlanScreen() {
               ) : null}
               <View style={[styles.row, withCalls && styles.rowTopLine]}>
                 <IconTile fill={moduleFills.store}>
-                  <SFIcon ios="bubble.left.fill" icon="chatbubble" size={17} color={colors.white} />
+                  <SFIcon ios="bubble.left.fill" icon="chatbubble" size={17} color={glyphOn(moduleFills.store)} />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.chatRow')}</Txt>
                 <View style={styles.value}>
@@ -200,7 +200,7 @@ export default function MyPlanScreen() {
             <View style={featureStyles.card}>
               <View style={[styles.row, styles.rowLine]}>
                 <IconTile fill={moduleFills.store}>
-                  <ShellIcon size={17} tintColor={colors.white} />
+                  <ShellIcon size={17} tintColor={glyphOn(moduleFills.store)} />
                 </IconTile>
                 <Txt style={styles.rowTitle}>{t('plans.freeShells')}</Txt>
                 <Txt style={styles.meta}>

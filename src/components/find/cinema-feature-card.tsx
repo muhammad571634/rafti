@@ -18,7 +18,7 @@ import type { Character } from '@/types';
 
 const CARD_SCRIM = ['rgba(9,9,13,0.28)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.34)', 'rgba(9,9,13,0.92)'] as const;
 const CARD_SCRIM_STOPS = [0, 0.24, 0.56, 1] as const;
-const NEW_FILL = 'rgba(235,173,132,0.22)';
+const NEW_FILL = ink.tintFill;
 const NEW_RIM = 'rgba(235,173,132,0.44)';
 const FOOT_H = 42;
 

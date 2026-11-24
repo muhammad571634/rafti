@@ -60,7 +60,14 @@ export const ink = {
   accent: palette.apricotCalm,
   onAccent: '#2B1305',
   danger: '#FF453A',
-  unread: '#0A84FF',
+  /** Unread: the peach dot in a row; a count is a red badge, as iOS badges (audit #3). */
+  unread: palette.apricotCalm,
+  /** A tinted selected state: neutral glass with a peach rim and glyph, never a peach wash (washes read brown on obsidian). */
+  tintFill: 'rgba(255,255,255,0.13)',
+  tintRim: 'rgba(235,173,132,0.52)',
+  /** Count badges (tab, chip, row, bell): Apple's red with white, the one badge colour. */
+  badge: '#FF453A',
+  onBadge: '#FFFFFF',
 } as const;
 
 /** Radii: cards 28, tiles 32, fields 20, a list row's own card 20 (Chats), sheets 34; everything round is a pill. */
@@ -221,7 +228,8 @@ export const inkPeachGlass = {
   /** Luminous cream-peach label/glyph on dark tracks (Morph Island, TypingRow, played voice wave). */
   textBright: '#FFF3EA',
   /** Tier 1 — Prominent primary CTAs ("Say hi", "Message", "Send", "Create", "Buy"): opaque brand peach. */
-  ctaFill: ['#F0BA95', '#E39E72'] as readonly [string, string],
+  /** One flat peach (owner 2026-11-18; audit 2026-11-24 #1): a lighter top read as a second colour. */
+  ctaFill: [palette.apricotCalm, palette.apricotCalm] as readonly [string, string],
   ctaSolid: palette.apricotCalm,
   ctaRim: 'rgba(255,228,206,0.36)',
   ctaText: '#2B1305',

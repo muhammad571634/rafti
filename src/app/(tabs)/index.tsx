@@ -317,7 +317,7 @@ export default function HomeScreen() {
                       {t('home.allChats')}
                     </InkText>
                     <View style={styles.count}>
-                      <InkText variant="caption" color={ink.onAccent}>
+                      <InkText variant="caption" color={ink.onBadge}>
                         +{others.length}
                       </InkText>
                     </View>
@@ -522,7 +522,7 @@ const WaitingRow = memo(function WaitingRow({
             ) : null}
           </View>
           <View style={styles.count}>
-            <InkText variant="caption" color={ink.onAccent}>
+            <InkText variant="caption" color={ink.onBadge}>
               {count > 99 ? '99+' : count}
             </InkText>
           </View>
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.accent,
+    backgroundColor: ink.badge,
   },
   noteIcon: { width: FACE, height: FACE, borderRadius: 14, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: SUN_WASH },
   // Same gap as the other cards' rhythm; no title above, so the grid keeps the section's spacing.

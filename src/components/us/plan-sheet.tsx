@@ -313,5 +313,5 @@ const styles = StyleSheet.create({
     gap: space.sm,
   },
   ctaOff: { opacity: 0.45 },
-  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: inkRadius.pill, backgroundColor: 'rgba(235,173,132,0.16)' },
+  cost: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 10, paddingVertical: 4, borderRadius: inkRadius.pill, backgroundColor: ink.tintFill },
 });

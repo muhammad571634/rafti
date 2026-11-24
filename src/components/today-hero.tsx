@@ -320,7 +320,7 @@ export function TodayHero({
           {/* How many of their messages wait, as the app icon's badge says it: a number, no words. */}
           {conversation.unreadCount > 0 ? (
             <View style={styles.unread}>
-              <InkText variant="caption" color={ink.onAccent}>
+              <InkText variant="caption" color={ink.onBadge}>
                 {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
               </InkText>
             </View>
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: ink.accent,
+    backgroundColor: ink.badge,
   },
   // A round frosted glass glyph, 44 pt (HIG: touch target), where the "Message" field was.
   reply: {

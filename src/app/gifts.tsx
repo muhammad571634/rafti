@@ -77,7 +77,7 @@ const WAY_TILES: Record<'invite' | 'share' | 'send' | 'join' | 'back', TileLook>
 
 const GLASS_RIM = 'rgba(255,255,255,0.11)';
 const CHECKIN_RIM = 'rgba(248,113,113,0.28)';
-const PEACH_SOFT = 'rgba(235,173,132,0.14)';
+const PEACH_SOFT = ink.tintFill;
 
 /**
  * Free gifts (approved Ink Night+ prototype): warm peach horizon glow, sticky Apple HIG nav bar
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayClaimed: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
-  dayNext: { backgroundColor: 'rgba(235,173,132,0.22)', borderWidth: 1.5, borderColor: ink.accent },
+  dayNext: { backgroundColor: ink.tintFill, borderWidth: 1.5, borderColor: ink.accent },
   dayNumber: { ...inkFace('caption'), color: ink.text },
   dayAmount: { ...inkFace('caption'), fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.58)', fontVariant: ['tabular-nums'] },
   dayAmountOn: { color: ink.text, fontWeight: '700' },

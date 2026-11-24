@@ -11,7 +11,7 @@ import { PLAN_PORTRAITS, QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
 import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, space, systemColors, systemGround } from '@/theme';
+import { colors, glyphOn, moduleFills, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { PlanId } from '@/types';
 
@@ -204,7 +204,7 @@ export function PlanPicker({
             <View key={row.key} style={[styles.tableRow, i < rows.length - 1 && styles.line]}>
               <View style={styles.tableTitle}>
                 <IconTile fill={row.fill} size={28}>
-                  <Glyph glyph={row.glyph} size={16} />
+                  <Glyph glyph={row.glyph} size={16} color={glyphOn(row.fill)} />
                 </IconTile>
                 <Txt style={styles.rowTitle} lines={2}>
                   {t(`plans.compare.${row.key}`)}
@@ -274,9 +274,9 @@ export function PlanPicker({
 }
 
 /** A white glyph: an SF Symbol (Ionicons off iPhone), or the shell drawn as a white silhouette. */
-function Glyph({ glyph, size }: { glyph: CompareRow['glyph']; size: number }) {
-  if (glyph === 'shell') return <ShellIcon size={size} tintColor={colors.white} />;
-  return <SFIcon ios={glyph.ios} icon={glyph.icon} size={size} color={colors.white} />;
+function Glyph({ glyph, size, color = colors.white }: { glyph: CompareRow['glyph']; size: number; color?: string }) {
+  if (glyph === 'shell') return <ShellIcon size={size} tintColor={color} />;
+  return <SFIcon ios={glyph.ios} icon={glyph.icon} size={size} color={color} />;
 }
 
 function CellView({ cell, plan, pro = false }: { cell: Cell; plan: string; pro?: boolean }) {

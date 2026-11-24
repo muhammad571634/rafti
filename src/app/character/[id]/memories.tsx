@@ -33,7 +33,7 @@ const LOCKED_LINES: [number, number][] = [
 ];
 
 const YOU_SEG_COLOR = '#B97856';
-const LOCK_PILL_BG = 'rgba(235,173,132,0.14)';
+const LOCK_PILL_BG = ink.tintFill;
 const LOCK_PILL_RIM = 'rgba(235,173,132,0.34)';
 const BASIC_MINT = '#5FE0C4';
 const FOOTER_BG = 'rgba(9,9,13,0.94)';

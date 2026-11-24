@@ -24,7 +24,7 @@ import type { Character } from '@/types';
 const NAME_MAX = 40;
 const HERO_RING = '#14332C';
 const HERO_RIM = 'rgba(95,224,196,0.24)';
-const PEACH_SOFT = 'rgba(235,173,132,0.16)';
+const PEACH_SOFT = ink.tintFill;
 const GLASS_RIM = 'rgba(255,255,255,0.10)';
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 

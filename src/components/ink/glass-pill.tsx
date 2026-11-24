@@ -6,6 +6,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 import { PressableScale } from '@/components/ui/pressable-scale';
 import { SFIcon } from '@/components/ui/symbol';
 import { ink, inkRadius } from '@/theme/ink';
+import { SOLID_GLASS, useReduceTransparency } from '@/theme/a11y';
 
 import { InkText } from './ink-text';
 
@@ -44,6 +45,7 @@ export function PhotoGlassPill({
   accessibilityLabel,
   style,
 }: PhotoGlassPillProps) {
+  const solid = useReduceTransparency();
   return (
     <PressableScale
       scaleTo={0.96}
@@ -54,7 +56,7 @@ export function PhotoGlassPill({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ disabled: !!disabled }}
-      style={[styles.pill, flex && styles.flex, disabled && styles.disabled, style]}>
+      style={[styles.pill, solid && styles.solid, flex && styles.flex, disabled && styles.disabled, style]}>
       <View style={styles.row}>
         {ios && icon ? <SFIcon ios={ios} icon={icon} size={iconSize} color={ink.text} /> : null}
         {label ? (
@@ -75,6 +77,8 @@ export function PhotoGlassPill({
 }
 
 const styles = StyleSheet.create({
+  /** Reduce Transparency on: the glass turns solid. */
+  solid: { backgroundColor: SOLID_GLASS },
   pill: {
     minHeight: 42,
     paddingHorizontal: 14,

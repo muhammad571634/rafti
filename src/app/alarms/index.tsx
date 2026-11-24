@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   untilText: { ...inkFace('footnote'), color: ink.text2, fontVariant: ['tabular-nums'], flexShrink: 1 },
   faceWrap: { alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   bell: {
-    backgroundColor: 'rgba(235,173,132,0.16)',
+    backgroundColor: ink.tintFill,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(235,173,132,0.34)',
     alignItems: 'center',
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: 'rgba(235,173,132,0.14)',
+    backgroundColor: ink.tintFill,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(235,173,132,0.32)',
     alignItems: 'center',

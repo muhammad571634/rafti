@@ -25,7 +25,7 @@ import { useFriendName } from '@/hooks/use-friend-name';
 import { callClock, clockTime } from '@/lib/format';
 import { dayKey, todayKey } from '@/mock';
 import { minutesOf, useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, space, systemColors } from '@/theme';
+import { colors, glyphOn, moduleFills, space, systemColors } from '@/theme';
 import { inkFace } from '@/theme/ink';
 import type { Character, LedgerEntry, LedgerReason } from '@/types';
 
@@ -256,7 +256,7 @@ function ReasonTile({ reason }: { reason: LedgerReason }) {
   const look = REASON[reason];
   return (
     <View style={[styles.tile, { backgroundColor: look.fill }]}>
-      <SFIcon ios={look.ios} icon={look.icon} size={18} color={colors.white} />
+      <SFIcon ios={look.ios} icon={look.icon} size={18} color={glyphOn(look.fill)} />
     </View>
   );
 }

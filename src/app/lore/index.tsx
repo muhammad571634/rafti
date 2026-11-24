@@ -21,7 +21,7 @@ import type { Character, LoreEntry, LoreKind, Lorebook } from '@/types';
 
 type Filter = 'all' | LoreKind;
 
-const PEACH_SOFT = 'rgba(235,173,132,0.14)';
+const PEACH_SOFT = ink.tintFill;
 const KW_BG = 'rgba(255,255,255,0.06)';
 const TILE_RIM = 'rgba(255,255,255,0.10)';
 const MAX_KEYWORDS_SHOWN = 4;

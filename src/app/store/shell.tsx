@@ -36,7 +36,7 @@ import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { shellCosts, shellPacks, STARTER_PACK } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
-import { colors, moduleFills, signature, space, systemColors, systemGround } from '@/theme';
+import { colors, glyphOn, moduleFills, signature, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { PlanId, ShellPack } from '@/types';
 import { freeMessagesPerDay } from '@/economy/free-messages';
@@ -262,7 +262,7 @@ function ShellsTab({
           {COSTS.map((cost, i) => (
             <View key={cost.key} style={[styles.costRow, i < COSTS.length - 1 && styles.costLine]}>
               <IconTile fill={cost.fill}>
-                <SFIcon ios={cost.ios} icon={cost.icon} size={17} color={colors.white} />
+                <SFIcon ios={cost.ios} icon={cost.icon} size={17} color={glyphOn(cost.fill)} />
               </IconTile>
               <Txt style={styles.costTitle} lines={2}>
                 {t(`store.${cost.key}`, { count: freeMessagesPerDay(wallet.subscription, Date.now()) })}

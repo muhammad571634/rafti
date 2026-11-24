@@ -649,7 +649,7 @@ function PinnedTile({
           {item.kind === 'chat' && awake ? <View style={styles.pinnedAwake} pointerEvents="none" /> : null}
           {unread ? (
             <View style={styles.pinnedBadge} pointerEvents="none">
-              <InkText variant="caption" color={ink.onAccent} style={styles.tabular}>
+              <InkText variant="caption" color={ink.onBadge} style={styles.tabular}>
                 {unreadCount > 99 ? '99+' : unreadCount}
               </InkText>
             </View>
@@ -908,7 +908,7 @@ const ChatRow = memo(function ChatRow({
               ) : null}
               {row.muted ? <Ionicons name="notifications-off" size={13} color={ink.text3} /> : null}
               <View style={styles.spacer} />
-              <InkText variant="footnote" color={unread ? ink.accent : ink.text3} style={styles.tabular}>
+              <InkText variant="footnote" color={unread ? ink.text2 : ink.text3} style={styles.tabular}>
                 {relativeStamp(row.lastMessageAt)}
               </InkText>
             </View>
@@ -1052,7 +1052,7 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.pill,
     borderWidth: 2,
     borderColor: PINNED_BG,
-    backgroundColor: UNREAD,
+    backgroundColor: ink.badge,
     alignItems: 'center',
     justifyContent: 'center',
   },

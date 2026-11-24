@@ -117,7 +117,7 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
 
   // The ring wears the brand's peach, the same on every friend (owner, 2026-11-13).
   const accent = palette.apricot500;
-  const accentLight = palette.apricot300;
+  const accentLight = palette.apricotCalm;
   const face = characterImage(character);
   const [faceFailed, setFaceFailed] = useState(false);
   const tier = tierForLevel(event.level);

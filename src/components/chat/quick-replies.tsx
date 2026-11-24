@@ -31,7 +31,7 @@ export function QuickReplies({ ideas, onPick }: { ideas: ReplyIdea[]; onPick: (i
             style={[styles.chip, onPhoto && styles.photoChip]}
             accessibilityRole="button"
             accessibilityLabel={phrase(idea.text)}>
-            <Txt style={styles.chipText} color={onPhoto ? palette.apricot300 : colors.brandText} lines={1}>
+            <Txt style={styles.chipText} color={onPhoto ? palette.apricotCalm : colors.brandText} lines={1}>
               {phrase(idea.label)}
             </Txt>
           </PressableScale>
@@ -112,6 +112,6 @@ const styles = StyleSheet.create({
   },
   chipText: { fontSize: 15, fontWeight: '500', letterSpacing: -0.2 },
   // On a picture (an Art wallpaper): dark glass under a peach rim.
-  photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricot300 },
+  photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricotCalm },
   bar: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.sm, backgroundColor: colors.primaryFill },
 });

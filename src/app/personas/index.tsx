@@ -13,8 +13,8 @@ import { useAppStore } from '@/store/use-app-store';
 import { friendAccentAt, space } from '@/theme';
 import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
 
-const CHOSEN_WASH = 'rgba(235,173,132,0.07)';
-const PEACH_SOFT = 'rgba(235,173,132,0.16)';
+const CHOSEN_WASH = ink.tintFill;
+const PEACH_SOFT = ink.tintFill;
 const PRONOUN_BG = 'rgba(255,255,255,0.08)';
 const RADIO_OFF = 'rgba(235,235,245,0.28)';
 

@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(235,173,132,0.14)',
+    backgroundColor: ink.tintFill,
   },
   continueText: { ...inkFace('subStrong'), fontSize: 15.5, color: ink.text },
   continueButtons: { flexDirection: 'row', gap: space.sm, marginTop: 14 },

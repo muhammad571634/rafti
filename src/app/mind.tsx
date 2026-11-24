@@ -16,7 +16,7 @@ import { colors, friendAccent, space } from '@/theme';
 import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Thread } from '@/types';
 
-const NEXT_PILL_BG = 'rgba(235,173,132,0.14)';
+const NEXT_PILL_BG = ink.tintFill;
 
 /**
  * Keeping in mind (approved Ink Night+ prototype): sticky Apple HIG nav bar, friend filter chips

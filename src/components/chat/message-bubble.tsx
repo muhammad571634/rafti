@@ -690,7 +690,7 @@ function BoardNoteLine({ text }: { text: string }) {
         accessibilityRole="button"
         accessibilityLabel={`${t('board.title')}: ${text}`}
         style={styles.boardNote}>
-        <Ionicons name="pin" size={16} color={palette.apricot300} style={styles.boardPin} />
+        <Ionicons name="pin" size={16} color={palette.apricotCalm} style={styles.boardPin} />
         <Txt style={styles.boardText} lines={4}>
           {text}
         </Txt>
@@ -891,7 +891,7 @@ function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () =
           {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
         </Txt>
         {missed && onCallBack ? (
-          <Txt style={[styles.systemText, styles.systemStrong, { color: onPhoto ? palette.apricot300 : colors.brandText }]}>
+          <Txt style={[styles.systemText, styles.systemStrong, { color: onPhoto ? palette.apricotCalm : colors.brandText }]}>
             {' · '}
             {t('chat.callBack')}
           </Txt>

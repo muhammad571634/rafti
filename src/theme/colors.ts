@@ -200,32 +200,35 @@ export const nightColors: Record<keyof typeof lightColors, string> = {
   glass: 'rgba(30,30,32,0.94)',
   glassLine: 'rgba(255,255,255,0.16)',
   glassActive: 'rgba(255,255,255,0.12)',
-  border: '#38383A',
+  border: 'rgba(84,84,88,0.6)',
   well: 'rgba(118,118,128,0.24)',
-  track: '#3A3A3C',
-  borderStrong: '#48484A',
-  divider: '#2C2C2E',
+  track: '#2A2A38',
+  borderStrong: 'rgba(118,118,128,0.5)',
+  divider: 'rgba(84,84,88,0.6)',
   text: '#FFFFFF',
-  textSecondary: '#AEAEB2',
-  textMuted: '#8E8E93',
-  /** Meets WCAG AA (>= 4.5:1) on both `#16161E` cards (5.22:1) and `#1F1F2B` elevated sheets (4.56:1). */
-  textFaint: '#8E8E9A',
+  /** Four text levels on Apple's label ladder (audit #6): label, secondary, tertiary, placeholder. */
+  textSecondary: 'rgba(235,235,245,0.62)',
+  textMuted: 'rgba(235,235,245,0.55)',
+  textFaint: 'rgba(235,235,245,0.55)',
   textOnPrimary: '#2B1305',
   primary: palette.apricotCalm,
   primaryFill: palette.apricotCalm,
-  primarySoft: '#3B2A26',
-  primarySofter: '#2E2422',
-  brandText: palette.apricot300,
+  /** A soft selected or tinted state: Apple's neutral glass fill, the peach goes on the glyph (audit 2026-11-24 #2: peach washes read brown). */
+  primarySoft: 'rgba(255,255,255,0.13)',
+  primarySofter: 'rgba(118,118,128,0.24)',
+  /** One peach (audit 2026-11-24 #1): the brand's own, never the brighter `apricot300`. */
+  brandText: palette.apricotCalm,
   accentSoft: '#163F3A',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
-  bubbleSelf: '#5C3A28',
-  bubbleSelfText: '#FFFFFF',
-  bubbleOther: '#262628',
+  /** Your bubble wears the brand, as iMessage wears the accent (audit #2: it was brown `#5C3A28`). */
+  bubbleSelf: palette.apricotCalm,
+  bubbleSelfText: '#2B1305',
+  bubbleOther: '#1F1F2B',
   bubbleOtherRim: 'rgba(255,255,255,0.06)',
   bubbleOtherText: '#FFFFFF',
   bubbleTranscript: 'rgba(28,28,30,0.92)',
-  bubbleTranscriptText: '#AEAEB2',
+  bubbleTranscriptText: 'rgba(235,235,245,0.62)',
   tabActive: '#FFFFFF',
   textOnInk: '#000000',
   successText: '#30D158',
@@ -262,14 +265,17 @@ export const sleepColors: Record<keyof typeof lightColors, string> = {
   textOnPrimary: '#2B1305',
   primary: palette.apricotCalm,
   primaryFill: palette.apricotCalm,
-  primarySoft: '#3B2A26',
-  primarySofter: '#2E2422',
-  brandText: palette.apricot300,
+  /** A soft selected or tinted state: Apple's neutral glass fill, the peach goes on the glyph (audit 2026-11-24 #2: peach washes read brown). */
+  primarySoft: 'rgba(255,255,255,0.13)',
+  primarySofter: 'rgba(118,118,128,0.24)',
+  /** One peach (audit 2026-11-24 #1): the brand's own, never the brighter `apricot300`. */
+  brandText: palette.apricotCalm,
   accentSoft: '#163F3A',
   bondText: '#5FE0C4',
   bondSoft: '#163F3A',
-  bubbleSelf: '#5C3A28',
-  bubbleSelfText: '#FFFFFF',
+  /** Your bubble wears the brand, as iMessage wears the accent (audit #2: it was brown `#5C3A28`). */
+  bubbleSelf: palette.apricotCalm,
+  bubbleSelfText: '#2B1305',
   bubbleOther: '#1A1A22',
   bubbleOtherRim: 'rgba(255,255,255,0.06)',
   bubbleOtherText: '#F4F4F8',
@@ -428,12 +434,15 @@ export const systemColors = isDark ? systemColorsNight : systemColorsDay;
  * tiles (chat "+" menu, Us moments, notifications, Shell history, the publish sheet), as iOS pairs
  * a gradient app icon with a flat Settings icon of the same colour.
  */
+/** The glyph on a Settings-style tile: white on a system colour, the brand's ink on the brand's peach (white reads 1.9:1 there). */
+export const glyphOn = (fill: string) => (fill === palette.apricotCalm ? '#2B1305' : palette.white);
+
 export const moduleFills: Record<string, string> = {
   calls: systemColors.green,
   diary: systemColors.brown,
   date: systemColors.pink,
   sleep: systemColors.indigo,
-  store: isDark ? palette.apricot500 : palette.apricot600,
+  store: isDark ? palette.apricotCalm : palette.apricot600,
   photo: systemColors.blue,
   contacts: systemColors.gray,
   gifts: systemColors.red,
@@ -607,7 +616,7 @@ export const signature = {
   board: look(systemColors.cyan, isDark ? '#70D7FF' : '#0071A4', isDark ? ['#4FC3F7', '#1A6FA0'] : ['#5AC8FA', '#1E9BD7']),
   photo: look(systemColors.blue, isDark ? '#409CFF' : '#0062CC', isDark ? ['#3D8BFF', '#1550B8'] : ['#4FA3FF', '#0A6CFF']),
   // Tier 1 Store Sokin brand peach (Variant A, owner 2026-11-24): matches primary CTAs across the app.
-  shells: { hero: isDark ? (['#F0BA95', '#E39E72'] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#2B1305' },
+  shells: { hero: isDark ? ([palette.apricotCalm, palette.apricotCalm] as const) : (['#FFC497', '#EF8A4E'] as const), heroInk: '#2B1305' },
 };
 
 /**

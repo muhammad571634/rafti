@@ -22,7 +22,7 @@ import { haptic } from '@/lib/haptics';
 import { allowAlarms } from '@/notifications/alarms';
 import { alarmSetupCost, useAppStore } from '@/store/use-app-store';
 import { radius, sleepColors as night, space, systemColors, type } from '@/theme';
-import { inkFace, inkPeachGlass, inkRadius } from '@/theme/ink';
+import { inkFace, inkPeachGlass, inkRadius, ink } from '@/theme/ink';
 import type { Alarm, AlarmSound, Character } from '@/types';
 
 type Page = 'main' | 'sound';
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
   cta: { height: 56, borderRadius: inkRadius.pill, overflow: 'hidden', borderWidth: 1, borderColor: inkPeachGlass.ctaRim, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
   // System bold, not Fredoka: the button's words come in every script (Fredoka has Latin only).
   ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
-  price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: 'rgba(235,173,132,0.16)' },
+  price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: ink.tintFill },
   priceText: { ...inkFace('subStrong'), color: inkPeachGlass.ctaText },
   moment: { alignItems: 'center', justifyContent: 'center' },
   momentBody: { alignItems: 'center', gap: space.lg },

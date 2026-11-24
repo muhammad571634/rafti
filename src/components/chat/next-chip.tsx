@@ -34,7 +34,7 @@ export function NextChip({ kind, onOpen }: { kind: NextKind; onOpen: () => void 
     <View style={styles.row}>
       <PressableScale onPress={onOpen} scaleTo={0.95} style={[styles.chip, onPhoto && styles.photoChip]} accessibilityRole="button" accessibilityLabel={label}>
         <SymbolTile fill={look.fill} ios={look.ios} icon={look.icon} size={22} deep />
-        <Txt style={styles.text} color={onPhoto ? palette.apricot300 : colors.brandText} lines={1}>
+        <Txt style={styles.text} color={onPhoto ? palette.apricotCalm : colors.brandText} lines={1}>
           {label}
         </Txt>
       </PressableScale>
@@ -59,5 +59,5 @@ const styles = StyleSheet.create({
   },
   text: { flexShrink: 1, fontSize: 15, fontWeight: '500', letterSpacing: -0.2 },
   // On a picture (an Art wallpaper): dark glass under a peach rim, as the other chips.
-  photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricot300 },
+  photoChip: { backgroundColor: colors.onMediaBubble, borderColor: palette.apricotCalm },
 });

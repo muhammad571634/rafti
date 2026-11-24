@@ -90,7 +90,7 @@ export function TruthOrDareSheet({
           <Animated.View style={[styles.wheel, wheelStyle]}>
             <Svg width={SIZE} height={SIZE}>
               <Path d={`M${r} ${r} L${r} 0 A${r} ${r} 0 0 1 ${r} ${SIZE} Z`} fill={palette.apricot100} />
-              <Path d={`M${r} ${r} L${r} ${SIZE} A${r} ${r} 0 0 1 ${r} 0 Z`} fill={palette.apricot300} />
+              <Path d={`M${r} ${r} L${r} ${SIZE} A${r} ${r} 0 0 1 ${r} 0 Z`} fill={palette.apricotCalm} />
               <SvgText x={r * 1.5} y={r + 7} fontSize={20} fontWeight="700" fontFamily={fonts.body} fill={colors.text} textAnchor="middle">
                 {t('games.you')}
               </SvgText>

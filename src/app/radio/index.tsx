@@ -36,7 +36,7 @@ const RADIO_VIOLET = '#BF5AF2';
 const RADIO_TINT = '#DA8FFF';
 const RADIO_SOFT = 'rgba(191,90,242,0.18)';
 const RADIO_RIM = 'rgba(218,143,255,0.28)';
-const NEW_FILL = 'rgba(235,173,132,0.20)';
+const NEW_FILL = ink.tintFill;
 const NEW_RIM = 'rgba(235,173,132,0.40)';
 
 /**
