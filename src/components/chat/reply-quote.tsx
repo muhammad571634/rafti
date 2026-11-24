@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   quoteMine: { backgroundColor: ink.onAccentWash },
   barMine: { backgroundColor: ink.onAccent },
   onMine: { color: ink.onAccent },
-  wordsMine: { color: ink.onAccent, opacity: 0.75 },
+  wordsMine: { color: ink.onAccent, opacity: 0.85 },
   bar: { width: 3, alignSelf: 'stretch', borderRadius: 2, backgroundColor: ink.accent },
   quoteText: { flexShrink: 1, flexGrow: 1 },
   title: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: ink.accent },
