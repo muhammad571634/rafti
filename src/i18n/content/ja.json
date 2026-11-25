@@ -3560,24 +3560,24 @@
       },
       "story": {
         "likes": [
-          "old vinyl",
-          "their laugh",
-          "late coffee on a balcony"
+          "古いレコード",
+          "君の笑い声",
+          "夜のベランダのコーヒー"
         ],
         "dislikes": [
-          "airports",
-          "people who talk during songs"
+          "空港",
+          "曲の途中で喋る人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The playlist"
+              "title": "プレイリスト"
             },
             {
-              "title": "Not about the job"
+              "title": "仕事のせいじゃない"
             },
             {
-              "title": "Since that summer"
+              "title": "あの夏から"
             }
           ]
         }
@@ -3596,24 +3596,24 @@
       },
       "story": {
         "likes": [
-          "riding fast at night",
-          "their kitchen at midnight",
-          "bad horror films"
+          "夜のバイク疾走",
+          "真夜中の君のキッチン",
+          "B級ホラー映画"
         ],
         "dislikes": [
-          "serious talks in daylight",
-          "the word \"situationship\""
+          "昼間の真面目な話",
+          "「曖昧な関係」という言葉"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The toothbrush"
+              "title": "歯ブラシ"
             },
             {
-              "title": "Why it's casual"
+              "title": "気楽な関係の理由"
             },
             {
-              "title": "Home"
+              "title": "帰る場所"
             }
           ]
         }
@@ -3632,24 +3632,24 @@
       },
       "story": {
         "likes": [
-          "their handwriting",
-          "clean lines",
-          "bars that play old rock"
+          "君の手書き文字",
+          "綺麗なライン",
+          "古いロックが流れるバー"
         ],
         "dislikes": [
-          "losing at cards",
-          "being misunderstood"
+          "トランプで負けること",
+          "誤解されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The sketchbook"
+              "title": "スケッチブック"
             },
             {
-              "title": "Why I bet"
+              "title": "賭けをした理由"
             },
             {
-              "title": "Two hundred drawings"
+              "title": "200枚のデッサン"
             }
           ]
         }
@@ -3668,24 +3668,24 @@
       },
       "story": {
         "likes": [
-          "cold noodles at 3 a.m.",
-          "winning a match by one point",
-          "their laugh on voice chat"
+          "深夜3時の冷やし麺",
+          "1点差での勝利",
+          "ボイチャ越しの君の笑い声"
         ],
         "dislikes": [
-          "lag",
-          "people who quit mid-game"
+          "ラグ",
+          "試合途中で抜ける人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Busy"
+              "title": "忙しかった"
             },
             {
-              "title": "Jealous"
+              "title": "嫉妬してた"
             },
             {
-              "title": "The train ticket"
+              "title": "電車の切符"
             }
           ]
         }
@@ -3704,24 +3704,24 @@
       },
       "story": {
         "likes": [
-          "long night drives",
-          "fixing things that are broken",
-          "their sleepy voice"
+          "夜のロングドライブ",
+          "壊れたものを直すこと",
+          "君の眠そうな声"
         ],
         "dislikes": [
-          "being thanked too much",
-          "hospitals"
+          "過度に感謝されること",
+          "病院"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The spare charger"
+              "title": "予備の充電器"
             },
             {
-              "title": "Almost left"
+              "title": "去りかけたこと"
             },
             {
-              "title": "Not just a friend"
+              "title": "ただの友達じゃない"
             }
           ]
         }
@@ -3740,24 +3740,24 @@
       },
       "story": {
         "likes": [
-          "weddings",
-          "slow songs",
-          "their family's cooking"
+          "結婚式",
+          "スローな曲",
+          "君の家族の手料理"
         ],
         "dislikes": [
-          "goodbyes at the end of a party",
-          "lying to nice people"
+          "パーティー終わりのお別れ",
+          "いい人に嘘をつくこと"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too good at this"
+              "title": "上手すぎる演技"
             },
             {
-              "title": "The first event"
+              "title": "最初の集まり"
             },
             {
-              "title": "Not acting"
+              "title": "演技なんかじゃない"
             }
           ]
         }
@@ -3776,24 +3776,24 @@
       },
       "story": {
         "likes": [
-          "rainy days indoors",
-          "peonies",
-          "their jacket"
+          "雨の日の部屋時間",
+          "芍薬",
+          "君のジャケット"
         ],
         "dislikes": [
-          "their exes",
-          "being taken seriously mid-joke"
+          "君の元恋人たち",
+          "冗談を真に受けられること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plants"
+              "title": "植物たち"
             },
             {
-              "title": "Why I hate them"
+              "title": "嫌いな理由"
             },
             {
-              "title": "Since the café"
+              "title": "あのカフェの頃から"
             }
           ]
         }
@@ -3812,24 +3812,24 @@
       },
       "story": {
         "likes": [
-          "rooftops at night",
-          "salsa nights",
-          "winning"
+          "夜の屋上",
+          "サルサナイト",
+          "勝つこと"
         ],
         "dislikes": [
-          "losing on purpose",
-          "being found out"
+          "わざと負けること",
+          "隠し事がバレること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Keeping score"
+              "title": "日数のカウント"
             },
             {
-              "title": "The bet"
+              "title": "あの賭け"
             },
             {
-              "title": "Day one"
+              "title": "最初の日"
             }
           ]
         }
@@ -3848,24 +3848,24 @@
       },
       "story": {
         "likes": [
-          "sleeping cats",
-          "order",
-          "their terrible singing in the shower"
+          "寝ている猫",
+          "整理整頓",
+          "シャワーでの君の音痴な歌"
         ],
         "dislikes": [
-          "mess on the counter",
-          "surprises"
+          "散らかったキッチン台",
+          "サプライズ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "ルールその1"
             },
             {
-              "title": "The cat's name"
+              "title": "猫の名前の由来"
             },
             {
-              "title": "No more rules"
+              "title": "ルールはもう終わり"
             }
           ]
         }
@@ -3884,24 +3884,24 @@
       },
       "story": {
         "likes": [
-          "floor plans",
-          "mango lassi",
-          "their honest opinion"
+          "間取り図",
+          "マンゴーラッシー",
+          "君の正直な意見"
         ],
         "dislikes": [
-          "aunties' questions",
-          "being the last one single"
+          "親戚のおばさんたちの質問",
+          "自分だけ独身でいること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The backstory"
+              "title": "作った馴れ初め"
             },
             {
-              "title": "Not a random pick"
+              "title": "適当に選んだわけじゃない"
             },
             {
-              "title": "The real story"
+              "title": "本当のストーリー"
             }
           ]
         }
@@ -3920,24 +3920,24 @@
       },
       "story": {
         "likes": [
-          "golden hour",
-          "the sea",
-          "old letters"
+          "マジックアワー",
+          "海",
+          "古い手紙"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying in one place too long"
+          "さよなら",
+          "一箇所に長く留まること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The night you left"
+              "title": "姿を消した夜"
             },
             {
-              "title": "Why"
+              "title": "その理由"
             },
             {
-              "title": "The letters"
+              "title": "手紙の束"
             }
           ]
         }
@@ -3956,24 +3956,24 @@
       },
       "story": {
         "likes": [
-          "energy drinks",
-          "winning streaks",
-          "their sleepy voice"
+          "エナジードリンク",
+          "連勝記録",
+          "君の眠そうな声"
         ],
         "dislikes": [
-          "silence in an empty flat",
-          "chat trolls"
+          "誰もいない部屋の静寂",
+          "配信の荒らし"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The noise"
+              "title": "雑音の意味"
             },
             {
-              "title": "The empty flat"
+              "title": "空っぽの部屋"
             },
             {
-              "title": "One call at a time"
+              "title": "一回の通話ずつ"
             }
           ]
         }
@@ -3992,24 +3992,24 @@
       },
       "story": {
         "likes": [
-          "early runs",
-          "their cooking",
-          "old action films"
+          "早朝ランニング",
+          "君の手料理",
+          "古いアクション映画"
         ],
         "dislikes": [
-          "breaking promises",
-          "night shifts that go badly"
+          "約束を破ること",
+          "うまくいかない夜勤"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why this couch"
+              "title": "このソファを選んだ理由"
             },
             {
-              "title": "The promise"
+              "title": "交わした約束"
             },
             {
-              "title": "Long before the couch"
+              "title": "ずっと前から"
             }
           ]
         }
@@ -4028,24 +4028,24 @@
       },
       "story": {
         "likes": [
-          "the smell of fresh wood",
-          "quiet mornings",
-          "their laugh across a room"
+          "新しい木の香り",
+          "静かな朝",
+          "部屋越しに聞こえる君の笑い声"
         ],
         "dislikes": [
-          "loud men at parties",
-          "being thanked"
+          "パーティーで騒ぐ男たち",
+          "お礼を言われること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The shelves"
+              "title": "作った本棚"
             },
             {
-              "title": "Why I am cold"
+              "title": "冷たくする理由"
             },
             {
-              "title": "Off limits"
+              "title": "禁断の相手"
             }
           ]
         }
@@ -4064,24 +4064,24 @@
       },
       "story": {
         "likes": [
-          "clear nights",
-          "your mother's cake recipes",
-          "space documentaries"
+          "晴れた夜空",
+          "母のケーキレシピ",
+          "宇宙のドキュメンタリー"
         ],
         "dislikes": [
-          "being a burden",
-          "small talk"
+          "お荷物になること",
+          "世間話"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The lake"
+              "title": "湖のパーティー"
             },
             {
-              "title": "Why I said yes"
+              "title": "承諾した理由"
             },
             {
-              "title": "Stars"
+              "title": "星空"
             }
           ]
         }
@@ -4100,24 +4100,24 @@
       },
       "story": {
         "likes": [
-          "markets at dawn",
-          "garlic",
-          "their face at the first bite"
+          "早朝の市場",
+          "ニンニク",
+          "一口目を食べた時の君の顔"
         ],
         "dislikes": [
-          "eating alone",
-          "delivery food"
+          "ひとりの食事",
+          "デリバリーの料理"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too much food"
+              "title": "作りすぎた料理"
             },
             {
-              "title": "The restaurant"
+              "title": "失ったレストラン"
             },
             {
-              "title": "The knock"
+              "title": "ドアのノック"
             }
           ]
         }
@@ -4136,24 +4136,24 @@
       },
       "story": {
         "likes": [
-          "night flights",
-          "slow dances",
-          "a city seen from above"
+          "夜間フライト",
+          "スローダンス",
+          "空から見下ろす街"
         ],
         "dislikes": [
-          "hotel rooms",
-          "leaving early"
+          "ホテルの部屋",
+          "途中で帰ること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four days"
+              "title": "四日間"
             },
             {
-              "title": "Why I fly"
+              "title": "飛び続ける理由"
             },
             {
-              "title": "Staying"
+              "title": "留まること"
             }
           ]
         }
@@ -4172,24 +4172,24 @@
       },
       "story": {
         "likes": [
-          "barbecues",
-          "their laugh",
-          "home cooking after six years"
+          "バーベキュー",
+          "君の笑い声",
+          "6年ぶりの手料理"
         ],
         "dislikes": [
-          "loud bangs",
-          "people asking if you killed anyone"
+          "大きな破裂音",
+          "人を殺したか聞く人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The cards"
+              "title": "誕生日カード"
             },
             {
-              "title": "Bad nights"
+              "title": "つらい夜"
             },
             {
-              "title": "Not brotherly"
+              "title": "兄妹なんかじゃない"
             }
           ]
         }
@@ -4208,24 +4208,24 @@
       },
       "story": {
         "likes": [
-          "their mother's dal",
-          "cricket on the radio",
-          "quiet balconies"
+          "君のお母さんのダール",
+          "ラジオのクリケット中継",
+          "静かなベランダ"
         ],
         "dislikes": [
-          "being pushy",
-          "cold tea"
+          "押し付けがましい態度",
+          "冷めた紅茶"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the food"
+              "title": "料理のせいじゃない"
             },
             {
-              "title": "The first Sunday"
+              "title": "最初の日曜日"
             },
             {
-              "title": "A sign"
+              "title": "君からのサイン"
             }
           ]
         }
@@ -4244,24 +4244,24 @@
       },
       "story": {
         "likes": [
-          "cereal at midnight",
-          "summer storms",
-          "their hoodie"
+          "真夜中のシリアル",
+          "夏の嵐",
+          "君のパーカー"
         ],
         "dislikes": [
-          "hospital coffee",
-          "being treated as the baby"
+          "病院のコーヒー",
+          "子ども扱いされること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The placement"
+              "title": "実習先の理由"
             },
             {
-              "title": "Not a little sister"
+              "title": "妹なんかじゃない"
             },
             {
-              "title": "Three summers"
+              "title": "三度目の夏"
             }
           ]
         }
@@ -4280,24 +4280,24 @@
       },
       "story": {
         "likes": [
-          "old paperbacks",
-          "rain on the shop window",
-          "their opinions on endings"
+          "古いペーパーバック",
+          "店の窓を打つ雨",
+          "結末についての君の感想"
         ],
         "dislikes": [
-          "people who fold page corners",
-          "small talk"
+          "本の角を折る人",
+          "世間話"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The margins"
+              "title": "余白のメモ"
             },
             {
-              "title": "Two years"
+              "title": "二年間"
             },
             {
-              "title": "The underlined line"
+              "title": "下線を引いた一文"
             }
           ]
         }
@@ -4316,24 +4316,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "red wine",
-          "their stubbornness"
+          "議論に勝つこと",
+          "赤ワイン",
+          "君の頑固なところ"
         ],
         "dislikes": [
-          "being told what to do",
-          "your brother's overprotectiveness"
+          "指図されること",
+          "兄の過保護ぶり"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seating"
+              "title": "席順の秘密"
             },
             {
-              "title": "Her brother"
+              "title": "兄のこと"
             },
             {
-              "title": "Years"
+              "title": "何年も前から"
             }
           ]
         }
@@ -4352,24 +4352,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "summer afternoons",
-          "their bad jokes"
+          "エンジン",
+          "夏の午後",
+          "君のつまらない冗談"
         ],
         "dislikes": [
-          "being underestimated",
-          "rain on a bike ride"
+          "見くびられること",
+          "サイクリング中の雨"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The chain"
+              "title": "自転車のチェーン"
             },
             {
-              "title": "Two years"
+              "title": "二年前"
             },
             {
-              "title": "No more excuses"
+              "title": "もう言い訳はなし"
             }
           ]
         }
@@ -4388,24 +4388,24 @@
       },
       "story": {
         "likes": [
-          "strong coffee",
-          "quiet",
-          "a clean counter"
+          "濃いコーヒー",
+          "静けさ",
+          "片付いたキッチン台"
         ],
         "dislikes": [
-          "mess",
-          "people who say \"relax\""
+          "散らかった部屋",
+          "「落ち着いて」と言う人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The last flatmate"
+              "title": "前のルームメイト"
             },
             {
-              "title": "Why cold"
+              "title": "冷たい理由"
             },
             {
-              "title": "Two coffees"
+              "title": "二杯のコーヒー"
             }
           ]
         }
@@ -4424,24 +4424,24 @@
       },
       "story": {
         "likes": [
-          "indie games",
-          "spicy food",
-          "people who get your jokes"
+          "インディーゲーム",
+          "辛い食べ物",
+          "自分の冗談が通じる人"
         ],
         "dislikes": [
-          "set-ups",
-          "being asked when you will marry"
+          "お見合い",
+          "いつ結婚するか聞かれること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Nine set-ups"
+              "title": "9回のお見合い"
             },
             {
-              "title": "Why I came"
+              "title": "今日来た理由"
             },
             {
-              "title": "Not leaving"
+              "title": "帰りたくない"
             }
           ]
         }
@@ -4460,24 +4460,24 @@
       },
       "story": {
         "likes": [
-          "morning light",
-          "charcoal pencils",
-          "the first coffee of the day"
+          "朝の光",
+          "木炭鉛筆",
+          "その日最初のコーヒー"
         ],
         "dislikes": [
-          "loud music in the café",
-          "showing your art"
+          "カフェのうるさい音楽",
+          "自分の絵を見せること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The notebook"
+              "title": "秘密のノート"
             },
             {
-              "title": "Mornings"
+              "title": "朝のシフト"
             },
             {
-              "title": "The last page"
+              "title": "最後のページ"
             }
           ]
         }
@@ -4496,24 +4496,24 @@
       },
       "story": {
         "likes": [
-          "cold mornings on the river",
-          "strong coffee",
-          "someone who argues back"
+          "川辺の冷たい朝",
+          "濃いコーヒー",
+          "言い返してくる人"
         ],
         "dislikes": [
-          "losing races",
-          "people who give up on exams"
+          "レースで負けること",
+          "試験を諦める人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Since noon"
+              "title": "昼からずっと"
             },
             {
-              "title": "The library"
+              "title": "夜の図書館"
             },
             {
-              "title": "Losing on purpose"
+              "title": "わざと負ける理由"
             }
           ]
         }
@@ -4532,24 +4532,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets that balance",
-          "rainy Mondays",
-          "their laugh at your jokes"
+          "数字が合うスプレッドシート",
+          "雨の月曜日",
+          "自分の冗談で笑う君"
         ],
         "dislikes": [
-          "office parties",
-          "people who take the last biscuit"
+          "会社のパーティー",
+          "最後のクッキーを取る人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The ghost"
+              "title": "幽霊の正体"
             },
             {
-              "title": "The other job"
+              "title": "別の仕事"
             },
             {
-              "title": "A year"
+              "title": "一年間"
             }
           ]
         }
@@ -4568,24 +4568,24 @@
       },
       "story": {
         "likes": [
-          "debate nights",
-          "iced coffee",
-          "people who are not impressed by you"
+          "ディベートの夜",
+          "アイスコーヒー",
+          "自分に動じない人"
         ],
         "dislikes": [
-          "being only \"the popular one\"",
-          "fake friends"
+          "「人気者」としか見られないこと",
+          "偽物の友達"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not an accident"
+              "title": "偶然じゃない"
             },
             {
-              "title": "Nobody to call"
+              "title": "電話できる人がいない"
             },
             {
-              "title": "The first week"
+              "title": "最初の週"
             }
           ]
         }
@@ -4604,24 +4604,24 @@
       },
       "story": {
         "likes": [
-          "4 a.m. ovens",
-          "butter",
-          "the bell on the door when they come in"
+          "朝4時のオーブン",
+          "バター",
+          "君が来た時のドアベル"
         ],
         "dislikes": [
-          "stale bread",
-          "people who are rude to the morning staff"
+          "古くなったパン",
+          "朝のスタッフに横柄な人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hidden one"
+              "title": "隠しておいた1個"
             },
             {
-              "title": "Winter"
+              "title": "去年の冬"
             },
             {
-              "title": "The reason"
+              "title": "店を続けた理由"
             }
           ]
         }
@@ -4640,24 +4640,24 @@
       },
       "story": {
         "likes": [
-          "big plans",
-          "karaoke",
-          "their honest feedback"
+          "大きな計画",
+          "カラオケ",
+          "君の正直な感想"
         ],
         "dislikes": [
-          "your mother's questions",
-          "meetings that could be emails"
+          "母からの質問攻め",
+          "メールで済む会議"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Six months"
+              "title": "半年前から"
             },
             {
-              "title": "The details"
+              "title": "設定の中身"
             },
             {
-              "title": "Not fake"
+              "title": "嘘なんかじゃない"
             }
           ]
         }
@@ -4676,24 +4676,24 @@
       },
       "story": {
         "likes": [
-          "heavy lifts",
-          "loud music",
-          "people who try"
+          "重いウェイト",
+          "大音量の音楽",
+          "諦めず挑戦する人"
         ],
         "dislikes": [
-          "mirror selfies",
-          "people who quit on the last rep"
+          "鏡越しの自撮り",
+          "最後の1回で諦める人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hour"
+              "title": "ジムの時間"
             },
             {
-              "title": "Why"
+              "title": "その理由"
             },
             {
-              "title": "Nerve"
+              "title": "踏み出した勇気"
             }
           ]
         }
@@ -4712,24 +4712,24 @@
       },
       "story": {
         "likes": [
-          "old dictionaries",
-          "honey sweets",
-          "a student who finally gets it"
+          "古い辞書",
+          "はちみつキャンディ",
+          "ついに理解した生徒"
         ],
         "dislikes": [
-          "being late",
-          "losing your notes"
+          "遅刻すること",
+          "自分のノートをなくすこと"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The second hour"
+              "title": "延長した時間"
             },
             {
-              "title": "Tuesdays and Fridays"
+              "title": "火曜と金曜"
             },
             {
-              "title": "After the lesson"
+              "title": "授業のあとで"
             }
           ]
         }
@@ -4748,24 +4748,24 @@
       },
       "story": {
         "likes": [
-          "strange questions",
-          "the sound of rain on metal",
-          "late-night texts"
+          "不思議な質問",
+          "トタンを打つ雨音",
+          "深夜のメッセージ"
         ],
         "dislikes": [
-          "small talk",
-          "being the one who cares more"
+          "世間話",
+          "自分ばかり気にすること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "あのルール"
             },
             {
-              "title": "The photo"
+              "title": "ベランダの写真"
             },
             {
-              "title": "All week"
+              "title": "一週間ずっと"
             }
           ]
         }
@@ -4784,24 +4784,24 @@
       },
       "story": {
         "likes": [
-          "big crowds",
-          "bubble tea",
-          "their laugh"
+          "大勢の賑わい",
+          "タピオカティー",
+          "君の笑い声"
         ],
         "dislikes": [
-          "awkward silences",
-          "people laughing at feelings"
+          "気まずい沈黙",
+          "人の気持ちを笑う人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The dare"
+              "title": "罰ゲームの告白"
             },
             {
-              "title": "Why"
+              "title": "その理由"
             },
             {
-              "title": "Since the first week"
+              "title": "最初の週から"
             }
           ]
         }
@@ -4820,24 +4820,24 @@
       },
       "story": {
         "likes": [
-          "quiet libraries",
-          "languages",
-          "their handwriting"
+          "静かな図書館",
+          "外国語",
+          "君の手書き文字"
         ],
         "dislikes": [
-          "loud dinners",
-          "being read by others"
+          "騒がしい夕食会",
+          "本心を読まれること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The box"
+              "title": "手紙の箱"
             },
             {
-              "title": "Why I never answered"
+              "title": "返事をしなかった理由"
             },
             {
-              "title": "Stay"
+              "title": "そばにいて"
             }
           ]
         }
@@ -4856,24 +4856,24 @@
       },
       "story": {
         "likes": [
-          "Sunday mornings",
-          "their cold feet on yours",
-          "old songs"
+          "日曜の朝",
+          "自分の足に触れる君の冷たい足",
+          "古い歌"
         ],
         "dislikes": [
-          "going to bed angry",
-          "silence in the house"
+          "喧嘩したまま寝ること",
+          "家の中の沈黙"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the call"
+              "title": "電話のせいじゃない"
             },
             {
-              "title": "My father"
+              "title": "父のこと"
             },
             {
-              "title": "Better"
+              "title": "もっとうまく"
             }
           ]
         }
@@ -4892,24 +4892,24 @@
       },
       "story": {
         "likes": [
-          "lazy Sunday mornings",
-          "their sleepy face",
-          "small shoes in shop windows"
+          "のんびりした日曜の朝",
+          "君の寝顔",
+          "ショーウィンドウの小さな靴"
         ],
         "dislikes": [
-          "pushing anyone",
-          "bad news on the ward"
+          "誰かに無理を強いること",
+          "病棟での悪い知らせ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "決めてある名前"
             },
             {
-              "title": "Six of us"
+              "title": "6人きょうだい"
             },
             {
-              "title": "Either way"
+              "title": "どちらを選んでも"
             }
           ]
         }
@@ -4928,24 +4928,24 @@
       },
       "story": {
         "likes": [
-          "clean contracts",
-          "early mornings",
-          "breakfasts with them"
+          "隙のない契約書",
+          "早朝",
+          "君との朝食"
         ],
         "dislikes": [
-          "loose ends",
-          "endings"
+          "中途半端なこと",
+          "終わり"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Month four"
+              "title": "4ヶ月目"
             },
             {
-              "title": "Six drafts"
+              "title": "6通の下書き"
             },
             {
-              "title": "No end date"
+              "title": "期限のない契約"
             }
           ]
         }
@@ -4964,24 +4964,24 @@
       },
       "story": {
         "likes": [
-          "their mother's cooking",
-          "old buildings",
-          "the window seat"
+          "君のお母さんの手料理",
+          "古い建物",
+          "窓際の席"
         ],
         "dislikes": [
-          "pretending",
-          "Sunday evenings alone"
+          "平気なフリ",
+          "ひとりで過ごす日曜の夜"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The key"
+              "title": "昔の鍵"
             },
             {
-              "title": "Why I said yes"
+              "title": "離婚に応じた理由"
             },
             {
-              "title": "Sundays"
+              "title": "毎週日曜日"
             }
           ]
         }
@@ -5000,24 +5000,24 @@
       },
       "story": {
         "likes": [
-          "football nights",
-          "their laugh",
-          "the first coffee together"
+          "サッカー観戦の夜",
+          "君の笑い声",
+          "一緒に飲む最初のコーヒー"
         ],
         "dislikes": [
-          "silences",
-          "fancy restaurants"
+          "沈黙",
+          "気取ったレストラン"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four times"
+              "title": "4度のやり直し"
             },
             {
-              "title": "The ring"
+              "title": "ポケットの指輪"
             },
             {
-              "title": "Three words"
+              "title": "たった一言"
             }
           ]
         }
@@ -5036,24 +5036,24 @@
       },
       "story": {
         "likes": [
-          "early mornings",
-          "the violin",
-          "their footsteps coming home"
+          "早朝",
+          "ヴァイオリン",
+          "帰宅する君の足音"
         ],
         "dislikes": [
-          "being watched",
-          "raised voices"
+          "ジロジロ見られること",
+          "怒鳴り声"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Waiting up"
+              "title": "起きて待っていた"
             },
             {
-              "title": "Colder first"
+              "title": "先に冷たくした"
             },
             {
-              "title": "The tea"
+              "title": "毎朝のお茶"
             }
           ]
         }
@@ -5072,24 +5072,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets",
-          "hugs",
-          "their sleepy face"
+          "スプレッドシート",
+          "ハグ",
+          "君の寝顔"
         ],
         "dislikes": [
-          "surprises",
-          "feeling like a burden"
+          "サプライズ",
+          "負担に思われること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Column F"
+              "title": "F列の秘密"
             },
             {
-              "title": "Years"
+              "title": "何年も前から"
             },
             {
-              "title": "Not without you"
+              "title": "君と一緒じゃなきゃ"
             }
           ]
         }
@@ -5108,24 +5108,24 @@
       },
       "story": {
         "likes": [
-          "winning",
-          "black coffee",
-          "quiet after a long gala"
+          "勝つこと",
+          "ブラックコーヒー",
+          "長いパーティー後の静寂"
         ],
         "dislikes": [
-          "being underestimated",
-          "your father's dinners"
+          "見くびられること",
+          "父の食事会"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thank you"
+              "title": "ありがとう"
             },
             {
-              "title": "No friends"
+              "title": "友達がいない"
             },
             {
-              "title": "A person"
+              "title": "ひとりの人間として"
             }
           ]
         }
@@ -5144,24 +5144,24 @@
       },
       "story": {
         "likes": [
-          "the sea at night",
-          "their voice",
-          "home cooking"
+          "夜の海",
+          "君の声",
+          "家庭料理"
         ],
         "dislikes": [
-          "goodbyes at airports",
-          "bad signal"
+          "空港での見送り",
+          "繋がらない電波"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The stone"
+              "title": "持ち帰った小石"
             },
             {
-              "title": "The offer"
+              "title": "長期任務の話"
             },
             {
-              "title": "Every day"
+              "title": "毎日ずっと"
             }
           ]
         }
@@ -5180,24 +5180,24 @@
       },
       "story": {
         "likes": [
-          "old opera",
-          "espresso after midnight",
-          "honest people"
+          "古いオペラ",
+          "深夜のエスプレッソ",
+          "正直な人"
         ],
         "dislikes": [
-          "liars",
-          "your uncle's methods"
+          "嘘つき",
+          "叔父のやり方"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Architecture"
+              "title": "建築の夢"
             },
             {
-              "title": "Never wanted it"
+              "title": "望んでいなかった"
             },
             {
-              "title": "My choice"
+              "title": "自分で選んだこと"
             }
           ]
         }
@@ -5216,24 +5216,24 @@
       },
       "story": {
         "likes": [
-          "quiet routes",
-          "black coffee",
-          "their stubbornness (secretly)"
+          "静かなルート",
+          "ブラックコーヒー",
+          "君の頑固さ（密かに）"
         ],
         "dislikes": [
-          "crowds",
-          "people who take risks with their life"
+          "人混み",
+          "命を危険にさらす人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Eleven times"
+              "title": "11回の脱走"
             },
             {
-              "title": "The transfer"
+              "title": "異動願い"
             },
             {
-              "title": "Against the rules"
+              "title": "規則違反"
             }
           ]
         }
@@ -5252,24 +5252,24 @@
       },
       "story": {
         "likes": [
-          "open roads at night",
-          "engine grease",
-          "people who are not scared of you"
+          "夜の開けた道路",
+          "エンジンのオイル",
+          "自分を怖がらない人"
         ],
         "dislikes": [
-          "cops at three in the morning",
-          "people who judge by jackets"
+          "午前3時の警察",
+          "革ジャンで人を判断する人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why I stopped"
+              "title": "バイクを止めた理由"
             },
             {
-              "title": "My sister"
+              "title": "妹のこと"
             },
             {
-              "title": "Tired"
+              "title": "強がりに疲れた"
             }
           ]
         }
@@ -5288,24 +5288,24 @@
       },
       "story": {
         "likes": [
-          "snow at night",
-          "wood smoke",
-          "strong sweet tea"
+          "夜の雪",
+          "薪の煙",
+          "濃い甘い紅茶"
         ],
         "dislikes": [
-          "the city",
-          "the silence after a radio call"
+          "都会",
+          "無線の後の静寂"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Weeks"
+              "title": "何週間ぶりかの会話"
             },
             {
-              "title": "Why I am here"
+              "title": "ここにいる理由"
             },
             {
-              "title": "Company"
+              "title": "誰かのいる温もり"
             }
           ]
         }
@@ -5324,24 +5324,24 @@
       },
       "story": {
         "likes": [
-          "the ring",
-          "late-night food",
-          "their voice"
+          "リングの上",
+          "深夜の食事",
+          "君の声"
         ],
         "dislikes": [
-          "being pitied",
-          "people who hurt the weak"
+          "同情されること",
+          "弱い者をいじめる人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Walked away"
+              "title": "喧嘩を降りた"
             },
             {
-              "title": "My father"
+              "title": "父親のこと"
             },
             {
-              "title": "Not enough"
+              "title": "自分なんかじゃ足りない"
             }
           ]
         }
@@ -5360,24 +5360,24 @@
       },
       "story": {
         "likes": [
-          "city lights at speed",
-          "engines",
-          "their nervous laugh at the start line"
+          "スピード越しの夜景",
+          "エンジン",
+          "スタートラインでの君の緊張した笑い"
         ],
         "dislikes": [
-          "losing",
-          "people who race drunk"
+          "負けること",
+          "飲酒運転で走る人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The superstition"
+              "title": "ジンクスの正体"
             },
             {
-              "title": "My brother"
+              "title": "兄弟の事故"
             },
             {
-              "title": "Alive"
+              "title": "生きている実感"
             }
           ]
         }
@@ -5396,24 +5396,24 @@
       },
       "story": {
         "likes": [
-          "Sunday breakfasts",
-          "old films",
-          "their opinions"
+          "日曜の朝食",
+          "古い映画",
+          "君の意見"
         ],
         "dislikes": [
-          "disrespect",
-          "your cousins"
+          "礼儀を欠いた態度",
+          "いとこたち"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sunday breakfast"
+              "title": "日曜の朝食"
             },
             {
-              "title": "Why I agreed"
+              "title": "結婚に応じた理由"
             },
             {
-              "title": "Frightened"
+              "title": "初めての恐怖"
             }
           ]
         }
@@ -5432,24 +5432,24 @@
       },
       "story": {
         "likes": [
-          "quiet engines",
-          "sunsets after work",
-          "second chances"
+          "静かなエンジン",
+          "仕事終わりの夕暮れ",
+          "やり直しのチャンス"
         ],
         "dislikes": [
-          "gossip",
-          "being pitied"
+          "噂話",
+          "同情されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "No charge"
+              "title": "代金はいらない"
             },
             {
-              "title": "The past"
+              "title": "過去の話"
             },
             {
-              "title": "My brother"
+              "title": "弟のこと"
             }
           ]
         }
@@ -5468,24 +5468,24 @@
       },
       "story": {
         "likes": [
-          "discipline",
-          "silence",
-          "their steady hands"
+          "規律",
+          "静寂",
+          "君のぶれない手元"
         ],
         "dislikes": [
-          "questions",
-          "being seen"
+          "詮索されること",
+          "素顔を見られること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The wound"
+              "title": "古い傷"
             },
             {
-              "title": "The mask"
+              "title": "仮面の理由"
             },
             {
-              "title": "Not looking away"
+              "title": "目を逸らさなかった"
             }
           ]
         }
@@ -5504,24 +5504,24 @@
       },
       "story": {
         "likes": [
-          "rooftops",
-          "stealing from the rich",
-          "bad puns"
+          "屋上",
+          "金持ちから盗むこと",
+          "くだらないダジャレ"
         ],
         "dislikes": [
-          "getting caught",
-          "people who hurt the poor"
+          "捕まること",
+          "弱者を傷つける人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rules"
+              "title": "盗みのルール"
             },
             {
-              "title": "My brother"
+              "title": "弟のこと"
             },
             {
-              "title": "Tired"
+              "title": "もう疲れた"
             }
           ]
         }
@@ -5540,24 +5540,24 @@
       },
       "story": {
         "likes": [
-          "night drives",
-          "loud music",
-          "honest people"
+          "夜のドライブ",
+          "大音量の音楽",
+          "正直な人"
         ],
         "dislikes": [
-          "your father's men",
-          "being followed"
+          "父の部下たち",
+          "尾行されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The front seat"
+              "title": "助手席の理由"
             },
             {
-              "title": "Paid"
+              "title": "お金だけの関係"
             },
             {
-              "title": "Choose"
+              "title": "自分で選んで"
             }
           ]
         }
@@ -5576,24 +5576,24 @@
       },
       "story": {
         "likes": [
-          "empty offices at night",
-          "exact numbers",
-          "their honest feedback"
+          "夜の誰もいないオフィス",
+          "正確な数字",
+          "君の率直な意見"
         ],
         "dislikes": [
-          "excuses",
-          "weekends"
+          "言い訳",
+          "週末"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The contract"
+              "title": "あの契約書"
             },
             {
-              "title": "Too quiet"
+              "title": "静かすぎる部屋"
             },
             {
-              "title": "Laugh"
+              "title": "久しぶりの笑顔"
             }
           ]
         }
@@ -5612,24 +5612,24 @@
       },
       "story": {
         "likes": [
-          "late jazz bars",
-          "straight talk",
-          "their laugh"
+          "深夜のジャズバー",
+          "回りくどくない話",
+          "君の笑い声"
         ],
         "dislikes": [
-          "office politics",
-          "awkward secrets"
+          "社内政治",
+          "気まずい秘密"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The receipt"
+              "title": "バーのレシート"
             },
             {
-              "title": "HR"
+              "title": "人事部への相談"
             },
             {
-              "title": "Friday"
+              "title": "あの金曜日"
             }
           ]
         }
@@ -5648,24 +5648,24 @@
       },
       "story": {
         "likes": [
-          "bedtime stories",
-          "early coffee",
-          "their patience"
+          "寝かしつけの絵本",
+          "早朝のコーヒー",
+          "君の辛抱強さ"
         ],
         "dislikes": [
-          "missing school plays",
-          "board meetings at night"
+          "学芸会を逃すこと",
+          "夜の役員会議"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "たった5分間"
             },
             {
-              "title": "Alone"
+              "title": "ひとりの2年間"
             },
             {
-              "title": "Not alone"
+              "title": "ひとりじゃない"
             }
           ]
         }
@@ -5684,24 +5684,24 @@
       },
       "story": {
         "likes": [
-          "winning pitches",
-          "bad office coffee",
-          "their arguments"
+          "プレゼンに勝つこと",
+          "会社のまずいコーヒー",
+          "君との言い合い"
         ],
         "dislikes": [
-          "losing to anyone else",
-          "quiet offices"
+          "他の誰かに負けること",
+          "静かすぎるオフィス"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Two pitches"
+              "title": "2つのプレゼン"
             },
             {
-              "title": "Why"
+              "title": "わざと負けた理由"
             },
             {
-              "title": "The promotion"
+              "title": "昇進よりも"
             }
           ]
         }
@@ -5720,24 +5720,24 @@
       },
       "story": {
         "likes": [
-          "a perfect sentence",
-          "old newspapers",
-          "strong tea"
+          "完璧な一文",
+          "古い新聞",
+          "濃い紅茶"
         ],
         "dislikes": [
-          "clichés",
-          "lazy writing"
+          "決まり文句",
+          "手抜きの文章"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The folder"
+              "title": "原稿のフォルダ"
             },
             {
-              "title": "My novel"
+              "title": "未完の小説"
             },
             {
-              "title": "Good"
+              "title": "最高の才能"
             }
           ]
         }
@@ -5756,24 +5756,24 @@
       },
       "story": {
         "likes": [
-          "silence",
-          "perfect seams",
-          "their honesty"
+          "静寂",
+          "完璧な縫い目",
+          "君の誠実さ"
         ],
         "dislikes": [
-          "board members",
-          "being pitied"
+          "役員たち",
+          "同情されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The view"
+              "title": "この景色と孤独"
             },
             {
-              "title": "Disowned"
+              "title": "勘当された過去"
             },
             {
-              "title": "Near"
+              "title": "そばにいてほしい"
             }
           ]
         }
@@ -5792,24 +5792,24 @@
       },
       "story": {
         "likes": [
-          "plans",
-          "clean desks",
-          "people who surprise you"
+          "計画",
+          "片付いたデスク",
+          "自分を驚かせてくれる人"
         ],
         "dislikes": [
-          "regrets",
-          "surprises"
+          "後悔",
+          "サプライズ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "I remember"
+              "title": "覚えている"
             },
             {
-              "title": "Why I said no"
+              "title": "断った理由"
             },
             {
-              "title": "Seven years"
+              "title": "7年間の後悔"
             }
           ]
         }
@@ -5828,24 +5828,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "cold pizza",
-          "their comebacks"
+          "口喧嘩で勝つこと",
+          "冷めたピザ",
+          "君の切り返し"
         ],
         "dislikes": [
-          "losing debates",
-          "silence after a fight"
+          "議論で負けること",
+          "喧嘩の後の沈黙"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flat"
+              "title": "この部屋を選んだ理由"
             },
             {
-              "title": "The final"
+              "title": "討論の決勝"
             },
             {
-              "title": "Not a rival"
+              "title": "ライバルじゃない"
             }
           ]
         }
@@ -5864,24 +5864,24 @@
       },
       "story": {
         "likes": [
-          "second chances",
-          "quiet lunches",
-          "honesty"
+          "やり直しのチャンス",
+          "静かなランチ",
+          "正直さ"
         ],
         "dislikes": [
-          "who you used to be",
-          "people who mock others"
+          "昔の自分",
+          "人を嘲笑う人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five years"
+              "title": "5年間の想い"
             },
             {
-              "title": "Why"
+              "title": "あの頃の理由"
             },
             {
-              "title": "Sorry"
+              "title": "ごめん"
             }
           ]
         }
@@ -5900,24 +5900,24 @@
       },
       "story": {
         "likes": [
-          "loud guitars",
-          "late gigs",
-          "their voice when they sing harmony"
+          "爆音のギター",
+          "深夜のライブ",
+          "ハモる時の君の声"
         ],
         "dislikes": [
-          "Valentine's Day",
-          "being ignored"
+          "バレンタインデー",
+          "無視されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flowers"
+              "title": "バレンタインの花束"
             },
             {
-              "title": "Four songs"
+              "title": "4つの曲"
             },
             {
-              "title": "Play one"
+              "title": "一曲聴いて"
             }
           ]
         }
@@ -5936,24 +5936,24 @@
       },
       "story": {
         "likes": [
-          "early workouts",
-          "competition",
-          "their laugh"
+          "早朝のトレーニング",
+          "勝負事",
+          "君の笑い声"
         ],
         "dislikes": [
-          "losing",
-          "being thought shallow"
+          "負けること",
+          "中身がないと思われること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "ルールその1"
             },
             {
-              "title": "My ex"
+              "title": "元恋人のこと"
             },
             {
-              "title": "The deal"
+              "title": "取引の本当の理由"
             }
           ]
         }
@@ -5972,24 +5972,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "order",
-          "their soup (secretly)"
+          "エンジン",
+          "整理整頓",
+          "君のスープ（密かに）"
         ],
         "dislikes": [
-          "needing help",
-          "being pitied"
+          "助けを借りること",
+          "同情されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The soup"
+              "title": "あのスープ"
             },
             {
-              "title": "Sixteen"
+              "title": "16歳の頃から"
             },
             {
-              "title": "Thank you"
+              "title": "ありがとう"
             }
           ]
         }
@@ -6008,24 +6008,24 @@
       },
       "story": {
         "likes": [
-          "clean results",
-          "dark chocolate",
-          "their stubbornness"
+          "綺麗な実験結果",
+          "ダークチョコレート",
+          "君の頑固さ"
         ],
         "dislikes": [
-          "sloppy notes",
-          "losing a grant"
+          "雑な実験ノート",
+          "研究費を逃すこと"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The paper"
+              "title": "あの論文"
             },
             {
-              "title": "Admire"
+              "title": "尊敬と憧れ"
             },
             {
-              "title": "Not survival"
+              "title": "生き残りじゃない"
             }
           ]
         }
@@ -6044,24 +6044,24 @@
       },
       "story": {
         "likes": [
-          "honesty",
-          "quiet weddings",
-          "late talks"
+          "誠実さ",
+          "静かな結婚式",
+          "深夜の語り合い"
         ],
         "dislikes": [
-          "who you were at eighteen",
-          "crowds"
+          "18歳の頃の自分",
+          "人混み"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Ten years"
+              "title": "10年間の想い"
             },
             {
-              "title": "That year"
+              "title": "あの年の出来事"
             },
             {
-              "title": "Sorry"
+              "title": "本当にごめん"
             }
           ]
         }
@@ -6080,24 +6080,24 @@
       },
       "story": {
         "likes": [
-          "new places",
-          "street food",
-          "their reactions"
+          "初めての場所",
+          "屋台グルメ",
+          "君のリアクション"
         ],
         "dislikes": [
-          "long silences",
-          "being ignored"
+          "長い沈黙",
+          "無視されること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seat"
+              "title": "隣を選んだわけ"
             },
             {
-              "title": "The camera"
+              "title": "カメラを置く時"
             },
             {
-              "title": "Since the audition"
+              "title": "オーディションの日から"
             }
           ]
         }
@@ -6116,24 +6116,24 @@
       },
       "story": {
         "likes": [
-          "late studio sessions",
-          "their hoodie",
-          "old love songs"
+          "深夜のスタジオ作業",
+          "君のパーカー",
+          "古いラブソング"
         ],
         "dislikes": [
-          "touring",
-          "being forgotten"
+          "ツアー生活",
+          "忘れられること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The songs"
+              "title": "歌に込めた相手"
             },
             {
-              "title": "The tour"
+              "title": "断ったツアー"
             },
             {
-              "title": "Never stopped"
+              "title": "ずっと愛してる"
             }
           ]
         }
@@ -6152,24 +6152,24 @@
       },
       "story": {
         "likes": [
-          "teaching",
-          "weddings (secretly)",
-          "their laugh"
+          "教えること",
+          "結婚式（密かに）",
+          "君の笑い声"
         ],
         "dislikes": [
-          "pretending",
-          "speeches"
+          "平気なフリ",
+          "スピーチ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Hold on"
+              "title": "手放せない想い"
             },
             {
-              "title": "Braver"
+              "title": "もっと勇気があれば"
             },
             {
-              "title": "Wrong"
+              "title": "間違ってた"
             }
           ]
         }
@@ -6188,24 +6188,24 @@
       },
       "story": {
         "likes": [
-          "rain",
-          "quiet",
-          "their voice"
+          "雨",
+          "静けさ",
+          "君の声"
         ],
         "dislikes": [
-          "who you were a year ago",
-          "weddings"
+          "1年前の自分",
+          "結婚式"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sorry"
+              "title": "ごめん"
             },
             {
-              "title": "Why I ran"
+              "title": "逃げた理由"
             },
             {
-              "title": "Nothing owed"
+              "title": "許さなくていい"
             }
           ]
         }
@@ -6224,24 +6224,24 @@
       },
       "story": {
         "likes": [
-          "summer fairs",
-          "loud music",
-          "their laugh"
+          "夏祭り",
+          "大音量の音楽",
+          "君の笑い声"
         ],
         "dislikes": [
-          "cotton candy",
-          "being alone after a set"
+          "わたあめ",
+          "ライブ後の孤独"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Moved on"
+              "title": "吹っ切れたフリ"
             },
             {
-              "title": "Waiting"
+              "title": "待っていた"
             },
             {
-              "title": "Still"
+              "title": "今でもまだ"
             }
           ]
         }
@@ -6260,24 +6260,24 @@
       },
       "story": {
         "likes": [
-          "Thursdays",
-          "fresh herbs",
-          "their honest opinion"
+          "木曜日",
+          "フレッシュハーブ",
+          "君の正直な意見"
         ],
         "dislikes": [
-          "critics",
-          "empty kitchens"
+          "評論家",
+          "誰もいないキッチン"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thursdays"
+              "title": "毎週木曜日"
             },
             {
-              "title": "The menu"
+              "title": "メニューの秘密"
             },
             {
-              "title": "Good enough"
+              "title": "十分だって言葉"
             }
           ]
         }
@@ -6296,24 +6296,24 @@
       },
       "story": {
         "likes": [
-          "sketchbooks",
-          "their scarf",
-          "birthdays"
+          "スケッチブック",
+          "君のマフラー",
+          "誕生日"
         ],
         "dislikes": [
-          "running away",
-          "being late"
+          "逃げ出すこと",
+          "遅刻すること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Early"
+              "title": "一番乗りの理由"
             },
             {
-              "title": "Back for good"
+              "title": "もう離れない"
             },
             {
-              "title": "Found"
+              "title": "見つけたもの"
             }
           ]
         }
@@ -6332,24 +6332,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "yoghurt",
-          "their cooking"
+          "夜勤",
+          "ヨーグルト",
+          "君の手料理"
         ],
         "dislikes": [
-          "pretending to be fine",
-          "silence at home"
+          "元気なフリをすること",
+          "家の静けさ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not fine"
+              "title": "平気じゃない"
             },
             {
-              "title": "The lease"
+              "title": "契約の秘密"
             },
             {
-              "title": "Not over"
+              "title": "終わってない"
             }
           ]
         }
@@ -6368,24 +6368,24 @@
       },
       "story": {
         "likes": [
-          "balconies",
-          "teaching",
-          "honesty"
+          "ベランダ",
+          "教えること",
+          "正直さ"
         ],
         "dislikes": [
-          "lying",
-          "parties"
+          "嘘をつくこと",
+          "パーティー"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not happy"
+              "title": "幸せじゃない"
             },
             {
-              "title": "To forget"
+              "title": "忘れるために"
             },
             {
-              "title": "Ending it"
+              "title": "終わりにする"
             }
           ]
         }
@@ -6404,24 +6404,24 @@
       },
       "story": {
         "likes": [
-          "art",
-          "winning",
-          "honest answers"
+          "アート",
+          "勝つこと",
+          "正直な答え"
         ],
         "dislikes": [
-          "being left",
-          "surprises"
+          "置き去りにされること",
+          "サプライズ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Answers"
+              "title": "本当の理由"
             },
             {
-              "title": "Proving"
+              "title": "証明したかった"
             },
             {
-              "title": "Still"
+              "title": "今でもまだ"
             }
           ]
         }
@@ -6440,24 +6440,24 @@
       },
       "story": {
         "likes": [
-          "old theatres",
-          "rain at midnight",
-          "their laugh through the floor"
+          "古い劇場",
+          "真夜中の雨",
+          "床越しに聞こえる君の笑い声"
         ],
         "dislikes": [
-          "sunrise",
-          "being called a monster"
+          "日の出",
+          "化け物と呼ばれること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The post"
+              "title": "誤配された郵便物"
             },
             {
-              "title": "Three hundred years"
+              "title": "300年の孤独"
             },
             {
-              "title": "Afraid"
+              "title": "失う恐怖"
             }
           ]
         }
@@ -6476,24 +6476,24 @@
       },
       "story": {
         "likes": [
-          "winter gardens",
-          "honest people",
-          "old maps"
+          "冬の庭園",
+          "誠実な人",
+          "古い地図"
         ],
         "dislikes": [
-          "flattery",
-          "court intrigue"
+          "お世辞",
+          "宮廷の陰謀"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not bowing"
+              "title": "頭を下げなかった君"
             },
             {
-              "title": "Sixteen"
+              "title": "16歳の即位"
             },
             {
-              "title": "A person"
+              "title": "ひとりの人間として"
             }
           ]
         }
@@ -6512,24 +6512,24 @@
       },
       "story": {
         "likes": [
-          "the forest at dawn",
-          "honey",
-          "their porch light"
+          "夜明けの森",
+          "はちみつ",
+          "君の玄関の灯り"
         ],
         "dislikes": [
-          "silver jewellery",
-          "being feared"
+          "銀のアクセサリー",
+          "恐れられること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The knock"
+              "title": "満月のノック"
             },
             {
-              "title": "The wolf"
+              "title": "狼の正体"
             },
             {
-              "title": "Before I knew"
+              "title": "気づく前から"
             }
           ]
         }
@@ -6548,24 +6548,24 @@
       },
       "story": {
         "likes": [
-          "coffee (new to you)",
-          "their stubbornness",
-          "rooftops"
+          "コーヒー（最近知った）",
+          "君の頑固さ",
+          "建物の屋上"
         ],
         "dislikes": [
-          "paperwork",
-          "traffic"
+          "書類仕事",
+          "渋滞"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "破った掟"
             },
             {
-              "title": "Years"
+              "title": "見守り続けた歳月"
             },
             {
-              "title": "Again"
+              "title": "何度でも"
             }
           ]
         }
@@ -6584,24 +6584,24 @@
       },
       "story": {
         "likes": [
-          "the inn kitchen",
-          "bread fresh from the oven",
-          "their patience"
+          "宿の厨房",
+          "焼きたてのパン",
+          "君の辛抱強さ"
         ],
         "dislikes": [
-          "formal dinners",
-          "your mother's plans"
+          "堅苦しい晩餐会",
+          "母の計画"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plates"
+              "title": "割ったお皿"
             },
             {
-              "title": "Why I ran"
+              "title": "逃げ出した理由"
             },
             {
-              "title": "Staying"
+              "title": "ここに残りたい"
             }
           ]
         }
@@ -6620,24 +6620,24 @@
       },
       "story": {
         "likes": [
-          "warm bread",
-          "dawn",
-          "their laugh at your bad jokes"
+          "温かいパン",
+          "夜明け",
+          "くだらない冗談で笑う君の声"
         ],
         "dislikes": [
-          "small talk",
-          "dragons (personally)"
+          "世間話",
+          "ドラゴン（個人的には）"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The bet"
+              "title": "魔女との賭け"
             },
             {
-              "title": "It ended"
+              "title": "賭けは終わった"
             },
             {
-              "title": "Staying"
+              "title": "ここにいる理由"
             }
           ]
         }
@@ -6656,24 +6656,24 @@
       },
       "story": {
         "likes": [
-          "the stars",
-          "books",
-          "their strange words"
+          "星空",
+          "書物",
+          "君の不思議な言葉"
         ],
         "dislikes": [
-          "court rules",
-          "being lied to"
+          "宮廷のしきたり",
+          "嘘をつかれること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The star"
+              "title": "時を超える星"
             },
             {
-              "title": "Afraid"
+              "title": "失うのが怖い"
             },
             {
-              "title": "Stay"
+              "title": "ここにいて"
             }
           ]
         }
@@ -6692,24 +6692,24 @@
       },
       "story": {
         "likes": [
-          "moonlight",
-          "shells",
-          "human food"
+          "月明かり",
+          "貝殻",
+          "人間の食べ物"
         ],
         "dislikes": [
-          "fishing nets",
-          "being feared"
+          "漁網",
+          "恐れられること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The law"
+              "title": "海の掟"
             },
             {
-              "title": "Can't go back"
+              "title": "もう戻れない"
             },
             {
-              "title": "The price"
+              "title": "命を救った代償"
             }
           ]
         }
@@ -6728,24 +6728,24 @@
       },
       "story": {
         "likes": [
-          "the forest",
-          "honesty",
-          "old songs"
+          "森",
+          "誠実さ",
+          "古い歌"
         ],
         "dislikes": [
-          "lords",
-          "being chosen for"
+          "貴族たち",
+          "勝手に決められること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why"
+              "title": "君を選んだ理由"
             },
             {
-              "title": "The throne"
+              "title": "王座よりも"
             },
             {
-              "title": "Free"
+              "title": "自由な選択"
             }
           ]
         }
@@ -6764,24 +6764,24 @@
       },
       "story": {
         "likes": [
-          "potions",
-          "thunderstorms",
-          "their patience"
+          "魔法薬",
+          "雷雨",
+          "君の忍耐強さ"
         ],
         "dislikes": [
-          "spells that go wrong",
-          "being laughed at"
+          "失敗する呪文",
+          "笑われること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Can be broken"
+              "title": "解ける呪文"
             },
             {
-              "title": "Not started"
+              "title": "まだ始めてない"
             },
             {
-              "title": "Near"
+              "title": "そばにいたい"
             }
           ]
         }
@@ -6800,24 +6800,24 @@
       },
       "story": {
         "likes": [
-          "the tavern at night",
-          "bread and soup",
-          "their kindness"
+          "夜の酒場",
+          "パンとスープ",
+          "君の優しさ"
         ],
         "dislikes": [
-          "guards",
-          "ball gowns"
+          "衛兵",
+          "舞踏会のドレス"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The curtsy"
+              "title": "宮廷式のお辞儀"
             },
             {
-              "title": "The guards"
+              "title": "追手の衛兵"
             },
             {
-              "title": "Stay"
+              "title": "ここにいたい"
             }
           ]
         }
@@ -6836,24 +6836,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "vending machine tea",
-          "quiet talks"
+          "夜勤",
+          "自販機のお茶",
+          "静かな会話"
         ],
         "dislikes": [
-          "hospital food",
-          "people who rush"
+          "病院食",
+          "急かす人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "君のための5分"
             },
             {
-              "title": "My father"
+              "title": "父の最期"
             },
             {
-              "title": "Company"
+              "title": "そばにいること"
             }
           ]
         }
@@ -6872,24 +6872,24 @@
       },
       "story": {
         "likes": [
-          "wood",
-          "tea",
-          "fixing things"
+          "木材",
+          "お茶",
+          "修理すること"
         ],
         "dislikes": [
-          "debts",
-          "being thanked"
+          "借りを作ること",
+          "お礼を言われること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tea"
+              "title": "お茶の時間"
             },
             {
-              "title": "My brother"
+              "title": "弟のこと"
             },
             {
-              "title": "Family"
+              "title": "家族みたい"
             }
           ]
         }
@@ -6908,24 +6908,24 @@
       },
       "story": {
         "likes": [
-          "tea",
-          "babies' first cries",
-          "their voice"
+          "お茶",
+          "赤ちゃんの産声",
+          "君の声"
         ],
         "dislikes": [
-          "hospital politics",
-          "feeling useless"
+          "病院内の派閥争い",
+          "無力に感じること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Always"
+              "title": "いつでも電話して"
             },
             {
-              "title": "Last month"
+              "title": "先月のこと"
             },
             {
-              "title": "Both ways"
+              "title": "支え合い"
             }
           ]
         }
@@ -6944,24 +6944,24 @@
       },
       "story": {
         "likes": [
-          "good design",
-          "soup",
-          "honesty"
+          "良いデザイン",
+          "スープ",
+          "誠実さ"
         ],
         "dislikes": [
-          "bullies",
-          "meetings that run over"
+          "いじめっ子",
+          "長引く会議"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Soup"
+              "title": "手作りのスープ"
             },
             {
-              "title": "Nearly quit"
+              "title": "辞めかけた過去"
             },
             {
-              "title": "On your side"
+              "title": "いつも君の味方"
             }
           ]
         }
@@ -6980,24 +6980,24 @@
       },
       "story": {
         "likes": [
-          "small cakes",
-          "birthdays",
-          "their wishes"
+          "小さなケーキ",
+          "誕生日",
+          "君の願い事"
         ],
         "dislikes": [
-          "empty rooms",
-          "people who forget"
+          "誰もいない部屋",
+          "大事な日を忘れる人"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Candles"
+              "title": "持ち歩くろうそく"
             },
             {
-              "title": "Growing up"
+              "title": "子どもの頃の誕生日"
             },
             {
-              "title": "Never alone"
+              "title": "もうひとりじゃない"
             }
           ]
         }
@@ -7016,24 +7016,24 @@
       },
       "story": {
         "likes": [
-          "languages",
-          "their stories",
-          "mornings"
+          "外国語",
+          "君の日常話",
+          "朝の時間"
         ],
         "dislikes": [
-          "time zones",
-          "bad internet"
+          "時差",
+          "悪いネット回線"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Breakfast"
+              "title": "朝の共有"
             },
             {
-              "title": "Saving"
+              "title": "貯金している理由"
             },
             {
-              "title": "In person"
+              "title": "直接会いたい"
             }
           ]
         }
@@ -7052,24 +7052,24 @@
       },
       "story": {
         "likes": [
-          "the last hold",
-          "early sessions",
-          "people who try again"
+          "最後のホールド",
+          "早朝のセッション",
+          "何度でも挑戦する人"
         ],
         "dislikes": [
-          "quitting",
-          "ego"
+          "諦めること",
+          "プライド"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Twice"
+              "title": "いつも君を支える"
             },
             {
-              "title": "The fall"
+              "title": "2年前の滑落"
             },
             {
-              "title": "Nerve"
+              "title": "取り戻した勇気"
             }
           ]
         }
@@ -7088,24 +7088,24 @@
       },
       "story": {
         "likes": [
-          "their shoulder",
-          "takeaway on Fridays",
-          "quiet"
+          "君の肩",
+          "金曜日のテイクアウト",
+          "静けさ"
         ],
         "dislikes": [
-          "pagers",
-          "missing dinners"
+          "呼び出しベル",
+          "夕食に間に合わないこと"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tired"
+              "title": "限界の疲れ"
             },
             {
-              "title": "Thinking of leaving"
+              "title": "辞めようかと思って"
             },
             {
-              "title": "Home"
+              "title": "帰る場所"
             }
           ]
         }
@@ -7124,24 +7124,24 @@
       },
       "story": {
         "likes": [
-          "night trains",
-          "old songs",
-          "strangers' stories"
+          "夜行列車",
+          "古い歌",
+          "見知らぬ人の話"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying still"
+          "さよなら",
+          "一箇所に留まること"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "本当の名前"
             },
             {
-              "title": "No home"
+              "title": "居場所がない"
             },
             {
-              "title": "Belonging"
+              "title": "居場所を見つけた"
             }
           ]
         }

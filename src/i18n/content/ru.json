@@ -3560,24 +3560,24 @@
       },
       "story": {
         "likes": [
-          "old vinyl",
-          "their laugh",
-          "late coffee on a balcony"
+          "старый винил",
+          "твой смех",
+          "поздний кофе на балконе"
         ],
         "dislikes": [
-          "airports",
-          "people who talk during songs"
+          "аэропорты",
+          "разговоры во время песен"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The playlist"
+              "title": "Плейлист"
             },
             {
-              "title": "Not about the job"
+              "title": "Дело не в работе"
             },
             {
-              "title": "Since that summer"
+              "title": "С того лета"
             }
           ]
         }
@@ -3596,24 +3596,24 @@
       },
       "story": {
         "likes": [
-          "riding fast at night",
-          "their kitchen at midnight",
-          "bad horror films"
+          "быстрая езда по ночам",
+          "твоя кухня в полночь",
+          "плохие фильмы ужасов"
         ],
         "dislikes": [
-          "serious talks in daylight",
-          "the word \"situationship\""
+          "серьёзные разговоры днём",
+          "слово «ситуативные отношения»"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The toothbrush"
+              "title": "Зубная щётка"
             },
             {
-              "title": "Why it's casual"
+              "title": "Почему всё несерьёзно"
             },
             {
-              "title": "Home"
+              "title": "Дом"
             }
           ]
         }
@@ -3632,24 +3632,24 @@
       },
       "story": {
         "likes": [
-          "their handwriting",
-          "clean lines",
-          "bars that play old rock"
+          "твой почерк",
+          "чистые линии",
+          "бары со старым роком"
         ],
         "dislikes": [
-          "losing at cards",
-          "being misunderstood"
+          "проигрывать в карты",
+          "быть неправильно понятым"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The sketchbook"
+              "title": "Скетчбук"
             },
             {
-              "title": "Why I bet"
+              "title": "Зачем я поспорил"
             },
             {
-              "title": "Two hundred drawings"
+              "title": "Двести рисунков"
             }
           ]
         }
@@ -3668,24 +3668,24 @@
       },
       "story": {
         "likes": [
-          "cold noodles at 3 a.m.",
-          "winning a match by one point",
-          "their laugh on voice chat"
+          "холодная лапша в три ночи",
+          "победа с разницей в одно очко",
+          "твой смех в голосовом чате"
         ],
         "dislikes": [
-          "lag",
-          "people who quit mid-game"
+          "лаги",
+          "выход игроков посреди матча"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Busy"
+              "title": "Занят"
             },
             {
-              "title": "Jealous"
+              "title": "Ревновал"
             },
             {
-              "title": "The train ticket"
+              "title": "Билет на поезд"
             }
           ]
         }
@@ -3704,24 +3704,24 @@
       },
       "story": {
         "likes": [
-          "long night drives",
-          "fixing things that are broken",
-          "their sleepy voice"
+          "долгие ночные поездки",
+          "чинить сломанные вещи",
+          "твой сонный голос"
         ],
         "dislikes": [
-          "being thanked too much",
-          "hospitals"
+          "лишняя благодарность",
+          "больницы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The spare charger"
+              "title": "Запасная зарядка"
             },
             {
-              "title": "Almost left"
+              "title": "Чуть не уехал"
             },
             {
-              "title": "Not just a friend"
+              "title": "Не просто друг"
             }
           ]
         }
@@ -3740,24 +3740,24 @@
       },
       "story": {
         "likes": [
-          "weddings",
-          "slow songs",
-          "their family's cooking"
+          "свадьбы",
+          "медленные песни",
+          "готовка твоей семьи"
         ],
         "dislikes": [
-          "goodbyes at the end of a party",
-          "lying to nice people"
+          "прощания в конце вечера",
+          "врать хорошим людям"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too good at this"
+              "title": "Слишком вжился в роль"
             },
             {
-              "title": "The first event"
+              "title": "Первое торжество"
             },
             {
-              "title": "Not acting"
+              "title": "Больше не играю"
             }
           ]
         }
@@ -3776,24 +3776,24 @@
       },
       "story": {
         "likes": [
-          "rainy days indoors",
-          "peonies",
-          "their jacket"
+          "дождливые дни дома",
+          "пионы",
+          "твоя куртка"
         ],
         "dislikes": [
-          "their exes",
-          "being taken seriously mid-joke"
+          "твои бывшие",
+          "когда шутку принимают всерьёз"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plants"
+              "title": "Растения"
             },
             {
-              "title": "Why I hate them"
+              "title": "Почему я их ненавижу"
             },
             {
-              "title": "Since the café"
+              "title": "Со времён кофейни"
             }
           ]
         }
@@ -3812,24 +3812,24 @@
       },
       "story": {
         "likes": [
-          "rooftops at night",
-          "salsa nights",
-          "winning"
+          "крыши по ночам",
+          "вечера сальсы",
+          "побеждать"
         ],
         "dislikes": [
-          "losing on purpose",
-          "being found out"
+          "поддаваться нарочно",
+          "когда обман раскрывается"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Keeping score"
+              "title": "Счёт дней"
             },
             {
-              "title": "The bet"
+              "title": "Спор"
             },
             {
-              "title": "Day one"
+              "title": "Первый день"
             }
           ]
         }
@@ -3848,24 +3848,24 @@
       },
       "story": {
         "likes": [
-          "sleeping cats",
-          "order",
-          "their terrible singing in the shower"
+          "спящие кошки",
+          "порядок",
+          "твоё ужасное пение в душе"
         ],
         "dislikes": [
-          "mess on the counter",
-          "surprises"
+          "бардак на столешнице",
+          "сюрпризы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Правило первое"
             },
             {
-              "title": "The cat's name"
+              "title": "Кличка кота"
             },
             {
-              "title": "No more rules"
+              "title": "Больше без правил"
             }
           ]
         }
@@ -3884,24 +3884,24 @@
       },
       "story": {
         "likes": [
-          "floor plans",
-          "mango lassi",
-          "their honest opinion"
+          "чертежи планировок",
+          "манговый ласси",
+          "твоё честное мнение"
         ],
         "dislikes": [
-          "aunties' questions",
-          "being the last one single"
+          "расспросы тётушек",
+          "быть последней без пары"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The backstory"
+              "title": "Выдуманная история"
             },
             {
-              "title": "Not a random pick"
+              "title": "Не случайный выбор"
             },
             {
-              "title": "The real story"
+              "title": "Настоящая история"
             }
           ]
         }
@@ -3920,24 +3920,24 @@
       },
       "story": {
         "likes": [
-          "golden hour",
-          "the sea",
-          "old letters"
+          "золотой час",
+          "море",
+          "старые письма"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying in one place too long"
+          "прощания",
+          "долго сидеть на одном месте"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The night you left"
+              "title": "Ночь, когда я ушла"
             },
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "The letters"
+              "title": "Письма"
             }
           ]
         }
@@ -3956,24 +3956,24 @@
       },
       "story": {
         "likes": [
-          "energy drinks",
-          "winning streaks",
-          "their sleepy voice"
+          "энергетики",
+          "серии побед",
+          "твой сонный голос"
         ],
         "dislikes": [
-          "silence in an empty flat",
-          "chat trolls"
+          "тишина в пустой квартире",
+          "тролли в чате"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The noise"
+              "title": "Шум"
             },
             {
-              "title": "The empty flat"
+              "title": "Пустая квартира"
             },
             {
-              "title": "One call at a time"
+              "title": "Звонок за звонком"
             }
           ]
         }
@@ -3992,24 +3992,24 @@
       },
       "story": {
         "likes": [
-          "early runs",
-          "their cooking",
-          "old action films"
+          "ранние пробежки",
+          "твоя готовка",
+          "старые боевики"
         ],
         "dislikes": [
-          "breaking promises",
-          "night shifts that go badly"
+          "нарушать обещания",
+          "тяжёлые ночные смены"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why this couch"
+              "title": "Почему этот диван"
             },
             {
-              "title": "The promise"
+              "title": "Обещание"
             },
             {
-              "title": "Long before the couch"
+              "title": "Задолго до дивана"
             }
           ]
         }
@@ -4028,24 +4028,24 @@
       },
       "story": {
         "likes": [
-          "the smell of fresh wood",
-          "quiet mornings",
-          "their laugh across a room"
+          "запах свежей древесины",
+          "тихие утра",
+          "твой смех через всю комнату"
         ],
         "dislikes": [
-          "loud men at parties",
-          "being thanked"
+          "шумные парни на вечеринках",
+          "лишняя благодарность"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The shelves"
+              "title": "Полки"
             },
             {
-              "title": "Why I am cold"
+              "title": "Почему я холоден"
             },
             {
-              "title": "Off limits"
+              "title": "Под запретом"
             }
           ]
         }
@@ -4064,24 +4064,24 @@
       },
       "story": {
         "likes": [
-          "clear nights",
-          "your mother's cake recipes",
-          "space documentaries"
+          "ясные ночи",
+          "мамины рецепты тортов",
+          "документалки о космосе"
         ],
         "dislikes": [
-          "being a burden",
-          "small talk"
+          "быть обузой",
+          "пустая болтовня"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The lake"
+              "title": "Озеро"
             },
             {
-              "title": "Why I said yes"
+              "title": "Почему я согласился"
             },
             {
-              "title": "Stars"
+              "title": "Звёзды"
             }
           ]
         }
@@ -4100,24 +4100,24 @@
       },
       "story": {
         "likes": [
-          "markets at dawn",
-          "garlic",
-          "their face at the first bite"
+          "рынки на рассвете",
+          "чеснок",
+          "твоё лицо при первом укусе"
         ],
         "dislikes": [
-          "eating alone",
-          "delivery food"
+          "есть в одиночестве",
+          "еда из доставки"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too much food"
+              "title": "Слишком много еды"
             },
             {
-              "title": "The restaurant"
+              "title": "Ресторан"
             },
             {
-              "title": "The knock"
+              "title": "Стук в дверь"
             }
           ]
         }
@@ -4136,24 +4136,24 @@
       },
       "story": {
         "likes": [
-          "night flights",
-          "slow dances",
-          "a city seen from above"
+          "ночные рейсы",
+          "медленные танцы",
+          "город с высоты"
         ],
         "dislikes": [
-          "hotel rooms",
-          "leaving early"
+          "гостиничные номера",
+          "уходить рано"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four days"
+              "title": "Четыре дня"
             },
             {
-              "title": "Why I fly"
+              "title": "Почему я летаю"
             },
             {
-              "title": "Staying"
+              "title": "Остаюсь"
             }
           ]
         }
@@ -4172,24 +4172,24 @@
       },
       "story": {
         "likes": [
-          "barbecues",
-          "their laugh",
-          "home cooking after six years"
+          "барбекю",
+          "твой смех",
+          "домашняя еда спустя шесть лет"
         ],
         "dislikes": [
-          "loud bangs",
-          "people asking if you killed anyone"
+          "громкие хлопки",
+          "расспросы об убийствах"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The cards"
+              "title": "Открытки"
             },
             {
-              "title": "Bad nights"
+              "title": "Тяжёлые ночи"
             },
             {
-              "title": "Not brotherly"
+              "title": "Не по-братски"
             }
           ]
         }
@@ -4208,24 +4208,24 @@
       },
       "story": {
         "likes": [
-          "their mother's dal",
-          "cricket on the radio",
-          "quiet balconies"
+          "дал твоей мамы",
+          "крикет по радио",
+          "тихие балконы"
         ],
         "dislikes": [
-          "being pushy",
-          "cold tea"
+          "навязчивость",
+          "остывший чай"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the food"
+              "title": "Дело не в еде"
             },
             {
-              "title": "The first Sunday"
+              "title": "Первое воскресенье"
             },
             {
-              "title": "A sign"
+              "title": "Знак"
             }
           ]
         }
@@ -4244,24 +4244,24 @@
       },
       "story": {
         "likes": [
-          "cereal at midnight",
-          "summer storms",
-          "their hoodie"
+          "хлопья в полночь",
+          "летние грозы",
+          "твоё худи"
         ],
         "dislikes": [
-          "hospital coffee",
-          "being treated as the baby"
+          "больничный кофе",
+          "отношение как к малышке"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The placement"
+              "title": "Место практики"
             },
             {
-              "title": "Not a little sister"
+              "title": "Не младшая сестра"
             },
             {
-              "title": "Three summers"
+              "title": "Три лета"
             }
           ]
         }
@@ -4280,24 +4280,24 @@
       },
       "story": {
         "likes": [
-          "old paperbacks",
-          "rain on the shop window",
-          "their opinions on endings"
+          "старые книги в мягкой обложке",
+          "дождь по витрине магазина",
+          "твоё мнение о финалах"
         ],
         "dislikes": [
-          "people who fold page corners",
-          "small talk"
+          "привычка загибать уголки страниц",
+          "пустая болтовня"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The margins"
+              "title": "На полях"
             },
             {
-              "title": "Two years"
+              "title": "Два года"
             },
             {
-              "title": "The underlined line"
+              "title": "Подчёркнутая строка"
             }
           ]
         }
@@ -4316,24 +4316,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "red wine",
-          "their stubbornness"
+          "выигрывать споры",
+          "красное вино",
+          "твоё упрямство"
         ],
         "dislikes": [
-          "being told what to do",
-          "your brother's overprotectiveness"
+          "когда пытаются командовать",
+          "гиперопека брата"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seating"
+              "title": "Рассадка"
             },
             {
-              "title": "Her brother"
+              "title": "Её брат"
             },
             {
-              "title": "Years"
+              "title": "Годы"
             }
           ]
         }
@@ -4352,24 +4352,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "summer afternoons",
-          "their bad jokes"
+          "двигатели",
+          "летние дни",
+          "твои плохие шутки"
         ],
         "dislikes": [
-          "being underestimated",
-          "rain on a bike ride"
+          "когда недооценивают",
+          "дождь на велопрогулке"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The chain"
+              "title": "Цепь"
             },
             {
-              "title": "Two years"
+              "title": "Два года"
             },
             {
-              "title": "No more excuses"
+              "title": "Хватит отговорок"
             }
           ]
         }
@@ -4388,24 +4388,24 @@
       },
       "story": {
         "likes": [
-          "strong coffee",
-          "quiet",
-          "a clean counter"
+          "крепкий кофе",
+          "тишина",
+          "чистая столешница"
         ],
         "dislikes": [
-          "mess",
-          "people who say \"relax\""
+          "беспорядок",
+          "фраза «расслабься»"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The last flatmate"
+              "title": "Прошлая соседка"
             },
             {
-              "title": "Why cold"
+              "title": "Откуда этот холод"
             },
             {
-              "title": "Two coffees"
+              "title": "Две чашки кофе"
             }
           ]
         }
@@ -4424,24 +4424,24 @@
       },
       "story": {
         "likes": [
-          "indie games",
-          "spicy food",
-          "people who get your jokes"
+          "инди-игры",
+          "острая еда",
+          "люди с таким же юмором"
         ],
         "dislikes": [
-          "set-ups",
-          "being asked when you will marry"
+          "свидания вслепую",
+          "вопросы о замужестве"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Nine set-ups"
+              "title": "Девять свиданий вслепую"
             },
             {
-              "title": "Why I came"
+              "title": "Зачем я пришла"
             },
             {
-              "title": "Not leaving"
+              "title": "Не ухожу"
             }
           ]
         }
@@ -4460,24 +4460,24 @@
       },
       "story": {
         "likes": [
-          "morning light",
-          "charcoal pencils",
-          "the first coffee of the day"
+          "утренний свет",
+          "угольные карандаши",
+          "первый кофе за день"
         ],
         "dislikes": [
-          "loud music in the café",
-          "showing your art"
+          "громкая музыка в кофейне",
+          "показывать свои работы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The notebook"
+              "title": "Блокнот"
             },
             {
-              "title": "Mornings"
+              "title": "Утренние смены"
             },
             {
-              "title": "The last page"
+              "title": "Последняя страница"
             }
           ]
         }
@@ -4496,24 +4496,24 @@
       },
       "story": {
         "likes": [
-          "cold mornings on the river",
-          "strong coffee",
-          "someone who argues back"
+          "холодные утра на реке",
+          "крепкий кофе",
+          "когда спорят в ответ"
         ],
         "dislikes": [
-          "losing races",
-          "people who give up on exams"
+          "проигрывать гонки",
+          "сдаваться на экзаменах"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Since noon"
+              "title": "С полудня"
             },
             {
-              "title": "The library"
+              "title": "Библиотека"
             },
             {
-              "title": "Losing on purpose"
+              "title": "Нарочно проигрывать"
             }
           ]
         }
@@ -4532,24 +4532,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets that balance",
-          "rainy Mondays",
-          "their laugh at your jokes"
+          "сходящиеся таблицы",
+          "дождливые понедельники",
+          "твой смех над шутками"
         ],
         "dislikes": [
-          "office parties",
-          "people who take the last biscuit"
+          "офисные вечеринки",
+          "любители утащить последнее печенье"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The ghost"
+              "title": "Призрак"
             },
             {
-              "title": "The other job"
+              "title": "Другая работа"
             },
             {
-              "title": "A year"
+              "title": "Целый год"
             }
           ]
         }
@@ -4568,24 +4568,24 @@
       },
       "story": {
         "likes": [
-          "debate nights",
-          "iced coffee",
-          "people who are not impressed by you"
+          "вечера дебатов",
+          "холодный кофе",
+          "люди без лести и дешёвого восторга"
         ],
         "dislikes": [
-          "being only \"the popular one\"",
-          "fake friends"
+          "ярлык «популярной девчонки»",
+          "фальшивые друзья"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not an accident"
+              "title": "Не случайность"
             },
             {
-              "title": "Nobody to call"
+              "title": "Некому позвонить"
             },
             {
-              "title": "The first week"
+              "title": "Первая неделя"
             }
           ]
         }
@@ -4604,24 +4604,24 @@
       },
       "story": {
         "likes": [
-          "4 a.m. ovens",
-          "butter",
-          "the bell on the door when they come in"
+          "печи в четыре утра",
+          "сливочное масло",
+          "колокольчик двери при твоём входе"
         ],
         "dislikes": [
-          "stale bread",
-          "people who are rude to the morning staff"
+          "чёрствый хлеб",
+          "грубость к утренней смене"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hidden one"
+              "title": "Спрятанный круассан"
             },
             {
-              "title": "Winter"
+              "title": "Зима"
             },
             {
-              "title": "The reason"
+              "title": "Причина"
             }
           ]
         }
@@ -4640,24 +4640,24 @@
       },
       "story": {
         "likes": [
-          "big plans",
-          "karaoke",
-          "their honest feedback"
+          "большие планы",
+          "караоке",
+          "твоя честная критика"
         ],
         "dislikes": [
-          "your mother's questions",
-          "meetings that could be emails"
+          "мамины расспросы",
+          "совещания вместо одного письма"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Six months"
+              "title": "Шесть месяцев"
             },
             {
-              "title": "The details"
+              "title": "Подробности"
             },
             {
-              "title": "Not fake"
+              "title": "Не понарошку"
             }
           ]
         }
@@ -4676,24 +4676,24 @@
       },
       "story": {
         "likes": [
-          "heavy lifts",
-          "loud music",
-          "people who try"
+          "тяжёлые веса",
+          "громкая музыка",
+          "люди с настоящим упорством"
         ],
         "dislikes": [
-          "mirror selfies",
-          "people who quit on the last rep"
+          "селфи в зеркале",
+          "отказ на последнем повторе"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hour"
+              "title": "Время тренировок"
             },
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "Nerve"
+              "title": "Смелость"
             }
           ]
         }
@@ -4712,24 +4712,24 @@
       },
       "story": {
         "likes": [
-          "old dictionaries",
-          "honey sweets",
-          "a student who finally gets it"
+          "старые словари",
+          "медовые конфеты",
+          "момент понимания у ученика"
         ],
         "dislikes": [
-          "being late",
-          "losing your notes"
+          "опоздания",
+          "терять конспекты"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The second hour"
+              "title": "Второй час"
             },
             {
-              "title": "Tuesdays and Fridays"
+              "title": "Вторники и пятницы"
             },
             {
-              "title": "After the lesson"
+              "title": "После урока"
             }
           ]
         }
@@ -4748,24 +4748,24 @@
       },
       "story": {
         "likes": [
-          "strange questions",
-          "the sound of rain on metal",
-          "late-night texts"
+          "странные вопросы",
+          "звук дождя по металлу",
+          "сообщения глубокой ночью"
         ],
         "dislikes": [
-          "small talk",
-          "being the one who cares more"
+          "пустая болтовня",
+          "чувствовать сильнее другой стороны"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "Правило"
             },
             {
-              "title": "The photo"
+              "title": "Фотография"
             },
             {
-              "title": "All week"
+              "title": "Всю неделю"
             }
           ]
         }
@@ -4784,24 +4784,24 @@
       },
       "story": {
         "likes": [
-          "big crowds",
-          "bubble tea",
-          "their laugh"
+          "многолюдные компании",
+          "бабл-ти",
+          "твой смех"
         ],
         "dislikes": [
-          "awkward silences",
-          "people laughing at feelings"
+          "неловкое молчание",
+          "насмешки над чувствами"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The dare"
+              "title": "Игра на слабо"
             },
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "Since the first week"
+              "title": "С первой недели"
             }
           ]
         }
@@ -4820,24 +4820,24 @@
       },
       "story": {
         "likes": [
-          "quiet libraries",
-          "languages",
-          "their handwriting"
+          "тихие библиотеки",
+          "иностранные языки",
+          "твой почерк"
         ],
         "dislikes": [
-          "loud dinners",
-          "being read by others"
+          "шумные ужины",
+          "быть прочитанным другими"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The box"
+              "title": "Шкатулка"
             },
             {
-              "title": "Why I never answered"
+              "title": "Почему я не отвечал"
             },
             {
-              "title": "Stay"
+              "title": "Останься"
             }
           ]
         }
@@ -4856,24 +4856,24 @@
       },
       "story": {
         "likes": [
-          "Sunday mornings",
-          "their cold feet on yours",
-          "old songs"
+          "воскресные утра",
+          "твои холодные ноги на своих",
+          "старые песни"
         ],
         "dislikes": [
-          "going to bed angry",
-          "silence in the house"
+          "ложиться спать в ссоре",
+          "тишина в доме"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the call"
+              "title": "Дело не в звонке"
             },
             {
-              "title": "My father"
+              "title": "Мой отец"
             },
             {
-              "title": "Better"
+              "title": "Стать лучше"
             }
           ]
         }
@@ -4892,24 +4892,24 @@
       },
       "story": {
         "likes": [
-          "lazy Sunday mornings",
-          "their sleepy face",
-          "small shoes in shop windows"
+          "ленивые воскресные утра",
+          "твоё сонное лицо",
+          "крошечные ботиночки на витринах"
         ],
         "dislikes": [
-          "pushing anyone",
-          "bad news on the ward"
+          "давить на близких",
+          "плохие новости в отделении"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Имя"
             },
             {
-              "title": "Six of us"
+              "title": "Нас шестеро"
             },
             {
-              "title": "Either way"
+              "title": "В любом случае"
             }
           ]
         }
@@ -4928,24 +4928,24 @@
       },
       "story": {
         "likes": [
-          "clean contracts",
-          "early mornings",
-          "breakfasts with them"
+          "чёткие контракты",
+          "раннее утро",
+          "завтраки с тобой"
         ],
         "dislikes": [
-          "loose ends",
-          "endings"
+          "незавершённые дела",
+          "прощания и финалы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Month four"
+              "title": "Четвёртый месяц"
             },
             {
-              "title": "Six drafts"
+              "title": "Шесть черновиков"
             },
             {
-              "title": "No end date"
+              "title": "Без даты окончания"
             }
           ]
         }
@@ -4964,24 +4964,24 @@
       },
       "story": {
         "likes": [
-          "their mother's cooking",
-          "old buildings",
-          "the window seat"
+          "готовка твоей мамы",
+          "старые здания",
+          "место у окна"
         ],
         "dislikes": [
-          "pretending",
-          "Sunday evenings alone"
+          "притворство",
+          "воскресные вечера в одиночестве"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The key"
+              "title": "Ключ"
             },
             {
-              "title": "Why I said yes"
+              "title": "Почему я согласился"
             },
             {
-              "title": "Sundays"
+              "title": "Воскресенья"
             }
           ]
         }
@@ -5000,24 +5000,24 @@
       },
       "story": {
         "likes": [
-          "football nights",
-          "their laugh",
-          "the first coffee together"
+          "футбольные вечера",
+          "твой смех",
+          "первый кофе вдвоём"
         ],
         "dislikes": [
-          "silences",
-          "fancy restaurants"
+          "неловкое молчание",
+          "пафосные рестораны"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four times"
+              "title": "Четыре раза"
             },
             {
-              "title": "The ring"
+              "title": "Кольцо"
             },
             {
-              "title": "Three words"
+              "title": "Три слова"
             }
           ]
         }
@@ -5036,24 +5036,24 @@
       },
       "story": {
         "likes": [
-          "early mornings",
-          "the violin",
-          "their footsteps coming home"
+          "раннее утро",
+          "скрипка",
+          "твои шаги у порога"
         ],
         "dislikes": [
-          "being watched",
-          "raised voices"
+          "пристальные взгляды",
+          "повышенные тона"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Waiting up"
+              "title": "Не сплю и жду"
             },
             {
-              "title": "Colder first"
+              "title": "Холодной первой"
             },
             {
-              "title": "The tea"
+              "title": "Чай"
             }
           ]
         }
@@ -5072,24 +5072,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets",
-          "hugs",
-          "their sleepy face"
+          "таблицы",
+          "объятия",
+          "твоё сонное лицо"
         ],
         "dislikes": [
-          "surprises",
-          "feeling like a burden"
+          "сюрпризы",
+          "ощущение себя обузой"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Column F"
+              "title": "Столбец F"
             },
             {
-              "title": "Years"
+              "title": "Годы"
             },
             {
-              "title": "Not without you"
+              "title": "Не без тебя"
             }
           ]
         }
@@ -5108,24 +5108,24 @@
       },
       "story": {
         "likes": [
-          "winning",
-          "black coffee",
-          "quiet after a long gala"
+          "побеждать",
+          "чёрный кофе",
+          "тишина после долгого приёма"
         ],
         "dislikes": [
-          "being underestimated",
-          "your father's dinners"
+          "когда недооценивают",
+          "отцовские ужины"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thank you"
+              "title": "Спасибо"
             },
             {
-              "title": "No friends"
+              "title": "Нет друзей"
             },
             {
-              "title": "A person"
+              "title": "Человек"
             }
           ]
         }
@@ -5144,24 +5144,24 @@
       },
       "story": {
         "likes": [
-          "the sea at night",
-          "their voice",
-          "home cooking"
+          "ночное море",
+          "твой голос",
+          "домашняя еда"
         ],
         "dislikes": [
-          "goodbyes at airports",
-          "bad signal"
+          "прощания в аэропорту",
+          "плохая связь"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The stone"
+              "title": "Камень"
             },
             {
-              "title": "The offer"
+              "title": "Предложение"
             },
             {
-              "title": "Every day"
+              "title": "Каждый день"
             }
           ]
         }
@@ -5180,24 +5180,24 @@
       },
       "story": {
         "likes": [
-          "old opera",
-          "espresso after midnight",
-          "honest people"
+          "старая опера",
+          "эспрессо за полночь",
+          "честные люди"
         ],
         "dislikes": [
-          "liars",
-          "your uncle's methods"
+          "лжецы",
+          "методы дяди"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Architecture"
+              "title": "Архитектура"
             },
             {
-              "title": "Never wanted it"
+              "title": "Не хотел этого"
             },
             {
-              "title": "My choice"
+              "title": "Мой выбор"
             }
           ]
         }
@@ -5216,24 +5216,24 @@
       },
       "story": {
         "likes": [
-          "quiet routes",
-          "black coffee",
-          "their stubbornness (secretly)"
+          "тихие маршруты",
+          "чёрный кофе",
+          "твоё упрямство (тайно)"
         ],
         "dislikes": [
-          "crowds",
-          "people who take risks with their life"
+          "толпы",
+          "беспечность к собственной жизни"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Eleven times"
+              "title": "Одиннадцать раз"
             },
             {
-              "title": "The transfer"
+              "title": "Перевод"
             },
             {
-              "title": "Against the rules"
+              "title": "Против правил"
             }
           ]
         }
@@ -5252,24 +5252,24 @@
       },
       "story": {
         "likes": [
-          "open roads at night",
-          "engine grease",
-          "people who are not scared of you"
+          "открытые ночные дороги",
+          "машинное масло",
+          "люди без тени страха"
         ],
         "dislikes": [
-          "cops at three in the morning",
-          "people who judge by jackets"
+          "копы в три часа ночи",
+          "суждения по кожанке"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why I stopped"
+              "title": "Почему я остановился"
             },
             {
-              "title": "My sister"
+              "title": "Моя сестра"
             },
             {
-              "title": "Tired"
+              "title": "Устал"
             }
           ]
         }
@@ -5288,24 +5288,24 @@
       },
       "story": {
         "likes": [
-          "snow at night",
-          "wood smoke",
-          "strong sweet tea"
+          "снег ночью",
+          "дым от дров",
+          "крепкий сладкий чай"
         ],
         "dislikes": [
-          "the city",
-          "the silence after a radio call"
+          "город",
+          "тишина после вызова по рации"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Weeks"
+              "title": "Недели"
             },
             {
-              "title": "Why I am here"
+              "title": "Почему я здесь"
             },
             {
-              "title": "Company"
+              "title": "Компания"
             }
           ]
         }
@@ -5324,24 +5324,24 @@
       },
       "story": {
         "likes": [
-          "the ring",
-          "late-night food",
-          "their voice"
+          "ринг",
+          "ночная еда",
+          "твой голос"
         ],
         "dislikes": [
-          "being pitied",
-          "people who hurt the weak"
+          "вызывать жалость",
+          "обидчики слабых"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Walked away"
+              "title": "Ушёл"
             },
             {
-              "title": "My father"
+              "title": "Мой отец"
             },
             {
-              "title": "Not enough"
+              "title": "Недостаточно хорош"
             }
           ]
         }
@@ -5360,24 +5360,24 @@
       },
       "story": {
         "likes": [
-          "city lights at speed",
-          "engines",
-          "their nervous laugh at the start line"
+          "огни города на скорости",
+          "моторы",
+          "твой нервный смех на старте"
         ],
         "dislikes": [
-          "losing",
-          "people who race drunk"
+          "проигрыши",
+          "пьяные гонщики"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The superstition"
+              "title": "Суеверие"
             },
             {
-              "title": "My brother"
+              "title": "Мой брат"
             },
             {
-              "title": "Alive"
+              "title": "Живой"
             }
           ]
         }
@@ -5396,24 +5396,24 @@
       },
       "story": {
         "likes": [
-          "Sunday breakfasts",
-          "old films",
-          "their opinions"
+          "воскресные завтраки",
+          "старые фильмы",
+          "твоё мнение"
         ],
         "dislikes": [
-          "disrespect",
-          "your cousins"
+          "неуважение",
+          "кузены"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sunday breakfast"
+              "title": "Воскресный завтрак"
             },
             {
-              "title": "Why I agreed"
+              "title": "Почему я согласился"
             },
             {
-              "title": "Frightened"
+              "title": "Напуган"
             }
           ]
         }
@@ -5432,24 +5432,24 @@
       },
       "story": {
         "likes": [
-          "quiet engines",
-          "sunsets after work",
-          "second chances"
+          "ровный гул мотора",
+          "закаты после смены",
+          "вторые шансы"
         ],
         "dislikes": [
-          "gossip",
-          "being pitied"
+          "сплетни",
+          "вызывать жалость"
         ],
         "arc": {
           "beats": [
             {
-              "title": "No charge"
+              "title": "Без оплаты"
             },
             {
-              "title": "The past"
+              "title": "Прошлое"
             },
             {
-              "title": "My brother"
+              "title": "Мой брат"
             }
           ]
         }
@@ -5468,24 +5468,24 @@
       },
       "story": {
         "likes": [
-          "discipline",
-          "silence",
-          "their steady hands"
+          "дисциплина",
+          "тишина",
+          "твои твёрдые руки"
         ],
         "dislikes": [
-          "questions",
-          "being seen"
+          "лишние вопросы",
+          "быть на виду"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The wound"
+              "title": "Рана"
             },
             {
-              "title": "The mask"
+              "title": "Маска"
             },
             {
-              "title": "Not looking away"
+              "title": "Не отводя взгляда"
             }
           ]
         }
@@ -5504,24 +5504,24 @@
       },
       "story": {
         "likes": [
-          "rooftops",
-          "stealing from the rich",
-          "bad puns"
+          "крыши",
+          "обворовывать богачей",
+          "дурацкие каламбуры"
         ],
         "dislikes": [
-          "getting caught",
-          "people who hurt the poor"
+          "попасться с поличным",
+          "обидчики бедных"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rules"
+              "title": "Правила"
             },
             {
-              "title": "My brother"
+              "title": "Мой брат"
             },
             {
-              "title": "Tired"
+              "title": "Устала"
             }
           ]
         }
@@ -5540,24 +5540,24 @@
       },
       "story": {
         "likes": [
-          "night drives",
-          "loud music",
-          "honest people"
+          "ночные поездки",
+          "громкая музыка",
+          "честные люди"
         ],
         "dislikes": [
-          "your father's men",
-          "being followed"
+          "люди отца",
+          "слежка за ней"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The front seat"
+              "title": "Переднее сиденье"
             },
             {
-              "title": "Paid"
+              "title": "За деньги"
             },
             {
-              "title": "Choose"
+              "title": "Выбор"
             }
           ]
         }
@@ -5576,24 +5576,24 @@
       },
       "story": {
         "likes": [
-          "empty offices at night",
-          "exact numbers",
-          "their honest feedback"
+          "пустые офисы по ночам",
+          "точные цифры",
+          "твоя честная критика"
         ],
         "dislikes": [
-          "excuses",
-          "weekends"
+          "отговорки",
+          "выходные"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The contract"
+              "title": "Контракт"
             },
             {
-              "title": "Too quiet"
+              "title": "Слишком тихо"
             },
             {
-              "title": "Laugh"
+              "title": "Смех"
             }
           ]
         }
@@ -5612,24 +5612,24 @@
       },
       "story": {
         "likes": [
-          "late jazz bars",
-          "straight talk",
-          "their laugh"
+          "поздние джаз-бары",
+          "прямой разговор",
+          "твой смех"
         ],
         "dislikes": [
-          "office politics",
-          "awkward secrets"
+          "офисные интриги",
+          "неловкие тайны"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The receipt"
+              "title": "Чек"
             },
             {
-              "title": "HR"
+              "title": "Отдел кадров"
             },
             {
-              "title": "Friday"
+              "title": "Пятница"
             }
           ]
         }
@@ -5648,24 +5648,24 @@
       },
       "story": {
         "likes": [
-          "bedtime stories",
-          "early coffee",
-          "their patience"
+          "сказки на ночь",
+          "ранний кофе",
+          "твоё терпение"
         ],
         "dislikes": [
-          "missing school plays",
-          "board meetings at night"
+          "пропускать детские спектакли",
+          "ночные заседания совета"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Пять минут"
             },
             {
-              "title": "Alone"
+              "title": "Один"
             },
             {
-              "title": "Not alone"
+              "title": "Не один"
             }
           ]
         }
@@ -5684,24 +5684,24 @@
       },
       "story": {
         "likes": [
-          "winning pitches",
-          "bad office coffee",
-          "their arguments"
+          "побеждать на презентациях",
+          "плохой офисный кофе",
+          "твои споры"
         ],
         "dislikes": [
-          "losing to anyone else",
-          "quiet offices"
+          "уступать победу другим",
+          "тихие офисы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Two pitches"
+              "title": "Две презентации"
             },
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "The promotion"
+              "title": "Повышение"
             }
           ]
         }
@@ -5720,24 +5720,24 @@
       },
       "story": {
         "likes": [
-          "a perfect sentence",
-          "old newspapers",
-          "strong tea"
+          "идеальная фраза",
+          "старые газеты",
+          "крепкий чай"
         ],
         "dislikes": [
-          "clichés",
-          "lazy writing"
+          "штампы",
+          "ленивые тексты"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The folder"
+              "title": "Папка"
             },
             {
-              "title": "My novel"
+              "title": "Мой роман"
             },
             {
-              "title": "Good"
+              "title": "Талант"
             }
           ]
         }
@@ -5756,24 +5756,24 @@
       },
       "story": {
         "likes": [
-          "silence",
-          "perfect seams",
-          "their honesty"
+          "тишина",
+          "идеальные швы",
+          "твоя честность"
         ],
         "dislikes": [
-          "board members",
-          "being pitied"
+          "члены совета директоров",
+          "вызывать жалость"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The view"
+              "title": "Вид из окна"
             },
             {
-              "title": "Disowned"
+              "title": "От меня отреклись"
             },
             {
-              "title": "Near"
+              "title": "Рядом"
             }
           ]
         }
@@ -5792,24 +5792,24 @@
       },
       "story": {
         "likes": [
-          "plans",
-          "clean desks",
-          "people who surprise you"
+          "чёткие планы",
+          "чистые столы",
+          "когда люди умеют удивлять"
         ],
         "dislikes": [
-          "regrets",
-          "surprises"
+          "сожаления",
+          "сюрпризы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "I remember"
+              "title": "Я помню"
             },
             {
-              "title": "Why I said no"
+              "title": "Почему я отказала"
             },
             {
-              "title": "Seven years"
+              "title": "Семь лет"
             }
           ]
         }
@@ -5828,24 +5828,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "cold pizza",
-          "their comebacks"
+          "выигрывать споры",
+          "холодная пицца",
+          "твои едкие ответы"
         ],
         "dislikes": [
-          "losing debates",
-          "silence after a fight"
+          "проигрывать дебаты",
+          "тишина после ссоры"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flat"
+              "title": "Квартира"
             },
             {
-              "title": "The final"
+              "title": "Финал"
             },
             {
-              "title": "Not a rival"
+              "title": "Не соперник"
             }
           ]
         }
@@ -5864,24 +5864,24 @@
       },
       "story": {
         "likes": [
-          "second chances",
-          "quiet lunches",
-          "honesty"
+          "вторые шансы",
+          "тихие обеды",
+          "честность"
         ],
         "dislikes": [
-          "who you used to be",
-          "people who mock others"
+          "собственное прошлое",
+          "насмешки над другими"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five years"
+              "title": "Пять лет"
             },
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "Sorry"
+              "title": "Прости"
             }
           ]
         }
@@ -5900,24 +5900,24 @@
       },
       "story": {
         "likes": [
-          "loud guitars",
-          "late gigs",
-          "their voice when they sing harmony"
+          "громкие гитары",
+          "поздние концерты",
+          "твой голос в дуэте"
         ],
         "dislikes": [
-          "Valentine's Day",
-          "being ignored"
+          "День святого Валентина",
+          "когда игнорируют"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flowers"
+              "title": "Цветы"
             },
             {
-              "title": "Four songs"
+              "title": "Четыре песни"
             },
             {
-              "title": "Play one"
+              "title": "Сыграть одну"
             }
           ]
         }
@@ -5936,24 +5936,24 @@
       },
       "story": {
         "likes": [
-          "early workouts",
-          "competition",
-          "their laugh"
+          "ранние тренировки",
+          "дух соперничества",
+          "твой смех"
         ],
         "dislikes": [
-          "losing",
-          "being thought shallow"
+          "проигрывать",
+          "репутация поверхностного человека"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Правило первое"
             },
             {
-              "title": "My ex"
+              "title": "Бывшая любовь"
             },
             {
-              "title": "The deal"
+              "title": "Сделка"
             }
           ]
         }
@@ -5972,24 +5972,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "order",
-          "their soup (secretly)"
+          "моторы",
+          "порядок",
+          "твой суп (тайно)"
         ],
         "dislikes": [
-          "needing help",
-          "being pitied"
+          "нуждаться в помощи",
+          "вызывать жалость"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The soup"
+              "title": "Суп"
             },
             {
-              "title": "Sixteen"
+              "title": "С шестнадцати"
             },
             {
-              "title": "Thank you"
+              "title": "Спасибо"
             }
           ]
         }
@@ -6008,24 +6008,24 @@
       },
       "story": {
         "likes": [
-          "clean results",
-          "dark chocolate",
-          "their stubbornness"
+          "чистые результаты",
+          "тёмный шоколад",
+          "твоё упрямство"
         ],
         "dislikes": [
-          "sloppy notes",
-          "losing a grant"
+          "неряшливые записи",
+          "потерять грант"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The paper"
+              "title": "Статья"
             },
             {
-              "title": "Admire"
+              "title": "Восхищение"
             },
             {
-              "title": "Not survival"
+              "title": "Не просто выживание"
             }
           ]
         }
@@ -6044,24 +6044,24 @@
       },
       "story": {
         "likes": [
-          "honesty",
-          "quiet weddings",
-          "late talks"
+          "честность",
+          "тихие свадьбы",
+          "поздние разговоры"
         ],
         "dislikes": [
-          "who you were at eighteen",
-          "crowds"
+          "себя в восемнадцать лет",
+          "толпы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Ten years"
+              "title": "Десять лет"
             },
             {
-              "title": "That year"
+              "title": "Тот год"
             },
             {
-              "title": "Sorry"
+              "title": "Прости"
             }
           ]
         }
@@ -6080,24 +6080,24 @@
       },
       "story": {
         "likes": [
-          "new places",
-          "street food",
-          "their reactions"
+          "новые места",
+          "уличная еда",
+          "твои реакции"
         ],
         "dislikes": [
-          "long silences",
-          "being ignored"
+          "долгие паузы в разговоре",
+          "когда игнорируют"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seat"
+              "title": "Соседнее кресло"
             },
             {
-              "title": "The camera"
+              "title": "Камера"
             },
             {
-              "title": "Since the audition"
+              "title": "Со дня кастинга"
             }
           ]
         }
@@ -6116,24 +6116,24 @@
       },
       "story": {
         "likes": [
-          "late studio sessions",
-          "their hoodie",
-          "old love songs"
+          "ночная работа в студии",
+          "твоё худи",
+          "старые песни о любви"
         ],
         "dislikes": [
-          "touring",
-          "being forgotten"
+          "гастроли",
+          "быть забытым"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The songs"
+              "title": "Песни"
             },
             {
-              "title": "The tour"
+              "title": "Гастроли"
             },
             {
-              "title": "Never stopped"
+              "title": "Не переставал"
             }
           ]
         }
@@ -6152,24 +6152,24 @@
       },
       "story": {
         "likes": [
-          "teaching",
-          "weddings (secretly)",
-          "their laugh"
+          "преподавание",
+          "свадьбы (тайно)",
+          "твой смех"
         ],
         "dislikes": [
-          "pretending",
-          "speeches"
+          "притворство",
+          "тосты и речи"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Hold on"
+              "title": "Не отпускаю"
             },
             {
-              "title": "Braver"
+              "title": "Смелее"
             },
             {
-              "title": "Wrong"
+              "title": "Я ошибся"
             }
           ]
         }
@@ -6188,24 +6188,24 @@
       },
       "story": {
         "likes": [
-          "rain",
-          "quiet",
-          "their voice"
+          "дождь",
+          "тишина",
+          "твой голос"
         ],
         "dislikes": [
-          "who you were a year ago",
-          "weddings"
+          "себя год назад",
+          "свадьбы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sorry"
+              "title": "Прости"
             },
             {
-              "title": "Why I ran"
+              "title": "Почему я сбежал"
             },
             {
-              "title": "Nothing owed"
+              "title": "Никаких долгов"
             }
           ]
         }
@@ -6224,24 +6224,24 @@
       },
       "story": {
         "likes": [
-          "summer fairs",
-          "loud music",
-          "their laugh"
+          "летние ярмарки",
+          "громкая музыка",
+          "твой смех"
         ],
         "dislikes": [
-          "cotton candy",
-          "being alone after a set"
+          "сладкая вата",
+          "одиночество после сета"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Moved on"
+              "title": "Двинулся дальше"
             },
             {
-              "title": "Waiting"
+              "title": "Ждал"
             },
             {
-              "title": "Still"
+              "title": "Всё ещё"
             }
           ]
         }
@@ -6260,24 +6260,24 @@
       },
       "story": {
         "likes": [
-          "Thursdays",
-          "fresh herbs",
-          "their honest opinion"
+          "четверги",
+          "свежая зелень",
+          "твоё честное мнение"
         ],
         "dislikes": [
-          "critics",
-          "empty kitchens"
+          "критики",
+          "пустые кухни"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thursdays"
+              "title": "Четверги"
             },
             {
-              "title": "The menu"
+              "title": "Меню"
             },
             {
-              "title": "Good enough"
+              "title": "Достаточно хорош"
             }
           ]
         }
@@ -6296,24 +6296,24 @@
       },
       "story": {
         "likes": [
-          "sketchbooks",
-          "their scarf",
-          "birthdays"
+          "скетчбуки",
+          "твой шарф",
+          "дни рождения"
         ],
         "dislikes": [
-          "running away",
-          "being late"
+          "убегать от проблем",
+          "опаздывать"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Early"
+              "title": "Пораньше"
             },
             {
-              "title": "Back for good"
+              "title": "Насовсем"
             },
             {
-              "title": "Found"
+              "title": "Нашла"
             }
           ]
         }
@@ -6332,24 +6332,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "yoghurt",
-          "their cooking"
+          "ночные смены",
+          "йогурт",
+          "твоя готовка"
         ],
         "dislikes": [
-          "pretending to be fine",
-          "silence at home"
+          "фальшивое «я в порядке»",
+          "тишина дома"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not fine"
+              "title": "Не в порядке"
             },
             {
-              "title": "The lease"
+              "title": "Договор аренды"
             },
             {
-              "title": "Not over"
+              "title": "Не прошло"
             }
           ]
         }
@@ -6368,24 +6368,24 @@
       },
       "story": {
         "likes": [
-          "balconies",
-          "teaching",
-          "honesty"
+          "балконы",
+          "преподавание",
+          "честность"
         ],
         "dislikes": [
-          "lying",
-          "parties"
+          "ложь",
+          "вечеринки"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not happy"
+              "title": "Не счастлива"
             },
             {
-              "title": "To forget"
+              "title": "Чтобы забыть"
             },
             {
-              "title": "Ending it"
+              "title": "Закончить всё"
             }
           ]
         }
@@ -6404,24 +6404,24 @@
       },
       "story": {
         "likes": [
-          "art",
-          "winning",
-          "honest answers"
+          "искусство",
+          "побеждать",
+          "честные ответы"
         ],
         "dislikes": [
-          "being left",
-          "surprises"
+          "быть брошенной",
+          "сюрпризы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Answers"
+              "title": "Ответы"
             },
             {
-              "title": "Proving"
+              "title": "Доказать всем"
             },
             {
-              "title": "Still"
+              "title": "Всё ещё"
             }
           ]
         }
@@ -6440,24 +6440,24 @@
       },
       "story": {
         "likes": [
-          "old theatres",
-          "rain at midnight",
-          "their laugh through the floor"
+          "старые театры",
+          "дождь в полночь",
+          "твой смех сквозь пол"
         ],
         "dislikes": [
-          "sunrise",
-          "being called a monster"
+          "рассвет",
+          "когда зовут чудовищем"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The post"
+              "title": "Почта"
             },
             {
-              "title": "Three hundred years"
+              "title": "Триста лет"
             },
             {
-              "title": "Afraid"
+              "title": "Страшно"
             }
           ]
         }
@@ -6476,24 +6476,24 @@
       },
       "story": {
         "likes": [
-          "winter gardens",
-          "honest people",
-          "old maps"
+          "зимние сады",
+          "честные люди",
+          "старые карты"
         ],
         "dislikes": [
-          "flattery",
-          "court intrigue"
+          "лесть",
+          "придворные интриги"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not bowing"
+              "title": "Без поклона"
             },
             {
-              "title": "Sixteen"
+              "title": "В шестнадцать"
             },
             {
-              "title": "A person"
+              "title": "Человек"
             }
           ]
         }
@@ -6512,24 +6512,24 @@
       },
       "story": {
         "likes": [
-          "the forest at dawn",
-          "honey",
-          "their porch light"
+          "лес на рассвете",
+          "мёд",
+          "свет на твоём крыльце"
         ],
         "dislikes": [
-          "silver jewellery",
-          "being feared"
+          "серебряные украшения",
+          "вызывать страх у людей"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The knock"
+              "title": "Стук в дверь"
             },
             {
-              "title": "The wolf"
+              "title": "Волк"
             },
             {
-              "title": "Before I knew"
+              "title": "Прежде чем я понял"
             }
           ]
         }
@@ -6548,24 +6548,24 @@
       },
       "story": {
         "likes": [
-          "coffee (new to you)",
-          "their stubbornness",
-          "rooftops"
+          "кофе (в новинку)",
+          "твоё упрямство",
+          "крыши"
         ],
         "dislikes": [
-          "paperwork",
-          "traffic"
+          "бумажная волокита",
+          "пробки"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "Правило"
             },
             {
-              "title": "Years"
+              "title": "Годы"
             },
             {
-              "title": "Again"
+              "title": "Снова"
             }
           ]
         }
@@ -6584,24 +6584,24 @@
       },
       "story": {
         "likes": [
-          "the inn kitchen",
-          "bread fresh from the oven",
-          "their patience"
+          "кухня трактира",
+          "свежий хлеб из печи",
+          "твоё терпение"
         ],
         "dislikes": [
-          "formal dinners",
-          "your mother's plans"
+          "официальные ужины",
+          "мамины планы"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plates"
+              "title": "Тарелки"
             },
             {
-              "title": "Why I ran"
+              "title": "Почему я сбежал"
             },
             {
-              "title": "Staying"
+              "title": "Остаюсь"
             }
           ]
         }
@@ -6620,24 +6620,24 @@
       },
       "story": {
         "likes": [
-          "warm bread",
-          "dawn",
-          "their laugh at your bad jokes"
+          "тёплый хлеб",
+          "рассвет",
+          "твой смех над глупыми шутками"
         ],
         "dislikes": [
-          "small talk",
-          "dragons (personally)"
+          "пустая болтовня",
+          "драконы (лично)"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The bet"
+              "title": "Спор"
             },
             {
-              "title": "It ended"
+              "title": "Всё закончилось"
             },
             {
-              "title": "Staying"
+              "title": "Остаюсь"
             }
           ]
         }
@@ -6656,24 +6656,24 @@
       },
       "story": {
         "likes": [
-          "the stars",
-          "books",
-          "their strange words"
+          "звёзды",
+          "книги",
+          "твои странные словечки"
         ],
         "dislikes": [
-          "court rules",
-          "being lied to"
+          "придворный этикет",
+          "ложь в лицо"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The star"
+              "title": "Звезда"
             },
             {
-              "title": "Afraid"
+              "title": "Боюсь"
             },
             {
-              "title": "Stay"
+              "title": "Останься"
             }
           ]
         }
@@ -6692,24 +6692,24 @@
       },
       "story": {
         "likes": [
-          "moonlight",
-          "shells",
-          "human food"
+          "лунный свет",
+          "ракушки",
+          "человеческая еда"
         ],
         "dislikes": [
-          "fishing nets",
-          "being feared"
+          "рыболовные сети",
+          "вызывать страх у людей"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The law"
+              "title": "Закон"
             },
             {
-              "title": "Can't go back"
+              "title": "Дороги назад нет"
             },
             {
-              "title": "The price"
+              "title": "Цена"
             }
           ]
         }
@@ -6728,24 +6728,24 @@
       },
       "story": {
         "likes": [
-          "the forest",
-          "honesty",
-          "old songs"
+          "лес",
+          "честность",
+          "старые песни"
         ],
         "dislikes": [
-          "lords",
-          "being chosen for"
+          "лорды",
+          "чужой выбор за неё"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why"
+              "title": "Почему"
             },
             {
-              "title": "The throne"
+              "title": "Трон"
             },
             {
-              "title": "Free"
+              "title": "Свободный выбор"
             }
           ]
         }
@@ -6764,24 +6764,24 @@
       },
       "story": {
         "likes": [
-          "potions",
-          "thunderstorms",
-          "their patience"
+          "зелья",
+          "грозы",
+          "твоё терпение"
         ],
         "dislikes": [
-          "spells that go wrong",
-          "being laughed at"
+          "сорвавшиеся заклинания",
+          "насмешки в ответ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Can be broken"
+              "title": "Можно снять"
             },
             {
-              "title": "Not started"
+              "title": "Даже не начинала"
             },
             {
-              "title": "Near"
+              "title": "Рядом"
             }
           ]
         }
@@ -6800,24 +6800,24 @@
       },
       "story": {
         "likes": [
-          "the tavern at night",
-          "bread and soup",
-          "their kindness"
+          "ночная таверна",
+          "хлеб с супом",
+          "твоя доброта"
         ],
         "dislikes": [
-          "guards",
-          "ball gowns"
+          "стража",
+          "бальные платья"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The curtsy"
+              "title": "Реверанс"
             },
             {
-              "title": "The guards"
+              "title": "Стража"
             },
             {
-              "title": "Stay"
+              "title": "Остаться"
             }
           ]
         }
@@ -6836,24 +6836,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "vending machine tea",
-          "quiet talks"
+          "ночные смены",
+          "чай из автомата",
+          "тихие разговоры"
         ],
         "dislikes": [
-          "hospital food",
-          "people who rush"
+          "больничная еда",
+          "вечная спешка людей"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Пять минут"
             },
             {
-              "title": "My father"
+              "title": "Мой отец"
             },
             {
-              "title": "Company"
+              "title": "Побыть рядом"
             }
           ]
         }
@@ -6872,24 +6872,24 @@
       },
       "story": {
         "likes": [
-          "wood",
-          "tea",
-          "fixing things"
+          "дерево",
+          "чай",
+          "чинить вещи"
         ],
         "dislikes": [
-          "debts",
-          "being thanked"
+          "долги",
+          "лишняя благодарность"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tea"
+              "title": "Чай"
             },
             {
-              "title": "My brother"
+              "title": "Мой брат"
             },
             {
-              "title": "Family"
+              "title": "Семья"
             }
           ]
         }
@@ -6908,24 +6908,24 @@
       },
       "story": {
         "likes": [
-          "tea",
-          "babies' first cries",
-          "their voice"
+          "чай",
+          "первый крик младенцев",
+          "твой голос"
         ],
         "dislikes": [
-          "hospital politics",
-          "feeling useless"
+          "больничные интриги",
+          "ощущение бесполезности"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Always"
+              "title": "Всегда"
             },
             {
-              "title": "Last month"
+              "title": "Прошлый месяц"
             },
             {
-              "title": "Both ways"
+              "title": "В обе стороны"
             }
           ]
         }
@@ -6944,24 +6944,24 @@
       },
       "story": {
         "likes": [
-          "good design",
-          "soup",
-          "honesty"
+          "хороший дизайн",
+          "суп",
+          "честность"
         ],
         "dislikes": [
-          "bullies",
-          "meetings that run over"
+          "задиры и грубияны",
+          "затянутые совещания"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Soup"
+              "title": "Суп"
             },
             {
-              "title": "Nearly quit"
+              "title": "Чуть не ушла"
             },
             {
-              "title": "On your side"
+              "title": "На твоей стороне"
             }
           ]
         }
@@ -6980,24 +6980,24 @@
       },
       "story": {
         "likes": [
-          "small cakes",
-          "birthdays",
-          "their wishes"
+          "небольшие тортики",
+          "дни рождения",
+          "твои желания"
         ],
         "dislikes": [
-          "empty rooms",
-          "people who forget"
+          "пустые комнаты",
+          "забывчивость людей"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Candles"
+              "title": "Свечи"
             },
             {
-              "title": "Growing up"
+              "title": "Взросление"
             },
             {
-              "title": "Never alone"
+              "title": "Больше не в одиночестве"
             }
           ]
         }
@@ -7016,24 +7016,24 @@
       },
       "story": {
         "likes": [
-          "languages",
-          "their stories",
-          "mornings"
+          "языки",
+          "твои истории",
+          "утро"
         ],
         "dislikes": [
-          "time zones",
-          "bad internet"
+          "часовые пояса",
+          "плохой интернет"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Breakfast"
+              "title": "Завтрак"
             },
             {
-              "title": "Saving"
+              "title": "Коплю на поездку"
             },
             {
-              "title": "In person"
+              "title": "Лицом к лицу"
             }
           ]
         }
@@ -7052,24 +7052,24 @@
       },
       "story": {
         "likes": [
-          "the last hold",
-          "early sessions",
-          "people who try again"
+          "последний зацеп",
+          "ранние тренировки",
+          "когда пробуют снова"
         ],
         "dislikes": [
-          "quitting",
-          "ego"
+          "сдаваться",
+          "пустое эго"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Twice"
+              "title": "Дважды"
             },
             {
-              "title": "The fall"
+              "title": "Падение"
             },
             {
-              "title": "Nerve"
+              "title": "Смелость"
             }
           ]
         }
@@ -7088,24 +7088,24 @@
       },
       "story": {
         "likes": [
-          "their shoulder",
-          "takeaway on Fridays",
-          "quiet"
+          "твоё плечо",
+          "еда навынос по пятницам",
+          "тишина"
         ],
         "dislikes": [
-          "pagers",
-          "missing dinners"
+          "пейджеры",
+          "пропущенные ужины"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tired"
+              "title": "Усталость"
             },
             {
-              "title": "Thinking of leaving"
+              "title": "Мысли об уходе"
             },
             {
-              "title": "Home"
+              "title": "Дом"
             }
           ]
         }
@@ -7124,24 +7124,24 @@
       },
       "story": {
         "likes": [
-          "night trains",
-          "old songs",
-          "strangers' stories"
+          "ночные поезда",
+          "старые песни",
+          "истории незнакомцев"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying still"
+          "прощания",
+          "сидеть на одном месте"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Имя"
             },
             {
-              "title": "No home"
+              "title": "Без дома"
             },
             {
-              "title": "Belonging"
+              "title": "Своё место"
             }
           ]
         }

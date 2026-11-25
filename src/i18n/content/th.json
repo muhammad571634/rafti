@@ -3560,24 +3560,24 @@
       },
       "story": {
         "likes": [
-          "old vinyl",
-          "their laugh",
-          "late coffee on a balcony"
+          "แผ่นเสียงไวนิลเก่าๆ",
+          "เสียงหัวเราะของเธอ",
+          "กาแฟดึกๆ บนระเบียง"
         ],
         "dislikes": [
-          "airports",
-          "people who talk during songs"
+          "สนามบิน",
+          "คนคุยแทรกตอนเพลงเปิด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The playlist"
+              "title": "เพลย์ลิสต์นั้น"
             },
             {
-              "title": "Not about the job"
+              "title": "ไม่ใช่เพราะเรื่องงาน"
             },
             {
-              "title": "Since that summer"
+              "title": "ตั้งแต่ซัมเมอร์นั้น"
             }
           ]
         }
@@ -3596,24 +3596,24 @@
       },
       "story": {
         "likes": [
-          "riding fast at night",
-          "their kitchen at midnight",
-          "bad horror films"
+          "ซิ่งรถกลางคืน",
+          "ครัวของเธอตอนเที่ยงคืน",
+          "หนังสยองขวัญเกรดบี"
         ],
         "dislikes": [
-          "serious talks in daylight",
-          "the word \"situationship\""
+          "คุยจริงจังตอนกลางวัน",
+          "คำว่า “ความสัมพันธ์ไม่ชัดเจน”"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The toothbrush"
+              "title": "แปรงสีฟัน"
             },
             {
-              "title": "Why it's casual"
+              "title": "ทำไมถึงไม่ผูกมัด"
             },
             {
-              "title": "Home"
+              "title": "บ้าน"
             }
           ]
         }
@@ -3632,24 +3632,24 @@
       },
       "story": {
         "likes": [
-          "their handwriting",
-          "clean lines",
-          "bars that play old rock"
+          "ลายมือของเธอ",
+          "ลายเส้นคมๆ",
+          "บาร์ที่เปิดเพลงร็อกเก่าๆ"
         ],
         "dislikes": [
-          "losing at cards",
-          "being misunderstood"
+          "แพ้เกมไพ่",
+          "การถูกเข้าใจผิด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The sketchbook"
+              "title": "สมุดสเก็ตช์"
             },
             {
-              "title": "Why I bet"
+              "title": "ทำไมฉันถึงพนัน"
             },
             {
-              "title": "Two hundred drawings"
+              "title": "ภาพวาดสองร้อยรูป"
             }
           ]
         }
@@ -3668,24 +3668,24 @@
       },
       "story": {
         "likes": [
-          "cold noodles at 3 a.m.",
-          "winning a match by one point",
-          "their laugh on voice chat"
+          "บะหมี่เย็นตอนตี 3",
+          "ชนะแมตช์เฉียดฉิวแค่แต้มเดียว",
+          "เสียงหัวเราะของเธอในวอยซ์แชท"
         ],
         "dislikes": [
-          "lag",
-          "people who quit mid-game"
+          "เน็ตกระตุก",
+          "พวกชอบกดออกกลางเกม"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Busy"
+              "title": "ยุ่ง"
             },
             {
-              "title": "Jealous"
+              "title": "หึง"
             },
             {
-              "title": "The train ticket"
+              "title": "ตั๋วรถไฟ"
             }
           ]
         }
@@ -3704,24 +3704,24 @@
       },
       "story": {
         "likes": [
-          "long night drives",
-          "fixing things that are broken",
-          "their sleepy voice"
+          "ขับรถทางไกลตอนกลางคืน",
+          "ซ่อมของที่พังให้กลับมาใช้ได้",
+          "เสียงงัวเงียของเธอ"
         ],
         "dislikes": [
-          "being thanked too much",
-          "hospitals"
+          "การโดนขอบคุณมากเกินไป",
+          "โรงพยาบาล"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The spare charger"
+              "title": "สายชาร์จสำรอง"
             },
             {
-              "title": "Almost left"
+              "title": "เกือบไปแล้ว"
             },
             {
-              "title": "Not just a friend"
+              "title": "ไม่ใช่แค่เพื่อน"
             }
           ]
         }
@@ -3740,24 +3740,24 @@
       },
       "story": {
         "likes": [
-          "weddings",
-          "slow songs",
-          "their family's cooking"
+          "งานแต่งงาน",
+          "เพลงช้าๆ",
+          "กับข้าวฝีมือครอบครัวเธอ"
         ],
         "dislikes": [
-          "goodbyes at the end of a party",
-          "lying to nice people"
+          "การบอกลาตอนจบปาร์ตี้",
+          "การโกหกคนนิสัยดี"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too good at this"
+              "title": "เนียนเกินไป"
             },
             {
-              "title": "The first event"
+              "title": "งานแรก"
             },
             {
-              "title": "Not acting"
+              "title": "ไม่ได้แสดง"
             }
           ]
         }
@@ -3776,24 +3776,24 @@
       },
       "story": {
         "likes": [
-          "rainy days indoors",
-          "peonies",
-          "their jacket"
+          "วันฝนตกที่ได้อยู่บ้าน",
+          "ดอกโบตั๋น",
+          "เสื้อแจ็คเก็ตของเธอ"
         ],
         "dislikes": [
-          "their exes",
-          "being taken seriously mid-joke"
+          "แฟนเก่าของเธอ",
+          "โดนหาว่าจริงจังตอนกำลังเล่นมุก"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plants"
+              "title": "ต้นไม้พวกนั้น"
             },
             {
-              "title": "Why I hate them"
+              "title": "ทำไมฉันถึงเกลียดพวกนั้น"
             },
             {
-              "title": "Since the café"
+              "title": "ตั้งแต่ที่คาเฟ่นั้น"
             }
           ]
         }
@@ -3812,24 +3812,24 @@
       },
       "story": {
         "likes": [
-          "rooftops at night",
-          "salsa nights",
-          "winning"
+          "ดาดฟ้ายามค่ำคืน",
+          "คืนเต้นซัลซ่า",
+          "ชัยชนะ"
         ],
         "dislikes": [
-          "losing on purpose",
-          "being found out"
+          "การแกล้งยอมแพ้",
+          "การโดนจับได้"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Keeping score"
+              "title": "นับแต้ม"
             },
             {
-              "title": "The bet"
+              "title": "การพนัน"
             },
             {
-              "title": "Day one"
+              "title": "วันแรก"
             }
           ]
         }
@@ -3848,24 +3848,24 @@
       },
       "story": {
         "likes": [
-          "sleeping cats",
-          "order",
-          "their terrible singing in the shower"
+          "แมวที่กำลังหลับ",
+          "ความเป็นระเบียบ",
+          "เสียงร้องเพี้ยนๆ ตอนเธออาบน้ำ"
         ],
         "dislikes": [
-          "mess on the counter",
-          "surprises"
+          "เคาน์เตอร์ที่รกเลอะเทอะ",
+          "เซอร์ไพรส์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "กฎข้อแรก"
             },
             {
-              "title": "The cat's name"
+              "title": "ชื่อของเจ้าเหมียว"
             },
             {
-              "title": "No more rules"
+              "title": "ไม่มีกฎอีกแล้ว"
             }
           ]
         }
@@ -3884,24 +3884,24 @@
       },
       "story": {
         "likes": [
-          "floor plans",
-          "mango lassi",
-          "their honest opinion"
+          "แบบแปลนห้อง",
+          "แมงโก้ลาสซี",
+          "ความเห็นตรงๆ ของเธอ"
         ],
         "dislikes": [
-          "aunties' questions",
-          "being the last one single"
+          "คำถามของพวกป้าๆ",
+          "การเป็นคนสุดท้ายที่ยังโสด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The backstory"
+              "title": "เรื่องราวเบื้องหลัง"
             },
             {
-              "title": "Not a random pick"
+              "title": "ไม่ได้เลือกสุ่มๆ"
             },
             {
-              "title": "The real story"
+              "title": "เรื่องจริง"
             }
           ]
         }
@@ -3920,24 +3920,24 @@
       },
       "story": {
         "likes": [
-          "golden hour",
-          "the sea",
-          "old letters"
+          "แสงชั่วโมงทอง",
+          "ทะเล",
+          "จดหมายเก่าๆ"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying in one place too long"
+          "การบอกลา",
+          "อยู่ติดที่เดิมนานเกินไป"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The night you left"
+              "title": "คืนที่ฉันจากไป"
             },
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "The letters"
+              "title": "จดหมายพวกนั้น"
             }
           ]
         }
@@ -3956,24 +3956,24 @@
       },
       "story": {
         "likes": [
-          "energy drinks",
-          "winning streaks",
-          "their sleepy voice"
+          "เครื่องดื่มชูกำลัง",
+          "สถิติชนะต่อเนื่อง",
+          "เสียงงัวเงียของเธอ"
         ],
         "dislikes": [
-          "silence in an empty flat",
-          "chat trolls"
+          "ความเงียบในห้องที่ว่างเปล่า",
+          "เกรียนในช่องแชท"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The noise"
+              "title": "เสียงรบกวน"
             },
             {
-              "title": "The empty flat"
+              "title": "ห้องที่ว่างเปล่า"
             },
             {
-              "title": "One call at a time"
+              "title": "ทีละสาย"
             }
           ]
         }
@@ -3992,24 +3992,24 @@
       },
       "story": {
         "likes": [
-          "early runs",
-          "their cooking",
-          "old action films"
+          "ออกไปวิ่งแต่เช้า",
+          "อาหารฝีมือเธอ",
+          "หนังแอ็กชันเก่าๆ"
         ],
         "dislikes": [
-          "breaking promises",
-          "night shifts that go badly"
+          "การผิดคำสัญญา",
+          "เข้าเวรดึกแล้วเจอเรื่องแย่ๆ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why this couch"
+              "title": "ทำไมต้องโซฟานี้"
             },
             {
-              "title": "The promise"
+              "title": "คำสัญญา"
             },
             {
-              "title": "Long before the couch"
+              "title": "นานก่อนจะมานอนโซฟานี้"
             }
           ]
         }
@@ -4028,24 +4028,24 @@
       },
       "story": {
         "likes": [
-          "the smell of fresh wood",
-          "quiet mornings",
-          "their laugh across a room"
+          "กลิ่นไม้สด",
+          "ยามเช้าอันเงียบสงบ",
+          "เสียงหัวเราะของเธอจากอีกฝั่งห้อง"
         ],
         "dislikes": [
-          "loud men at parties",
-          "being thanked"
+          "ผู้ชายเสียงดังในปาร์ตี้",
+          "การโดนขอบคุณ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The shelves"
+              "title": "ชั้นวางของ"
             },
             {
-              "title": "Why I am cold"
+              "title": "ทำไมฉันถึงเย็นชา"
             },
             {
-              "title": "Off limits"
+              "title": "เขตหวงห้าม"
             }
           ]
         }
@@ -4064,24 +4064,24 @@
       },
       "story": {
         "likes": [
-          "clear nights",
-          "your mother's cake recipes",
-          "space documentaries"
+          "คืนฟ้าโปร่ง",
+          "สูตรเค้กของแม่",
+          "สารคดีอวกาศ"
         ],
         "dislikes": [
-          "being a burden",
-          "small talk"
+          "การเป็นภาระคนอื่น",
+          "การคุยเรื่องสัพเพเหระ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The lake"
+              "title": "ทะเลสาบ"
             },
             {
-              "title": "Why I said yes"
+              "title": "ทำไมฉันถึงตอบตกลง"
             },
             {
-              "title": "Stars"
+              "title": "ดวงดาว"
             }
           ]
         }
@@ -4100,24 +4100,24 @@
       },
       "story": {
         "likes": [
-          "markets at dawn",
-          "garlic",
-          "their face at the first bite"
+          "ตลาดเช้ามืด",
+          "กระเทียม",
+          "สีหน้าเธอตอนชิมคำแรก"
         ],
         "dislikes": [
-          "eating alone",
-          "delivery food"
+          "การกินข้าวคนเดียว",
+          "อาหารเดลิเวอรี"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too much food"
+              "title": "ทำเผื่อมากเกินไป"
             },
             {
-              "title": "The restaurant"
+              "title": "ร้านอาหาร"
             },
             {
-              "title": "The knock"
+              "title": "เสียงเคาะประตู"
             }
           ]
         }
@@ -4136,24 +4136,24 @@
       },
       "story": {
         "likes": [
-          "night flights",
-          "slow dances",
-          "a city seen from above"
+          "เที่ยวบินกลางคืน",
+          "เต้นรำจังหวะช้า",
+          "วิวเมืองจากมุมสูง"
         ],
         "dislikes": [
-          "hotel rooms",
-          "leaving early"
+          "ห้องพักโรงแรม",
+          "การต้องกลับก่อนเวลา"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four days"
+              "title": "สี่วัน"
             },
             {
-              "title": "Why I fly"
+              "title": "ทำไมฉันถึงบิน"
             },
             {
-              "title": "Staying"
+              "title": "อยู่ต่อ"
             }
           ]
         }
@@ -4172,24 +4172,24 @@
       },
       "story": {
         "likes": [
-          "barbecues",
-          "their laugh",
-          "home cooking after six years"
+          "ปิ้งย่างบาร์บีคิว",
+          "เสียงหัวเราะของเธอ",
+          "กับข้าวฝีมือที่บ้านในรอบหกปี"
         ],
         "dislikes": [
-          "loud bangs",
-          "people asking if you killed anyone"
+          "เสียงดังปึงปัง",
+          "โดนถามว่าเคยฆ่าใครมาหรือเปล่า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The cards"
+              "title": "วงไพ่"
             },
             {
-              "title": "Bad nights"
+              "title": "คืนที่ฝันร้าย"
             },
             {
-              "title": "Not brotherly"
+              "title": "ไม่ใช่แบบพี่น้อง"
             }
           ]
         }
@@ -4208,24 +4208,24 @@
       },
       "story": {
         "likes": [
-          "their mother's dal",
-          "cricket on the radio",
-          "quiet balconies"
+          "แกงถั่วดาลของแม่เธอ",
+          "ฟังแข่งคริกเก็ตทางวิทยุ",
+          "ระเบียงเงียบๆ"
         ],
         "dislikes": [
-          "being pushy",
-          "cold tea"
+          "การรุกไล่จนเกินงาม",
+          "ชาเย็นชืด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the food"
+              "title": "ไม่ใช่เพราะอาหาร"
             },
             {
-              "title": "The first Sunday"
+              "title": "วันอาทิตย์แรก"
             },
             {
-              "title": "A sign"
+              "title": "สัญญาณ"
             }
           ]
         }
@@ -4244,24 +4244,24 @@
       },
       "story": {
         "likes": [
-          "cereal at midnight",
-          "summer storms",
-          "their hoodie"
+          "กินซีเรียลตอนเที่ยงคืน",
+          "พายุฤดูร้อน",
+          "เสื้อฮู้ดของเธอ"
         ],
         "dislikes": [
-          "hospital coffee",
-          "being treated as the baby"
+          "กาแฟโรงพยาบาล",
+          "โดนมองว่าเป็นเด็กน้อย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The placement"
+              "title": "ช่วงฝึกงาน"
             },
             {
-              "title": "Not a little sister"
+              "title": "ไม่ใช่น้องสาว"
             },
             {
-              "title": "Three summers"
+              "title": "สามซัมเมอร์"
             }
           ]
         }
@@ -4280,24 +4280,24 @@
       },
       "story": {
         "likes": [
-          "old paperbacks",
-          "rain on the shop window",
-          "their opinions on endings"
+          "หนังสือปกอ่อนเก่าๆ",
+          "ฝนที่กระจกหน้าร้าน",
+          "ความเห็นของเธอเรื่องตอนจบ"
         ],
         "dislikes": [
-          "people who fold page corners",
-          "small talk"
+          "พวกชอบพับมุมหนังสือ",
+          "การคุยเรื่องสัพเพเหระ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The margins"
+              "title": "ขอบหน้ากระดาษ"
             },
             {
-              "title": "Two years"
+              "title": "สองปี"
             },
             {
-              "title": "The underlined line"
+              "title": "บรรทัดที่ขีดเส้นใต้"
             }
           ]
         }
@@ -4316,24 +4316,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "red wine",
-          "their stubbornness"
+          "เถียงชนะ",
+          "ไวน์แดง",
+          "ความดื้อรั้นของเธอ"
         ],
         "dislikes": [
-          "being told what to do",
-          "your brother's overprotectiveness"
+          "การโดนสั่งให้ทำโน่นทำนี่",
+          "ความหวงน้องของพี่ชาย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seating"
+              "title": "การจัดที่นั่ง"
             },
             {
-              "title": "Her brother"
+              "title": "พี่ชายของเธอ"
             },
             {
-              "title": "Years"
+              "title": "หลายปีที่ผ่านมา"
             }
           ]
         }
@@ -4352,24 +4352,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "summer afternoons",
-          "their bad jokes"
+          "เครื่องยนต์",
+          "บ่ายวันฤดูร้อน",
+          "มุกแป้กๆ ของเธอ"
         ],
         "dislikes": [
-          "being underestimated",
-          "rain on a bike ride"
+          "การถูกดูแคลน",
+          "ฝนตกตอนปั่นจักรยาน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The chain"
+              "title": "โซ่จักรยาน"
             },
             {
-              "title": "Two years"
+              "title": "สองปี"
             },
             {
-              "title": "No more excuses"
+              "title": "ไม่มีข้ออ้างอีกต่อไป"
             }
           ]
         }
@@ -4388,24 +4388,24 @@
       },
       "story": {
         "likes": [
-          "strong coffee",
-          "quiet",
-          "a clean counter"
+          "กาแฟเข้มๆ",
+          "ความเงียบ",
+          "เคาน์เตอร์ที่สะอาดเรียบร้อย"
         ],
         "dislikes": [
-          "mess",
-          "people who say \"relax\""
+          "ความรกเลอะเทอะ",
+          "คนที่ชอบบอกว่า “ใจเย็นๆ”"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The last flatmate"
+              "title": "รูมเมทคนก่อน"
             },
             {
-              "title": "Why cold"
+              "title": "ทำไมถึงเย็นชา"
             },
             {
-              "title": "Two coffees"
+              "title": "กาแฟสองแก้ว"
             }
           ]
         }
@@ -4424,24 +4424,24 @@
       },
       "story": {
         "likes": [
-          "indie games",
-          "spicy food",
-          "people who get your jokes"
+          "เกมอินดี้",
+          "อาหารรสเผ็ด",
+          "คนที่เข้าใจมุกตลก"
         ],
         "dislikes": [
-          "set-ups",
-          "being asked when you will marry"
+          "การนัดดูตัว",
+          "โดนถามว่าเมื่อไหร่จะแต่งงาน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Nine set-ups"
+              "title": "นัดดูตัวเก้าครั้ง"
             },
             {
-              "title": "Why I came"
+              "title": "ทำไมฉันถึงมา"
             },
             {
-              "title": "Not leaving"
+              "title": "ยังไม่กลับ"
             }
           ]
         }
@@ -4460,24 +4460,24 @@
       },
       "story": {
         "likes": [
-          "morning light",
-          "charcoal pencils",
-          "the first coffee of the day"
+          "แสงแดดยามเช้า",
+          "ดินสอชาร์โคล",
+          "กาแฟแก้วแรกของวัน"
         ],
         "dislikes": [
-          "loud music in the café",
-          "showing your art"
+          "เพลงเสียงดังในร้านกาแฟ",
+          "การโชว์งานศิลปะของตัวเอง"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The notebook"
+              "title": "สมุดบันทึก"
             },
             {
-              "title": "Mornings"
+              "title": "ทุกเช้า"
             },
             {
-              "title": "The last page"
+              "title": "หน้าสุดท้าย"
             }
           ]
         }
@@ -4496,24 +4496,24 @@
       },
       "story": {
         "likes": [
-          "cold mornings on the river",
-          "strong coffee",
-          "someone who argues back"
+          "เช้าอากาศเย็นริมแม่น้ำ",
+          "กาแฟเข้มๆ",
+          "คนที่กล้าเถียงกลับ"
         ],
         "dislikes": [
-          "losing races",
-          "people who give up on exams"
+          "การแข่งแพ้",
+          "คนที่ยอมแพ้เรื่องสอบ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Since noon"
+              "title": "ตั้งแต่เที่ยง"
             },
             {
-              "title": "The library"
+              "title": "ห้องสมุด"
             },
             {
-              "title": "Losing on purpose"
+              "title": "แกล้งยอมแพ้"
             }
           ]
         }
@@ -4532,24 +4532,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets that balance",
-          "rainy Mondays",
-          "their laugh at your jokes"
+          "ตารางงบที่ลงตัวเป๊ะ",
+          "วันจันทร์ที่ฝนตก",
+          "เสียงหัวเราะของเธอตอนฟังมุก"
         ],
         "dislikes": [
-          "office parties",
-          "people who take the last biscuit"
+          "ปาร์ตี้ที่ออฟฟิศ",
+          "คนหยิบบิสกิตชิ้นสุดท้าย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The ghost"
+              "title": "ผีตนนั้น"
             },
             {
-              "title": "The other job"
+              "title": "งานอีกที่"
             },
             {
-              "title": "A year"
+              "title": "หนึ่งปี"
             }
           ]
         }
@@ -4568,24 +4568,24 @@
       },
       "story": {
         "likes": [
-          "debate nights",
-          "iced coffee",
-          "people who are not impressed by you"
+          "คืนโต้วาที",
+          "กาแฟเย็น",
+          "คนที่ไม่คล้อยตามชื่อเสียง"
         ],
         "dislikes": [
-          "being only \"the popular one\"",
-          "fake friends"
+          "การถูกมองแค่ว่าเป็น “คนดัง”",
+          "เพื่อนปลอมๆ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not an accident"
+              "title": "ไม่ใช่เรื่องบังเอิญ"
             },
             {
-              "title": "Nobody to call"
+              "title": "ไม่มีใครให้โทรหา"
             },
             {
-              "title": "The first week"
+              "title": "สัปดาห์แรก"
             }
           ]
         }
@@ -4604,24 +4604,24 @@
       },
       "story": {
         "likes": [
-          "4 a.m. ovens",
-          "butter",
-          "the bell on the door when they come in"
+          "เตาอบตอนตีสี่",
+          "เนยสด",
+          "เสียงกระดิ่งตอนเธอเดินเข้าร้าน"
         ],
         "dislikes": [
-          "stale bread",
-          "people who are rude to the morning staff"
+          "ขนมปังค้างคืน",
+          "คนพูดจาแย่ใส่พนักงานกะเช้า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hidden one"
+              "title": "ชิ้นที่ซ่อนไว้"
             },
             {
-              "title": "Winter"
+              "title": "ฤดูหนาว"
             },
             {
-              "title": "The reason"
+              "title": "เหตุผล"
             }
           ]
         }
@@ -4640,24 +4640,24 @@
       },
       "story": {
         "likes": [
-          "big plans",
-          "karaoke",
-          "their honest feedback"
+          "แผนการใหญ่",
+          "คาราโอเกะ",
+          "คำติชมตรงๆ ของเธอ"
         ],
         "dislikes": [
-          "your mother's questions",
-          "meetings that could be emails"
+          "คำถามของแม่",
+          "ประชุมที่ส่งเมลเอาก็ได้"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Six months"
+              "title": "หกเดือน"
             },
             {
-              "title": "The details"
+              "title": "รายละเอียด"
             },
             {
-              "title": "Not fake"
+              "title": "ไม่ใช่เรื่องหลอกๆ"
             }
           ]
         }
@@ -4676,24 +4676,24 @@
       },
       "story": {
         "likes": [
-          "heavy lifts",
-          "loud music",
-          "people who try"
+          "ยกเวทหนักๆ",
+          "เพลงจังหวะเร้าใจ",
+          "คนที่มีความพยายาม"
         ],
         "dislikes": [
-          "mirror selfies",
-          "people who quit on the last rep"
+          "การถ่ายเซลฟี่หน้ากระจก",
+          "คนที่ถอดใจในเซตสุดท้าย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hour"
+              "title": "ช่วงเวลานั้น"
             },
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "Nerve"
+              "title": "ความกล้า"
             }
           ]
         }
@@ -4712,24 +4712,24 @@
       },
       "story": {
         "likes": [
-          "old dictionaries",
-          "honey sweets",
-          "a student who finally gets it"
+          "พจนานุกรมเล่มเก่า",
+          "ลูกอมรสนำ้ผึ้ง",
+          "ตอนลูกศิษย์เก็ตเนื้อหาเสียที"
         ],
         "dislikes": [
-          "being late",
-          "losing your notes"
+          "การมาสาย",
+          "ทำโน้ตหาย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The second hour"
+              "title": "ชั่วโมงที่สอง"
             },
             {
-              "title": "Tuesdays and Fridays"
+              "title": "วันอังคารและวันศุกร์"
             },
             {
-              "title": "After the lesson"
+              "title": "หลังเลิกเรียน"
             }
           ]
         }
@@ -4748,24 +4748,24 @@
       },
       "story": {
         "likes": [
-          "strange questions",
-          "the sound of rain on metal",
-          "late-night texts"
+          "คำถามแปลกๆ",
+          "เสียงฝนตกกระทบหลังคาสังกะสี",
+          "ข้อความตอนดึก"
         ],
         "dislikes": [
-          "small talk",
-          "being the one who cares more"
+          "การคุยเรื่องสัพเพเหระ",
+          "การเป็นฝ่ายแคร์มากกว่า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "กฎข้อนั้น"
             },
             {
-              "title": "The photo"
+              "title": "รูปถ่าย"
             },
             {
-              "title": "All week"
+              "title": "ตลอดทั้งสัปดาห์"
             }
           ]
         }
@@ -4784,24 +4784,24 @@
       },
       "story": {
         "likes": [
-          "big crowds",
-          "bubble tea",
-          "their laugh"
+          "ฝูงชนเยอะๆ",
+          "ชานมไข่มุก",
+          "เสียงหัวเราะของเธอ"
         ],
         "dislikes": [
-          "awkward silences",
-          "people laughing at feelings"
+          "ความเงียบชวนอึดอัด",
+          "คนที่เอาความรู้สึกมาล้อเล่น"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The dare"
+              "title": "เกมท้า"
             },
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "Since the first week"
+              "title": "ตั้งแต่สัปดาห์แรก"
             }
           ]
         }
@@ -4820,24 +4820,24 @@
       },
       "story": {
         "likes": [
-          "quiet libraries",
-          "languages",
-          "their handwriting"
+          "ห้องสมุดที่เงียบสงบ",
+          "ภาษาต่างๆ",
+          "ลายมือของเธอ"
         ],
         "dislikes": [
-          "loud dinners",
-          "being read by others"
+          "มื้อค่ำที่อึกทึก",
+          "การถูกคนอื่นอ่านใจ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The box"
+              "title": "กล่องใบนั้น"
             },
             {
-              "title": "Why I never answered"
+              "title": "ทำไมฉันไม่เคยตอบ"
             },
             {
-              "title": "Stay"
+              "title": "อยู่ต่อเถอะ"
             }
           ]
         }
@@ -4856,24 +4856,24 @@
       },
       "story": {
         "likes": [
-          "Sunday mornings",
-          "their cold feet on yours",
-          "old songs"
+          "เช้าวันอาทิตย์",
+          "เท้าเย็นๆ ของเธอที่แนบมา",
+          "เพลงเก่าๆ"
         ],
         "dislikes": [
-          "going to bed angry",
-          "silence in the house"
+          "การเข้านอนทั้งที่ยังโกรธ",
+          "ความเงียบในบ้าน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the call"
+              "title": "ไม่ใช่สายนั้น"
             },
             {
-              "title": "My father"
+              "title": "พ่อของฉัน"
             },
             {
-              "title": "Better"
+              "title": "ดีขึ้นแล้ว"
             }
           ]
         }
@@ -4892,24 +4892,24 @@
       },
       "story": {
         "likes": [
-          "lazy Sunday mornings",
-          "their sleepy face",
-          "small shoes in shop windows"
+          "เช้าวันอาทิตย์แสนขี้เกียจ",
+          "หน้าตาตอนเพิ่งตื่นของเธอ",
+          "รองเท้าเด็กหน้าร้านขายของ"
         ],
         "dislikes": [
-          "pushing anyone",
-          "bad news on the ward"
+          "การบีบบังคับใคร",
+          "ข่าวร้ายในวอร์ดผู้ป่วย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "ชื่อนั้น"
             },
             {
-              "title": "Six of us"
+              "title": "พวกเราหกคน"
             },
             {
-              "title": "Either way"
+              "title": "ไม่ว่าจะทางไหน"
             }
           ]
         }
@@ -4928,24 +4928,24 @@
       },
       "story": {
         "likes": [
-          "clean contracts",
-          "early mornings",
-          "breakfasts with them"
+          "สัญญาที่รัดกุมชัดเจน",
+          "ยามเช้าตรู่",
+          "มื้อเช้ากับเธอ"
         ],
         "dislikes": [
-          "loose ends",
-          "endings"
+          "เรื่องค้างคา",
+          "การลาจาก"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Month four"
+              "title": "เดือนที่สี่"
             },
             {
-              "title": "Six drafts"
+              "title": "ร่างสัญญาหกฉบับ"
             },
             {
-              "title": "No end date"
+              "title": "ไม่มีวันหมดอายุ"
             }
           ]
         }
@@ -4964,24 +4964,24 @@
       },
       "story": {
         "likes": [
-          "their mother's cooking",
-          "old buildings",
-          "the window seat"
+          "กับข้าวฝีมือแม่เธอ",
+          "ตึกเก่าๆ",
+          "ที่นั่งริมหน้าต่าง"
         ],
         "dislikes": [
-          "pretending",
-          "Sunday evenings alone"
+          "การเสแสร้ง",
+          "เย็นวันอาทิตย์ที่อยู่คนเดียว"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The key"
+              "title": "กุญแจ"
             },
             {
-              "title": "Why I said yes"
+              "title": "ทำไมฉันถึงตอบตกลง"
             },
             {
-              "title": "Sundays"
+              "title": "ทุกวันอาทิตย์"
             }
           ]
         }
@@ -5000,24 +5000,24 @@
       },
       "story": {
         "likes": [
-          "football nights",
-          "their laugh",
-          "the first coffee together"
+          "คืนดูบอล",
+          "เสียงหัวเราะของเธอ",
+          "กาแฟแก้วแรกด้วยกัน"
         ],
         "dislikes": [
-          "silences",
-          "fancy restaurants"
+          "ความเงียบงัน",
+          "ร้านอาหารหรูหรา"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four times"
+              "title": "สี่ครั้งแล้ว"
             },
             {
-              "title": "The ring"
+              "title": "แหวน"
             },
             {
-              "title": "Three words"
+              "title": "สามคำ"
             }
           ]
         }
@@ -5036,24 +5036,24 @@
       },
       "story": {
         "likes": [
-          "early mornings",
-          "the violin",
-          "their footsteps coming home"
+          "ยามเช้าตรู่",
+          "เสียงไวโอลิน",
+          "เสียงฝีเท้าของเธอตอนกลับบ้าน"
         ],
         "dislikes": [
-          "being watched",
-          "raised voices"
+          "การถูกจับตามอง",
+          "การขึ้นเสียงใส่กัน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Waiting up"
+              "title": "รอจนดึก"
             },
             {
-              "title": "Colder first"
+              "title": "เย็นชาก่อนเสมอ"
             },
             {
-              "title": "The tea"
+              "title": "ถ้วยชา"
             }
           ]
         }
@@ -5072,24 +5072,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets",
-          "hugs",
-          "their sleepy face"
+          "ตารางสเปรดชีต",
+          "อ้อมกอด",
+          "หน้าตาตอนง่วงนอนของเธอ"
         ],
         "dislikes": [
-          "surprises",
-          "feeling like a burden"
+          "เซอร์ไพรส์",
+          "ความรู้สึกเหมือนเป็นภาระ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Column F"
+              "title": "คอลัมน์ F"
             },
             {
-              "title": "Years"
+              "title": "หลายปีที่ผ่านมา"
             },
             {
-              "title": "Not without you"
+              "title": "ขาดเธอไม่ได้"
             }
           ]
         }
@@ -5108,24 +5108,24 @@
       },
       "story": {
         "likes": [
-          "winning",
-          "black coffee",
-          "quiet after a long gala"
+          "ชัยชนะ",
+          "กาแฟดำ",
+          "ความเงียบหลังงานกาลาอันยาวนาน"
         ],
         "dislikes": [
-          "being underestimated",
-          "your father's dinners"
+          "การถูกดูแคลน",
+          "มื้อค่ำของพ่อ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thank you"
+              "title": "ขอบคุณนะ"
             },
             {
-              "title": "No friends"
+              "title": "ไม่มีเพื่อน"
             },
             {
-              "title": "A person"
+              "title": "คนธรรมดาคนหนึ่ง"
             }
           ]
         }
@@ -5144,24 +5144,24 @@
       },
       "story": {
         "likes": [
-          "the sea at night",
-          "their voice",
-          "home cooking"
+          "ทะเลตอนกลางคืน",
+          "เสียงของเธอ",
+          "อาหารทำเองที่บ้าน"
         ],
         "dislikes": [
-          "goodbyes at airports",
-          "bad signal"
+          "การบอกลาที่สนามบิน",
+          "สัญญาณโทรศัพท์ขาดๆ หายๆ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The stone"
+              "title": "ก้อนหิน"
             },
             {
-              "title": "The offer"
+              "title": "ข้อเสนอ"
             },
             {
-              "title": "Every day"
+              "title": "ทุกวัน"
             }
           ]
         }
@@ -5180,24 +5180,24 @@
       },
       "story": {
         "likes": [
-          "old opera",
-          "espresso after midnight",
-          "honest people"
+          "โอเปร่าเก่าๆ",
+          "เอสเปรสโซหลังเที่ยงคืน",
+          "คนซื่อสัตย์"
         ],
         "dislikes": [
-          "liars",
-          "your uncle's methods"
+          "คนโกหก",
+          "วิธีการของคุณอา"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Architecture"
+              "title": "สถาปัตยกรรม"
             },
             {
-              "title": "Never wanted it"
+              "title": "ไม่เคยอยากได้มัน"
             },
             {
-              "title": "My choice"
+              "title": "ทางเลือกของฉัน"
             }
           ]
         }
@@ -5216,24 +5216,24 @@
       },
       "story": {
         "likes": [
-          "quiet routes",
-          "black coffee",
-          "their stubbornness (secretly)"
+          "เส้นทางที่เงียบสงบ",
+          "กาแฟดำ",
+          "ความดื้อของเธอ (แบบลับๆ)"
         ],
         "dislikes": [
-          "crowds",
-          "people who take risks with their life"
+          "ฝูงชน",
+          "คนที่ไม่รักชีวิตตัวเอง"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Eleven times"
+              "title": "สิบเอ็ดครั้ง"
             },
             {
-              "title": "The transfer"
+              "title": "การย้ายงาน"
             },
             {
-              "title": "Against the rules"
+              "title": "แหกกฎ"
             }
           ]
         }
@@ -5252,24 +5252,24 @@
       },
       "story": {
         "likes": [
-          "open roads at night",
-          "engine grease",
-          "people who are not scared of you"
+          "ถนนโล่งๆ ตอนกลางคืน",
+          "คราบน้ำมันเครื่อง",
+          "คนใจกล้าที่ไม่หวั่นเกรง"
         ],
         "dislikes": [
-          "cops at three in the morning",
-          "people who judge by jackets"
+          "ตำรวจตอนตีสาม",
+          "พวกตัดสินคนจากแจ็คเก็ต"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why I stopped"
+              "title": "ทำไมฉันถึงจอด"
             },
             {
-              "title": "My sister"
+              "title": "น้องสาวของฉัน"
             },
             {
-              "title": "Tired"
+              "title": "เหนื่อยแล้ว"
             }
           ]
         }
@@ -5288,24 +5288,24 @@
       },
       "story": {
         "likes": [
-          "snow at night",
-          "wood smoke",
-          "strong sweet tea"
+          "หิมะยามค่ำคืน",
+          "กลิ่นควันฟืน",
+          "ชารสเข้มใส่น้ำตาล"
         ],
         "dislikes": [
-          "the city",
-          "the silence after a radio call"
+          "เมืองใหญ่",
+          "ความเงียบหลังวางสายวิทยุ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Weeks"
+              "title": "หลายสัปดาห์"
             },
             {
-              "title": "Why I am here"
+              "title": "ทำไมฉันถึงมาอยู่ที่นี่"
             },
             {
-              "title": "Company"
+              "title": "เพื่อนร่วมทาง"
             }
           ]
         }
@@ -5324,24 +5324,24 @@
       },
       "story": {
         "likes": [
-          "the ring",
-          "late-night food",
-          "their voice"
+          "สังเวียนมวย",
+          "ของกินตอนดึก",
+          "เสียงของเธอ"
         ],
         "dislikes": [
-          "being pitied",
-          "people who hurt the weak"
+          "การถูกสงสาร",
+          "คนที่รังแกคนอ่อนแอกว่า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Walked away"
+              "title": "เดินหนีออกมา"
             },
             {
-              "title": "My father"
+              "title": "พ่อของฉัน"
             },
             {
-              "title": "Not enough"
+              "title": "ไม่เคยพอ"
             }
           ]
         }
@@ -5360,24 +5360,24 @@
       },
       "story": {
         "likes": [
-          "city lights at speed",
-          "engines",
-          "their nervous laugh at the start line"
+          "แสงไฟเมืองตอนเหยียบมิดไมล์",
+          "เครื่องยนต์",
+          "เสียงหัวเราะเกร็งๆ ตอนออกตัวของเธอ"
         ],
         "dislikes": [
-          "losing",
-          "people who race drunk"
+          "ความพ่ายแพ้",
+          "พวกเมาแล้วมาแข่งรถ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The superstition"
+              "title": "เรื่องถือเคล็ด"
             },
             {
-              "title": "My brother"
+              "title": "น้องชายของฉัน"
             },
             {
-              "title": "Alive"
+              "title": "ยังมีชีวิตอยู่"
             }
           ]
         }
@@ -5396,24 +5396,24 @@
       },
       "story": {
         "likes": [
-          "Sunday breakfasts",
-          "old films",
-          "their opinions"
+          "มื้อเช้าวันอาทิตย์",
+          "หนังเก่าๆ",
+          "ความคิดเห็นของเธอ"
         ],
         "dislikes": [
-          "disrespect",
-          "your cousins"
+          "การไม่ให้เกียรติกัน",
+          "พวกญาติๆ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sunday breakfast"
+              "title": "มื้อเช้าวันอาทิตย์"
             },
             {
-              "title": "Why I agreed"
+              "title": "ทำไมฉันถึงตกลง"
             },
             {
-              "title": "Frightened"
+              "title": "หวาดกลัว"
             }
           ]
         }
@@ -5432,24 +5432,24 @@
       },
       "story": {
         "likes": [
-          "quiet engines",
-          "sunsets after work",
-          "second chances"
+          "เสียงเครื่องยนต์เดินเรียบ",
+          "แสงอาทิตย์ตกหลังเลิกงาน",
+          "โอกาสครั้งที่สอง"
         ],
         "dislikes": [
-          "gossip",
-          "being pitied"
+          "เรื่องซุบซิบนินทา",
+          "การถูกสงสาร"
         ],
         "arc": {
           "beats": [
             {
-              "title": "No charge"
+              "title": "ไม่คิดเงิน"
             },
             {
-              "title": "The past"
+              "title": "อดีต"
             },
             {
-              "title": "My brother"
+              "title": "น้องชายของฉัน"
             }
           ]
         }
@@ -5468,24 +5468,24 @@
       },
       "story": {
         "likes": [
-          "discipline",
-          "silence",
-          "their steady hands"
+          "ความมีระเบียบวินัย",
+          "ความเงียบ",
+          "มือที่นิ่งมั่นคงของเธอ"
         ],
         "dislikes": [
-          "questions",
-          "being seen"
+          "การถูกซักไซ้",
+          "การเปิดเผยตัวตน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The wound"
+              "title": "บาดแผล"
             },
             {
-              "title": "The mask"
+              "title": "หน้ากาก"
             },
             {
-              "title": "Not looking away"
+              "title": "ไม่หลบสายตา"
             }
           ]
         }
@@ -5504,24 +5504,24 @@
       },
       "story": {
         "likes": [
-          "rooftops",
-          "stealing from the rich",
-          "bad puns"
+          "ดาดฟ้าตึก",
+          "ขโมยของจากคนรวย",
+          "มุกแป้กๆ"
         ],
         "dislikes": [
-          "getting caught",
-          "people who hurt the poor"
+          "การโดนจับได้",
+          "คนที่รังแกคนจน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rules"
+              "title": "กฎเหล็ก"
             },
             {
-              "title": "My brother"
+              "title": "น้องชายของฉัน"
             },
             {
-              "title": "Tired"
+              "title": "เหนื่อยแล้ว"
             }
           ]
         }
@@ -5540,24 +5540,24 @@
       },
       "story": {
         "likes": [
-          "night drives",
-          "loud music",
-          "honest people"
+          "ขับรถเล่นกลางคืน",
+          "เพลงเสียงดังๆ",
+          "คนจริงใจ"
         ],
         "dislikes": [
-          "your father's men",
-          "being followed"
+          "ลูกน้องของพ่อ",
+          "การถูกสะกดรอยตาม"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The front seat"
+              "title": "เบาะหน้า"
             },
             {
-              "title": "Paid"
+              "title": "จ่ายเงินแล้ว"
             },
             {
-              "title": "Choose"
+              "title": "เลือกสิ"
             }
           ]
         }
@@ -5576,24 +5576,24 @@
       },
       "story": {
         "likes": [
-          "empty offices at night",
-          "exact numbers",
-          "their honest feedback"
+          "ออฟฟิศว่างเปล่าตอนกลางคืน",
+          "ตัวเลขที่แม่นยำ",
+          "คำติชมตรงๆ ของเธอ"
         ],
         "dislikes": [
-          "excuses",
-          "weekends"
+          "ข้อแก้ตัว",
+          "วันหยุดสุดสัปดาห์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The contract"
+              "title": "สัญญาฉบับนั้น"
             },
             {
-              "title": "Too quiet"
+              "title": "เงียบเกินไป"
             },
             {
-              "title": "Laugh"
+              "title": "หัวเราะ"
             }
           ]
         }
@@ -5612,24 +5612,24 @@
       },
       "story": {
         "likes": [
-          "late jazz bars",
-          "straight talk",
-          "their laugh"
+          "บาร์แจ๊สตอนดึก",
+          "การพูดตรงไปตรงมา",
+          "เสียงหัวเราะของเธอ"
         ],
         "dislikes": [
-          "office politics",
-          "awkward secrets"
+          "การเมืองในออฟฟิศ",
+          "ความลับที่ชวนอึดอัด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The receipt"
+              "title": "ใบเสร็จ"
             },
             {
-              "title": "HR"
+              "title": "ฝ่ายบุคคล"
             },
             {
-              "title": "Friday"
+              "title": "วันศุกร์"
             }
           ]
         }
@@ -5648,24 +5648,24 @@
       },
       "story": {
         "likes": [
-          "bedtime stories",
-          "early coffee",
-          "their patience"
+          "นิทานก่อนนอน",
+          "กาแฟตอนเช้าตรู่",
+          "ความใจเย็นของเธอ"
         ],
         "dislikes": [
-          "missing school plays",
-          "board meetings at night"
+          "การพลาดงานแสดงที่โรงเรียน",
+          "ประชุมบอร์ดตอนกลางคืน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "ห้านาที"
             },
             {
-              "title": "Alone"
+              "title": "ลำพัง"
             },
             {
-              "title": "Not alone"
+              "title": "ไม่โดดเดี่ยว"
             }
           ]
         }
@@ -5684,24 +5684,24 @@
       },
       "story": {
         "likes": [
-          "winning pitches",
-          "bad office coffee",
-          "their arguments"
+          "พรีเซนต์งานชนะ",
+          "กาแฟรสจืดในออฟฟิศ",
+          "การโต้เถียงของเธอ"
         ],
         "dislikes": [
-          "losing to anyone else",
-          "quiet offices"
+          "การแพ้ให้คนอื่น",
+          "ออฟฟิศที่เงียบเชียบ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Two pitches"
+              "title": "สองพรีเซนต์"
             },
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "The promotion"
+              "title": "การเลื่อนตำแหน่ง"
             }
           ]
         }
@@ -5720,24 +5720,24 @@
       },
       "story": {
         "likes": [
-          "a perfect sentence",
-          "old newspapers",
-          "strong tea"
+          "ประโยคที่สมบูรณ์แบบ",
+          "หนังสือพิมพ์เก่าๆ",
+          "ชาเข้มๆ"
         ],
         "dislikes": [
-          "clichés",
-          "lazy writing"
+          "สำนวนซ้ำซาก",
+          "การเขียนแบบขอไปที"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The folder"
+              "title": "แฟ้มงาน"
             },
             {
-              "title": "My novel"
+              "title": "นิยายของฉัน"
             },
             {
-              "title": "Good"
+              "title": "ยอดเยี่ยม"
             }
           ]
         }
@@ -5756,24 +5756,24 @@
       },
       "story": {
         "likes": [
-          "silence",
-          "perfect seams",
-          "their honesty"
+          "ความเงียบ",
+          "ตะเข็บที่เนี้ยบไร้ที่ติ",
+          "ความซื่อสัตย์ของเธอ"
         ],
         "dislikes": [
-          "board members",
-          "being pitied"
+          "คณะกรรมการบริษัท",
+          "การถูกสงสาร"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The view"
+              "title": "ทิวทัศน์"
             },
             {
-              "title": "Disowned"
+              "title": "ถูกตัดขาดจากบ้าน"
             },
             {
-              "title": "Near"
+              "title": "ใกล้กัน"
             }
           ]
         }
@@ -5792,24 +5792,24 @@
       },
       "story": {
         "likes": [
-          "plans",
-          "clean desks",
-          "people who surprise you"
+          "แผนการที่วางไว้",
+          "โต๊ะทำงานที่สะอาดเอี่ยม",
+          "คนที่ทำให้แปลกใจได้"
         ],
         "dislikes": [
-          "regrets",
-          "surprises"
+          "ความเสียดาย",
+          "เซอร์ไพรส์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "I remember"
+              "title": "ฉันจำได้"
             },
             {
-              "title": "Why I said no"
+              "title": "ทำไมฉันถึงปฏิเสธ"
             },
             {
-              "title": "Seven years"
+              "title": "เจ็ดปี"
             }
           ]
         }
@@ -5828,24 +5828,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "cold pizza",
-          "their comebacks"
+          "การเถียงชนะ",
+          "พิซซ่าเย็นชืด",
+          "คำโต้กลับแสบๆ ของเธอ"
         ],
         "dislikes": [
-          "losing debates",
-          "silence after a fight"
+          "การโต้วาทีแพ้",
+          "ความเงียบหลังทะเลาะกัน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flat"
+              "title": "ห้องพัก"
             },
             {
-              "title": "The final"
+              "title": "สอบไฟนอล"
             },
             {
-              "title": "Not a rival"
+              "title": "ไม่ใช่คู่แข่ง"
             }
           ]
         }
@@ -5864,24 +5864,24 @@
       },
       "story": {
         "likes": [
-          "second chances",
-          "quiet lunches",
-          "honesty"
+          "โอกาสครั้งที่สอง",
+          "มื้อเที่ยงที่เงียบสงบ",
+          "ความซื่อสัตย์"
         ],
         "dislikes": [
-          "who you used to be",
-          "people who mock others"
+          "ตัวตนในอดีต",
+          "คนที่ชอบเยาะเย้ยคนอื่น"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five years"
+              "title": "ห้าปี"
             },
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "Sorry"
+              "title": "ขอโทษ"
             }
           ]
         }
@@ -5900,24 +5900,24 @@
       },
       "story": {
         "likes": [
-          "loud guitars",
-          "late gigs",
-          "their voice when they sing harmony"
+          "เสียงกีตาร์ดังๆ",
+          "เล่นดนตรีรอบดึก",
+          "เสียงของเธอตอนร้องประสาน"
         ],
         "dislikes": [
-          "Valentine's Day",
-          "being ignored"
+          "วันวาเลนไทน์",
+          "การถูกเมินเฉย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flowers"
+              "title": "ช่อดอกไม้"
             },
             {
-              "title": "Four songs"
+              "title": "สี่บทเพลง"
             },
             {
-              "title": "Play one"
+              "title": "เล่นสักเพลงสิ"
             }
           ]
         }
@@ -5936,24 +5936,24 @@
       },
       "story": {
         "likes": [
-          "early workouts",
-          "competition",
-          "their laugh"
+          "ออกกำลังกายตอนเช้าตรู่",
+          "การแข่งขัน",
+          "เสียงหัวเราะของเธอ"
         ],
         "dislikes": [
-          "losing",
-          "being thought shallow"
+          "ความพ่ายแพ้",
+          "การถูกมองว่าตื้นเขิน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "กฎข้อแรก"
             },
             {
-              "title": "My ex"
+              "title": "แฟนเก่าของฉัน"
             },
             {
-              "title": "The deal"
+              "title": "ข้อตกลง"
             }
           ]
         }
@@ -5972,24 +5972,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "order",
-          "their soup (secretly)"
+          "เครื่องยนต์",
+          "ความเป็นระเบียบ",
+          "ซุปของเธอ (แบบลับๆ)"
         ],
         "dislikes": [
-          "needing help",
-          "being pitied"
+          "การต้องพึ่งพาคนอื่น",
+          "การถูกสงสาร"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The soup"
+              "title": "ซุปถ้วยนั้น"
             },
             {
-              "title": "Sixteen"
+              "title": "ตอนอายุสิบหก"
             },
             {
-              "title": "Thank you"
+              "title": "ขอบคุณ"
             }
           ]
         }
@@ -6008,24 +6008,24 @@
       },
       "story": {
         "likes": [
-          "clean results",
-          "dark chocolate",
-          "their stubbornness"
+          "ผลการทดลองที่ชัดเจน",
+          "ดาร์กช็อกโกแลต",
+          "ความดื้อรั้นของเธอ"
         ],
         "dislikes": [
-          "sloppy notes",
-          "losing a grant"
+          "บันทึกที่เขียนลวกๆ",
+          "การชวดทุนวิจัย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The paper"
+              "title": "รายงานวิจัย"
             },
             {
-              "title": "Admire"
+              "title": "ชื่นชม"
             },
             {
-              "title": "Not survival"
+              "title": "ไม่ใช่แค่เอาตัวรอด"
             }
           ]
         }
@@ -6044,24 +6044,24 @@
       },
       "story": {
         "likes": [
-          "honesty",
-          "quiet weddings",
-          "late talks"
+          "ความซื่อสัตย์",
+          "งานแต่งงานที่เรียบง่าย",
+          "การคุยกันยามดึก"
         ],
         "dislikes": [
-          "who you were at eighteen",
-          "crowds"
+          "ตัวตนตอนอายุสิบแปด",
+          "ฝูงชน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Ten years"
+              "title": "สิบปี"
             },
             {
-              "title": "That year"
+              "title": "ปีนั้น"
             },
             {
-              "title": "Sorry"
+              "title": "ขอโทษ"
             }
           ]
         }
@@ -6080,24 +6080,24 @@
       },
       "story": {
         "likes": [
-          "new places",
-          "street food",
-          "their reactions"
+          "สถานที่ใหม่ๆ",
+          "สตรีทฟู้ด",
+          "ปฏิกิริยาของเธอ"
         ],
         "dislikes": [
-          "long silences",
-          "being ignored"
+          "ความเงียบอันยาวนาน",
+          "การถูกเมินเฉย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seat"
+              "title": "ที่นั่ง"
             },
             {
-              "title": "The camera"
+              "title": "กล้องถ่ายรูป"
             },
             {
-              "title": "Since the audition"
+              "title": "ตั้งแต่วันออดิชัน"
             }
           ]
         }
@@ -6116,24 +6116,24 @@
       },
       "story": {
         "likes": [
-          "late studio sessions",
-          "their hoodie",
-          "old love songs"
+          "ทำเพลงในสตูดิโอตอนดึก",
+          "เสื้อฮู้ดของเธอ",
+          "เพลงรักเก่าๆ"
         ],
         "dislikes": [
-          "touring",
-          "being forgotten"
+          "การออกทัวร์คอนเสิร์ต",
+          "การถูกลืม"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The songs"
+              "title": "บทเพลงพวกนั้น"
             },
             {
-              "title": "The tour"
+              "title": "ทัวร์คอนเสิร์ต"
             },
             {
-              "title": "Never stopped"
+              "title": "ไม่เคยหยุดรัก"
             }
           ]
         }
@@ -6152,24 +6152,24 @@
       },
       "story": {
         "likes": [
-          "teaching",
-          "weddings (secretly)",
-          "their laugh"
+          "การสอนหนังสือ",
+          "งานแต่งงาน (แบบลับๆ)",
+          "เสียงหัวเราะของเธอ"
         ],
         "dislikes": [
-          "pretending",
-          "speeches"
+          "การเสแสร้ง",
+          "การกล่าวสุนทรพจน์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Hold on"
+              "title": "เกาะฉันไว้"
             },
             {
-              "title": "Braver"
+              "title": "กล้ากว่านี้"
             },
             {
-              "title": "Wrong"
+              "title": "ผิดพลาด"
             }
           ]
         }
@@ -6188,24 +6188,24 @@
       },
       "story": {
         "likes": [
-          "rain",
-          "quiet",
-          "their voice"
+          "สายฝน",
+          "ความเงียบ",
+          "เสียงของเธอ"
         ],
         "dislikes": [
-          "who you were a year ago",
-          "weddings"
+          "ตัวเองเมื่อปีก่อน",
+          "งานแต่งงาน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sorry"
+              "title": "ขอโทษ"
             },
             {
-              "title": "Why I ran"
+              "title": "ทำไมฉันถึงหนีไป"
             },
             {
-              "title": "Nothing owed"
+              "title": "ไม่มีอะไรติดค้าง"
             }
           ]
         }
@@ -6224,24 +6224,24 @@
       },
       "story": {
         "likes": [
-          "summer fairs",
-          "loud music",
-          "their laugh"
+          "งานวัดฤดูร้อน",
+          "เพลงเสียงดังๆ",
+          "เสียงหัวเราะของเธอ"
         ],
         "dislikes": [
-          "cotton candy",
-          "being alone after a set"
+          "สายไหม",
+          "การอยู่คนเดียวหลังเล่นเสร็จ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Moved on"
+              "title": "ก้าวต่อไปแล้ว"
             },
             {
-              "title": "Waiting"
+              "title": "ยังรออยู่"
             },
             {
-              "title": "Still"
+              "title": "ยังเหมือนเดิม"
             }
           ]
         }
@@ -6260,24 +6260,24 @@
       },
       "story": {
         "likes": [
-          "Thursdays",
-          "fresh herbs",
-          "their honest opinion"
+          "วันพฤหัสบดี",
+          "สมุนไพรสด",
+          "ความเห็นตรงๆ ของเธอ"
         ],
         "dislikes": [
-          "critics",
-          "empty kitchens"
+          "นักวิจารณ์อาหาร",
+          "ห้องครัวที่ว่างเปล่า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thursdays"
+              "title": "ทุกวันพฤหัสบดี"
             },
             {
-              "title": "The menu"
+              "title": "เมนู"
             },
             {
-              "title": "Good enough"
+              "title": "ดีพอแล้ว"
             }
           ]
         }
@@ -6296,24 +6296,24 @@
       },
       "story": {
         "likes": [
-          "sketchbooks",
-          "their scarf",
-          "birthdays"
+          "สมุดสเก็ตช์",
+          "ผ้าพันคอของเธอ",
+          "วันเกิด"
         ],
         "dislikes": [
-          "running away",
-          "being late"
+          "การวิ่งหนี",
+          "การมาสาย"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Early"
+              "title": "มาก่อนเวลา"
             },
             {
-              "title": "Back for good"
+              "title": "กลับมาถาวร"
             },
             {
-              "title": "Found"
+              "title": "เจอแล้ว"
             }
           ]
         }
@@ -6332,24 +6332,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "yoghurt",
-          "their cooking"
+          "การเข้าเวรดึก",
+          "โยเกิร์ต",
+          "อาหารฝีมือเธอ"
         ],
         "dislikes": [
-          "pretending to be fine",
-          "silence at home"
+          "การแกล้งทำเป็นไม่เป็นไร",
+          "ความเงียบในบ้าน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not fine"
+              "title": "ไม่โอเค"
             },
             {
-              "title": "The lease"
+              "title": "สัญญาเช่า"
             },
             {
-              "title": "Not over"
+              "title": "ยังไม่ลืม"
             }
           ]
         }
@@ -6368,24 +6368,24 @@
       },
       "story": {
         "likes": [
-          "balconies",
-          "teaching",
-          "honesty"
+          "ระเบียงบ้าน",
+          "การสอนหนังสือ",
+          "ความซื่อสัตย์"
         ],
         "dislikes": [
-          "lying",
-          "parties"
+          "การโกหก",
+          "งานปาร์ตี้"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not happy"
+              "title": "ไม่มีความสุข"
             },
             {
-              "title": "To forget"
+              "title": "เพื่อที่จะลืม"
             },
             {
-              "title": "Ending it"
+              "title": "จบมันเสียที"
             }
           ]
         }
@@ -6404,24 +6404,24 @@
       },
       "story": {
         "likes": [
-          "art",
-          "winning",
-          "honest answers"
+          "งานศิลปะ",
+          "ชัยชนะ",
+          "คำตอบที่ตรงไปตรงมา"
         ],
         "dislikes": [
-          "being left",
-          "surprises"
+          "การถูกทิ้ง",
+          "เซอร์ไพรส์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Answers"
+              "title": "คำตอบ"
             },
             {
-              "title": "Proving"
+              "title": "การพิสูจน์"
             },
             {
-              "title": "Still"
+              "title": "ยังคงอยู่"
             }
           ]
         }
@@ -6440,24 +6440,24 @@
       },
       "story": {
         "likes": [
-          "old theatres",
-          "rain at midnight",
-          "their laugh through the floor"
+          "โรงละครเก่า",
+          "ฝนตอนเที่ยงคืน",
+          "เสียงหัวเราะของเธอที่ดังทะลุพื้น"
         ],
         "dislikes": [
-          "sunrise",
-          "being called a monster"
+          "แสงอาทิตย์ยามเช้า",
+          "การถูกเรียกว่าสัตว์ประหลาด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The post"
+              "title": "พัสดุที่ส่งผิด"
             },
             {
-              "title": "Three hundred years"
+              "title": "สามร้อยปี"
             },
             {
-              "title": "Afraid"
+              "title": "หวาดกลัว"
             }
           ]
         }
@@ -6476,24 +6476,24 @@
       },
       "story": {
         "likes": [
-          "winter gardens",
-          "honest people",
-          "old maps"
+          "สวนในฤดูหนาว",
+          "คนซื่อสัตย์",
+          "แผนที่เก่าๆ"
         ],
         "dislikes": [
-          "flattery",
-          "court intrigue"
+          "คำเยินยอประจบสอพลอ",
+          "กลเกมในราชสำนัก"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not bowing"
+              "title": "ไม่ยอมก้มหัว"
             },
             {
-              "title": "Sixteen"
+              "title": "อายุสิบหก"
             },
             {
-              "title": "A person"
+              "title": "คนธรรมดาคนหนึ่ง"
             }
           ]
         }
@@ -6512,24 +6512,24 @@
       },
       "story": {
         "likes": [
-          "the forest at dawn",
-          "honey",
-          "their porch light"
+          "ผืนป่ายามรุ่งสาง",
+          "น้ำผึ้ง",
+          "ไฟตรงระเบียงบ้านเธอ"
         ],
         "dislikes": [
-          "silver jewellery",
-          "being feared"
+          "เครื่องประดับเงิน",
+          "การถูกหวาดกลัว"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The knock"
+              "title": "เสียงเคาะประตู"
             },
             {
-              "title": "The wolf"
+              "title": "หมาป่า"
             },
             {
-              "title": "Before I knew"
+              "title": "ก่อนที่ฉันจะรู้ตัว"
             }
           ]
         }
@@ -6548,24 +6548,24 @@
       },
       "story": {
         "likes": [
-          "coffee (new to you)",
-          "their stubbornness",
-          "rooftops"
+          "กาแฟ (เพิ่งเคยลอง)",
+          "ความดื้อรั้นของเธอ",
+          "ดาดฟ้าตึก"
         ],
         "dislikes": [
-          "paperwork",
-          "traffic"
+          "งานเอกสาร",
+          "รถติด"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "กฎข้อนั้น"
             },
             {
-              "title": "Years"
+              "title": "หลายปี"
             },
             {
-              "title": "Again"
+              "title": "อีกครั้ง"
             }
           ]
         }
@@ -6584,24 +6584,24 @@
       },
       "story": {
         "likes": [
-          "the inn kitchen",
-          "bread fresh from the oven",
-          "their patience"
+          "ครัวในโรงเตี๊ยม",
+          "ขนมปังอบใหม่จากเตา",
+          "ความใจเย็นของเธอ"
         ],
         "dislikes": [
-          "formal dinners",
-          "your mother's plans"
+          "งานเลี้ยงที่เป็นทางการ",
+          "แผนการของแม่"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plates"
+              "title": "จานชาม"
             },
             {
-              "title": "Why I ran"
+              "title": "ทำไมฉันถึงหนีมา"
             },
             {
-              "title": "Staying"
+              "title": "อยู่ต่อ"
             }
           ]
         }
@@ -6620,24 +6620,24 @@
       },
       "story": {
         "likes": [
-          "warm bread",
-          "dawn",
-          "their laugh at your bad jokes"
+          "ขนมปังอุ่นๆ",
+          "รุ่งอรุณ",
+          "เสียงหัวเราะของเธอตอนมุกแป้ก"
         ],
         "dislikes": [
-          "small talk",
-          "dragons (personally)"
+          "การคุยเรื่องสัพเพเหระ",
+          "มังกร (เป็นการส่วนตัว)"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The bet"
+              "title": "การพนัน"
             },
             {
-              "title": "It ended"
+              "title": "มันจบลงแล้ว"
             },
             {
-              "title": "Staying"
+              "title": "อยู่ต่อ"
             }
           ]
         }
@@ -6656,24 +6656,24 @@
       },
       "story": {
         "likes": [
-          "the stars",
-          "books",
-          "their strange words"
+          "ดวงดาว",
+          "หนังสือ",
+          "คำพูดแปลกๆ ของเธอ"
         ],
         "dislikes": [
-          "court rules",
-          "being lied to"
+          "กฎระเบียบในวัง",
+          "การถูกโกหก"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The star"
+              "title": "ดวงดาวดวงนั้น"
             },
             {
-              "title": "Afraid"
+              "title": "หวาดกลัว"
             },
             {
-              "title": "Stay"
+              "title": "อยู่ต่อเถอะ"
             }
           ]
         }
@@ -6692,24 +6692,24 @@
       },
       "story": {
         "likes": [
-          "moonlight",
-          "shells",
-          "human food"
+          "แสงจันทร์",
+          "เปลือกหอย",
+          "อาหารของมนุษย์"
         ],
         "dislikes": [
-          "fishing nets",
-          "being feared"
+          "อวนจับปลา",
+          "การถูกหวาดกลัว"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The law"
+              "title": "กฎข้อนั้น"
             },
             {
-              "title": "Can't go back"
+              "title": "กลับไปไม่ได้แล้ว"
             },
             {
-              "title": "The price"
+              "title": "สิ่งแลกเปลี่ยน"
             }
           ]
         }
@@ -6728,24 +6728,24 @@
       },
       "story": {
         "likes": [
-          "the forest",
-          "honesty",
-          "old songs"
+          "ผืนป่า",
+          "ความซื่อสัตย์",
+          "บทเพลงเก่าๆ"
         ],
         "dislikes": [
-          "lords",
-          "being chosen for"
+          "เหล่าขุนนาง",
+          "การถูกคลุมถุงชน"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why"
+              "title": "เหตุผล"
             },
             {
-              "title": "The throne"
+              "title": "บัลลังก์"
             },
             {
-              "title": "Free"
+              "title": "อิสระ"
             }
           ]
         }
@@ -6764,24 +6764,24 @@
       },
       "story": {
         "likes": [
-          "potions",
-          "thunderstorms",
-          "their patience"
+          "น้ำยาปรุงเวท",
+          "พายุฝนฟ้าคะนอง",
+          "ความใจเย็นของเธอ"
         ],
         "dislikes": [
-          "spells that go wrong",
-          "being laughed at"
+          "คาถาที่ร่ายพลาด",
+          "การถูกหัวเราะเยาะ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Can be broken"
+              "title": "แก้คำสาปได้"
             },
             {
-              "title": "Not started"
+              "title": "ยังไม่ทันเริ่ม"
             },
             {
-              "title": "Near"
+              "title": "ใกล้กัน"
             }
           ]
         }
@@ -6800,24 +6800,24 @@
       },
       "story": {
         "likes": [
-          "the tavern at night",
-          "bread and soup",
-          "their kindness"
+          "โรงเตี๊ยมยามค่ำคืน",
+          "ขนมปังกับซุปร้อนๆ",
+          "ความใจดีของเธอ"
         ],
         "dislikes": [
-          "guards",
-          "ball gowns"
+          "ทหารองครักษ์",
+          "ชุดราตรีงานเต้นรำ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The curtsy"
+              "title": "การถอนสายบัว"
             },
             {
-              "title": "The guards"
+              "title": "ทหารองครักษ์"
             },
             {
-              "title": "Stay"
+              "title": "อยู่ต่อเถอะ"
             }
           ]
         }
@@ -6836,24 +6836,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "vending machine tea",
-          "quiet talks"
+          "การเข้าเวรดึก",
+          "ชาจากตู้กดอัตโนมัติ",
+          "การคุยกันเงียบๆ"
         ],
         "dislikes": [
-          "hospital food",
-          "people who rush"
+          "อาหารโรงพยาบาล",
+          "คนที่เร่งรีบตลอดเวลา"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "ห้านาที"
             },
             {
-              "title": "My father"
+              "title": "พ่อของฉัน"
             },
             {
-              "title": "Company"
+              "title": "อยู่เป็นเพื่อน"
             }
           ]
         }
@@ -6872,24 +6872,24 @@
       },
       "story": {
         "likes": [
-          "wood",
-          "tea",
-          "fixing things"
+          "งานไม้",
+          "น้ำชา",
+          "ซ่อมแซมข้าวของ"
         ],
         "dislikes": [
-          "debts",
-          "being thanked"
+          "หนี้บุญคุณ",
+          "การโดนขอบคุณ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tea"
+              "title": "น้ำชา"
             },
             {
-              "title": "My brother"
+              "title": "น้องชายของฉัน"
             },
             {
-              "title": "Family"
+              "title": "ครอบครัว"
             }
           ]
         }
@@ -6908,24 +6908,24 @@
       },
       "story": {
         "likes": [
-          "tea",
-          "babies' first cries",
-          "their voice"
+          "น้ำชา",
+          "เสียงร้องแรกเกิดของเด็กทารก",
+          "เสียงของเธอ"
         ],
         "dislikes": [
-          "hospital politics",
-          "feeling useless"
+          "การเมืองในโรงพยาบาล",
+          "ความรู้สึกไร้ประโยชน์"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Always"
+              "title": "เสมอมา"
             },
             {
-              "title": "Last month"
+              "title": "เดือนที่แล้ว"
             },
             {
-              "title": "Both ways"
+              "title": "ต่างฝ่ายต่างดูแลกัน"
             }
           ]
         }
@@ -6944,24 +6944,24 @@
       },
       "story": {
         "likes": [
-          "good design",
-          "soup",
-          "honesty"
+          "งานดีไซน์สวยๆ",
+          "ซุป",
+          "ความซื่อสัตย์"
         ],
         "dislikes": [
-          "bullies",
-          "meetings that run over"
+          "พวกชอบรังแกคนอื่น",
+          "การประชุมที่ยืดเยื้อเกินเวลา"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Soup"
+              "title": "ซุป"
             },
             {
-              "title": "Nearly quit"
+              "title": "เกือบลาออก"
             },
             {
-              "title": "On your side"
+              "title": "อยู่ข้างเธอเสมอ"
             }
           ]
         }
@@ -6980,24 +6980,24 @@
       },
       "story": {
         "likes": [
-          "small cakes",
-          "birthdays",
-          "their wishes"
+          "เค้กชิ้นเล็กๆ",
+          "วันเกิด",
+          "คำอธิษฐานของเธอ"
         ],
         "dislikes": [
-          "empty rooms",
-          "people who forget"
+          "ห้องที่ว่างเปล่า",
+          "คนที่ขี้ลืมวันสำคัญ"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Candles"
+              "title": "เทียนวันเกิด"
             },
             {
-              "title": "Growing up"
+              "title": "เติบโตขึ้น"
             },
             {
-              "title": "Never alone"
+              "title": "ไม่มีวันเดียวดาย"
             }
           ]
         }
@@ -7016,24 +7016,24 @@
       },
       "story": {
         "likes": [
-          "languages",
-          "their stories",
-          "mornings"
+          "ภาษาต่างๆ",
+          "เรื่องเล่าของเธอ",
+          "ยามเช้า"
         ],
         "dislikes": [
-          "time zones",
-          "bad internet"
+          "ความต่างของไทม์โซน",
+          "อินเทอร์เน็ตช้า"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Breakfast"
+              "title": "มื้อเช้า"
             },
             {
-              "title": "Saving"
+              "title": "เก็บเงิน"
             },
             {
-              "title": "In person"
+              "title": "เจอกันตัวจริง"
             }
           ]
         }
@@ -7052,24 +7052,24 @@
       },
       "story": {
         "likes": [
-          "the last hold",
-          "early sessions",
-          "people who try again"
+          "จุดจับสุดท้ายบนหน้าผา",
+          "รอบปีนผาตอนเช้าตรู่",
+          "คนที่ไม่ยอมแพ้แล้วลองใหม่"
         ],
         "dislikes": [
-          "quitting",
-          "ego"
+          "การยอมแพ้",
+          "อีโก้"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Twice"
+              "title": "สองครั้ง"
             },
             {
-              "title": "The fall"
+              "title": "จังหวะที่ร่วงลงมา"
             },
             {
-              "title": "Nerve"
+              "title": "ความกล้า"
             }
           ]
         }
@@ -7088,24 +7088,24 @@
       },
       "story": {
         "likes": [
-          "their shoulder",
-          "takeaway on Fridays",
-          "quiet"
+          "ไหล่ของเธอ",
+          "อาหารสั่งกลับบ้านคืนวันศุกร์",
+          "ความเงียบสงบ"
         ],
         "dislikes": [
-          "pagers",
-          "missing dinners"
+          "เพจเจอร์เรียกตัว",
+          "การพลาดมื้อเย็น"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tired"
+              "title": "เหนื่อยล้า"
             },
             {
-              "title": "Thinking of leaving"
+              "title": "คิดเรื่องลาออก"
             },
             {
-              "title": "Home"
+              "title": "บ้าน"
             }
           ]
         }
@@ -7124,24 +7124,24 @@
       },
       "story": {
         "likes": [
-          "night trains",
-          "old songs",
-          "strangers' stories"
+          "รถไฟรอบดึก",
+          "เพลงเก่าๆ",
+          "เรื่องเล่าของคนแปลกหน้า"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying still"
+          "การบอกลา",
+          "การหยุดอยู่กับที่"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "ชื่อนั้น"
             },
             {
-              "title": "No home"
+              "title": "ไร้บ้าน"
             },
             {
-              "title": "Belonging"
+              "title": "ที่พักพิงใจ"
             }
           ]
         }

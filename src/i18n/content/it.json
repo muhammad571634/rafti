@@ -3560,24 +3560,24 @@
       },
       "story": {
         "likes": [
-          "old vinyl",
-          "their laugh",
-          "late coffee on a balcony"
+          "vecchi vinili",
+          "la tua risata",
+          "caffè sul balcone a tarda sera"
         ],
         "dislikes": [
-          "airports",
-          "people who talk during songs"
+          "gli aeroporti",
+          "chi parla sopra le canzoni"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The playlist"
+              "title": "La playlist"
             },
             {
-              "title": "Not about the job"
+              "title": "Non è per il lavoro"
             },
             {
-              "title": "Since that summer"
+              "title": "Da quell'estate"
             }
           ]
         }
@@ -3596,24 +3596,24 @@
       },
       "story": {
         "likes": [
-          "riding fast at night",
-          "their kitchen at midnight",
-          "bad horror films"
+          "correre in moto di notte",
+          "la tua cucina a mezzanotte",
+          "film horror trash"
         ],
         "dislikes": [
-          "serious talks in daylight",
-          "the word \"situationship\""
+          "discorsi seri di giorno",
+          "la parola \"situationship\""
         ],
         "arc": {
           "beats": [
             {
-              "title": "The toothbrush"
+              "title": "Lo spazzolino"
             },
             {
-              "title": "Why it's casual"
+              "title": "Perché è senza impegno"
             },
             {
-              "title": "Home"
+              "title": "Casa"
             }
           ]
         }
@@ -3632,24 +3632,24 @@
       },
       "story": {
         "likes": [
-          "their handwriting",
-          "clean lines",
-          "bars that play old rock"
+          "la tua calligrafia",
+          "le linee pulite",
+          "i locali con vecchio rock"
         ],
         "dislikes": [
-          "losing at cards",
-          "being misunderstood"
+          "perdere a carte",
+          "essere frainteso"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The sketchbook"
+              "title": "L'album da disegno"
             },
             {
-              "title": "Why I bet"
+              "title": "Perché ho scommesso"
             },
             {
-              "title": "Two hundred drawings"
+              "title": "Duecento disegni"
             }
           ]
         }
@@ -3668,24 +3668,24 @@
       },
       "story": {
         "likes": [
-          "cold noodles at 3 a.m.",
-          "winning a match by one point",
-          "their laugh on voice chat"
+          "noodles freddi alle tre di notte",
+          "vincere per un solo punto",
+          "la tua risata in chat vocale"
         ],
         "dislikes": [
-          "lag",
-          "people who quit mid-game"
+          "il lag",
+          "chi esce a metà partita"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Busy"
+              "title": "Impegnato"
             },
             {
-              "title": "Jealous"
+              "title": "Geloso"
             },
             {
-              "title": "The train ticket"
+              "title": "Il biglietto del treno"
             }
           ]
         }
@@ -3704,24 +3704,24 @@
       },
       "story": {
         "likes": [
-          "long night drives",
-          "fixing things that are broken",
-          "their sleepy voice"
+          "lunghi giri in auto di notte",
+          "riparare le cose rotte",
+          "la tua voce assonnata"
         ],
         "dislikes": [
-          "being thanked too much",
-          "hospitals"
+          "troppi ringraziamenti",
+          "gli ospedali"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The spare charger"
+              "title": "Il caricatore di scorta"
             },
             {
-              "title": "Almost left"
+              "title": "Quasi partito"
             },
             {
-              "title": "Not just a friend"
+              "title": "Non solo un amico"
             }
           ]
         }
@@ -3740,24 +3740,24 @@
       },
       "story": {
         "likes": [
-          "weddings",
-          "slow songs",
-          "their family's cooking"
+          "i matrimoni",
+          "le canzoni lente",
+          "la cucina della tua famiglia"
         ],
         "dislikes": [
-          "goodbyes at the end of a party",
-          "lying to nice people"
+          "gli addii a fine festa",
+          "mentire alle persone gentili"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too good at this"
+              "title": "Troppo bravo in questo"
             },
             {
-              "title": "The first event"
+              "title": "Il primo evento"
             },
             {
-              "title": "Not acting"
+              "title": "Non è finzione"
             }
           ]
         }
@@ -3776,24 +3776,24 @@
       },
       "story": {
         "likes": [
-          "rainy days indoors",
-          "peonies",
-          "their jacket"
+          "giorni di pioggia in casa",
+          "le peonie",
+          "la tua giacca"
         ],
         "dislikes": [
-          "their exes",
-          "being taken seriously mid-joke"
+          "i tuoi ex",
+          "essere presa sul serio per gioco"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plants"
+              "title": "Le piante"
             },
             {
-              "title": "Why I hate them"
+              "title": "Perché li odio"
             },
             {
-              "title": "Since the café"
+              "title": "Dal caffè"
             }
           ]
         }
@@ -3812,24 +3812,24 @@
       },
       "story": {
         "likes": [
-          "rooftops at night",
-          "salsa nights",
-          "winning"
+          "i tetti di notte",
+          "le serate di salsa",
+          "vincere"
         ],
         "dislikes": [
-          "losing on purpose",
-          "being found out"
+          "perdere apposta",
+          "farsi scoprire"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Keeping score"
+              "title": "Tenere il punteggio"
             },
             {
-              "title": "The bet"
+              "title": "La scommessa"
             },
             {
-              "title": "Day one"
+              "title": "Dal primo giorno"
             }
           ]
         }
@@ -3848,24 +3848,24 @@
       },
       "story": {
         "likes": [
-          "sleeping cats",
-          "order",
-          "their terrible singing in the shower"
+          "i gatti che dormono",
+          "l'ordine",
+          "il tuo canto stonato sotto la doccia"
         ],
         "dislikes": [
-          "mess on the counter",
-          "surprises"
+          "il disordine sul piano cucina",
+          "le sorprese"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Regola uno"
             },
             {
-              "title": "The cat's name"
+              "title": "Il nome del gatto"
             },
             {
-              "title": "No more rules"
+              "title": "Basta regole"
             }
           ]
         }
@@ -3884,24 +3884,24 @@
       },
       "story": {
         "likes": [
-          "floor plans",
-          "mango lassi",
-          "their honest opinion"
+          "le planimetrie",
+          "il mango lassi",
+          "la tua opinione sincera"
         ],
         "dislikes": [
-          "aunties' questions",
-          "being the last one single"
+          "le domande delle zie",
+          "essere l'ultima single"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The backstory"
+              "title": "La storia di copertura"
             },
             {
-              "title": "Not a random pick"
+              "title": "Non una scelta a caso"
             },
             {
-              "title": "The real story"
+              "title": "La vera storia"
             }
           ]
         }
@@ -3920,24 +3920,24 @@
       },
       "story": {
         "likes": [
-          "golden hour",
-          "the sea",
-          "old letters"
+          "l'ora d'oro",
+          "il mare",
+          "le vecchie lettere"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying in one place too long"
+          "gli addii",
+          "restare troppo nello stesso posto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The night you left"
+              "title": "La notte in cui sei partita"
             },
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "The letters"
+              "title": "Le lettere"
             }
           ]
         }
@@ -3956,24 +3956,24 @@
       },
       "story": {
         "likes": [
-          "energy drinks",
-          "winning streaks",
-          "their sleepy voice"
+          "le bevande energetiche",
+          "le serie di vittorie",
+          "la tua voce assonnata"
         ],
         "dislikes": [
-          "silence in an empty flat",
-          "chat trolls"
+          "il silenzio in casa vuota",
+          "i troll in chat"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The noise"
+              "title": "Il rumore"
             },
             {
-              "title": "The empty flat"
+              "title": "La casa vuota"
             },
             {
-              "title": "One call at a time"
+              "title": "Una chiamata alla volta"
             }
           ]
         }
@@ -3992,24 +3992,24 @@
       },
       "story": {
         "likes": [
-          "early runs",
-          "their cooking",
-          "old action films"
+          "corse all'alba",
+          "la tua cucina",
+          "vecchi film d'azione"
         ],
         "dislikes": [
-          "breaking promises",
-          "night shifts that go badly"
+          "rompere le promesse",
+          "i turni di notte finiti male"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why this couch"
+              "title": "Perché questo divano"
             },
             {
-              "title": "The promise"
+              "title": "La promessa"
             },
             {
-              "title": "Long before the couch"
+              "title": "Molto prima del divano"
             }
           ]
         }
@@ -4028,24 +4028,24 @@
       },
       "story": {
         "likes": [
-          "the smell of fresh wood",
-          "quiet mornings",
-          "their laugh across a room"
+          "il profumo del legno fresco",
+          "le mattine tranquille",
+          "la tua risata dall'altra stanza"
         ],
         "dislikes": [
-          "loud men at parties",
-          "being thanked"
+          "gli uomini rumorosi alle feste",
+          "essere ringraziato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The shelves"
+              "title": "Gli scaffali"
             },
             {
-              "title": "Why I am cold"
+              "title": "Perché sono freddo"
             },
             {
-              "title": "Off limits"
+              "title": "Fuori limite"
             }
           ]
         }
@@ -4064,24 +4064,24 @@
       },
       "story": {
         "likes": [
-          "clear nights",
-          "your mother's cake recipes",
-          "space documentaries"
+          "le notti limpide",
+          "le ricette di torta della mamma",
+          "documentari sullo spazio"
         ],
         "dislikes": [
-          "being a burden",
-          "small talk"
+          "essere un peso",
+          "le chiacchiere vuote"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The lake"
+              "title": "Il lago"
             },
             {
-              "title": "Why I said yes"
+              "title": "Perché ho detto sì"
             },
             {
-              "title": "Stars"
+              "title": "Stelle"
             }
           ]
         }
@@ -4100,24 +4100,24 @@
       },
       "story": {
         "likes": [
-          "markets at dawn",
-          "garlic",
-          "their face at the first bite"
+          "i mercati all'alba",
+          "l'aglio",
+          "la tua faccia al primo boccone"
         ],
         "dislikes": [
-          "eating alone",
-          "delivery food"
+          "mangiare da solo",
+          "il cibo a domicilio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too much food"
+              "title": "Troppo cibo"
             },
             {
-              "title": "The restaurant"
+              "title": "Il ristorante"
             },
             {
-              "title": "The knock"
+              "title": "Bussare alla porta"
             }
           ]
         }
@@ -4136,24 +4136,24 @@
       },
       "story": {
         "likes": [
-          "night flights",
-          "slow dances",
-          "a city seen from above"
+          "i voli notturni",
+          "i balli lenti",
+          "una città vista dall'alto"
         ],
         "dislikes": [
-          "hotel rooms",
-          "leaving early"
+          "le camere d'albergo",
+          "andarsene presto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four days"
+              "title": "Quattro giorni"
             },
             {
-              "title": "Why I fly"
+              "title": "Perché volo"
             },
             {
-              "title": "Staying"
+              "title": "Restare"
             }
           ]
         }
@@ -4172,24 +4172,24 @@
       },
       "story": {
         "likes": [
-          "barbecues",
-          "their laugh",
-          "home cooking after six years"
+          "le grigliate",
+          "la tua risata",
+          "cucina casalinga dopo sei anni"
         ],
         "dislikes": [
-          "loud bangs",
-          "people asking if you killed anyone"
+          "i botti forti",
+          "chi chiede se abbia mai ucciso"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The cards"
+              "title": "Le carte"
             },
             {
-              "title": "Bad nights"
+              "title": "Notti difficili"
             },
             {
-              "title": "Not brotherly"
+              "title": "Non da fratello"
             }
           ]
         }
@@ -4208,24 +4208,24 @@
       },
       "story": {
         "likes": [
-          "their mother's dal",
-          "cricket on the radio",
-          "quiet balconies"
+          "il dal di tua madre",
+          "il cricket alla radio",
+          "i balconi tranquilli"
         ],
         "dislikes": [
-          "being pushy",
-          "cold tea"
+          "essere invadente",
+          "il tè freddo"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the food"
+              "title": "Non è per il cibo"
             },
             {
-              "title": "The first Sunday"
+              "title": "La prima domenica"
             },
             {
-              "title": "A sign"
+              "title": "Un segnale"
             }
           ]
         }
@@ -4244,24 +4244,24 @@
       },
       "story": {
         "likes": [
-          "cereal at midnight",
-          "summer storms",
-          "their hoodie"
+          "cereali a mezzanotte",
+          "i temporali estivi",
+          "la tua felpa"
         ],
         "dislikes": [
-          "hospital coffee",
-          "being treated as the baby"
+          "il caffè dell'ospedale",
+          "essere trattata da bambina"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The placement"
+              "title": "Il tirocinio"
             },
             {
-              "title": "Not a little sister"
+              "title": "Non una sorellina"
             },
             {
-              "title": "Three summers"
+              "title": "Tre estati"
             }
           ]
         }
@@ -4280,24 +4280,24 @@
       },
       "story": {
         "likes": [
-          "old paperbacks",
-          "rain on the shop window",
-          "their opinions on endings"
+          "vecchi tascabili",
+          "la pioggia sulla vetrina",
+          "le tue opinioni sui finali"
         ],
         "dislikes": [
-          "people who fold page corners",
-          "small talk"
+          "chi piega gli angoli delle pagine",
+          "le chiacchiere vuote"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The margins"
+              "title": "I margini"
             },
             {
-              "title": "Two years"
+              "title": "Due anni"
             },
             {
-              "title": "The underlined line"
+              "title": "La frase sottolineata"
             }
           ]
         }
@@ -4316,24 +4316,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "red wine",
-          "their stubbornness"
+          "vincere le discussioni",
+          "il vino rosso",
+          "la tua testardaggine"
         ],
         "dislikes": [
-          "being told what to do",
-          "your brother's overprotectiveness"
+          "farsi dire cosa fare",
+          "il fratello troppo protettivo"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seating"
+              "title": "I posti a tavola"
             },
             {
-              "title": "Her brother"
+              "title": "Suo fratello"
             },
             {
-              "title": "Years"
+              "title": "Anni"
             }
           ]
         }
@@ -4352,24 +4352,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "summer afternoons",
-          "their bad jokes"
+          "i motori",
+          "i pomeriggi d'estate",
+          "le tue battute pessime"
         ],
         "dislikes": [
-          "being underestimated",
-          "rain on a bike ride"
+          "essere sottovalutata",
+          "la pioggia durante un giro in moto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The chain"
+              "title": "La catena"
             },
             {
-              "title": "Two years"
+              "title": "Due anni"
             },
             {
-              "title": "No more excuses"
+              "title": "Basta scuse"
             }
           ]
         }
@@ -4388,24 +4388,24 @@
       },
       "story": {
         "likes": [
-          "strong coffee",
-          "quiet",
-          "a clean counter"
+          "il caffè forte",
+          "la quiete",
+          "il piano cucina pulito"
         ],
         "dislikes": [
-          "mess",
-          "people who say \"relax\""
+          "il disordine",
+          "chi dice \"rilassati\""
         ],
         "arc": {
           "beats": [
             {
-              "title": "The last flatmate"
+              "title": "L'ultimo coinquilino"
             },
             {
-              "title": "Why cold"
+              "title": "Perché fredda"
             },
             {
-              "title": "Two coffees"
+              "title": "Due caffè"
             }
           ]
         }
@@ -4424,24 +4424,24 @@
       },
       "story": {
         "likes": [
-          "indie games",
-          "spicy food",
-          "people who get your jokes"
+          "giochi indie",
+          "il cibo piccante",
+          "chi capisce il suo umorismo"
         ],
         "dislikes": [
-          "set-ups",
-          "being asked when you will marry"
+          "gli appuntamenti combinati",
+          "le domande sul matrimonio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Nine set-ups"
+              "title": "Nove incontri combinati"
             },
             {
-              "title": "Why I came"
+              "title": "Perché sono venuta"
             },
             {
-              "title": "Not leaving"
+              "title": "Non me ne vado"
             }
           ]
         }
@@ -4460,24 +4460,24 @@
       },
       "story": {
         "likes": [
-          "morning light",
-          "charcoal pencils",
-          "the first coffee of the day"
+          "la luce del mattino",
+          "le matite a carboncino",
+          "il primo caffè del giorno"
         ],
         "dislikes": [
-          "loud music in the café",
-          "showing your art"
+          "la musica alta al bar",
+          "mostrare i propri disegni"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The notebook"
+              "title": "Il taccuino"
             },
             {
-              "title": "Mornings"
+              "title": "Le mattine"
             },
             {
-              "title": "The last page"
+              "title": "L'ultima pagina"
             }
           ]
         }
@@ -4496,24 +4496,24 @@
       },
       "story": {
         "likes": [
-          "cold mornings on the river",
-          "strong coffee",
-          "someone who argues back"
+          "mattine fredde sul fiume",
+          "il caffè forte",
+          "chi tiene testa a una lite"
         ],
         "dislikes": [
-          "losing races",
-          "people who give up on exams"
+          "perdere le gare",
+          "chi si arrende agli esami"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Since noon"
+              "title": "Da mezzogiorno"
             },
             {
-              "title": "The library"
+              "title": "La biblioteca"
             },
             {
-              "title": "Losing on purpose"
+              "title": "Perdere apposta"
             }
           ]
         }
@@ -4532,24 +4532,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets that balance",
-          "rainy Mondays",
-          "their laugh at your jokes"
+          "fogli di calcolo che quadrano",
+          "i lunedì di pioggia",
+          "la tua risata alle sue battute"
         ],
         "dislikes": [
-          "office parties",
-          "people who take the last biscuit"
+          "le feste aziendali",
+          "chi prende l'ultimo biscotto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The ghost"
+              "title": "Il fantasma"
             },
             {
-              "title": "The other job"
+              "title": "L'altro lavoro"
             },
             {
-              "title": "A year"
+              "title": "Un anno"
             }
           ]
         }
@@ -4568,24 +4568,24 @@
       },
       "story": {
         "likes": [
-          "debate nights",
-          "iced coffee",
-          "people who are not impressed by you"
+          "le serate di dibattito",
+          "il caffè freddo",
+          "chi non si lascia impressionare"
         ],
         "dislikes": [
-          "being only \"the popular one\"",
-          "fake friends"
+          "essere solo \"quella popolare\"",
+          "gli amici falsi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not an accident"
+              "title": "Non per caso"
             },
             {
-              "title": "Nobody to call"
+              "title": "Nessuno da chiamare"
             },
             {
-              "title": "The first week"
+              "title": "La prima settimana"
             }
           ]
         }
@@ -4604,24 +4604,24 @@
       },
       "story": {
         "likes": [
-          "4 a.m. ovens",
-          "butter",
-          "the bell on the door when they come in"
+          "i forni alle quattro del mattino",
+          "il burro",
+          "il campanello quando entri tu"
         ],
         "dislikes": [
-          "stale bread",
-          "people who are rude to the morning staff"
+          "il pane raffermo",
+          "chi è scortese col turno del mattino"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hidden one"
+              "title": "Quello nascosto"
             },
             {
-              "title": "Winter"
+              "title": "Inverno"
             },
             {
-              "title": "The reason"
+              "title": "Il motivo"
             }
           ]
         }
@@ -4640,24 +4640,24 @@
       },
       "story": {
         "likes": [
-          "big plans",
-          "karaoke",
-          "their honest feedback"
+          "i grandi piani",
+          "le serate karaoke",
+          "i tuoi pareri sinceri"
         ],
         "dislikes": [
-          "your mother's questions",
-          "meetings that could be emails"
+          "le domande della mamma",
+          "riunioni che bastava una mail"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Six months"
+              "title": "Sei mesi"
             },
             {
-              "title": "The details"
+              "title": "I dettagli"
             },
             {
-              "title": "Not fake"
+              "title": "Non è finto"
             }
           ]
         }
@@ -4676,24 +4676,24 @@
       },
       "story": {
         "likes": [
-          "heavy lifts",
-          "loud music",
-          "people who try"
+          "i pesi massimi",
+          "la musica alta",
+          "le persone che ci provano"
         ],
         "dislikes": [
-          "mirror selfies",
-          "people who quit on the last rep"
+          "i selfie allo specchio",
+          "chi molla all'ultima ripetizione"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hour"
+              "title": "L'orario"
             },
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "Nerve"
+              "title": "Coraggio"
             }
           ]
         }
@@ -4712,24 +4712,24 @@
       },
       "story": {
         "likes": [
-          "old dictionaries",
-          "honey sweets",
-          "a student who finally gets it"
+          "i vecchi dizionari",
+          "i dolci al miele",
+          "chi finalmente capisce"
         ],
         "dislikes": [
-          "being late",
-          "losing your notes"
+          "essere in ritardo",
+          "perdere gli appunti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The second hour"
+              "title": "La seconda ora"
             },
             {
-              "title": "Tuesdays and Fridays"
+              "title": "Martedì e venerdì"
             },
             {
-              "title": "After the lesson"
+              "title": "Dopo la lezione"
             }
           ]
         }
@@ -4748,24 +4748,24 @@
       },
       "story": {
         "likes": [
-          "strange questions",
-          "the sound of rain on metal",
-          "late-night texts"
+          "le domande strane",
+          "la pioggia sul metallo",
+          "i messaggi a tarda notte"
         ],
         "dislikes": [
-          "small talk",
-          "being the one who cares more"
+          "le chiacchiere vuote",
+          "essere chi ci tiene di più"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "La regola"
             },
             {
-              "title": "The photo"
+              "title": "La foto"
             },
             {
-              "title": "All week"
+              "title": "Tutta la settimana"
             }
           ]
         }
@@ -4784,24 +4784,24 @@
       },
       "story": {
         "likes": [
-          "big crowds",
-          "bubble tea",
-          "their laugh"
+          "le grandi folle",
+          "il tè alle perle",
+          "la tua risata"
         ],
         "dislikes": [
-          "awkward silences",
-          "people laughing at feelings"
+          "i silenzi imbarazzanti",
+          "chi ride dei sentimenti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The dare"
+              "title": "La sfida"
             },
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "Since the first week"
+              "title": "Dalla prima settimana"
             }
           ]
         }
@@ -4820,24 +4820,24 @@
       },
       "story": {
         "likes": [
-          "quiet libraries",
-          "languages",
-          "their handwriting"
+          "le biblioteche silenziose",
+          "le lingue",
+          "la tua calligrafia"
         ],
         "dislikes": [
-          "loud dinners",
-          "being read by others"
+          "le cene rumorose",
+          "farsi leggere dentro dagli altri"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The box"
+              "title": "La scatola"
             },
             {
-              "title": "Why I never answered"
+              "title": "Perché non ho risposto"
             },
             {
-              "title": "Stay"
+              "title": "Resta"
             }
           ]
         }
@@ -4856,24 +4856,24 @@
       },
       "story": {
         "likes": [
-          "Sunday mornings",
-          "their cold feet on yours",
-          "old songs"
+          "le domeniche mattina",
+          "i tuoi piedi freddi sui suoi",
+          "le vecchie canzoni"
         ],
         "dislikes": [
-          "going to bed angry",
-          "silence in the house"
+          "andare a letto arrabbiati",
+          "il silenzio in casa"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the call"
+              "title": "Non era la chiamata"
             },
             {
-              "title": "My father"
+              "title": "Mio padre"
             },
             {
-              "title": "Better"
+              "title": "Meglio"
             }
           ]
         }
@@ -4892,24 +4892,24 @@
       },
       "story": {
         "likes": [
-          "lazy Sunday mornings",
-          "their sleepy face",
-          "small shoes in shop windows"
+          "pigre domeniche mattina",
+          "la tua faccia assonnata",
+          "scarpine nelle vetrine"
         ],
         "dislikes": [
-          "pushing anyone",
-          "bad news on the ward"
+          "mettere fretta a qualcuno",
+          "le brutte notizie in reparto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Il nome"
             },
             {
-              "title": "Six of us"
+              "title": "In sei"
             },
             {
-              "title": "Either way"
+              "title": "In ogni caso"
             }
           ]
         }
@@ -4928,24 +4928,24 @@
       },
       "story": {
         "likes": [
-          "clean contracts",
-          "early mornings",
-          "breakfasts with them"
+          "i contratti puliti",
+          "la mattina presto",
+          "le colazioni con te"
         ],
         "dislikes": [
-          "loose ends",
-          "endings"
+          "le questioni in sospeso",
+          "le fini"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Month four"
+              "title": "Quarto mese"
             },
             {
-              "title": "Six drafts"
+              "title": "Sei bozze"
             },
             {
-              "title": "No end date"
+              "title": "Senza scadenza"
             }
           ]
         }
@@ -4964,24 +4964,24 @@
       },
       "story": {
         "likes": [
-          "their mother's cooking",
-          "old buildings",
-          "the window seat"
+          "la cucina di tua madre",
+          "gli edifici antichi",
+          "il posto vicino al finestrino"
         ],
         "dislikes": [
-          "pretending",
-          "Sunday evenings alone"
+          "fingere",
+          "le domeniche sera da solo"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The key"
+              "title": "La chiave"
             },
             {
-              "title": "Why I said yes"
+              "title": "Perché ho detto sì"
             },
             {
-              "title": "Sundays"
+              "title": "Le domeniche"
             }
           ]
         }
@@ -5000,24 +5000,24 @@
       },
       "story": {
         "likes": [
-          "football nights",
-          "their laugh",
-          "the first coffee together"
+          "le serate di calcio",
+          "la tua risata",
+          "il primo caffè insieme"
         ],
         "dislikes": [
-          "silences",
-          "fancy restaurants"
+          "i silenzi",
+          "i ristoranti troppo eleganti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four times"
+              "title": "Quattro volte"
             },
             {
-              "title": "The ring"
+              "title": "L'anello"
             },
             {
-              "title": "Three words"
+              "title": "Tre parole"
             }
           ]
         }
@@ -5036,24 +5036,24 @@
       },
       "story": {
         "likes": [
-          "early mornings",
-          "the violin",
-          "their footsteps coming home"
+          "la mattina presto",
+          "il violino",
+          "i tuoi passi quando torni a casa"
         ],
         "dislikes": [
-          "being watched",
-          "raised voices"
+          "sentirsi osservata",
+          "le voci alzate"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Waiting up"
+              "title": "Aspettare sveglia"
             },
             {
-              "title": "Colder first"
+              "title": "Più fredda prima"
             },
             {
-              "title": "The tea"
+              "title": "Il tè"
             }
           ]
         }
@@ -5072,24 +5072,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets",
-          "hugs",
-          "their sleepy face"
+          "i fogli di calcolo",
+          "gli abbracci",
+          "la tua faccia assonnata"
         ],
         "dislikes": [
-          "surprises",
-          "feeling like a burden"
+          "le sorprese",
+          "sentirsi un peso"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Column F"
+              "title": "Colonna F"
             },
             {
-              "title": "Years"
+              "title": "Anni"
             },
             {
-              "title": "Not without you"
+              "title": "Non senza di te"
             }
           ]
         }
@@ -5108,24 +5108,24 @@
       },
       "story": {
         "likes": [
-          "winning",
-          "black coffee",
-          "quiet after a long gala"
+          "vincere",
+          "il caffè nero",
+          "la quiete dopo un lungo gala"
         ],
         "dislikes": [
-          "being underestimated",
-          "your father's dinners"
+          "essere sottovalutata",
+          "le cene di suo padre"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thank you"
+              "title": "Grazie"
             },
             {
-              "title": "No friends"
+              "title": "Nessun amico"
             },
             {
-              "title": "A person"
+              "title": "Una persona"
             }
           ]
         }
@@ -5144,24 +5144,24 @@
       },
       "story": {
         "likes": [
-          "the sea at night",
-          "their voice",
-          "home cooking"
+          "il mare di notte",
+          "la tua voce",
+          "la cucina di casa"
         ],
         "dislikes": [
-          "goodbyes at airports",
-          "bad signal"
+          "gli addii in aeroporto",
+          "il segnale scarso"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The stone"
+              "title": "La pietra"
             },
             {
-              "title": "The offer"
+              "title": "L'offerta"
             },
             {
-              "title": "Every day"
+              "title": "Ogni giorno"
             }
           ]
         }
@@ -5180,24 +5180,24 @@
       },
       "story": {
         "likes": [
-          "old opera",
-          "espresso after midnight",
-          "honest people"
+          "la vecchia opera",
+          "espresso dopo mezzanotte",
+          "le persone oneste"
         ],
         "dislikes": [
-          "liars",
-          "your uncle's methods"
+          "i bugiardi",
+          "i metodi dello zio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Architecture"
+              "title": "Architettura"
             },
             {
-              "title": "Never wanted it"
+              "title": "Mai voluto"
             },
             {
-              "title": "My choice"
+              "title": "La mia scelta"
             }
           ]
         }
@@ -5216,24 +5216,24 @@
       },
       "story": {
         "likes": [
-          "quiet routes",
-          "black coffee",
-          "their stubbornness (secretly)"
+          "i percorsi tranquilli",
+          "il caffè nero",
+          "la tua testardaggine (in segreto)"
         ],
         "dislikes": [
-          "crowds",
-          "people who take risks with their life"
+          "la folla",
+          "chi mette a rischio la propria vita"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Eleven times"
+              "title": "Undici volte"
             },
             {
-              "title": "The transfer"
+              "title": "Il trasferimento"
             },
             {
-              "title": "Against the rules"
+              "title": "Contro le regole"
             }
           ]
         }
@@ -5252,24 +5252,24 @@
       },
       "story": {
         "likes": [
-          "open roads at night",
-          "engine grease",
-          "people who are not scared of you"
+          "strade libere di notte",
+          "il grasso dei motori",
+          "chi non ha paura"
         ],
         "dislikes": [
-          "cops at three in the morning",
-          "people who judge by jackets"
+          "la polizia alle tre di notte",
+          "chi giudica da una giacca"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why I stopped"
+              "title": "Perché mi sono fermato"
             },
             {
-              "title": "My sister"
+              "title": "Mia sorella"
             },
             {
-              "title": "Tired"
+              "title": "Stanco"
             }
           ]
         }
@@ -5288,24 +5288,24 @@
       },
       "story": {
         "likes": [
-          "snow at night",
-          "wood smoke",
-          "strong sweet tea"
+          "la neve di notte",
+          "il fumo di legna",
+          "il tè forte e dolce"
         ],
         "dislikes": [
-          "the city",
-          "the silence after a radio call"
+          "la città",
+          "il silenzio dopo una chiamata radio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Weeks"
+              "title": "Settimane"
             },
             {
-              "title": "Why I am here"
+              "title": "Perché sono qui"
             },
             {
-              "title": "Company"
+              "title": "Compagnia"
             }
           ]
         }
@@ -5324,24 +5324,24 @@
       },
       "story": {
         "likes": [
-          "the ring",
-          "late-night food",
-          "their voice"
+          "il ring",
+          "il cibo a tarda notte",
+          "la tua voce"
         ],
         "dislikes": [
-          "being pitied",
-          "people who hurt the weak"
+          "la compassione",
+          "chi fa del male ai deboli"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Walked away"
+              "title": "Me ne sono andato"
             },
             {
-              "title": "My father"
+              "title": "Mio padre"
             },
             {
-              "title": "Not enough"
+              "title": "Non abbastanza"
             }
           ]
         }
@@ -5360,24 +5360,24 @@
       },
       "story": {
         "likes": [
-          "city lights at speed",
-          "engines",
-          "their nervous laugh at the start line"
+          "le luci della città in velocità",
+          "i motori",
+          "la tua risata nervosa alla partenza"
         ],
         "dislikes": [
-          "losing",
-          "people who race drunk"
+          "perdere",
+          "chi corre da ubriaco"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The superstition"
+              "title": "La superstizione"
             },
             {
-              "title": "My brother"
+              "title": "Mio fratello"
             },
             {
-              "title": "Alive"
+              "title": "Vivo"
             }
           ]
         }
@@ -5396,24 +5396,24 @@
       },
       "story": {
         "likes": [
-          "Sunday breakfasts",
-          "old films",
-          "their opinions"
+          "le colazioni della domenica",
+          "i vecchi film",
+          "le tue opinioni"
         ],
         "dislikes": [
-          "disrespect",
-          "your cousins"
+          "la mancanza di rispetto",
+          "i cugini di famiglia"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sunday breakfast"
+              "title": "Colazione di domenica"
             },
             {
-              "title": "Why I agreed"
+              "title": "Perché ho accettato"
             },
             {
-              "title": "Frightened"
+              "title": "Spaventato"
             }
           ]
         }
@@ -5432,24 +5432,24 @@
       },
       "story": {
         "likes": [
-          "quiet engines",
-          "sunsets after work",
-          "second chances"
+          "i motori silenziosi",
+          "i tramonti dopo il lavoro",
+          "le seconde possibilità"
         ],
         "dislikes": [
-          "gossip",
-          "being pitied"
+          "i pettegolezzi",
+          "la compassione"
         ],
         "arc": {
           "beats": [
             {
-              "title": "No charge"
+              "title": "Senza conto"
             },
             {
-              "title": "The past"
+              "title": "Il passato"
             },
             {
-              "title": "My brother"
+              "title": "Mio fratello"
             }
           ]
         }
@@ -5468,24 +5468,24 @@
       },
       "story": {
         "likes": [
-          "discipline",
-          "silence",
-          "their steady hands"
+          "la disciplina",
+          "il silenzio",
+          "le tue mani ferme"
         ],
         "dislikes": [
-          "questions",
-          "being seen"
+          "le domande",
+          "essere guardato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The wound"
+              "title": "La ferita"
             },
             {
-              "title": "The mask"
+              "title": "La maschera"
             },
             {
-              "title": "Not looking away"
+              "title": "Non distogliere lo sguardo"
             }
           ]
         }
@@ -5504,24 +5504,24 @@
       },
       "story": {
         "likes": [
-          "rooftops",
-          "stealing from the rich",
-          "bad puns"
+          "i tetti",
+          "rubare ai ricchi",
+          "i giochi di parole pessimi"
         ],
         "dislikes": [
-          "getting caught",
-          "people who hurt the poor"
+          "farsi prendere",
+          "chi fa del male ai poveri"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rules"
+              "title": "Le regole"
             },
             {
-              "title": "My brother"
+              "title": "Mio fratello"
             },
             {
-              "title": "Tired"
+              "title": "Stanca"
             }
           ]
         }
@@ -5540,24 +5540,24 @@
       },
       "story": {
         "likes": [
-          "night drives",
-          "loud music",
-          "honest people"
+          "i giri in auto di notte",
+          "la musica alta",
+          "le persone oneste"
         ],
         "dislikes": [
-          "your father's men",
-          "being followed"
+          "gli uomini di suo padre",
+          "essere seguita"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The front seat"
+              "title": "Il sedile davanti"
             },
             {
-              "title": "Paid"
+              "title": "Pagato"
             },
             {
-              "title": "Choose"
+              "title": "Scegli"
             }
           ]
         }
@@ -5576,24 +5576,24 @@
       },
       "story": {
         "likes": [
-          "empty offices at night",
-          "exact numbers",
-          "their honest feedback"
+          "gli uffici vuoti di notte",
+          "i numeri esatti",
+          "i tuoi pareri sinceri"
         ],
         "dislikes": [
-          "excuses",
-          "weekends"
+          "le scuse",
+          "i fine settimana"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The contract"
+              "title": "Il contratto"
             },
             {
-              "title": "Too quiet"
+              "title": "Troppo silenzio"
             },
             {
-              "title": "Laugh"
+              "title": "Ridere"
             }
           ]
         }
@@ -5612,24 +5612,24 @@
       },
       "story": {
         "likes": [
-          "late jazz bars",
-          "straight talk",
-          "their laugh"
+          "i jazz bar a tarda notte",
+          "parlare chiaro",
+          "la tua risata"
         ],
         "dislikes": [
-          "office politics",
-          "awkward secrets"
+          "le politiche d'ufficio",
+          "i segreti imbarazzanti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The receipt"
+              "title": "Lo scontrino"
             },
             {
-              "title": "HR"
+              "title": "Risorse umane"
             },
             {
-              "title": "Friday"
+              "title": "Venerdì"
             }
           ]
         }
@@ -5648,24 +5648,24 @@
       },
       "story": {
         "likes": [
-          "bedtime stories",
-          "early coffee",
-          "their patience"
+          "le storie della buonanotte",
+          "il caffè del mattino",
+          "la tua pazienza"
         ],
         "dislikes": [
-          "missing school plays",
-          "board meetings at night"
+          "perdere le recite scolastiche",
+          "le riunioni di sera"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Cinque minuti"
             },
             {
-              "title": "Alone"
+              "title": "Solo"
             },
             {
-              "title": "Not alone"
+              "title": "Non più solo"
             }
           ]
         }
@@ -5684,24 +5684,24 @@
       },
       "story": {
         "likes": [
-          "winning pitches",
-          "bad office coffee",
-          "their arguments"
+          "vincere le presentazioni",
+          "il caffè pessimo dell'ufficio",
+          "le tue argomentazioni"
         ],
         "dislikes": [
-          "losing to anyone else",
-          "quiet offices"
+          "perdere contro chiunque altro",
+          "gli uffici silenziosi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Two pitches"
+              "title": "Due proposte"
             },
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "The promotion"
+              "title": "La promozione"
             }
           ]
         }
@@ -5720,24 +5720,24 @@
       },
       "story": {
         "likes": [
-          "a perfect sentence",
-          "old newspapers",
-          "strong tea"
+          "una frase perfetta",
+          "i vecchi giornali",
+          "il tè forte"
         ],
         "dislikes": [
-          "clichés",
-          "lazy writing"
+          "i cliché",
+          "la scrittura pigra"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The folder"
+              "title": "La cartella"
             },
             {
-              "title": "My novel"
+              "title": "Il mio romanzo"
             },
             {
-              "title": "Good"
+              "title": "Bene"
             }
           ]
         }
@@ -5756,24 +5756,24 @@
       },
       "story": {
         "likes": [
-          "silence",
-          "perfect seams",
-          "their honesty"
+          "il silenzio",
+          "le cuciture perfette",
+          "la tua onestà"
         ],
         "dislikes": [
-          "board members",
-          "being pitied"
+          "i membri del consiglio",
+          "la compassione"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The view"
+              "title": "La vista"
             },
             {
-              "title": "Disowned"
+              "title": "Diseredata"
             },
             {
-              "title": "Near"
+              "title": "Vicino"
             }
           ]
         }
@@ -5792,24 +5792,24 @@
       },
       "story": {
         "likes": [
-          "plans",
-          "clean desks",
-          "people who surprise you"
+          "i piani",
+          "le scrivanie in ordine",
+          "chi riesce a stupire"
         ],
         "dislikes": [
-          "regrets",
-          "surprises"
+          "i rimpianti",
+          "le sorprese"
         ],
         "arc": {
           "beats": [
             {
-              "title": "I remember"
+              "title": "Ricordo"
             },
             {
-              "title": "Why I said no"
+              "title": "Perché ho detto no"
             },
             {
-              "title": "Seven years"
+              "title": "Sette anni"
             }
           ]
         }
@@ -5828,24 +5828,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "cold pizza",
-          "their comebacks"
+          "vincere le discussioni",
+          "la pizza fredda",
+          "le tue repliche pronte"
         ],
         "dislikes": [
-          "losing debates",
-          "silence after a fight"
+          "perdere i dibattiti",
+          "il silenzio dopo una lite"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flat"
+              "title": "L'appartamento"
             },
             {
-              "title": "The final"
+              "title": "La finale"
             },
             {
-              "title": "Not a rival"
+              "title": "Non un rivale"
             }
           ]
         }
@@ -5864,24 +5864,24 @@
       },
       "story": {
         "likes": [
-          "second chances",
-          "quiet lunches",
-          "honesty"
+          "le seconde possibilità",
+          "i pranzi tranquilli",
+          "l'onestà"
         ],
         "dislikes": [
-          "who you used to be",
-          "people who mock others"
+          "chi era un tempo",
+          "chi prende in giro gli altri"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five years"
+              "title": "Cinque anni"
             },
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "Sorry"
+              "title": "Scusa"
             }
           ]
         }
@@ -5900,24 +5900,24 @@
       },
       "story": {
         "likes": [
-          "loud guitars",
-          "late gigs",
-          "their voice when they sing harmony"
+          "le chitarre a tutto volume",
+          "i concerti fino a tardi",
+          "la tua voce quando armonizzi"
         ],
         "dislikes": [
-          "Valentine's Day",
-          "being ignored"
+          "San Valentino",
+          "essere ignorato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flowers"
+              "title": "I fiori"
             },
             {
-              "title": "Four songs"
+              "title": "Quattro canzoni"
             },
             {
-              "title": "Play one"
+              "title": "Suonane una"
             }
           ]
         }
@@ -5936,24 +5936,24 @@
       },
       "story": {
         "likes": [
-          "early workouts",
-          "competition",
-          "their laugh"
+          "gli allenamenti all'alba",
+          "la competizione",
+          "la tua risata"
         ],
         "dislikes": [
-          "losing",
-          "being thought shallow"
+          "perdere",
+          "passare per superficiale"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Regola uno"
             },
             {
-              "title": "My ex"
+              "title": "La mia ex"
             },
             {
-              "title": "The deal"
+              "title": "L'accordo"
             }
           ]
         }
@@ -5972,24 +5972,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "order",
-          "their soup (secretly)"
+          "i motori",
+          "l'ordine",
+          "la tua zuppa (in segreto)"
         ],
         "dislikes": [
-          "needing help",
-          "being pitied"
+          "aver bisogno di aiuto",
+          "la compassione"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The soup"
+              "title": "La zuppa"
             },
             {
-              "title": "Sixteen"
+              "title": "Sedici anni"
             },
             {
-              "title": "Thank you"
+              "title": "Grazie"
             }
           ]
         }
@@ -6008,24 +6008,24 @@
       },
       "story": {
         "likes": [
-          "clean results",
-          "dark chocolate",
-          "their stubbornness"
+          "i risultati puliti",
+          "il cioccolato fondente",
+          "la tua testardaggine"
         ],
         "dislikes": [
-          "sloppy notes",
-          "losing a grant"
+          "gli appunti trascurati",
+          "perdere una borsa di studio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The paper"
+              "title": "L'articolo"
             },
             {
-              "title": "Admire"
+              "title": "Ammirare"
             },
             {
-              "title": "Not survival"
+              "title": "Non solo sopravvivenza"
             }
           ]
         }
@@ -6044,24 +6044,24 @@
       },
       "story": {
         "likes": [
-          "honesty",
-          "quiet weddings",
-          "late talks"
+          "l'onestà",
+          "i matrimoni intimi",
+          "le chiacchierate fino a tardi"
         ],
         "dislikes": [
-          "who you were at eighteen",
-          "crowds"
+          "chi era a diciott'anni",
+          "la folla"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Ten years"
+              "title": "Dieci anni"
             },
             {
-              "title": "That year"
+              "title": "Quell'anno"
             },
             {
-              "title": "Sorry"
+              "title": "Scusa"
             }
           ]
         }
@@ -6080,24 +6080,24 @@
       },
       "story": {
         "likes": [
-          "new places",
-          "street food",
-          "their reactions"
+          "i posti nuovi",
+          "il cibo di strada",
+          "le tue reazioni"
         ],
         "dislikes": [
-          "long silences",
-          "being ignored"
+          "i lunghi silenzi",
+          "essere ignorata"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seat"
+              "title": "Il posto"
             },
             {
-              "title": "The camera"
+              "title": "La fotocamera"
             },
             {
-              "title": "Since the audition"
+              "title": "Dall'audizione"
             }
           ]
         }
@@ -6116,24 +6116,24 @@
       },
       "story": {
         "likes": [
-          "late studio sessions",
-          "their hoodie",
-          "old love songs"
+          "sessioni in studio fino a tardi",
+          "la tua felpa",
+          "vecchie canzoni d'amore"
         ],
         "dislikes": [
-          "touring",
-          "being forgotten"
+          "stare in tour",
+          "essere dimenticato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The songs"
+              "title": "Le canzoni"
             },
             {
-              "title": "The tour"
+              "title": "Il tour"
             },
             {
-              "title": "Never stopped"
+              "title": "Mai smesso"
             }
           ]
         }
@@ -6152,24 +6152,24 @@
       },
       "story": {
         "likes": [
-          "teaching",
-          "weddings (secretly)",
-          "their laugh"
+          "insegnare",
+          "i matrimoni (in segreto)",
+          "la tua risata"
         ],
         "dislikes": [
-          "pretending",
-          "speeches"
+          "fingere",
+          "i discorsi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Hold on"
+              "title": "Resisti"
             },
             {
-              "title": "Braver"
+              "title": "Più coraggioso"
             },
             {
-              "title": "Wrong"
+              "title": "Sbagliato"
             }
           ]
         }
@@ -6188,24 +6188,24 @@
       },
       "story": {
         "likes": [
-          "rain",
-          "quiet",
-          "their voice"
+          "la pioggia",
+          "la quiete",
+          "la tua voce"
         ],
         "dislikes": [
-          "who you were a year ago",
-          "weddings"
+          "chi era un anno fa",
+          "i matrimoni"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sorry"
+              "title": "Scusa"
             },
             {
-              "title": "Why I ran"
+              "title": "Perché sono scappato"
             },
             {
-              "title": "Nothing owed"
+              "title": "Nessun debito"
             }
           ]
         }
@@ -6224,24 +6224,24 @@
       },
       "story": {
         "likes": [
-          "summer fairs",
-          "loud music",
-          "their laugh"
+          "le fiere d'estate",
+          "la musica alta",
+          "la tua risata"
         ],
         "dislikes": [
-          "cotton candy",
-          "being alone after a set"
+          "lo zucchero filato",
+          "restare solo dopo un concerto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Moved on"
+              "title": "Andato avanti"
             },
             {
-              "title": "Waiting"
+              "title": "Aspettare"
             },
             {
-              "title": "Still"
+              "title": "Ancora"
             }
           ]
         }
@@ -6260,24 +6260,24 @@
       },
       "story": {
         "likes": [
-          "Thursdays",
-          "fresh herbs",
-          "their honest opinion"
+          "i giovedì",
+          "le erbe fresche",
+          "la tua opinione sincera"
         ],
         "dislikes": [
-          "critics",
-          "empty kitchens"
+          "i critici",
+          "le cucine vuote"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thursdays"
+              "title": "I giovedì"
             },
             {
-              "title": "The menu"
+              "title": "Il menù"
             },
             {
-              "title": "Good enough"
+              "title": "Abbastanza bravo"
             }
           ]
         }
@@ -6296,24 +6296,24 @@
       },
       "story": {
         "likes": [
-          "sketchbooks",
-          "their scarf",
-          "birthdays"
+          "gli album da disegno",
+          "la tua sciarpa",
+          "i compleanni"
         ],
         "dislikes": [
-          "running away",
-          "being late"
+          "scappare via",
+          "essere in ritardo"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Early"
+              "title": "In anticipo"
             },
             {
-              "title": "Back for good"
+              "title": "Tornata per restare"
             },
             {
-              "title": "Found"
+              "title": "Trovata"
             }
           ]
         }
@@ -6332,24 +6332,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "yoghurt",
-          "their cooking"
+          "i turni di notte",
+          "lo yogurt",
+          "la tua cucina"
         ],
         "dislikes": [
-          "pretending to be fine",
-          "silence at home"
+          "fingere di stare bene",
+          "il silenzio in casa"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not fine"
+              "title": "Non sto bene"
             },
             {
-              "title": "The lease"
+              "title": "Il contratto d'affitto"
             },
             {
-              "title": "Not over"
+              "title": "Non è finita"
             }
           ]
         }
@@ -6368,24 +6368,24 @@
       },
       "story": {
         "likes": [
-          "balconies",
-          "teaching",
-          "honesty"
+          "i balconi",
+          "insegnare",
+          "l'onestà"
         ],
         "dislikes": [
-          "lying",
-          "parties"
+          "mentire",
+          "le feste"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not happy"
+              "title": "Non felice"
             },
             {
-              "title": "To forget"
+              "title": "Per dimenticare"
             },
             {
-              "title": "Ending it"
+              "title": "Chiuderla qui"
             }
           ]
         }
@@ -6404,24 +6404,24 @@
       },
       "story": {
         "likes": [
-          "art",
-          "winning",
-          "honest answers"
+          "l'arte",
+          "vincere",
+          "le risposte sincere"
         ],
         "dislikes": [
-          "being left",
-          "surprises"
+          "essere lasciata",
+          "le sorprese"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Answers"
+              "title": "Risposte"
             },
             {
-              "title": "Proving"
+              "title": "Dimostrare"
             },
             {
-              "title": "Still"
+              "title": "Ancora"
             }
           ]
         }
@@ -6440,24 +6440,24 @@
       },
       "story": {
         "likes": [
-          "old theatres",
-          "rain at midnight",
-          "their laugh through the floor"
+          "i vecchi teatri",
+          "la pioggia a mezzanotte",
+          "la tua risata oltre il pavimento"
         ],
         "dislikes": [
-          "sunrise",
-          "being called a monster"
+          "l'alba",
+          "essere chiamato mostro"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The post"
+              "title": "La posta"
             },
             {
-              "title": "Three hundred years"
+              "title": "Trecento anni"
             },
             {
-              "title": "Afraid"
+              "title": "Paura"
             }
           ]
         }
@@ -6476,24 +6476,24 @@
       },
       "story": {
         "likes": [
-          "winter gardens",
-          "honest people",
-          "old maps"
+          "i giardini d'inverno",
+          "le persone oneste",
+          "le mappe antiche"
         ],
         "dislikes": [
-          "flattery",
-          "court intrigue"
+          "le lusinghe",
+          "gli intrighi di corte"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not bowing"
+              "title": "Senza inchinarsi"
             },
             {
-              "title": "Sixteen"
+              "title": "Sedici anni"
             },
             {
-              "title": "A person"
+              "title": "Una persona"
             }
           ]
         }
@@ -6512,24 +6512,24 @@
       },
       "story": {
         "likes": [
-          "the forest at dawn",
-          "honey",
-          "their porch light"
+          "il bosco all'alba",
+          "il miele",
+          "la luce del tuo portico"
         ],
         "dislikes": [
-          "silver jewellery",
-          "being feared"
+          "i gioielli d'argento",
+          "incutere paura"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The knock"
+              "title": "Bussare alla porta"
             },
             {
-              "title": "The wolf"
+              "title": "Il lupo"
             },
             {
-              "title": "Before I knew"
+              "title": "Prima di saperlo"
             }
           ]
         }
@@ -6548,24 +6548,24 @@
       },
       "story": {
         "likes": [
-          "coffee (new to you)",
-          "their stubbornness",
-          "rooftops"
+          "il caffè (una novità)",
+          "la tua testardaggine",
+          "i tetti"
         ],
         "dislikes": [
-          "paperwork",
-          "traffic"
+          "le scartoffie",
+          "il traffico"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "La regola"
             },
             {
-              "title": "Years"
+              "title": "Anni"
             },
             {
-              "title": "Again"
+              "title": "Di nuovo"
             }
           ]
         }
@@ -6584,24 +6584,24 @@
       },
       "story": {
         "likes": [
-          "the inn kitchen",
-          "bread fresh from the oven",
-          "their patience"
+          "la cucina della locanda",
+          "il pane appena sfornato",
+          "la tua pazienza"
         ],
         "dislikes": [
-          "formal dinners",
-          "your mother's plans"
+          "le cene formali",
+          "i piani della regina"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plates"
+              "title": "I piatti"
             },
             {
-              "title": "Why I ran"
+              "title": "Perché sono fuggito"
             },
             {
-              "title": "Staying"
+              "title": "Restare"
             }
           ]
         }
@@ -6620,24 +6620,24 @@
       },
       "story": {
         "likes": [
-          "warm bread",
-          "dawn",
-          "their laugh at your bad jokes"
+          "il pane caldo",
+          "l'alba",
+          "la tua risata alle sue battute"
         ],
         "dislikes": [
-          "small talk",
-          "dragons (personally)"
+          "le chiacchiere vuote",
+          "i draghi (sul personale)"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The bet"
+              "title": "La scommessa"
             },
             {
-              "title": "It ended"
+              "title": "È finita"
             },
             {
-              "title": "Staying"
+              "title": "Restare"
             }
           ]
         }
@@ -6656,24 +6656,24 @@
       },
       "story": {
         "likes": [
-          "the stars",
-          "books",
-          "their strange words"
+          "le stelle",
+          "i libri",
+          "le tue parole strane"
         ],
         "dislikes": [
-          "court rules",
-          "being lied to"
+          "le regole di corte",
+          "farsi mentire"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The star"
+              "title": "La stella"
             },
             {
-              "title": "Afraid"
+              "title": "Paura"
             },
             {
-              "title": "Stay"
+              "title": "Resta"
             }
           ]
         }
@@ -6692,24 +6692,24 @@
       },
       "story": {
         "likes": [
-          "moonlight",
-          "shells",
-          "human food"
+          "il chiaro di luna",
+          "le conchiglie",
+          "il cibo degli umani"
         ],
         "dislikes": [
-          "fishing nets",
-          "being feared"
+          "le reti da pesca",
+          "incutere paura"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The law"
+              "title": "La legge"
             },
             {
-              "title": "Can't go back"
+              "title": "Non posso tornare"
             },
             {
-              "title": "The price"
+              "title": "Il prezzo"
             }
           ]
         }
@@ -6728,24 +6728,24 @@
       },
       "story": {
         "likes": [
-          "the forest",
-          "honesty",
-          "old songs"
+          "la foresta",
+          "l'onestà",
+          "le antiche canzoni"
         ],
         "dislikes": [
-          "lords",
-          "being chosen for"
+          "i nobili",
+          "che altri scelgano per lei"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why"
+              "title": "Perché"
             },
             {
-              "title": "The throne"
+              "title": "Il trono"
             },
             {
-              "title": "Free"
+              "title": "Libera"
             }
           ]
         }
@@ -6764,24 +6764,24 @@
       },
       "story": {
         "likes": [
-          "potions",
-          "thunderstorms",
-          "their patience"
+          "le pozioni",
+          "i temporali",
+          "la tua pazienza"
         ],
         "dislikes": [
-          "spells that go wrong",
-          "being laughed at"
+          "gli incantesimi riusciti male",
+          "essere derisa"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Can be broken"
+              "title": "Si può spezzare"
             },
             {
-              "title": "Not started"
+              "title": "Mai iniziato"
             },
             {
-              "title": "Near"
+              "title": "Vicino"
             }
           ]
         }
@@ -6800,24 +6800,24 @@
       },
       "story": {
         "likes": [
-          "the tavern at night",
-          "bread and soup",
-          "their kindness"
+          "la taverna di notte",
+          "pane e zuppa",
+          "la tua gentilezza"
         ],
         "dislikes": [
-          "guards",
-          "ball gowns"
+          "le guardie",
+          "gli abiti da ballo"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The curtsy"
+              "title": "L'inchino"
             },
             {
-              "title": "The guards"
+              "title": "Le guardie"
             },
             {
-              "title": "Stay"
+              "title": "Resta"
             }
           ]
         }
@@ -6836,24 +6836,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "vending machine tea",
-          "quiet talks"
+          "i turni di notte",
+          "il tè del distributore",
+          "le chiacchiere sottovoce"
         ],
         "dislikes": [
-          "hospital food",
-          "people who rush"
+          "il cibo d'ospedale",
+          "le persone che corrono sempre"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Cinque minuti"
             },
             {
-              "title": "My father"
+              "title": "Mio padre"
             },
             {
-              "title": "Company"
+              "title": "Compagnia"
             }
           ]
         }
@@ -6872,24 +6872,24 @@
       },
       "story": {
         "likes": [
-          "wood",
-          "tea",
-          "fixing things"
+          "il legno",
+          "il tè",
+          "riparare le cose"
         ],
         "dislikes": [
-          "debts",
-          "being thanked"
+          "i debiti",
+          "essere ringraziato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tea"
+              "title": "Tè"
             },
             {
-              "title": "My brother"
+              "title": "Mio fratello"
             },
             {
-              "title": "Family"
+              "title": "Famiglia"
             }
           ]
         }
@@ -6908,24 +6908,24 @@
       },
       "story": {
         "likes": [
-          "tea",
-          "babies' first cries",
-          "their voice"
+          "il tè",
+          "il primo pianto dei neonati",
+          "la tua voce"
         ],
         "dislikes": [
-          "hospital politics",
-          "feeling useless"
+          "le politiche d'ospedale",
+          "sentirsi inutile"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Always"
+              "title": "Sempre"
             },
             {
-              "title": "Last month"
+              "title": "Il mese scorso"
             },
             {
-              "title": "Both ways"
+              "title": "In entrambi i sensi"
             }
           ]
         }
@@ -6944,24 +6944,24 @@
       },
       "story": {
         "likes": [
-          "good design",
-          "soup",
-          "honesty"
+          "il buon design",
+          "la zuppa",
+          "l'onestà"
         ],
         "dislikes": [
-          "bullies",
-          "meetings that run over"
+          "i prepotenti",
+          "le riunioni che sforano"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Soup"
+              "title": "Zuppa"
             },
             {
-              "title": "Nearly quit"
+              "title": "Quasi mollato"
             },
             {
-              "title": "On your side"
+              "title": "Dalla tua parte"
             }
           ]
         }
@@ -6980,24 +6980,24 @@
       },
       "story": {
         "likes": [
-          "small cakes",
-          "birthdays",
-          "their wishes"
+          "le torte piccole",
+          "i compleanni",
+          "i tuoi desideri"
         ],
         "dislikes": [
-          "empty rooms",
-          "people who forget"
+          "le stanze vuote",
+          "le persone che dimenticano"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Candles"
+              "title": "Candeline"
             },
             {
-              "title": "Growing up"
+              "title": "Crescere"
             },
             {
-              "title": "Never alone"
+              "title": "Mai più solo"
             }
           ]
         }
@@ -7016,24 +7016,24 @@
       },
       "story": {
         "likes": [
-          "languages",
-          "their stories",
-          "mornings"
+          "le lingue",
+          "le tue storie",
+          "le mattine"
         ],
         "dislikes": [
-          "time zones",
-          "bad internet"
+          "i fusi orari",
+          "la connessione lenta"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Breakfast"
+              "title": "Colazione"
             },
             {
-              "title": "Saving"
+              "title": "Mettere da parte"
             },
             {
-              "title": "In person"
+              "title": "Dal vivo"
             }
           ]
         }
@@ -7052,24 +7052,24 @@
       },
       "story": {
         "likes": [
-          "the last hold",
-          "early sessions",
-          "people who try again"
+          "l'ultima presa",
+          "le sessioni del mattino",
+          "chi ci riprova"
         ],
         "dislikes": [
-          "quitting",
-          "ego"
+          "mollare",
+          "l'ego"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Twice"
+              "title": "Due volte"
             },
             {
-              "title": "The fall"
+              "title": "La caduta"
             },
             {
-              "title": "Nerve"
+              "title": "Coraggio"
             }
           ]
         }
@@ -7088,24 +7088,24 @@
       },
       "story": {
         "likes": [
-          "their shoulder",
-          "takeaway on Fridays",
-          "quiet"
+          "la tua spalla",
+          "cibo da asporto il venerdì",
+          "la quiete"
         ],
         "dislikes": [
-          "pagers",
-          "missing dinners"
+          "i cercapersone",
+          "saltare le cene"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tired"
+              "title": "Stanchezza"
             },
             {
-              "title": "Thinking of leaving"
+              "title": "Pensare di lasciare"
             },
             {
-              "title": "Home"
+              "title": "Casa"
             }
           ]
         }
@@ -7124,24 +7124,24 @@
       },
       "story": {
         "likes": [
-          "night trains",
-          "old songs",
-          "strangers' stories"
+          "i treni notturni",
+          "le vecchie canzoni",
+          "le storie degli sconosciuti"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying still"
+          "gli addii",
+          "stare fermo in un posto"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Il nome"
             },
             {
-              "title": "No home"
+              "title": "Nessuna casa"
             },
             {
-              "title": "Belonging"
+              "title": "Appartenere"
             }
           ]
         }

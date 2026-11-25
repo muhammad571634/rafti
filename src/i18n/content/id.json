@@ -3560,24 +3560,24 @@
       },
       "story": {
         "likes": [
-          "old vinyl",
-          "their laugh",
-          "late coffee on a balcony"
+          "piringan hitam tua",
+          "tawamu",
+          "kopi larut malam di balkon"
         ],
         "dislikes": [
-          "airports",
-          "people who talk during songs"
+          "bandara",
+          "orang yang ngobrol pas lagu main"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The playlist"
+              "title": "Daftar lagu"
             },
             {
-              "title": "Not about the job"
+              "title": "Bukan soal pekerjaan"
             },
             {
-              "title": "Since that summer"
+              "title": "Sejak musim panas itu"
             }
           ]
         }
@@ -3596,24 +3596,24 @@
       },
       "story": {
         "likes": [
-          "riding fast at night",
-          "their kitchen at midnight",
-          "bad horror films"
+          "ngebut di malam hari",
+          "dapurmu tengah malam",
+          "film horor jelek"
         ],
         "dislikes": [
-          "serious talks in daylight",
-          "the word \"situationship\""
+          "obrolan serius di siang hari",
+          "kata \"hubungan tanpa status\""
         ],
         "arc": {
           "beats": [
             {
-              "title": "The toothbrush"
+              "title": "Sikat gigi"
             },
             {
-              "title": "Why it's casual"
+              "title": "Kenapa dibuat santai"
             },
             {
-              "title": "Home"
+              "title": "Rumah"
             }
           ]
         }
@@ -3632,24 +3632,24 @@
       },
       "story": {
         "likes": [
-          "their handwriting",
-          "clean lines",
-          "bars that play old rock"
+          "tulisan tanganmu",
+          "garis yang rapi",
+          "bar dengan musik rock lama"
         ],
         "dislikes": [
-          "losing at cards",
-          "being misunderstood"
+          "kalah main kartu",
+          "disalahpahami"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The sketchbook"
+              "title": "Buku sketsa"
             },
             {
-              "title": "Why I bet"
+              "title": "Kenapa aku bertaruh"
             },
             {
-              "title": "Two hundred drawings"
+              "title": "Dua ratus gambar"
             }
           ]
         }
@@ -3668,24 +3668,24 @@
       },
       "story": {
         "likes": [
-          "cold noodles at 3 a.m.",
-          "winning a match by one point",
-          "their laugh on voice chat"
+          "mi dingin jam 3 pagi",
+          "menang selisih satu poin",
+          "tawamu di obrolan suara"
         ],
         "dislikes": [
-          "lag",
-          "people who quit mid-game"
+          "jaringan ngadat",
+          "pemain yang kabur tengah laga"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Busy"
+              "title": "Sibuk"
             },
             {
-              "title": "Jealous"
+              "title": "Cemburu"
             },
             {
-              "title": "The train ticket"
+              "title": "Tiket kereta"
             }
           ]
         }
@@ -3704,24 +3704,24 @@
       },
       "story": {
         "likes": [
-          "long night drives",
-          "fixing things that are broken",
-          "their sleepy voice"
+          "berkendara jauh malam hari",
+          "memperbaiki barang rusak",
+          "suara ngantukmu"
         ],
         "dislikes": [
-          "being thanked too much",
-          "hospitals"
+          "ucapan terima kasih berlebihan",
+          "rumah sakit"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The spare charger"
+              "title": "Kabel cadangan"
             },
             {
-              "title": "Almost left"
+              "title": "Hampir pergi"
             },
             {
-              "title": "Not just a friend"
+              "title": "Bukan sekadar teman"
             }
           ]
         }
@@ -3740,24 +3740,24 @@
       },
       "story": {
         "likes": [
-          "weddings",
-          "slow songs",
-          "their family's cooking"
+          "pesta pernikahan",
+          "lagu pelan",
+          "masakan keluargamu"
         ],
         "dislikes": [
-          "goodbyes at the end of a party",
-          "lying to nice people"
+          "perpisahan di akhir pesta",
+          "membohongi orang baik"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too good at this"
+              "title": "Terlalu piawai"
             },
             {
-              "title": "The first event"
+              "title": "Acara pertama"
             },
             {
-              "title": "Not acting"
+              "title": "Bukan sandiwara"
             }
           ]
         }
@@ -3776,24 +3776,24 @@
       },
       "story": {
         "likes": [
-          "rainy days indoors",
-          "peonies",
-          "their jacket"
+          "hari hujan di dalam rumah",
+          "bunga peoni",
+          "jaketmu"
         ],
         "dislikes": [
-          "their exes",
-          "being taken seriously mid-joke"
+          "para mantanmu",
+          "dianggap serius saat bercanda"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plants"
+              "title": "Tanaman itu"
             },
             {
-              "title": "Why I hate them"
+              "title": "Kenapa aku benci mereka"
             },
             {
-              "title": "Since the café"
+              "title": "Sejak di kafe"
             }
           ]
         }
@@ -3812,24 +3812,24 @@
       },
       "story": {
         "likes": [
-          "rooftops at night",
-          "salsa nights",
-          "winning"
+          "atap gedung malam hari",
+          "malam dansa salsa",
+          "kemenangan"
         ],
         "dislikes": [
-          "losing on purpose",
-          "being found out"
+          "kalah dengan sengaja",
+          "ketahuan rahasianya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Keeping score"
+              "title": "Menghitung skor"
             },
             {
-              "title": "The bet"
+              "title": "Taruhan itu"
             },
             {
-              "title": "Day one"
+              "title": "Hari pertama"
             }
           ]
         }
@@ -3848,24 +3848,24 @@
       },
       "story": {
         "likes": [
-          "sleeping cats",
-          "order",
-          "their terrible singing in the shower"
+          "kucing yang sedang tidur",
+          "kerapian",
+          "nyanyian sumbangmu di kamar mandi"
         ],
         "dislikes": [
-          "mess on the counter",
-          "surprises"
+          "meja dapur yang berantakan",
+          "kejutan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Aturan pertama"
             },
             {
-              "title": "The cat's name"
+              "title": "Nama kucing itu"
             },
             {
-              "title": "No more rules"
+              "title": "Tak ada aturan lagi"
             }
           ]
         }
@@ -3884,24 +3884,24 @@
       },
       "story": {
         "likes": [
-          "floor plans",
-          "mango lassi",
-          "their honest opinion"
+          "denah bangunan",
+          "lassi mangga",
+          "pendapat jujurmu"
         ],
         "dislikes": [
-          "aunties' questions",
-          "being the last one single"
+          "pertanyaan tante-tante",
+          "jadi yang terakhir melajang"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The backstory"
+              "title": "Cerita latar"
             },
             {
-              "title": "Not a random pick"
+              "title": "Bukan pilihan acak"
             },
             {
-              "title": "The real story"
+              "title": "Kisah sebenarnya"
             }
           ]
         }
@@ -3920,24 +3920,24 @@
       },
       "story": {
         "likes": [
-          "golden hour",
-          "the sea",
-          "old letters"
+          "cahaya senja",
+          "laut",
+          "surat-surat lama"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying in one place too long"
+          "perpisahan",
+          "berdiam terlalu lama di satu tempat"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The night you left"
+              "title": "Malam aku pergi"
             },
             {
-              "title": "Why"
+              "title": "Alasannya"
             },
             {
-              "title": "The letters"
+              "title": "Surat-surat itu"
             }
           ]
         }
@@ -3956,24 +3956,24 @@
       },
       "story": {
         "likes": [
-          "energy drinks",
-          "winning streaks",
-          "their sleepy voice"
+          "minuman berenergi",
+          "kemenangan beruntun",
+          "suara ngantukmu"
         ],
         "dislikes": [
-          "silence in an empty flat",
-          "chat trolls"
+          "sepi di apartemen kosong",
+          "pengacau di kolom obrolan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The noise"
+              "title": "Kebisingan"
             },
             {
-              "title": "The empty flat"
+              "title": "Apartemen kosong"
             },
             {
-              "title": "One call at a time"
+              "title": "Satu demi satu panggilan"
             }
           ]
         }
@@ -3992,24 +3992,24 @@
       },
       "story": {
         "likes": [
-          "early runs",
-          "their cooking",
-          "old action films"
+          "lari pagi",
+          "masakanmu",
+          "film laga klasik"
         ],
         "dislikes": [
-          "breaking promises",
-          "night shifts that go badly"
+          "mengingkari janji",
+          "tugas malam yang kacau"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why this couch"
+              "title": "Kenapa sofa ini"
             },
             {
-              "title": "The promise"
+              "title": "Janji itu"
             },
             {
-              "title": "Long before the couch"
+              "title": "Jauh sebelum sofa ini"
             }
           ]
         }
@@ -4028,24 +4028,24 @@
       },
       "story": {
         "likes": [
-          "the smell of fresh wood",
-          "quiet mornings",
-          "their laugh across a room"
+          "aroma kayu segar",
+          "pagi yang tenang",
+          "tawamu dari seberang ruangan"
         ],
         "dislikes": [
-          "loud men at parties",
-          "being thanked"
+          "pria berisik di pesta",
+          "ucapan terima kasih"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The shelves"
+              "title": "Rak kayu itu"
             },
             {
-              "title": "Why I am cold"
+              "title": "Kenapa aku dingin"
             },
             {
-              "title": "Off limits"
+              "title": "Terlarang"
             }
           ]
         }
@@ -4064,24 +4064,24 @@
       },
       "story": {
         "likes": [
-          "clear nights",
-          "your mother's cake recipes",
-          "space documentaries"
+          "malam yang cerah",
+          "resep kue ibu",
+          "dokumenter luar angkasa"
         ],
         "dislikes": [
-          "being a burden",
-          "small talk"
+          "jadi beban orang lain",
+          "basa-basi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The lake"
+              "title": "Danau itu"
             },
             {
-              "title": "Why I said yes"
+              "title": "Kenapa aku setuju"
             },
             {
-              "title": "Stars"
+              "title": "Bintang-bintang"
             }
           ]
         }
@@ -4100,24 +4100,24 @@
       },
       "story": {
         "likes": [
-          "markets at dawn",
-          "garlic",
-          "their face at the first bite"
+          "pasar saat subuh",
+          "bawang putih",
+          "ekspresimu di suapan pertama"
         ],
         "dislikes": [
-          "eating alone",
-          "delivery food"
+          "makan sendirian",
+          "makanan pesan antar"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Too much food"
+              "title": "Terlalu banyak makanan"
             },
             {
-              "title": "The restaurant"
+              "title": "Restoran itu"
             },
             {
-              "title": "The knock"
+              "title": "Ketukan pintu"
             }
           ]
         }
@@ -4136,24 +4136,24 @@
       },
       "story": {
         "likes": [
-          "night flights",
-          "slow dances",
-          "a city seen from above"
+          "penerbangan malam",
+          "dansa pelan",
+          "pemandangan kota dari atas"
         ],
         "dislikes": [
-          "hotel rooms",
-          "leaving early"
+          "kamar hotel",
+          "pulang lebih awal"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four days"
+              "title": "Empat hari"
             },
             {
-              "title": "Why I fly"
+              "title": "Kenapa aku terbang"
             },
             {
-              "title": "Staying"
+              "title": "Menetap"
             }
           ]
         }
@@ -4172,24 +4172,24 @@
       },
       "story": {
         "likes": [
-          "barbecues",
-          "their laugh",
-          "home cooking after six years"
+          "barbeku",
+          "tawamu",
+          "masakan rumah setelah enam tahun"
         ],
         "dislikes": [
-          "loud bangs",
-          "people asking if you killed anyone"
+          "suara dentuman keras",
+          "ditanya pernah membunuh orang"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The cards"
+              "title": "Kartu ucapan"
             },
             {
-              "title": "Bad nights"
+              "title": "Malam-malam buruk"
             },
             {
-              "title": "Not brotherly"
+              "title": "Bukan seperti kakak"
             }
           ]
         }
@@ -4208,24 +4208,24 @@
       },
       "story": {
         "likes": [
-          "their mother's dal",
-          "cricket on the radio",
-          "quiet balconies"
+          "dal buatan ibumu",
+          "kriket di radio",
+          "balkon yang tenang"
         ],
         "dislikes": [
-          "being pushy",
-          "cold tea"
+          "bersikap memaksa",
+          "teh dingin"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the food"
+              "title": "Bukan soal makanannya"
             },
             {
-              "title": "The first Sunday"
+              "title": "Minggu pertama"
             },
             {
-              "title": "A sign"
+              "title": "Sebuah pertanda"
             }
           ]
         }
@@ -4244,24 +4244,24 @@
       },
       "story": {
         "likes": [
-          "cereal at midnight",
-          "summer storms",
-          "their hoodie"
+          "sereal tengah malam",
+          "badai musim panas",
+          "hoodiemu"
         ],
         "dislikes": [
-          "hospital coffee",
-          "being treated as the baby"
+          "kopi rumah sakit",
+          "diperlakukan seperti anak kecil"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The placement"
+              "title": "Penempatan tugas"
             },
             {
-              "title": "Not a little sister"
+              "title": "Bukan adik kecil"
             },
             {
-              "title": "Three summers"
+              "title": "Tiga musim panas"
             }
           ]
         }
@@ -4280,24 +4280,24 @@
       },
       "story": {
         "likes": [
-          "old paperbacks",
-          "rain on the shop window",
-          "their opinions on endings"
+          "buku saku tua",
+          "hujan di jendela toko",
+          "pendapatmu soal akhir cerita"
         ],
         "dislikes": [
-          "people who fold page corners",
-          "small talk"
+          "orang yang melipat sudut halaman",
+          "basa-basi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The margins"
+              "title": "Catatan pinggir"
             },
             {
-              "title": "Two years"
+              "title": "Dua tahun"
             },
             {
-              "title": "The underlined line"
+              "title": "Kalimat yang digarisbawahi"
             }
           ]
         }
@@ -4316,24 +4316,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "red wine",
-          "their stubbornness"
+          "menang debat",
+          "anggur merah",
+          "sikap keras kepalamu"
         ],
         "dislikes": [
-          "being told what to do",
-          "your brother's overprotectiveness"
+          "diatur-atur",
+          "sikap protektif kakaknya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seating"
+              "title": "Pengaturan tempat duduk"
             },
             {
-              "title": "Her brother"
+              "title": "Kakaknya"
             },
             {
-              "title": "Years"
+              "title": "Bertahun-tahun"
             }
           ]
         }
@@ -4352,24 +4352,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "summer afternoons",
-          "their bad jokes"
+          "mesin",
+          "sore musim panas",
+          "lelucon garingmu"
         ],
         "dislikes": [
-          "being underestimated",
-          "rain on a bike ride"
+          "diremehkan",
+          "hujan saat bersepeda"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The chain"
+              "title": "Rantai sepeda"
             },
             {
-              "title": "Two years"
+              "title": "Dua tahun"
             },
             {
-              "title": "No more excuses"
+              "title": "Tak ada alasan lagi"
             }
           ]
         }
@@ -4388,24 +4388,24 @@
       },
       "story": {
         "likes": [
-          "strong coffee",
-          "quiet",
-          "a clean counter"
+          "kopi kental",
+          "ketenangan",
+          "meja dapur bersih"
         ],
         "dislikes": [
-          "mess",
-          "people who say \"relax\""
+          "berantakan",
+          "orang yang bilang \"santai saja\""
         ],
         "arc": {
           "beats": [
             {
-              "title": "The last flatmate"
+              "title": "Teman serumah dulu"
             },
             {
-              "title": "Why cold"
+              "title": "Kenapa bersikap dingin"
             },
             {
-              "title": "Two coffees"
+              "title": "Dua cangkir kopi"
             }
           ]
         }
@@ -4424,24 +4424,24 @@
       },
       "story": {
         "likes": [
-          "indie games",
-          "spicy food",
-          "people who get your jokes"
+          "gim indie",
+          "makanan pedas",
+          "orang yang paham leluconnya"
         ],
         "dislikes": [
-          "set-ups",
-          "being asked when you will marry"
+          "perjodohan",
+          "ditanya kapan menikah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Nine set-ups"
+              "title": "Sembilan perjodohan"
             },
             {
-              "title": "Why I came"
+              "title": "Kenapa aku datang"
             },
             {
-              "title": "Not leaving"
+              "title": "Tidak pergi"
             }
           ]
         }
@@ -4460,24 +4460,24 @@
       },
       "story": {
         "likes": [
-          "morning light",
-          "charcoal pencils",
-          "the first coffee of the day"
+          "cahaya pagi",
+          "pensil arang",
+          "kopi pertama hari itu"
         ],
         "dislikes": [
-          "loud music in the café",
-          "showing your art"
+          "musik kencang di kafe",
+          "memamerkan karyanya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The notebook"
+              "title": "Buku catatan"
             },
             {
-              "title": "Mornings"
+              "title": "Masuk pagi"
             },
             {
-              "title": "The last page"
+              "title": "Halaman terakhir"
             }
           ]
         }
@@ -4496,24 +4496,24 @@
       },
       "story": {
         "likes": [
-          "cold mornings on the river",
-          "strong coffee",
-          "someone who argues back"
+          "pagi dingin di sungai",
+          "kopi kental",
+          "orang yang berani mendebat"
         ],
         "dislikes": [
-          "losing races",
-          "people who give up on exams"
+          "kalah lomba",
+          "orang yang menyerah saat ujian"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Since noon"
+              "title": "Sejak siang"
             },
             {
-              "title": "The library"
+              "title": "Perpustakaan"
             },
             {
-              "title": "Losing on purpose"
+              "title": "Sengaja kalah"
             }
           ]
         }
@@ -4532,24 +4532,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets that balance",
-          "rainy Mondays",
-          "their laugh at your jokes"
+          "laporan angka yang seimbang",
+          "Senin hujan",
+          "tawamu atas leluconnya"
         ],
         "dislikes": [
-          "office parties",
-          "people who take the last biscuit"
+          "pesta kantor",
+          "pengambil biskuit terakhir"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The ghost"
+              "title": "Hantu kantor"
             },
             {
-              "title": "The other job"
+              "title": "Pekerjaan lain"
             },
             {
-              "title": "A year"
+              "title": "Setahun"
             }
           ]
         }
@@ -4568,24 +4568,24 @@
       },
       "story": {
         "likes": [
-          "debate nights",
-          "iced coffee",
-          "people who are not impressed by you"
+          "malam debat",
+          "es kopi",
+          "orang yang tak mudah terpukau"
         ],
         "dislikes": [
-          "being only \"the popular one\"",
-          "fake friends"
+          "dicap cuma \"si populer\"",
+          "teman palsu"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not an accident"
+              "title": "Bukan kebetulan"
             },
             {
-              "title": "Nobody to call"
+              "title": "Tak ada yang ditelepon"
             },
             {
-              "title": "The first week"
+              "title": "Minggu pertama"
             }
           ]
         }
@@ -4604,24 +4604,24 @@
       },
       "story": {
         "likes": [
-          "4 a.m. ovens",
-          "butter",
-          "the bell on the door when they come in"
+          "oven jam 4 pagi",
+          "mentega",
+          "lonceng pintu saat kamu masuk"
         ],
         "dislikes": [
-          "stale bread",
-          "people who are rude to the morning staff"
+          "roti basi",
+          "orang yang kasar ke staf pagi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hidden one"
+              "title": "Yang disembunyikan"
             },
             {
-              "title": "Winter"
+              "title": "Musim dingin"
             },
             {
-              "title": "The reason"
+              "title": "Alasannya"
             }
           ]
         }
@@ -4640,24 +4640,24 @@
       },
       "story": {
         "likes": [
-          "big plans",
+          "rencana besar",
           "karaoke",
-          "their honest feedback"
+          "masukan jujurmu"
         ],
         "dislikes": [
-          "your mother's questions",
-          "meetings that could be emails"
+          "pertanyaan ibunya",
+          "rapat yang cukup lewat surel"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Six months"
+              "title": "Enam bulan"
             },
             {
-              "title": "The details"
+              "title": "Detailnya"
             },
             {
-              "title": "Not fake"
+              "title": "Bukan pura-pura"
             }
           ]
         }
@@ -4676,24 +4676,24 @@
       },
       "story": {
         "likes": [
-          "heavy lifts",
-          "loud music",
-          "people who try"
+          "angkat beban berat",
+          "musik kencang",
+          "orang yang mau berusaha"
         ],
         "dislikes": [
-          "mirror selfies",
-          "people who quit on the last rep"
+          "swafoto di cermin",
+          "menyerah di repetisi terakhir"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The hour"
+              "title": "Jam latihan"
             },
             {
-              "title": "Why"
+              "title": "Alasannya"
             },
             {
-              "title": "Nerve"
+              "title": "Keberanian"
             }
           ]
         }
@@ -4712,24 +4712,24 @@
       },
       "story": {
         "likes": [
-          "old dictionaries",
-          "honey sweets",
-          "a student who finally gets it"
+          "kamus tua",
+          "permen madu",
+          "murid yang akhirnya paham"
         ],
         "dislikes": [
-          "being late",
-          "losing your notes"
+          "terlambat",
+          "kehilangan catatannya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The second hour"
+              "title": "Jam kedua"
             },
             {
-              "title": "Tuesdays and Fridays"
+              "title": "Selasa dan Jumat"
             },
             {
-              "title": "After the lesson"
+              "title": "Setelah pelajaran"
             }
           ]
         }
@@ -4748,24 +4748,24 @@
       },
       "story": {
         "likes": [
-          "strange questions",
-          "the sound of rain on metal",
-          "late-night texts"
+          "pertanyaan aneh",
+          "suara hujan di atas seng",
+          "pesan larut malam"
         ],
         "dislikes": [
-          "small talk",
-          "being the one who cares more"
+          "basa-basi",
+          "jadi pihak yang lebih peduli"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "Aturan itu"
             },
             {
-              "title": "The photo"
+              "title": "Foto itu"
             },
             {
-              "title": "All week"
+              "title": "Sepanjang minggu"
             }
           ]
         }
@@ -4784,24 +4784,24 @@
       },
       "story": {
         "likes": [
-          "big crowds",
-          "bubble tea",
-          "their laugh"
+          "keramaian",
+          "teh boba",
+          "tawamu"
         ],
         "dislikes": [
-          "awkward silences",
-          "people laughing at feelings"
+          "keheningan canggung",
+          "orang yang menertawakan perasaan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The dare"
+              "title": "Tantangan itu"
             },
             {
-              "title": "Why"
+              "title": "Kenapa"
             },
             {
-              "title": "Since the first week"
+              "title": "Sejak minggu pertama"
             }
           ]
         }
@@ -4820,24 +4820,24 @@
       },
       "story": {
         "likes": [
-          "quiet libraries",
-          "languages",
-          "their handwriting"
+          "perpustakaan sunyi",
+          "bahasa asing",
+          "tulisan tanganmu"
         ],
         "dislikes": [
-          "loud dinners",
-          "being read by others"
+          "makan malam berisik",
+          "dibaca orang lain"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The box"
+              "title": "Kotak itu"
             },
             {
-              "title": "Why I never answered"
+              "title": "Kenapa tak pernah kubalas"
             },
             {
-              "title": "Stay"
+              "title": "Tetaplah tinggal"
             }
           ]
         }
@@ -4856,24 +4856,24 @@
       },
       "story": {
         "likes": [
-          "Sunday mornings",
-          "their cold feet on yours",
-          "old songs"
+          "Minggu pagi",
+          "kakimu yang dingin di kakinya",
+          "lagu-lagu lama"
         ],
         "dislikes": [
-          "going to bed angry",
-          "silence in the house"
+          "tidur dalam keadaan marah",
+          "kesunyian di rumah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not the call"
+              "title": "Bukan soal telepon"
             },
             {
-              "title": "My father"
+              "title": "Ayahku"
             },
             {
-              "title": "Better"
+              "title": "Lebih baik"
             }
           ]
         }
@@ -4892,24 +4892,24 @@
       },
       "story": {
         "likes": [
-          "lazy Sunday mornings",
-          "their sleepy face",
-          "small shoes in shop windows"
+          "Minggu pagi yang santai",
+          "wajah ngantukmu",
+          "sepatu kecil di etalase toko"
         ],
         "dislikes": [
-          "pushing anyone",
-          "bad news on the ward"
+          "memaksa siapa pun",
+          "kabar buruk di bangsal"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Nama itu"
             },
             {
-              "title": "Six of us"
+              "title": "Kami berenam"
             },
             {
-              "title": "Either way"
+              "title": "Apa pun pilihanmu"
             }
           ]
         }
@@ -4928,24 +4928,24 @@
       },
       "story": {
         "likes": [
-          "clean contracts",
-          "early mornings",
-          "breakfasts with them"
+          "kontrak yang rapi",
+          "pagi hari",
+          "sarapan bersamamu"
         ],
         "dislikes": [
-          "loose ends",
-          "endings"
+          "urusan yang menggantung",
+          "perpisahan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Month four"
+              "title": "Bulan keempat"
             },
             {
-              "title": "Six drafts"
+              "title": "Enam draf"
             },
             {
-              "title": "No end date"
+              "title": "Tanpa tanggal akhir"
             }
           ]
         }
@@ -4964,24 +4964,24 @@
       },
       "story": {
         "likes": [
-          "their mother's cooking",
-          "old buildings",
-          "the window seat"
+          "masakan ibumu",
+          "bangunan tua",
+          "kursi dekat jendela"
         ],
         "dislikes": [
-          "pretending",
-          "Sunday evenings alone"
+          "berpura-pura",
+          "Minggu malam sendirian"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The key"
+              "title": "Kunci itu"
             },
             {
-              "title": "Why I said yes"
+              "title": "Kenapa aku setuju"
             },
             {
-              "title": "Sundays"
+              "title": "Hari Minggu"
             }
           ]
         }
@@ -5000,24 +5000,24 @@
       },
       "story": {
         "likes": [
-          "football nights",
-          "their laugh",
-          "the first coffee together"
+          "malam pertandingan bola",
+          "tawamu",
+          "kopi pertama berdua"
         ],
         "dislikes": [
-          "silences",
-          "fancy restaurants"
+          "keheningan",
+          "restoran mewah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Four times"
+              "title": "Empat kali"
             },
             {
-              "title": "The ring"
+              "title": "Cincin itu"
             },
             {
-              "title": "Three words"
+              "title": "Tiga kata"
             }
           ]
         }
@@ -5036,24 +5036,24 @@
       },
       "story": {
         "likes": [
-          "early mornings",
-          "the violin",
-          "their footsteps coming home"
+          "pagi hari",
+          "biola",
+          "langkah kakimu pulang"
         ],
         "dislikes": [
-          "being watched",
-          "raised voices"
+          "diawasi",
+          "suara membentak"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Waiting up"
+              "title": "Menunggu pulang"
             },
             {
-              "title": "Colder first"
+              "title": "Dingin duluan"
             },
             {
-              "title": "The tea"
+              "title": "Teh itu"
             }
           ]
         }
@@ -5072,24 +5072,24 @@
       },
       "story": {
         "likes": [
-          "spreadsheets",
-          "hugs",
-          "their sleepy face"
+          "lembar kerja",
+          "pelukan",
+          "wajah ngantukmu"
         ],
         "dislikes": [
-          "surprises",
-          "feeling like a burden"
+          "kejutan",
+          "merasa jadi beban"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Column F"
+              "title": "Kolom F"
             },
             {
-              "title": "Years"
+              "title": "Bertahun-tahun"
             },
             {
-              "title": "Not without you"
+              "title": "Bukan tanpamu"
             }
           ]
         }
@@ -5108,24 +5108,24 @@
       },
       "story": {
         "likes": [
-          "winning",
-          "black coffee",
-          "quiet after a long gala"
+          "kemenangan",
+          "kopi hitam",
+          "tenang setelah pesta gala"
         ],
         "dislikes": [
-          "being underestimated",
-          "your father's dinners"
+          "diremehkan",
+          "jamuan makan malam ayahnya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thank you"
+              "title": "Terima kasih"
             },
             {
-              "title": "No friends"
+              "title": "Tak punya teman"
             },
             {
-              "title": "A person"
+              "title": "Sebagai manusia"
             }
           ]
         }
@@ -5144,24 +5144,24 @@
       },
       "story": {
         "likes": [
-          "the sea at night",
-          "their voice",
-          "home cooking"
+          "laut di malam hari",
+          "suaramu",
+          "masakan rumah"
         ],
         "dislikes": [
-          "goodbyes at airports",
-          "bad signal"
+          "perpisahan di bandara",
+          "sinyal buruk"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The stone"
+              "title": "Batu itu"
             },
             {
-              "title": "The offer"
+              "title": "Tawaran itu"
             },
             {
-              "title": "Every day"
+              "title": "Setiap hari"
             }
           ]
         }
@@ -5180,24 +5180,24 @@
       },
       "story": {
         "likes": [
-          "old opera",
-          "espresso after midnight",
-          "honest people"
+          "opera klasik",
+          "espreso lewat tengah malam",
+          "orang jujur"
         ],
         "dislikes": [
-          "liars",
-          "your uncle's methods"
+          "pembohong",
+          "metode pamannya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Architecture"
+              "title": "Arsitektur"
             },
             {
-              "title": "Never wanted it"
+              "title": "Tak pernah kumau"
             },
             {
-              "title": "My choice"
+              "title": "Pilihanku"
             }
           ]
         }
@@ -5216,24 +5216,24 @@
       },
       "story": {
         "likes": [
-          "quiet routes",
-          "black coffee",
-          "their stubbornness (secretly)"
+          "rute sepi",
+          "kopi hitam",
+          "sikap keras kepalamu (diam-diam)"
         ],
         "dislikes": [
-          "crowds",
-          "people who take risks with their life"
+          "keramaian",
+          "orang yang nekat soal nyawanya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Eleven times"
+              "title": "Sebelas kali"
             },
             {
-              "title": "The transfer"
+              "title": "Permintaan pindah"
             },
             {
-              "title": "Against the rules"
+              "title": "Melanggar aturan"
             }
           ]
         }
@@ -5252,24 +5252,24 @@
       },
       "story": {
         "likes": [
-          "open roads at night",
-          "engine grease",
-          "people who are not scared of you"
+          "jalanan terbuka malam hari",
+          "oli mesin",
+          "orang yang tak takut padanya"
         ],
         "dislikes": [
-          "cops at three in the morning",
-          "people who judge by jackets"
+          "polisi jam tiga pagi",
+          "menilai orang dari jaketnya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why I stopped"
+              "title": "Kenapa aku berhenti"
             },
             {
-              "title": "My sister"
+              "title": "Adikku"
             },
             {
-              "title": "Tired"
+              "title": "Lelah"
             }
           ]
         }
@@ -5288,24 +5288,24 @@
       },
       "story": {
         "likes": [
-          "snow at night",
-          "wood smoke",
-          "strong sweet tea"
+          "salju di malam hari",
+          "asap kayu bakar",
+          "teh manis kental"
         ],
         "dislikes": [
-          "the city",
-          "the silence after a radio call"
+          "kota besar",
+          "hening setelah panggilan radio"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Weeks"
+              "title": "Berminggu-minggu"
             },
             {
-              "title": "Why I am here"
+              "title": "Kenapa aku di sini"
             },
             {
-              "title": "Company"
+              "title": "Kebersamaan"
             }
           ]
         }
@@ -5324,24 +5324,24 @@
       },
       "story": {
         "likes": [
-          "the ring",
-          "late-night food",
-          "their voice"
+          "ring tinju",
+          "makanan larut malam",
+          "suaramu"
         ],
         "dislikes": [
-          "being pitied",
-          "people who hurt the weak"
+          "dikasihani",
+          "orang yang menindas yang lemah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Walked away"
+              "title": "Melangkah pergi"
             },
             {
-              "title": "My father"
+              "title": "Ayahku"
             },
             {
-              "title": "Not enough"
+              "title": "Tak cukup baik"
             }
           ]
         }
@@ -5360,24 +5360,24 @@
       },
       "story": {
         "likes": [
-          "city lights at speed",
-          "engines",
-          "their nervous laugh at the start line"
+          "lampu kota saat ngebut",
+          "mesin mobil",
+          "tawa gugupmu di garis start"
         ],
         "dislikes": [
-          "losing",
-          "people who race drunk"
+          "kekalahan",
+          "orang yang balapan sambil mabuk"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The superstition"
+              "title": "Takhayul"
             },
             {
-              "title": "My brother"
+              "title": "Saudaraku"
             },
             {
-              "title": "Alive"
+              "title": "Merasa hidup"
             }
           ]
         }
@@ -5396,24 +5396,24 @@
       },
       "story": {
         "likes": [
-          "Sunday breakfasts",
-          "old films",
-          "their opinions"
+          "sarapan hari Minggu",
+          "film-film lama",
+          "pendapatmu"
         ],
         "dislikes": [
-          "disrespect",
-          "your cousins"
+          "sikap tidak hormat",
+          "para sepupunya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sunday breakfast"
+              "title": "Sarapan Minggu"
             },
             {
-              "title": "Why I agreed"
+              "title": "Kenapa aku setuju"
             },
             {
-              "title": "Frightened"
+              "title": "Ketakutan"
             }
           ]
         }
@@ -5432,24 +5432,24 @@
       },
       "story": {
         "likes": [
-          "quiet engines",
-          "sunsets after work",
-          "second chances"
+          "mesin yang tenang",
+          "matahari terbenam usai kerja",
+          "kesempatan kedua"
         ],
         "dislikes": [
-          "gossip",
-          "being pitied"
+          "gosip",
+          "dikasihani"
         ],
         "arc": {
           "beats": [
             {
-              "title": "No charge"
+              "title": "Tanpa biaya"
             },
             {
-              "title": "The past"
+              "title": "Masa lalu"
             },
             {
-              "title": "My brother"
+              "title": "Saudaraku"
             }
           ]
         }
@@ -5468,24 +5468,24 @@
       },
       "story": {
         "likes": [
-          "discipline",
-          "silence",
-          "their steady hands"
+          "kedisiplinan",
+          "keheningan",
+          "tanganmu yang tenang"
         ],
         "dislikes": [
-          "questions",
-          "being seen"
+          "pertanyaan",
+          "dilihat orang"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The wound"
+              "title": "Luka itu"
             },
             {
-              "title": "The mask"
+              "title": "Topeng ini"
             },
             {
-              "title": "Not looking away"
+              "title": "Tak memalingkan muka"
             }
           ]
         }
@@ -5504,24 +5504,24 @@
       },
       "story": {
         "likes": [
-          "rooftops",
-          "stealing from the rich",
-          "bad puns"
+          "atap gedung",
+          "mencuri dari orang kaya",
+          "plesetan garing"
         ],
         "dislikes": [
-          "getting caught",
-          "people who hurt the poor"
+          "tertangkap basah",
+          "orang yang menindas orang miskin"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rules"
+              "title": "Aturannya"
             },
             {
-              "title": "My brother"
+              "title": "Adikku"
             },
             {
-              "title": "Tired"
+              "title": "Lelah"
             }
           ]
         }
@@ -5540,24 +5540,24 @@
       },
       "story": {
         "likes": [
-          "night drives",
-          "loud music",
-          "honest people"
+          "berkendara malam",
+          "musik kencang",
+          "orang jujur"
         ],
         "dislikes": [
-          "your father's men",
-          "being followed"
+          "anak buah ayahnya",
+          "dibuntuti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The front seat"
+              "title": "Kursi depan"
             },
             {
-              "title": "Paid"
+              "title": "Dibayar"
             },
             {
-              "title": "Choose"
+              "title": "Memilih"
             }
           ]
         }
@@ -5576,24 +5576,24 @@
       },
       "story": {
         "likes": [
-          "empty offices at night",
-          "exact numbers",
-          "their honest feedback"
+          "kantor kosong malam hari",
+          "angka yang presisi",
+          "masukan jujurmu"
         ],
         "dislikes": [
-          "excuses",
-          "weekends"
+          "alasan",
+          "akhir pekan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The contract"
+              "title": "Kontrak itu"
             },
             {
-              "title": "Too quiet"
+              "title": "Terlalu sunyi"
             },
             {
-              "title": "Laugh"
+              "title": "Tertawa"
             }
           ]
         }
@@ -5612,24 +5612,24 @@
       },
       "story": {
         "likes": [
-          "late jazz bars",
-          "straight talk",
-          "their laugh"
+          "bar jazz larut malam",
+          "bicara blak-blakan",
+          "tawamu"
         ],
         "dislikes": [
-          "office politics",
-          "awkward secrets"
+          "politik kantor",
+          "rahasia canggung"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The receipt"
+              "title": "Struk itu"
             },
             {
-              "title": "HR"
+              "title": "Bagian SDM"
             },
             {
-              "title": "Friday"
+              "title": "Jumat"
             }
           ]
         }
@@ -5648,24 +5648,24 @@
       },
       "story": {
         "likes": [
-          "bedtime stories",
-          "early coffee",
-          "their patience"
+          "dongeng pengantar tidur",
+          "kopi pagi",
+          "kesabaranmu"
         ],
         "dislikes": [
-          "missing school plays",
-          "board meetings at night"
+          "melewatkan pentas sekolah",
+          "rapat direksi malam hari"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Lima menit"
             },
             {
-              "title": "Alone"
+              "title": "Sendirian"
             },
             {
-              "title": "Not alone"
+              "title": "Tak lagi sendiri"
             }
           ]
         }
@@ -5684,24 +5684,24 @@
       },
       "story": {
         "likes": [
-          "winning pitches",
-          "bad office coffee",
-          "their arguments"
+          "menang presentasi",
+          "kopi kantor tak enak",
+          "debatmu"
         ],
         "dislikes": [
-          "losing to anyone else",
-          "quiet offices"
+          "kalah dari siapa pun",
+          "kantor yang sepi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Two pitches"
+              "title": "Dua presentasi"
             },
             {
-              "title": "Why"
+              "title": "Kenapa"
             },
             {
-              "title": "The promotion"
+              "title": "Promosi itu"
             }
           ]
         }
@@ -5720,24 +5720,24 @@
       },
       "story": {
         "likes": [
-          "a perfect sentence",
-          "old newspapers",
-          "strong tea"
+          "kalimat yang sempurna",
+          "koran lama",
+          "teh kental"
         ],
         "dislikes": [
-          "clichés",
-          "lazy writing"
+          "klise",
+          "tulisan yang malas"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The folder"
+              "title": "Map berkas"
             },
             {
-              "title": "My novel"
+              "title": "Novelku"
             },
             {
-              "title": "Good"
+              "title": "Bagus"
             }
           ]
         }
@@ -5756,24 +5756,24 @@
       },
       "story": {
         "likes": [
-          "silence",
-          "perfect seams",
-          "their honesty"
+          "keheningan",
+          "jahitan sempurna",
+          "kejujuranmu"
         ],
         "dislikes": [
-          "board members",
-          "being pitied"
+          "anggota dewan direksi",
+          "dikasihani"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The view"
+              "title": "Pemandangan itu"
             },
             {
-              "title": "Disowned"
+              "title": "Dicoret keluarga"
             },
             {
-              "title": "Near"
+              "title": "Dekat"
             }
           ]
         }
@@ -5792,24 +5792,24 @@
       },
       "story": {
         "likes": [
-          "plans",
-          "clean desks",
-          "people who surprise you"
+          "rencana",
+          "meja kerja bersih",
+          "orang yang bisa mengejutkannya"
         ],
         "dislikes": [
-          "regrets",
-          "surprises"
+          "penyesalan",
+          "kejutan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "I remember"
+              "title": "Aku ingat"
             },
             {
-              "title": "Why I said no"
+              "title": "Kenapa dulu menolak"
             },
             {
-              "title": "Seven years"
+              "title": "Tujuh tahun"
             }
           ]
         }
@@ -5828,24 +5828,24 @@
       },
       "story": {
         "likes": [
-          "winning arguments",
-          "cold pizza",
-          "their comebacks"
+          "menang debat",
+          "pizza dingin",
+          "balasan menohokmu"
         ],
         "dislikes": [
-          "losing debates",
-          "silence after a fight"
+          "kalah debat",
+          "hening setelah bertengkar"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flat"
+              "title": "Apartemen itu"
             },
             {
-              "title": "The final"
+              "title": "Babak final"
             },
             {
-              "title": "Not a rival"
+              "title": "Bukan saingan"
             }
           ]
         }
@@ -5864,24 +5864,24 @@
       },
       "story": {
         "likes": [
-          "second chances",
-          "quiet lunches",
-          "honesty"
+          "kesempatan kedua",
+          "makan siang tenang",
+          "kejujuran"
         ],
         "dislikes": [
-          "who you used to be",
-          "people who mock others"
+          "dirinya di masa lalu",
+          "orang yang mengejek sesama"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five years"
+              "title": "Lima tahun"
             },
             {
-              "title": "Why"
+              "title": "Alasannya"
             },
             {
-              "title": "Sorry"
+              "title": "Maaf"
             }
           ]
         }
@@ -5900,24 +5900,24 @@
       },
       "story": {
         "likes": [
-          "loud guitars",
-          "late gigs",
-          "their voice when they sing harmony"
+          "gitar kencang",
+          "manggung larut malam",
+          "suaramu saat bernyanyi harmoni"
         ],
         "dislikes": [
-          "Valentine's Day",
-          "being ignored"
+          "Hari Valentine",
+          "diabaikan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The flowers"
+              "title": "Bunga itu"
             },
             {
-              "title": "Four songs"
+              "title": "Empat lagu"
             },
             {
-              "title": "Play one"
+              "title": "Mainkan satu"
             }
           ]
         }
@@ -5936,24 +5936,24 @@
       },
       "story": {
         "likes": [
-          "early workouts",
-          "competition",
-          "their laugh"
+          "olahraga pagi",
+          "persaingan",
+          "tawamu"
         ],
         "dislikes": [
-          "losing",
-          "being thought shallow"
+          "kekalahan",
+          "dianggap dangkal"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Rule one"
+              "title": "Aturan pertama"
             },
             {
-              "title": "My ex"
+              "title": "Mantanku"
             },
             {
-              "title": "The deal"
+              "title": "Kesepakatan itu"
             }
           ]
         }
@@ -5972,24 +5972,24 @@
       },
       "story": {
         "likes": [
-          "engines",
-          "order",
-          "their soup (secretly)"
+          "mesin",
+          "keteraturan",
+          "sup buatanmu (diam-diam)"
         ],
         "dislikes": [
-          "needing help",
-          "being pitied"
+          "butuh bantuan",
+          "dikasihani"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The soup"
+              "title": "Sup itu"
             },
             {
-              "title": "Sixteen"
+              "title": "Usia enam belas"
             },
             {
-              "title": "Thank you"
+              "title": "Terima kasih"
             }
           ]
         }
@@ -6008,24 +6008,24 @@
       },
       "story": {
         "likes": [
-          "clean results",
-          "dark chocolate",
-          "their stubbornness"
+          "hasil bersih",
+          "cokelat hitam",
+          "sikap keras kepalamu"
         ],
         "dislikes": [
-          "sloppy notes",
-          "losing a grant"
+          "catatan berantakan",
+          "kehilangan dana hibah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The paper"
+              "title": "Makalah itu"
             },
             {
-              "title": "Admire"
+              "title": "Kagum"
             },
             {
-              "title": "Not survival"
+              "title": "Bukan sekadar bertahan"
             }
           ]
         }
@@ -6044,24 +6044,24 @@
       },
       "story": {
         "likes": [
-          "honesty",
-          "quiet weddings",
-          "late talks"
+          "kejujuran",
+          "pernikahan tenang",
+          "obrolan larut malam"
         ],
         "dislikes": [
-          "who you were at eighteen",
-          "crowds"
+          "dirinya saat umur delapan belas",
+          "keramaian"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Ten years"
+              "title": "Sepuluh tahun"
             },
             {
-              "title": "That year"
+              "title": "Tahun itu"
             },
             {
-              "title": "Sorry"
+              "title": "Maaf"
             }
           ]
         }
@@ -6080,24 +6080,24 @@
       },
       "story": {
         "likes": [
-          "new places",
-          "street food",
-          "their reactions"
+          "tempat baru",
+          "jajanan kaki lima",
+          "reaksimu"
         ],
         "dislikes": [
-          "long silences",
-          "being ignored"
+          "keheningan panjang",
+          "diabaikan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The seat"
+              "title": "Kursi pesawat"
             },
             {
-              "title": "The camera"
+              "title": "Kamera itu"
             },
             {
-              "title": "Since the audition"
+              "title": "Sejak audisi"
             }
           ]
         }
@@ -6116,24 +6116,24 @@
       },
       "story": {
         "likes": [
-          "late studio sessions",
-          "their hoodie",
-          "old love songs"
+          "sesi studio larut malam",
+          "hoodiemu",
+          "lagu cinta lama"
         ],
         "dislikes": [
-          "touring",
-          "being forgotten"
+          "tur konser",
+          "dilupakan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The songs"
+              "title": "Lagu-lagu itu"
             },
             {
-              "title": "The tour"
+              "title": "Tur itu"
             },
             {
-              "title": "Never stopped"
+              "title": "Tak pernah berhenti"
             }
           ]
         }
@@ -6152,24 +6152,24 @@
       },
       "story": {
         "likes": [
-          "teaching",
-          "weddings (secretly)",
-          "their laugh"
+          "mengajar",
+          "pesta pernikahan (diam-diam)",
+          "tawamu"
         ],
         "dislikes": [
-          "pretending",
-          "speeches"
+          "berpura-pura",
+          "pidato"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Hold on"
+              "title": "Masih bertahan"
             },
             {
-              "title": "Braver"
+              "title": "Lebih berani"
             },
             {
-              "title": "Wrong"
+              "title": "Aku keliru"
             }
           ]
         }
@@ -6188,24 +6188,24 @@
       },
       "story": {
         "likes": [
-          "rain",
-          "quiet",
-          "their voice"
+          "hujan",
+          "ketenangan",
+          "suaramu"
         ],
         "dislikes": [
-          "who you were a year ago",
-          "weddings"
+          "dirinya setahun yang lalu",
+          "pesta pernikahan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Sorry"
+              "title": "Maaf"
             },
             {
-              "title": "Why I ran"
+              "title": "Kenapa aku kabur"
             },
             {
-              "title": "Nothing owed"
+              "title": "Tak berutang apa pun"
             }
           ]
         }
@@ -6224,24 +6224,24 @@
       },
       "story": {
         "likes": [
-          "summer fairs",
-          "loud music",
-          "their laugh"
+          "pasar malam musim panas",
+          "musik kencang",
+          "tawamu"
         ],
         "dislikes": [
-          "cotton candy",
-          "being alone after a set"
+          "gulali kapas",
+          "sendirian usai manggung"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Moved on"
+              "title": "Sudah melangkah"
             },
             {
-              "title": "Waiting"
+              "title": "Menunggu"
             },
             {
-              "title": "Still"
+              "title": "Masih saja"
             }
           ]
         }
@@ -6260,24 +6260,24 @@
       },
       "story": {
         "likes": [
-          "Thursdays",
-          "fresh herbs",
-          "their honest opinion"
+          "hari Kamis",
+          "rempah segar",
+          "pendapat jujurmu"
         ],
         "dislikes": [
-          "critics",
-          "empty kitchens"
+          "kritikus",
+          "dapur kosong"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Thursdays"
+              "title": "Hari Kamis"
             },
             {
-              "title": "The menu"
+              "title": "Daftar menu"
             },
             {
-              "title": "Good enough"
+              "title": "Cukup baik"
             }
           ]
         }
@@ -6296,24 +6296,24 @@
       },
       "story": {
         "likes": [
-          "sketchbooks",
-          "their scarf",
-          "birthdays"
+          "buku sketsa",
+          "syalmu",
+          "hari ulang tahun"
         ],
         "dislikes": [
-          "running away",
-          "being late"
+          "melarikan diri",
+          "terlambat"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Early"
+              "title": "Lebih awal"
             },
             {
-              "title": "Back for good"
+              "title": "Kembali selamanya"
             },
             {
-              "title": "Found"
+              "title": "Ditemukan"
             }
           ]
         }
@@ -6332,24 +6332,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "yoghurt",
-          "their cooking"
+          "tugas malam",
+          "yogurt",
+          "masakanmu"
         ],
         "dislikes": [
-          "pretending to be fine",
-          "silence at home"
+          "pura-pura baik-baik saja",
+          "kesunyian di rumah"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not fine"
+              "title": "Tak baik-baik saja"
             },
             {
-              "title": "The lease"
+              "title": "Kontrak sewa"
             },
             {
-              "title": "Not over"
+              "title": "Belum usai"
             }
           ]
         }
@@ -6368,24 +6368,24 @@
       },
       "story": {
         "likes": [
-          "balconies",
-          "teaching",
-          "honesty"
+          "balkon",
+          "mengajar",
+          "kejujuran"
         ],
         "dislikes": [
-          "lying",
-          "parties"
+          "kebohongan",
+          "pesta"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not happy"
+              "title": "Tidak bahagia"
             },
             {
-              "title": "To forget"
+              "title": "Untuk melupakan"
             },
             {
-              "title": "Ending it"
+              "title": "Mengakhirinya"
             }
           ]
         }
@@ -6404,24 +6404,24 @@
       },
       "story": {
         "likes": [
-          "art",
-          "winning",
-          "honest answers"
+          "seni",
+          "menang",
+          "jawaban jujur"
         ],
         "dislikes": [
-          "being left",
-          "surprises"
+          "ditinggalkan",
+          "kejutan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Answers"
+              "title": "Jawaban"
             },
             {
-              "title": "Proving"
+              "title": "Membuktikan"
             },
             {
-              "title": "Still"
+              "title": "Masih ada"
             }
           ]
         }
@@ -6440,24 +6440,24 @@
       },
       "story": {
         "likes": [
-          "old theatres",
-          "rain at midnight",
-          "their laugh through the floor"
+          "teater tua",
+          "hujan tengah malam",
+          "tawamu menembus lantai"
         ],
         "dislikes": [
-          "sunrise",
-          "being called a monster"
+          "matahari terbit",
+          "disebut monster"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The post"
+              "title": "Surat kiriman"
             },
             {
-              "title": "Three hundred years"
+              "title": "Tiga ratus tahun"
             },
             {
-              "title": "Afraid"
+              "title": "Takut"
             }
           ]
         }
@@ -6476,24 +6476,24 @@
       },
       "story": {
         "likes": [
-          "winter gardens",
-          "honest people",
-          "old maps"
+          "taman musim dingin",
+          "orang jujur",
+          "peta tua"
         ],
         "dislikes": [
-          "flattery",
-          "court intrigue"
+          "sanjungan",
+          "intrik istana"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Not bowing"
+              "title": "Tak membungkuk"
             },
             {
-              "title": "Sixteen"
+              "title": "Usia enam belas"
             },
             {
-              "title": "A person"
+              "title": "Manusia biasa"
             }
           ]
         }
@@ -6512,24 +6512,24 @@
       },
       "story": {
         "likes": [
-          "the forest at dawn",
-          "honey",
-          "their porch light"
+          "hutan saat fajar",
+          "madu",
+          "lampu terasmu"
         ],
         "dislikes": [
-          "silver jewellery",
-          "being feared"
+          "perhiasan perak",
+          "ditakuti orang"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The knock"
+              "title": "Ketukan pintu"
             },
             {
-              "title": "The wolf"
+              "title": "Serigala itu"
             },
             {
-              "title": "Before I knew"
+              "title": "Sebelum aku sadar"
             }
           ]
         }
@@ -6548,24 +6548,24 @@
       },
       "story": {
         "likes": [
-          "coffee (new to you)",
-          "their stubbornness",
-          "rooftops"
+          "kopi (hal baru)",
+          "sikap keras kepalamu",
+          "atap gedung"
         ],
         "dislikes": [
-          "paperwork",
-          "traffic"
+          "urusan berkas",
+          "kemacetan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The rule"
+              "title": "Aturan itu"
             },
             {
-              "title": "Years"
+              "title": "Bertahun-tahun"
             },
             {
-              "title": "Again"
+              "title": "Lagi"
             }
           ]
         }
@@ -6584,24 +6584,24 @@
       },
       "story": {
         "likes": [
-          "the inn kitchen",
-          "bread fresh from the oven",
-          "their patience"
+          "dapur penginapan",
+          "roti hangat dari oven",
+          "kesabaranmu"
         ],
         "dislikes": [
-          "formal dinners",
-          "your mother's plans"
+          "jamuan makan resmi",
+          "rencana ibunya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The plates"
+              "title": "Piring-piring"
             },
             {
-              "title": "Why I ran"
+              "title": "Kenapa aku kabur"
             },
             {
-              "title": "Staying"
+              "title": "Menetap"
             }
           ]
         }
@@ -6620,24 +6620,24 @@
       },
       "story": {
         "likes": [
-          "warm bread",
-          "dawn",
-          "their laugh at your bad jokes"
+          "roti hangat",
+          "fajar",
+          "tawamu atas lelucon garingnya"
         ],
         "dislikes": [
-          "small talk",
-          "dragons (personally)"
+          "basa-basi",
+          "naga (secara pribadi)"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The bet"
+              "title": "Taruhan itu"
             },
             {
-              "title": "It ended"
+              "title": "Sudah berakhir"
             },
             {
-              "title": "Staying"
+              "title": "Menetap"
             }
           ]
         }
@@ -6656,24 +6656,24 @@
       },
       "story": {
         "likes": [
-          "the stars",
-          "books",
-          "their strange words"
+          "bintang-bintang",
+          "buku",
+          "kata-kata anehmu"
         ],
         "dislikes": [
-          "court rules",
-          "being lied to"
+          "aturan istana",
+          "dibohongi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The star"
+              "title": "Bintang itu"
             },
             {
-              "title": "Afraid"
+              "title": "Takut"
             },
             {
-              "title": "Stay"
+              "title": "Tetaplah di sini"
             }
           ]
         }
@@ -6692,24 +6692,24 @@
       },
       "story": {
         "likes": [
-          "moonlight",
-          "shells",
-          "human food"
+          "cahaya bulan",
+          "kerang",
+          "makanan manusia"
         ],
         "dislikes": [
-          "fishing nets",
-          "being feared"
+          "jaring ikan",
+          "ditakuti"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The law"
+              "title": "Hukum laut"
             },
             {
-              "title": "Can't go back"
+              "title": "Tak bisa kembali"
             },
             {
-              "title": "The price"
+              "title": "Harganya"
             }
           ]
         }
@@ -6728,24 +6728,24 @@
       },
       "story": {
         "likes": [
-          "the forest",
-          "honesty",
-          "old songs"
+          "hutan",
+          "kejujuran",
+          "lagu-lagu lama"
         ],
         "dislikes": [
-          "lords",
-          "being chosen for"
+          "para bangsawan",
+          "diatur pilihannya"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Why"
+              "title": "Alasannya"
             },
             {
-              "title": "The throne"
+              "title": "Takhta itu"
             },
             {
-              "title": "Free"
+              "title": "Bebas memilih"
             }
           ]
         }
@@ -6764,24 +6764,24 @@
       },
       "story": {
         "likes": [
-          "potions",
-          "thunderstorms",
-          "their patience"
+          "ramuan",
+          "badai petir",
+          "kesabaranmu"
         ],
         "dislikes": [
-          "spells that go wrong",
-          "being laughed at"
+          "mantra yang gagal",
+          "ditertawakan"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Can be broken"
+              "title": "Bisa dipatahkan"
             },
             {
-              "title": "Not started"
+              "title": "Belum dimulai"
             },
             {
-              "title": "Near"
+              "title": "Dekat"
             }
           ]
         }
@@ -6800,24 +6800,24 @@
       },
       "story": {
         "likes": [
-          "the tavern at night",
-          "bread and soup",
-          "their kindness"
+          "kedai malam hari",
+          "roti dan sup",
+          "kebaikanmu"
         ],
         "dislikes": [
-          "guards",
-          "ball gowns"
+          "para pengawal",
+          "gaun pesta"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The curtsy"
+              "title": "Hormat membungkuk"
             },
             {
-              "title": "The guards"
+              "title": "Para pengawal"
             },
             {
-              "title": "Stay"
+              "title": "Tetap tinggal"
             }
           ]
         }
@@ -6836,24 +6836,24 @@
       },
       "story": {
         "likes": [
-          "night shifts",
-          "vending machine tea",
-          "quiet talks"
+          "jaga malam",
+          "teh mesin otomatis",
+          "obrolan tenang"
         ],
         "dislikes": [
-          "hospital food",
-          "people who rush"
+          "makanan rumah sakit",
+          "orang yang buru-buru"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Five minutes"
+              "title": "Lima menit"
             },
             {
-              "title": "My father"
+              "title": "Ayahku"
             },
             {
-              "title": "Company"
+              "title": "Menemani"
             }
           ]
         }
@@ -6872,24 +6872,24 @@
       },
       "story": {
         "likes": [
-          "wood",
-          "tea",
-          "fixing things"
+          "kayu",
+          "teh",
+          "memperbaiki barang"
         ],
         "dislikes": [
-          "debts",
-          "being thanked"
+          "utang budi",
+          "ucapan terima kasih"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tea"
+              "title": "Teh"
             },
             {
-              "title": "My brother"
+              "title": "Adikku"
             },
             {
-              "title": "Family"
+              "title": "Keluarga"
             }
           ]
         }
@@ -6908,24 +6908,24 @@
       },
       "story": {
         "likes": [
-          "tea",
-          "babies' first cries",
-          "their voice"
+          "teh",
+          "tangis pertama bayi",
+          "suaramu"
         ],
         "dislikes": [
-          "hospital politics",
-          "feeling useless"
+          "politik rumah sakit",
+          "merasa tak berguna"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Always"
+              "title": "Selalu"
             },
             {
-              "title": "Last month"
+              "title": "Bulan lalu"
             },
             {
-              "title": "Both ways"
+              "title": "Saling menguatkan"
             }
           ]
         }
@@ -6944,24 +6944,24 @@
       },
       "story": {
         "likes": [
-          "good design",
-          "soup",
-          "honesty"
+          "desain bagus",
+          "sup",
+          "kejujuran"
         ],
         "dislikes": [
-          "bullies",
-          "meetings that run over"
+          "tukang rundung",
+          "rapat yang molor"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Soup"
+              "title": "Sup itu"
             },
             {
-              "title": "Nearly quit"
+              "title": "Hampir berhenti"
             },
             {
-              "title": "On your side"
+              "title": "Di pihakmu"
             }
           ]
         }
@@ -6980,24 +6980,24 @@
       },
       "story": {
         "likes": [
-          "small cakes",
-          "birthdays",
-          "their wishes"
+          "kue kecil",
+          "ulang tahun",
+          "harapanmu"
         ],
         "dislikes": [
-          "empty rooms",
-          "people who forget"
+          "ruangan kosong",
+          "orang yang mudah lupa"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Candles"
+              "title": "Lilin"
             },
             {
-              "title": "Growing up"
+              "title": "Tumbuh dewasa"
             },
             {
-              "title": "Never alone"
+              "title": "Takkan pernah sendiri"
             }
           ]
         }
@@ -7016,24 +7016,24 @@
       },
       "story": {
         "likes": [
-          "languages",
-          "their stories",
-          "mornings"
+          "bahasa asing",
+          "cerita-ceritamu",
+          "pagi hari"
         ],
         "dislikes": [
-          "time zones",
-          "bad internet"
+          "perbedaan zona waktu",
+          "internet buruk"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Breakfast"
+              "title": "Sarapan"
             },
             {
-              "title": "Saving"
+              "title": "Menabung"
             },
             {
-              "title": "In person"
+              "title": "Bertemu langsung"
             }
           ]
         }
@@ -7052,24 +7052,24 @@
       },
       "story": {
         "likes": [
-          "the last hold",
-          "early sessions",
-          "people who try again"
+          "pegangan terakhir",
+          "latihan pagi",
+          "orang yang mau mencoba lagi"
         ],
         "dislikes": [
-          "quitting",
-          "ego"
+          "menyerah",
+          "ego tinggi"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Twice"
+              "title": "Dua kali"
             },
             {
-              "title": "The fall"
+              "title": "Saat terjatuh"
             },
             {
-              "title": "Nerve"
+              "title": "Keberanian"
             }
           ]
         }
@@ -7088,24 +7088,24 @@
       },
       "story": {
         "likes": [
-          "their shoulder",
-          "takeaway on Fridays",
-          "quiet"
+          "bahumu",
+          "makanan bungkus hari Jumat",
+          "keheningan"
         ],
         "dislikes": [
-          "pagers",
-          "missing dinners"
+          "alat panggil",
+          "melewatkan makan malam"
         ],
         "arc": {
           "beats": [
             {
-              "title": "Tired"
+              "title": "Lelah"
             },
             {
-              "title": "Thinking of leaving"
+              "title": "Niat untuk pergi"
             },
             {
-              "title": "Home"
+              "title": "Rumah"
             }
           ]
         }
@@ -7124,24 +7124,24 @@
       },
       "story": {
         "likes": [
-          "night trains",
-          "old songs",
-          "strangers' stories"
+          "kereta malam",
+          "lagu-lagu lama",
+          "cerita orang asing"
         ],
         "dislikes": [
-          "goodbyes",
-          "staying still"
+          "perpisahan",
+          "diam di satu tempat"
         ],
         "arc": {
           "beats": [
             {
-              "title": "The name"
+              "title": "Nama asli"
             },
             {
-              "title": "No home"
+              "title": "Tanpa rumah"
             },
             {
-              "title": "Belonging"
+              "title": "Merasa diterima"
             }
           ]
         }
