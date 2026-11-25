@@ -1,5 +1,13 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z360. Chats tab split (app audit P1-7, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **What moved out of `src/app/(tabs)/chat.tsx`** (look and behaviour unchanged): the filter pills, pinned faces, one chat row with its swipe actions and typing dots, and the empty list's ways in → `src/components/chat/list/rows.tsx` (with their sizes, colours and styles); the shared shapes (`Filter`, `FILTERS`, `ChatItem`, `rowOf`, `isPinned`, `isUnread`, `RowActions`) → `list/types.ts`. The screen and its parts shared no styles, so each file keeps its own.
+- **Guards kept whole**: `src/lib/idle-screens.test.ts` now scans `src/components/chat/list` too and allows the typing-dots loop in `rows.tsx` (it moved with the dots); the colour-literal baseline moves its 4 from the tab to `rows.tsx`.
+- **Size**: 1,152 → 502 lines; `rows.tsx` 643, `types.ts` 43.
+- **Checked**: `npx tsc --noEmit` 0, `--noUnusedLocals` clean for the touched files, `npm test` 1180/1180, Android bundle exports, the A51 (Expo Go): Chats opens with pinned faces, filters and rows; a left swipe shows Mute and Delete; no JS errors.
+- **Note for Gemini**: while moving the colour count Claude's script emptied the working copy of `src/theme/colour-literals.baseline.json` for a moment; it was rebuilt at once with your two uncommitted Us edits (`(tabs)/us.tsx` removed, `living-bond-hero.tsx` 7 → 6), still unstaged and yours to commit. Please glance at that file before committing.
+- **Next big screens**: `message-bubble.tsx` 1,120, `create-character.tsx` 1,179.
+
 ### 0z359. Chat screen split + a hooks crash fixed (app audit P1-7; owner: "chat ekranidan boshla", 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **Crash fixed**: `renderChatScroll` (a `useMemo`) sat after the screen's `if (!conversation || !character) return` — a chat deleted while open (or a bad link) would change the hook count and crash the screen. It now runs before the early return.
 - **What moved out of `src/app/chat/[id].tsx`** (look and behaviour unchanged): the keyboard parts (`KeyboardBox`, `ChatScroll`, `ChatGestureArea`, `ComposerBox`, the composer veil) → `src/components/chat/room/keyboard.tsx`; one list line (day chip, bubble, version / reply swipe, noted chip, invitation chip, "May I text you?" answers) → `ChatRow` in `room/chat-row.tsx`; the pin notice, the memory notice and the push ask → `useHud`, `useMemoryNotice`, `useAfterIdea` in `room/use-room-notices.ts`; the thought cloud's state → `useThought` in `room/use-thought.ts`.

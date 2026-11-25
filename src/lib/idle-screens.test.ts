@@ -10,11 +10,12 @@ import { describe, it } from 'node:test';
  * live event and stops with it; each one is listed here with that event.
  */
 const LOOPS_ALLOWED: Record<string, string> = {
-  'src/app/(tabs)/chat.tsx': 'typing dots, only while a friend is typing',
   'src/app/(tabs)/index.tsx': 'the widget jiggle, only in edit mode',
+  // The Chats tab's rows live in src/components/chat/list (0z360).
+  'src/components/chat/list/rows.tsx': 'typing dots, only while a friend is typing',
 };
 
-const MAIN_TAB_CODE = ['src/app/(tabs)', 'src/components/today', 'src/components/find', 'src/components/us', 'src/components/today-hero.tsx'];
+const MAIN_TAB_CODE = ['src/app/(tabs)', 'src/components/chat/list', 'src/components/today', 'src/components/find', 'src/components/us', 'src/components/today-hero.tsx'];
 /** Endless motion: a Reanimated repeat with -1, a looping Lottie, a JS interval that sets state. */
 const ENDLESS = [/withRepeat\([\s\S]{0,400}?,\s*-1/, /<(?:LottieView|Anim)\b[^>]*\bloop(?!\s*=\s*\{false\})/, /setInterval\(/];
 
