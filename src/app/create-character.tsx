@@ -1,27 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, type ScrollViewInstance, StyleSheet, TextInput, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
+import { BackHandler, KeyboardAvoidingView, Linking, Platform, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { actionOf, chatToDefinition, checkIdea, type CharacterDraft, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
+import { actionOf, chatToDefinition, checkIdea, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
 import { PORTRAITS_AVAILABLE, requestDraft, requestField, requestPortrait } from '@/ai/character-studio';
 import { baseLanguage } from '@/ai/reply-language';
-import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, ModeSwitch, Rewrite, SmallRound } from '@/components/create/kit';
-import { InkText, PhotoGlassPill } from '@/components/ink';
+import { DialogField, HeroCard, InlineAction, Lines, PhotoSheet, ShareRow } from '@/components/create/form-parts';
+import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, ModeSwitch, Rewrite } from '@/components/create/kit';
+import { MeetMoment } from '@/components/create/meet-moment';
 import { coachGreeting } from '@/lib/greeting-coach';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { ListRow, PressableScale, Screen, Sheet, Toggle, Txt, useScrolledPast } from '@/components/ui';
+import { Screen, useScrolledPast } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { clearCreation, loadCreation, saveCreation } from '@/lib/create-draft-storage';
 import { type CreateForm, type CreateSection, firstProblemSection, hasContent, problemsBySection, sameForm } from '@/lib/create-flow';
+import { BLANK, CATEGORIES, cleanList, fieldPatch, formOf, formOfTemplate, fromDraft, isTrait } from '@/lib/create-form';
 import {
   BACKSTORY_MAX,
   BIO_MAX,
@@ -54,9 +54,9 @@ import {
 } from '@/lib/create-character';
 import { haptic } from '@/lib/haptics';
 import { quickCreatesToday, useAppStore } from '@/store/use-app-store';
-import { avatarGradients, colors, space, systemColors } from '@/theme';
-import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
-import type { Character, CharacterCategory, CharacterRole } from '@/types';
+import { avatarGradients, space } from '@/theme';
+import { ink, inkPeachGlass } from '@/theme/ink';
+import type { Character, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
 import { keepCharacterPicture } from '@/lib/character-picture';
 import { type StoryTemplate, templateById } from '@/lib/templates';
@@ -64,160 +64,8 @@ import { localTemplate } from '@/i18n/content';
 import { serverTemplates } from '@/ai/server';
 import { withAccount } from '@/ai/account';
 
-const isTrait = (tag: string) => (TRAITS as readonly string[]).includes(tag);
-const CATEGORIES: CharacterCategory[] = ['school', 'fantasy', 'idol', 'daily', 'original'];
 /** How long typing waits before the unfinished character is kept on the phone. */
 const SAVE_AFTER_MS = 600;
-const SCRIM = ['rgba(9,9,13,0.20)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.45)', 'rgba(9,9,13,0.92)'] as const;
-const SCRIM_STOPS = [0, 0.32, 0.62, 1] as const;
-const FIELD_BG = '#0E0E14';
-const FIELD_RIM = 'rgba(255,255,255,0.10)';
-const SHARE_TILE_BG = 'rgba(48,209,88,0.16)';
-/** "Alisa Vetrova" -> "AV": the same letters their avatar shows without a picture. */
-const initialsOf = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? '')
-    .join('') || '?';
-/** Their avatar's colours without a picture, so the page, the meet moment and the chat look alike. */
-const gradientOf = (accent: number) => avatarGradients[accent % avatarGradients.length];
-
-
-/** Non-empty lines, trimmed; undefined when none are left, so the field is cleared. */
-const cleanList = (list: string[]) => {
-  const kept = list.map((line) => line.trim()).filter(Boolean);
-  return kept.length > 0 ? kept : undefined;
-};
-
-/** A blank new character. */
-const BLANK: CreateForm = {
-  name: '',
-  tagline: '',
-  age: '',
-  traits: [],
-  style: 'casual',
-  role: 'friend',
-  bio: '',
-  look: '',
-  quirk: '',
-  scenario: '',
-  greeting: '',
-  opening: '',
-  greetings: [],
-  definition: '',
-  starters: [],
-  height: '',
-  backstory: '',
-  likes: '',
-  dislikes: '',
-  opinions: [],
-  preset: 'warm',
-  category: 'original',
-  relation: '',
-  mask: '',
-  secret: '',
-  history: '',
-  exception: '',
-  arcBeats: [],
-  arcFor: '',
-};
-
-/**
- * A story template made the user's own (Find → Make it yours): the form starts filled in from it, and
- * the user changes anything, adds their own picture, and keeps it private.
- */
-function formOfTemplate({ card }: StoryTemplate): CreateForm {
-  return {
-    ...BLANK,
-    name: card.name,
-    tagline: card.tagline ?? '',
-    gender: card.gender,
-    age: card.age != null ? String(card.age) : '',
-    traits: (card.tags ?? []).filter(isTrait),
-    style: card.speakingStyle ?? 'casual',
-    role: card.role ?? 'friend',
-    bio: card.bio ?? '',
-    scenario: card.scenario ?? '',
-    greeting: card.greeting,
-    opening: card.opening ?? '',
-    preset: card.voicePreset ?? 'warm',
-    relation: card.relation ?? '',
-    mask: card.mask ?? '',
-  };
-}
-
-/** A character the user made, as the form holds it. */
-function formOf(c: Character): CreateForm {
-  return {
-    imageUri: c.avatarUri,
-    name: c.name,
-    tagline: c.tagline ?? '',
-    gender: c.gender,
-    age: c.age != null ? String(c.age) : '',
-    traits: c.tags.filter(isTrait),
-    style: c.speakingStyle ?? 'casual',
-    role: c.role ?? 'friend',
-    bio: c.bio,
-    look: c.look ?? '',
-    quirk: c.quirk ?? '',
-    scenario: c.scenario ?? '',
-    greeting: c.greeting,
-    opening: c.opening ?? '',
-    greetings: c.greetings ?? [],
-    definition: c.definition ?? '',
-    starters: c.starters ?? [],
-    height: c.heightCm != null ? String(c.heightCm) : '',
-    backstory: c.backstory ?? '',
-    likes: (c.likes ?? []).join(', '),
-    dislikes: (c.dislikes ?? []).join(', '),
-    opinions: c.opinions ?? [],
-    preset: c.voicePreset,
-    category: c.category,
-    relation: c.relation ?? '',
-    mask: c.mask ?? '',
-    secret: c.arc?.secret ?? '',
-    history: c.history ?? '',
-    exception: c.exception ?? '',
-    arcBeats: c.arc?.beats ?? [],
-    arcFor: c.arc?.secret ?? '',
-  };
-}
-
-/** A written draft as the form holds it; the photo and its rights stay as they were. */
-const fromDraft = (form: CreateForm, d: CharacterDraft): CreateForm => ({
-  ...form,
-  name: d.name,
-  tagline: d.tagline,
-  gender: d.gender,
-  age: String(d.age),
-  traits: d.tags.filter(isTrait).slice(0, MAX_TRAITS),
-  style: d.speakingStyle,
-  role: d.role,
-  bio: d.bio,
-  look: d.look,
-  quirk: d.quirk,
-  scenario: d.scenario,
-  greeting: d.greeting,
-  opening: d.opening,
-  greetings: d.greetings,
-  definition: d.definition,
-  starters: d.starters,
-  height: d.heightCm != null ? String(d.heightCm) : '',
-  backstory: d.backstory,
-  likes: d.likes.join(', '),
-  dislikes: d.dislikes.join(', '),
-  opinions: d.opinions,
-  preset: d.voicePreset,
-  relation: d.relation,
-  mask: d.mask,
-  secret: d.arc?.secret ?? '',
-  history: d.history,
-  exception: d.exception,
-  arcBeats: d.arc?.beats ?? [],
-  arcFor: d.arc?.secret ?? '',
-});
 
 /**
  * Make your own character (F15), as one chain (0z149, owner: "very easy to use, and everything
@@ -473,45 +321,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
     }
     // What they hide comes back as a whole arc: the secret shows, the beats ride along for it.
     if (typeof value === 'object' && !Array.isArray(value)) return set({ secret: value.secret, arcBeats: value.beats, arcFor: value.secret });
-    const text = Array.isArray(value) ? value.join('\n') : value;
-    const list = Array.isArray(value) ? value : [value];
-    const patch: Partial<CreateForm> =
-      field === 'relation'
-        ? { relation: text }
-        : field === 'mask'
-          ? { mask: text }
-          : field === 'history'
-            ? { history: text }
-            : field === 'exception'
-              ? { exception: text }
-              : field === 'tagline'
-        ? { tagline: text }
-        : field === 'bio'
-          ? { bio: text }
-          : field === 'look'
-            ? { look: text }
-            : field === 'greeting'
-              ? { greeting: text }
-              : field === 'opening'
-                ? { opening: text }
-                : field === 'quirk'
-                  ? { quirk: text }
-                  : field === 'scenario'
-                  ? { scenario: text }
-                  : field === 'greetings'
-                    ? { greetings: list }
-                    : field === 'starters'
-                      ? { starters: list }
-                      : field === 'backstory'
-                        ? { backstory: text }
-                        : field === 'likes'
-                          ? { likes: list.join(', ') }
-                          : field === 'dislikes'
-                            ? { dislikes: list.join(', ') }
-                            : field === 'opinions'
-                              ? { opinions: list }
-                              : { definition: text };
-    set(patch);
+    set(fieldPatch(field, value));
   };
 
   /**
@@ -741,39 +551,16 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
           </ScrollView>
         ) : (
           <ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
-            {/* Cinema hero photo card matching Find: tap photo or top-right PhotoGlassPill. */}
-            <View onLayout={at('who')} style={styles.heroWrap}>
-              <PressableScale onPress={() => setPhotoMenu(true)} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')} style={styles.hero}>
-                {form.imageUri ? (
-                  <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
-                ) : (
-                  <LinearGradient colors={gradientOf(accent)} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.heroCenter]}>
-                    <Txt style={styles.initial} maxFontSizeMultiplier={1}>
-                      {initialsOf(form.name)}
-                    </Txt>
-                  </LinearGradient>
-                )}
-                <LinearGradient colors={SCRIM} locations={SCRIM_STOPS} style={StyleSheet.absoluteFill} />
-                <View style={styles.heroFoot}>
-                  <InkText variant="card" color={colors.onMedia} lines={1} style={styles.heroName}>
-                    {form.name.trim() || label('namePlaceholder')}
-                  </InkText>
-                  {form.tagline.trim() ? (
-                    <InkText variant="quote" color="rgba(255,255,255,0.78)" lines={2} style={styles.heroLine}>
-                      {form.tagline}
-                    </InkText>
-                  ) : null}
-                </View>
-              </PressableScale>
-              <PhotoGlassPill
-                ios="camera.fill"
-                icon="camera"
-                iconSize={14}
-                label={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}
-                onPress={() => setPhotoMenu(true)}
-                style={styles.photoPill}
-              />
-            </View>
+            <HeroCard
+              imageUri={form.imageUri}
+              name={form.name}
+              tagline={form.tagline}
+              accent={accent}
+              namePlaceholder={label('namePlaceholder')}
+              photoLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}
+              onPhoto={() => setPhotoMenu(true)}
+              onLayout={at('who')}
+            />
 
             <Card title={label('basics')} problem={problemText('who')}>
               <Field label={label('name')} value={form.name} onChange={(name) => set({ name })} placeholder={label('namePlaceholder')} max={NAME_MAX} />
@@ -868,29 +655,16 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
               <Disclosure label={label('flow.more')} open={moreOpen} onPress={() => setMoreOpen((o) => !o)} />
               {moreOpen ? (
                 <Animated.View entering={FadeInDown.duration(200)}>
-                  <View style={styles.fieldHead}>
-                    <Txt style={[styles.subLabel, styles.flex]}>{label('dialog')}</Txt>
-                    <Ionicons name="lock-closed" size={13} color={ink.text2} accessibilityLabel={label('privateNote')} />
-                    {sparkle('dialog', label('dialog'))}
-                  </View>
-                  <TextInput
+                  <DialogField
+                    label={label('dialog')}
+                    lockLabel={label('privateNote')}
                     value={definitionToText(form.definition, dialogLabels)}
-                    onChangeText={(text) => set({ definition: textToDefinition(text, dialogLabels) })}
+                    onChange={(text) => set({ definition: textToDefinition(text, dialogLabels) })}
                     placeholder={t('createCharacter.dialogPlaceholder', dialogLabels)}
-                    placeholderTextColor={ink.placeholder}
-                    selectionColor={ink.accent}
-                    style={styles.dialog}
-                    maxLength={DEFINITION_MAX}
-                    multiline
-                    textAlignVertical="top"
-                    accessibilityLabel={label('dialog')}
+                    max={DEFINITION_MAX}
+                    action={sparkle('dialog', label('dialog'))}
                   />
-                  {editing ? (
-                    <Pressable onPress={addFromChat} accessibilityRole="button" style={styles.inlineAction}>
-                      <Ionicons name="chatbubbles" size={16} color={ink.accent} />
-                      <Txt style={styles.inlineActionText}>{label('addFromChat')}</Txt>
-                    </Pressable>
-                  ) : null}
+                  {editing ? <InlineAction icon="chatbubbles" label={label('addFromChat')} onPress={addFromChat} /> : null}
                   <Lines
                     label={t('createCharacter.starters', { count: form.starters.length, max: STARTERS_MAX })}
                     lines={form.starters}
@@ -919,27 +693,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
 
             {canShare ? (
               <Card>
-                <View style={styles.shareRow}>
-                  <View style={styles.shareTile}>
-                    <Ionicons name="globe-outline" size={17} color={systemColors.green} />
-                  </View>
-                  <View style={styles.flex}>
-                    <Txt style={styles.shareTitle}>{t('community.shareTitle')}</Txt>
-                    <Txt style={[styles.shareSub, share && styles.shareSubOn]}>
-                      {share ? t('community.shareNote') : t('createCharacter.privateNote')}
-                    </Txt>
-                  </View>
-                  <Toggle value={share} onChange={setShare} onColor={systemColors.green} accessibilityLabel={t('community.shareToggle')} />
-                </View>
-                {editing?.visibility === 'public' && editing.review ? (
-                  <Txt style={[styles.shareSub, styles.shareStatus, editing.review === 'rejected' && styles.shareRefused]}>
-                    {editing.review === 'pending'
-                      ? t('community.status.pending')
-                      : editing.review === 'approved'
-                        ? t('community.status.live')
-                        : t(`community.status.rejected.${editing.communityReason ?? 'harm'}`)}
-                  </Txt>
-                ) : null}
+                <ShareRow share={share} onShare={setShare} editing={editing} />
               </Card>
             ) : null}
           </ScrollView>
@@ -976,204 +730,20 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
       </KeyboardAvoidingView>
 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
-      <Sheet visible={photoMenu} onClose={() => setPhotoMenu(false)} title={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}>
-        <ListRow title={label('flow.choosePhoto')} left={<Ionicons name="images-outline" size={22} color={colors.text} />} onPress={() => void pickImage('library')} />
-        <ListRow title={label('flow.takePhoto')} left={<Ionicons name="camera-outline" size={22} color={colors.text} />} onPress={() => void pickImage('camera')} />
-        {form.imageUri ? (
-          <ListRow
-            title={label('flow.removePhoto')}
-            left={<Ionicons name="trash-outline" size={22} color={systemColors.red} />}
-            onPress={() => {
-              setPhotoMenu(false);
-              set({ imageUri: undefined });
-            }}
-          />
-        ) : null}
-      </Sheet>
+      <PhotoSheet
+        visible={photoMenu}
+        hasPhoto={!!form.imageUri}
+        onClose={() => setPhotoMenu(false)}
+        onPick={(from) => void pickImage(from)}
+        onRemove={() => {
+          setPhotoMenu(false);
+          set({ imageUri: undefined });
+        }}
+      />
     </Screen>
   );
 }
-
-/** Up to `max` short lines (more openings, first lines): each can be removed; a row adds the next. */
-function Lines({
-  label,
-  lines,
-  onChange,
-  max,
-  size,
-  placeholder,
-  addLabel,
-  action,
-}: {
-  label: string;
-  lines: string[];
-  onChange: (lines: string[]) => void;
-  max: number;
-  size: number;
-  placeholder: string;
-  addLabel: string;
-  action?: React.ReactNode;
-}) {
-  const { t } = useTranslation();
-  return (
-    <View style={styles.lines}>
-      <View style={styles.fieldHead}>
-        <Txt style={[styles.subLabel, styles.flex]}>{label}</Txt>
-        {action}
-      </View>
-      {lines.map((line, index) => (
-        <View key={index} style={styles.lineRow}>
-          <TextInput
-            value={line}
-            onChangeText={(text) => onChange(lines.map((l, i) => (i === index ? text : l)))}
-            placeholder={placeholder}
-            placeholderTextColor={ink.placeholder}
-            selectionColor={ink.accent}
-            style={[styles.lineInput, styles.flex]}
-            maxLength={size}
-            multiline
-            accessibilityLabel={placeholder}
-          />
-          <SmallRound icon="close" label={t('createCharacter.remove')} onPress={() => onChange(lines.filter((_, i) => i !== index))} color={ink.text2} />
-        </View>
-      ))}
-      {lines.length < max ? (
-        <Pressable onPress={() => onChange([...lines, ''])} accessibilityRole="button" style={styles.inlineAction}>
-          <Ionicons name="add-circle" size={18} color={ink.accent} />
-          <Txt style={styles.inlineActionText}>{addLabel}</Txt>
-        </Pressable>
-      ) : null}
-    </View>
-  );
-}
-
-/** "Meet them": their face, their name and the first thing they will say, then the chat. */
-function MeetMoment({ form, accent, onOpen }: { form: CreateForm; accent: number; onOpen: () => void }) {
-  const { t } = useTranslation();
-  const you = useAppStore((s) => s.user.displayName);
-  const name = form.name.trim();
-  const greeting = (form.greeting.trim() || t('createCharacter.defaultGreeting', { name })).replace(/\{\{user\}\}/g, you);
-  return (
-    <Screen background={ink.ground}>
-      <View style={styles.meet}>
-        <Animated.View entering={ZoomIn.springify().damping(14)} style={styles.meetFace}>
-          {form.imageUri ? (
-            <Image source={{ uri: form.imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
-          ) : (
-            <LinearGradient colors={gradientOf(accent)} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.heroCenter]}>
-              <Txt style={styles.meetInitial} maxFontSizeMultiplier={1}>
-                {initialsOf(name)}
-              </Txt>
-            </LinearGradient>
-          )}
-        </Animated.View>
-        <Animated.View entering={FadeIn.delay(220).duration(260)}>
-          <Txt style={styles.meetTitle} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
-            {t('createCharacter.flow.meet', { name })}
-          </Txt>
-        </Animated.View>
-        <Animated.View entering={FadeInDown.delay(420).duration(280)} style={styles.meetBubble}>
-          <Txt style={styles.meetBubbleText} lines={5}>
-            {greeting}
-          </Txt>
-        </Animated.View>
-      </View>
-      <BottomBar label={t('createCharacter.flow.startChat')} onPress={onOpen} left={<Ionicons name="chatbubble" size={17} color={inkPeachGlass.ctaText} />} />
-    </Screen>
-  );
-}
-
-const HERO_H = 224;
-const MEET = 148;
 
 const styles = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
-  heroWrap: { marginHorizontal: inkGutter, marginTop: 4 },
-  hero: {
-    height: HERO_H,
-    borderRadius: inkRadius.card,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-    backgroundColor: ink.card,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: FIELD_RIM,
-  },
-  heroCenter: { alignItems: 'center', justifyContent: 'center' },
-  initial: { ...inkFace('display'), marginTop: -44, color: colors.white },
-  heroFoot: { position: 'absolute', left: 16, right: 16, bottom: 14 },
-  heroName: { fontSize: 25, lineHeight: 30 },
-  heroLine: { marginTop: 2, fontSize: 13.5, lineHeight: 19 },
-  photoPill: { position: 'absolute', top: 12, right: 12, minHeight: 34, paddingHorizontal: 12 },
-  shareRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
-  shareTile: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    borderCurve: 'continuous',
-    backgroundColor: SHARE_TILE_BG,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  shareTitle: { ...inkFace('subStrong'), fontSize: 15.5, color: ink.text },
-  shareSub: { ...inkFace('caption'), fontWeight: '400', color: ink.text2, marginTop: 1 },
-  shareSubOn: { color: systemColors.green },
-  shareStatus: { marginTop: 10 },
-  shareRefused: { color: systemColors.red },
-  fieldHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 30, marginTop: space.sm, marginBottom: 6 },
-  subLabel: { ...inkFace('footnoteStrong'), color: ink.text2 },
-  dialog: {
-    ...inkFace('body'),
-    fontSize: 15,
-    lineHeight: 21,
-    minHeight: 140,
-    padding: 13,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    backgroundColor: FIELD_BG,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: FIELD_RIM,
-    color: ink.text,
-  },
-  inlineAction: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 40, alignSelf: 'flex-start' },
-  inlineActionText: { ...inkFace('footnoteStrong'), fontSize: 14, color: ink.accent },
-  lines: { marginTop: space.sm },
-  lineRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  lineInput: {
-    ...inkFace('body'),
-    fontSize: 15,
-    lineHeight: 21,
-    minHeight: 44,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-    borderRadius: 15,
-    borderCurve: 'continuous',
-    backgroundColor: FIELD_BG,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: FIELD_RIM,
-    color: ink.text,
-  },
-  meet: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.xl, paddingBottom: 120, gap: space.lg },
-  meetFace: {
-    width: MEET,
-    height: MEET,
-    borderRadius: MEET / 2,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: FIELD_RIM,
-  },
-  meetInitial: { ...inkFace('display'), color: colors.white },
-  meetTitle: { ...inkFace('display'), textAlign: 'center', color: ink.text },
-  meetBubble: {
-    maxWidth: '92%',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 22,
-    borderBottomLeftRadius: 6,
-    backgroundColor: ink.card,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-  },
-  meetBubbleText: { ...inkFace('body'), color: ink.text },
 });
