@@ -38,8 +38,7 @@ import { groupStoryById } from '@/lib/group-stories';
 import { bubblesSpeech, enforceStyleBubbles } from '@/ai/reply-style';
 import { accessToken, withAccount } from '@/ai/account';
 import { nextChoices } from '@/ai/next-moment';
-import { dropBranchLines, loadBranchLines, saveBranchLines } from '@/lib/branch-files';
-import { addBranch, branchRecord, cutAfter, swapIn, worthBranching } from '@/lib/branches';
+import { dropBranchLines } from '@/lib/branch-files';
 import { analyticsChannel, experiment } from '@/lib/analytics';
 
 import type { FirstTextRequest } from '@/ai/first-text';
@@ -88,7 +87,7 @@ import { boardNoteText } from '@/lib/story-continuity';
 import { REPORT_LIMITS } from '@/ai/session-types';
 import { finishReveals, markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
-import { isSteer, lastExchange, MAX_REPLY_VERSIONS } from '@/lib/chat-turns';
+import { lastExchange } from '@/lib/chat-turns';
 import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { ageDoubt, confirmedAge, withAgeDoubt, type AgeDoubt } from '@/lib/age-check';
@@ -153,6 +152,7 @@ import { createGroups } from '@/store/groups';
 import { createStories } from '@/store/stories';
 import { createGames } from '@/store/games';
 import { createCalls } from '@/store/calls';
+import { createBranches } from '@/store/branches';
 import { replyingUntil } from '@/store/reply-state';
 export { callsIncluded, checkInStatus, memberActive, memoryAccess, minutesOf, quickCreatesToday, shareReward } from '@/store/wallet';
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
@@ -1143,6 +1143,9 @@ const demoHistory = () => ({
   schedules: seedSchedules,
 });
 
+/** Reply versions, edits, rewinds and branches (`src/store/branches.ts`). */
+const branchSlice = createBranches({ answerText, cancelReplies, chatGender, omitKey, scheduleReply, wakeFor, withMessages });
+
 /** Calls: ringing, one-to-one and group call replies, the call log (`src/store/calls.ts`). */
 const callSlice = createCalls({
   intimacy: INTIMACY,
@@ -1534,168 +1537,7 @@ export const useAppStore = create<AppState>()(
         else groupSlice.answerGroup(set, get, groupId, failed.text ?? '', (gender) => pick(groupReplies(gender)));
       },
 
-      regenerateReply: (conversationId, off) => {
-        const state = get();
-        const exchange = lastExchange(state.messages[conversationId]);
-        if (!exchange?.burst.length || exchange.crisis || state.typing[conversationId]) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
-        countMessage(set, get);
-        // What is on screen becomes a kept version; the new one fills in as it arrives.
-        const held = state.replyVersions[conversationId];
-        const same = held?.afterId === exchange.anchor.id;
-        const versions = same ? [...held.versions] : [];
-        versions[same ? held.index : 0] = exchange.burst;
-        const next = [...versions, []].slice(-MAX_REPLY_VERSIONS);
-        const ids = new Set(exchange.burst.map((m) => m.id));
-        const afterId = exchange.anchor.id;
-        set((s) => ({
-          ...withMessages(s, conversationId, (s.messages[conversationId] ?? []).filter((m) => !ids.has(m.id))),
-          replyVersions: { ...s.replyVersions, [conversationId]: { afterId, versions: next, index: next.length - 1 } },
-        }));
-        // A new version is the same exchange again: it adds no closeness. After a continue or a
-        // skip it answers that again (the server sends the same cue).
-        // Every version so far is something they already said: the new one takes another angle (the
-        // server gets them as `redo`, the mock avoids their lines).
-        const anchor = exchange.anchor;
-        const avoid = versions.flat().flatMap((m) => (m.kind === 'text' && m.text ? [m.text] : []));
-        let steer = isSteer(anchor) ? mockSteerLines(anchor.card as SteerKind, anchor.skip, `${anchor.id}:${next.length}`, chatGender(get(), conversationId)) : undefined;
-        for (let tries = 1; steer && avoid.includes(steer[0]) && tries < 5; tries++) {
-          steer = mockSteerLines(anchor.card as SteerKind, anchor.skip, `${anchor.id}:${next.length}:${tries}`, chatGender(get(), conversationId));
-        }
-        scheduleReply(set, get, conversationId, {
-          lines: steer,
-          gain: 0,
-          avoid,
-          off,
-          steer: isSteer(anchor) ? { kind: anchor.card as SteerKind, skip: anchor.skip, to: anchor.skipTo } : undefined,
-        });
-        return 'sent';
-      },
-
-      markNextUsed: (conversationId, messageId) =>
-        set((s) => {
-          const list = s.messages[conversationId];
-          if (!list?.some((m) => m.id === messageId && m.next && !m.nextUsed)) return {};
-          return { messages: { ...s.messages, [conversationId]: list.map((m) => (m.id === messageId ? { ...m, nextUsed: true } : m)) } };
-        }),
-
-      showReplyVersion: (conversationId, index) => {
-        const state = get();
-        const held = state.replyVersions[conversationId];
-        const exchange = lastExchange(state.messages[conversationId]);
-        if (!held || !exchange || held.afterId !== exchange.anchor.id || state.typing[conversationId]) return;
-        if (index === held.index || !held.versions[index]?.length) return;
-        // The version leaving the screen is copied first, so a reaction on it is kept.
-        const versions = held.versions.map((v, i) => (i === held.index ? exchange.burst : v));
-        const ids = new Set(exchange.burst.map((m) => m.id));
-        set((s) => ({
-          ...withMessages(s, conversationId, [
-            ...(s.messages[conversationId] ?? []).filter((m) => !ids.has(m.id)),
-            ...versions[index],
-          ]),
-          replyVersions: { ...s.replyVersions, [conversationId]: { ...held, versions, index } },
-        }));
-      },
-
-      editLastMessage: (conversationId, text) => {
-        const trimmed = text.trim();
-        const exchange = lastExchange(get().messages[conversationId]);
-        if (!trimmed || !exchange || exchange.anchor.kind !== 'text' || exchange.anchor.pending) return 'empty';
-        if (trimmed === exchange.anchor.text) return 'sent';
-        // Fixing a reply to the wake-up alarm stays free, as the reply itself was.
-        const wakeHere = !!wakeFor(get(), conversationId);
-        if (!wakeHere && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
-        countMessage(set, get);
-        // A reply still on its way answered the old words: it stops, and their answer goes.
-        cancelReplies(set, conversationId);
-        const mineId = exchange.anchor.id;
-        const ids = new Set(exchange.burst.map((m) => m.id));
-        const editedAt = new Date().toISOString();
-        set((s) => ({
-          ...withMessages(
-            s,
-            conversationId,
-            (s.messages[conversationId] ?? [])
-              .filter((m) => !ids.has(m.id))
-              .map((m) => (m.id === mineId ? { ...m, text: trimmed, editedAt, readAt: undefined, noted: undefined } : m)),
-          ),
-          replyVersions: omitKey(s.replyVersions, conversationId),
-        }));
-        // The new answer reads differently from the one the old words got.
-        answerText(set, get, conversationId, trimmed, { wakeHere, gain: 0, avoid: exchange.burst.find((m) => m.kind === 'text')?.text });
-        return 'sent';
-      },
-
-      rewindTo: (conversationId, messageId) => {
-        const list = get().messages[conversationId] ?? [];
-        const at = list.findIndex((m) => m.id === messageId);
-        if (at < 0 || at === list.length - 1) return;
-        // Level, shells and memories stay as they are (owner, 2026-10-24).
-        cancelReplies(set, conversationId);
-        // What came after is kept as a branch (0z286), its lines saved apart; the record shows at once.
-        const cut = cutAfter(get().messages[conversationId] ?? [], messageId);
-        const branch = cut && worthBranching(cut.tail) ? branchRecord(uid('br'), conversationId, messageId, cut.tail, new Date()) : null;
-        set((s) => {
-          const current = s.messages[conversationId] ?? [];
-          const keep = current.findIndex((m) => m.id === messageId);
-          const added = branch ? addBranch(s.branches, branch) : null;
-          if (added) for (const old of added.dropped) void dropBranchLines(old.id);
-          return {
-            ...withMessages(s, conversationId, current.slice(0, keep + 1)),
-            replyVersions: omitKey(s.replyVersions, conversationId),
-            ...(added ? { branches: added.branches } : {}),
-          };
-        });
-        // Not saved (storage full): the record goes too, so the list never offers what cannot come back.
-        if (branch && cut) {
-          void saveBranchLines(branch.id, cut.tail).then((saved) => {
-            if (!saved) set((s) => ({ branches: s.branches.filter((b) => b.id !== branch.id) }));
-          });
-        }
-      },
-
-      switchBranch: async (conversationId, branchId) => {
-        const branch = get().branches.find((b) => b.id === branchId && b.conversationId === conversationId);
-        if (!branch) return 'missing';
-        const lines = await loadBranchLines(branchId);
-        if (!lines) {
-          set((s) => ({ branches: s.branches.filter((b) => b.id !== branchId) }));
-          return 'missing';
-        }
-        cancelReplies(set, conversationId);
-        const swapped = swapIn(get().messages[conversationId] ?? [], branch.atMessageId, lines);
-        if (!swapped) return 'gone';
-        // Where the chat is now is kept first; if that cannot be saved, nothing changes.
-        const here = worthBranching(swapped.current) ? branchRecord(uid('br'), conversationId, branch.atMessageId, swapped.current, new Date()) : null;
-        if (here && !(await saveBranchLines(here.id, swapped.current))) return 'failed';
-        let applied = false;
-        set((s) => {
-          // The chat may have been deleted while saving the branch file.
-          if (!s.conversations.some((c) => c.id === conversationId)) return {};
-          applied = true;
-          const rest = s.branches.filter((b) => b.id !== branchId);
-          const added = here ? addBranch(rest, here) : { branches: rest, dropped: [] };
-          for (const old of added.dropped) void dropBranchLines(old.id);
-          return {
-            ...withMessages(s, conversationId, swapped.messages),
-            replyVersions: omitKey(s.replyVersions, conversationId),
-            branches: added.branches,
-          };
-        });
-        if (!applied) {
-          if (here) void dropBranchLines(here.id, false);
-          return 'gone';
-        }
-        // Its lines are the chat's now; their voice notes stay with them.
-        void dropBranchLines(branchId, false);
-        return 'ok';
-      },
-
-      deleteBranch: (branchId) => {
-        if (!get().branches.some((b) => b.id === branchId)) return;
-        set((s) => ({ branches: s.branches.filter((b) => b.id !== branchId) }));
-        void dropBranchLines(branchId);
-      },
+      ...branchSlice.actions(set, get),
 
       continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
 
@@ -4218,7 +4060,7 @@ function answerLine(
   return 'sent';
 }
 
-function answerText(
+export function answerText(
   set: Setter,
   get: Getter,
   conversationId: string,
@@ -4989,12 +4831,12 @@ export function genderOf(state: AppState, characterId?: string): CharacterGender
 }
 
 /** The gender of the character a chat is with. */
-function chatGender(state: AppState, conversationId: string) {
+export function chatGender(state: AppState, conversationId: string) {
   return genderOf(state, state.conversations.find((c) => c.id === conversationId)?.characterId);
 }
 
 /** "Kai: On my way" for a member's line, the plain preview for the user's own. */
-function wakeFor(state: AppState, conversationId: string, now = Date.now()) {
+export function wakeFor(state: AppState, conversationId: string, now = Date.now()) {
   const wake = state.wake;
   if (!wake || wake.conversationId !== conversationId) return null;
   if (wake.state !== 'awake') return wake;
@@ -5327,7 +5169,7 @@ function failReply(set: Setter, conversationId: string, request: ReplyRequest) {
 }
 
 /** `record` without `key`, unchanged when the key is not there. */
-function omitKey<T>(record: Record<string, T>, key: string): Record<string, T> {
+export function omitKey<T>(record: Record<string, T>, key: string): Record<string, T> {
   if (!(key in record)) return record;
   const { [key]: _gone, ...rest } = record;
   return rest;
@@ -5342,7 +5184,7 @@ function dropChatBranches(set: Setter, get: Getter, conversationId: string) {
   for (const b of gone) void dropBranchLines(b.id);
 }
 
-function withMessages(s: AppState, conversationId: string, messages: Message[]) {
+export function withMessages(s: AppState, conversationId: string, messages: Message[]) {
   // System lines (the AI notice, cards) never become the preview.
   const last = [...messages].reverse().find((m) => m.kind !== 'system');
   return {

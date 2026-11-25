@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z357. Store split step 8: reply versions, edits, rewinds and branches (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **What moved** (behaviour and persisted shape unchanged): `regenerateReply`, `markNextUsed`, `showReplyVersion`, `editLastMessage`, `rewindTo`, `switchBranch`, `deleteBranch` into `src/store/branches.ts` as `createBranches(deps)`. Deps: `answerText`, `cancelReplies`, `chatGender`, `omitKey`, `scheduleReply`, `wakeFor`, `withMessages` (now exported from the store for `typeof`).
+- **Size**: `use-app-store.ts` 5,364 → 5,206 lines (7,717 at the start); `branches.ts` 200.
+- **Checked**: `npx tsc --noEmit` 0, `--noUnusedLocals` nothing new, `npm test` 1176/1176, Android bundle exports, the A51 opens Chats and Roman's chat with the ↻ control, no JS errors (↻ not tapped: it costs a shell and a model call).
+- **APK vs Expo Go (owner asked)**: Expo Go runs the computer's code; the preview APK still runs the 0z347 OTA. One OTA after the split brings the APK level (also carries Gemini's Find v3).
+- **Next**: the last piece, send / reply (`sendText`, `sendVoice`, `sendImage`, `scheduleReply`, `answerText` and friends).
+
 ### 0z356. Store split step 7: calls (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **What moved** (behaviour and persisted shape unchanged): `ring`, `acceptCall`, `declineCall`, `deleteCall`, `clearCalls`, `callReply`, `helplineToChat`, `groupCallReply`, `groupHelplineToChat`, `addCall` into `src/store/calls.ts` as `createCalls(deps)`. Deps: `intimacy`, `staleRingMs`, `addMoment`, `appendHelplineCard`, `appendMessage`, `clock`, `genderOf`, `keepOwnDay`, `pick` (wrapper), `queueMemoryPass`, `sayFirst`, `worldStoryOf`, and `groups: () => groupSlice` (a getter: `callSlice` is made before `groupSlice`). `appendHelplineCard`, `clock`, `queueMemoryPass`, `STALE_RING_MS` now exported from the store for `typeof`.
 - **Size**: `use-app-store.ts` 5,520 → 5,364 lines (7,717 at the start); `calls.ts` 224.
