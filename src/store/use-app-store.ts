@@ -30,7 +30,7 @@ import {
 import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker, TWIST_MAX, type SteerKind } from '@/lib/chat-steer';
 import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
-import { replyBatcher } from '@/lib/reply-batch';
+
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { groupStoryEverywhere, localCharacter, localGroupStory, localized, localTemplateStory, templateCardMasks } from '@/i18n/content';
 import { relabelStoryGroups } from '@/lib/group-story-labels';
@@ -78,17 +78,17 @@ import { comebackDays, prunePushLines, PUSH_REACH, pushesToWrite, pushIdeas, pus
 import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
-import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
+import { spokenCue } from '@/ai/voice-prompt';
 import { type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
 import { type GroupCallLine } from '@/ai/group-call';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
 import { boardNoteText } from '@/lib/story-continuity';
 import { REPORT_LIMITS } from '@/ai/session-types';
-import { finishReveals, markFresh } from '@/lib/reveal';
+import { markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
 import { lastExchange } from '@/lib/chat-turns';
-import { isHappy, type OffReason, type Rating, replyAround, withRating } from '@/lib/reply-rating';
+import { type OffReason, type Rating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { ageDoubt, confirmedAge, withAgeDoubt, type AgeDoubt } from '@/lib/age-check';
 import { firstStepReward, type FirstStepKey } from '@/economy/first-steps';
@@ -153,7 +153,8 @@ import { createStories } from '@/store/stories';
 import { createGames } from '@/store/games';
 import { createCalls } from '@/store/calls';
 import { createBranches } from '@/store/branches';
-import { replyingUntil } from '@/store/reply-state';
+import { createChat } from '@/store/chat';
+import { failedTurns, replyBatch, replyingUntil } from '@/store/reply-state';
 export { callsIncluded, checkInStatus, memberActive, memoryAccess, minutesOf, quickCreatesToday, shareReward } from '@/store/wallet';
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
@@ -210,7 +211,6 @@ import {
   characters as seedCharacters,
   conversations as seedConversations,
   currentUser,
-  groupReplies,
   dayKey,
   dayKeyFromToday,
   diaryEntries as seedDiary,
@@ -1143,6 +1143,27 @@ const demoHistory = () => ({
   schedules: seedSchedules,
 });
 
+/** The one-to-one chat: sending, reading, reactions, ratings, retries and steering (`src/store/chat.ts`). */
+const chatSlice = createChat({
+  intimacy: INTIMACY,
+  groups: () => groupSlice,
+  pick: (list) => pick(list),
+  answerText,
+  appendHelplineCard,
+  appendMessage,
+  cancelReplies,
+  dayToDiary,
+  dropChatBranches,
+  omitKey,
+  openingFor,
+  previewFor,
+  scheduleReply,
+  startMessages,
+  steerChat,
+  touchStreak,
+  wakeFor,
+});
+
 /** Reply versions, edits, rewinds and branches (`src/store/branches.ts`). */
 const branchSlice = createBranches({ answerText, cancelReplies, chatGender, omitKey, scheduleReply, wakeFor, withMessages });
 
@@ -1287,262 +1308,10 @@ export const useAppStore = create<AppState>()(
       wonFrames: [],
       frames: [],
 
-      /* ── chat ─────────────────────────────────────────────────────────── */
-
-      sendText: (conversationId, text, tone, replyTo) => {
-        const trimmed = text.trim();
-        const conversation = get().conversations.find((c) => c.id === conversationId);
-        if (!trimmed || !conversation) return 'empty';
-        // Replies to the wake-up alarm (and its quick replies) cost no shell, so 0 shells never
-        // keeps anyone from turning it off.
-        const wakeHere = wakeFor(get(), conversationId);
-        if (!wakeHere && !chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
-        countMessage(set, get);
-
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'me',
-          kind: 'text',
-          text: trimmed,
-          tone,
-          ...(replyTo ? { replyTo } : {}),
-          createdAt: new Date().toISOString(),
-        });
-        touchStreak(set, get, conversation.characterId);
-        dayToDiary(set, get, conversationId, trimmed);
-
-        // Typed texts wait a beat for the next one, so back-to-back messages get one reply.
-        answerText(set, get, conversationId, trimmed, { wakeHere: !!wakeHere, gain: INTIMACY.text, batch: true });
-        return 'sent';
-      },
-
-      sendVoice: (conversationId, durationSec, transcript, audioFile, language, levels) => {
-        const conversation = get().conversations.find((c) => c.id === conversationId);
-        if (!conversation) return 'empty';
-        const heard = !!transcript && transcript !== VOICE_NO_WORDS;
-        // A spoken answer to the alarm costs nothing either, as a typed one does.
-        const wakeHere = heard ? wakeFor(get(), conversationId) : undefined;
-        if (!wakeHere && !chargeMessage(get, shellCosts.voiceMessage, 'voice', conversationId)) return 'noShells';
-        countMessage(set, get);
-
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'me',
-          kind: 'voice',
-          durationSec,
-          transcript,
-          transcriptLanguage: heard ? language : undefined,
-          audioFile,
-          ...(levels?.length ? { levels } : {}),
-          createdAt: new Date().toISOString(),
-        });
-        touchStreak(set, get, conversation.characterId);
-        if (heard) {
-          dayToDiary(set, get, conversationId, transcript);
-          answerText(set, get, conversationId, transcript, { wakeHere: !!wakeHere, gain: INTIMACY.voice, batch: true });
-          return 'sent';
-        }
-        // A spoken crisis gets the same care as a typed one.
-        const crisis = !!transcript && detectCrisis(transcript);
-        if (crisis) appendHelplineCard(set, get, conversationId);
-        scheduleReply(set, get, conversationId, {
-          text: crisis ? pick(crisisReplies) : undefined,
-          gain: INTIMACY.voice,
-        });
-        return 'sent';
-      },
-
-      sendImage: (conversationId, imageUri, aspect) => {
-        const conversation = get().conversations.find((c) => c.id === conversationId);
-        if (!conversation) return 'empty';
-        if (!chargeMessage(get, shellCosts.textMessage, 'photo', conversationId)) return 'noShells';
-        countMessage(set, get);
-
-        appendMessage(set, get, conversationId, {
-          id: uid('m'),
-          conversationId,
-          author: 'me',
-          kind: 'image',
-          imageUri,
-          ...(aspect ? { imageAspect: aspect } : {}),
-          createdAt: new Date().toISOString(),
-        });
-        touchStreak(set, get, conversation.characterId);
-        scheduleReply(set, get, conversationId, {
-          lines: [
-            pick([
-              'Wait, you took this? Send more. Right now.',
-              'Okay, this is going in my favourites folder.',
-              'I am looking at this way longer than I should be.',
-            ]),
-          ],
-          gain: INTIMACY.text,
-          photo: true,
-        });
-        return 'sent';
-      },
-
-      markRead: (conversationId) =>
-        set((s) => ({
-          conversations: s.conversations.map((c) =>
-            c.id === conversationId && c.unreadCount ? { ...c, unreadCount: 0 } : c,
-          ),
-          groups: s.groups.map((g) => (g.id === conversationId && g.unreadCount ? { ...g, unreadCount: 0 } : g)),
-        })),
-
-      markUnread: (conversationId) =>
-        set((s) => ({
-          conversations: s.conversations.map((c) =>
-            c.id === conversationId && !c.unreadCount ? { ...c, unreadCount: 1 } : c,
-          ),
-          groups: s.groups.map((g) => (g.id === conversationId && !g.unreadCount ? { ...g, unreadCount: 1 } : g)),
-        })),
-
-      setActiveConversation: (conversationId) => {
-        set({ activeConversationId: conversationId });
-        if (!conversationId) return;
-        get().markRead(conversationId);
-        // Opening a group starts a session: the "not real people" line shows if it is due. A
-        // one-to-one chat's header says "AI character" instead (owner, 2026-10-30).
-        if (get().groups.some((g) => g.id === conversationId)) groupSlice.noticeGroupAiIfDue(set, get, conversationId);
-      },
-
-      clearChat: (conversationId) => {
-        cancelReplies(set, conversationId);
-        // A cleared chat starts over, as Character.AI's new chat does: one of their openings
-        // (likely another one) and, under it, their starters.
-        const conversation = get().conversations.find((c) => c.id === conversationId);
-        const character = get().characters.find((c) => c.id === conversation?.characterId);
-        const greeting = character ? openingFor(get(), character, `${conversationId}:${Date.now()}`) : '';
-        const now = new Date().toISOString();
-        dropChatBranches(set, get, conversationId);
-        set((s) => ({
-          replyVersions: omitKey(s.replyVersions, conversationId),
-          messages: {
-            ...s.messages,
-            [conversationId]: character && greeting ? startMessages(s, character, conversationId, greeting, now) : [],
-          },
-          conversations: s.conversations.map((c) =>
-            c.id === conversationId ? { ...c, lastMessagePreview: plainText(greeting), lastMessageAt: greeting ? now : c.lastMessageAt, unreadCount: 0 } : c,
-          ),
-        }));
-      },
-
-      setChatPinned: (conversationId, pinned) =>
-        set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, pinned } : c)) })),
-
-      setChatMuted: (conversationId, muted) =>
-        set((s) => ({ conversations: s.conversations.map((c) => (c.id === conversationId ? { ...c, muted } : c)) })),
-
-      deleteChat: (conversationId) => {
-        // A reply still on its way must not land in a chat that is gone.
-        cancelReplies(set, conversationId);
-        dropChatBranches(set, get, conversationId);
-        set((s) => {
-          const { [conversationId]: _messages, ...messages } = s.messages;
-          const { [conversationId]: _typing, ...typing } = s.typing;
-          return {
-            replyVersions: omitKey(s.replyVersions, conversationId),
-            conversations: s.conversations.filter((c) => c.id !== conversationId),
-            messages,
-            typing,
-            activeConversationId: s.activeConversationId === conversationId ? null : s.activeConversationId,
-          };
-        });
-      },
-
-      reactToMessage: (conversationId, messageId, reaction) =>
-        set((s) => {
-          const list = s.messages[conversationId] ?? [];
-          // A happy sticker and a 👎 on the same reply say opposite things: the sticker wins.
-          const undown = isHappy(reaction) ? new Set(replyAround(list, messageId).map((m) => m.id)) : null;
-          return {
-            messages: {
-              ...s.messages,
-              [conversationId]: list.map((m) => {
-                const next = m.id === messageId ? { ...m, reaction } : m;
-                return undown?.has(m.id) && next.rating === 'down' ? { ...next, rating: undefined, offReason: undefined } : next;
-              }),
-            },
-          };
-        }),
-
-      rateReply: (conversationId, rating, reason) => {
-        const exchange = lastExchange(get().messages[conversationId]);
-        if (!exchange?.burst.length) return;
-        const first = exchange.burst[0].id;
-        const ids = new Set(exchange.burst.map((m) => m.id));
-        set((s) => ({
-          messages: {
-            ...s.messages,
-            [conversationId]: (s.messages[conversationId] ?? []).map((m) =>
-              ids.has(m.id) ? withRating(m, m.id === first, rating, reason) : m,
-            ),
-          },
-        }));
-      },
-
-      deleteMessage: (conversationId, messageId) =>
-        set((s) => {
-          const rest = (s.messages[conversationId] ?? []).filter((m) => m.id !== messageId);
-          // System lines (the AI notice, cards) never become the preview.
-          const last = [...rest].reverse().find((m) => m.kind !== 'system');
-          return {
-            messages: { ...s.messages, [conversationId]: rest },
-            // A deleted line may belong to the newest exchange; its versions would no longer match.
-            replyVersions: omitKey(s.replyVersions, conversationId),
-            conversations: s.conversations.map((c) =>
-              c.id === conversationId ? { ...c, lastMessagePreview: last ? previewFor(last) : '' } : c,
-            ),
-            groups: s.groups.map((g) =>
-              g.id === conversationId ? { ...g, lastMessagePreview: last ? groupSlice.groupLinePreview(s, last) : '' } : g,
-            ),
-          };
-        }),
-
-      stopReply: (conversationId) => {
-        cancelReplies(set, conversationId);
-        finishReveals();
-      },
-
-      setComposing: (conversationId, typing) => replyBatch.composing(conversationId, typing),
-
-      retryReply: (conversationId) => {
-        const failed = (get().messages[conversationId] ?? []).findLast((m) => m.failed);
-        if (!failed || get().typing[conversationId]) return;
-        set((s) => ({
-          messages: {
-            ...s.messages,
-            [conversationId]: (s.messages[conversationId] ?? []).map((m) => (m.id === failed.id ? { ...m, failed: undefined } : m)),
-          },
-        }));
-        // After a restart the turn's details are gone; a plain reply to the same line still fits.
-        const turn = failedTurns.get(conversationId) ?? { gain: INTIMACY.text };
-        failedTurns.delete(conversationId);
-        scheduleReply(set, get, conversationId, turn);
-      },
-
-      retryGroupReply: (groupId) => {
-        const failed = (get().messages[groupId] ?? []).findLast((m) => m.failed);
-        if (!failed || get().groupTyping[groupId]?.length) return;
-        set((s) => ({
-          messages: { ...s.messages, [groupId]: (s.messages[groupId] ?? []).map((m) => (m.id === failed.id ? { ...m, failed: undefined } : m)) },
-        }));
-        const turns = groupSlice.failedGroupTurns.get(groupId);
-        groupSlice.failedGroupTurns.delete(groupId);
-        // After a restart the turns are gone; answering the same line again still fits.
-        if (turns) groupSlice.writeGroupTurns(set, get, groupId, turns);
-        else groupSlice.answerGroup(set, get, groupId, failed.text ?? '', (gender) => pick(groupReplies(gender)));
-      },
+      ...chatSlice.actions(set, get),
 
       ...branchSlice.actions(set, get),
 
-      continueChat: (conversationId) => steerChat(set, get, conversationId, 'continue'),
-
-      skipTime: (conversationId, skip, to) => steerChat(set, get, conversationId, 'skip', skip, to),
-      twist: (conversationId, to) => steerChat(set, get, conversationId, 'twist', undefined, to),
       claimFirstStep: (step) => {
         const amount = firstStepReward(step);
         if (!amount || get().daily.firstSteps?.[step]) return false;
@@ -3616,7 +3385,7 @@ const DIARY_MOODS: DiaryMood[] = ['happy', 'soft', 'blue', 'excited', 'tired'];
  * becomes today's diary page with its mood, and the friend writes back on it. Once a day; "Tell you
  * later" and crisis words write nothing.
  */
-function dayToDiary(set: Setter, get: Getter, conversationId: string, text: string, intent?: IdeaIntent) {
+export function dayToDiary(set: Setter, get: Getter, conversationId: string, text: string, intent?: IdeaIntent) {
   const chat = get().messages[conversationId] ?? [];
   const mine = chat.findLast((m) => m.author === 'me');
   const question = mine && answeredQuestion(chat, mine.id);
@@ -4171,7 +3940,7 @@ export function answerText(
  * their reply to it. Charged as a message; it adds no closeness (the user wrote nothing) and
  * leaves the streak alone. The server answers with the chat's prompt and `steerCue`.
  */
-function steerChat(set: Setter, get: Getter, conversationId: string, kind: SteerKind, skip?: TimeSkip, to?: string): SendResult {
+export function steerChat(set: Setter, get: Getter, conversationId: string, kind: SteerKind, skip?: TimeSkip, to?: string): SendResult {
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation) return 'empty';
@@ -4197,7 +3966,7 @@ function steerChat(set: Setter, get: Getter, conversationId: string, kind: Steer
  * reply style and length and their mood; the mock writes it (`writeMockReply`), the server's
  * model will. Swapping in the model only changes the writing.
  */
-interface ReplyRequest {
+export interface ReplyRequest {
   text?: string;
   /** Lines already written (a continue or a skip); without them the mock writes the reply. */
   lines?: string[];
@@ -5081,8 +4850,6 @@ async function runMemoryPass(set: Setter, get: Getter, conversationId: string) {
 
 /** Bumped when a chat's replies on their way are taken back; their timers then stop. */
 const replyEpoch = new Map<string, number>();
-/** Replies waiting a beat for the next text (src/lib/reply-batch.ts). */
-const replyBatch = replyBatcher();
 
 /**
  * Bubbles of replies on their way, in order. Android stops JS timers while the app is in the
@@ -5133,7 +4900,7 @@ export function cancelReplies(set: Setter, conversationId: string) {
  * A new or cleared chat's first rows: the creator's start scene as a scene card (0z296), when they
  * wrote one, then the greeting. The scene stays in their persona for the model (`characterParts`).
  */
-function startMessages(state: AppState, character: Character, conversationId: string, greeting: string, now: string): Message[] {
+export function startMessages(state: AppState, character: Character, conversationId: string, greeting: string, now: string): Message[] {
   const greet: Message = { id: uid('m'), conversationId, author: 'them', kind: 'text', text: greeting, createdAt: now };
   const scenario = character.scenario?.trim();
   if (!scenario) return [greet];
@@ -5149,8 +4916,6 @@ export function openingFor(state: AppState, character: Character, seed: string) 
 }
 
 
-/** The reply each chat could not get, kept for "Try again" (`retryReply`). */
-const failedTurns = new Map<string, ReplyRequest>();
 
 /**
  * No reply came: typing stops and the user's newest line says "Not Delivered". Only an answer
@@ -5177,7 +4942,7 @@ export function omitKey<T>(record: Record<string, T>, key: string): Record<strin
 
 /** A chat's new message list, with the list's preview following its new last line. */
 /** A chat cleared or deleted: its branches go too (their points are gone), with their lines and notes. */
-function dropChatBranches(set: Setter, get: Getter, conversationId: string) {
+export function dropChatBranches(set: Setter, get: Getter, conversationId: string) {
   const gone = get().branches.filter((b) => b.conversationId === conversationId);
   if (!gone.length) return;
   set((s) => ({ branches: s.branches.filter((b) => b.conversationId !== conversationId) }));
