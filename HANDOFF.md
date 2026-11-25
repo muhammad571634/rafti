@@ -1,5 +1,10 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z348. Pictures audit: portraits + 84 stills read like passport photos (owner, 2026-11-25, Claude 1, Opus 5.5). Doc done, waits for the Roman test
+- **Audit** in `docs/portrait-audit-2026-11-25.md`: every still prompt fixed one frame (centred, eyes 38-40 %, POV hand at the bottom, "deep eye contact"; 62/62 + 8/8 lines), the 7 moods became 7 identical sets across friends, 4 of 7 end in a reaching hand, portraits are one amber grade (10/12 above 60 % warm pixels, cool 0.00-0.10) and one closed half smile.
+- **Fix**: show each friend's knot, eye contact at most 2 of 7, at least 5 camera setups per set, one action per picture, the viewer's hand at most twice, a signature colour + place + prop per friend, mask/crack/want in every set. Full 12x7 staged shot list, crop safe zones (stills 2:3 at 50 % 38 %, portraits `FACE_AT` / `SCENE_FACE`), new prompt template, and 3 ready Roman test prompts (save as `art-new/t_roman_*.png`).
+- **Still to do**: owner draws the Roman test; after approval redraw the 84 (onboarding four first), then a colour pass on 2 portraits; Preview OTA after each wired set.
+
 ### 0z347. Moment stills complete: all 84/84 wired (Roman 6 + Ethan, Clara, Caleb, Asher, Mia, Lena, Victor, Yuna 7 each; 2026-11-25, Claude 1, Opus 5.5). Pushed (OTA batched)
 - **Assets (`assets/stills/`)**: owner drew the last 62 stills into `art-new/` with loose names (`m_<name> <n> yan.jpg`, `c.clara <n> yan.jpg`, Ethan/Roman by slug with typos). Number order = prompt order in `docs/nano-banana-stills-ready.md`: 1 close_night, 2 rain, 3 city_lights, 4 morning, 5 laughing, 6 tension, 7 our_place. Asher's 3 and 4 had no number (`m_asher  yan.jpg`, `m_asher yan.jpg`); placed by save time and confirmed by eye. Every still checked on a labelled contact sheet: right face, right moment, no comic outlines, viewer faceless. All 1792x2400 (3:4), compressed to 900x1200 progressive JPEG q=82 (~117 KB each, 7.1 MB total).
 - **Registry**: `assets/stills/registry.ts` now lists all 7 moods for all 12 Cast 2.0 friends, so no mood falls back to the portrait any more.
