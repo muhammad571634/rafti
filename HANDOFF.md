@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z355. Store split step 6: dates, quizzes, frames and truth or dare (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **0z354 now seen on the A51**: Streams, Personas and Lore open with no JS errors.
+- **What moved** (behaviour and persisted shape unchanged): `beginDate` .. `sendDatePhoto` (9) and `finishQuiz` .. `playTruthOrDare` (7), with the live-date runner (`startLiveDate`, `dateAsking`, `askDateRound`, used only here), into `src/store/games.ts` as `createGames(deps)`. Deps: `intimacy` (`INTIMACY`), `addMoment`, `appendMessage`, `displayName` and `modelOn` and `pick` (wrappers), `genderOf`, `sayFirst`, `scheduleReply`, `touchStreak`, `worldEventNote`, `writeBase`, `writeWithModel` (`INTIMACY`, `modelOn`, `scheduleReply`, `touchStreak`, `worldEventNote` now exported from the store for `typeof`).
+- **Size**: `use-app-store.ts` 5,793 → 5,520 lines (7,717 at the start); `games.ts` 333.
+- **Checked**: `npx tsc --noEmit` 0 in the store (the `find.tsx` error is Gemini's uncommitted work), `--noUnusedLocals` nothing new, `npm test` 1176/1176, Android bundle exports, the A51 opens Today, the date album and the date theme editor (closed without saving), no JS errors.
+- **Next**: the chat core (send / reply / branches / calls) is what remains, the most coupled part: split it last and in smaller steps (calls first, then branches and versions, then send/reply).
+
 ### 0z354. Store split step 5: personas, scenes, lorebooks and streams (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed; A51 not checked
 - **What moved** (behaviour and persisted shape unchanged): the 19 actions `savePersona` .. `deleteStream` and the stream runner (`streamEpoch`, `STREAM_RETRY_MS`, `payStreamRound`, `stopStreamRunner`, `typingMs`, `runStream`) into `src/store/stories.ts` as `createStories(deps)`; launch and account deletion use `storySlice.runStream` / `storySlice.streamEpoch`. Deps: `appendMessage`, `cancelReplies`, `keepOwnDay`, `momentRequest`, `openingFor`, `sceneFor`, `themText` (wrapper), `writeFirst` (now exported from the store for `typeof`).
 - **Size**: `use-app-store.ts` 6,133 → 5,793 lines (7,717 at the start); `stories.ts` 389.
