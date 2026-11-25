@@ -8,6 +8,11 @@
 - **Waiting on the owner (ask, do not do unasked)**: (1) done in 0z363 (a failed ↻ brings the old reply back); (2) done: preview OTA `a13006b5` (2026-11-25, runtime 1.3.0) carries 0z350-0z366; (3) the feature trim for launch (audit P2-11); (4) accounts for the native batch (Apple/Google developer, Sentry sign-up, domain).
 - **Known**: the free Gemini key runs out of quota at times (server log 429), so replies can fail until the paid key. Gemini's Us v3 is committed (`363c749e`) and polished by Claude (0z365); the owner likes this Us screen: keep improving it, never redesign it.
 
+### 0z367. Story cards: "Story details" no longer runs into "Reply →" (owner's A51 screenshot, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed; not on an OTA yet
+- **Was**: `StoryHookCard`'s foot put the words "Подробнее об истории" beside "Ответить →"; the label did not shrink, so the two touched (Find's "Pick a story", the Stories shelf, search).
+- **Now**: details is a round book button (34 pt, its name stays the accessibility label), "Reply →" keeps the right; no words to collide in any language. Seen on the A51 in Russian.
+- **Note**: the A51 lost `adb reverse` after reconnecting (Expo Go showed "Something went wrong"); `adb reverse tcp:8081 tcp:8081` and Reload fixed it.
+
 ### 0z366. A door's icon says what opens (owner: "Вместе'da fotoapparat bor, ichida uchta narsa chiqadi… umumiy qilib", then "ikonlar juda kichik", 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **Rule (in `.agents/rules/project-memory.md`)**: a door to one screen wears its icon; a door to a set shows the set's own tiles side by side.
 - **Kit**: `IconStack` in `src/components/ui/module-icon.tsx` (exported with `FolderItem`): full-size coloured tiles in a row with a small gap. A 2x2 folder was tried first and was too small on the A51; an overlapping stack hid half of each glyph.

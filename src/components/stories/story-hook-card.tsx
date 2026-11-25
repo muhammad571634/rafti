@@ -25,7 +25,7 @@ export interface StoryHookCardProps {
 /**
  * First-Message DM Hook Card for pictureless story templates (Find v3): shows who they are, the
  * unclipped knot, their actual opening message in a DM speech bubble, and separate bottom actions
- * for "Story details" and "Reply →" (zero settings-row feel, zero nested pressables).
+ * for a book button (Story details) and "Reply →" (zero settings-row feel, zero nested pressables).
  */
 export const StoryHookCard = memo(function StoryHookCard({
   item: written,
@@ -102,10 +102,8 @@ export const StoryHookCard = memo(function StoryHookCard({
           accessibilityLabel={`${t('stories.details')}, ${name}`}
           onPress={onStory}
           style={styles.detailsBtn}>
-          <Ionicons name="book-outline" size={15} color={ink.text2} />
-          <InkText variant="caption" color={ink.text2} lines={1}>
-            {t('stories.details')}
-          </InkText>
+          {/* The book alone (its name is the label): words here ran into "Reply →" (A51, 2026-11-25). */}
+          <Ionicons name="book-outline" size={16} color={ink.text2} />
         </PressableScale>
 
         <PressableScale
@@ -193,12 +191,16 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   detailsBtn: {
-    flexDirection: 'row',
+    width: 34,
+    height: 34,
+    borderRadius: inkRadius.pill,
     alignItems: 'center',
-    gap: 5,
-    flexShrink: 1,
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
   },
   replyBtn: {
-    flexShrink: 0,
+    flexShrink: 1,
+    minHeight: 34,
+    justifyContent: 'center',
   },
 });
