@@ -207,7 +207,21 @@
     "surprise": "Beri kejutan",
     "searchWorld": "Cari {{world}}",
     "addFriend": "Tambah {{name}}",
-    "isFriend": "{{name}} adalah temanmu"
+    "isFriend": "{{name}} adalah temanmu",
+    "searchAllPlaceholder": "Orang, adegan grup, cerita",
+    "createShort": "Buat",
+    "lensPeople": "Orang",
+    "lensGroups": "Grup",
+    "lensStories": "Cerita",
+    "lensFamily": "Keluarga",
+    "meetCast": "Kenali mereka",
+    "groupScenes": "Adegan grup",
+    "pickStory": "Pilih cerita",
+    "inChats": "Di Obrolan",
+    "reply": "Balas",
+    "continueChat": "Lanjut",
+    "yourCreations": "Buatanmu",
+    "scenesCount_other": "{{count}} adegan"
   },
   "newCharacters": {
     "proTitle": "Temui mereka lebih dulu dengan Pro",

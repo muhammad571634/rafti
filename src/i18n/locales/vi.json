@@ -207,7 +207,21 @@
     "surprise": "Gợi ý ngẫu nhiên",
     "searchWorld": "Tìm kiếm {{world}}",
     "addFriend": "Thêm {{name}}",
-    "isFriend": "{{name}} đã là bạn của bạn"
+    "isFriend": "{{name}} đã là bạn của bạn",
+    "searchAllPlaceholder": "Nhân vật, cảnh nhóm, câu chuyện",
+    "createShort": "Tạo",
+    "lensPeople": "Nhân vật",
+    "lensGroups": "Nhóm",
+    "lensStories": "Câu chuyện",
+    "lensFamily": "Gia đình",
+    "meetCast": "Làm quen",
+    "groupScenes": "Cảnh nhóm",
+    "pickStory": "Chọn câu chuyện",
+    "inChats": "Trong Chat",
+    "reply": "Trả lời",
+    "continueChat": "Tiếp tục",
+    "yourCreations": "Nhân vật của bạn",
+    "scenesCount_other": "{{count}} cảnh"
   },
   "newCharacters": {
     "proTitle": "Gặp gỡ họ trước với gói Pro",

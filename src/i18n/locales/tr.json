@@ -211,7 +211,22 @@
     "surprise": "Beni şaşırt",
     "searchWorld": "{{world}} içinde ara",
     "addFriend": "{{name}} ekle",
-    "isFriend": "{{name}} senin arkadaşın"
+    "isFriend": "{{name}} senin arkadaşın",
+    "searchAllPlaceholder": "Kişiler, grup sahneleri, hikâyeler",
+    "createShort": "Oluştur",
+    "lensPeople": "Kişiler",
+    "lensGroups": "Gruplar",
+    "lensStories": "Hikâyeler",
+    "lensFamily": "Aile",
+    "meetCast": "Tanış",
+    "groupScenes": "Grup sahneleri",
+    "pickStory": "Bir hikâye seç",
+    "inChats": "Sohbette",
+    "reply": "Yanıtla",
+    "continueChat": "Devam et",
+    "yourCreations": "Senin oluşturdukların",
+    "scenesCount_one": "{{count}} sahne",
+    "scenesCount_other": "{{count}} sahne"
   },
   "newCharacters": {
     "proTitle": "Pro ile onlarla ilk sen tanış",

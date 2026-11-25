@@ -207,7 +207,21 @@
     "surprise": "おまかせ",
     "searchWorld": "{{world}}を検索",
     "addFriend": "{{name}}を追加",
-    "isFriend": "{{name}}は友達です"
+    "isFriend": "{{name}}は友達です",
+    "searchAllPlaceholder": "人物、グループシーン、ストーリー",
+    "createShort": "作成",
+    "lensPeople": "人物",
+    "lensGroups": "グループ",
+    "lensStories": "ストーリー",
+    "lensFamily": "家族",
+    "meetCast": "キャスト紹介",
+    "groupScenes": "グループシーン",
+    "pickStory": "ストーリーを選ぶ",
+    "inChats": "トーク中",
+    "reply": "返信する",
+    "continueChat": "続ける",
+    "yourCreations": "作ったキャラ",
+    "scenesCount_other": "{{count}}シーン"
   },
   "newCharacters": {
     "proTitle": "Proで先行して出会う",

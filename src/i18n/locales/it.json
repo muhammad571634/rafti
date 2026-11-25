@@ -211,7 +211,22 @@
     "surprise": "Sorprendimi",
     "searchWorld": "Cerca in {{world}}",
     "addFriend": "Aggiungi {{name}}",
-    "isFriend": "{{name}} è tuo amico"
+    "isFriend": "{{name}} è tuo amico",
+    "searchAllPlaceholder": "Persone, gruppi, storie",
+    "createShort": "Crea",
+    "lensPeople": "Persone",
+    "lensGroups": "Gruppi",
+    "lensStories": "Storie",
+    "lensFamily": "Famiglia",
+    "meetCast": "Scopri i volti",
+    "groupScenes": "Scene di gruppo",
+    "pickStory": "Scegli una storia",
+    "inChats": "Nelle chat",
+    "reply": "Rispondi",
+    "continueChat": "Continua",
+    "yourCreations": "Le tue creazioni",
+    "scenesCount_one": "{{count}} scena",
+    "scenesCount_other": "{{count}} scene"
   },
   "newCharacters": {
     "proTitle": "Incontrali per primo con Pro",

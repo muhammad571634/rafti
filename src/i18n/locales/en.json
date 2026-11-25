@@ -211,7 +211,22 @@
     "surprise": "Surprise me",
     "searchWorld": "Search {{world}}",
     "addFriend": "Add {{name}}",
-    "isFriend": "{{name}} is your friend"
+    "isFriend": "{{name}} is your friend",
+    "searchAllPlaceholder": "People, group scenes, stories",
+    "createShort": "Create",
+    "lensPeople": "People",
+    "lensGroups": "Groups",
+    "lensStories": "Stories",
+    "lensFamily": "Family",
+    "meetCast": "Meet the cast",
+    "groupScenes": "Group scenes",
+    "pickStory": "Pick a story",
+    "inChats": "In Chats",
+    "reply": "Reply",
+    "continueChat": "Continue",
+    "yourCreations": "Your creations",
+    "scenesCount_one": "{{count}} scene",
+    "scenesCount_other": "{{count}} scenes"
   },
   "newCharacters": {
     "proTitle": "Meet them first with Pro",

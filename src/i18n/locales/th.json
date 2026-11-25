@@ -207,7 +207,21 @@
     "surprise": "สุ่มให้ฉันที",
     "searchWorld": "ค้นหา {{world}}",
     "addFriend": "เพิ่ม {{name}}",
-    "isFriend": "{{name}} เป็นเพื่อนของคุณแล้ว"
+    "isFriend": "{{name}} เป็นเพื่อนของคุณแล้ว",
+    "searchAllPlaceholder": "ผู้คน ฉากกลุ่ม เรื่องราว",
+    "createShort": "สร้าง",
+    "lensPeople": "ผู้คน",
+    "lensGroups": "กลุ่ม",
+    "lensStories": "เรื่องราว",
+    "lensFamily": "ครอบครัว",
+    "meetCast": "ทำความรู้จัก",
+    "groupScenes": "ฉากกลุ่ม",
+    "pickStory": "เลือกเรื่องราว",
+    "inChats": "ในแชท",
+    "reply": "ตอบกลับ",
+    "continueChat": "คุยต่อ",
+    "yourCreations": "ตัวละครของคุณ",
+    "scenesCount_other": "{{count}} ฉาก"
   },
   "newCharacters": {
     "proTitle": "พบพวกเขาก่อนใครด้วยแพ็กเกจ Pro",

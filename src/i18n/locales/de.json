@@ -211,7 +211,22 @@
     "surprise": "Überrasch mich",
     "searchWorld": "In {{world}} suchen",
     "addFriend": "{{name}} hinzufügen",
-    "isFriend": "{{name}} ist dein Freund"
+    "isFriend": "{{name}} ist dein Freund",
+    "searchAllPlaceholder": "Leute, Gruppenszenen, Stories",
+    "createShort": "Neu",
+    "lensPeople": "Leute",
+    "lensGroups": "Gruppen",
+    "lensStories": "Geschichten",
+    "lensFamily": "Familie",
+    "meetCast": "Lerne sie kennen",
+    "groupScenes": "Gruppenszenen",
+    "pickStory": "Wähle eine Story",
+    "inChats": "In Chats",
+    "reply": "Antworten",
+    "continueChat": "Weiter",
+    "yourCreations": "Deine Figuren",
+    "scenesCount_one": "{{count}} Szene",
+    "scenesCount_other": "{{count}} Szenen"
   },
   "newCharacters": {
     "proTitle": "Mit Pro zuerst kennenlernen",

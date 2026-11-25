@@ -34,9 +34,19 @@ export const ink = {
   photoGlassRim: 'rgba(255,255,255,0.26)',
   /** Floating metadata badge over photography (level, mood). */
   photoBadge: 'rgba(9,9,13,0.52)',
+  /** Multi-stop dark scrim over portrait/story cards so overlaid text stays crisp and legible. */
+  photoScrim: ['rgba(9,9,13,0.24)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.48)', 'rgba(9,9,13,0.94)'] as readonly [string, string, string, string],
+  photoScrimStops: [0, 0.28, 0.58, 1] as readonly [number, number, number, number],
+  /** Translucent dark-glass backing behind incoming DM quotes on Spotlight photo cards. */
+  photoBubble: 'rgba(9,9,13,0.48)',
+  /** Secondary crisp light text and muted metadata drawn directly over darkened photography. */
+  photoLine: 'rgba(255,255,255,0.78)',
+  photoMuted: 'rgba(255,255,255,0.60)',
   /** The dark fade at the foot of a photo card, under its badge. */
   scrim: 'rgba(9,9,13,0.6)',
   photoBadgeRim: 'rgba(255,255,255,0.16)',
+  /** Incoming DM bubble surface inside Solo Story Hook cards (one perceptual step above ink.card). */
+  storyBubble: '#21212E',
   /** Subtle progress bar track on cards and over photos. */
   hairlineFill: 'rgba(255,255,255,0.12)',
   /** A bar pinned over the ground (the bottom dock): nearly opaque, so rows under it never ghost through. */

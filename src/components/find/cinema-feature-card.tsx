@@ -12,23 +12,22 @@ import { InkText, PhotoGlassPill } from '@/components/ink';
 import { CharacterAvatar, characterImage, PressableScale } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
-import { colors, friendColor } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { colors, friendAccent, friendColor } from '@/theme';
+import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
-const CARD_SCRIM = ['rgba(9,9,13,0.28)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.34)', 'rgba(9,9,13,0.92)'] as const;
-const CARD_SCRIM_STOPS = [0, 0.24, 0.56, 1] as const;
-const NEW_FILL = ink.photoBadge;
-const NEW_RIM = 'rgba(235,173,132,0.44)';
 const FOOT_H = 42;
+const CALL_BADGE_PAD = 48;
 
 export interface CinemaFeatureCardProps {
   character: Character;
   width: number;
   height: number;
   isNew: boolean;
+  inChats?: boolean;
   onOpen: () => void;
   onSayHi: () => void;
+  onCall?: () => void;
 }
 
 /** Formats a character's opening line as a clean editorial whisper, keeping existing quotes intact. */
@@ -40,17 +39,19 @@ function formatHook(text?: string): string | undefined {
 }
 
 /**
- * Cinema Story Card for Find's featured carousel (approved Ink+ prototype): full-bleed character
- * art with a multi-stop scrim, relation & "New" badges on top, serif name + whispered Cast 2.0
- * opening line at the bottom, and a reusable clear-glass "Say hi →" pill as a sibling button.
+ * Spotlight Cinema Card for Find's top showcase: full-bleed character portrait with dark multi-stop
+ * scrim, relation badge in friend's accent, sibling clear-glass Voice Call button, translucent
+ * incoming DM hook bubble, and Tier-1 peach "Reply →" (or clear-glass "Continue →" if already in Chats).
  */
 export const CinemaFeatureCard = memo(function CinemaFeatureCard({
   character,
   width,
   height,
   isNew,
+  inChats = false,
   onOpen,
   onSayHi,
+  onCall,
 }: CinemaFeatureCardProps) {
   const { t } = useTranslation();
   const [broken, setBroken] = useState(false);
@@ -62,6 +63,8 @@ export const CinemaFeatureCard = memo(function CinemaFeatureCard({
   const rawSource = hero ?? PORTRAITS[character.id] ?? characterImage(character);
   const source = broken ? undefined : rawSource;
   const hue = friendColor(character.id);
+  const accent = friendAccent(character.id);
+  const canCall = Boolean(character.voiceReady && onCall);
 
   return (
     <View style={[styles.card, { width, height }]}>
@@ -87,18 +90,18 @@ export const CinemaFeatureCard = memo(function CinemaFeatureCard({
         )}
 
         <LinearGradient
-          colors={CARD_SCRIM}
-          locations={CARD_SCRIM_STOPS}
+          colors={ink.photoScrim}
+          locations={ink.photoScrimStops}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
 
         {badge || isNew ? (
-          <View style={styles.badges}>
+          <View style={[styles.badges, canCall && styles.badgesClearCall]}>
             {badge ? (
               <View style={styles.relationBadge}>
-                <InkText variant="caption" color={ink.text} lines={1}>
+                <InkText variant="caption" color={accent.strong} lines={1}>
                   {badge}
                 </InkText>
               </View>
@@ -118,30 +121,59 @@ export const CinemaFeatureCard = memo(function CinemaFeatureCard({
             {character.name}
           </InkText>
           {hook ? (
-            // Three lines: the openings are short, so long languages still finish without "…" (audit #6).
-            <InkText variant="quote" color="rgba(255,255,255,0.84)" lines={3} style={styles.hook}>
-              {hook}
-            </InkText>
+            <View style={styles.hookBubble}>
+              <InkText variant="quote" color={ink.photoLine} lines={3}>
+                {hook}
+              </InkText>
+            </View>
           ) : null}
         </View>
       </PressableScale>
 
-      {/* Sibling overlay so the Say hi button is never nested inside the card button (a11y + web). */}
+      {canCall && onCall ? (
+        <View pointerEvents="box-none" style={styles.topCallWrap}>
+          <PhotoGlassPill
+            ios="phone.fill"
+            icon="call"
+            iconSize={15}
+            accessibilityLabel={`${t('characterProfile.call')}, ${character.name}`}
+            onPress={onCall}
+            style={styles.callCircle}
+          />
+        </View>
+      ) : null}
+
+      {/* Sibling overlay so interactive CTAs are never nested inside the card button (a11y + web). */}
       <View pointerEvents="box-none" style={styles.footRow}>
         <View pointerEvents="none" style={styles.seriesWrap}>
           {character.series ? (
-            <InkText variant="footnote" color="rgba(255,255,255,0.60)" lines={1}>
+            <InkText variant="footnote" color={ink.photoMuted} lines={1}>
               {phrase(character.series)}
             </InkText>
           ) : null}
         </View>
-        <PhotoGlassPill
-          label={t('find.sayHi')}
-          trailing={<Ionicons name="arrow-forward" size={14} color={ink.text} />}
-          accessibilityLabel={`${t('find.sayHi')}, ${character.name}`}
-          onPress={onSayHi}
-          style={styles.sayHi}
-        />
+        {inChats ? (
+          <PhotoGlassPill
+            label={t('find.continueChat')}
+            trailing={<Ionicons name="arrow-forward" size={14} color={ink.text} />}
+            accessibilityLabel={`${t('find.continueChat')}, ${character.name}`}
+            onPress={onSayHi}
+            style={styles.actionPill}
+          />
+        ) : (
+          <PressableScale
+            scaleTo={0.95}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('find.reply')}, ${character.name}`}
+            onPress={onSayHi}
+            style={styles.replyPill}>
+            <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" />
+            <InkText variant="subStrong" color={inkPeachGlass.ctaText} lines={1}>
+              {t('find.reply')}
+            </InkText>
+            <Ionicons name="arrow-forward" size={14} color={inkPeachGlass.ctaText} />
+          </PressableScale>
+        )}
       </View>
     </View>
   );
@@ -167,8 +199,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
+  badgesClearCall: { right: 14 + CALL_BADGE_PAD },
   relationBadge: {
-    maxWidth: '78%',
+    maxWidth: '100%',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: inkRadius.pill,
@@ -180,17 +213,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 5,
     borderRadius: inkRadius.pill,
-    backgroundColor: NEW_FILL,
+    backgroundColor: ink.photoBadge,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: NEW_RIM,
+    borderColor: ink.tintRim,
+  },
+  topCallWrap: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+  },
+  callCircle: {
+    minHeight: 36,
+    width: 36,
+    paddingHorizontal: 0,
   },
   copy: {
     position: 'absolute',
     left: 16,
     right: 16,
     bottom: 14 + FOOT_H + 10,
+    gap: 6,
   },
-  hook: { marginTop: 4 },
+  hookBubble: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: inkRadius.chip,
+    borderCurve: 'continuous',
+    backgroundColor: ink.photoBubble,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoBadgeRim,
+  },
   footRow: {
     position: 'absolute',
     left: 16,
@@ -203,5 +255,16 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   seriesWrap: { flex: 1, minWidth: 0 },
-  sayHi: { minHeight: 38, paddingHorizontal: 15 },
+  actionPill: { minHeight: 38, paddingHorizontal: 15 },
+  replyPill: {
+    minHeight: 38,
+    paddingHorizontal: 15,
+    borderRadius: inkRadius.pill,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: inkPeachGlass.ctaRim,
+  },
 });

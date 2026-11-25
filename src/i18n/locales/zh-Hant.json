@@ -207,7 +207,21 @@
     "surprise": "給我驚喜",
     "searchWorld": "搜尋{{world}}",
     "addFriend": "新增{{name}}",
-    "isFriend": "{{name}}已是你的好友"
+    "isFriend": "{{name}}已是你的好友",
+    "searchAllPlaceholder": "人物、群組場景、故事",
+    "createShort": "建立",
+    "lensPeople": "人物",
+    "lensGroups": "群組",
+    "lensStories": "故事",
+    "lensFamily": "家人",
+    "meetCast": "認識新朋友",
+    "groupScenes": "群組場景",
+    "pickStory": "挑一個故事",
+    "inChats": "已在聊天",
+    "reply": "回覆",
+    "continueChat": "繼續",
+    "yourCreations": "你的創作",
+    "scenesCount_other": "{{count}} 場戲"
   },
   "newCharacters": {
     "proTitle": "透過Pro搶先認識",
