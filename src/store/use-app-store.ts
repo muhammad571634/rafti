@@ -12,7 +12,6 @@ import { withoutCrisisPlanMoments, withoutCrisisPlans } from '@/ai/crisis-guard'
 import { fillNames, pickOpening, withOpening } from '@/ai/character-draft';
 import { rememberableText, withMemory, withoutCrisisMemories } from '@/ai/memory-guard';
 import { crisisReplies, detectCrisis, type ReportReason } from '@/ai/safety';
-import { dueRing, SNOOZE_MIN } from '@/lib/alarms';
 import {
   addMinutes,
   CHAIN_LINES,
@@ -20,14 +19,12 @@ import {
   CHIPS,
   countsAsWakeReply,
   likelyLeaveTime,
-  MAX_SNOOZES,
   readMorningReply,
   readMorningTime,
   readYesNo,
   reminderTimeFor,
   SLEEPY_CHECK_MIN,
   WAKE_WINDOW_MIN,
-  wakeQuestion,
   type MorningRead,
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
@@ -68,7 +65,6 @@ import {
   missedCallCue,
   nightCue,
   photoCue,
-  alarmSetCue,
   planAddedCue,
   planFollowUpCue,
   planRemindCue,
@@ -78,7 +74,6 @@ import {
   quizDoneCue,
   sayCue,
   voiceNoteCue,
-  wakeCheckInCue,
   worldQuizCue,
   pushCue,
   IN_CHAT_CUE,
@@ -171,6 +166,7 @@ import {
 } from '@/store/wallet';
 import { sendReports } from '@/store/reports';
 import { createDiary, PAGES_AT_ONCE } from '@/store/diary';
+import { createAlarms } from '@/store/alarms';
 export { callsIncluded, checkInStatus, memberActive, memoryAccess, minutesOf, quickCreatesToday, shareReward } from '@/store/wallet';
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
 import { isBig, localPlan, mockBreakLine, mockMove, mockNightLine, mockOutcome, mockQuest, mockThread, mockTouchLine, QUEST_REWARD } from '@/mock/threads';
@@ -1195,6 +1191,9 @@ const demoHistory = () => ({
   moments: seedMoments,
   schedules: seedSchedules,
 });
+
+/** The alarms and wake-up slice, given the chat helpers it calls (`src/store/alarms.ts`). */
+const alarmSlice = createAlarms({ setupInChat, setupCancelled, setupRemoved, sayFirst, appendMessage, genderOf });
 
 /** The diary and secret-note slice, given the chat helpers it calls (`src/store/diary.ts`). */
 const diarySlice = createDiary({
@@ -2872,123 +2871,7 @@ export const useAppStore = create<AppState>()(
 
       /* ── profile ──────────────────────────────────────────────────────── */
 
-      saveAlarm: ({ id, ...fields }, opts) => {
-        const existing = id ? get().alarms.find((a) => a.id === id) : undefined;
-        // The friend who wakes them hears about it in their chat, as with a plan (0z135): on a new
-        // alarm, or when the time, the days or the friend changed, not on a label or sound edit.
-        const waker = fields.characterId;
-        const told =
-          !!waker &&
-          get().characters.some((c) => c.id === waker) &&
-          (!existing ||
-            existing.characterId !== waker ||
-            existing.hour !== fields.hour ||
-            existing.minute !== fields.minute ||
-            existing.repeat.join() !== fields.repeat.join());
-        let savedId: string;
-        if (existing) {
-          const armedAt = new Date().toISOString();
-          set((s) => ({ alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...fields, enabled: true, armedAt } : a)) }));
-          savedId = existing.id;
-        } else {
-          const now = new Date().toISOString();
-          const alarm: Alarm = { ...fields, id: uid('alarm'), enabled: true, createdAt: now, armedAt: now };
-          set((s) => ({ alarms: [...s.alarms, alarm] }));
-          savedId = alarm.id;
-        }
-        if (told && waker && !opts?.quiet) {
-          const at = `${String(fields.hour).padStart(2, '0')}:${String(fields.minute).padStart(2, '0')}`;
-          const days = alarmDaysWord(fields.repeat);
-          const title = fields.label.trim() || i18n.t('home.widget.wakeUp');
-          // The card first, on their side; then the friend's word under it (0z139).
-          const conversationId = setupInChat(set, get, waker, alarmOffer(fields), savedId);
-          sayFirst(set, get, conversationId, planAddedLine(title, at, genderOf(get(), waker)), alarmSetCue(at, days));
-        }
-        return savedId;
-      },
-      deleteAlarm: (id, opts) => {
-        const alarm = get().alarms.find((a) => a.id === id);
-        set((s) => ({ alarms: s.alarms.filter((a) => a.id !== id), messages: setupRemoved(s.messages, id) }));
-        // A wake-up still to come, with a friend: they see it is off and ask what changed (0z139).
-        if (!opts?.quiet && alarm?.enabled && alarm.characterId && get().characters.some((c) => c.id === alarm.characterId)) {
-          const at = `${String(alarm.hour).padStart(2, '0')}:${String(alarm.minute).padStart(2, '0')}`;
-          setupCancelled(set, get, alarm.characterId, alarmOffer(alarm), id, `${at} ${alarmDaysWord(alarm.repeat)}`);
-        }
-      },
-      setAlarmEnabled: (id, enabled) =>
-        set((s) => ({
-          alarms: s.alarms.map((a) =>
-            a.id === id ? { ...a, enabled, armedAt: enabled ? new Date().toISOString() : a.armedAt } : a,
-          ),
-        })),
-
-      ringAlarm: (alarmId) => {
-        const alarm = get().alarms.find((a) => a.id === alarmId);
-        if (!alarm) return null;
-        const now = new Date();
-        const current = get().wake;
-        // The same ring seen twice (the clock and a notification tap) stays one session. A ring
-        // after the alarm was set again (new time, switched back on) is a new one: ringing sets
-        // `armedAt` to `rangAt`, so only a later save moves it past the session.
-        if (
-          current?.alarmId === alarmId &&
-          (!alarm.armedAt || Date.parse(current.rangAt) >= Date.parse(alarm.armedAt)) &&
-          now.getTime() - Date.parse(current.rangAt) < WAKE_WINDOW_MIN * 60_000
-        ) {
-          return current;
-        }
-        const friend = alarm.characterId ? get().characters.find((c) => c.id === alarm.characterId) : undefined;
-        const conversation = friend ? get().conversations.find((c) => c.characterId === friend.id) : undefined;
-        // Today's plan with that friend makes the question about it ("Exam at 10 today. Ready?").
-        const todayPlan = get().schedules.find(
-          (p) => p.date === todayKey() && (!friend || p.characterId === friend.id) && !p.followedUp,
-        );
-        const question = wakeQuestion(now.getDate() + alarm.minute, todayPlan && { title: todayPlan.title, time: todayPlan.time }, friend?.gender);
-        const session: WakeSession = {
-          alarmId,
-          characterId: friend?.id,
-          conversationId: conversation?.id,
-          replyToWake: alarm.replyToWake && !!conversation,
-          question,
-          rangAt: now.toISOString(),
-          state: 'ringing',
-          snoozes: 0,
-        };
-        set((s) => ({
-          wake: session,
-          // A one-time alarm switches itself off once it has rung, as on the iPhone.
-          alarms: s.alarms.map((a) =>
-            a.id === alarmId ? { ...a, armedAt: now.toISOString(), enabled: a.repeat.length > 0 ? a.enabled : false } : a,
-          ),
-        }));
-        if (conversation && friend) {
-          // The recorded wake-up line (free voice lines, backend-plan §13.5): never charged.
-          const voice = alarm.voice && friend.voiceReady;
-          appendMessage(set, get, conversation.id, {
-            id: uid('m'),
-            conversationId: conversation.id,
-            author: 'them',
-            kind: voice ? 'voice' : 'text',
-            text: voice ? undefined : question,
-            transcript: voice ? question : undefined,
-            durationSec: voice ? 4 : undefined,
-            createdAt: now.toISOString(),
-          });
-        }
-        return session;
-      },
-
-      snoozeWake: () => {
-        const wake = get().wake;
-        if (!wake || wake.state !== 'ringing' || wake.snoozes >= MAX_SNOOZES) return;
-        const alarm = get().alarms.find((a) => a.id === wake.alarmId);
-        if (alarm && !alarm.snooze) return;
-        set({
-          wake: { ...wake, state: 'snoozed', snoozes: wake.snoozes + 1, snoozeUntil: new Date(Date.now() + SNOOZE_MIN * 60_000).toISOString() },
-        });
-      },
-
-      stopWake: () => set({ wake: null }),
+      ...alarmSlice.actions(set, get),
 
       pickChip: (conversationId, messageId, chip) => {
         set((s) => ({
@@ -3131,37 +3014,6 @@ export const useAppStore = create<AppState>()(
           { id: uid('m'), conversationId, author: 'them', kind: 'system', card: 'notifyOff', createdAt: new Date().toISOString() },
           { quiet: true },
         );
-      },
-
-      wakeTick: () => {
-        const now = new Date();
-        const t = now.getTime();
-        const { alarms, wake } = get();
-        const busy = wake && wake.state !== 'awake';
-        if (!busy) {
-          const due = alarms.find((a) => a.enabled && dueRing(a, now));
-          if (due) {
-            get().ringAlarm(due.id);
-            return 'ring';
-          }
-        }
-        if (!wake) return null;
-        if (wake.state === 'snoozed' && wake.snoozeUntil && Date.parse(wake.snoozeUntil) <= t) {
-          set({ wake: { ...wake, state: 'ringing', snoozeUntil: undefined } });
-          return 'ring';
-        }
-        if (wake.checkInAt && Date.parse(wake.checkInAt) <= t && wake.conversationId) {
-          sayFirst(set, get, wake.conversationId, CHAIN_LINES.checkIn(genderOf(get(), wake.characterId)), wakeCheckInCue());
-          set((s) => ({ wake: s.wake ? { ...s.wake, checkInAt: undefined } : null }));
-          return null;
-        }
-        // A finished morning ends when its window closes; a ring nobody answered gives up after two.
-        const since = Date.parse(wake.awakeAt ?? wake.rangAt);
-        const window = WAKE_WINDOW_MIN * 60_000;
-        if ((wake.state === 'awake' && !wake.checkInAt && t - since > window) || (wake.state === 'ringing' && t - since > window * 2)) {
-          set({ wake: null });
-        }
-        return null;
       },
 
       updateProfile: (patch) => set((s) => ({ user: { ...s.user, ...patch } })),
@@ -4384,17 +4236,6 @@ export const displayName = (character: Character, relationship?: Relationship) =
 
 /* ── helpers ───────────────────────────────────────────────────────────────── */
 
-/** An alarm's days for the friend's cue (`alarmSetCue`): "every day", "weekdays", "once"… */
-function alarmDaysWord(repeat: readonly number[]) {
-  const days = [...new Set(repeat)].sort();
-  if (!days.length) return 'once';
-  if (days.length === 7) return 'every day';
-  if (days.join() === '1,2,3,4,5') return 'on weekdays';
-  if (days.join() === '0,6') return 'on weekends';
-  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return `on ${days.map((d) => names[d]).join(', ')}`;
-}
-
 /**
  * A reply the server refused for want of shells (402 `noShells`, once `ENFORCE_WALLET` is on) comes
  * with the server's wallet: it shows at once, so the next line opens the app's own paywall.
@@ -4408,7 +4249,7 @@ whenNoShells(({ wallet, free }) => {
 });
 
 
-function appendMessage(
+export function appendMessage(
   set: Setter,
   get: Getter,
   conversationId: string,
@@ -4651,7 +4492,7 @@ function momentRequest(get: Getter, conversationId: string, cue: readonly string
  * A text a friend sends because something just happened: `cue` says what, the model writes it
  * (src/ai/moment-prompt.ts). Busy for good: they stay quiet. `stock` is for the model off.
  */
-function sayFirst(set: Setter, get: Getter, conversationId: string, stock: string, cue: readonly string[], reach?: string) {
+export function sayFirst(set: Setter, get: Getter, conversationId: string, stock: string, cue: readonly string[], reach?: string) {
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation || !state.characters.some((c) => c.id === conversation.characterId)) return;
@@ -5903,16 +5744,6 @@ function linkPlanThread(set: Setter, get: Getter, characterId: string, scheduleI
 /** A plan as a setup card: its day and hour. */
 const planOffer = (plan: Pick<ScheduleItem, 'title' | 'date' | 'time'>): SetupOffer => ({ kind: 'plan', title: plan.title, date: plan.date, ...(plan.time ? { time: plan.time } : {}) });
 
-/** An alarm as a setup card: its time, its days, and the day it rings next. */
-function alarmOffer(alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat' | 'label'>): SetupOffer {
-  const now = new Date();
-  const at = new Date(now);
-  at.setHours(alarm.hour, alarm.minute, 0, 0);
-  if (at.getTime() <= now.getTime()) at.setDate(at.getDate() + 1);
-  const time = `${String(alarm.hour).padStart(2, '0')}:${String(alarm.minute).padStart(2, '0')}`;
-  return { kind: 'alarm', title: alarm.label.trim(), date: dayKey(at), time, repeat: [...alarm.repeat] };
-}
-
 /** Whether a plan is still ahead on the phone's clock (one with no hour lasts its whole day). */
 const planAhead = (plan: Pick<ScheduleItem, 'date' | 'time'>, now: Date) => new Date(`${plan.date}T${plan.time ?? '23:59'}:00`).getTime() > now.getTime();
 
@@ -5922,7 +5753,7 @@ const planAhead = (plan: Pick<ScheduleItem, 'date' | 'time'>, now: Date) => new 
  * history (`setupHistoryText`), so the friend's word right under it and every later reply know it
  * happened. A change marks the card it changes; the new one says where it stands now.
  */
-function setupInChat(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, cancelled = false) {
+export function setupInChat(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, cancelled = false) {
   const conversationId = get().addFriend(characterId);
   set((s) => ({ messages: markSetupCards(s.messages, madeId, cancelled ? { removed: true } : { replaced: true }) }));
   appendMessage(
@@ -5944,7 +5775,7 @@ const lastCancelWord = new Map<string, number>();
  * side says it is off, and the friend notices like a person ("the cinema's off? what happened?"),
  * so the talk goes on from there.
  */
-function setupCancelled(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, when: string) {
+export function setupCancelled(set: Setter, get: Getter, characterId: string, offer: SetupOffer, madeId: string, when: string) {
   const conversationId = setupInChat(set, get, characterId, offer, madeId, true);
   const now = Date.now();
   if (now - (lastCancelWord.get(characterId) ?? 0) < CANCEL_WORD_MS) return;
@@ -5970,7 +5801,7 @@ function markSetupCards(messages: AppState['messages'], madeId: string, patch: P
 }
 
 /** Setup cards in any chat that stood for an alarm or plan that is now deleted: they say so. */
-function setupRemoved(messages: AppState['messages'], madeId: string): AppState['messages'] {
+export function setupRemoved(messages: AppState['messages'], madeId: string): AppState['messages'] {
   let changed = false;
   const next: AppState['messages'] = {};
   for (const [id, list] of Object.entries(messages)) {

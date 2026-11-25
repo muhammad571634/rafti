@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z352. Store split step 3: the alarms + wake-up slice (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **What moved** (behaviour and persisted shape unchanged): `saveAlarm`, `deleteAlarm`, `setAlarmEnabled`, `ringAlarm`, `snoozeWake`, `stopWake`, `wakeTick`, with `alarmDaysWord` and `alarmOffer` (only alarms used them), into `src/store/alarms.ts` as `createAlarms(deps)`; deps are the chat helpers `setupInChat`, `setupCancelled`, `setupRemoved`, `sayFirst`, `appendMessage`, `genderOf` (now exported from the store for `typeof`).
+- **Size**: `use-app-store.ts` 6,976 → 6,807 lines (7,717 at the start); `alarms.ts` 205.
+- **Checked**: `npx tsc --noEmit` 0, `--noUnusedLocals` nothing new, `npm run typecheck:test` 0, `npm test` 1169/1169, Android bundle exports, the A51 (Expo Go) opens Today and Alarms with no JS errors (no alarm saved on the owner's phone on purpose).
+- **Next**: groups, scenes / lorebook / streams, dates + quizzes, then chat send/reply.
+
 ### 0z351. Store split step 2: the diary + secret-note slice (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **What moved** (behaviour and persisted shape unchanged): the 11 diary and note actions (`addDiaryEntry` .. `exchangeNote`) and their helpers (`askSecretNote`, `writePagesWithModel`, `writeDiaryReply`, `answerDiary`, `sealNote`, `latestNote`, the stock `diaryReplyFor` / `noteReplyFor`, the asked/retry maps) into `src/store/diary.ts`.
 - **Pattern for coupled slices**: `createDiary(deps)` is made once in the store module and gets the chat helpers it calls (`writeBase`, `writeWithModel`, `answerCrisisInChat`, `addMoment`, `genderOf`, `modelOn`, `getState`, two intimacy numbers, `pick`); the slice imports only types from the store, so no runtime cycle. Launch and the evening diary call `diarySlice.sealNote / answerDiary / writeDiaryReply`; `PAGES_AT_ONCE` is exported. `answerCrisisInChat`, `addMoment`, `genderOf` are now exported (for `typeof` only).
