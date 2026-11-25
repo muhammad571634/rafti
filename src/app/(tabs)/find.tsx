@@ -1023,7 +1023,8 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.field,
   },
   cancelBtn: { paddingVertical: 8, paddingHorizontal: 4 },
-  lensWrap: { flexGrow: 0, marginTop: space.sm },
+  // A ScrollView shrinks by default: in the screen's column it lost a few points and cut the pills' bottoms (A51 2026-11-25).
+  lensWrap: { flexGrow: 0, flexShrink: 0, marginTop: space.sm },
   lensRow: {
     gap: 8,
     paddingHorizontal: inkGutter,
