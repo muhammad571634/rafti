@@ -115,8 +115,32 @@ export function SymbolTile({
   );
 }
 
+/** One choice inside a set door: the icon its own row shows when the set opens. */
+export interface FolderItem {
+  fill: string;
+  ios: SFSymbol;
+  icon: keyof typeof Ionicons.glyphMap;
+}
+
+/**
+ * A door that opens a set of choices shows the set (owner, 2026-11-25: an icon must say what opens; a
+ * lone camera on "Together" hid its quiz and scene). The choices' own coloured tiles in a row, full
+ * size with a small gap, so each glyph reads at a glance (a 2x2 folder made them too small and an
+ * overlapping stack hid half of each, both seen on the A51). A door to one screen keeps `SymbolTile`.
+ */
+export function IconStack({ items, size = 34, max = 4 }: { items: readonly FolderItem[]; size?: number; max?: number }) {
+  return (
+    <View style={[styles.stack, { gap: Math.round(size * 0.18) }]}>
+      {items.slice(0, max).map((item, i) => (
+        <SymbolTile key={`${item.ios}-${i}`} {...item} size={size} />
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   icon: { alignItems: 'center', justifyContent: 'center' },
+  stack: { flexDirection: 'row', alignItems: 'center' },
   frost: {
     backgroundColor: aurora.frost,
     borderWidth: StyleSheet.hairlineWidth,

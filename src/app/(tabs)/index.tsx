@@ -20,13 +20,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { featuredFriendOf, heroTopHeight, TodayHero } from '@/components/today-hero';
-import { TodayMoreSheet } from '@/components/today/more-apps';
+import { moreModules, TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { LiveWidget } from '@/components/today/widget-models';
 import { WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, widgetLabel } from '@/components/today/widgets';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useReorderOnly } from '@/hooks/use-reorder-only';
-import { CharacterAvatar, ModuleLine, PressableScale, Screen, Sheet, SymbolTile, UserAvatar, type ModuleKey } from '@/components/ui';
+import { CharacterAvatar, IconStack, ModuleLine, moduleTile, PressableScale, Screen, Sheet, SymbolTile, UserAvatar, type ModuleKey } from '@/components/ui';
 import { InkText, listReorder } from '@/components/ink';
 import { helplineToday } from '@/lib/daily-note';
 import { shortName } from '@/lib/format';
@@ -416,9 +416,8 @@ export default function HomeScreen() {
           accessibilityLabel={giftBadge ? t('a11y.unreadTab', { label: t('more.title'), count: 1 }) : t('more.title')}
           onPress={() => setMoreOpen(true)}
           style={[styles.card, styles.row, styles.moreRow, !waiting && !anyWidget && !editing && !!hero && styles.firstCard]}>
-          <View style={styles.moreIcon}>
-            <Ionicons name="apps" size={19} color={ink.accent} />
-          </View>
+          {/* A door to a set: the first of the sheet's own tiles side by side (owner, 2026-11-25). */}
+          <IconStack items={moreModules(covered).map((m) => moduleTile(m.key))} size={30} max={4} />
           <InkText variant="bodyStrong" lines={1} style={styles.flex}>
             {t('more.title')}
           </InkText>
@@ -781,16 +780,6 @@ const styles = StyleSheet.create({
   },
   solo: { paddingRight: space.lg, paddingVertical: 10, minHeight: 72 },
   moreRow: { marginTop: space.md, minHeight: 60, paddingRight: space.lg },
-  moreIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: inkRadius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: ink.hairlineFill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-  },
   badge: {
     minWidth: 22,
     height: 22,

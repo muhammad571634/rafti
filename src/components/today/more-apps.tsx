@@ -21,6 +21,9 @@ export const TODAY_MODULES: { key: ModuleKey; route: string; label: string }[] =
   { key: 'sleep', route: '/bedtime', label: 'home.short.bedtime' },
 ];
 
+/** The modules the More sheet lists: those no widget on Today stands in for. */
+export const moreModules = (covered: ReadonlySet<ModuleKey>) => TODAY_MODULES.filter((m) => !covered.has(m.key));
+
 /** Four to a row, as on the iPhone Home Screen; the tile is 58 pt where the phone allows it. */
 const COLUMNS = 4;
 const TILE_MAX = 58;
@@ -50,7 +53,7 @@ export function TodayMoreSheet({
   const { width } = useWindowDimensions();
   // The sheet's own gutters take ~40 pt; a cell keeps 6 pt each side for its label.
   const tile = Math.min(TILE_MAX, Math.floor((width - 40) / COLUMNS) - 22);
-  const shown = TODAY_MODULES.filter((m) => !covered.has(m.key));
+  const shown = moreModules(covered);
 
   return (
     <Sheet visible={visible} onClose={onClose} title={t('more.title')} scroll>

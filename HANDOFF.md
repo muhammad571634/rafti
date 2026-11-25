@@ -8,6 +8,13 @@
 - **Waiting on the owner (ask, do not do unasked)**: (1) done in 0z363 (a failed ↻ brings the old reply back); (2) one preview OTA so the APK matches the code (Claude's last OTA was 0z347; Gemini's uncommitted `docs/flows.md` line says Find v3 went out on a preview OTA `eac3e0ce`, so run `npx eas-cli update:list --branch preview` first to see what the APK already has); (3) the feature trim for launch (audit P2-11); (4) accounts for the native batch (Apple/Google developer, Sentry sign-up, domain).
 - **Known**: the free Gemini key runs out of quota at times (server log 429), so replies can fail until the paid key. Gemini's Us v3 is committed (`363c749e`) and polished by Claude (0z365); the owner likes this Us screen: keep improving it, never redesign it.
 
+### 0z366. A door's icon says what opens (owner: "Вместе'da fotoapparat bor, ichida uchta narsa chiqadi… umumiy qilib", then "ikonlar juda kichik", 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **Rule (in `.agents/rules/project-memory.md`)**: a door to one screen wears its icon; a door to a set shows the set's own tiles side by side.
+- **Kit**: `IconStack` in `src/components/ui/module-icon.tsx` (exported with `FolderItem`): full-size coloured tiles in a row with a small gap. A 2x2 folder was tried first and was too small on the A51; an overlapping stack hid half of each glyph.
+- **Used on**: Us' "Together" door (Photo Booth blue, Quiz indigo, Scene pink; Scene only with a chat), and the Together sheet's rows now wear the same coloured tiles (`togetherFolder` in `together-sheet.tsx` is the one list); Today's "More" row shows the first four of the sheet's own module tiles (`moreModules` in `more-apps.tsx`). Us' doors' icons are 38 pt.
+- **Looked at, left**: the + buttons (iOS convention), the month ring (its faces say it), Find's "Все ⌄" (chevron says a choice), Chats' compose.
+- **Checked**: `npx tsc --noEmit` 0, `npm test` PASS, the A51: Us' Together door and Today's More row read clearly, no JS errors.
+
 ### 0z365. Us v3 polish: month ring, whole words, fewer words (owner: "barchasini to'g'rila… ekranni tartiblash, matnlarni kamaytirish", 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **Gemini's Us v3 committed first as it stood** (`363c749e`, its `.agents/now.md` line was 2 h stale); Claude took over the Us area.
 - **Month capsule gone** (owner: the "Нояб. · 38%" pill looked ugly and meant nothing): the header is title, bell, +. The month now leads the friend strip as a ring (`src/components/us/month-donut.tsx`): one arc per friend in their talk colour sized by this month's lines, the friend you talked with most inside, the month's name under it; a tap opens the month sheet with the numbers (`TalkedWith`).

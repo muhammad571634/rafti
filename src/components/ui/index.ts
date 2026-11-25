@@ -33,6 +33,6 @@ export { SFIcon } from './symbol';
 export { AlertHost } from './alert-host';
 export { TabGlyph } from './tab-glyph';
 export type { TabGlyphName } from './tab-glyph';
-export { FrostIcon, MODULE_GLYPH, MODULE_LINE, ModuleIcon, ModuleLine, moduleTile, SymbolTile } from './module-icon';
-export type { ModuleKey } from './module-icon';
+export { FrostIcon, IconStack, MODULE_GLYPH, MODULE_LINE, ModuleIcon, ModuleLine, moduleTile, SymbolTile } from './module-icon';
+export type { FolderItem, ModuleKey } from './module-icon';
 export { DotMatrix } from './dot-matrix';

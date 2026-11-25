@@ -4,7 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { InkText } from '@/components/ink';
-import { PressableScale, SFIcon, Sheet } from '@/components/ui';
+import { type FolderItem, PressableScale, Sheet, SymbolTile } from '@/components/ui';
+import { systemColors } from '@/theme';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 
 export type TogetherKind = 'photoBooth' | 'quiz' | 'scene';
@@ -13,14 +14,22 @@ interface Option {
   kind: TogetherKind;
   ios: SFSymbol;
   icon: keyof typeof Ionicons.glyphMap;
+  /** The choice's own icon colour: the same tile on the Us door's folder and on its row here. */
+  tile: string;
+  /** The row's deep Ink tint. */
   fill: string;
 }
 
 const OPTIONS: readonly Option[] = [
-  { kind: 'photoBooth', ios: 'camera.fill', icon: 'camera', fill: inkTints[0][0] },
-  { kind: 'quiz', ios: 'sparkles', icon: 'sparkles', fill: inkTints[4][0] },
-  { kind: 'scene', ios: 'film.fill', icon: 'film', fill: inkTints[5][0] },
+  { kind: 'photoBooth', ios: 'camera.fill', icon: 'camera', tile: systemColors.blue, fill: inkTints[0][0] },
+  { kind: 'quiz', ios: 'sparkles', icon: 'sparkles', tile: systemColors.indigo, fill: inkTints[4][0] },
+  { kind: 'scene', ios: 'film.fill', icon: 'film', tile: systemColors.pink, fill: inkTints[5][0] },
 ];
+
+/** What the sheet holds, for the door that opens it (`IconStack`): the scene only with a chat to play it in. */
+export function togetherFolder(canScene: boolean): FolderItem[] {
+  return OPTIONS.filter((o) => canScene || o.kind !== 'scene').map((o) => ({ fill: o.tile, ios: o.ios, icon: o.icon }));
+}
 
 export interface TogetherSheetProps {
   visible: boolean;
@@ -54,7 +63,7 @@ export function TogetherSheet({ visible, onClose, name, canScene, onPick }: Toge
   return (
     <Sheet visible={visible} onClose={onClose} title={t('us.togetherWith', { name })} scroll>
       <View style={styles.tiles}>
-        {shown.map(({ kind, ios, icon, fill }) => (
+        {shown.map(({ kind, ios, icon, tile, fill }) => (
           <PressableScale
             key={kind}
             scaleTo={0.97}
@@ -62,9 +71,7 @@ export function TogetherSheet({ visible, onClose, name, canScene, onPick }: Toge
             accessibilityRole="button"
             accessibilityLabel={titleOf(kind)}
             style={[styles.tile, { backgroundColor: fill }]}>
-            <View style={styles.icon}>
-              <SFIcon ios={ios} icon={icon} size={22} color={ink.text} />
-            </View>
+            <SymbolTile fill={tile} ios={ios} icon={icon} size={44} />
             <InkText variant="bodyStrong" lines={2} style={styles.text}>
               {titleOf(kind)}
             </InkText>
@@ -85,14 +92,6 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: inkRadius.field,
     borderCurve: 'continuous',
-  },
-  icon: {
-    width: 48,
-    height: 48,
-    borderRadius: inkRadius.chip,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: ink.raised,
   },
   text: { flex: 1, minWidth: 0 },
 });

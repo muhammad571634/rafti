@@ -8,7 +8,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { InkText } from '@/components/ink';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIcon, Sheet } from '@/components/ui';
+import { CharacterAvatar, EmptyState, type FolderItem, GlassButton, IconStack, PressableScale, Screen, SFIcon, Sheet } from '@/components/ui';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { ChaptersSheet } from '@/components/us/chapters-sheet';
 import { LivingBondHero } from '@/components/us/living-bond-hero';
@@ -18,7 +18,7 @@ import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
 import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
-import { TogetherSheet, type TogetherKind } from '@/components/us/together-sheet';
+import { togetherFolder, TogetherSheet, type TogetherKind } from '@/components/us/together-sheet';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
@@ -35,6 +35,8 @@ import { ink, inkGutter, inkRadius } from '@/theme/ink';
 const STORY = 50;
 const STORY_RING = 2;
 const STORY_GAP = 2;
+/** A door's icon on the 2x2 grid: one tile, or a set's tiles side by side. */
+const TILE_ICON = 38;
 
 /**
  * [Us] v3: one bond at a time on a clean 20 pt Ink grid — compact Month Circle header capsule +
@@ -429,10 +431,12 @@ export default function UsScreen() {
                 else router.push('/diary');
               }}
             />
+            {/* Opens a set (Photo Booth, Quiz, Scene): its icon shows the set's own tiles side by side. */}
             <SharedTile
               ios="camera.fill"
               icon="camera"
               fill={systemColors.blue}
+              folder={togetherFolder(Boolean(friendChatId))}
               title={t('us.togetherTile')}
               onPress={() => setTogetherOpen(true)}
             />
@@ -514,6 +518,7 @@ function SharedTile({
   fill,
   title,
   sub,
+  folder,
   onPress,
 }: {
   ios: SFSymbol;
@@ -521,6 +526,8 @@ function SharedTile({
   fill: string;
   title: string;
   sub?: string;
+  /** A door to a set of choices: their tiles side by side instead of one icon. */
+  folder?: readonly FolderItem[];
   onPress: () => void;
 }) {
   return (
@@ -531,9 +538,13 @@ function SharedTile({
       accessibilityRole="button"
       accessibilityLabel={sub ? `${title}, ${sub}` : title}
       style={styles.tileCard}>
-      <View style={[styles.tileIcon, { backgroundColor: fill }]}>
-        <SFIcon ios={ios} icon={icon} size={18} color={ink.text} />
-      </View>
+      {folder?.length ? (
+        <IconStack items={folder} size={TILE_ICON} />
+      ) : (
+        <View style={[styles.tileIcon, { backgroundColor: fill }]}>
+          <SFIcon ios={ios} icon={icon} size={20} color={ink.text} />
+        </View>
+      )}
       <View style={styles.tileText}>
         <InkText variant="subStrong" lines={2}>
           {title}
@@ -633,9 +644,9 @@ const styles = StyleSheet.create({
     borderColor: ink.edge,
   },
   tileIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
+    width: TILE_ICON,
+    height: TILE_ICON,
+    borderRadius: Math.round(TILE_ICON * 0.24),
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
