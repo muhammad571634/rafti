@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { byWhoNeedsYou, newestWaitingFirst, waitingChatCount, waitingSince } from './waiting';
+import { byWhoNeedsYou, newestWaitingFirst, waitingChatCount, waitingSince, waitingThreadsFirst } from './waiting';
 
 const chat = (unreadCount: number, at: string, muted = false) => ({ unreadCount, muted, lastMessageAt: at });
 
@@ -23,6 +23,23 @@ describe('who is waiting', () => {
       { id: 'c', ...chat(5, '2026-11-25T11:00:00Z') },
     ]);
     assert.deepEqual(list.map((c) => c.id), ['c', 'a']);
+  });
+
+  it('merges unread chats and groups newest first so Today matches the Chats badge', () => {
+    const threads = waitingThreadsFirst(
+      [
+        { id: 'c1', ...chat(1, '2026-11-25T09:00:00Z') },
+        { id: 'c2', ...chat(0, '2026-11-25T13:00:00Z') },
+      ],
+      [
+        { id: 'g1', ...chat(3, '2026-11-25T11:30:00Z') },
+        { id: 'g2', ...chat(0, '2026-11-25T12:00:00Z') },
+      ],
+    );
+    assert.deepEqual(
+      threads.map((t) => `${t.kind}:${t.item.id}`),
+      ['group:g1', 'chat:c1'],
+    );
   });
 
   it('puts whoever waits before whoever you talked with last, then the closest bond', () => {

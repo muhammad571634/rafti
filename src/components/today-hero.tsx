@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { AppState, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -25,7 +25,7 @@ import { useDayKey } from '@/hooks/use-day-key';
 import { messageSpeech, plainText } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
 import { byWhoNeedsYou, waitingSince } from '@/lib/waiting';
-import { awakeAt, freshDayNote } from '@/lib/today';
+import { awakeAt, freshDayNote, nextHeroWakeAt } from '@/lib/today';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, space, systemColors } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
@@ -96,9 +96,12 @@ export function featuredFriend(
   conversations: Conversation[],
   messages: Record<string, Message[]>,
   order: 'needsYou' | 'talked' = 'needsYou',
+  blockedIds: readonly string[] = [],
 ): HeroFriend | undefined {
+  const blocked = blockedIds.length ? new Set(blockedIds) : undefined;
   const friends = characters
     .flatMap((character) => {
+      if (blocked?.has(character.id)) return [];
       const relationship = relationships[character.id];
       const conversation = conversations.find((c) => c.characterId === character.id);
       if (!relationship || !conversation) return [];
@@ -123,8 +126,9 @@ type FeaturedInputs = {
   relationships: Record<string, Relationship>;
   conversations: Conversation[];
   messages: Record<string, Message[]>;
+  blockedIds?: string[];
 };
-/** A store selector for one `featuredFriend` order, worked out once per change of its four inputs. */
+/** A store selector for one `featuredFriend` order, worked out once per change of its inputs. */
 function featuredSelector(order: 'needsYou' | 'talked') {
   let cache: { inputs: FeaturedInputs; friend: HeroFriend | undefined } | undefined;
   return (s: FeaturedInputs): HeroFriend | undefined => {
@@ -135,12 +139,22 @@ function featuredSelector(order: 'needsYou' | 'talked') {
       last.characters === s.characters &&
       last.relationships === s.relationships &&
       last.conversations === s.conversations &&
-      last.messages === s.messages
+      last.messages === s.messages &&
+      last.blockedIds === s.blockedIds
     ) {
       return cache.friend;
     }
-    const friend = featuredFriend(s.characters, s.relationships, s.conversations, s.messages, order);
-    cache = { inputs: { characters: s.characters, relationships: s.relationships, conversations: s.conversations, messages: s.messages }, friend };
+    const friend = featuredFriend(s.characters, s.relationships, s.conversations, s.messages, order, s.blockedIds ?? []);
+    cache = {
+      inputs: {
+        characters: s.characters,
+        relationships: s.relationships,
+        conversations: s.conversations,
+        messages: s.messages,
+        blockedIds: s.blockedIds,
+      },
+      friend,
+    };
     return friend;
   };
 }
@@ -209,14 +223,36 @@ export function TodayHero({
   const left = stretchLeft(width, stretch, FACE_AT, tall?.faceX);
 
   const still = useReducedMotion();
+  const today = useDayKey();
+  const [clockTick, setClockTick] = useState(0);
   const [hour, setHour] = useState(() => new Date().getHours());
-  // The light is read again on each visit. The picture holds still: its slow "breath" (0z107) redrew
-  // half the screen every frame while Today was open, 12-13 ms of GPU per frame on a Galaxy A51 with
-  // nothing moving, so scrolls and tab switches missed their frames (0z131, owner: keep it still).
+  // Re-reads the hour on focus, on foreground return, and at exact light/awake/day-note boundaries (zero continuous polling).
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        setHour(new Date().getHours());
+        setClockTick((n) => n + 1);
+      }
+    });
+    return () => sub.remove();
+  }, []);
+  useEffect(() => {
+    const now = Date.now();
+    const wakeAt = nextHeroWakeAt(now, relationship.ownDay, today);
+    const delay = Math.min(24 * 60 * 60 * 1000, Math.max(500, wakeAt - now + 300));
+    const timer = setTimeout(() => {
+      setHour(new Date().getHours());
+      setClockTick((n) => n + 1);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [relationship.ownDay, today, hour, clockTick]);
+
+  // The picture takes one calm breath on focus, then holds completely still (0z131).
   const breath = useSharedValue(0);
   useFocusEffect(
     useCallback(() => {
       setHour(new Date().getHours());
+      setClockTick((n) => n + 1);
       if (!still) {
         const ease = { duration: BREATH_MS, easing: Easing.inOut(Easing.sin) };
         breath.value = withDelay(BREATH_DELAY, withSequence(withTiming(1, ease), withTiming(0, ease)));
@@ -234,13 +270,10 @@ export function TodayHero({
 
   // Presence (audit §8.2.1): what they said they are doing, if it is fresh; their notes are kept in
   // English (0z187), so another app language gets the plain awake / asleep line instead.
-  const today = useDayKey();
   const awake = awakeAt(hour);
   const doing = useMemo(
-    () => (i18n.language.startsWith('en') ? freshDayNote(relationship.ownDay, today, Date.now()) : undefined),
-    // `hour` re-reads it on each visit.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [relationship.ownDay, today, hour, i18n.language],
+    () => (i18n.language.startsWith('en') ? freshDayNote(relationship.ownDay, today, Date.now() + clockTick * 0) : undefined),
+    [relationship.ownDay, today, hour, clockTick, i18n.language],
   );
   const status = doing ?? t(awake ? 'home.presence.awake' : 'home.presence.asleep');
 

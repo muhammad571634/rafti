@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -48,7 +48,8 @@ export default function CallHistoryScreen() {
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
   const wallet = useAppStore((s) => s.wallet);
-  const [filter, setFilter] = useState<Filter>('all');
+  const { filter: askedFilter } = useLocalSearchParams<{ filter?: string }>();
+  const [filter, setFilter] = useState<Filter>(askedFilter === 'missed' ? 'missed' : 'all');
   const deleteCall = useAppStore((s) => s.deleteCall);
   const clearCalls = useAppStore((s) => s.clearCalls);
   // Hold a row to take that call off the list; "Clear" under the list takes them all (0z181).

@@ -1,21 +1,30 @@
 import { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 
+import { nextMidnightAt } from '@/lib/today';
 import { todayKey } from '@/mock';
 
-/** How often an open screen checks whether midnight has passed. */
-const CHECK_MS = 60_000;
-
 /**
- * Today's day key that stays current while a screen is left open over midnight,
- * so "today" state (the daily gift, the free spin) rolls over without a relaunch.
+ * Today's day key that rolls over at exact local midnight (and on foreground return) without a
+ * continuous background `setInterval`, so "today" state (daily gift, free spin, plans, diary) flips
+ * cleanly right after 00:00.
  */
 export function useDayKey() {
   const [key, setKey] = useState(todayKey);
 
   useEffect(() => {
-    const timer = setInterval(() => setKey(todayKey()), CHECK_MS);
-    return () => clearInterval(timer);
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') setKey(todayKey());
+    });
+    return () => sub.remove();
   }, []);
+
+  useEffect(() => {
+    const now = Date.now();
+    const delay = Math.max(250, nextMidnightAt(now) - now + 250);
+    const timer = setTimeout(() => setKey(todayKey()), delay);
+    return () => clearTimeout(timer);
+  }, [key]);
 
   return key;
 }

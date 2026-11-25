@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -58,7 +58,11 @@ export default function BedtimeScreen() {
     [characters, conversations],
   );
 
-  const [readerId, setReaderId] = useState(known[0]?.id);
+  const { partner } = useLocalSearchParams<{ partner?: string }>();
+  const askedPartner = Array.isArray(partner) ? partner[0] : partner;
+  const [readerId, setReaderId] = useState(() =>
+    askedPartner && known.some((c) => c.id === askedPartner) ? askedPartner : known[0]?.id,
+  );
   const [step, setStep] = useState(TIMERS.indexOf(20));
   const [left, setLeft] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
@@ -278,7 +282,7 @@ export default function BedtimeScreen() {
               </PressableScale>
             ) : (
               <PressableScale
-                onPress={() => router.push('/alarms/edit')}
+                onPress={() => router.push(reader ? { pathname: '/alarms/edit', params: { characterId: reader.id } } : '/alarms/edit')}
                 scaleTo={0.98}
                 style={[styles.wakeCard, styles.wakeEmpty]}
                 accessibilityRole="button"

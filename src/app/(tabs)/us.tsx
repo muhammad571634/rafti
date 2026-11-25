@@ -21,7 +21,6 @@ import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with'
 import { togetherFolder, TogetherSheet, type TogetherKind } from '@/components/us/together-sheet';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { useDayKey } from '@/hooks/use-day-key';
-import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { daysBetween, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
@@ -73,7 +72,6 @@ export default function UsScreen() {
   const [publishOpen, setPublishOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
-  const unread = useInboxUnread();
 
   const bonds = useMemo(
     () =>
@@ -85,14 +83,15 @@ export default function UsScreen() {
   );
 
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-  // Opened for one friend and day (a plan set from the chat, a plan in Notifications): the tab stays
+  // Opened for one friend and day (a plan set from chat/Today, or a plan in Notifications): the tab stays
   // mounted, so each open carries `at` and is applied once, while rendering (no effect, no flash).
-  const opened = useLocalSearchParams<{ friend?: string; day?: string; at?: string }>();
+  const opened = useLocalSearchParams<{ friend?: string; day?: string; plan?: string; at?: string }>();
   const [openedAt, setOpenedAt] = useState<string | undefined>(undefined);
   if (opened.at && opened.at !== openedAt) {
     setOpenedAt(opened.at);
     if (opened.friend) setSelectedId(opened.friend);
     if (opened.day && /^\d{4}-\d{2}-\d{2}$/.test(opened.day)) setDay(opened.day);
+    if (opened.plan === '1') setPlanOpen(true);
   }
   const selected = bonds.find((b) => b.character.id === selectedId) ?? bonds[0];
   const activeId = selected?.character.id;
@@ -201,23 +200,6 @@ export default function UsScreen() {
     setDay(plan.date);
   };
 
-  const bell = (
-    <View>
-      <GlassButton
-        icon="notifications-outline"
-        accessibilityLabel={unread > 0 ? t('us.notificationsNew', { count: unread }) : t('notifications.title')}
-        onPress={() => router.push('/notifications')}
-      />
-      {unread > 0 ? (
-        <View style={styles.badge} pointerEvents="none">
-          <InkText variant="caption" color={ink.onBadge}>
-            {unread > 99 ? '99+' : unread}
-          </InkText>
-        </View>
-      ) : null}
-    </View>
-  );
-
   const addButton = <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />;
 
   const now = new Date();
@@ -233,7 +215,6 @@ export default function UsScreen() {
           <InkText variant="display" style={styles.grow}>
             {t('us.title')}
           </InkText>
-          {bell}
         </View>
         <EmptyState
           title={t('us.noRelationships')}
@@ -331,7 +312,6 @@ export default function UsScreen() {
         <InkText variant="display" style={styles.grow}>
           {t('us.title')}
         </InkText>
-        {bell}
         {addButton}
       </View>
 
@@ -596,21 +576,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: inkGutter,
     paddingTop: space.sm,
     paddingBottom: space.xs,
-  },
-  // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
-  badge: {
-    position: 'absolute',
-    top: -4,
-    right: -5,
-    minWidth: 20,
-    height: 20,
-    paddingHorizontal: 5,
-    borderRadius: inkRadius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: ink.danger,
-    borderWidth: 2,
-    borderColor: ink.ground,
   },
   picker: { gap: 12, paddingHorizontal: inkGutter, paddingTop: space.sm, paddingBottom: space.xs },
   pick: { alignItems: 'center', gap: 5, width: STORY + (STORY_RING + STORY_GAP) * 2 + 4 },

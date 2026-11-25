@@ -127,12 +127,14 @@ export function WidgetView({
   model,
   height = WIDGET_HEIGHT,
   preview,
+  editing,
   onPress,
   onLongPress,
 }: {
   model: WidgetModel;
   height?: number;
   preview?: boolean;
+  editing?: boolean;
   /** Replaces the widget's own tap (edit mode: open the gallery for this slot). */
   onPress?: () => void;
   onLongPress?: () => void;
@@ -149,11 +151,11 @@ export function WidgetView({
   const tint = moduleTints[key] ?? moduleTints.bond;
   // At night: stained glass instead of the flat deep tint (`moduleGlass`).
   const glass = !onPhoto && moduleGlass ? (moduleGlass[key] ?? moduleGlass.bond) : null;
-  // The board widget is a note pinned up: a little tilt and a strip of tape.
-  const pinned = model.kind === 'board' && !onPhoto;
+  // The board widget is a note pinned up: a little tilt and a strip of tape (flattened while jiggling in edit mode).
+  const pinned = model.kind === 'board' && !onPhoto && !editing;
   const buttons = model.buttons ?? [];
   // In edit mode (or the gallery) a tap belongs to the card, so its buttons do nothing.
-  const inert = preview || !!onPress;
+  const inert = preview || editing || !!onPress;
   const person = model.person;
 
   const words = (

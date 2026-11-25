@@ -3,10 +3,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
 import { memo, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type LayoutRectangle, ScrollView, type ScrollViewInstance, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
+import { ScrollView, type ScrollViewInstance, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
+  FadeIn,
   runOnJS,
   useAnimatedStyle,
   useReducedMotion,
@@ -19,31 +20,34 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
+import { GroupAvatar } from '@/components/group-avatar';
+import { InkText, listReorder } from '@/components/ink';
 import { featuredFriendOf, heroTopHeight, lastTalkedFriendOf, TodayHero } from '@/components/today-hero';
 import { moreModules, TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { LiveWidget } from '@/components/today/widget-models';
 import { WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, widgetLabel } from '@/components/today/widgets';
-import { useDayKey } from '@/hooks/use-day-key';
-import { useReorderOnly } from '@/hooks/use-reorder-only';
 import { CharacterAvatar, IconStack, ModuleLine, moduleTile, PressableScale, Screen, Sheet, SymbolTile, UserAvatar, type ModuleKey } from '@/components/ui';
-import { InkText, listReorder } from '@/components/ink';
+import { useDayKey } from '@/hooks/use-day-key';
+import { useFirstSteps } from '@/hooks/use-first-steps';
+import { useInboxUnread } from '@/hooks/use-inbox-unread';
+import { useReorderOnly } from '@/hooks/use-reorder-only';
 import { helplineToday } from '@/lib/daily-note';
 import { shortName } from '@/lib/format';
+import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
-import { newestWaitingFirst } from '@/lib/waiting';
-import { TODAY_SLOTS } from '@/lib/today';
+import { previewSlideForSlot, swapWidgetSlots, TODAY_SLOTS } from '@/lib/today';
+import { waitingThreadsFirst } from '@/lib/waiting';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
-import { useFirstSteps } from '@/hooks/use-first-steps';
 import { colors, hitSlop, night, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
 import { ink, inkPeachGlass, inkRadius, inkTints } from '@/theme/ink';
-import type { Character, Conversation, WidgetKind } from '@/types';
+import type { Character, Conversation, GroupChat, WidgetKind } from '@/types';
 
 /** The sealed note: the sun's deep tint, its light for the envelope. */
 const SUN_WASH = inkTints[2][0];
 const SUN_LIGHT = systemColors.yellow;
-/** "Waiting for you" lists three chats; more than that ends in one "All chats" row (Chats on Unread). */
+/** "Waiting for you" lists three threads; more than that ends in one "All chats" row (Chats on Unread). */
 const WAITING_ROWS = 3;
 /** The gallery shows each widget at its real size, so its words sit as they will on Today. */
 const GALLERY_HEIGHT = WIDGET_HEIGHT;
@@ -53,48 +57,51 @@ const WIDGET_FLOOR = 158;
 const LOGO_MAX = 48;
 /** The letters of `sigmazam-logo.png` fill rows 154-351 of 356; this is their middle's height above the art's bottom. */
 const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
-/** Your capsule's height; the logo's glass capsule matches it. */
+/** Your capsule's height; the bell's glass circle matches it. */
 const CAPSULE = 40;
 /** A waiting face and the gap after it: the separators start where the words do (iOS inset rows). */
 const FACE = 44;
 const noop = () => {};
 
+/** Apple interactive springs for lifting a widget and sliding neighbours into place. */
+const LIFT_SPRING = { damping: 18, stiffness: 220, mass: 0.8 } as const;
+const SLIDE_SPRING = { damping: 22, stiffness: 210, mass: 0.85 } as const;
+
+type WaitingEntry =
+  | { kind: 'chat'; id: string; conversation: Conversation; character: Character; name: string }
+  | { kind: 'group'; id: string; group: GroupChat; members: Character[]; name: string };
+
 /**
- * The calm Today (design audit 2026-11-15 §6.1, approved prototype `docs/prototypes/today-calm.html`):
- * the friend you talked with last, full bleed to the screen's middle, lit for the hour; "Waiting for
- * you" as one card (each unread chat, then the day's sealed note); four widgets in a 2x2 grid with no
- * title over them (owner, 2026-11-16), the user's pick; and one More row that opens every other module as a deep-tinted icon, with "Choose widgets" under them.
- * Before it was a launcher: a yellow bubble, a note, four widgets and six bright app icons.
- *
- * Edit like the iPhone Home Screen: a long press on a widget or "Choose widgets" makes the widgets
- * jiggle (still under Reduce Motion), "−" empties a slot, "+" or an empty slot opens the widget
- * gallery, a tap on a widget swaps it for another, and dragging one onto the other trades places.
+ * The calm Today (design audit 2026-11-15 §6.1, simplify plan 2026-11-25 §1):
+ * - Top bar: Notifications bell + Profile avatar in clear photo glass (or soft raised glass without a hero).
+ * - Hero: the friend who needs you (newest unread unmuted line, else last talked, else closest bond),
+ *   full bleed to the screen's middle, lit for the hour.
+ * - "Waiting for you": unread one-to-one and group chats (excluding the hero's chat so nobody shows
+ *   twice), plus the day's sealed note.
+ * - Four widgets in a 2x2 grid with contextual Apple deep-links, live timeline refresh, and fluid
+ *   iPhone Home Screen jiggle + live drag-to-swap physics.
+ * - One More row with deep-tinted module tiles and "Choose widgets".
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width, height: windowHeight } = useWindowDimensions();
-  // Tapping this tab again while it is open scrolls back to the top, as on iOS (the tab bar emits
-  // tabPress on the current tab too).
   const scrollRef = useRef<ScrollViewInstance>(null);
   useScrollToTop(scrollRef);
-  // Two widgets to a row on every phone width; percentages plus a fixed gap overflow on narrow Androids.
+
   const half = Math.floor((width - space.lg * 2 - space.md) / 2);
-  // Never taller than wide: iOS small widgets are square (HIG Widgets: 158x158 on a 390 pt iPhone), so on
-  // narrow phones the four come down a little instead of standing as tall rectangles. 158 is the floor:
-  // the contact widget (face, name, line, two buttons) needs ~154 pt, so 360 pt Androids stay at 158.
   const tile = Math.min(WIDGET_HEIGHT, Math.max(half, WIDGET_FLOOR));
   const [galleryWidth, setGalleryWidth] = useState(0);
-  /** The picture has scrolled away from under the status bar. */
   const [pastHero, setPastHero] = useState(false);
-  /** Anything has scrolled under the status bar: its edge then gets a scrim (`TopEdge`). */
   const [scrolled, setScrolled] = useState(false);
   const galleryHalf = galleryWidth ? Math.floor((galleryWidth - space.md) / 2) : undefined;
 
   const user = useAppStore((s) => s.user);
   const conversations = useAppStore((s) => s.conversations);
+  const groups = useAppStore((s) => s.groups);
   const characters = useAppStore((s) => s.characters);
+  const blockedIds = useAppStore((s) => s.blockedIds);
   const relationships = useAppStore((s) => s.relationships);
   const notes = useAppStore((s) => s.notes);
   const leaveDailyNote = useAppStore((s) => s.leaveDailyNote);
@@ -102,34 +109,47 @@ export default function HomeScreen() {
   const stored = useAppStore((s) => s.todayWidgets);
   const setSlots = useAppStore((s) => s.setTodayWidgets);
   const today = useDayKey();
+  const inboxUnread = useInboxUnread();
   const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
-  // A first step done and not yet paid lights the gift dot too (0z294).
   const stepWaiting = useFirstSteps().ready;
 
-  // Four slots; older saves are filled to four by the store's v18 migration.
   const slots = useMemo(() => {
     const two = stored.slice(0, TODAY_SLOTS);
     return two.length < TODAY_SLOTS ? [...two, ...Array<null>(TODAY_SLOTS - two.length).fill(null)] : two;
   }, [stored]);
 
   const [editing, setEditing] = useState(false);
-  /** The slot the gallery fills; null while it is closed. */
+  const [activeDrag, setActiveDrag] = useState<number | null>(null);
+  const [hoverSlot, setHoverSlot] = useState<number | null>(null);
+  const dragCommitted = useRef(false);
   const [gallerySlot, setGallerySlot] = useState<number | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
-  const rects = useRef<LayoutRectangle[]>([]);
-  /** Where the widgets begin in the scroll, so "Choose widgets" can bring them into view. */
   const widgetsY = useRef(0);
 
-  const charactersById = useMemo(() => new Map(characters.map((c) => [c.id, c])), [characters]);
-  // Worked out once per store change and shared with the widgets that show the same friend.
+  const charactersById = useMemo(() => {
+    const blocked = new Set(blockedIds);
+    const map = new Map<string, Character>();
+    for (const c of characters) {
+      if (!blocked.has(c.id)) map.set(c.id, c);
+    }
+    return map;
+  }, [characters, blockedIds]);
+
   const hero = useAppStore(featuredFriendOf);
 
-  // Coming back in the morning: pages written overnight should be waiting here.
-  useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
-  // And the day's sealed note (`dailyNoteStep`) from the friend you talk to (not whoever wrote last,
-  // so a new line never brings a second note that day), once the chats have loaded, and again after
-  // midnight if Today stays open.
+  // Coming back in the morning: pages written overnight should be waiting here; leaving Today exits jiggle mode cleanly.
+  useFocusEffect(
+    useCallback(() => {
+      writeDuePages();
+      return () => {
+        setEditing(false);
+        setActiveDrag(null);
+        setHoverSlot(null);
+      };
+    }, [writeDuePages]),
+  );
+
   const noteFriendId = useAppStore((s) => lastTalkedFriendOf(s)?.character.id);
   const hydrated = useAppStore((s) => s.hydrated);
   useFocusEffect(
@@ -138,29 +158,40 @@ export default function HomeScreen() {
     }, [hydrated, noteFriendId, today, leaveDailyNote]),
   );
 
-  // Sorted once per change of the chats, not on every render (scrolling sets state). The friend on the
-  // picture is left out: their line and count are already on it, so nothing is said twice.
+  // Unread one-to-one chats (excluding the hero's chat) and unread group chats, newest message first.
   const heroChat = hero?.conversation.id;
-  const unread = useMemo(
-    () =>
-      newestWaitingFirst(conversations)
-        .filter((c) => c.id !== heroChat)
-        .flatMap((c) => {
-          const character = charactersById.get(c.characterId);
-          return character ? [{ conversation: c, character }] : [];
-        }),
-    [conversations, charactersById, heroChat],
-  );
-  // Three rows, or two and an "All chats" row when more wait, so the card never grows past four rows.
+  const unread = useMemo<WaitingEntry[]>(() => {
+    const oneToOne = conversations.filter((c) => c.id !== heroChat && charactersById.has(c.characterId));
+    const rooms = groups.filter((g) => g.memberIds.filter((id) => charactersById.has(id)).length >= 2);
+    return waitingThreadsFirst(oneToOne, rooms).flatMap((entry): WaitingEntry[] => {
+      if (entry.kind === 'chat') {
+        const character = charactersById.get(entry.item.characterId);
+        if (!character) return [];
+        return [
+          {
+            kind: 'chat',
+            id: entry.item.id,
+            conversation: entry.item,
+            character,
+            name: displayName(character, relationships[character.id]),
+          },
+        ];
+      }
+      const members = entry.item.memberIds.flatMap((id) => charactersById.get(id) ?? []);
+      if (members.length < 2) return [];
+      const name = entry.item.name || groupTitle(members.map((m) => shortName(displayName(m, relationships[m.id]))));
+      return [{ kind: 'group', id: entry.item.id, group: entry.item, members, name }];
+    });
+  }, [conversations, groups, charactersById, relationships, heroChat]);
+
   const listed = unread.length > WAITING_ROWS ? unread.slice(0, WAITING_ROWS - 1) : unread;
   const others = unread.slice(listed.length);
-  const reorderOnly = useReorderOnly(listed.map((f) => f.conversation.id));
+  const reorderOnly = useReorderOnly(listed.map((f) => `${f.kind}:${f.id}`));
 
-  // The first ready note whose friend is not on a helpline day. Picked in the selector, so Today
-  // re-renders when that answer changes, not on every line of every chat (brief Step 3.8).
+  // The first ready note whose friend is unblocked and not on a helpline day.
   const noteId = useAppStore((s) =>
     s.notes.find((n) => {
-      if (n.status !== 'ready' || !s.characters.some((c) => c.id === n.characterId)) return false;
+      if (n.status !== 'ready' || s.blockedIds.includes(n.characterId) || !s.characters.some((c) => c.id === n.characterId)) return false;
       const chatId = s.conversations.find((c) => c.characterId === n.characterId)?.id;
       return !helplineToday((chatId && s.messages[chatId]) || []);
     })?.id,
@@ -170,69 +201,124 @@ export default function HomeScreen() {
   const noteName = noteFrom ? shortName(displayName(noteFrom, relationships[noteFrom.id])) : '';
   const waiting = unread.length > 0 || !!noteFrom;
 
-  // Modules a widget on Today stands in for leave the More sheet.
   const covered = useMemo(
     () => new Set(slots.flatMap((k) => (k && WIDGET_MODULE[k] ? [WIDGET_MODULE[k] as ModuleKey] : []))),
     [slots],
   );
-  // A gift waiting marks Gifts in More, and More itself, unless the Gifts widget shows it.
   const giftBadge = (spinReady || giftWaiting || stepWaiting) && !covered.has('gifts');
   const firstEmpty = slots.indexOf(null);
   const anyWidget = firstEmpty < 0 || slots.some(Boolean);
 
-  // Stable handlers, so a filled slot (memo) re-renders only when its own widget or edit mode changes,
-  // never because Today re-rendered for an unread chat or the scroll.
-  const remove = useCallback((i: number) => setSlots(slots.map((k, j) => (j === i ? null : k))), [slots, setSlots]);
-  const place = (kind: WidgetKind) => {
-    if (gallerySlot === null) return;
-    setSlots(slots.map((k, j) => (j === gallerySlot ? kind : k)));
-    setGallerySlot(null);
-  };
-  /** A widget dropped with its centre over the other slot trades places with it. */
-  const drop = useCallback(
-    (from: number, dx: number, dy: number) => {
-      const r = rects.current[from];
-      if (!r) return;
-      const cx = r.x + r.width / 2 + dx;
-      const cy = r.y + r.height / 2 + dy;
-      const to = rects.current.findIndex((o) => o && cx >= o.x && cx <= o.x + o.width && cy >= o.y && cy <= o.y + o.height);
-      if (to < 0 || to === from) return;
-      const next = [...slots];
-      [next[from], next[to]] = [next[to], next[from]];
-      setSlots(next);
+  const remove = useCallback(
+    (i: number) => {
+      haptic.selection();
+      setSlots(slots.map((k, j) => (j === i ? null : k)));
     },
     [slots, setSlots],
   );
-  const keepRect = useCallback((i: number, r: LayoutRectangle) => {
-    rects.current[i] = r;
+
+  const place = (kind: WidgetKind) => {
+    if (gallerySlot === null) return;
+    if (slots[gallerySlot] === kind) {
+      setGallerySlot(null);
+      return;
+    }
+    haptic.selection();
+    setSlots(slots.map((k, j) => (j === gallerySlot ? kind : k)));
+    setGallerySlot(null);
+  };
+
+  const handleDragStart = useCallback((from: number) => {
+    dragCommitted.current = false;
+    haptic.lift();
+    setActiveDrag(from);
+    setHoverSlot(null);
   }, []);
+
+  const handleDragHover = useCallback((nextHover: number | null) => {
+    setHoverSlot((prev) => {
+      if (prev !== nextHover && nextHover !== null) haptic.selection();
+      return nextHover;
+    });
+  }, []);
+
+  const handleDragCommit = useCallback(
+    (from: number, to: number) => {
+      dragCommitted.current = true;
+      setActiveDrag(null);
+      setHoverSlot(null);
+      setSlots(swapWidgetSlots(slots, from, to));
+    },
+    [slots, setSlots],
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setActiveDrag(null);
+    setHoverSlot(null);
+  }, []);
+
   const startEditing = useCallback(() => setEditing(true), []);
-  // From More: the widgets jiggle and come into view under the top row.
+  const finishEditing = useCallback(() => {
+    haptic.tap();
+    setEditing(false);
+    setActiveDrag(null);
+    setHoverSlot(null);
+  }, []);
+
   const chooseWidgets = () => {
     setEditing(true);
     requestAnimationFrame(() => scrollRef.current?.scrollTo({ y: Math.max(0, widgetsY.current - insets.top - 64), animated: true }));
   };
-  const openChat = useCallback((id: string) => router.push(`/chat/${id}`), [router]);
 
-  // With a friend on the card, their picture runs from the screen's top, under the status bar or the
-  // Dynamic Island, and this row sits on it as clear glass just below that safe area (owner,
-  // 2026-11-03, prototype B); the status bar turns dark again once the picture has scrolled away.
+  const openWaiting = useCallback(
+    (entry: WaitingEntry) => {
+      if (editing) {
+        finishEditing();
+        return;
+      }
+      router.push(entry.kind === 'chat' ? `/chat/${entry.id}` : `/group/${entry.id}`);
+    },
+    [editing, finishEditing, router],
+  );
+
   const onPhoto = !!hero;
   const Glass = onPhoto ? PhotoGlass : SoftGlass;
   const heroBottom = hero ? heroTopHeight(windowHeight) : 0;
-  // One row: the mascot in its circle on the leading edge, your face on the trailing one; no words on
-  // the picture here (owner, 2026-11-16: the hour shows in its light, your name is in your profile).
+
   const bar = (
     <View style={styles.bar}>
-      {/* No mascot on Today (owner, 2026-11-18): the friend's picture is the face of the screen. */}
       <View style={styles.logo} />
       <PressableScale
         scaleTo={0.92}
         hitSlop={hitSlop}
         accessibilityRole="button"
+        accessibilityLabel={inboxUnread > 0 ? t('us.notificationsNew', { count: inboxUnread }) : t('notifications.title')}
+        onPress={() => {
+          if (editing) setEditing(false);
+          router.push('/notifications');
+        }}>
+        <View>
+          <Glass style={styles.me}>
+            <Ionicons name="notifications-outline" size={20} color={onPhoto ? colors.onMedia : ink.text} />
+          </Glass>
+          {inboxUnread > 0 ? (
+            <View style={styles.bellBadge} pointerEvents="none">
+              <InkText variant="caption" color={ink.onBadge}>
+                {inboxUnread > 99 ? '99+' : inboxUnread}
+              </InkText>
+            </View>
+          ) : null}
+        </View>
+      </PressableScale>
+      <PressableScale
+        scaleTo={0.92}
+        hitSlop={hitSlop}
+        accessibilityRole="button"
         accessibilityLabel={`${t('a11y.profile')}, ${user.displayName}`}
-        onPress={() => router.push('/profile')}>
-        {/* Your photo in its glass ring, or your initials in clear glass, so the friend's picture shows through. */}
+        onPress={() => {
+          if (editing) setEditing(false);
+          router.push('/profile');
+        }}>
         {user.avatarUri ? (
           <Glass style={styles.me}>
             <UserAvatar user={user} size={34} />
@@ -248,6 +334,7 @@ export default function HomeScreen() {
     <Screen background={ink.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
       <ScrollView
         ref={scrollRef}
+        scrollEnabled={activeDrag === null}
         showsVerticalScrollIndicator={false}
         onTouchStart={hideWelcome}
         scrollEventThrottle={32}
@@ -266,16 +353,27 @@ export default function HomeScreen() {
             friend={hero}
             header={bar}
             topInset={insets.top}
-            onPress={() => router.push(`/chat/${hero.conversation.id}`)}
+            onPress={() => {
+              if (editing) {
+                finishEditing();
+                return;
+              }
+              router.push(`/chat/${hero.conversation.id}`);
+            }}
           />
         ) : (
           <>
             {bar}
-            {/* No friend yet: one way on, to Find (nothing else on Today has anyone to show). */}
             <PressableScale
               scaleTo={0.98}
               accessibilityRole="button"
-              onPress={() => router.navigate('/(tabs)/find')}
+              onPress={() => {
+                if (editing) {
+                  finishEditing();
+                  return;
+                }
+                router.navigate('/(tabs)/find');
+              }}
               style={[styles.card, styles.row, styles.solo, styles.firstCard]}>
               <SymbolTile fill={systemColors.orange} ios="sparkles" icon="sparkles" size={FACE} deep />
               <InkText variant="bodyStrong" lines={2} style={styles.flex}>
@@ -287,121 +385,139 @@ export default function HomeScreen() {
         )}
 
         {waiting ? (
-          <>
-            {/* No title or count over the card (owner, 2026-11-16): the faces and blue counts say it. */}
-            <View style={[styles.card, styles.firstCard]}>
-              {listed.map((f, i) => (
-                <WaitingRow
-                  key={f.conversation.id}
-                  conversation={f.conversation}
-                  character={f.character}
-                  name={displayName(f.character, relationships[f.character.id])}
-                  first={i === 0}
-                  slide={reorderOnly}
-                  onOpen={openChat}
-                />
-              ))}
-              {others.length > 0 ? (
-                <PressableScale
-                  scaleTo={0.98}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('a11y.unreadTab', { label: t('home.allChats'), count: others.length })}
-                  onPress={() => router.navigate({ pathname: '/(tabs)/chat', params: { filter: 'unread' } })}
-                  style={styles.row}>
-                  <View style={styles.faces}>
-                    {others.slice(0, 2).map((f, i) => (
-                      <CharacterAvatar key={f.character.id} character={f.character} size={i ? 30 : 32} style={i > 0 && styles.overlap} />
-                    ))}
-                  </View>
-                  <View style={[styles.rowBody, styles.line]}>
-                    <InkText variant="bodyStrong" lines={1} style={styles.flex}>
-                      {t('home.allChats')}
+          <View style={[styles.card, styles.firstCard]}>
+            {listed.map((entry, i) => (
+              <WaitingRow
+                key={`${entry.kind}:${entry.id}`}
+                entry={entry}
+                first={i === 0}
+                slide={reorderOnly}
+                onOpen={openWaiting}
+              />
+            ))}
+            {others.length > 0 ? (
+              <PressableScale
+                scaleTo={0.98}
+                accessibilityRole="button"
+                accessibilityLabel={t('a11y.unreadTab', { label: t('home.allChats'), count: others.length })}
+                onPress={() => {
+                  if (editing) {
+                    finishEditing();
+                    return;
+                  }
+                  router.navigate({ pathname: '/(tabs)/chat', params: { filter: 'unread' } });
+                }}
+                style={styles.row}>
+                <View style={styles.faces}>
+                  {others.slice(0, 2).map((entry, i) => {
+                    const face = entry.kind === 'chat' ? entry.character : entry.members[0];
+                    return face ? (
+                      <CharacterAvatar key={`${entry.kind}:${entry.id}`} character={face} size={i ? 30 : 32} style={i > 0 && styles.overlap} />
+                    ) : null;
+                  })}
+                </View>
+                <View style={[styles.rowBody, styles.line]}>
+                  <InkText variant="bodyStrong" lines={1} style={styles.flex}>
+                    {t('home.allChats')}
+                  </InkText>
+                  <InkText variant="body" color={ink.text3} style={styles.tabular}>
+                    {others.length}
+                  </InkText>
+                  <Ionicons name="chevron-forward" size={18} color={ink.text3} />
+                </View>
+              </PressableScale>
+            ) : null}
+            {note && noteFrom ? (
+              <PressableScale
+                scaleTo={0.98}
+                accessibilityRole="button"
+                accessibilityLabel={`${t('home.todo.note', { name: noteName })}, ${note.depth ? t('secretNote.depthKicker', { n: note.depth }) : t('home.widget.sealed')}`}
+                onPress={() => {
+                  if (editing) {
+                    finishEditing();
+                    return;
+                  }
+                  router.push(`/secret-note/${noteFrom.id}`);
+                }}
+                style={styles.row}>
+                <View style={styles.noteIcon}>
+                  <ModuleLine name="note" size={24} color={SUN_LIGHT} />
+                </View>
+                <View style={[styles.rowBody, unread.length > 0 && styles.line]}>
+                  <View style={styles.flex}>
+                    <InkText variant="bodyStrong" lines={1}>
+                      {t('home.todo.note', { name: noteName })}
                     </InkText>
-                    {/* A plain grey count before the chevron, as iOS Mail's mailbox rows: a red "+N" read
-                        like a price, and the Chats tab badge already carries the red count (audit #10). */}
-                    <InkText variant="body" color={ink.text3} style={styles.tabular}>
-                      {others.length}
-                    </InkText>
-                    <Ionicons name="chevron-forward" size={18} color={ink.text3} />
-                  </View>
-                </PressableScale>
-              ) : null}
-              {note && noteFrom ? (
-                <PressableScale
-                  scaleTo={0.98}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${t('home.todo.note', { name: noteName })}, ${note.depth ? t('secretNote.depthKicker', { n: note.depth }) : t('home.widget.sealed')}`}
-                  onPress={() => router.push(`/secret-note/${noteFrom.id}`)}
-                  style={styles.row}>
-                  <View style={styles.noteIcon}>
-                    <ModuleLine name="note" size={24} color={SUN_LIGHT} />
-                  </View>
-                  <View style={[styles.rowBody, unread.length > 0 && styles.line]}>
-                    <View style={styles.flex}>
-                      <InkText variant="bodyStrong" lines={1}>
-                        {t('home.todo.note', { name: noteName })}
-                      </InkText>
-                      {/* A keepsake (every 40th message, `depth`) says how far you have come, in the note's warm colour. */}
-                      {note.depth ? (
-                        <View style={styles.keepsake}>
-                          <Ionicons name="sparkles" size={13} color={SUN_LIGHT} />
-                          <InkText variant="sub" lines={1} color={SUN_LIGHT} style={styles.flex}>
-                            {t('secretNote.depthKicker', { n: note.depth })}
-                          </InkText>
-                        </View>
-                      ) : (
-                        <InkText variant="sub" lines={1}>
-                          {t('home.widget.sealed')}
+                    {note.depth ? (
+                      <View style={styles.keepsake}>
+                        <Ionicons name="sparkles" size={13} color={SUN_LIGHT} />
+                        <InkText variant="sub" lines={1} color={SUN_LIGHT} style={styles.flex}>
+                          {t('secretNote.depthKicker', { n: note.depth })}
                         </InkText>
-                      )}
-                    </View>
-                    <Ionicons name="chevron-forward" size={18} color={ink.text3} />
+                      </View>
+                    ) : (
+                      <InkText variant="sub" lines={1}>
+                        {t('home.widget.sealed')}
+                      </InkText>
+                    )}
                   </View>
-                </PressableScale>
-              ) : null}
-            </View>
-          </>
+                  <Ionicons name="chevron-forward" size={18} color={ink.text3} />
+                </View>
+              </PressableScale>
+            ) : null}
+          </View>
         ) : null}
 
         {anyWidget || editing ? (
           <View style={styles.widgetBlock} onLayout={(e) => (widgetsY.current = e.nativeEvent.layout.y)}>
-            {/* No title over the widgets (owner, 2026-11-16): they speak for themselves. */}
             <View style={styles.widgets}>
-              {slots.map((kind, i) =>
-                kind ? (
-                  <Slot
-                    key={`${kind}-${i}`}
-                    index={i}
-                    width={half}
-                    height={tile}
-                    kind={kind}
-                    editing={editing}
-                    onLayout={keepRect}
-                    onStartEditing={startEditing}
-                    onReplace={setGallerySlot}
-                    onRemove={remove}
-                    onDrop={drop}
-                  />
-                ) : editing ? (
-                  <PressableScale
-                    key={`empty-${i}`}
-                    scaleTo={0.97}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('home.widget.addHere')}
-                    onPress={() => setGallerySlot(i)}
-                    onLayout={(e) => (rects.current[i] = e.nativeEvent.layout)}
-                    style={[styles.empty, { width: half, height: tile }]}>
-                    <SoftGlass style={styles.round}>
-                      <Ionicons name="add" size={24} color={ink.text} />
-                    </SoftGlass>
-                  </PressableScale>
-                ) : null,
-              )}
+              {slots.map((kind, i) => {
+                const slide = previewSlideForSlot(i, activeDrag, hoverSlot, half, tile, space.md);
+                if (kind) {
+                  return (
+                    <Slot
+                      key={kind}
+                      index={i}
+                      width={half}
+                      height={tile}
+                      gap={space.md}
+                      kind={kind}
+                      editing={editing}
+                      dragging={activeDrag === i}
+                      slideX={slide.x}
+                      slideY={slide.y}
+                      committedRef={dragCommitted}
+                      onStartEditing={startEditing}
+                      onReplace={setGallerySlot}
+                      onRemove={remove}
+                      onDragStart={handleDragStart}
+                      onDragHover={handleDragHover}
+                      onDragCommit={handleDragCommit}
+                      onDragEnd={handleDragEnd}
+                    />
+                  );
+                }
+                if (editing) {
+                  return (
+                    <EmptySlot
+                      key={`empty-${i}`}
+                      index={i}
+                      width={half}
+                      height={tile}
+                      slideX={slide.x}
+                      slideY={slide.y}
+                      committedRef={dragCommitted}
+                      activeDrag={activeDrag}
+                      label={t('home.widget.addHere')}
+                      onPress={setGallerySlot}
+                    />
+                  );
+                }
+                return null;
+              })}
             </View>
-            {/* Done sits under the widgets it finishes: above them it would push the grid down under
-                the finger that just started editing. */}
             {editing ? (
-              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={() => setEditing(false)} style={styles.done}>
+              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={finishEditing} style={styles.done}>
                 <InkText variant="bodyStrong" color={inkPeachGlass.ctaText}>
                   {t('home.widget.done')}
                 </InkText>
@@ -410,14 +526,15 @@ export default function HomeScreen() {
           </View>
         ) : null}
 
-        {/* Everything else, one step deeper (audit §6.1); a gift waiting rides on this row. */}
         <PressableScale
           scaleTo={0.98}
           accessibilityRole="button"
           accessibilityLabel={giftBadge ? t('a11y.unreadTab', { label: t('more.title'), count: 1 }) : t('more.title')}
-          onPress={() => setMoreOpen(true)}
+          onPress={() => {
+            if (editing) setEditing(false);
+            setMoreOpen(true);
+          }}
           style={[styles.card, styles.row, styles.moreRow, !waiting && !anyWidget && !editing && !!hero && styles.firstCard]}>
-          {/* A door to a set: the first of the sheet's own tiles side by side (owner, 2026-11-25). */}
           <IconStack items={moreModules(covered).map((m) => moduleTile(m.key))} size={30} max={4} />
           <InkText variant="bodyStrong" lines={1} style={styles.flex}>
             {t('more.title')}
@@ -445,25 +562,33 @@ export default function HomeScreen() {
 
       <Sheet visible={gallerySlot !== null} onClose={() => setGallerySlot(null)} title={t('home.widget.gallery')} scroll>
         <View style={styles.galleryGrid} onLayout={(e) => setGalleryWidth(e.nativeEvent.layout.width)}>
-          {/* Live previews only while the gallery is open: each one reads the store like a widget. */}
           {gallerySlot !== null &&
             WIDGET_KINDS.map((kind) => {
-              const used = slots.includes(kind);
+              const current = slots[gallerySlot] === kind;
+              const usedElsewhere = !current && slots.includes(kind);
               const label = widgetLabel(kind, t);
               return (
                 <PressableScale
                   key={kind}
                   scaleTo={0.96}
-                  disabled={used}
+                  disabled={usedElsewhere}
                   accessibilityRole="button"
                   accessibilityLabel={label}
-                  accessibilityState={{ disabled: used }}
+                  accessibilityState={{ disabled: usedElsewhere, selected: current }}
                   onPress={() => place(kind)}
-                  style={[styles.galleryItem, { width: galleryHalf }, used && styles.used]}>
-                  <LiveWidget kind={kind} height={GALLERY_HEIGHT} preview />
+                  style={[styles.galleryItem, { width: galleryHalf }, usedElsewhere && styles.used]}>
+                  <View style={[styles.galleryFrame, current && styles.galleryCurrent]}>
+                    <LiveWidget kind={kind} height={GALLERY_HEIGHT} preview />
+                  </View>
                   <View style={styles.galleryLabel}>
-                    <InkText variant="subStrong">{label}</InkText>
-                    {used ? <Ionicons name="checkmark" size={15} color={colors.success} /> : null}
+                    <InkText variant="subStrong" color={current ? ink.accent : ink.text}>
+                      {label}
+                    </InkText>
+                    {current ? (
+                      <Ionicons name="checkmark-circle" size={16} color={ink.accent} />
+                    ) : usedElsewhere ? (
+                      <Ionicons name="checkmark" size={15} color={colors.success} />
+                    ) : null}
                   </View>
                 </PressableScale>
               );
@@ -471,7 +596,6 @@ export default function HomeScreen() {
         </View>
       </Sheet>
 
-      {/* The day's check-in shows here only, never over a chat or another tab. */}
       <DailyRewardSheet />
       <WelcomeBack />
     </Screen>
@@ -479,45 +603,44 @@ export default function HomeScreen() {
 }
 
 /**
- * One unread chat in "Waiting for you": their face in a peach ring, their name, the last line, the
- * count in blue; a tap opens that chat. Memo, so a new line in one chat redraws only its own row.
+ * One unread one-to-one or group chat in "Waiting for you": face (or group mosaic), name, last
+ * line, unread count; a tap opens that chat or group.
  */
 const WaitingRow = memo(function WaitingRow({
-  conversation,
-  character,
-  name,
+  entry,
   first,
   slide,
   onOpen,
 }: {
-  conversation: Conversation;
-  character: Character;
-  name: string;
+  entry: WaitingEntry;
   first: boolean;
-  /** The same rows as before, only reordered: this one may slide to its new place. */
   slide: boolean;
-  onOpen: (id: string) => void;
+  onOpen: (entry: WaitingEntry) => void;
 }) {
   const { t } = useTranslation();
-  const count = conversation.unreadCount;
-  // A friend who writes again moves up the card by sliding, not jumping (§8.2.3).
+  const count = entry.kind === 'chat' ? entry.conversation.unreadCount : entry.group.unreadCount;
+  const preview = entry.kind === 'chat' ? entry.conversation.lastMessagePreview : entry.group.lastMessagePreview;
   return (
     <Animated.View layout={slide ? listReorder : undefined}>
       <PressableScale
         scaleTo={0.98}
         accessibilityRole="button"
-        accessibilityLabel={[t('a11y.unreadTab', { label: name, count }), conversation.lastMessagePreview].filter(Boolean).join(', ')}
-        onPress={() => onOpen(conversation.id)}
+        accessibilityLabel={[t('a11y.unreadTab', { label: entry.name, count }), preview].filter(Boolean).join(', ')}
+        onPress={() => onOpen(entry)}
         style={styles.row}>
-        <CharacterAvatar character={character} size={FACE} ring ringColor={night.friendAccent(character.id).strong} />
+        {entry.kind === 'chat' ? (
+          <CharacterAvatar character={entry.character} size={FACE} ring ringColor={night.friendAccent(entry.character.id).strong} />
+        ) : (
+          <GroupAvatar members={entry.members} size={FACE} ringColor={ink.card} />
+        )}
         <View style={[styles.rowBody, !first && styles.line]}>
           <View style={styles.flex}>
             <InkText variant="bodyStrong" lines={1}>
-              {name}
+              {entry.name}
             </InkText>
-            {conversation.lastMessagePreview ? (
+            {preview ? (
               <InkText variant="sub" lines={1}>
-                {conversation.lastMessagePreview}
+                {preview}
               </InkText>
             ) : null}
           </View>
@@ -533,11 +656,68 @@ const WaitingRow = memo(function WaitingRow({
 });
 
 /**
+ * Empty dashed "+" slot shown during widget edit mode; slides smoothly out of the way when a
+ * dragged widget hovers over it.
+ */
+const EmptySlot = memo(function EmptySlot({
+  index,
+  width,
+  height,
+  slideX,
+  slideY,
+  committedRef,
+  activeDrag,
+  label,
+  onPress,
+}: {
+  index: number;
+  width: number;
+  height: number;
+  slideX: number;
+  slideY: number;
+  committedRef: React.MutableRefObject<boolean>;
+  activeDrag: number | null;
+  label: string;
+  onPress: (index: number) => void;
+}) {
+  const still = useReducedMotion();
+  const sx = useSharedValue(0);
+  const sy = useSharedValue(0);
+
+  useEffect(() => {
+    if (activeDrag === null && committedRef.current) {
+      sx.value = 0;
+      sy.value = 0;
+      return;
+    }
+    sx.value = still ? slideX : withSpring(slideX, SLIDE_SPRING);
+    sy.value = still ? slideY : withSpring(slideY, SLIDE_SPRING);
+  }, [slideX, slideY, activeDrag, committedRef, still, sx, sy]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    zIndex: 1,
+    transform: [{ translateX: sx.value }, { translateY: sy.value }],
+  }));
+
+  return (
+    <Animated.View entering={still ? undefined : FadeIn.duration(160)} style={animStyle}>
+      <PressableScale
+        scaleTo={0.97}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={() => onPress(index)}
+        style={[styles.empty, { width, height }]}>
+        <SoftGlass style={styles.round}>
+          <Ionicons name="add" size={24} color={ink.text} />
+        </SoftGlass>
+      </PressableScale>
+    </Animated.View>
+  );
+});
+
+/**
  * The scroll edge under the status bar (iOS 26 scroll edge effect, as a gradient: a live blur on
- * Android redraws the whole screen each frame on a Galaxy A51). Without it the hero's line, its
- * "Message" field and then the widgets ran straight under the clock and battery glyphs (owner's
- * screenshots, 2026-11-11). Over the picture it is a dark veil that keeps the light glyphs legible;
- * once the picture is gone it is the ground, under the dark glyphs. Not drawn at rest.
+ * Android redraws the whole screen each frame on a Galaxy A51).
  */
 function TopEdge({ mode, solid, height }: { mode: 'none' | 'photo' | 'ground'; solid: number; height: number }) {
   const still = useReducedMotion();
@@ -554,58 +734,72 @@ function TopEdge({ mode, solid, height }: { mode: 'none' | 'photo' | 'ground'; s
     </Animated.View>
   );
 }
-// Opaque under the status bar, then a short fade: at 0.96 the hero's name and line still showed as a
-// ghost behind the clock once scrolled (A51, design-audit §10).
 const TOP_EDGE_PHOTO = ['rgba(10,12,20,1)', 'rgba(10,12,20,1)', 'rgba(10,12,20,0)'] as const;
 const TOP_EDGE_GROUND = ['rgba(9,9,13,1)', 'rgba(9,9,13,1)', 'rgba(9,9,13,0)'] as const;
 
-/** Clear glass on the friend's picture (HIG Materials: the clear variant is for rich media). */
 function PhotoGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
   return <View style={[style, styles.photoGlass]}>{children}</View>;
 }
 
-/** Apple's fill on the white ground: the round buttons and pills off the picture. */
 function SoftGlass({ style, children }: { style?: StyleProp<ViewStyle>; children: ReactNode }) {
   return <View style={[style, styles.softGlass]}>{children}</View>;
 }
 
 /**
- * One filled slot. In edit mode it jiggles, wears a "−", opens the gallery on a tap and can be
- * dragged onto another slot; out of it, the widget works as itself and a long press starts
- * editing. Memo: Today's handlers are stable and take the slot's index.
+ * One filled widget slot. In edit mode it jiggles, wears a "−", opens the replacement gallery on a
+ * quick tap, and lifts on hold-drag so neighbours slide into its vacated cell live under the finger
+ * before release (60-120 FPS pure UI-thread worklets, elevated zIndex so Row 1 never slips under Row 2).
  */
 const Slot = memo(function Slot({
   index,
   width,
   height,
+  gap,
   kind,
   editing,
-  onLayout,
+  dragging,
+  slideX,
+  slideY,
+  committedRef,
   onStartEditing,
   onReplace,
   onRemove,
-  onDrop,
+  onDragStart,
+  onDragHover,
+  onDragCommit,
+  onDragEnd,
 }: {
   index: number;
   width: number;
   height: number;
+  gap: number;
   kind: WidgetKind;
   editing: boolean;
-  onLayout: (index: number, r: LayoutRectangle) => void;
+  dragging: boolean;
+  slideX: number;
+  slideY: number;
+  committedRef: React.MutableRefObject<boolean>;
   onStartEditing: () => void;
   onReplace: (index: number) => void;
   onRemove: (index: number) => void;
-  onDrop: (from: number, dx: number, dy: number) => void;
+  onDragStart: (index: number) => void;
+  onDragHover: (hover: number | null) => void;
+  onDragCommit: (from: number, to: number) => void;
+  onDragEnd: () => void;
 }) {
   const { t } = useTranslation();
   const still = useReducedMotion();
   const tilt = useSharedValue(0);
   const dx = useSharedValue(0);
   const dy = useSharedValue(0);
-  const lifted = useSharedValue(0);
+  const liftScale = useSharedValue(1);
+  const elevated = useSharedValue(0);
+  const hover = useSharedValue(-1);
+  const sx = useSharedValue(0);
+  const sy = useSharedValue(0);
 
   useEffect(() => {
-    if (editing && !still) {
+    if (editing && !still && !dragging) {
       const way = index % 2 ? -1 : 1;
       tilt.value = withRepeat(
         withSequence(withTiming(1.1 * way, { duration: 130 }), withTiming(-1.1 * way, { duration: 130 })),
@@ -614,47 +808,100 @@ const Slot = memo(function Slot({
       );
     } else {
       cancelAnimation(tilt);
-      tilt.value = withTiming(0, { duration: 120 });
+      tilt.value = withTiming(0, { duration: 110 });
     }
-  }, [editing, still, index, tilt]);
+  }, [editing, still, dragging, index, tilt]);
+
+  useEffect(() => {
+    if (!dragging && committedRef.current && slideX === 0 && slideY === 0) {
+      sx.value = 0;
+      sy.value = 0;
+      return;
+    }
+    sx.value = still ? slideX : withSpring(slideX, SLIDE_SPRING);
+    sy.value = still ? slideY : withSpring(slideY, SLIDE_SPRING);
+  }, [slideX, slideY, dragging, committedRef, still, sx, sy]);
 
   const drag = Gesture.Pan()
     .enabled(editing)
-    .activateAfterLongPress(150)
+    .activateAfterLongPress(130)
     .onStart(() => {
-      lifted.value = 1;
+      'worklet';
+      hover.value = -1;
+      elevated.value = 1;
+      liftScale.value = still ? 1.03 : withSpring(1.06, LIFT_SPRING);
+      runOnJS(onDragStart)(index);
     })
     .onUpdate((e) => {
+      'worklet';
       dx.value = e.translationX;
       dy.value = e.translationY;
+      const fromX = (index % 2) * (width + gap);
+      const fromY = Math.floor(index / 2) * (height + gap);
+      const cx = fromX + width / 2 + e.translationX;
+      const cy = fromY + height / 2 + e.translationY;
+      let found = -1;
+      for (let i = 0; i < TODAY_SLOTS; i++) {
+        if (i === index) continue;
+        const ox = (i % 2) * (width + gap);
+        const oy = Math.floor(i / 2) * (height + gap);
+        if (cx >= ox && cx <= ox + width && cy >= oy && cy <= oy + height) {
+          found = i;
+          break;
+        }
+      }
+      if (found !== hover.value) {
+        hover.value = found;
+        runOnJS(onDragHover)(found >= 0 ? found : null);
+      }
     })
     .onEnd((e) => {
-      runOnJS(onDrop)(index, e.translationX, e.translationY);
+      'worklet';
+      const target = hover.value;
+      if (target >= 0 && target !== index) {
+        const fromX = (index % 2) * (width + gap);
+        const fromY = Math.floor(index / 2) * (height + gap);
+        const toX = (target % 2) * (width + gap);
+        const toY = Math.floor(target / 2) * (height + gap);
+        dx.value = e.translationX - (toX - fromX);
+        dy.value = e.translationY - (toY - fromY);
+        dx.value = still ? 0 : withSpring(0, SLIDE_SPRING);
+        dy.value = still ? 0 : withSpring(0, SLIDE_SPRING);
+        runOnJS(onDragCommit)(index, target);
+      } else {
+        dx.value = still ? 0 : withSpring(0, SLIDE_SPRING);
+        dy.value = still ? 0 : withSpring(0, SLIDE_SPRING);
+        runOnJS(onDragEnd)();
+      }
     })
     .onFinalize(() => {
-      dx.value = withSpring(0);
-      dy.value = withSpring(0);
-      lifted.value = 0;
+      'worklet';
+      hover.value = -1;
+      liftScale.value = still
+        ? 1
+        : withSpring(1, LIFT_SPRING, (finished) => {
+            if (finished) elevated.value = 0;
+          });
+      if (still) elevated.value = 0;
     });
 
   const moving = useAnimatedStyle(() => ({
-    zIndex: lifted.value ? 10 : 0,
+    zIndex: elevated.value ? 30 : 1,
     transform: [
-      { translateX: dx.value },
-      { translateY: dy.value },
-      { scale: withTiming(lifted.value ? 1.05 : 1, { duration: 120 }) },
+      { translateX: dx.value + sx.value },
+      { translateY: dy.value + sy.value },
+      { scale: liftScale.value },
       { rotate: `${tilt.value}deg` },
     ],
   }));
 
   return (
     <GestureDetector gesture={drag}>
-      <Animated.View style={[{ width, height }, moving]} onLayout={(e) => onLayout(index, e.nativeEvent.layout)}>
-        {/* In edit mode a long press still has a handler: without one, the finger that just started
-            editing would also open the gallery as it lifts (A51 2026-11-05). */}
+      <Animated.View entering={still ? undefined : FadeIn.duration(160)} style={[{ width, height }, moving]}>
         <LiveWidget
           kind={kind}
           height={height}
+          editing={editing}
           onPress={editing ? () => onReplace(index) : undefined}
           onLongPress={
             editing
@@ -665,7 +912,7 @@ const Slot = memo(function Slot({
                 }
           }
         />
-        {editing ? (
+        {editing && !dragging ? (
           <PressableScale
             scaleTo={0.88}
             hitSlop={8}
@@ -685,8 +932,6 @@ const styles = StyleSheet.create({
   keepsake: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   topEdge: { position: 'absolute', top: 0, left: 0, right: 0 },
   flex: { flex: 1, minWidth: 0 },
-  // The top row under the Dynamic Island: the mascot on the leading edge, your face
-  // on the trailing one, 44pt tall like an iOS bar. The top padding is the room the mascot's hair rises into.
   bar: {
     minHeight: 44,
     flexDirection: 'row',
@@ -695,10 +940,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingTop: Math.ceil(LOGO_MAX - LOGO_BELOW_MID - 44 / 2),
   },
-  // As tall as the capsule; the wordmark hangs from it so its letters centre on the capsule.
   logo: { flex: 1, minWidth: 0, height: CAPSULE },
-  // Your face in a glass circle, as iOS account buttons are (your name is in your profile).
   me: { width: CAPSULE, height: CAPSULE, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
+  bellBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 5,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.badge,
+  },
   photoGlass: { backgroundColor: ink.photoGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: ink.photoGlassRim },
   softGlass: { backgroundColor: ink.raised },
   round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
@@ -714,8 +969,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: inkPeachGlass.ctaRim,
   },
-
-  // One card on the night ground, its rows inset like Apple's grouped lists.
   card: {
     marginHorizontal: space.lg,
     borderRadius: inkRadius.card,
@@ -727,7 +980,6 @@ const styles = StyleSheet.create({
   },
   firstCard: { marginTop: space.xl },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingLeft: space.lg, minHeight: 64 },
-  // The words and what trails them; its top edge is the separator, so it starts after the face.
   rowBody: {
     flex: 1,
     alignSelf: 'stretch',
@@ -752,12 +1004,11 @@ const styles = StyleSheet.create({
     backgroundColor: ink.badge,
   },
   noteIcon: { width: FACE, height: FACE, borderRadius: 14, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: SUN_WASH },
-  // Same gap as the other cards' rhythm; no title above, so the grid keeps the section's spacing.
   widgetBlock: { marginTop: space.xl },
-  // Two to a row: the width comes from the screen (`half`), so two always fit.
   widgets: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg },
   empty: {
     borderRadius: inkRadius.card,
+    borderCurve: 'continuous',
     borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: ink.text3,
@@ -765,7 +1016,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // The remove badge in the corner of a jiggling widget.
   minus: {
     position: 'absolute',
     left: -7,
@@ -792,6 +1042,8 @@ const styles = StyleSheet.create({
   },
   galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingBottom: space.lg },
   galleryItem: { width: '47%', gap: space.sm },
-  used: { opacity: 0.45 },
+  galleryFrame: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
+  galleryCurrent: { borderWidth: 2, borderColor: inkPeachGlass.rim },
+  used: { opacity: 0.42 },
   galleryLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 4 },
 });

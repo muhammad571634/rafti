@@ -1,7 +1,17 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { awakeAt, freshDayNote, fourWidgets } from './today';
+import {
+  awakeAt,
+  fourWidgets,
+  freshDayNote,
+  hoverSlotAt,
+  nextHeroWakeAt,
+  nextMidnightAt,
+  previewSlideForSlot,
+  slotOrigin,
+  swapWidgetSlots,
+} from './today';
 
 describe('calm Today', () => {
   it('shows the friend awake only in waking hours', () => {
@@ -26,12 +36,25 @@ describe('calm Today', () => {
       },
     ];
     assert.equal(freshDayNote(ownDay, '2026-11-16', now), 'at practice');
-    // Over three hours old: nothing.
     assert.equal(freshDayNote(ownDay, '2026-11-16', Date.parse('2026-11-16T17:00:00Z')), undefined);
-    // Another day: nothing, even when fresh by the clock.
     assert.equal(freshDayNote(ownDay, '2026-11-17', now), undefined);
     assert.equal(freshDayNote(undefined, '2026-11-16', now), undefined);
     assert.equal(freshDayNote([{ date: '2026-11-16', notes: [{ at: 'bad', text: 'x' }] }], '2026-11-16', now), undefined);
+  });
+
+  it('schedules next midnight and hero light/presence boundaries accurately', () => {
+    const afternoon = new Date(2026, 10, 25, 16, 45, 0, 0).getTime();
+    assert.equal(nextMidnightAt(afternoon), new Date(2026, 10, 26, 0, 0, 0, 0).getTime());
+    // Next hero boundary after 16:45 is evening at 17:00.
+    assert.equal(nextHeroWakeAt(afternoon), new Date(2026, 10, 25, 17, 0, 0, 0).getTime());
+    // Late at 23:30: next hero boundary is tomorrow dawn at 05:00.
+    const lateNight = new Date(2026, 10, 25, 23, 30, 0, 0).getTime();
+    assert.equal(nextHeroWakeAt(lateNight), new Date(2026, 10, 26, 5, 0, 0, 0).getTime());
+    // When an active ownDay note expires before the next light boundary, wakes at note expiry first.
+    const morning = new Date(2026, 10, 25, 12, 0, 0, 0).getTime();
+    const noteAt = morning - 2 * 60 * 60 * 1000 - 50 * 60 * 1000; // 2h50m old -> expires in 10m (at 12:10 < 17:00)
+    const ownDay = [{ date: '2026-11-25', notes: [{ at: new Date(noteAt).toISOString(), text: 'coffee' }] }];
+    assert.equal(nextHeroWakeAt(morning, ownDay, '2026-11-25'), noteAt + 3 * 60 * 60 * 1000 + 1);
   });
 
   it('fills the saved widgets up to four with the defaults', () => {
@@ -45,5 +68,31 @@ describe('calm Today', () => {
     assert.deepEqual(fourWidgets(['a', 'b', 'c', 'd', 'e'], defaults).length, 4);
     assert.deepEqual(fourWidgets(undefined, defaults), ['calls', 'diary', 'date', 'sleep']);
     assert.deepEqual(fourWidgets([null, null], defaults), ['calls', 'diary', 'date', 'sleep']);
+  });
+
+  it('computes 2x2 widget grid hover and live slide offsets cleanly', () => {
+    const W = 170;
+    const H = 170;
+    const GAP = 12;
+    assert.deepEqual(slotOrigin(0, W, H, GAP), { x: 0, y: 0 });
+    assert.deepEqual(slotOrigin(1, W, H, GAP), { x: 182, y: 0 });
+    assert.deepEqual(slotOrigin(2, W, H, GAP), { x: 0, y: 182 });
+    assert.deepEqual(slotOrigin(3, W, H, GAP), { x: 182, y: 182 });
+
+    // Small drag stays in slot 0 -> null
+    assert.equal(hoverSlotAt(0, 20, 15, W, H, GAP), null);
+    // Dragging slot 0 right into slot 1
+    assert.equal(hoverSlotAt(0, 180, 10, W, H, GAP), 1);
+    // Dragging slot 0 down into slot 2
+    assert.equal(hoverSlotAt(0, 5, 185, W, H, GAP), 2);
+    // Dragging slot 0 diagonally into slot 3
+    assert.equal(hoverSlotAt(0, 185, 185, W, H, GAP), 3);
+
+    // While slot 0 hovers over slot 2, slot 2 slides up by -182 into slot 0's spot; others stay at 0
+    assert.deepEqual(previewSlideForSlot(2, 0, 2, W, H, GAP), { x: 0, y: -182 });
+    assert.deepEqual(previewSlideForSlot(1, 0, 2, W, H, GAP), { x: 0, y: 0 });
+
+    assert.deepEqual(swapWidgetSlots(['calls', 'diary', 'date', 'sleep'], 0, 2), ['date', 'diary', 'calls', 'sleep']);
+    assert.deepEqual(swapWidgetSlots(['calls', null, 'date', 'sleep'], 2, 1), ['calls', 'date', null, 'sleep']);
   });
 });

@@ -29,12 +29,13 @@ Proposed:
    talked with last (today it is always "last talked", so a new message from someone else sits in the
    card under a picture of someone who said nothing new). The waiting card then leaves the hero's chat
    out (no friend twice on one screen).
-2. **Widgets become "Today's list"**: real items for today only, newest first, each one row (its
-   module tile, one line, its time): a plan at 19:00 with Ethan, a wake-up at 07:00 from Clara, a new
-   diary page, a gift or spin ready, a date that waits. Nothing due: the list is not there. This drops
-   the widget editor, the gallery and drag-to-swap (a large, fragile piece of code that only arranges
-   copies of Us), and every row is something the user can act on.
-3. **The bell moves from Us to Today** (notifications are "what's new"); Us keeps "+" only.
+2. **Keep and polish Today's 2x2 Apple-style widgets** (**owner decision, done 0z370**): instead of
+   dropping widgets for a text list, the owner chose to keep Today's 2x2 widgets and make their
+   A-to-Z architecture, timeline wake-ups, contextual deep-links (Date → Us plan day or active date,
+   Sleep → Alarms or partner-selected Bedtime, Photos/Diary/Board/Bond → exact friend, Gifts → unified
+   spin/check-in/first-step rewards) and live jiggle drag-to-swap physics work like iPhone widgets.
+3. **The bell moves from Us to Today** (**done 0z370**): notifications sit in Today's top bar beside
+   Profile; Us keeps "+" only.
 4. **More stays one row** with the module tiles (0z366), and shrinks with the launch feature trim
    (audit P2-11): each module lives where it belongs (Calls in Chats, dates and diary in Us, Store
    behind shells).

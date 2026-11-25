@@ -1,17 +1,40 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { alarmsInOrder, earliest, freeShellsLeft, missedCall, MISSED_CALL_MS, upcomingPlans } from './today-widgets';
+import {
+  alarmsInOrder,
+  earliest,
+  freeShellsLeft,
+  missedCall,
+  MISSED_CALL_MS,
+  nextRelativeWakeAt,
+  resolveDateWidget,
+  resolveGiftsAction,
+  resolveSleepWidget,
+  upcomingPlans,
+} from './today-widgets';
 
 // Saturday, Nov 7 2026, 15:00 local time.
 const NOW = new Date(2026, 10, 7, 15, 0, 0, 0).getTime();
 const TODAY = '2026-11-07';
 const at = (h: number, m = 0, day = 7) => new Date(2026, 10, day, h, m, 0, 0).getTime();
 
-describe('earliest', () => {
+describe('earliest & nextRelativeWakeAt', () => {
   it('picks the soonest moment and skips missing ones', () => {
     assert.equal(earliest(undefined, 30, 10, undefined), 10);
     assert.equal(earliest(undefined), undefined);
+  });
+
+  it('wakes every minute in the first hour, every hour in the first day, and stops after a day', () => {
+    const tenSecAgo = new Date(NOW - 10_000).toISOString();
+    assert.equal(nextRelativeWakeAt(tenSecAgo, NOW), NOW + 50_000);
+
+    const twoHoursAgo = new Date(NOW - 2 * 3_600_000 - 15 * 60_000).toISOString();
+    assert.equal(nextRelativeWakeAt(twoHoursAgo, NOW), NOW + 45 * 60_000);
+
+    const twoDaysAgo = new Date(NOW - 2 * MISSED_CALL_MS).toISOString();
+    assert.equal(nextRelativeWakeAt(twoDaysAgo, NOW), undefined);
+    assert.equal(nextRelativeWakeAt(undefined, NOW), undefined);
   });
 });
 
@@ -123,5 +146,108 @@ describe('freeShellsLeft: the Store widget', () => {
     assert.equal(freeShellsLeft({ free: { day: TODAY, amount: 40 } }, TODAY), 40);
     assert.equal(freeShellsLeft({ free: { day: '2026-11-06', amount: 40 } }, TODAY), 0);
     assert.equal(freeShellsLeft({}, TODAY), 0);
+  });
+});
+
+describe('contextual widget chains: Date, Sleep, Gifts', () => {
+  const known = new Set(['c_ethan', 'c_clara']);
+  const hasCharacter = (id: string) => known.has(id);
+
+  it('Date widget prioritizes an active date, then upcoming plan (targeting friend+day), else hero partner', () => {
+    const schedules = [
+      { characterId: 'c_blocked', date: TODAY, time: '15:30', title: 'Hidden' },
+      { characterId: 'c_ethan', date: TODAY, time: '19:00', title: 'Movie night' },
+      { characterId: 'c_clara', date: '2026-11-08', time: '10:00', title: 'Brunch' },
+    ];
+
+    const inProgress = resolveDateWidget({
+      activeDate: { characterId: 'c_clara', placeId: 'rooftop', live: { title: 'Rooftop Stars' } },
+      schedules,
+      today: TODAY,
+      now: NOW,
+      heroId: 'c_ethan',
+      hasCharacter,
+    });
+    assert.equal(inProgress.mode, 'activeDate');
+    if (inProgress.mode === 'activeDate') {
+      assert.equal(inProgress.characterId, 'c_clara');
+      assert.equal(inProgress.placeId, 'rooftop');
+      assert.equal(inProgress.customTitle, 'Rooftop Stars');
+    }
+
+    const planned = resolveDateWidget({
+      activeDate: null,
+      schedules,
+      today: TODAY,
+      now: NOW,
+      heroId: 'c_clara',
+      hasCharacter,
+    });
+    assert.equal(planned.mode, 'plan');
+    if (planned.mode === 'plan') {
+      assert.equal(planned.plan.characterId, 'c_ethan');
+      assert.equal(planned.plan.title, 'Movie night');
+      assert.equal(planned.nextPlan?.characterId, 'c_clara');
+    }
+
+    const empty = resolveDateWidget({
+      activeDate: null,
+      schedules: [],
+      today: TODAY,
+      now: NOW,
+      heroId: 'c_clara',
+      hasCharacter,
+    });
+    assert.deepEqual(empty, { mode: 'empty', partnerId: 'c_clara' });
+  });
+
+  it('Sleep widget routes enabled alarms to /alarms and empty state to /bedtime with hero pre-selected', () => {
+    const active = resolveSleepWidget({
+      alarms: [
+        { id: 'a1', enabled: true, hour: 7, minute: 30, repeat: [1, 2, 3], label: 'Gym', characterId: 'c_clara' },
+        { id: 'a_blocked', enabled: true, hour: 6, minute: 0, repeat: [], label: 'Nope', characterId: 'c_gone' },
+      ],
+      now: NOW,
+      heroId: 'c_ethan',
+      hasCharacter,
+    });
+    assert.equal(active.mode, 'alarm');
+    if (active.mode === 'alarm') {
+      assert.equal(active.targetRoute, '/alarms');
+      assert.equal(active.alarm.id, 'a1');
+      assert.equal(active.addFriendId, 'c_clara');
+    }
+
+    const empty = resolveSleepWidget({
+      alarms: [{ id: 'a1', enabled: false, hour: 7, minute: 30, repeat: [], label: '', characterId: 'c_clara' }],
+      now: NOW,
+      heroId: 'c_ethan',
+      hasCharacter,
+    });
+    assert.deepEqual(empty, {
+      mode: 'empty',
+      targetRoute: '/bedtime',
+      partnerId: 'c_ethan',
+      addFriendId: 'c_ethan',
+    });
+  });
+
+  it('Gifts widget unifies spin, daily check-in, and first-step rewards so More badge never contradicts', () => {
+    assert.equal(
+      resolveGiftsAction({ daily: { spinDay: undefined, spinsUsed: 0 }, today: TODAY, checkInClaimed: false, stepReady: true }),
+      'spin',
+    );
+    assert.equal(
+      resolveGiftsAction({ daily: { spinDay: TODAY, spinsUsed: 1 }, today: TODAY, checkInClaimed: false, stepReady: true }),
+      'checkIn',
+    );
+    assert.equal(
+      resolveGiftsAction({ daily: { spinDay: TODAY, spinsUsed: 1 }, today: TODAY, checkInClaimed: true, stepReady: true }),
+      'firstStep',
+    );
+    assert.equal(
+      resolveGiftsAction({ daily: { spinDay: TODAY, spinsUsed: 1 }, today: TODAY, checkInClaimed: true, stepReady: false }),
+      'none',
+    );
   });
 });

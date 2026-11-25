@@ -11,6 +11,10 @@ export interface WaitingInput {
   lastMessageAt: string;
 }
 
+export type WaitingThread<C extends WaitingInput, G extends WaitingInput> =
+  | { kind: 'chat'; item: C; at: number }
+  | { kind: 'group'; item: G; at: number };
+
 /**
  * When their unread line came, or 0 when nothing is waiting. A muted chat never claims Today's
  * picture (muted means "not now"); it still counts on the badge and in its own row.
@@ -28,6 +32,21 @@ export function waitingChatCount(chats: readonly WaitingInput[], groups: readonl
 /** Unread chats, newest line first: the order Today lists them in. */
 export function newestWaitingFirst<T extends WaitingInput>(chats: readonly T[]): T[] {
   return chats.filter((c) => c.unreadCount > 0).sort((a, b) => (Date.parse(b.lastMessageAt) || 0) - (Date.parse(a.lastMessageAt) || 0));
+}
+
+/**
+ * Unread one-to-one chats and group chats together, newest message first, so Today's "Waiting for
+ * you" card and the Chats tab badge never disagree when a group chat has unread lines.
+ */
+export function waitingThreadsFirst<C extends WaitingInput, G extends WaitingInput>(
+  chats: readonly C[],
+  groups: readonly G[],
+): WaitingThread<C, G>[] {
+  const merged: WaitingThread<C, G>[] = [
+    ...chats.filter((c) => c.unreadCount > 0).map((item) => ({ kind: 'chat' as const, item, at: Date.parse(item.lastMessageAt) || 0 })),
+    ...groups.filter((g) => g.unreadCount > 0).map((item) => ({ kind: 'group' as const, item, at: Date.parse(item.lastMessageAt) || 0 })),
+  ];
+  return merged.sort((a, b) => b.at - a.at);
 }
 
 /**

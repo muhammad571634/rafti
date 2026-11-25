@@ -43,9 +43,11 @@ const SET_MOMENT_MS = 2600;
  */
 export default function AlarmEditScreen() {
   const friendName = useFriendName();
-  // `characterId` and `clipId` come from a Radio clip's "Wake me with this".
-  const { id, characterId: fromClipFriend, clipId: fromClip } = useLocalSearchParams<{ id?: string; characterId?: string; clipId?: string }>();
+  // `characterId` comes from Us or Today's Sleep widget; `clipId` also comes from Radio's "Wake me with this".
+  const { id, characterId: fromParamFriend, clipId: fromClip } = useLocalSearchParams<{ id?: string; characterId?: string; clipId?: string }>();
   const editId = Array.isArray(id) ? id[0] : id;
+  const paramFriendId = Array.isArray(fromParamFriend) ? fromParamFriend[0] : fromParamFriend;
+  const paramClipId = Array.isArray(fromClip) ? fromClip[0] : fromClip;
   const { gifts, mine } = useRadioClips();
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -80,8 +82,9 @@ export default function AlarmEditScreen() {
       const { id: _id, createdAt: _c, enabled: _e, ...rest } = existing;
       return rest;
     }
-    const clipFriend = fromClip ? friends.find((f) => f.id === fromClipFriend) : undefined;
-    const friend = clipFriend ?? friends.find((f) => f.voiceReady) ?? friends[0];
+    const askedFriend = paramFriendId ? friends.find((f) => f.id === paramFriendId) : undefined;
+    const clipFriend = paramClipId ? askedFriend : undefined;
+    const friend = askedFriend ?? friends.find((f) => f.voiceReady) ?? friends[0];
     return {
       // A wake-up starts at a morning hour, not at whatever the clock says now ("in 23 h 59 min").
       hour: DEFAULT_HOUR,
@@ -90,7 +93,7 @@ export default function AlarmEditScreen() {
       label: '',
       characterId: friend?.id,
       voice: !!clipFriend || !!friend?.voiceReady,
-      clipId: clipFriend ? fromClip : undefined,
+      clipId: clipFriend ? paramClipId : undefined,
       sound: 'morningTide',
       replyToWake: !!friend,
       snooze: true,
