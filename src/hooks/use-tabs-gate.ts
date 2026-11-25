@@ -1,3 +1,4 @@
+import { waitingChatCount } from '@/lib/waiting';
 import { useAppStore } from '@/store/use-app-store';
 
 import { useCharacterInitiative } from './use-character-initiative';
@@ -22,7 +23,7 @@ export function useTabsGate(): 'loading' | 'onboarding' | 'ready' {
  */
 export function useUnreadChats() {
   return useAppStore(
-    (s) => s.conversations.filter((c) => c.unreadCount > 0).length + s.groups.filter((g) => g.unreadCount > 0).length,
+    (s) => waitingChatCount(s.conversations, s.groups),
   );
 }
 

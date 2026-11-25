@@ -19,7 +19,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
-import { featuredFriendOf, heroTopHeight, TodayHero } from '@/components/today-hero';
+import { featuredFriendOf, heroTopHeight, lastTalkedFriendOf, TodayHero } from '@/components/today-hero';
 import { moreModules, TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
 import { LiveWidget } from '@/components/today/widget-models';
@@ -31,6 +31,7 @@ import { InkText, listReorder } from '@/components/ink';
 import { helplineToday } from '@/lib/daily-note';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { newestWaitingFirst } from '@/lib/waiting';
 import { TODAY_SLOTS } from '@/lib/today';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
@@ -126,14 +127,15 @@ export default function HomeScreen() {
 
   // Coming back in the morning: pages written overnight should be waiting here.
   useFocusEffect(useCallback(() => writeDuePages(), [writeDuePages]));
-  // And the day's sealed note from the friend on the card (`dailyNoteStep`), once the chats have
-  // loaded, and again after midnight if Today stays open.
-  const heroId = hero?.character.id;
+  // And the day's sealed note (`dailyNoteStep`) from the friend you talk to (not whoever wrote last,
+  // so a new line never brings a second note that day), once the chats have loaded, and again after
+  // midnight if Today stays open.
+  const noteFriendId = useAppStore((s) => lastTalkedFriendOf(s)?.character.id);
   const hydrated = useAppStore((s) => s.hydrated);
   useFocusEffect(
     useCallback(() => {
-      if (hydrated && heroId && today) leaveDailyNote(heroId);
-    }, [hydrated, heroId, today, leaveDailyNote]),
+      if (hydrated && noteFriendId && today) leaveDailyNote(noteFriendId);
+    }, [hydrated, noteFriendId, today, leaveDailyNote]),
   );
 
   // Sorted once per change of the chats, not on every render (scrolling sets state). The friend on the
@@ -141,9 +143,8 @@ export default function HomeScreen() {
   const heroChat = hero?.conversation.id;
   const unread = useMemo(
     () =>
-      conversations
-        .filter((c) => c.unreadCount > 0 && c.id !== heroChat)
-        .sort((a, b) => Date.parse(b.lastMessageAt) - Date.parse(a.lastMessageAt))
+      newestWaitingFirst(conversations)
+        .filter((c) => c.id !== heroChat)
         .flatMap((c) => {
           const character = charactersById.get(c.characterId);
           return character ? [{ conversation: c, character }] : [];

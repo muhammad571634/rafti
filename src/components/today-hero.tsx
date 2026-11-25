@@ -24,6 +24,7 @@ import { Anim, characterImage, PressableScale } from '@/components/ui';
 import { useDayKey } from '@/hooks/use-day-key';
 import { messageSpeech, plainText } from '@/lib/reply-engine';
 import { lastTalkedAt } from '@/lib/talk';
+import { byWhoNeedsYou, waitingSince } from '@/lib/waiting';
 import { awakeAt, freshDayNote } from '@/lib/today';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, gradientStops, space, systemColors } from '@/theme';
@@ -82,27 +83,31 @@ export interface HeroFriend {
 }
 
 /**
- * The friend the Today hero features: the one you talked with last (docs/today-hero.md).
- * Before your first conversation it is the closest bond. A friend is a character you
- * have a bond and a chat with, the same rule as the Us tab. The picture is their wide
- * scene, else their tall one, else their portrait. Undefined when there is no one to show.
+ * The friend the Today hero features (simplify plan 2026-11-25 §1.1): whoever wrote to you and waits,
+ * newest first (`byWhoNeedsYou`), else the one you talked with last (docs/today-hero.md), else the
+ * closest bond. `talked` keeps the old order (the day's sealed note stays with the friend you talk to,
+ * so a new line from someone else never makes a second note that day). A friend is a character you
+ * have a bond and a chat with, the same rule as the Us tab. The picture is their wide scene, else
+ * their tall one, else their portrait. Undefined when there is no one to show.
  */
 export function featuredFriend(
   characters: Character[],
   relationships: Record<string, Relationship>,
   conversations: Conversation[],
   messages: Record<string, Message[]>,
+  order: 'needsYou' | 'talked' = 'needsYou',
 ): HeroFriend | undefined {
   const friends = characters
     .flatMap((character) => {
       const relationship = relationships[character.id];
       const conversation = conversations.find((c) => c.characterId === character.id);
       if (!relationship || !conversation) return [];
-      return [{ character, relationship, conversation, talkedAt: lastTalkedAt(messages[conversation.id]) }];
+      const waiting = order === 'needsYou' ? waitingSince(conversation) : 0;
+      return [{ character, relationship, conversation, waiting, talkedAt: lastTalkedAt(messages[conversation.id]) }];
     })
-    .sort((a, b) => b.talkedAt - a.talkedAt || b.relationship.intimacy - a.relationship.intimacy);
+    .sort((a, b) => byWhoNeedsYou({ ...a, intimacy: a.relationship.intimacy }, { ...b, intimacy: b.relationship.intimacy }));
 
-  for (const { talkedAt: _, ...friend } of friends) {
+  for (const { talkedAt: _, waiting: _w, ...friend } of friends) {
     const scene = HEROES[friend.character.id];
     if (scene != null) return { ...friend, image: scene, framing: 'scene' };
     const tall = PORTRAITS[friend.character.id];
@@ -119,31 +124,34 @@ type FeaturedInputs = {
   conversations: Conversation[];
   messages: Record<string, Message[]>;
 };
-let featured: { inputs: FeaturedInputs; friend: HeroFriend | undefined } | undefined;
+/** A store selector for one `featuredFriend` order, worked out once per change of its four inputs. */
+function featuredSelector(order: 'needsYou' | 'talked') {
+  let cache: { inputs: FeaturedInputs; friend: HeroFriend | undefined } | undefined;
+  return (s: FeaturedInputs): HeroFriend | undefined => {
+    const last = cache?.inputs;
+    if (
+      cache &&
+      last &&
+      last.characters === s.characters &&
+      last.relationships === s.relationships &&
+      last.conversations === s.conversations &&
+      last.messages === s.messages
+    ) {
+      return cache.friend;
+    }
+    const friend = featuredFriend(s.characters, s.relationships, s.conversations, s.messages, order);
+    cache = { inputs: { characters: s.characters, relationships: s.relationships, conversations: s.conversations, messages: s.messages }, friend };
+    return friend;
+  };
+}
 
 /**
- * `featuredFriend` for a store state, worked out once per change of its four inputs however many
- * parts of Today ask (the hero, the Calls, Photos and Bond widgets). Use it as a store selector.
+ * Today's hero, however many parts of Today ask (the hero, the Calls, Photos and Bond widgets):
+ * who needs you. Use it as a store selector.
  */
-export function featuredFriendOf(s: FeaturedInputs): HeroFriend | undefined {
-  const last = featured?.inputs;
-  if (
-    featured &&
-    last &&
-    last.characters === s.characters &&
-    last.relationships === s.relationships &&
-    last.conversations === s.conversations &&
-    last.messages === s.messages
-  ) {
-    return featured.friend;
-  }
-  const friend = featuredFriend(s.characters, s.relationships, s.conversations, s.messages);
-  featured = {
-    inputs: { characters: s.characters, relationships: s.relationships, conversations: s.conversations, messages: s.messages },
-    friend,
-  };
-  return friend;
-}
+export const featuredFriendOf = featuredSelector('needsYou');
+/** The friend you talked with last: who leaves the day's sealed note. Use it as a store selector. */
+export const lastTalkedFriendOf = featuredSelector('talked');
 
 /**
  * Their newest written line for the card, as said out loud (narration only when there is nothing

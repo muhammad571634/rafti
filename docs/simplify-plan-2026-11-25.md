@@ -25,7 +25,7 @@ chats + the day's sealed note); a 2x2 grid of user-picked widgets (11 kinds, a j
 drag-to-swap and a gallery); a "More" row opening 10 modules.
 
 Proposed:
-1. **Hero picks who needs you** (**logic**): the friend with the newest unread line, else the one you
+1. **Hero picks who needs you** (**logic**, done 0z369): the friend with the newest unread line, else the one you
    talked with last (today it is always "last talked", so a new message from someone else sits in the
    card under a picture of someone who said nothing new). The waiting card then leaves the hero's chat
    out (no friend twice on one screen).
@@ -38,9 +38,10 @@ Proposed:
 4. **More stays one row** with the module tiles (0z366), and shrinks with the launch feature trim
    (audit P2-11): each module lives where it belongs (Calls in Chats, dates and diary in Us, Store
    behind shells).
-5. **One "what needs you" selector** (**logic**): a pure `todayItems(state)` in `src/lib/` with tests,
-   used by Today, the tab badges and the bell, so the counts agree. Today on the A51 the Chats tab
-   says 1 while Milo's row says 2 (chats vs messages) and Us' bell says 14.
+5. **One "who is waiting" rule** (**logic**, done 0z369): `src/lib/waiting.ts` with tests, used by
+   Today's hero, Today's waiting card and the Chats tab badge. Checked against the A51: the tab's 1
+   and Milo's 2 were not a contradiction (the badge counts chats waiting, the row its messages, as
+   WhatsApp does), and Us' bell 14 counts notifications, not chats; the rule is now in one place.
 
 ## 2. Chats
 
