@@ -29,7 +29,7 @@ import {
 } from '@/lib/morning-chain';
 import { planMemoryLine } from '@/lib/plan-memory';
 import { checkSkipTo, cleanSkipTo, steerBlock, steerMarker, TWIST_MAX, type SteerKind } from '@/lib/chat-steer';
-import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, speechOnly, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
+import { bubbleTimes, messageSpeech, pace, plainText, planReply, readMessage, replyPrefs, type ReplyPrefs, type Segment, type TurnTrigger } from '@/lib/reply-engine';
 import { replyBatcher } from '@/lib/reply-batch';
 import i18n, { getSavedLocale, phoneLanguage, phrase } from '@/i18n';
 import { groupStoryEverywhere, localCharacter, localGroupStory, localized, localTemplateStory, templateCardMasks } from '@/i18n/content';
@@ -43,7 +43,7 @@ import { addBranch, branchRecord, cutAfter, swapIn, worthBranching } from '@/lib
 import { analyticsChannel, experiment } from '@/lib/analytics';
 
 import type { FirstTextRequest } from '@/ai/first-text';
-import { apiBase, serverFirstText, serverGroupReply, whenNoShells, serverMemoryPass, serverReply, serverStudio, serverWallet, serverWrite, serverCommunity, serverTemplates } from '@/ai/server';
+import { apiBase, serverFirstText, whenNoShells, serverMemoryPass, serverReply, serverStudio, serverWallet, serverWrite, serverCommunity, serverTemplates } from '@/ai/server';
 import { cardOf, knownCommunityCharacter, type CommunityItem } from '@/lib/community';
 import { withTemplateStory } from '@/lib/template-stories';
 import type { StoryTemplate } from '@/lib/templates';
@@ -59,7 +59,6 @@ import {
   firstHelloCue,
   greetingCue,
   lifeCue,
-  missedCallCue,
   nightCue,
   photoCue,
   planAddedCue,
@@ -81,8 +80,8 @@ import { imageCue, unseenPhotos } from '@/ai/photo-prompt';
 import { languageName } from '@/ai/reply-language';
 import { toneCue } from '@/ai/tone';
 import { spokenCue, VOICE_NO_WORDS } from '@/ai/voice-prompt';
-import { callCue, callMessages, keptCallLines, type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
-import { groupCallCue, groupCallMessages, groupCallResponders, type GroupCallLine } from '@/ai/group-call';
+import { type CallLine, type CallPlacedBy, type CallReplyLine } from '@/ai/call-prompt';
+import { type GroupCallLine } from '@/ai/group-call';
 import type { SelfQuizItem, WriteKind, WriteRequest, WriteResults } from '@/ai/writes';
 import { photosForModel, type PreparedPhoto } from '@/lib/photo-for-model';
 import { boardNoteText } from '@/lib/story-continuity';
@@ -138,7 +137,6 @@ import {
   chargeMessage,
   countMessage,
   log,
-  logSeconds,
   serverWalletOn,
   spendVoice,
   syncWallet,
@@ -154,6 +152,7 @@ import { createAlarms } from '@/store/alarms';
 import { createGroups } from '@/store/groups';
 import { createStories } from '@/store/stories';
 import { createGames } from '@/store/games';
+import { createCalls } from '@/store/calls';
 import { replyingUntil } from '@/store/reply-state';
 export { callsIncluded, checkInStatus, memberActive, memoryAccess, minutesOf, quickCreatesToday, shareReward } from '@/store/wallet';
 import { hasThreadOps, wallToIso, type ThreadOps } from '@/ai/thread-prompt';
@@ -194,7 +193,6 @@ import {
 } from '@/lib/personas';
 import {
   canRing,
-  consumeMinutes,
   consumePhoto,
   photoQuota,
   startSubscription,
@@ -225,7 +223,6 @@ import {
   memories as seedMemories,
   messagesByConversation,
   moments as seedMoments,
-  missedCallLines,
   morningGreetings,
   newRelationship,
   relationships as seedRelationships,
@@ -347,7 +344,7 @@ export interface IncomingCall {
   at: number;
 }
 
-const STALE_RING_MS = 45_000;
+export const STALE_RING_MS = 45_000;
 /** The welcome gift at the end of the first launch. */
 export const WELCOME_SHELLS = 100;
 /** A group's "not real people" line shows at the start of a session and again after this long (NY GBL 47). */
@@ -1144,6 +1141,23 @@ const demoHistory = () => ({
   calls: seedCalls,
   moments: seedMoments,
   schedules: seedSchedules,
+});
+
+/** Calls: ringing, one-to-one and group call replies, the call log (`src/store/calls.ts`). */
+const callSlice = createCalls({
+  intimacy: INTIMACY,
+  staleRingMs: STALE_RING_MS,
+  addMoment,
+  appendHelplineCard,
+  appendMessage,
+  clock,
+  genderOf,
+  groups: () => groupSlice,
+  keepOwnDay,
+  pick: (list) => pick(list),
+  queueMemoryPass,
+  sayFirst,
+  worldStoryOf,
 });
 
 /** Dates, quizzes, frames and truth or dare, given the chat helpers they call (`src/store/games.ts`). */
@@ -2162,40 +2176,7 @@ export const useAppStore = create<AppState>()(
 
       ...diarySlice.actions(set, get),
 
-      /* ── calls ────────────────────────────────────────────────────────── */
-
-      ring: (characterId, slot) => {
-        // No call minutes (no plan, or this month's are used up): they text instead of
-        // ringing a call you could not take.
-        if (minutesOf(get().wallet, 'call').total <= 0) return;
-        const current = get().incomingCall;
-        if (current && Date.now() - current.at < STALE_RING_MS) return;
-        set({ incomingCall: { characterId, slot, at: Date.now() } });
-      },
-
-      acceptCall: () => {
-        const call = get().incomingCall;
-        set({ incomingCall: null });
-        return call?.characterId ?? null;
-      },
-
-      declineCall: () => {
-        const call = get().incomingCall;
-        set({ incomingCall: null });
-        if (!call) return;
-        get().addCall({
-          characterId: call.characterId,
-          startedAt: new Date().toISOString(),
-          durationSec: 0,
-          direction: 'incoming',
-          missed: true,
-        });
-        // They noticed you did not pick up, and say so.
-        const conversationId = get().addFriend(call.characterId);
-        setTimeout(() => {
-          sayFirst(set, get, conversationId, pick(missedCallLines(genderOf(get(), call.characterId))), missedCallCue());
-        }, 1500);
-      },
+      ...callSlice.actions(set, get),
 
       /* ── safety ───────────────────────────────────────────────────────── */
 
@@ -2268,9 +2249,6 @@ export const useAppStore = create<AppState>()(
           moments: s.moments.filter((m) => m.photoId !== id),
           messages: Object.fromEntries(Object.entries(s.messages).map(([chat, list]) => [chat, list.some((m) => m.photoId === id) ? list.filter((m) => m.photoId !== id) : list])),
         })),
-      deleteCall: (id) => set((s) => ({ calls: s.calls.filter((c) => c.id !== id) })),
-      clearCalls: () => set({ calls: [] }),
-
       unblockCharacter: (characterId) =>
         set((s) => ({ blockedIds: s.blockedIds.filter((id) => id !== characterId) })),
 
@@ -2467,140 +2445,6 @@ export const useAppStore = create<AppState>()(
           schedules: uniqueById([...s.schedules, ...demo.schedules]),
         }));
       },
-
-      callReply: async (characterId, said, placedBy) => {
-        const state = get();
-        const character = state.characters.find((c) => c.id === characterId);
-        const bond = state.relationships[characterId];
-        if (!character || !bond || !state.settings.realAi || !apiBase()) return { lines: null, crisis: false };
-        const conversation = state.conversations.find((c) => c.characterId === characterId);
-        const chat = conversation ? (state.messages[conversation.id] ?? []).filter((m) => !m.pending) : [];
-        // The call so far reads as the newest turns, after the chat it grew out of.
-        const messages = [...chat, ...callMessages(said, conversation?.id ?? '', new Date().toISOString())];
-        const memories = memoryAccess(state.memories, state.wallet, characterId).open;
-        const input = {
-          mode: 'call' as const,
-          character,
-          user: state.user,
-          relationship: bond,
-          // Spoken, not written: the chat's story or long style would ask for narration a call cannot say.
-          prefs: { ...replyPrefs(bond), style: 'talk' as const, length: 'short' as const },
-          persona: conversation ? personaFor(conversation.id, state) : undefined,
-          scene: conversation?.scene,
-          lore: { ...lorePrompt(booksFor(character, state.lorebooks, officialLorebooks), recentLines(messages), character.id), story: worldStoryOf(state, character) },
-          pinned: memories.filter((m) => m.pinned),
-          facts: memories.filter((m) => !m.pinned),
-          summary: conversation?.summary,
-          messages,
-          threads: state.threads.filter((t) => t.characterId === characterId),
-          clock: chatClock(),
-          together: togetherWith(state, characterId, todayKey()),
-          ownDay: ownDayOf(bond.ownDay, todayKey()),
-          cue: [...callCue(placedBy, said), ...(spokenCue(messages) ?? [])],
-        };
-        const reply = await accessToken()
-          .then((token) => serverReply(input, token))
-          .catch(() => null);
-        if (!reply) return { lines: null, crisis: false };
-        if (reply.day?.length) keepOwnDay(set, characterId, reply.day);
-        // Captions say only what is spoken, as a voice will: narration has no place on a call. Each
-        // line keeps its words as the server wrote them and their signature, for the voice.
-        // `crisis` is the server's check; the reply is already the safe one.
-        const spoken = reply.lines
-          .map((line, i) => ({ text: speechOnly(line), line, sig: reply.voice?.[i] }))
-          .filter((l) => l.text);
-        return { lines: spoken.length ? spoken : null, crisis: reply.crisis };
-      },
-
-      helplineToChat: (characterId) => appendHelplineCard(set, get, get().addFriend(characterId)),
-
-      groupCallReply: async (groupId, said, { onTurn, alive } = {}) => {
-        const state = get();
-        const group = state.groups.find((g) => g.id === groupId);
-        if (!group || !state.settings.realAi || !apiBase()) return { turns: null, crisis: false };
-        const names = Object.fromEntries(
-          group.memberIds.map((id) => [id, groupSlice.memberName(state, id)] as const).filter(([, name]) => !!name),
-        );
-        const { responders, crisis: heard } = groupCallResponders(group.memberIds, names, said, groupSlice.speakersIn(state, groupId));
-        const opening = !said.some((line) => line.author === 'me');
-        const at = new Date().toISOString();
-        const turns: { characterId: string; lines: string[] }[] = [];
-        let crisis = heard;
-        for (const characterId of responders) {
-          // Hung up or talked over: nobody else is asked (a model call nobody would see).
-          if (alive && !alive()) break;
-          // The next member hears what the one before just said.
-          const sofar = [...said, ...turns.flatMap((t) => t.lines.map((text) => ({ author: 'them' as const, text, characterId: t.characterId })))];
-          const first = turns[0] ? names[turns[0].characterId] : undefined;
-          const chat = groupSlice.groupInput(get(), group, { characterId, lines: [], cue: groupCallCue({ opening, first }) }, []);
-          if (!chat) break;
-          // The call after the chat, added as is: `groupSlice.groupInput`'s de-duplication would drop the user's
-          // spoken lines against any of their earlier messages without text.
-          const input = { ...chat, messages: [...chat.messages, ...groupCallMessages(sofar, groupId, at)] };
-          const reply = await accessToken()
-            .then((token) => serverGroupReply(input, token))
-            .catch(() => null);
-          if (!reply) break;
-          crisis ||= reply.crisis;
-          if (reply.day?.length) keepOwnDay(set, characterId, reply.day);
-          // Spoken words only; a line that was all narration keeps its plain words rather than vanish.
-          const lines = reply.lines.map((line) => speechOnly(line) || plainText(line)).filter(Boolean);
-          if (lines.length) {
-            turns.push({ characterId, lines });
-            onTurn?.({ characterId, lines });
-          }
-          if (crisis) break;
-        }
-        return { turns: turns.length ? turns : null, crisis };
-      },
-
-      groupHelplineToChat: (groupId) => {
-        if (!get().groups.some((g) => g.id === groupId)) return;
-        if ((get().messages[groupId] ?? []).slice(-3).some((m) => m.card === 'helpline')) return;
-        groupSlice.appendGroupMessage(set, get, groupId, { id: uid('m'), conversationId: groupId, author: 'them', kind: 'system', card: 'helpline', createdAt: new Date().toISOString() }, { quiet: true });
-      },
-
-      addCall: (record, lines) => {
-        const callId = uid('call');
-        set((s) => ({ calls: [{ ...record, id: callId }, ...s.calls] }));
-        const kept = lines?.length ? keptCallLines(lines) : [];
-
-        // The call also lands in the chat, like a phone's call log line.
-        const conversationId = get().addFriend(record.characterId);
-        appendMessage(
-          set,
-          get,
-          conversationId,
-          {
-            id: uid('m'),
-            conversationId,
-            author: record.direction === 'incoming' ? 'them' : 'me',
-            kind: 'call',
-            durationSec: record.durationSec,
-            missed: record.missed,
-            ...(kept.length ? { callLines: kept } : {}),
-            createdAt: record.startedAt,
-          },
-          { countUnread: record.missed },
-        );
-        // What was said on the call goes to memory like a chat does.
-        if (kept.length) queueMemoryPass(set, get, conversationId);
-
-        if (record.missed) return;
-        // Minutes go second by second: the plan's first, then bought ones. The call
-        // screen stops at zero, so a call never takes more than there was.
-        const { wallet } = get();
-        const used = consumeMinutes(wallet.subscription, wallet.packs, 'call', record.durationSec, Date.now());
-        set((s) => ({ wallet: { ...s.wallet, subscription: used.subscription, packs: used.packs } }));
-        if (used.taken > 0) logSeconds(set, -used.taken, 'call', record.characterId);
-        const minutes = Math.max(1, Math.round(record.durationSec / 60));
-        get().addIntimacy(record.characterId, minutes * INTIMACY.callPerMinute);
-        if (record.durationSec >= 60) {
-          addMoment(set, record.characterId, 'call', { duration: clock(record.durationSec) }, callId);
-        }
-      },
-
-      /* ── modules ──────────────────────────────────────────────────────── */
 
       ...gameSlice.actions(set, get),
 
@@ -3993,7 +3837,7 @@ export function raiseAgeDoubt(set: Setter, get: Getter, chatId: string, inGroup:
   else appendMessage(set, get, chatId, card, { quiet: true });
 }
 
-function appendHelplineCard(set: Setter, get: Getter, conversationId: string) {
+export function appendHelplineCard(set: Setter, get: Getter, conversationId: string) {
   appendMessage(set, get, conversationId, {
     id: uid('m'),
     conversationId,
@@ -5326,7 +5170,7 @@ const passLines = (m: Message): { author: Message['author']; text: string; at: s
 };
 
 /** After a reply: once enough is new, the memory pass waits for a quiet moment (each reply resets the wait). */
-function queueMemoryPass(set: Setter, get: Getter, conversationId: string) {
+export function queueMemoryPass(set: Setter, get: Getter, conversationId: string) {
   const state = get();
   const conversation = state.conversations.find((c) => c.id === conversationId);
   if (!conversation || !state.settings.realAi || !apiBase()) return;
@@ -5509,7 +5353,7 @@ function withMessages(s: AppState, conversationId: string, messages: Message[]) 
   };
 }
 
-function clock(totalSeconds: number) {
+export function clock(totalSeconds: number) {
   const m = Math.floor(totalSeconds / 60);
   return `${m}:${String(totalSeconds % 60).padStart(2, '0')}`;
 }

@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z356. Store split step 7: calls (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **What moved** (behaviour and persisted shape unchanged): `ring`, `acceptCall`, `declineCall`, `deleteCall`, `clearCalls`, `callReply`, `helplineToChat`, `groupCallReply`, `groupHelplineToChat`, `addCall` into `src/store/calls.ts` as `createCalls(deps)`. Deps: `intimacy`, `staleRingMs`, `addMoment`, `appendHelplineCard`, `appendMessage`, `clock`, `genderOf`, `keepOwnDay`, `pick` (wrapper), `queueMemoryPass`, `sayFirst`, `worldStoryOf`, and `groups: () => groupSlice` (a getter: `callSlice` is made before `groupSlice`). `appendHelplineCard`, `clock`, `queueMemoryPass`, `STALE_RING_MS` now exported from the store for `typeof`.
+- **Size**: `use-app-store.ts` 5,520 → 5,364 lines (7,717 at the start); `calls.ts` 224.
+- **Checked**: `npx tsc --noEmit` 0 in the store (the `find.tsx` error is Gemini's uncommitted work), `--noUnusedLocals` nothing new, `npm test` 1176/1176, Android bundle exports, the A51 opens Today and Calls (history intact), no JS errors. No live call placed (it would call the model and voice).
+- **Next**: branches and reply versions, then send/reply last.
+
 ### 0z355. Store split step 6: dates, quizzes, frames and truth or dare (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **0z354 now seen on the A51**: Streams, Personas and Lore open with no JS errors.
 - **What moved** (behaviour and persisted shape unchanged): `beginDate` .. `sendDatePhoto` (9) and `finishQuiz` .. `playTruthOrDare` (7), with the live-date runner (`startLiveDate`, `dateAsking`, `askDateRound`, used only here), into `src/store/games.ts` as `createGames(deps)`. Deps: `intimacy` (`INTIMACY`), `addMoment`, `appendMessage`, `displayName` and `modelOn` and `pick` (wrappers), `genderOf`, `sayFirst`, `scheduleReply`, `touchStreak`, `worldEventNote`, `writeBase`, `writeWithModel` (`INTIMACY`, `modelOn`, `scheduleReply`, `touchStreak`, `worldEventNote` now exported from the store for `typeof`).
