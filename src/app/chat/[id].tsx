@@ -1,15 +1,14 @@
 import * as Clipboard from 'expo-clipboard';
-import { LinearGradient } from 'expo-linear-gradient';
 import { BlurTargetView } from 'expo-blur';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
-import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, Pressable, type ScrollViewProps, type StyleProp, StyleSheet, useWindowDimensions, View, type ViewInstance, type ViewStyle } from 'react-native';
-import Animated, { FadeOut, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { FlatList, Keyboard, ListRenderItemInfo, Platform, Pressable, type ScrollViewProps, StyleSheet, useWindowDimensions, type ViewInstance } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChatInput, LevelUpModal, MessageBubble, MorphIsland, type MorphIslandState, TypingRow, VoiceSheet } from '@/components/chat';
+import { ChatInput, LevelUpModal, MorphIsland, type MorphIslandState, TypingRow, VoiceSheet } from '@/components/chat';
 import { composerKeyboardOffset } from '@/components/chat/chat-input';
 import { AttachMenu, type AttachKey } from '@/components/chat/attach-menu';
 import { MoreSheet } from '@/components/more-sheet';
@@ -17,18 +16,15 @@ import { CaptionText, ChatHeader, HEADER_ROOM, HeaderFade } from '@/components/c
 import { LevelUpTakeover } from '@/components/level-up';
 import { ChatGroundProvider, PictureEdge, PictureGround, PICTURE_EDGE, PORTRAIT_BG, portraitOf, usePictureListTop } from '@/components/chat/chat-ground';
 import { currentMood, temperamentFor } from '@/lib/reply-engine/mood';
-import { DayChip } from '@/components/chat/day-chip';
 import { IntroCard } from '@/components/chat/intro-card';
 import type { BubbleAnchor } from '@/components/chat/message-bubble';
 import { MessageMenu, useBackToClose } from '@/components/chat/message-menu';
 import { OffSheet } from '@/components/chat/off-sheet';
-import { NotedChip } from '@/components/mind/noted-chip';
 import { ThreadSheet } from '@/components/mind/thread-sheet';
 import { WhySheet } from '@/components/mind/why-sheet';
-import { ReplyControls, VersionSwipe } from '@/components/chat/reply-controls';
+import { ReplyControls } from '@/components/chat/reply-controls';
 import { ThoughtCard, ThoughtMark, ThoughtSheet } from '@/components/chat/thought';
 import { playSend, useReceiveSound } from '@/components/chat/chat-sounds';
-import { SwipeToReply } from '@/components/chat/reply-quote';
 import { ShareSheet } from '@/components/chat/share-sheet';
 import { ReportSheet } from '@/components/chat/report-sheet';
 import { TimeSkipSheet } from '@/components/chat/time-skip-sheet';
@@ -40,8 +36,7 @@ import { useFollowNewest } from '@/components/chat/follow-newest';
 import { JumpToNewest } from '@/components/chat/jump-to-newest';
 import { lastMineId, runOf } from '@/components/chat/runs';
 import { DailyCallsSheet } from '@/components/chat/daily-calls-sheet';
-import { AlarmBar, QuickReplies, SceneBar } from '@/components/chat/quick-replies';
-import { NextChip } from '@/components/chat/next-chip';
+import { AlarmBar, SceneBar } from '@/components/chat/quick-replies';
 import { BranchesSheet } from '@/components/chat/branches-sheet';
 import { TruthOrDareSheet } from '@/components/chat/truth-or-dare-sheet';
 import { useFreeOutGate } from '@/components/chat/free-used-sheet';
@@ -60,16 +55,19 @@ import { isAskReach } from '@/lib/reach-ask';
 import { shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { shownLines } from '@/lib/scenes';
-import { pushPermission, requestPushPermission } from '@/notifications/sync';
 import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
 import { nightColors as colors, friendAccent, space } from '@/theme';
 import { canReplyTo, replySnapshot } from '@/lib/reply-quote';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
-import type { Message, MessageTone, NextKind, ReplyIdea, ReplyTo, TimeSkip } from '@/types';
+import type { Message, MessageTone, NextKind, ReplyTo, TimeSkip } from '@/types';
 import { track } from '@/lib/analytics';
 import { KC } from '@/lib/keyboard-native';
+import { ChatGestureArea, ChatScroll, ComposerBox, KeyboardBox, keyboardBoxProps } from '@/components/chat/room/keyboard';
+import { ChatRow } from '@/components/chat/room/chat-row';
+import { useAfterIdea, useHud, useMemoryNotice } from '@/components/chat/room/use-room-notices';
+import { useThought } from '@/components/chat/room/use-thought';
 
 /** The alarm bar under the header while the wake-up alarm rings. */
 const ALARM_ROOM = 44;
@@ -103,23 +101,8 @@ export default function ChatRoomScreen() {
 
   const sendText = useAppStore((s) => s.sendText);
   const answerIdea = useAppStore((s) => s.answerIdea);
-  const noteNotifyOff = useAppStore((s) => s.noteNotifyOff);
-  /**
-   * "Yes, text me!": the system asks for pushes now, the moment the user is most willing. Blocked
-   * pushes leave a card with a way to Settings; web and Expo Go on Android have none to ask for.
-   */
-  const afterIdea = useCallback(
-    (message: Message | undefined, idea: ReplyIdea) => {
-      if (!conversationId || !isAskReach(message?.reach) || idea.intent !== 'yes') return;
-      void (async () => {
-        const status = await pushPermission();
-        if (status === 'granted' || status === 'unsupported') return;
-        const granted = status === 'undetermined' && (await requestPushPermission());
-        if (!granted) noteNotifyOff(conversationId);
-      })();
-    },
-    [conversationId, noteNotifyOff],
-  );
+  /** "Yes, text me!": the system asks for pushes now (`useAfterIdea`). */
+  const afterIdea = useAfterIdea(conversationId);
   // The wake-up alarm rings until a real reply here (the morning chain).
   const alarmRinging = useAppStore((s) => s.wake?.state === 'ringing' && s.wake.conversationId === conversationId);
   const sendVoice = useAppStore((s) => s.sendVoice);
@@ -180,12 +163,7 @@ export default function ChatRoomScreen() {
   const unpinMessage = useAppStore((s) => s.unpinMessage);
   const endScene = useAppStore((s) => s.endScene);
   /** The short notice after a pin ("Pinned to Story"); it shows at once and goes by itself. */
-  const [hud, setHud] = useState<string | null>(null);
-  useEffect(() => {
-    if (!hud) return;
-    const timer = setTimeout(() => setHud(null), 1800);
-    return () => clearTimeout(timer);
-  }, [hud]);
+  const [hud, setHud] = useHud();
   /** Your newest message while it is being changed in the field (canvas `ChatEdit.dc.html`). */
   const [editing, setEditing] = useState<Message | null>(null);
   const cancelEdit = useCallback(() => setEditing(null), []);
@@ -310,27 +288,7 @@ export default function ChatRoomScreen() {
   const [sharing, setSharing] = useState(false);
   // Their newest reply's inner thought (owner's pick A, 2026-11-18): the cloud under it, the words under
   // the reply once opened, a sheet when today's free ones are used.
-  const thoughtLine = useMemo(() => (typing ? undefined : exchange?.burst.findLast((m) => !!m.thought)), [exchange, typing]);
-  const [thoughtOpenId, setThoughtOpenId] = useState<string | null>(null);
-  const [thoughtPayId, setThoughtPayId] = useState<string | null>(null);
-  const openThought = useAppStore((s) => s.openThought);
-  const tapThought = useCallback(
-    (messageId: string, pay = false) => {
-      if (!conversationId) return;
-      if (!pay && thoughtOpenId === messageId) return setThoughtOpenId(null);
-      const result = openThought(conversationId, messageId, pay);
-      if (result === 'open') {
-        setThoughtPayId(null);
-        setThoughtOpenId(messageId);
-      } else if (result === 'pay') setThoughtPayId(messageId);
-      else if (result === 'noShells') {
-        // Free shells can burn at midnight while the sheet is open: the packs, not a dead button.
-        setThoughtPayId(null);
-        router.push('/store/shell?tab=shells');
-      }
-    },
-    [conversationId, openThought, thoughtOpenId, router],
-  );
+  const { thoughtLine, thoughtOpenId, setThoughtOpenId, thoughtPayId, setThoughtPayId, tapThought } = useThought(conversationId, exchange?.burst, typing);
   // » under their newest reply and the "+" menu's Time skip (teardown item 5): null when they may go on.
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
@@ -351,33 +309,7 @@ export default function ChatRoomScreen() {
   // the list re-mounts when you scroll back up, appear without replaying it.
   const [openedAt] = useState(() => Date.now());
   const characterId = character?.id;
-  const freshMemory = useAppStore(
-    useShallow((s) => {
-      if (!characterId) return { id: '', text: '' };
-      let bestId = '';
-      let bestText = '';
-      let bestAt = openedAt;
-      for (const m of s.memories) {
-        if (m.characterId !== characterId || m.quote) continue;
-        const at = Date.parse(m.createdAt);
-        if (at > bestAt) {
-          bestAt = at;
-          bestId = m.id;
-          bestText = m.text;
-        }
-      }
-      return { id: bestId, text: bestText };
-    }),
-  );
-  const seenMemoryId = useRef('');
-  const [memoryNotice, setMemoryNotice] = useState<string | null>(null);
-  useEffect(() => {
-    if (!freshMemory.id || freshMemory.id === seenMemoryId.current) return;
-    seenMemoryId.current = freshMemory.id;
-    setMemoryNotice(freshMemory.text);
-    const timer = setTimeout(() => setMemoryNotice(null), 3200);
-    return () => clearTimeout(timer);
-  }, [freshMemory.id, freshMemory.text]);
+  const [memoryNotice, setMemoryNotice] = useMemoryNotice(characterId, openedAt);
   const callBack = useCallback(() => {
     if (characterId) router.push(`/call/${characterId}`);
   }, [characterId, router]);
@@ -395,66 +327,51 @@ export default function ChatRoomScreen() {
     ({ item, index }: ListRenderItemInfo<Message>) => {
       if (!character) return null;
       const run = runOf(shown, shown.length - 1 - index);
-      const bubble = (
-        <MessageBubble
-          message={item}
+      return (
+        <ChatRow
+          item={item}
           character={character}
+          run={run}
           animate={animations && Date.parse(item.createdAt) > openedAt}
-          showAvatar={run.runStart}
-          runEnd={run.runEnd}
           receipt={item.id === lastMine}
-          readFace
-          showTime={run.showTime}
+          flashing={item.id === flash}
+          pinned={pinnedIds.has(item.id)}
+          versionSwipe={swipeable && burstIds.has(item.id) ? { offset: swipeOffset, onStep: stepVersion } : undefined}
+          quoteTitle={item.replyTo ? (item.replyTo.author === 'me' ? you : theirName) : undefined}
+          next={item.author === 'them' && item.next && !item.nextUsed && newestLineId === item.id ? () => openNextRef.current(item.id, item.next!) : undefined}
+          ideas={
+            conversationId && isAskReach(item.reach) && shownIdeas(item, data)
+              ? {
+                  list: item.ideas!,
+                  onPick: (idea) => {
+                    answerIdea(conversationId, item.id, idea);
+                    afterIdea(item, idea);
+                  },
+                }
+              : undefined
+          }
           onCallBack={callBack}
           onLongPress={openMenu}
           onDoubleTap={toggleLove}
-          pinned={pinnedIds.has(item.id)}
           onRetry={item.failed ? retry : undefined}
-          quoteTitle={item.replyTo ? (item.replyTo.author === 'me' ? you : theirName) : undefined}
           onQuotePress={goToMessage}
+          onReply={startReply}
+          onNoted={setThreadOpen}
         />
-      );
-      return (
-        // One View: an inverted list lays each cell out column-reverse, so a Fragment's
-        // children would draw bottom to top (the day chip under its line).
-        <View>
-          {run.dayBreak ? <DayChip iso={item.createdAt} /> : null}
-          <View>
-            {item.id === flash ? (
-              <Animated.View exiting={FadeOut.duration(600)} pointerEvents="none" style={styles.flash} />
-            ) : null}
-            {/* Their newest reply swipes both ways through its versions; any other line swipes left to answer it. */}
-            {swipeable && burstIds.has(item.id) ? (
-              <VersionSwipe offset={swipeOffset} onStep={stepVersion}>
-                {bubble}
-              </VersionSwipe>
-            ) : canReplyTo(item) ? (
-              <SwipeToReply onReply={() => startReply(item)}>{bubble}</SwipeToReply>
-            ) : (
-              bubble
-            )}
-          </View>
-          {item.noted && item.author === 'me' ? <NotedChip noted={item.noted} onPress={setThreadOpen} /> : null}
-          {/* No ready replies in the chat (owner, 2026-11-17: the user writes, a live conversation). The
-              one exception is "May I text you?": its Yes is the only way to allow their pushes. */}
-          {/* A call, a date, a game their reply invited to (0z283): until the user writes again. */}
-          {item.author === 'them' && item.next && !item.nextUsed && newestLineId === item.id ? (
-            <NextChip kind={item.next} onOpen={() => openNextRef.current(item.id, item.next!)} />
-          ) : null}
-          {conversationId && isAskReach(item.reach) && shownIdeas(item, data) ? (
-            <QuickReplies
-              ideas={item.ideas!}
-              onPick={(idea) => {
-                answerIdea(conversationId, item.id, idea);
-                afterIdea(item, idea);
-              }}
-            />
-          ) : null}
-        </View>
       );
     },
     [character, animations, openedAt, data, shown, lastMine, flash, callBack, openMenu, toggleLove, conversationId, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply, newestLineId],
   );
+
+  // The keyboard (audit Step 3.4): with keyboard-controller in the APK the composer rides the keyboard
+  // frame by frame, the list lifts its newest lines by the same distance, and a drag down on the chat
+  // takes the keyboard with the finger on Android too (iOS Messages). Older APKs keep the padding box.
+  // Above the early return below: a hook after it would crash the screen when the chat is deleted while open.
+  const keyboardLift = composerKeyboardOffset(insets.bottom);
+  const renderChatScroll = useMemo(() => {
+    const Scroll = ChatScroll;
+    return Scroll ? (props: ScrollViewProps) => <Scroll {...props} inverted offset={keyboardLift} freeze={attachOpen} /> : undefined;
+  }, [keyboardLift, attachOpen]);
 
   if (!conversation || !character) {
     return (
@@ -586,7 +503,6 @@ export default function ChatRoomScreen() {
     }
   };
 
-
   const name = displayName(character, relationship);
 
   const startCall = () => {
@@ -625,18 +541,6 @@ export default function ChatRoomScreen() {
       : typing
         ? { kind: 'thinking', label: `${name} · ${t('common.thinking')}`, accent: friendAccent(character.id).strong }
         : null;
-
-  // The keyboard (audit Step 3.4): with keyboard-controller in the APK the composer rides the keyboard
-  // frame by frame, the list lifts its newest lines by the same distance, and a drag down on the chat
-  // takes the keyboard with the finger on Android too (iOS Messages). Older APKs keep the padding box.
-  const keyboardLift = composerKeyboardOffset(insets.bottom);
-  const renderChatScroll = useMemo(
-    () =>
-      ChatScroll
-        ? (props: ScrollViewProps) => <ChatScroll {...props} inverted offset={keyboardLift} freeze={attachOpen} />
-        : undefined,
-    [keyboardLift, attachOpen],
-  );
 
 
   return (
@@ -813,7 +717,6 @@ export default function ChatRoomScreen() {
           onClose={dismissLevelUp}
         />
       )}
-
 
       <TruthOrDareSheet visible={truthOpen} onClose={() => setTruthOpen(false)} character={character} name={name} />
       <DailyCallsSheet visible={callsOpen} onClose={() => setCallsOpen(false)} characterId={character.id} />
@@ -996,61 +899,8 @@ export default function ChatRoomScreen() {
   );
 }
 
-
-const COMPOSER_VEIL = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.88)', 'rgba(0,0,0,0.94)'] as const;
-const COMPOSER_VEIL_STOPS = [0, 0.3, 1] as const;
-
-/** The chat's keyboard room: keyboard-controller lifts the parts itself; older APKs keep the padding box. */
-const KeyboardBox = KC ? View : KeyboardAvoidingView;
-const ChatScroll = KC?.KeyboardChatScrollView;
-const keyboardBoxProps = KC ? {} : { behavior: 'padding' as const };
-/** A drag starting this far above the keyboard (the composer's height) already takes it along. */
-const GESTURE_OFFSET = 64;
-
-/** Android: a drag down on the chat takes the keyboard with the finger, as iOS's interactive dismiss. */
-function ChatGestureArea({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
-  if (KC && Platform.OS === 'android') {
-    return (
-      <KC.KeyboardGestureArea interpolator="ios" offset={GESTURE_OFFSET} style={style}>
-        {children}
-      </KC.KeyboardGestureArea>
-    );
-  }
-  return <View style={style}>{children}</View>;
-}
-
-/**
- * The composer rides the keyboard frame by frame, its foot always `space.sm` over the keyboard's top
- * (iOS Messages): it starts to rise only once the keyboard covers its resting room (`lift`), so a drag
- * down never opens a gap between them (a progress-based offset did, mid-drag on the A51).
- */
-function ComposerBox({ lift, children }: { lift: number; children: ReactNode }) {
-  if (!KC) return <>{children}</>;
-  return <StickyComposer lift={lift}>{children}</StickyComposer>;
-}
-
-function StickyComposer({ lift, children }: { lift: number; children: ReactNode }) {
-  // KC is set whenever this renders (ComposerBox checks it), and it never changes while the app runs.
-  const { height, progress } = KC!.useReanimatedKeyboardAnimation();
-  const ride = useAnimatedStyle(() => ({ transform: [{ translateY: Math.min(0, height.value + lift) }] }), [lift]);
-  // A drag down scrolls the chat with the finger, so lines pass behind the bar; iOS hides them under its
-  // glass. Android cannot afford a live blur, so a dark veil rises with the keyboard (none at rest).
-  const veil = useAnimatedStyle(() => ({ opacity: progress.value }));
-  return (
-    <Animated.View style={ride}>
-      <Animated.View pointerEvents="none" style={[styles.composerVeil, veil]}>
-        <LinearGradient colors={COMPOSER_VEIL} locations={COMPOSER_VEIL_STOPS} style={StyleSheet.absoluteFill} />
-      </Animated.View>
-      {children}
-    </Animated.View>
-  );
-}
-
 const styles = StyleSheet.create({
-  // Behind the composer while the keyboard is up or moving: from a little above the bar to its foot.
-  composerVeil: { position: 'absolute', left: 0, right: 0, top: -28, bottom: 0 },
   flex: { flex: 1 },
-  flash: { ...StyleSheet.absoluteFill, top: -3, bottom: -1, backgroundColor: colors.primarySoft },
   list: { paddingTop: space.sm },
   veil: { ...StyleSheet.absoluteFill, backgroundColor: colors.veil },
 });
