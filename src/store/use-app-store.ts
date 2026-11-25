@@ -87,7 +87,7 @@ import { boardNoteText } from '@/lib/story-continuity';
 import { REPORT_LIMITS } from '@/ai/session-types';
 import { markFresh } from '@/lib/reveal';
 import { writeMockReply } from '@/mock/reply-writer';
-import { lastExchange } from '@/lib/chat-turns';
+import { lastExchange, undoEmptyVersion } from '@/lib/chat-turns';
 import { type OffReason, type Rating } from '@/lib/reply-rating';
 import { mockSteerLines } from '@/mock/steer';
 import { ageDoubt, confirmedAge, withAgeDoubt, type AgeDoubt } from '@/lib/age-check';
@@ -4924,6 +4924,15 @@ export function openingFor(state: AppState, character: Character, seed: string) 
 function failReply(set: Setter, conversationId: string, request: ReplyRequest) {
   set((s) => ({ typing: { ...s.typing, [conversationId]: false } }));
   if ((request.trigger ?? 'message') !== 'message') return;
+  // A ↻ that got nothing: the reply they had shown comes back instead of "Not Delivered" (0z363).
+  let undone = false;
+  set((s) => {
+    const back = undoEmptyVersion(s.messages[conversationId], s.replyVersions[conversationId]);
+    if (!back) return {};
+    undone = true;
+    return { ...withMessages(s, conversationId, back.messages), replyVersions: { ...s.replyVersions, [conversationId]: back.held } };
+  });
+  if (undone) return;
   failedTurns.set(conversationId, request);
   set((s) => {
     const list = s.messages[conversationId] ?? [];

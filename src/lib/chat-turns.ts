@@ -49,6 +49,29 @@ export function lastExchange(messages: readonly Message[] | undefined) {
   };
 }
 
+/** The versions of their newest reply (the store's `ReplyVersions`). */
+export interface HeldVersions {
+  afterId: string;
+  versions: Message[][];
+  index: number;
+}
+
+/**
+ * ↻ took their reply off the screen and asked for another, but none came (the model busy, the key
+ * out of quota): the version they had shown comes back, and the empty slot goes. Nothing is lost and
+ * the user's line is never left "Not Delivered" (0z363). Null when no ↻ is waiting on this exchange.
+ */
+export function undoEmptyVersion(messages: readonly Message[] | undefined, held: HeldVersions | undefined) {
+  if (!held || held.versions[held.index]?.length !== 0) return null;
+  const exchange = lastExchange(messages);
+  if (!exchange || exchange.anchor.id !== held.afterId || exchange.burst.length) return null;
+  const back = held.versions.findLastIndex((v, i) => i !== held.index && v.length > 0);
+  if (back < 0) return null;
+  const versions = held.versions.filter((_, i) => i !== held.index);
+  const index = back > held.index ? back - 1 : back;
+  return { messages: [...(messages ?? []), ...versions[index]], held: { ...held, versions, index } };
+}
+
 /** A line with words in it: their voice notes and cards have none to put on a share card. */
 const isQuotable = (m: Message) => m.kind === 'text' && !m.card && !!m.text?.trim();
 

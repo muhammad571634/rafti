@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 
 import type { Message } from '@/types';
 
-import { canRewindTo, lastExchange, laterCount, laterNotes, SHARE_LINES, shareLines } from './chat-turns';
+import { canRewindTo, lastExchange, laterCount, laterNotes, SHARE_LINES, shareLines, undoEmptyVersion } from './chat-turns';
 
 const at = '2026-10-24T20:00:00.000Z';
 const me = (id: string, text = 'hi'): Message => ({ id, conversationId: 'c', author: 'me', kind: 'text', text, createdAt: at });
@@ -103,5 +103,25 @@ describe('shareLines', () => {
     assert.equal(shareLines([me('m'), voice('v')]), null);
     assert.equal(shareLines([me('m'), them('r', '  ')]), null);
     assert.equal(shareLines(undefined), null);
+  });
+});
+
+describe('undoEmptyVersion', () => {
+  it('puts back the version on screen when ↻ got no reply', () => {
+    const held = { afterId: 'm', versions: [[them('a')], [them('b')], []], index: 2 };
+    const undone = undoEmptyVersion([me('m'), card('n', 'voiceQuota')], held);
+    assert.deepEqual(undone?.messages.map((m) => m.id), ['m', 'n', 'b']);
+    assert.deepEqual(undone?.held, { afterId: 'm', versions: [[them('a')], [them('b')]], index: 1 });
+  });
+
+  it('does nothing when no ↻ is waiting, or a reply already landed', () => {
+    assert.equal(undoEmptyVersion([me('m')], undefined), null);
+    assert.equal(undoEmptyVersion([me('m'), them('b')], { afterId: 'm', versions: [[them('a')], [them('b')]], index: 1 }), null);
+    assert.equal(undoEmptyVersion([me('m'), them('c')], { afterId: 'm', versions: [[them('a')], []], index: 1 }), null);
+  });
+
+  it('does nothing for an older exchange or with no version to bring back', () => {
+    assert.equal(undoEmptyVersion([me('m'), them('r'), me('m2')], { afterId: 'm', versions: [[them('a')], []], index: 1 }), null);
+    assert.equal(undoEmptyVersion([me('m')], { afterId: 'm', versions: [[]], index: 0 }), null);
   });
 });
