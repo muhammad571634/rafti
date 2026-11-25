@@ -1,5 +1,8 @@
 # Cast 2.0 pictures audit: why they read like passport photos, and the fix (2026-11-25, Claude 1)
 
+> **Correction (same day):** the owner meant the twelve main portraits, not the stills. The portrait plan is
+> `docs/nano-banana-portraits-v2.md`; this file's stills plan is parked, and §6.3 ("keep the portraits") is withdrawn.
+
 The owner asked (2026-11-25) for a full audit of the twelve main characters' pictures: "they feel too plain, all in
 the same frame, the same scene, looking straight ahead, like a passport photo; how do we make pictures that pull a
 person in emotionally?" This covers the 12 portraits (`assets/portraits/c_*.jpg`) and the 84 moment stills
