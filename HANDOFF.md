@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z354. Store split step 5: personas, scenes, lorebooks and streams (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed; A51 not checked
+- **What moved** (behaviour and persisted shape unchanged): the 19 actions `savePersona` .. `deleteStream` and the stream runner (`streamEpoch`, `STREAM_RETRY_MS`, `payStreamRound`, `stopStreamRunner`, `typingMs`, `runStream`) into `src/store/stories.ts` as `createStories(deps)`; launch and account deletion use `storySlice.runStream` / `storySlice.streamEpoch`. Deps: `appendMessage`, `cancelReplies`, `keepOwnDay`, `momentRequest`, `openingFor`, `sceneFor`, `themText` (wrapper), `writeFirst` (now exported from the store for `typeof`).
+- **Size**: `use-app-store.ts` 6,133 → 5,793 lines (7,717 at the start); `stories.ts` 389.
+- **Checked**: `npx tsc --noEmit` 0 in the store (the `find.tsx` error is Gemini's uncommitted work), `--noUnusedLocals` nothing new, `npm test` 1176/1176, Android bundle exports. **Not checked on the A51**: the phone went offline mid-test. Next session: open Today, Scenes, Streams and a persona on the A51 before anything else.
+- **Next**: dates + quizzes, then chat send/reply.
+
 ### 0z354. Find v3 editorial architecture: 5 scope lenses, universal search, DM-hook story cards & live call CTA (2026-11-25, Gemini). Done, pushed
 - **Pure logic & tests (`src/lib/find-discovery.ts`, `src/lib/find-discovery.test.ts`)**: Added `CAST_CIRCLES`, `isGroupStoryMember`, `isOfficialCast`, `isUserCreation`, `groupStoryFitsGender` (mixed-gender group stories fit both Him/Her without altering strict `storyFits`), `splitCastForFind` (un-met Cast 2.0 ranked ahead of already-chatted friends, 3 Spotlight picks, 4 `gridPreview` picks excluding Spotlight #1), and `searchFindUniverse` (unified search across Cast + creations, Group scenes, and all 100 Solo Stories with group-member exclusion).
 - **Zero-literal Ink tokens (`src/theme/ink.ts`, `src/theme/colour-literals.baseline.json`)**: Added `photoScrim`, `photoScrimStops`, `photoBubble`, `photoLine`, `photoMuted`, and `storyBubble`. Eliminated remaining hex/rgba literals in `cinema-feature-card.tsx` (7 → 0) and `stories-shelf.tsx` (1 → 0) and lowered `colour-literals.baseline.json` accordingly.
