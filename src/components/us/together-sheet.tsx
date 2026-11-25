@@ -7,7 +7,7 @@ import { InkText } from '@/components/ink';
 import { PressableScale, SFIcon, Sheet } from '@/components/ui';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 
-export type TogetherKind = 'photoBooth' | 'quiz' | 'board' | 'scene';
+export type TogetherKind = 'photoBooth' | 'quiz' | 'scene';
 
 interface Option {
   kind: TogetherKind;
@@ -19,7 +19,6 @@ interface Option {
 const OPTIONS: readonly Option[] = [
   { kind: 'photoBooth', ios: 'camera.fill', icon: 'camera', fill: inkTints[0][0] },
   { kind: 'quiz', ios: 'sparkles', icon: 'sparkles', fill: inkTints[4][0] },
-  { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: inkTints[1][0] },
   { kind: 'scene', ios: 'film.fill', icon: 'film', fill: inkTints[5][0] },
 ];
 
@@ -32,9 +31,9 @@ export interface TogetherSheetProps {
 }
 
 /**
- * Friend-scoped "Together" sheet on Us (replaces the old global MoreSheet that mixed in Radio,
- * Streams, Lore and Personas): four deep Ink-tinted cards matching PublishSheet, each opening the
- * existing full-screen Photo Booth, Couple Quiz, Message Board, or Scene picker for this friend.
+ * Friend-scoped "Together" sheet on Us: deep Ink-tinted cards matching PublishSheet, each opening the
+ * full-screen Photo Booth, Couple Quiz or Scene picker for this friend. The board is the "+" sheet's
+ * (pin a note), so it is not here twice (2026-11-25).
  */
 export function TogetherSheet({ visible, onClose, name, canScene, onPick }: TogetherSheetProps) {
   const { t } = useTranslation();
@@ -45,14 +44,10 @@ export function TogetherSheet({ visible, onClose, name, canScene, onPick }: Toge
         return t('photoBooth.title');
       case 'quiz':
         return t('chat.attachments.quiz');
-      case 'board':
-        return t('board.title');
       case 'scene':
         return t('chat.attachments.scene');
     }
   };
-
-  const hintOf = (kind: TogetherKind): string => t(`us.togetherHint.${kind}`, { name });
 
   const shown = OPTIONS.filter((o) => canScene || o.kind !== 'scene');
 
@@ -65,19 +60,14 @@ export function TogetherSheet({ visible, onClose, name, canScene, onPick }: Toge
             scaleTo={0.97}
             onPress={() => onPick(kind)}
             accessibilityRole="button"
-            accessibilityLabel={`${titleOf(kind)}, ${hintOf(kind)}`}
+            accessibilityLabel={titleOf(kind)}
             style={[styles.tile, { backgroundColor: fill }]}>
             <View style={styles.icon}>
               <SFIcon ios={ios} icon={icon} size={22} color={ink.text} />
             </View>
-            <View style={styles.text}>
-              <InkText variant="bodyStrong" lines={2}>
-                {titleOf(kind)}
-              </InkText>
-              <InkText variant="footnote" lines={2}>
-                {hintOf(kind)}
-              </InkText>
-            </View>
+            <InkText variant="bodyStrong" lines={2} style={styles.text}>
+              {titleOf(kind)}
+            </InkText>
             <Ionicons name="chevron-forward" size={17} color={ink.text2} />
           </PressableScale>
         ))}
@@ -104,5 +94,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: ink.raised,
   },
-  text: { flex: 1, minWidth: 0, gap: 2 },
+  text: { flex: 1, minWidth: 0 },
 });

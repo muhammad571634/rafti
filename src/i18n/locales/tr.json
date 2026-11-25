@@ -1804,12 +1804,6 @@
     "with": "Birlikte:",
     "remindBefore": "{{name}} {{count}} dakika önce sana hatırlatır.",
     "remindMorning": "{{name}} o gün sabah 8:00'de sana hatırlatır.",
-    "publishHint": {
-      "plan": "{{name}} ile bir gün ve saat",
-      "diary": "Bugün hakkında yaz",
-      "board": "{{name}} için bir şey iliştir",
-      "alarm": "{{name}} seni kendi sesiyle uyandırır"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Arama",
@@ -1823,18 +1817,10 @@
     "mostWith": "En çok {{name}} · {{percent}}",
     "chaptersTitle": "Hikâye bölümleri",
     "chaptersWith": "{{name}} ile bölümler",
-    "chapterOpen": "Açıldı",
     "chapterLocked": "Seviye {{level}} olduğunda açılır",
     "datesTile": "Buluşmalar",
     "togetherTile": "Birlikte",
-    "togetherSub": "Foto · Test · Pano",
     "togetherWith": "{{name}} ile birlikte",
-    "togetherHint": {
-      "photoBooth": "Polaroid, film ve stüdyo kareleri",
-      "quiz": "{{name}} sesiyle haftalık 5 soru",
-      "board": "Panoya iliştirilmiş notlar",
-      "scene": "Birlikte bir sahneye girin"
-    },
     "savedCount_one": "{{count}} kayıtlı",
     "savedCount_other": "{{count}} kayıtlı",
     "datesPlacesCount_one": "{{count}} mekân",

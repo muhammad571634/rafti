@@ -1804,12 +1804,6 @@
     "with": "Con",
     "remindBefore": "{{name}} ti avviserà {{count}} minuti prima.",
     "remindMorning": "{{name}} ti avviserà alle 8:00 di quel giorno.",
-    "publishHint": {
-      "plan": "Un giorno e un'ora con {{name}}",
-      "diary": "Scrivi di oggi",
-      "board": "Fissa qualcosa per {{name}}",
-      "alarm": "{{name}} ti sveglia con la sua voce"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Chiamata",
@@ -1823,18 +1817,10 @@
     "mostWith": "Più con {{name}} · {{percent}}",
     "chaptersTitle": "Capitoli",
     "chaptersWith": "Capitoli con {{name}}",
-    "chapterOpen": "Sbloccato",
     "chapterLocked": "Si sblocca al livello {{level}}",
     "datesTile": "Uscite",
     "togetherTile": "Insieme",
-    "togetherSub": "Foto · Quiz · Bacheca",
     "togetherWith": "Insieme a {{name}}",
-    "togetherHint": {
-      "photoBooth": "Strisce Polaroid, pellicola e studio",
-      "quiz": "5 domande a settimana con la voce di {{name}}",
-      "board": "Biglietti appuntati in bacheca",
-      "scene": "Entrate insieme in una scena"
-    },
     "savedCount_one": "{{count}} salvato",
     "savedCount_other": "{{count}} salvati",
     "datesPlacesCount_one": "{{count}} posto",

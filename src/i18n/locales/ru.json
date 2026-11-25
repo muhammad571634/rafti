@@ -1880,12 +1880,6 @@
     "with": "С кем:",
     "remindBefore": "{{name}} напомнит вам за {{count}} мин до начала.",
     "remindMorning": "{{name}} напомнит вам в 8:00 утра в этот день.",
-    "publishHint": {
-      "plan": "День и время встречи с {{name}}",
-      "diary": "Написать о сегодняшнем дне",
-      "board": "Прикрепить что-то для {{name}}",
-      "alarm": "{{name}} разбудит вас своим голосом"
-    },
     "daysLabel_few": "дня вместе",
     "daysLabel_many": "дней вместе",
     "daysShort_few": "дня",
@@ -1905,18 +1899,10 @@
     "mostWith": "Больше с {{name}} · {{percent}}",
     "chaptersTitle": "Главы истории",
     "chaptersWith": "Главы с {{name}}",
-    "chapterOpen": "Открыто",
     "chapterLocked": "Откроется на уровне {{level}}",
     "datesTile": "Свидания",
     "togetherTile": "Вместе",
-    "togetherSub": "Фото · Квиз · Доска",
     "togetherWith": "Вместе с {{name}}",
-    "togetherHint": {
-      "photoBooth": "Полароид, плёнка и фотополоски",
-      "quiz": "5 вопросов недели голосом {{name}}",
-      "board": "Записки на общей доске",
-      "scene": "Начать совместную сцену"
-    },
     "savedCount_one": "{{count}} запись",
     "savedCount_few": "{{count}} записи",
     "savedCount_many": "{{count}} записей",

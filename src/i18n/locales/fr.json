@@ -1804,12 +1804,6 @@
     "with": "Avec",
     "remindBefore": "{{name}} vous le rappelle {{count}} minutes avant.",
     "remindMorning": "{{name}} vous le rappelle à 8h00 ce jour-là.",
-    "publishHint": {
-      "plan": "Un jour et une heure avec {{name}}",
-      "diary": "Raconter la journée d'aujourd'hui",
-      "board": "Épingler un mot pour {{name}}",
-      "alarm": "{{name}} vous réveille de sa voix"
-    },
     "said": "{{name}} : {{text}}",
     "momentTitle": {
       "call": "Appel",
@@ -1823,18 +1817,10 @@
     "mostWith": "Surtout {{name}} · {{percent}}",
     "chaptersTitle": "Chapitres",
     "chaptersWith": "Chapitres avec {{name}}",
-    "chapterOpen": "Débloqué",
     "chapterLocked": "Se débloque au niveau {{level}}",
     "datesTile": "Rendez-vous",
     "togetherTile": "Ensemble",
-    "togetherSub": "Photo · Quiz · Tableau",
     "togetherWith": "Ensemble avec {{name}}",
-    "togetherHint": {
-      "photoBooth": "Bandes Polaroid, film et studio",
-      "quiz": "5 questions par semaine avec la voix de {{name}}",
-      "board": "Mots épinglés au tableau",
-      "scene": "Plongez dans une scène à deux"
-    },
     "savedCount_one": "{{count}} gardé",
     "savedCount_other": "{{count}} gardés",
     "datesPlacesCount_one": "{{count}} lieu",

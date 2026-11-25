@@ -25,6 +25,8 @@ const FOOT_SCRIM = ['rgba(9,9,13,0)', 'rgba(9,9,13,0.88)'] as const;
 const FOOT_STOPS = [0.48, 1] as const;
 /** Aspect ratio of the right-side portrait box (~62% card width over ~222 pt height). */
 const ART_ASPECT = 0.97;
+/** A friend without a picture: the size of their initial on the card's right. */
+const NO_ART_FACE = 72;
 
 export interface LivingBondHeroProps {
   character: Character;
@@ -144,7 +146,7 @@ export function LivingBondHero({
               end={{ x: 0, y: 0.9 }}
               style={StyleSheet.absoluteFill}
             />
-            <CharacterAvatar character={character} size={88} />
+            <CharacterAvatar character={character} size={NO_ART_FACE} />
           </View>
         )}
 
@@ -283,7 +285,9 @@ const styles = StyleSheet.create({
     width: '62%',
   },
   artImage: { ...StyleSheet.absoluteFill, opacity: 0.92 },
-  noArt: { alignItems: 'center', justifyContent: 'center', paddingRight: 8 },
+  // No picture: their initial sits at the trailing edge, clear of the words and the bar on the left
+  // (centred in the art box it covered the progress bar, A51 2026-11-25).
+  noArt: { alignItems: 'flex-end', justifyContent: 'center', paddingRight: 22 },
   body: {
     padding: 18,
     justifyContent: 'space-between',

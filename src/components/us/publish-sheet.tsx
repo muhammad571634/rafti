@@ -29,17 +29,13 @@ export function PublishSheet({
   visible,
   onClose,
   onPick,
-  name,
 }: {
   visible: boolean;
   onClose: () => void;
   onPick: (kind: PublishKind) => void;
-  /** The friend picked on Us, named in the hints. */
-  name: string;
 }) {
   const { t } = useTranslation();
-  // The diary page from here goes to this friend, so its hint says so (the diary's own words).
-  const hint = (kind: PublishKind) => (kind === 'diary' ? t('diary.shareWith', { name }) : t(`us.publishHint.${kind}`, { name }));
+  // Icon, name and price only (minimal text UI); it is all for the friend picked on Us.
   return (
     <Sheet visible={visible} onClose={onClose} title={t('us.add')} scroll>
       <View style={styles.tiles}>
@@ -49,15 +45,14 @@ export function PublishSheet({
             scaleTo={0.97}
             onPress={() => onPick(kind)}
             accessibilityRole="button"
-            accessibilityLabel={[t(`us.publishKind.${kind}`), hint(kind), COST[kind] ? `${COST[kind]} ${t('common.shells')}` : ''].filter(Boolean).join(', ')}
+            accessibilityLabel={[t(`us.publishKind.${kind}`), COST[kind] ? `${COST[kind]} ${t('common.shells')}` : ''].filter(Boolean).join(', ')}
             style={[styles.tile, { backgroundColor: fill }]}>
             <View style={styles.icon}>
               <SFIcon ios={ios} icon={icon} size={22} color={ink.text} />
             </View>
-            <View style={styles.text}>
-              <InkText variant="bodyStrong">{t(`us.publishKind.${kind}`)}</InkText>
-              <InkText variant="footnote">{hint(kind)}</InkText>
-            </View>
+            <InkText variant="bodyStrong" lines={2} style={styles.text}>
+              {t(`us.publishKind.${kind}`)}
+            </InkText>
             {COST[kind] ? (
               <View style={styles.cost}>
                 <ShellIcon size={14} />
@@ -84,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: ink.raised,
   },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, minWidth: 0 },
   cost: {
     flexDirection: 'row',
     alignItems: 'center',

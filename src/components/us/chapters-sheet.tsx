@@ -46,7 +46,8 @@ export function ChaptersSheet({
   const shown = localCharacter(character);
   const full = displayName(character, relationship);
   const first = shortName(full);
-  const relation = shown.relation ?? shown.worldRole ?? (character.series ? phrase(character.series) : undefined);
+  // Who they are to you; a creation's series name ("My Creations") says nothing here.
+  const relation = shown.relation ?? shown.worldRole;
   const toNext = Math.max(0, relationship.nextLevelAt - relationship.intimacy);
   const beats = shown.arc?.beats ?? [];
 
@@ -112,11 +113,12 @@ export function ChaptersSheet({
               {relation}
             </InkText>
           ) : null}
-          <InkText variant="cardSmall" lines={1}>
-            {`${t('us.level', { level: relationship.level })} · ${phrase(relationship.levelTitle)}`}
+          {/* The level's name wraps; the numbers sit under it (a title is never cut with "…"). */}
+          <InkText variant="cardSmall" lines={2}>
+            {phrase(relationship.levelTitle)}
           </InkText>
           <InkText variant="footnote" color={ink.photoLine} style={styles.tabular}>
-            {`${days} ${t('us.daysLabel', { count: days })} · ${t('us.intimacy', { count: relationship.intimacy })}`}
+            {`${t('us.level', { level: relationship.level })} · ${days} ${t('us.daysLabel', { count: days })}`}
           </InkText>
           <InkText variant="caption" color={ink.photoMuted} style={styles.tabular}>
             {t('us.toLevel', { count: toNext, level: relationship.level + 1 })}
@@ -140,18 +142,16 @@ export function ChaptersSheet({
                     color={open ? accent.strong : ink.text3}
                   />
                 </View>
+                {/* Open: its title and the level it opened at; sealed: only when it opens. */}
                 <View style={styles.chapterText}>
                   <InkText variant={open ? 'subStrong' : 'sub'} color={open ? ink.text : ink.text2} lines={2}>
-                    {open ? beat.title : t('world.level', { level: beat.atLevel })}
+                    {open ? beat.title : t('us.chapterLocked', { level: beat.atLevel })}
                   </InkText>
-                  <InkText variant="footnote" color={open ? accent.strong : ink.text3}>
-                    {open ? t('us.chapterOpen') : t('us.chapterLocked', { level: beat.atLevel })}
-                  </InkText>
-                </View>
-                <View style={[styles.lvPill, { backgroundColor: open ? accent.soft : ink.raised }]}>
-                  <InkText variant="caption" color={open ? accent.strong : ink.text3} style={styles.tabular}>
-                    {`Lv ${beat.atLevel}`}
-                  </InkText>
+                  {open ? (
+                    <InkText variant="footnote" color={accent.strong} style={styles.tabular}>
+                      {t('us.level', { level: beat.atLevel })}
+                    </InkText>
+                  ) : null}
                 </View>
               </View>
             );
@@ -227,11 +227,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chapterText: { flex: 1, minWidth: 0, gap: 2 },
-  lvPill: {
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: inkRadius.pill,
-  },
   profileRow: {
     marginTop: 12,
     flexDirection: 'row',

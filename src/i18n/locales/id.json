@@ -1770,12 +1770,6 @@
     "with": "Bersama",
     "remindBefore": "{{name}} mengingatkanmu {{count}} menit sebelumnya.",
     "remindMorning": "{{name}} mengingatkanmu pukul 8:00 pada hari itu.",
-    "publishHint": {
-      "plan": "Hari dan waktu bersama {{name}}",
-      "diary": "Tulis tentang hari ini",
-      "board": "Sematkan sesuatu untuk {{name}}",
-      "alarm": "{{name}} membangunkanmu dengan suaranya"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Panggilan",
@@ -1789,18 +1783,10 @@
     "mostWith": "Terbanyak {{name}} · {{percent}}",
     "chaptersTitle": "Bab cerita",
     "chaptersWith": "Bab bersama {{name}}",
-    "chapterOpen": "Terbuka",
     "chapterLocked": "Terbuka di level {{level}}",
     "datesTile": "Kencan",
     "togetherTile": "Bersama",
-    "togetherSub": "Foto · Kuis · Papan",
     "togetherWith": "Bersama {{name}}",
-    "togetherHint": {
-      "photoBooth": "Strip Polaroid, film, dan studio",
-      "quiz": "5 pertanyaan mingguan dengan suara {{name}}",
-      "board": "Catatan kertas di papan",
-      "scene": "Masuk ke adegan berdua"
-    },
     "savedCount_other": "{{count}} tersimpan",
     "datesPlacesCount_other": "{{count}} tempat",
     "datesDoneCount_other": "{{count}} kencan",

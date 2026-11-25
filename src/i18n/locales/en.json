@@ -1804,12 +1804,6 @@
     "with": "With",
     "remindBefore": "{{name}} reminds you {{count}} minutes before.",
     "remindMorning": "{{name}} reminds you at 8:00 that day.",
-    "publishHint": {
-      "plan": "A day and time with {{name}}",
-      "diary": "Write about today",
-      "board": "Pin something for {{name}}",
-      "alarm": "{{name}} wakes you in their own voice"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Call",
@@ -1823,18 +1817,10 @@
     "mostWith": "Most with {{name}} · {{percent}}",
     "chaptersTitle": "Story chapters",
     "chaptersWith": "Chapters with {{name}}",
-    "chapterOpen": "Unlocked",
     "chapterLocked": "Unlocks at level {{level}}",
     "datesTile": "Dates",
     "togetherTile": "Together",
-    "togetherSub": "Photo · Quiz · Board",
     "togetherWith": "Together with {{name}}",
-    "togetherHint": {
-      "photoBooth": "Polaroid, film and studio strips",
-      "quiz": "5 weekly questions in {{name}}’s voice",
-      "board": "Pinned stationery notes",
-      "scene": "Jump into a moment together"
-    },
     "savedCount_one": "{{count}} saved",
     "savedCount_other": "{{count}} saved",
     "datesPlacesCount_one": "{{count}} place",

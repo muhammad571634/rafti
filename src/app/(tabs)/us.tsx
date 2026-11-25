@@ -12,11 +12,12 @@ import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIco
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
 import { ChaptersSheet } from '@/components/us/chapters-sheet';
 import { LivingBondHero } from '@/components/us/living-bond-hero';
+import { MonthDonut } from '@/components/us/month-donut';
 import { OurMoments } from '@/components/us/moments';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
-import { TALK_HUES, TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
+import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
 import { TogetherSheet, type TogetherKind } from '@/components/us/together-sheet';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { useDayKey } from '@/hooks/use-day-key';
@@ -55,7 +56,6 @@ export default function UsScreen() {
   const memories = useAppStore((s) => s.memories);
   const dates = useAppStore((s) => s.dates);
   const characterDiary = useAppStore((s) => s.characterDiary);
-  const myDiary = useAppStore((s) => s.diary);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
   const addSchedule = useAppStore((s) => s.addSchedule);
   const spendShells = useAppStore((s) => s.spendShells);
@@ -158,13 +158,10 @@ export default function UsScreen() {
     () => (activeId ? dates.filter((d) => d.characterId === activeId).length : 0),
     [dates, activeId],
   );
-  const diaryCount = useMemo(
-    () =>
-      activeId
-        ? characterDiary.filter((p) => p.characterId === activeId).length +
-          myDiary.filter((d) => d.sharedWithCharacterId === activeId).length
-        : 0,
-    [characterDiary, myDiary, activeId],
+  // Their pages about you: the tile counts them and opens the newest (the diary's own page screen).
+  const friendPages = useMemo(
+    () => (activeId ? characterDiary.filter((p) => p.characterId === activeId).sort((a, b) => a.date.localeCompare(b.date)) : []),
+    [characterDiary, activeId],
   );
 
   const pickPublish = (kind: PublishKind) => {
@@ -185,8 +182,6 @@ export default function UsScreen() {
         return router.push({ pathname: '/photo-booth', params: { partner: cid } });
       case 'quiz':
         return router.push({ pathname: '/quiz/[characterId]', params: { characterId: cid } });
-      case 'board':
-        return router.push('/board');
       case 'scene':
         if (friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });
     }
@@ -224,27 +219,10 @@ export default function UsScreen() {
   const addButton = <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />;
 
   const now = new Date();
-  const shortMonthRaw = new Intl.DateTimeFormat(i18n.language, { month: 'short' }).format(now);
-  const shortMonth = shortMonthRaw.charAt(0).toLocaleUpperCase(i18n.language) + shortMonthRaw.slice(1);
-  const longMonthRaw = new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(now);
-  const longMonth = longMonthRaw.charAt(0).toLocaleUpperCase(i18n.language) + longMonthRaw.slice(1);
-  const topShare = shares[0];
-  const topPercent = topShare ? (topShare.percent > 0 ? `${topShare.percent}%` : '<1%') : '';
-
-  const monthPill = topShare ? (
-    <PressableScale
-      scaleTo={0.94}
-      haptic
-      accessibilityRole="button"
-      accessibilityLabel={t('us.monthCircle', { month: longMonth })}
-      onPress={() => setCircleOpen(true)}
-      style={styles.monthCapsule}>
-      <View style={[styles.monthDot, { backgroundColor: TALK_HUES[0][0] }]} />
-      <InkText variant="caption" color={ink.text} lines={1} style={styles.tabular}>
-        {`${shortMonth} · ${topPercent}`}
-      </InkText>
-    </PressableScale>
-  ) : null;
+  const longMonth = capitalized(new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(now), i18n.language);
+  // Under the month ring: the month's name, or its short form where the name is long (it never wraps or cuts).
+  const monthLabel = longMonth.length <= 8 ? longMonth : capitalized(new Intl.DateTimeFormat(i18n.language, { month: 'short' }).format(now), i18n.language);
+  const topTalk = shares[0] ? characters.find((c) => c.id === shares[0].characterId) : undefined;
 
   if (!selected) {
     return (
@@ -351,7 +329,6 @@ export default function UsScreen() {
         <InkText variant="display" style={styles.grow}>
           {t('us.title')}
         </InkText>
-        {monthPill}
         {bell}
         {addButton}
       </View>
@@ -362,6 +339,21 @@ export default function UsScreen() {
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
         {/* 1. Single Quiet Friend Strip: active friend glows in their own accent, others recede calmly. */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>
+          {/* This month first: who you talked with, as one ring; a tap opens the month with its numbers. */}
+          {shares.length > 0 ? (
+            <PressableScale
+              style={styles.pick}
+              scaleTo={0.94}
+              haptic
+              accessibilityRole="button"
+              accessibilityLabel={t('us.monthCircle', { month: longMonth })}
+              onPress={() => setCircleOpen(true)}>
+              <MonthDonut shares={shares} top={topTalk} size={STORY + (STORY_RING + STORY_GAP) * 2} />
+              <InkText variant="caption" color={ink.text2} lines={1}>
+                {monthLabel}
+              </InkText>
+            </PressableScale>
+          ) : null}
           {bonds.map(({ character: c, relationship: r }) => {
             const active = c.id === character.id;
             const accent = friendAccent(c.id);
@@ -430,15 +422,18 @@ export default function UsScreen() {
               icon="book"
               fill={systemColors.orange}
               title={t('home.short.diary')}
-              sub={t('us.pagesCount', { count: diaryCount })}
-              onPress={() => router.push('/diary')}
+              sub={t('us.pagesCount', { count: friendPages.length })}
+              onPress={() => {
+                const newest = friendPages.at(-1);
+                if (newest) router.push({ pathname: '/diary/page/[characterId]', params: { characterId: character.id, date: newest.date } });
+                else router.push('/diary');
+              }}
             />
             <SharedTile
               ios="camera.fill"
               icon="camera"
               fill={systemColors.blue}
               title={t('us.togetherTile')}
-              sub={t('us.togetherSub')}
               onPress={() => setTogetherOpen(true)}
             />
           </View>
@@ -466,7 +461,6 @@ export default function UsScreen() {
         visible={publishOpen}
         onClose={() => setPublishOpen(false)}
         onPick={pickPublish}
-        name={first}
       />
       <PlanSheet
         visible={planOpen}
@@ -510,7 +504,10 @@ export default function UsScreen() {
   );
 }
 
-/** One compact 2x2 door card on Us with a coloured Apple iOS icon tile and wrapping 2-line labels. */
+/**
+ * One 2x2 door on Us: the coloured iOS icon tile on top, the name and its count under it. Stacked, the
+ * name gets the card's whole width, so a long word ("Воспоминания") stays whole (owner, 2026-11-25).
+ */
 function SharedTile({
   ios,
   icon,
@@ -523,7 +520,7 @@ function SharedTile({
   icon: keyof typeof Ionicons.glyphMap;
   fill: string;
   title: string;
-  sub: string;
+  sub?: string;
   onPress: () => void;
 }) {
   return (
@@ -532,7 +529,7 @@ function SharedTile({
       haptic
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${title}, ${sub}`}
+      accessibilityLabel={sub ? `${title}, ${sub}` : title}
       style={styles.tileCard}>
       <View style={[styles.tileIcon, { backgroundColor: fill }]}>
         <SFIcon ios={ios} icon={icon} size={18} color={ink.text} />
@@ -541,14 +538,18 @@ function SharedTile({
         <InkText variant="subStrong" lines={2}>
           {title}
         </InkText>
-        <InkText variant="caption" color={ink.text3} lines={2} style={styles.tabular}>
-          {sub}
-        </InkText>
+        {sub ? (
+          <InkText variant="caption" color={ink.text3} lines={1} style={styles.tabular}>
+            {sub}
+          </InkText>
+        ) : null}
       </View>
-      <Ionicons name="chevron-forward" size={14} color={ink.text3} />
     </PressableScale>
   );
 }
+
+/** "ноябрь" -> "Ноябрь" in the screen's language. */
+const capitalized = (text: string, locale: string) => text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
 
 const clock = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
@@ -584,23 +585,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: inkGutter,
     paddingTop: space.sm,
     paddingBottom: space.xs,
-  },
-  monthCapsule: {
-    minHeight: 36,
-    paddingHorizontal: 11,
-    borderRadius: inkRadius.pill,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: ink.raised,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-  },
-  monthDot: {
-    width: 7,
-    height: 7,
-    borderRadius: inkRadius.pill,
   },
   // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
   badge: {
@@ -640,13 +624,8 @@ const styles = StyleSheet.create({
   tileCard: {
     flex: 1,
     minWidth: 0,
-    minHeight: 62,
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 10,
-    paddingVertical: 11,
-    paddingLeft: 12,
-    paddingRight: 10,
+    padding: 12,
     borderRadius: inkRadius.field,
     borderCurve: 'continuous',
     backgroundColor: ink.card,
@@ -661,11 +640,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tileText: {
-    flex: 1,
-    minWidth: 0,
-    gap: 1,
-  },
+  tileText: { gap: 1 },
   scheduleWrap: { paddingVertical: 4 },
   pickedDayLabel: {
     paddingHorizontal: 16,

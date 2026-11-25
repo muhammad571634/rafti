@@ -1804,12 +1804,6 @@
     "with": "Mit",
     "remindBefore": "{{name}} erinnert dich {{count}} Min. vorher.",
     "remindMorning": "{{name}} erinnert dich um 8:00 Uhr an diesem Tag.",
-    "publishHint": {
-      "plan": "Tag und Uhrzeit mit {{name}}",
-      "diary": "Über heute schreiben",
-      "board": "Notiz für {{name}} anheften",
-      "alarm": "{{name}} weckt dich mit eigener Stimme"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Anruf",
@@ -1823,18 +1817,10 @@
     "mostWith": "Meist mit {{name}} · {{percent}}",
     "chaptersTitle": "Kapitel",
     "chaptersWith": "Kapitel mit {{name}}",
-    "chapterOpen": "Freigeschaltet",
     "chapterLocked": "Ab Level {{level}} frei",
     "datesTile": "Dates",
     "togetherTile": "Zusammen",
-    "togetherSub": "Foto · Quiz · Pinnwand",
     "togetherWith": "Zusammen mit {{name}}",
-    "togetherHint": {
-      "photoBooth": "Polaroid-, Film- und Studiostreifen",
-      "quiz": "5 Wochenfragen mit {{name}}s Stimme",
-      "board": "Angepinnte Briefnotizen",
-      "scene": "Gemeinsam in eine Szene starten"
-    },
     "savedCount_one": "{{count}} gemerkt",
     "savedCount_other": "{{count}} gemerkt",
     "datesPlacesCount_one": "{{count}} Ort",

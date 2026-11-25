@@ -1804,12 +1804,6 @@
     "with": "Com",
     "remindBefore": "{{name}} vai lembrar você {{count}} minutos antes.",
     "remindMorning": "{{name}} vai lembrar você às 8:00 daquele dia.",
-    "publishHint": {
-      "plan": "Um dia e horário com {{name}}",
-      "diary": "Escreva sobre o dia de hoje",
-      "board": "Fixe algo para {{name}}",
-      "alarm": "{{name}} acorda você com a própria voz"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "Chamada",
@@ -1823,18 +1817,10 @@
     "mostWith": "Mais com {{name}} · {{percent}}",
     "chaptersTitle": "Capítulos",
     "chaptersWith": "Capítulos com {{name}}",
-    "chapterOpen": "Desbloqueado",
     "chapterLocked": "Abre no nível {{level}}",
     "datesTile": "Encontros",
     "togetherTile": "Juntos",
-    "togetherSub": "Fotos · Quiz · Mural",
     "togetherWith": "Juntos com {{name}}",
-    "togetherHint": {
-      "photoBooth": "Tiras Polaroid, filme e estúdio",
-      "quiz": "5 perguntas semanais na voz de {{name}}",
-      "board": "Bilhetes fixados no mural",
-      "scene": "Entrem em uma cena juntos"
-    },
     "savedCount_one": "{{count}} salvo",
     "savedCount_other": "{{count}} salvos",
     "datesPlacesCount_one": "{{count}} lugar",

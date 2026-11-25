@@ -1770,12 +1770,6 @@
     "with": "相手",
     "remindBefore": "{{name}}が{{count}}分前にお知らせします。",
     "remindMorning": "{{name}}が当日の8:00にお知らせします。",
-    "publishHint": {
-      "plan": "{{name}}との日時と約束",
-      "diary": "今日の出来事を書く",
-      "board": "{{name}}へのメモを貼る",
-      "alarm": "{{name}}が自分の声で起こしてくれる"
-    },
     "said": "{{name}}：{{text}}",
     "momentTitle": {
       "call": "通話",
@@ -1789,18 +1783,10 @@
     "mostWith": "最多 {{name}} · {{percent}}",
     "chaptersTitle": "ふたりの章",
     "chaptersWith": "{{name}}との章",
-    "chapterOpen": "解放済み",
     "chapterLocked": "レベル{{level}}で解放",
     "datesTile": "デート",
     "togetherTile": "ふたりで",
-    "togetherSub": "写真・クイズ・ボード",
     "togetherWith": "{{name}}とふたりで",
-    "togetherHint": {
-      "photoBooth": "ポラロイドやフィルム風フォト",
-      "quiz": "{{name}}の声で楽しむ週替わり5問",
-      "board": "ボードに留めた手紙メモ",
-      "scene": "ふたりのシーンへ飛び込む"
-    },
     "savedCount_other": "{{count}}件の記憶",
     "datesPlacesCount_other": "{{count}}か所",
     "datesDoneCount_other": "{{count}}回のデート",

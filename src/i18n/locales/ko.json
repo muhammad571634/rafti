@@ -1770,12 +1770,6 @@
     "with": "함께할 사람",
     "remindBefore": "{{name}}이(가) {{count}}분 전에 알려줍니다.",
     "remindMorning": "{{name}}이(가) 당일 오전 8시에 알려줍니다.",
-    "publishHint": {
-      "plan": "{{name}}와(과)의 약속 날짜와 시간",
-      "diary": "오늘 하루를 기록하기",
-      "board": "{{name}}에게 메모 남기기",
-      "alarm": "{{name}}의 목소리로 아침에 깨워줘요"
-    },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
       "call": "통화",
@@ -1789,18 +1783,10 @@
     "mostWith": "최다 {{name}} · {{percent}}",
     "chaptersTitle": "우리의 챕터",
     "chaptersWith": "{{name}}와의 챕터",
-    "chapterOpen": "열림",
     "chapterLocked": "레벨 {{level}}에서 열림",
     "datesTile": "데이트",
     "togetherTile": "함께하기",
-    "togetherSub": "포토 · 퀴즈 · 보드",
     "togetherWith": "{{name}}와 함께하기",
-    "togetherHint": {
-      "photoBooth": "폴라로이드·필름·스튜디오 네컷",
-      "quiz": "{{name}} 목소리로 푸는 주간 5문답",
-      "board": "보드에 꽂아둔 손편지 메모",
-      "scene": "함께 새로운 장면 시작하기"
-    },
     "savedCount_other": "{{count}}개 기억됨",
     "datesPlacesCount_other": "{{count}}곳",
     "datesDoneCount_other": "데이트 {{count}}회",

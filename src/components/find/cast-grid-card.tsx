@@ -26,8 +26,8 @@ export interface CastGridCardProps {
 
 /**
  * 2-column cinema portrait card for Find's "Meet the cast" and "People" grid: full-bleed portrait,
- * top relation badge, sibling clear-glass Call button, serif name + 2-line greeting, and "✓ In Chats"
- * or "Say hi →" status cue at the foot.
+ * clear-glass Call button on top, and at the foot who they are to you (their hue), the serif name and
+ * the "✓ In Chats" or "Say hi →" cue.
  */
 export const CastGridCard = memo(function CastGridCard({
   character,
@@ -54,7 +54,7 @@ export const CastGridCard = memo(function CastGridCard({
       <PressableScale
         scaleTo={0.97}
         accessibilityRole="button"
-        accessibilityLabel={[character.name, badge, shown.greeting].filter(Boolean).join(', ')}
+        accessibilityLabel={[character.name, badge].filter(Boolean).join(', ')}
         onPress={onOpen}
         style={StyleSheet.absoluteFill}>
         {source != null ? (
@@ -80,25 +80,16 @@ export const CastGridCard = memo(function CastGridCard({
           style={StyleSheet.absoluteFill}
         />
 
-        {badge ? (
-          <View style={[styles.badgeWrap, canCall && styles.badgeClearCall]}>
-            <View style={styles.badge}>
-              <InkText variant="tag" color={accent.strong} lines={1}>
-                {badge}
-              </InkText>
-            </View>
-          </View>
-        ) : null}
-
         <View style={styles.foot}>
+          {/* Who they are to you, in their hue: words that wrap, never a pill cut with "…" (owner, 2026-11-25). */}
+          {badge ? (
+            <InkText variant="caption" color={accent.strong} lines={2}>
+              {badge}
+            </InkText>
+          ) : null}
           <InkText variant="cardSmall" color={colors.onMedia} lines={1}>
             {shortName(character.name)}
           </InkText>
-          {shown.greeting ? (
-            <InkText variant="footnote" color={ink.photoLine} lines={2}>
-              {`“${shown.greeting}”`}
-            </InkText>
-          ) : null}
           <View style={styles.statusRow}>
             {inChats ? (
               <>
@@ -142,23 +133,6 @@ const styles = StyleSheet.create({
     borderColor: ink.edge,
   },
   fallback: { alignItems: 'center', justifyContent: 'center', paddingBottom: 48 },
-  badgeWrap: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    right: 10,
-    alignItems: 'flex-start',
-  },
-  badgeClearCall: { right: 48 },
-  badge: {
-    maxWidth: '100%',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: inkRadius.pill,
-    backgroundColor: ink.photoBadge,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.photoBadgeRim,
-  },
   callWrap: { position: 'absolute', top: 9, right: 9 },
   callBtn: { minHeight: 30, width: 30, paddingHorizontal: 0 },
   foot: {
