@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z353. Store split step 4: the group chat slice and engine (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
+- **What moved** (behaviour and persisted shape unchanged): the 17 group actions (`createGroup` .. `deleteGroup`) and the group engine (`memberName`, `groupLinePreview`, `groupSystem`, `memberText`, `speakersIn`, `appendGroupMessage`, `noticeGroupAiIfDue`, `answerGroup`, `openStoryScene`, `storyCueFor`, `groupInput`, `writeGroupTurns`, `failGroupTurns`, `failedGroupTurns`, group typing, `scheduleGroupReplies`) into `src/store/groups.ts` as `createGroups(deps)`. Store code outside groups (group calls, truth or dare, timers, launch) calls `groupSlice.<name>`.
+- **Deps**: `aiNoticeMs`, `displayName`, `genderOf`, `keepOwnDay`, `lookAtPhotos`, `pick`, `previewFor`, `raiseAgeDoubt`, `rememberPhotos`, `themText`, `worldStoryOf` (consts declared later in the store go in as small wrappers, so module order cannot hit a TDZ). `replyingUntil` (one Map shared by one-to-one and group replies) moved to `src/store/reply-state.ts`.
+- **Size**: `use-app-store.ts` 6,807 → 6,133 lines (7,717 at the start); `groups.ts` 742.
+- **Checked**: `npx tsc --noEmit` 0 in the store (one error in `src/app/(tabs)/find.tsx` is Gemini's uncommitted Find v3 work, not this change), `--noUnusedLocals` nothing new, `npm test` 1176/1176, Android bundle exports, the A51 (Expo Go) opens Today and Chats → Groups, no JS errors. No group created on the owner's phone (it would call the model); group chats not driven end to end.
+- **Next**: scenes / lorebook / streams, dates + quizzes, then chat send/reply.
+
 ### 0z352. Store split step 3: the alarms + wake-up slice (app audit P1-6, 2026-11-25, Claude 1, Opus 5.5). Code done, pushed
 - **What moved** (behaviour and persisted shape unchanged): `saveAlarm`, `deleteAlarm`, `setAlarmEnabled`, `ringAlarm`, `snoozeWake`, `stopWake`, `wakeTick`, with `alarmDaysWord` and `alarmOffer` (only alarms used them), into `src/store/alarms.ts` as `createAlarms(deps)`; deps are the chat helpers `setupInChat`, `setupCancelled`, `setupRemoved`, `sayFirst`, `appendMessage`, `genderOf` (now exported from the store for `typeof`).
 - **Size**: `use-app-store.ts` 6,976 → 6,807 lines (7,717 at the start); `alarms.ts` 205.
