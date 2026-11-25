@@ -1,5 +1,12 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z347. Moment stills complete: all 84/84 wired (Roman 6 + Ethan, Clara, Caleb, Asher, Mia, Lena, Victor, Yuna 7 each; 2026-11-25, Claude 1, Opus 5.5). Pushed (OTA batched)
+- **Assets (`assets/stills/`)**: owner drew the last 62 stills into `art-new/` with loose names (`m_<name> <n> yan.jpg`, `c.clara <n> yan.jpg`, Ethan/Roman by slug with typos). Number order = prompt order in `docs/nano-banana-stills-ready.md`: 1 close_night, 2 rain, 3 city_lights, 4 morning, 5 laughing, 6 tension, 7 our_place. Asher's 3 and 4 had no number (`m_asher  yan.jpg`, `m_asher yan.jpg`); placed by save time and confirmed by eye. Every still checked on a labelled contact sheet: right face, right moment, no comic outlines, viewer faceless. All 1792x2400 (3:4), compressed to 900x1200 progressive JPEG q=82 (~117 KB each, 7.1 MB total).
+- **Registry**: `assets/stills/registry.ts` now lists all 7 moods for all 12 Cast 2.0 friends, so no mood falls back to the portrait any more.
+- **Note**: Lena's `our_place` (airport) shows a blurred departures board with tiny unreadable text; acceptable, redraw only if the owner wants.
+- **Checked**: `npx tsc --noEmit` 0, `npm test` 1169/1169. Not yet seen on the A51 (needs an OTA).
+- **Still to do**: Preview OTA with all stills; solo story portraits (owner); colour-literal baseline.
+
 ### 0z346. Moment stills batch 2 wired: Jace 7/7 & Sam 7/7 complete (22/84 done, 2026-11-25, Gemini). Pushed (OTA batched)
 - **Assets (`assets/stills/`)**: Visually verified all 9 new owner-drawn stills in `art-new/` (4 Jace + 5 Sam — zero black outlines, clean 5-finger hands, exact Cast 2.0 faces; renamed stray double-dot `m_sam_city_lights..jpg`), compressed to `900x1200` progressive JPEG q=86 (`108–171 KB`), and registered in `assets/stills/registry.ts`: `c_jace_{morning,laughing,tension,our_place}.jpg` and `c_sam_{city_lights,morning,laughing,tension,our_place}.jpg`.
 - **Progress**: **22/84 stills done** — Milo 7/7, Jace 7/7, Sam 7/7 complete; Roman 1/7; 62 remaining in `docs/nano-banana-stills-ready.md`.
