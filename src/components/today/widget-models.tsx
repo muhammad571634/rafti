@@ -221,19 +221,33 @@ function useDiaryModel(): WidgetModel {
     return {
       kind: 'diary',
       label: label('diary'),
-      faces: lastWriter ? [lastWriter] : writers.slice(0, 3),
+      faces: [],
       ...(fresh.length
-        ? { figure: String(fresh.length), unit: t('home.widget.newPages', { count: fresh.length }), line: writers.map(nameOf).join(', ') }
+        ? {
+            figure: String(fresh.length),
+            unit: t('home.widget.newPages', { count: fresh.length }),
+            line: writers.map(nameOf).join(', '),
+            lineFace: writers[0],
+          }
         : lastWriter && lastPage
           ? quiet
-            ? { title: label('diary'), line: `${nameOf(lastWriter)} · ${pageDay(lastPage.date)}` }
-            : { quote: lastPage.body[0], line: `${nameOf(lastWriter)} · ${pageDay(lastPage.date)}` }
+            ? { title: label('diary'), line: `${nameOf(lastWriter)} · ${pageDay(lastPage.date)}`, lineFace: lastWriter }
+            : { quote: lastPage.body[0], line: `${nameOf(lastWriter)} · ${pageDay(lastPage.date)}`, lineFace: lastWriter }
           : { title: label('diary'), line: t('home.widget.writeToday') }),
       onPress: () =>
         openPage
           ? router.push({ pathname: '/diary/page/[characterId]', params: { characterId: openPage.characterId, date: openPage.date } })
           : router.push('/diary'),
       buttons: [
+        ...(openPage
+          ? [
+              {
+                glyph: { ios: 'books.vertical' as const, icon: 'library-outline' as const },
+                label: t('home.modules.heartbeatDiary'),
+                onPress: () => router.push('/diary'),
+              },
+            ]
+          : []),
         {
           glyph: { ios: 'square.and.pencil', icon: 'create-outline' },
           label: t('home.widget.writeToday'),
@@ -286,9 +300,16 @@ function useDateModel(): WidgetModel {
         line: friend ? t('home.widget.withName', { name: nameOf(friend) }) : t('home.waiting'),
         lineFace: friend,
         onPress: () => router.push({ pathname: '/date/[placeId]', params: { placeId: state.placeId, characterId: state.characterId } }),
-        buttons: chatId
-          ? [{ glyph: { ios: 'message', icon: 'chatbubble-outline' }, label: t('characterProfile.chat'), onPress: () => router.push(`/chat/${chatId}`) }]
-          : undefined,
+        buttons: [
+          {
+            glyph: { ios: 'heart', icon: 'heart-outline' },
+            label: t('home.modules.dating'),
+            onPress: () => router.push({ pathname: '/dating', params: { partner: state.characterId } }),
+          },
+          ...(chatId
+            ? [{ glyph: { ios: 'message' as const, icon: 'chatbubble-outline' as const }, label: t('characterProfile.chat'), onPress: () => router.push(`/chat/${chatId}`) }]
+            : []),
+        ],
       };
     }
 
@@ -298,6 +319,7 @@ function useDateModel(): WidgetModel {
       return {
         kind: 'date',
         label: label('date'),
+        icon: { ios: 'calendar', icon: 'calendar-outline' },
         faces: [],
         figure: plan.time ?? dayWord(k, plan.date),
         title: plan.title,
@@ -308,9 +330,16 @@ function useDateModel(): WidgetModel {
           ? [{ face: byId.get(nextPlan.characterId), text: `${dayWord(k, nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` }]
           : undefined,
         onPress: () => router.navigate({ pathname: '/(tabs)/us', params: { friend: plan.characterId, day: plan.date, at: String(Date.now()) } }),
-        buttons: chatId
-          ? [{ glyph: { ios: 'message', icon: 'chatbubble-outline' }, label: t('characterProfile.chat'), onPress: () => router.push(`/chat/${chatId}`) }]
-          : undefined,
+        buttons: [
+          {
+            glyph: { ios: 'heart', icon: 'heart-outline' },
+            label: t('home.modules.dating'),
+            onPress: () => router.push({ pathname: '/dating', params: { partner: plan.characterId } }),
+          },
+          ...(chatId
+            ? [{ glyph: { ios: 'message' as const, icon: 'chatbubble-outline' as const }, label: t('characterProfile.chat'), onPress: () => router.push(`/chat/${chatId}`) }]
+            : []),
+        ],
       };
     }
 
@@ -373,9 +402,12 @@ function useSleepModel(): WidgetModel {
       if (later.length > 2) rows.push({ face: undefined, text: `+${later.length - 1}` });
       // Monday first; 2026-11-01 is a Sunday, so day d of that week is weekday d.
       const weekday = (d: number) => new Date(2026, 10, 1 + d).toLocaleDateString(lang, { weekday: 'narrow' });
+      const openBedtime = () =>
+        router.push(state.bedtimePartnerId ? { pathname: '/bedtime', params: { partner: state.bedtimePartnerId } } : '/bedtime');
       return {
         kind: 'sleep',
         label: label('sleep'),
+        icon: { ios: 'alarm', icon: 'alarm-outline' },
         faces: [],
         figure: mainClock.time,
         unit: mainClock.period ? t(`alarms.${mainClock.period}`) : undefined,
@@ -384,7 +416,10 @@ function useSleepModel(): WidgetModel {
         line: waker ? t('home.widget.wakeWith', { label: alarm.label || t('home.widget.wakeUp'), name: nameOf(waker) }) : alarm.label || t('home.widget.wakeUp'),
         lineFace: waker,
         onPress: () => router.push('/alarms'),
-        buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: openNewAlarm }],
+        buttons: [
+          { glyph: { ios: 'moon.fill', icon: 'moon' }, label: t('bedtime.title'), onPress: openBedtime },
+          { glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: openNewAlarm },
+        ],
       };
     }
 
@@ -395,7 +430,12 @@ function useSleepModel(): WidgetModel {
       title: label('sleep'),
       line: t('home.widget.setWake'),
       onPress: () => router.push(state.partnerId ? { pathname: '/bedtime', params: { partner: state.partnerId } } : '/bedtime'),
-      buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: openNewAlarm }],
+      buttons: [
+        ...(state.hasDisabledAlarms
+          ? [{ glyph: { ios: 'alarm' as const, icon: 'alarm-outline' as const }, label: t('alarms.title'), onPress: () => router.push('/alarms') }]
+          : []),
+        { glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: openNewAlarm },
+      ],
     };
   }, [k, state, h12]);
 }
@@ -570,7 +610,7 @@ function useContactsModel(): WidgetModel {
     return {
       kind: 'contacts',
       label: label('contacts'),
-      faces: friends.slice(0, 3),
+      faces: friends.slice(0, 2),
       figure: String(friends.length),
       unit: t('home.widget.friends', { count: friends.length }),
       line: label('contacts'),

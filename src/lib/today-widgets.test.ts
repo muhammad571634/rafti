@@ -201,7 +201,7 @@ describe('contextual widget chains: Date, Sleep, Gifts', () => {
     assert.deepEqual(empty, { mode: 'empty', partnerId: 'c_clara' });
   });
 
-  it('Sleep widget routes enabled alarms to /alarms and empty state to /bedtime with hero pre-selected', () => {
+  it('Sleep widget keeps Alarms, Bedtime, and disabled alarms all reachable with zero dead ends', () => {
     const active = resolveSleepWidget({
       alarms: [
         { id: 'a1', enabled: true, hour: 7, minute: 30, repeat: [1, 2, 3], label: 'Gym', characterId: 'c_clara' },
@@ -215,20 +215,36 @@ describe('contextual widget chains: Date, Sleep, Gifts', () => {
     if (active.mode === 'alarm') {
       assert.equal(active.targetRoute, '/alarms');
       assert.equal(active.alarm.id, 'a1');
+      assert.equal(active.bedtimePartnerId, 'c_clara');
       assert.equal(active.addFriendId, 'c_clara');
     }
 
-    const empty = resolveSleepWidget({
+    const disabledOnly = resolveSleepWidget({
       alarms: [{ id: 'a1', enabled: false, hour: 7, minute: 30, repeat: [], label: '', characterId: 'c_clara' }],
       now: NOW,
       heroId: 'c_ethan',
       hasCharacter,
     });
-    assert.deepEqual(empty, {
+    assert.deepEqual(disabledOnly, {
       mode: 'empty',
       targetRoute: '/bedtime',
       partnerId: 'c_ethan',
       addFriendId: 'c_ethan',
+      hasDisabledAlarms: true,
+    });
+
+    const none = resolveSleepWidget({
+      alarms: [],
+      now: NOW,
+      heroId: 'c_ethan',
+      hasCharacter,
+    });
+    assert.deepEqual(none, {
+      mode: 'empty',
+      targetRoute: '/bedtime',
+      partnerId: 'c_ethan',
+      addFriendId: 'c_ethan',
+      hasDisabledAlarms: false,
     });
   });
 

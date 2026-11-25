@@ -165,6 +165,7 @@ export type SleepWidgetState<A extends Pick<Alarm, 'id' | 'enabled' | 'hour' | '
       alarm: A;
       later: A[];
       targetRoute: '/alarms';
+      bedtimePartnerId?: string;
       addFriendId?: string;
       changesAt?: number;
     }
@@ -173,15 +174,15 @@ export type SleepWidgetState<A extends Pick<Alarm, 'id' | 'enabled' | 'hour' | '
       targetRoute: '/bedtime';
       partnerId?: string;
       addFriendId?: string;
+      hasDisabledAlarms: boolean;
       changesAt?: undefined;
     };
 
 /**
- * Resolves the Sleep / Wake-up widget chain:
- * - An enabled alarm opens `/alarms` (where that alarm leads at the top with its switch and editor),
- *   and `+` pre-selects the alarm's waker (or `heroId`).
- * - When no alarm is enabled, tapping opens `/bedtime` pre-selected with `heroId`, and `+` opens
- *   `/alarms/edit` pre-selected with `heroId`.
+ * Resolves the Sleep / Wake-up widget chain so Bedtime, Alarms, and New Alarm are ALL reachable in
+ * one tap (never trapping Bedtime behind an active alarm or hiding disabled alarms):
+ * - Enabled alarm -> body opens `/alarms`, Moon button opens `/bedtime?partner=<waker|hero>`, `+` opens `/alarms/edit`.
+ * - No enabled alarm -> body opens `/bedtime?partner=<hero>`, Alarm button (when disabled alarms exist) opens `/alarms`, `+` opens `/alarms/edit`.
  */
 export function resolveSleepWidget<
   A extends Pick<Alarm, 'id' | 'enabled' | 'hour' | 'minute' | 'repeat' | 'label' | 'characterId'>,
@@ -196,12 +197,14 @@ export function resolveSleepWidget<
   const hero = input.heroId && input.hasCharacter(input.heroId) ? input.heroId : undefined;
   const [alarm, ...later] = ordered.alarms;
   if (alarm) {
+    const partner = alarm.characterId ?? hero;
     return {
       mode: 'alarm',
       alarm,
       later,
       targetRoute: '/alarms',
-      addFriendId: alarm.characterId ?? hero,
+      bedtimePartnerId: partner,
+      addFriendId: partner,
       changesAt: ordered.changesAt,
     };
   }
@@ -210,6 +213,7 @@ export function resolveSleepWidget<
     targetRoute: '/bedtime',
     partnerId: hero,
     addFriendId: hero,
+    hasDisabledAlarms: valid.length > 0,
   };
 }
 

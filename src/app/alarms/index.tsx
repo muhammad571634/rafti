@@ -84,7 +84,17 @@ export default function AlarmsScreen() {
         onBack={() => router.back()}
         title={t('alarms.title')}
         scrolled={scrolled}
-        right={<InkIconButton icon="add" size={22} accessibilityLabel={t('alarms.add')} onPress={add} />}
+        right={
+          <View style={styles.navRight}>
+            <InkIconButton
+              icon="moon-outline"
+              size={20}
+              accessibilityLabel={t('bedtime.title')}
+              onPress={() => router.push(nextFriend ? { pathname: '/bedtime', params: { partner: nextFriend.id } } : '/bedtime')}
+            />
+            <InkIconButton icon="add" size={22} accessibilityLabel={t('alarms.add')} onPress={add} />
+          </View>
+        }
       />
 
       {sorted.length === 0 ? (
@@ -254,6 +264,7 @@ function Face({ friend, size, ringColor }: { friend?: Character; size: number; r
 
 const styles = StyleSheet.create({
   ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 220 },
+  navRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   emptyWrap: { flex: 1 },
   title: { paddingHorizontal: inkGutter, marginTop: 2 },
   titleInline: { marginTop: 2, marginBottom: 4 },

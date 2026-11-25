@@ -68,6 +68,8 @@ export const WIDGET_HEIGHT = 172;
 export interface WidgetModel {
   kind: WidgetKind;
   label: string;
+  /** Optional contextual top-left glyph override (e.g. alarm clock on Sleep when showing an alarm, calendar on Date when showing a plan). */
+  icon?: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
   faces: Character[];
   badge?: string;
   /** A big number or time, with an optional word after it */
@@ -263,7 +265,13 @@ export function WidgetView({
   ) : (
     <>
       <View style={styles.top}>
-        {onPhoto ? <View /> : <ModuleLine name={key} size={28} color={ink} />}
+        {onPhoto ? (
+          <View />
+        ) : model.icon ? (
+          <SFIcon ios={model.icon.ios} icon={model.icon.icon} size={28} color={ink} weight="light" />
+        ) : (
+          <ModuleLine name={key} size={28} color={ink} />
+        )}
         <View style={[styles.faces, buttons.length > 0 && { marginRight: buttons.length * (BUTTON + 8) }]}>
           {model.faces.slice(0, 3).map((c, i) => (
             <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
