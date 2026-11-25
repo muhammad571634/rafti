@@ -1,5 +1,11 @@
 # HANDOFF — keyingi sessiya shu fayldan boshlasin
 
+### 0z346. Moment stills batch 2 wired: Jace 7/7 & Sam 7/7 complete (22/84 done, 2026-11-25, Gemini). Pushed (OTA batched)
+- **Assets (`assets/stills/`)**: Visually verified all 9 new owner-drawn stills in `art-new/` (4 Jace + 5 Sam — zero black outlines, clean 5-finger hands, exact Cast 2.0 faces; renamed stray double-dot `m_sam_city_lights..jpg`), compressed to `900x1200` progressive JPEG q=86 (`108–171 KB`), and registered in `assets/stills/registry.ts`: `c_jace_{morning,laughing,tension,our_place}.jpg` and `c_sam_{city_lights,morning,laughing,tension,our_place}.jpg`.
+- **Progress**: **22/84 stills done** — Milo 7/7, Jace 7/7, Sam 7/7 complete; Roman 1/7; 62 remaining in `docs/nano-banana-stills-ready.md`.
+- **Checked**: `npx tsc --noEmit` 0, `npm run typecheck:test` 0, `npm test` 1169/1169.
+- **Still to do**: Remaining 62 Cast 2.0 moment stills (next: Roman 6 + Ethan 7); batch Preview OTA when ready; solo story portraits (owner); colour-literal baseline.
+
 ### 0z345. Moment stills batch 1 wired (Milo 7/7 complete + Jace city_lights redraw) & all 71 remaining prompts upgraded (2026-11-25, Gemini). Pushed (OTA batched for later)
 - **Prompt upgrade (`docs/nano-banana-moment-stills.md`, `docs/nano-banana-stills-ready.md`)**: Audited all 8 prior stills and all 76 remaining prompts against the owner's Character.AI reference video (owner approved keeping our horizontal Moments swipe feed). Added explicit `ZERO black ink outlines, ZERO comic lineart` + removed `photorealism` from `AVOID` (which caused `c_jace_city_lights` to turn comic-outlined), and separated viewer/character hands in `city_lights` to prevent fused fingers.
 - **Assets (`assets/stills/`)**: Visually verified all 6 new owner-drawn stills in `art-new/` (zero outlines, clean 5-finger hands, exact Cast 2.0 faces) and compressed to `900x1200` progressive JPEG q=86: replaced `c_jace_city_lights.jpg` and added `c_milo_{city_lights,morning,laughing,tension,our_place}.jpg`. Registered all 7 Milo stills in `assets/stills/registry.ts` (13/84 stills now live: Milo 7/7, Jace 3/7, Sam 2/7, Roman 1/7; 71 remaining in `docs/nano-banana-stills-ready.md`).
