@@ -9,6 +9,11 @@ export const STILLS: Record<string, Partial<Record<MomentStill, number>>> = {
   c_milo: {
     close_night: require('./c_milo_close_night.jpg'),
     rain: require('./c_milo_rain.jpg'),
+    city_lights: require('./c_milo_city_lights.jpg'),
+    morning: require('./c_milo_morning.jpg'),
+    laughing: require('./c_milo_laughing.jpg'),
+    tension: require('./c_milo_tension.jpg'),
+    our_place: require('./c_milo_our_place.jpg'),
   },
   c_jace: {
     close_night: require('./c_jace_close_night.jpg'),

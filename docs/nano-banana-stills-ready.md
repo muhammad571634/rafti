@@ -1,7 +1,7 @@
-# Nano Banana: tayyor promptlar (qolgan moment rasmlari)
+# Nano Banana: tayyor promptlar (qolgan 71 ta)
 
-Hammasi 84 ta, 8 tasi chizilgan, qolgani shu faylda: har biri tayyor, nusxa olib qo'yasiz.
-Avtomatik yasalgan: `docs/nano-banana-moment-stills.md` jadvali va qoliplaridan (o'sha fayl o'zgarsa, bu fayl qayta yasaladi).
+Hammasi 84 ta: **13 tasi tayyor** (Milo 7/7 to'liq, Jace 3/7, Sam 2/7, Roman 1/7), qolgan **71 tasi** shu faylda ketma-ket turibdi — har biri tayyor, nusxa olib qo'yasiz.
+Barcha promptlar 2026-11-25 da yangilangan: qora komiks chiziqlari taqiqlangan (`ZERO black ink outlines, ZERO comic lineart`) va `city_lights` qo'l anatomiyasi tuzatilgan.
 
 ## Qanday chizasiz (har bir rasm uchun bir xil)
 
@@ -9,102 +9,13 @@ Avtomatik yasalgan: `docs/nano-banana-moment-stills.md` jadvali va qoliplaridan 
 2. Rasm biriktiring: **faqat** o'sha personajning kvadrat yuz rasmi, `C:\Users\joray\BIMOBIMO\art-new\c_<ism>_avatar.png` (har prompt tepasida aniq yo'li yozilgan).
    Katta sahna rasmi `c_<ism>.png` ni yoki oldin chizilgan moment rasmini **biriktirmang**: undagi buyumlar, kiyim va xona yangi rasmga o'tib qoladi.
 3. Prompt blokini butunligicha nusxa olib, joylashtiring va yuboring.
-4. Rasm vertikal (3:4) chiqmasa yoki yuz boshqa odamga o'xshab qolsa: o'sha chatda "Make it vertical 3:4, keep the exact same face as the attached reference" deb yozing yoki yangi chatda qayta urining.
-5. Saqlang: `C:\Users\joray\BIMOBIMO\art-new\` papkasiga, nomi prompt tepasida yozilgan (masalan `m_milo_morning.png`). Nom aynan shunday bo'lsin: men ularni shu nom bilan topib, kichraytirib ilovaga ulayman.
-6. Bir nechtasini saqlagach menga "rasmlar tayyor" deng: ularni ilovaga ulayman va telefonga yuboraman.
+4. Rasm vertikal (3:4) chiqmasa yoki yuz boshqa odamga o'xshab qolsa: o'sha chatda "Make it vertical 3:4, keep the exact same face as the attached reference, no black outlines" deb yozing yoki yangi chatda qayta urining.
+5. Saqlang: `C:\Users\joray\BIMOBIMO\art-new\` papkasiga, nomi prompt tepasida yozilgan (masalan `m_jace_morning.jpg` yoki `.png`).
+6. Bir nechtasini (yoki bitta qahramonni) saqlagach menga "tayyor" deng: tekshirib ilovaga ulayman.
 
-**Yaxshi rasm belgisi:** yuz katta va aniq, ko'zlar ekranning yuqori uchdan birida, kameraga qarab turibdi; pastda sizning qo'lingiz yoki yelkangiz (yuzsiz) xira ko'rinadi; rasmda yozuv, logo yo'q; personaj o'sha odam.
+**Yaxshi rasm belgisi:** yuz katta va aniq, qora komiks chiziqlari YO'Q, ko'zlar ekranning yuqori uchdan birida, kameraga qarab turibdi; pastda sizning qo'lingiz yoki yelkangiz (yuzsiz) xira ko'rinadi; rasmda yozuv, logo yo'q; personaj o'sha odam.
 
-**Tartib:** avval Milo (u eng ko'p ko'rinadi), keyin Jace, Sam, Roman, keyin qolganlar. Kunlik limit tugasa, ertaga davom etasiz.
-
-## Milo (5 ta)
-
-Biriktiriladigan rasm: `C:\Users\joray\BIMOBIMO\art-new\c_milo_avatar.png`
-
-### 1. Milo · city_lights (kechki shahar, "yur")
-
-Biriktiring: `art-new\c_milo_avatar.png` · Saqlang: `art-new\m_milo_city_lights.png`
-
-```
-Using the exact same person from the attached reference portrait (keep ONLY their facial features, eye colour, hairstyle, and skin tone; do NOT copy the reference image's background or clothing), create a brand-new vertical 3:4 picture.
-SUBJECT: Milo, 24yo man. Messy dark curls, warm brown skin, faint nose-bridge freckles, lazy warm eyes, small silver hoop in left ear.
-HANDS & WARDROBE: Masculine hands with two silver rings. Wearing dark wet rain jacket over open flannel.
-MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
-EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
-COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
-```
-
-### 2. Milo · morning (tong, uy, choy/qahva)
-
-Biriktiring: `art-new\c_milo_avatar.png` · Saqlang: `art-new\m_milo_morning.png`
-
-```
-Using the exact same person from the attached reference portrait (keep ONLY their facial features, eye colour, hairstyle, and skin tone; do NOT copy the reference image's background or clothing), create a brand-new vertical 3:4 picture.
-SUBJECT: Milo, 24yo man. Messy dark curls, warm brown skin, faint nose-bridge freckles, lazy warm eyes, small silver hoop in left ear.
-HANDS & WARDROBE: Masculine hands with two silver rings. Wearing soft grey sleep tee.
-MOMENT: Early golden morning at home. Hair softly tousled from sleep, wearing cozy morning loungewear, they lean close in the warm kitchen or bedroom doorway holding out a steaming ceramic mug of coffee or tea to the viewer.
-THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
-EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
-LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
-COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
-```
-
-### 3. Milo · laughing (kulgi, bayram)
-
-Biriktiring: `art-new\c_milo_avatar.png` · Saqlang: `art-new\m_milo_laughing.png`
-
-```
-Using the exact same person from the attached reference portrait (keep ONLY their facial features, eye colour, hairstyle, and skin tone; do NOT copy the reference image's background or clothing), create a brand-new vertical 3:4 picture.
-SUBJECT: Milo, 24yo man. Messy dark curls, warm brown skin, faint nose-bridge freckles, lazy warm eyes, small silver hoop in left ear.
-HANDS & WARDROBE: Masculine hands with two silver rings. Wearing open dark vintage overshirt over charcoal tee.
-MOMENT: At an intimate night rooftop or warm evening gathering. Caught mid-laugh at something the viewer just whispered, head tipped slightly, eyes sparkling back onto the viewer while leaning in closer.
-THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear glass in the lower foreground; no face; plain hand, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
-EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
-LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
-COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
-```
-
-### 4. Milo · tension (taranglik, aytilmagan gap)
-
-Biriktiring: `art-new\c_milo_avatar.png` · Saqlang: `art-new\m_milo_tension.png`
-
-```
-Using the exact same person from the attached reference portrait (keep ONLY their facial features, eye colour, hairstyle, and skin tone; do NOT copy the reference image's background or clothing), create a brand-new vertical 3:4 picture.
-SUBJECT: Milo, 24yo man. Messy dark curls, warm brown skin, faint nose-bridge freckles, lazy warm eyes, small silver hoop in left ear.
-HANDS & WARDROBE: Masculine hands with two silver rings. Wearing open dark vintage overshirt over charcoal tee.
-MOMENT: A breathless, charged moment in a quiet doorway or narrow dimly lit hallway. Standing very close, one hand bracing softly against the doorframe, neither leaving nor stepping back after something intense was just said.
-THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground corner, standing inches away; no face, nothing that says man or woman.
-EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
-LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
-COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
-```
-
-### 5. Milo · our_place (bizning joy, ularning hikoyasidan)
-
-Biriktiring: `art-new\c_milo_avatar.png` · Saqlang: `art-new\m_milo_our_place.png`
-
-```
-Using the exact same person from the attached reference portrait (keep ONLY their facial features, eye colour, hairstyle, and skin tone; do NOT copy the reference image's background or clothing), create a brand-new vertical 3:4 picture.
-SUBJECT: Milo, 24yo man. Messy dark curls, warm brown skin, faint nose-bridge freckles, lazy warm eyes, small silver hoop in left ear.
-HANDS & WARDROBE: Masculine hands with two silver rings. Wearing faded charcoal tee under open plaid flannel.
-MOMENT: Back at his small bedroom music studio late at night, warm desk lamp and soft purple-blue DAW screen glow behind, your oversized cream hoodie draped over his chair; he pauses mid-chord at his mini keyboard, pen in hand, looking up with a caught-red-handed smile — the signature place from their shared story with the viewer. Already there when the viewer arrives, they look up mid-moment directly into your eyes.
-THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower foreground, close; no face; medium size hand, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
-EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
-LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
-COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
-```
+**Tartib:** Milo tugadi (7/7), endi Jace (4 ta), Sam (5 ta), Roman (6 ta), keyin qolgan 8 qahramon (7 tadan).
 
 ## Jace (4 ta)
 
@@ -123,8 +34,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 7. Jace · laughing (kulgi, bayram)
@@ -140,8 +51,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 8. Jace · tension (taranglik, aytilmagan gap)
@@ -157,8 +68,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 9. Jace · our_place (bizning joy, ularning hikoyasidan)
@@ -174,8 +85,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Sam (5 ta)
@@ -191,12 +102,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Sam, 24yo tall athletic woman. Deep rich brown skin, long dark braids tied up with loose curls framing face, warm expressive eyes, small silver hoop earrings.
 HANDS & WARDROBE: Graceful feminine hands, short clean nails. Wearing sleek wet dark track jacket.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 11. Sam · morning (tong, uy, choy/qahva)
@@ -212,8 +123,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 12. Sam · laughing (kulgi, bayram)
@@ -229,8 +140,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 13. Sam · tension (taranglik, aytilmagan gap)
@@ -246,8 +157,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 14. Sam · our_place (bizning joy, ularning hikoyasidan)
@@ -263,8 +174,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Roman (6 ta)
@@ -284,8 +195,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 16. Roman · city_lights (kechki shahar, "yur")
@@ -297,12 +208,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Roman, 31yo tall broad-shouldered man. Black hair combed back with a loose strand, piercing grey eyes, thin scar along jaw.
 HANDS & WARDROBE: Masculine hands with a plain platinum wedding band on left ring finger. Wearing tailored dark wool overcoat wet with rain.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 17. Roman · morning (tong, uy, choy/qahva)
@@ -318,8 +229,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 18. Roman · laughing (kulgi, bayram)
@@ -335,8 +246,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 19. Roman · tension (taranglik, aytilmagan gap)
@@ -352,8 +263,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 20. Roman · our_place (bizning joy, ularning hikoyasidan)
@@ -369,8 +280,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Ethan (7 ta)
@@ -390,8 +301,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 22. Ethan · rain (yomg'ir, sog'inch)
@@ -407,8 +318,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 23. Ethan · city_lights (kechki shahar, "yur")
@@ -420,12 +331,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Ethan, 26yo man. Soft wavy brown hair falling into his eyes, warm hazel eyes, light stubble.
 HANDS & WARDROBE: Masculine hands, black hair tie on one wrist. Wearing wet denim or canvas jacket over white tee.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 24. Ethan · morning (tong, uy, choy/qahva)
@@ -441,8 +352,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 25. Ethan · laughing (kulgi, bayram)
@@ -458,8 +369,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 26. Ethan · tension (taranglik, aytilmagan gap)
@@ -475,8 +386,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 27. Ethan · our_place (bizning joy, ularning hikoyasidan)
@@ -492,8 +403,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Clara (7 ta)
@@ -513,8 +424,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 29. Clara · rain (yomg'ir, sog'inch)
@@ -530,8 +441,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 30. Clara · city_lights (kechki shahar, "yur")
@@ -543,12 +454,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Clara, 33yo woman. Sleek dark bob with soft waves, sculpted cheekbones, expressive green eyes behind thin gold round glasses, small gold hoop earrings.
 HANDS & WARDROBE: Slender feminine hands with a delicate gold ring. Wearing wet classic trench coat over blouse.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 31. Clara · morning (tong, uy, choy/qahva)
@@ -564,8 +475,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 32. Clara · laughing (kulgi, bayram)
@@ -581,8 +492,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 33. Clara · tension (taranglik, aytilmagan gap)
@@ -598,8 +509,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 34. Clara · our_place (bizning joy, ularning hikoyasidan)
@@ -615,8 +526,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Caleb (7 ta)
@@ -636,8 +547,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 36. Caleb · rain (yomg'ir, sog'inch)
@@ -653,8 +564,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 37. Caleb · city_lights (kechki shahar, "yur")
@@ -666,12 +577,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Caleb, 27yo broad-shouldered man. Cropped sandy-blond hair, striking blue eyes, sun-kissed skin with light freckles.
 HANDS & WARDROBE: Strong masculine hands and forearms, small faded burn scar on one wrist. Wearing wet dark canvas work jacket.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 38. Caleb · morning (tong, uy, choy/qahva)
@@ -687,8 +598,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 39. Caleb · laughing (kulgi, bayram)
@@ -704,8 +615,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 40. Caleb · tension (taranglik, aytilmagan gap)
@@ -721,8 +632,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 41. Caleb · our_place (bizning joy, ularning hikoyasidan)
@@ -738,8 +649,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Asher (7 ta)
@@ -759,8 +670,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 43. Asher · rain (yomg'ir, sog'inch)
@@ -776,8 +687,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 44. Asher · city_lights (kechki shahar, "yur")
@@ -789,12 +700,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Asher, 25yo man. Neat black hair with soft strands falling over forehead, sharp jawline, dark expressive eyes, one dimple.
 HANDS & WARDROBE: Clean masculine hands. Wearing wet tailored dark wool coat.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 45. Asher · morning (tong, uy, choy/qahva)
@@ -810,8 +721,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 46. Asher · laughing (kulgi, bayram)
@@ -827,8 +738,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 47. Asher · tension (taranglik, aytilmagan gap)
@@ -844,8 +755,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 48. Asher · our_place (bizning joy, ularning hikoyasidan)
@@ -861,8 +772,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: stethoscope or scrubs, photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: stethoscope or scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Mia (7 ta)
@@ -882,8 +793,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 50. Mia · rain (yomg'ir, sog'inch)
@@ -899,8 +810,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 51. Mia · city_lights (kechki shahar, "yur")
@@ -912,12 +823,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Mia, 25yo woman. Wavy copper-red hair pinned in a tortoiseshell claw clip with loose tendrils, dark brown eyes, freckles across nose and cheeks, tiny silver nose stud.
 HANDS & WARDROBE: Slender feminine hands. Wearing wet dark coat over soft sweater.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 52. Mia · morning (tong, uy, choy/qahva)
@@ -933,8 +844,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 53. Mia · laughing (kulgi, bayram)
@@ -950,8 +861,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 54. Mia · tension (taranglik, aytilmagan gap)
@@ -967,8 +878,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 55. Mia · our_place (bizning joy, ularning hikoyasidan)
@@ -984,8 +895,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: hospital scrubs, photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: hospital scrubs, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Lena (7 ta)
@@ -1005,8 +916,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 57. Lena · rain (yomg'ir, sog'inch)
@@ -1022,8 +933,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 58. Lena · city_lights (kechki shahar, "yur")
@@ -1035,12 +946,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Lena, 23yo woman. Honey-blonde hair in a loose side plait with soft wisps, bright grey-blue eyes, light freckles (NO pencil behind ear).
 HANDS & WARDROBE: Slender feminine hands, tiny faint smudge of ink on fingers. Wearing wet light wool coat over knit sweater.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 59. Lena · morning (tong, uy, choy/qahva)
@@ -1056,8 +967,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 60. Lena · laughing (kulgi, bayram)
@@ -1073,8 +984,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 61. Lena · tension (taranglik, aytilmagan gap)
@@ -1090,8 +1001,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 62. Lena · our_place (bizning joy, ularning hikoyasidan)
@@ -1107,8 +1018,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Victor (7 ta)
@@ -1128,8 +1039,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 64. Victor · rain (yomg'ir, sog'inch)
@@ -1145,8 +1056,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 65. Victor · city_lights (kechki shahar, "yur")
@@ -1158,12 +1069,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Victor, 34yo tall precise man. Thick dark wavy hair with silver-grey at temples, cool brown eyes, clean-shaven sculpted jaw.
 HANDS & WARDROBE: Masculine hands, sleek brushed-steel wristwatch. Wearing dark cashmere overcoat over open collar.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 66. Victor · morning (tong, uy, choy/qahva)
@@ -1179,8 +1090,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 67. Victor · laughing (kulgi, bayram)
@@ -1196,8 +1107,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 68. Victor · tension (taranglik, aytilmagan gap)
@@ -1213,8 +1124,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 69. Victor · our_place (bizning joy, ularning hikoyasidan)
@@ -1230,8 +1141,8 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ## Yuna (7 ta)
@@ -1251,8 +1162,8 @@ THE VIEWER: the viewer's own hand, out of focus at the bottom edge, almost meeti
 EXPRESSION: A soft, unguarded, deeply affectionate gaze straight into the lens, lips slightly parted in a quiet private smile, eyes glowing with warmth and magnetic pull.
 LIGHT: One warm low amber bedside lamp from the side against cool deep night shadows, a luminous catchlight in their eyes, silky soft bokeh behind.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: headphones, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: headphones, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie in bed, posed ID portrait, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 71. Yuna · rain (yomg'ir, sog'inch)
@@ -1268,8 +1179,8 @@ THE VIEWER: the edge of the viewer's shoulder and plain dark wet sleeve, out of 
 EXPRESSION: Intense longing held just under control, eyes locked on the viewer, lips slightly parted, vulnerability glistening in their gaze.
 LIGHT: Cool rainy midnight blue contrasted with a single warm amber doorway or streetlamp light behind them, glowing bokeh raindrops catching the rim light.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: headphones, photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: headphones, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, posed ID portrait, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 72. Yuna · city_lights (kechki shahar, "yur")
@@ -1281,12 +1192,12 @@ Using the exact same person from the attached reference portrait (keep ONLY thei
 SUBJECT: Yuna, 24yo slight East Asian woman. Straight black hair cut in a blunt chin-length bob with wispy bangs, sleepy dark eyes, small silver hoop earring.
 HANDS & WARDROBE: Slender feminine hands, faint ink smudges on two fingers. Wearing oversized dark waterproof jacket/hoodie.
 MOMENT: Out in the city at night. Walking a step ahead on a wet neon-lit street, they glance back over their shoulder directly at the viewer and reach one hand back toward the lens, inviting you to catch up.
-THE VIEWER: the viewer's plain hand at the bottom foreground edge, reaching to take theirs; no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
+THE VIEWER: the viewer's blurred plain hand reaching into the bottom foreground edge with a small clear gap before their outstretched hand (hands NOT touching or overlapping, clean separate five-finger anatomy); no face; medium size, short clean nails, no rings or polish, plain dark sleeve, nothing that says man or woman.
 EXPRESSION: Eyes alive with playful mischief and quiet fondness, an irresistible half-smile looking back only at you.
-LIGHT: Soft glowing cyan, magenta-rose, and warm streetlamp bokeh behind them, clean dual-tone rim light across their hair and cheek.
+LIGHT: Warm amber streetlamps and soft rainy city bokeh (gentle warm gold, soft teal-blue rain reflections, subtle distant city lights) behind them, natural cinematic warm-and-cool rim light across their hair and cheek.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, subtle cinematic depth and motion blur in background.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 73. Yuna · morning (tong, uy, choy/qahva)
@@ -1302,8 +1213,8 @@ THE VIEWER: the viewer's plain hands at the bottom edge reaching to take the mug
 EXPRESSION: A sleepy, crooked, utterly fond smile, eyes soft and warm in the morning light, comfortable and close.
 LIGHT: Golden low morning sunlight streaming through a window behind them, warm backlit halo in their hair, delicate rising steam catching the sunbeams.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, hospital scrubs, stethoscope, necktie, nudity, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 74. Yuna · laughing (kulgi, bayram)
@@ -1319,8 +1230,8 @@ THE VIEWER: the viewer's blurred dark shoulder and a hand holding a plain clear 
 EXPRESSION: A genuine, radiant, helpless laugh with crinkled happy eyes and warm flushed cheeks, completely drawn into the moment with you.
 LIGHT: Warm golden fairy lights and soft city bokeh behind them against deep velvet night sky, warm amber glow on their face.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: headphones, photorealism, flat 2D anime, harsh gritty brush noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: headphones, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, bottle labels, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 75. Yuna · tension (taranglik, aytilmagan gap)
@@ -1336,8 +1247,8 @@ THE VIEWER: the viewer's dark, out-of-focus shoulder in one lower foreground cor
 EXPRESSION: Guarded intensity — jaw set, brow slightly low, holding the viewer's gaze with unspoken hurt, pride, and undeniable pull underneath.
 LIGHT: Dramatic chiaroscuro — one sharp warm side light sculpting half their face against cool deep midnight shadows.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: headphones, photorealism, flat 2D anime, harsh gritty brush noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: headphones, black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, weapons, blood, violence, text, logos, brand names, watermark, signature, extra fingers.
 ```
 
 ### 76. Yuna · our_place (bizning joy, ularning hikoyasidan)
@@ -1353,6 +1264,6 @@ THE VIEWER: the viewer's plain hand or dark shoulder out of focus in the lower f
 EXPRESSION: One unmistakable emotion from their shared story with you — quiet recognition, warmth, or longing held just below the surface — eyes locked onto the lens.
 LIGHT: Authentic evening or night lighting for that place, one strong warm key light balanced against cool ambient shadow, rich atmospheric bokeh.
 COMPOSITION: vertical 3:4, centered horizontally (middle 70% of width), face large and clear with eyes about 38–40% from the top, viewer's POV element in the bottom 20%, shallow depth of field.
-STYLE: High-end stylized 2.5D AI digital illustration — clean, luminous, slightly AI-polished aesthetic with smooth radiant skin, warm subsurface scattering, crisp expressive eyes with bright glistening catchlights, deep emotional eye contact, rich warm-against-cool cinematic lighting and creamy bokeh; an original adult character, not a real person photo, not flat 2D anime.
-AVOID: photorealism, flat 2D anime, harsh gritty brush noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
+STYLE: High-end cinematic 2.5D semi-realistic digital painting matching the attached portrait — smooth luminous natural skin with warm subsurface scattering, realistic hair strands and natural fabric texture, crisp expressive eyes with bright catchlights, deep emotional eye contact, ZERO black ink outlines, ZERO comic lineart, rich warm-against-cool 35mm film lighting and creamy bokeh; an original adult character, not a real person photo, not 2D cartoon or anime.
+AVOID: black outlines, dark ink contours, comic book lineart, 2D cartoon, flat cel-shading, anime, harsh gritty noise, readable signs, text, logos, brand names, watermark, signature, extra fingers.
 ```
