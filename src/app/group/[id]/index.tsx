@@ -9,6 +9,7 @@ import { FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View, t
 import Animated, { FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { ChatInput, MessageBubble, TypingRow, VoiceSheet } from '@/components/chat';
 import { useFollowNewest } from '@/components/chat/follow-newest';
 import { JumpToNewest } from '@/components/chat/jump-to-newest';
@@ -43,7 +44,7 @@ import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
 import { freeMessagesLeftNow } from '@/lib/use-free-messages';
-import { backgroundsById, chatArtBackgroundsById, CREAM_BG, shellCosts } from '@/mock';
+import { backgroundsById, chatArtBackgroundsById, CREAM_BG, PORTRAIT_BG, shellCosts } from '@/mock';
 import { callsIncluded, displayName, minutesOf, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, nightColors, space } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
@@ -210,12 +211,17 @@ export default function GroupChatScreen() {
         : typers.length === 2
           ? t('group.typingTwo', { a: nameOf(typers[0]), b: nameOf(typers[1]) })
           : t('group.typingMany', { a: nameOf(typers[0]), b: nameOf(typers[1]), c: nameOf(typers[2]) });
-  // The group's own background (info → Chat background). Default swaps legacy brown ground for Ink obsidian.
-  const backgroundId = group?.backgroundId ?? CREAM_BG;
+  // The group's own background (info → Chat background). Group stories default to their scene cover; plain groups use Ink obsidian.
+  const storyCover = group?.story ? PORTRAITS[group.story.id] : undefined;
+  const backgroundId = group?.backgroundId ?? (storyCover ? PORTRAIT_BG : CREAM_BG);
   const artWallpaper = chatArtBackgroundsById[backgroundId];
+  const picture =
+    artWallpaper ? { source: artWallpaper.image }
+    : backgroundId === PORTRAIT_BG && storyCover ? { source: storyCover, position: 'top' as const }
+    : undefined;
   const wallpaper = backgroundsById[backgroundId] ?? backgroundsById.bg_plain;
-  // An Art wallpaper is a picture: the one-to-one chat's picture look (`chat-ground.tsx`).
-  const onPicture = !!artWallpaper;
+  // An Art wallpaper or a group story's own scene is a picture: the one-to-one chat's picture look (`chat-ground.tsx`).
+  const onPicture = !!picture;
   const onDefaultInk = !onPicture && (backgroundId === CREAM_BG || backgroundId === 'bg_plain');
   const screenGround = (onPicture ? [colors.black, colors.black] : onDefaultInk ? [ink.ground, ink.ground] : wallpaper.colors) as readonly [string, string];
   const headerFadeColor = onDefaultInk ? ink.ground : wallpaper.colors[0];
@@ -404,8 +410,8 @@ export default function GroupChatScreen() {
       <ChatGroundProvider value>
       {/* What the menus blur on Android (expo-blur needs a target there). */}
       <BlurTargetView ref={blurTarget} style={styles.flex}>
-        {artWallpaper ? (
-          <PictureGround picture={{ source: artWallpaper.image }} />
+        {picture ? (
+          <PictureGround picture={picture} />
         ) : onDefaultInk ? (
           <LinearGradient
             pointerEvents="none"
@@ -453,7 +459,7 @@ export default function GroupChatScreen() {
             />
             {onPicture ? <PictureEdge top={pictureTop} /> : null}
             <JumpToNewest visible={away} unseen={unseen} onPress={jump} />
-            {!artWallpaper ? <HeaderFade color={headerFadeColor} room={headerRoom} /> : null}
+            {!onPicture ? <HeaderFade color={headerFadeColor} room={headerRoom} /> : null}
           </View>
 
           {playing ? (

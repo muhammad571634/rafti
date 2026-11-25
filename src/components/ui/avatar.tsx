@@ -96,9 +96,13 @@ export function Avatar({
   );
 }
 
-/** Bundled seed art is keyed by character id; created characters carry their own uri. */
+/** Bundled seed art is keyed by character id, or by `fromTemplate` (`<story>:<member>`) for group story members. */
+const bundledAvatar = (character: Character): number | undefined =>
+  AVATARS[character.id] ?? (character.fromTemplate ? AVATARS[character.fromTemplate] : undefined);
+
+/** Bundled seed art is keyed by character id (or group story member mark); created characters carry their own uri. */
 export const characterImage = (character: Character): string | number | undefined =>
-  character.avatarUri ?? AVATARS[character.id];
+  character.avatarUri ?? bundledAvatar(character);
 
 export function CharacterAvatar({
   character,
@@ -107,7 +111,7 @@ export function CharacterAvatar({
   return (
     <Avatar
       source={characterImage(character)}
-      fallback={character.avatarUri ? AVATARS[character.id] : undefined}
+      fallback={character.avatarUri ? bundledAvatar(character) : undefined}
       name={character.name}
       accentIndex={character.accentIndex}
       {...rest}

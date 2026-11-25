@@ -1,6 +1,7 @@
 /**
- * Tall Cast 2.0 character scenes (3:4), looked up by character id for chat grounds, intro cards,
- * Find cards, and Today. The paired square close-ups live in `assets/avatars`.
+ * Tall Cast 2.0 character scenes and group story covers (3:4), looked up by character id or
+ * group story id for chat grounds, intro cards, Find cards, and Today. The paired square
+ * close-ups live in `assets/avatars`.
  */
 export const PORTRAITS: Record<string, number> = {
   c_milo: require('./c_milo.jpg'),
@@ -15,4 +16,10 @@ export const PORTRAITS: Record<string, number> = {
   c_lena: require('./c_lena.jpg'),
   c_victor: require('./c_victor.jpg'),
   c_yuna: require('./c_yuna.jpg'),
+  g_dorm214: require('./g_dorm214.jpg'),
+  g_cafe: require('./g_cafe.jpg'),
+  g_ring: require('./g_ring.jpg'),
+  g_haunted: require('./g_haunted.jpg'),
+  g_villa: require('./g_villa.jpg'),
+  g_santa: require('./g_santa.jpg'),
 };

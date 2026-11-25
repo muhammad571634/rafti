@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it } from 'node:test';
 
 import { MIN_AGE, TRAITS } from './create-character';
-import { BEAT_TURNS, beatOpenCue, countTurn, GROUP_STORIES, nextBeat, storyCue, storyFits } from './group-stories';
+import { BEAT_TURNS, beatOpenCue, countTurn, GROUP_STORIES, memberMark, nextBeat, storyCue, storyFits } from './group-stories';
 
 describe('group stories (docs/group-stories.md)', () => {
   it('are unique, adult, two or three members each, with traits from the Create list', () => {
@@ -59,5 +61,21 @@ describe('group stories (docs/group-stories.md)', () => {
     const ring = GROUP_STORIES.find((s) => s.id === 'g_ring')!;
     assert.ok(storyFits(dorm, 'female') && !storyFits(dorm, 'male') && storyFits(dorm, undefined));
     assert.ok(!storyFits(ring, 'female') && !storyFits(ring, 'male'));
+  });
+
+  it('register a bundled 3:4 cover and 1:1 member avatars for every story', () => {
+    const root = path.resolve(process.cwd());
+    const portraitsSrc = fs.readFileSync(path.join(root, 'assets/portraits/registry.ts'), 'utf8');
+    const avatarsSrc = fs.readFileSync(path.join(root, 'assets/avatars/registry.ts'), 'utf8');
+    for (const story of GROUP_STORIES) {
+      assert.ok(portraitsSrc.includes(`${story.id}: require('./${story.id}.jpg')`), `missing portrait registry for ${story.id}`);
+      assert.ok(fs.existsSync(path.join(root, 'assets/portraits', `${story.id}.jpg`)), `missing portrait file for ${story.id}`);
+      for (const m of story.members) {
+        const mark = memberMark(story.id, m.id);
+        const file = `${story.id}_${m.id}_avatar.jpg`;
+        assert.ok(avatarsSrc.includes(`'${mark}': require('./${file}')`), `missing avatar registry for ${mark}`);
+        assert.ok(fs.existsSync(path.join(root, 'assets/avatars', file)), `missing avatar file for ${mark}`);
+      }
+    }
   });
 });

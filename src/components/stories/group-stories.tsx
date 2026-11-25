@@ -1,17 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { AVATARS } from '@/assets/avatars/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { InkText } from '@/components/ink';
 import { Avatar, PressableScale, Sheet } from '@/components/ui';
 import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { localGroupStory } from '@/i18n/content';
 import { rankGroupStoriesForUser } from '@/lib/discovery-rank';
 import { haptic } from '@/lib/haptics';
-import { GROUP_STORIES, type GroupStory, storyFits } from '@/lib/group-stories';
+import { GROUP_STORIES, type GroupStory, memberMark, storyFits } from '@/lib/group-stories';
 import { useAppStore } from '@/store/use-app-store';
 import { avatarGradients } from '@/theme';
 import { ink, inkGutter, inkRadius } from '@/theme/ink';
@@ -56,24 +59,38 @@ export function GroupStoryGrid({ gender }: { gender?: CharacterGender }) {
 function GroupStoryCard({ story: written, width, onPress, onStory }: { story: GroupStory; width: number; onPress: () => void; onStory: () => void }) {
   const { t } = useTranslation();
   const story = localGroupStory(written);
+  const cover = PORTRAITS[story.id];
   const tint = avatarGradients[story.members[0].accentIndex % avatarGradients.length][1];
   return (
     <PressableScale scaleTo={0.97} accessibilityRole="button" accessibilityLabel={`${story.name}. ${story.hook}. ${story.knot}`} onPress={onPress} style={[styles.card, { width }]}>
-      <LinearGradient colors={[`${tint}55`, ink.card]} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={styles.face}>
-        <View style={styles.faces}>
-          {story.members.map((m, i) => (
-            <View key={m.id} style={[styles.ring, i > 0 && styles.overlap]}>
-              <Avatar name={m.name} accentIndex={m.accentIndex} size={FACE} />
-            </View>
-          ))}
+      {cover ? (
+        <View style={styles.photo}>
+          <Image source={cover} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
+          <LinearGradient colors={['transparent', ink.scrim]} style={styles.scrim} />
+          <View style={styles.badge}>
+            <Ionicons name="people" size={12} color={ink.text} />
+            <InkText variant="caption" color={ink.text}>
+              {story.members.length}
+            </InkText>
+          </View>
         </View>
-        <View style={styles.badge}>
-          <Ionicons name="people" size={12} color={ink.text} />
-          <InkText variant="caption" color={ink.text}>
-            {story.members.length}
-          </InkText>
-        </View>
-      </LinearGradient>
+      ) : (
+        <LinearGradient colors={[`${tint}55`, ink.card]} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={styles.face}>
+          <View style={styles.faces}>
+            {story.members.map((m, i) => (
+              <View key={m.id} style={[styles.ring, i > 0 && styles.overlap]}>
+                <Avatar source={AVATARS[memberMark(story.id, m.id)]} name={m.name} accentIndex={m.accentIndex} size={FACE} />
+              </View>
+            ))}
+          </View>
+          <View style={styles.badge}>
+            <Ionicons name="people" size={12} color={ink.text} />
+            <InkText variant="caption" color={ink.text}>
+              {story.members.length}
+            </InkText>
+          </View>
+        </LinearGradient>
+      )}
       <View style={styles.body}>
         <View style={styles.nameRow}>
           {/* A long name wraps to a second line, never "…" (HIG text rule, 2026-11-16). */}
@@ -84,7 +101,8 @@ function GroupStoryCard({ story: written, width, onPress, onStory }: { story: Gr
             <Ionicons name="book-outline" size={18} color={ink.text2} />
           </PressableScale>
         </View>
-        <InkText variant="footnote" color={ink.text2} lines={4}>
+        {/* Hook and knot in full: never cut with "…" in long languages (HIG text rule, 0z342). */}
+        <InkText variant="footnote" color={ink.text2}>
           <InkText variant="footnote" color={ink.text}>
             {story.hook}
           </InkText>
@@ -114,7 +132,7 @@ function GroupStorySheet({ story: written, onClose }: { story: GroupStory | null
           <View style={styles.members}>
             {story.members.map((m) => (
               <View key={m.id} style={styles.member}>
-                <Avatar name={m.name} accentIndex={m.accentIndex} size={44} />
+                <Avatar source={AVATARS[memberMark(story.id, m.id)]} name={m.name} accentIndex={m.accentIndex} size={44} />
                 <View style={styles.grow}>
                   <InkText variant="subStrong">{m.name}</InkText>
                   <InkText variant="footnote">{m.who}</InkText>
@@ -141,6 +159,8 @@ function GroupStorySheet({ story: written, onClose }: { story: GroupStory | null
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP, paddingHorizontal: inkGutter },
   card: { borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: ink.card, overflow: 'hidden' },
+  photo: { aspectRatio: 3 / 4, justifyContent: 'flex-end', alignItems: 'flex-start', padding: 10 },
+  scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 64 },
   face: { aspectRatio: 3 / 4, justifyContent: 'space-between', alignItems: 'flex-start', padding: 12 },
   faces: { flexDirection: 'row', paddingTop: 6 },
   ring: { borderRadius: FACE, borderWidth: 2.5, borderColor: ink.card },
