@@ -1,35 +1,40 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewInstance } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
-import { HELPLINE_URL } from '@/ai/safety';
-import { AgeConfirmSheet } from '@/components/age-confirm-sheet';
 import { cleanReact } from '@/ai/react';
+import { BoothPhotoMessage, ChatPhoto, DatePhotoMessage } from '@/components/chat/bubble/media';
+import {
+  AgeCheckCard,
+  AiNotice,
+  BoardNoteLine,
+  CallLine,
+  HelplineCard,
+  NotifyOffNote,
+  SceneCard,
+  SkipLine,
+  SystemLine,
+  VoiceQuotaNote,
+  WeekCard,
+} from '@/components/chat/bubble/notes';
+import { EditedNote, NotDelivered, ReadReceipt } from '@/components/chat/bubble/receipts';
+import { AVATAR, bubbleStyles } from '@/components/chat/bubble/styles';
+import { TextBubble } from '@/components/chat/bubble/text-bubble';
+import { VoiceBubble } from '@/components/chat/bubble/voice-bubble';
 import { onPhotoText, useOnPhoto } from '@/components/chat/chat-ground';
-import { BubbleQuote } from '@/components/chat/reply-quote';
 import { SetupCard } from '@/components/chat/setup-card';
-import { playNote, seekNote, stopNote } from '@/components/chat/voice-player';
 import { TONE_LOOK } from '@/components/chat/tone-menu';
-import { Polaroid } from '@/components/date/polaroid';
-import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
-import { Anim, Button, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
-import { planDate } from '@/components/plans/copy';
-import { VOICE_NO_WORDS } from '@/ai/voice-prompt';
-import { clockTime, duration as fmtDuration } from '@/lib/format';
-import { blockWords, bubbleBlocks, cutBlocks, plainText } from '@/lib/reply-engine';
-import { ageDoubt } from '@/lib/age-check';
-import { useReveal } from '@/lib/reveal';
-import { barsFor, resampleWave } from '@/lib/voice-wave';
-import { useAppStore } from '@/store/use-app-store';
 import { ReactionBadge } from '@/components/ink';
-import { colors, friendColor, palette, radius, shadows, space, systemColors } from '@/theme';
-import { ink, inkFace, inkRadius } from '@/theme/ink';
-import type { Character, Message, WeekStats } from '@/types';
+import { Anim, CharacterAvatar, PressableScale, Txt } from '@/components/ui';
+import { clockTime } from '@/lib/format';
+import { useAppStore } from '@/store/use-app-store';
+import { colors, friendColor, shadows, space } from '@/theme';
+import { ink } from '@/theme/ink';
+import type { Character, Message } from '@/types';
 
 export interface MessageBubbleProps {
   message: Message;
@@ -76,10 +81,6 @@ export interface BubbleAnchor {
   height: number;
 }
 
-const AVATAR = 28;
-/** iOS bubble corners; the tail corner of a run's last bubble is tighter. */
-const CORNER = 19;
-const TAIL = 6;
 /** The heart burst over a loved line. */
 const BURST = 120;
 
@@ -194,7 +195,7 @@ export const MessageBubble = memo(function MessageBubble({
   if (message.kind === 'call') return <CallLine message={message} onCallBack={onCallBack} />;
 
   // With a double tap the wrapper carries the width cap, so the held area fills it.
-  const holdStyle = [styles.holdable, (column || !!onDoubleTap) && styles.wide, message.reaction || (mine && message.theirReaction) ? styles.withReaction : null];
+  const holdStyle = [styles.holdable, (column || !!onDoubleTap) && bubbleStyles.wide, message.reaction || (mine && message.theirReaction) ? styles.withReaction : null];
   const inner = (
     <>
       {message.kind === 'image' && message.dateId ? (
@@ -271,7 +272,7 @@ export const MessageBubble = memo(function MessageBubble({
       <View style={holdStyle}>{inner}</View>
     ) : onDoubleTap ? (
       <GestureDetector gesture={taps}>
-        <View collapsable={false} style={column ? styles.wide : styles.tapArea}>
+        <View collapsable={false} style={column ? bubbleStyles.wide : styles.tapArea}>
           {pressable}
         </View>
       </GestureDetector>
@@ -294,7 +295,7 @@ export const MessageBubble = memo(function MessageBubble({
           ) : message.editedAt ? (
             <EditedNote time={time} />
           ) : time ? (
-            <Txt style={[styles.receipt, onPhoto && onPhotoText]}>{time}</Txt>
+            <Txt style={[bubbleStyles.receipt, onPhoto && onPhotoText]}>{time}</Txt>
           ) : null}
         </View>
       ) : (
@@ -331,12 +332,12 @@ export const MessageBubble = memo(function MessageBubble({
                   variant="caption"
                   color={accentColor ?? (onPhoto ? colors.onMediaSoft : colors.textSecondary)}
                   lines={1}
-                  style={[styles.sender, accentColor && styles.senderAccented, onPhoto && styles.photoShadow]}>
+                  style={[styles.sender, accentColor && styles.senderAccented, onPhoto && bubbleStyles.photoShadow]}>
                   {senderName}
                 </Txt>
               ) : null}
               {content}
-              {time ? <Txt style={[styles.receipt, styles.timeTheirs, onPhoto && onPhotoText]}>{time}</Txt> : null}
+              {time ? <Txt style={[bubbleStyles.receipt, styles.timeTheirs, onPhoto && onPhotoText]}>{time}</Txt> : null}
             </View>
           ) : (
             content
@@ -347,585 +348,12 @@ export const MessageBubble = memo(function MessageBubble({
   );
 });
 
-function TextBubble({
-  message,
-  mine,
-  tail,
-  accentColor,
-  quoteTitle,
-  onQuotePress,
-}: {
-  message: Message;
-  mine: boolean;
-  tail: boolean;
-  accentColor?: string;
-  quoteTitle?: string;
-  onQuotePress?: (id: string) => void;
-}) {
-  const onPhoto = useOnPhoto();
-  const muted = message.muted;
-  const blocks = useMemo(() => bubbleBlocks(message), [message.parts, message.text]);
-  const total = useMemo(() => blockWords(blocks), [blocks]);
-  // A line that just arrived shows word by word (`src/lib/reveal.ts`); any other shows whole.
-  const shown = useReveal(message.id, total);
-  const revealing = shown < total;
-  const visible = revealing ? cutBlocks(blocks, shown) : blocks;
-  const hasActionBlock = blocks.some((b) => b.kind === 'action');
-  const speechColor = muted ? colors.bubbleTranscriptText : mine ? colors.bubbleSelfText : onPhoto ? colors.onMedia : colors.bubbleOtherText;
-  const actionStyle = mine ? styles.actionMine : onPhoto ? styles.photoAction : styles.actionTheirs;
-
-  return (
-    <View
-      style={[
-        styles.bubble,
-        styles.fill,
-        mine ? styles.bubbleMine : styles.bubbleTheirs,
-        tail && (mine ? styles.tailMine : styles.tailTheirs),
-        !mine && onPhoto && styles.photoBubble,
-        muted && styles.bubbleMuted,
-      ]}>
-      {message.replyTo && quoteTitle ? <BubbleQuote quote={message.replyTo} title={quoteTitle} onPress={onQuotePress} mine={mine} /> : null}
-      {hasActionBlock ? (
-        <View
-          style={styles.blockStack}
-          // A screen reader hears the whole line at once, not each word as it lands.
-          accessible={revealing}
-          accessibilityLabel={revealing ? plainText(message.text ?? '') : undefined}>
-          {/* Variant A (0z290): narration in its own quiet barred block inside the bubble, spoken lines below in full ink. */}
-          {visible.map((block, i) =>
-            block.kind === 'action' ? (
-              <View key={i} style={styles.actionBlock}>
-                <View style={[styles.actionBar, mine ? styles.actionBarMine : accentColor ? { backgroundColor: accentColor, opacity: 0.9 } : styles.actionBarTheirs]} />
-                <Txt style={[styles.actionBlockText, actionStyle]}>
-                  {block.text}
-                  {revealing && !mine && i === visible.length - 1 ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
-                </Txt>
-              </View>
-            ) : (
-              <Txt key={i} style={styles.text} color={speechColor}>
-                {block.segments.map((part, j) =>
-                  part.kind === 'action' ? (
-                    <Txt key={j} style={[styles.text, styles.action, actionStyle]}>
-                      {part.text}
-                    </Txt>
-                  ) : (
-                    part.text
-                  ),
-                )}
-                {revealing && !mine && i === visible.length - 1 ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
-              </Txt>
-            ),
-          )}
-        </View>
-      ) : (
-        <Txt
-          style={styles.text}
-          color={speechColor}
-          // A screen reader hears the whole line at once, not each word as it lands.
-          accessibilityLabel={revealing ? plainText(message.text ?? '') : undefined}>
-          {visible.flatMap((block, i) =>
-            block.kind === 'speech'
-              ? block.segments.map((part, j) =>
-                  part.kind === 'action' ? (
-                    <Txt key={`${i}-${j}`} style={[styles.text, styles.action, actionStyle]}>
-                      {part.text}
-                    </Txt>
-                  ) : (
-                    part.text
-                  ),
-                )
-              : [],
-          )}
-          {revealing && !mine ? <Txt color={accentColor ?? ink.accent}>{' ▍'}</Txt> : null}
-        </Txt>
-      )}
-    </View>
-  );
-}
-
-/** The largest a sent photo is drawn in the chat; it keeps its own shape inside these. */
-const PHOTO_MAX_W = 240;
-const PHOTO_MAX_H = 300;
-
-/** A sent photo in its own shape (width over height kept when it was sent, or read as it loads). */
-function ChatPhoto({ uri, aspect }: { uri: string; aspect?: number }) {
-  const [loaded, setLoaded] = useState<number>();
-  const shape = Math.max(0.5, Math.min(2, aspect ?? loaded ?? 0.8));
-  const width = Math.min(PHOTO_MAX_W, PHOTO_MAX_H * shape);
-  return (
-    <Image
-      source={{ uri }}
-      style={[styles.photo, { width, height: width / shape }]}
-      contentFit="cover"
-      onLoad={(e) => {
-        if (!aspect && e.source.width > 0 && e.source.height > 0) setLoaded(e.source.width / e.source.height);
-      }}
-    />
-  );
-}
-
-/** A note recorded before levels were kept draws this shape instead (0-1). */
-const STILL_WAVE = [0.3, 0.5, 0.7, 0.4, 0.8, 0.6, 0.9, 0.5, 0.3, 0.6, 0.8, 1, 0.7, 0.4, 0.6, 0.8, 0.5, 0.3, 0.7, 0.9, 0.6, 0.4];
-/** The tallest bar of a note's wave. */
-const WAVE_H = 20;
-
-function VoiceBubble({ message, mine, tail, wide }: { message: Message; mine: boolean; tail: boolean; wide?: boolean }) {
-  const { t } = useTranslation();
-  const [playing, setPlaying] = useState(false);
-  /** How far it has played (0-1): the bars up to here are drawn in full ink. */
-  const [at, setAt] = useState(0);
-  /** Its file is not on this phone (a chat restored from the server): it opens as text, never a silent "play". */
-  const [missing, setMissing] = useState(false);
-  // Your own note shows what the model heard, so a wrong hearing is seen and not only answered.
-  const [showTranscript, setShowTranscript] = useState(!!message.audioFile && message.transcript !== VOICE_NO_WORDS);
-  /** It is this bubble that plays, so scrolling it away stops the sound. */
-  const sounding = useRef(false);
-  useEffect(
-    () => () => {
-      if (sounding.current) stopNote();
-    },
-    [],
-  );
-  const onPhoto = useOnPhoto();
-  const seconds = message.durationSec ?? 0;
-  const theirsOnPhoto = !mine && onPhoto;
-  const ink = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMedia : colors.bubbleOtherText;
-  const faint = mine ? colors.bubbleSelfText : theirsOnPhoto ? colors.onMediaMuted : colors.textSecondary;
-  const playable = !!message.audioFile && !missing;
-  const bars = useMemo(() => resampleWave(message.levels?.length ? message.levels : STILL_WAVE, barsFor(seconds)), [message.levels, seconds]);
-  const [waveWidth, setWaveWidth] = useState(0);
-
-  const start = (from = 0) => {
-    if (!message.audioFile) return;
-    setPlaying(true);
-    setAt(from);
-    sounding.current = true;
-    const done = () => {
-      sounding.current = false;
-      setPlaying(false);
-      setAt(0);
-    };
-    void playNote(message.audioFile, done, { from, onProgress: setAt }).then((found) => {
-      if (found) return;
-      // Not on this phone: say what it said instead.
-      sounding.current = false;
-      setPlaying(false);
-      setMissing(true);
-      setShowTranscript(true);
-    });
-  };
-  const press = () => {
-    // A note with no sound (a friend's spoken line, or one whose file is gone) opens as its words.
-    if (!playable) return setShowTranscript((v) => !v);
-    if (playing) {
-      if (sounding.current) stopNote();
-      setAt(0);
-      return setPlaying(false);
-    }
-    start();
-  };
-
-  // Drag along the wave to move through it (Telegram): playing, it jumps there; still, it starts there.
-  const latest = useRef({ playing, start, waveWidth });
-  latest.current = { playing, start, waveWidth };
-  const scrub = useMemo(
-    () =>
-      Gesture.Pan()
-        .activeOffsetX([-6, 6])
-        .failOffsetY([-10, 10])
-        .runOnJS(true)
-        .onUpdate((e) => {
-          const width = latest.current.waveWidth;
-          if (width > 0) setAt(Math.max(0, Math.min(1, e.x / width)));
-        })
-        .onEnd((e) => {
-          const width = latest.current.waveWidth;
-          if (!(width > 0)) return;
-          const to = Math.max(0, Math.min(0.98, e.x / width));
-          if (latest.current.playing) seekNote(to);
-          else latest.current.start(to);
-        }),
-    [],
-  );
-
-  const wave = (
-    <View style={styles.wave} onLayout={(e) => setWaveWidth(e.nativeEvent.layout.width)}>
-      {bars.map((v, i) => (
-        <View
-          key={i}
-          style={[styles.waveBar, { height: 3 + v * (WAVE_H - 3), backgroundColor: playing && i / bars.length < at ? ink : faint }, playing && i / bars.length < at && styles.waveBarPlayed]}
-        />
-      ))}
-    </View>
-  );
-
-  return (
-    <View style={[styles.voiceWrap, mine && styles.voiceWrapMine, wide && styles.wide]}>
-      <Pressable
-        onPress={press}
-        onLongPress={() => setShowTranscript((v) => !v)}
-        accessibilityRole="button"
-        accessibilityLabel={playable ? t('chat.tapToPlay') : t('chat.voiceText')}
-        style={[
-          styles.bubble,
-          styles.voiceBubble,
-          mine ? styles.bubbleMine : styles.bubbleTheirs,
-          tail && (mine ? styles.tailMine : styles.tailTheirs),
-          theirsOnPhoto && styles.photoBubble,
-        ]}>
-        <View style={[styles.play, { backgroundColor: ink }, !playable && styles.playText]}>
-          <Ionicons
-            name={!playable ? 'text' : playing ? 'pause' : 'play'}
-            size={!playable ? 14 : 15}
-            color={mine ? colors.bubbleSelf : theirsOnPhoto ? colors.black : colors.bubbleOther}
-          />
-        </View>
-        {playable ? <GestureDetector gesture={scrub}>{wave}</GestureDetector> : wave}
-        <Txt style={styles.voiceLength} color={faint}>
-          {fmtDuration(playing ? Math.round(seconds * at) : seconds)}
-        </Txt>
-      </Pressable>
-
-      {showTranscript && message.transcript ? (
-        <View style={[styles.bubble, styles.transcript]}>
-          <Txt variant="small" color={colors.bubbleTranscriptText}>
-            {message.transcript}
-          </Txt>
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
-function ReadReceipt({ message, time, face }: { message: Message; time?: string; face?: Character }) {
-  const { t } = useTranslation();
-  const meta = [styles.receipt, useOnPhoto() && onPhotoText];
-  const read = !message.pending && !!message.readAt;
-
-  return (
-    // Read: their small face beside the word, so you see who read it (Instagram's "Seen").
-    <View style={styles.receiptRow}>
-    <Txt style={meta}>
-      {message.editedAt ? (
-        <>
-          <Txt style={[...meta, styles.receiptStrong]}>{t('chat.edited')}</Txt>
-          {' · '}
-        </>
-      ) : null}
-      {message.pending ? (
-        t('chat.sending')
-      ) : message.readAt ? (
-        <Txt style={[...meta, styles.receiptStrong]}>{t('chat.read')}</Txt>
-      ) : (
-        <Txt style={[...meta, styles.receiptStrong]}>{t('chat.delivered')}</Txt>
-      )}
-      {time ? ` · ${time}` : null}
-    </Txt>
-    {read && face ? <CharacterAvatar character={face} size={14} /> : null}
-    </View>
-  );
-}
-
 /** A held text line drawn again over the menu's blur, where it sat (iOS context menus). */
 export function HeldBubble({ message }: { message: Message }) {
   return <TextBubble message={message} mine={message.author === 'me'} tail={false} />;
 }
 
-/** "Edited" under a message you changed (iOS Messages), once a newer one carries the receipt. */
-function EditedNote({ time }: { time?: string }) {
-  const { t } = useTranslation();
-  const meta = [styles.receipt, useOnPhoto() && onPhotoText];
-  return (
-    <Txt style={meta}>
-      <Txt style={[...meta, styles.receiptStrong]}>{t('chat.edited')}</Txt>
-      {time ? ` · ${time}` : null}
-    </Txt>
-  );
-}
-
-/** iOS Messages' "Not Delivered" in system red under the line; a tap asks for the reply again. */
-function NotDelivered({ onRetry, time }: { onRetry?: () => void; time?: string }) {
-  const { t } = useTranslation();
-  return (
-    <Pressable
-      onPress={onRetry}
-      disabled={!onRetry}
-      hitSlop={10}
-      accessibilityRole="button"
-      accessibilityLabel={`${t('chat.notDelivered')}. ${t('chat.tryAgain')}`}
-      style={styles.failed}>
-      <Ionicons name="alert-circle" size={15} color={systemColors.red} />
-      <Txt style={[styles.receipt, styles.failedText]}>
-        <Txt style={[styles.receipt, styles.receiptStrong, styles.failedText]}>{t('chat.notDelivered')}</Txt>
-        {onRetry ? ` · ${t('chat.tryAgain')}` : null}
-        {time ? ` · ${time}` : null}
-      </Txt>
-    </Pressable>
-  );
-}
-
-/** System lines are plain grey text between the bubbles, as in iOS Messages. */
-function SystemLine({ text }: { text: string }) {
-  const onPhoto = useOnPhoto();
-  return (
-    <View style={styles.system}>
-      <Txt style={[styles.systemText, onPhoto && styles.photoSystem]} center>
-        {text}
-      </Txt>
-    </View>
-  );
-}
-
-/**
- * A note the user pinned for this friend on the board, on the user's side of the chat (0z138): what
- * the friend's answer below it is about. A tap opens the board.
- */
-function BoardNoteLine({ text }: { text: string }) {
-  const { t } = useTranslation();
-  const router = useRouter();
-  return (
-    <View style={styles.boardWrap}>
-      <PressableScale
-        onPress={() => router.push('/board')}
-        accessibilityRole="button"
-        accessibilityLabel={`${t('board.title')}: ${text}`}
-        style={styles.boardNote}>
-        <Ionicons name="pin" size={16} color={palette.apricotCalm} style={styles.boardPin} />
-        <Txt style={styles.boardText} lines={4}>
-          {text}
-        </Txt>
-      </PressableScale>
-    </View>
-  );
-}
-
-/** Where the story moved on (a time skip): the new time, centred like the chat's own notes. */
-function SkipLine({ text, icon = 'time-outline' }: { text: string; icon?: keyof typeof Ionicons.glyphMap }) {
-  const onPhoto = useOnPhoto();
-  return (
-    <View style={styles.system} accessibilityRole="header">
-      <View style={styles.sceneHead}>
-        <Ionicons name={icon} size={16} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
-        <Txt style={[styles.systemText, styles.systemStrong, onPhoto && styles.photoSystem]}>{text}</Txt>
-      </View>
-    </View>
-  );
-}
-
-/**
- * Where a scene starts in the chat, kept quiet (owner's "chat calm" pick, 0z269): a small capsule
- * with its title and the first line of its set-up; a tap opens the whole set-up, another closes it.
- */
-function SceneCard({ title, setting }: { title: string; setting?: string }) {
-  const onPhoto = useOnPhoto();
-  const [open, setOpen] = useState(false);
-  const body = setting?.trim();
-  const soft = onPhoto ? colors.onMediaMuted : colors.textSecondary;
-  const chevron = <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={13} color={soft} />;
-  return (
-    <View style={styles.system} accessibilityRole="header">
-      <PressableScale
-        scaleTo={0.97}
-        disabled={!body}
-        onPress={() => setOpen((was) => !was)}
-        accessibilityRole="button"
-        accessibilityLabel={body ? `${title}. ${body}` : title}
-        accessibilityState={body ? { expanded: open } : undefined}
-        style={[styles.sceneCard, onPhoto ? styles.sceneOnPhoto : styles.scenePlain]}>
-        <View style={styles.sceneHead}>
-          <Ionicons name="film-outline" size={15} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} />
-          <Txt style={[styles.sceneTitle, onPhoto && styles.sceneTitlePhoto]}>{title}</Txt>
-        </View>
-        {body ? (
-          // Closed: one line and a chevron beside it; open: the whole set-up, the chevron under it.
-          <View style={open ? styles.sceneBodyOpen : styles.sceneBody}>
-            <Txt style={[styles.sceneSetting, { color: soft }]} center lines={open ? undefined : 1}>
-              {body}
-            </Txt>
-            {chevron}
-          </View>
-        ) : null}
-      </PressableScale>
-    </View>
-  );
-}
-
-/**
- * The Sunday recap's numbers (`src/lib/week.ts`), above the friend's line: a calm card of icons and
- * numbers (days together, messages, wins, shared diary pages); the words are in their text.
- */
-function WeekCard({ week }: { week: WeekStats }) {
-  const { t } = useTranslation();
-  const stats: { icon: React.ComponentProps<typeof Ionicons>['name']; value: string; label: string }[] = [
-    { icon: 'calendar-outline', value: `${week.days}/7`, label: t('chat.week.days', { count: week.days }) },
-    { icon: 'chatbubbles-outline', value: String(week.messages), label: t('chat.week.messages', { count: week.messages }) },
-    { icon: 'trophy-outline', value: String(week.winCount + week.quests), label: t('chat.week.wins', { count: week.winCount + week.quests }) },
-    { icon: 'book-outline', value: String(week.pages), label: t('chat.week.pages', { count: week.pages }) },
-  ];
-  return (
-    <View style={styles.system}>
-      <View style={styles.weekCard} accessibilityRole="summary" accessibilityLabel={[t('chat.week.title'), ...stats.map((x) => x.label)].join(', ')}>
-        <View style={styles.sceneHead}>
-          <Ionicons name="sparkles-outline" size={16} color={colors.textSecondary} />
-          <Txt style={[styles.systemText, styles.systemStrong]}>{t('chat.week.title')}</Txt>
-        </View>
-        <View style={styles.weekRow}>
-          {stats.map((x) => (
-            <View key={x.icon} style={styles.weekStat}>
-              <Ionicons name={x.icon} size={20} color={colors.brandText} />
-              <Txt style={styles.weekValue}>{x.value}</Txt>
-            </View>
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-}
-
-/** A group's "Kai & Mia are AI characters, not real people." At a session's start and every 3 hours. */
-function AiNotice({ text }: { text: string }) {
-  const onPhoto = useOnPhoto();
-  return (
-    <View style={styles.system}>
-      <Txt style={[styles.systemText, onPhoto && styles.photoSystem]} center>
-        {text}
-      </Txt>
-    </View>
-  );
-}
-
-/** Under a text-only reply when a member's voice minutes ran out; once a day. */
-function VoiceQuotaNote({ until }: { until?: string }) {
-  const { t } = useTranslation();
-  const router = useRouter();
-  const onPhoto = useOnPhoto();
-  return (
-    <View style={styles.quota}>
-      <Ionicons name="mic-off-outline" size={17} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
-      <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
-        {t('chat.voiceQuota', { date: until ? planDate(Date.parse(until)) : '' })}{' '}
-        <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => router.push('/my-plan')} accessibilityRole="link">
-          {t('chat.addMinutes')}
-        </Txt>
-      </Txt>
-    </View>
-  );
-}
-
-/** "Yes, text me!" while the phone blocks pushes: their texts cannot reach the lock screen yet. */
-function NotifyOffNote({ name }: { name: string }) {
-  const { t } = useTranslation();
-  const onPhoto = useOnPhoto();
-  return (
-    <View style={styles.quota}>
-      <Ionicons name="notifications-off-outline" size={17} color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={styles.quotaIcon} />
-      <Txt variant="small" color={onPhoto ? colors.onMediaSoft : colors.textSecondary} style={[styles.quotaText, onPhoto && styles.photoShadow]}>
-        {t('chat.notifyOff', { name })}{' '}
-        <Txt variant="smallStrong" color={onPhoto ? colors.onMedia : colors.text} onPress={() => void Linking.openSettings()} accessibilityRole="link">
-          {t('chat.notifyOffAction')}
-        </Txt>
-      </Txt>
-    </View>
-  );
-}
-
-/** Shown under a crisis message: never blocks the chat, one tap to local helplines. */
-function HelplineCard() {
-  const { t } = useTranslation();
-  return (
-    <View style={styles.system}>
-      <View style={styles.helpline}>
-        <Txt variant="title" center>
-          {t('safety.helplineTitle')}
-        </Txt>
-        <Button
-          label={t('safety.helplineAction')}
-          variant="secondary"
-          size="sm"
-          onPress={() => void Linking.openURL(HELPLINE_URL)}
-        />
-      </View>
-    </View>
-  );
-}
-
-/**
- * Where a chat said the user may be under 18 (src/lib/age-check.ts): every character is careful now;
- * Confirm age opens the year wheel. Once confirmed it says so; a year under 18 keeps it for good.
- */
-function AgeCheckCard() {
-  const { t } = useTranslation();
-  const doubt = useAppStore((s) => ageDoubt(s.user));
-  const [open, setOpen] = useState(false);
-  return (
-    <View style={styles.system}>
-      <View style={styles.helpline}>
-        <Txt variant="title" center>
-          {doubt ? t('ageCheck.title') : t('ageCheck.confirmed')}
-        </Txt>
-        {doubt === 'locked' ? (
-          <Txt center style={styles.systemText}>
-            {t('ageCheck.locked')}
-          </Txt>
-        ) : doubt ? (
-          <Button label={t('ageCheck.confirm')} variant="secondary" size="sm" onPress={() => setOpen(true)} />
-        ) : null}
-      </View>
-      <AgeConfirmSheet visible={open} onClose={() => setOpen(false)} />
-    </View>
-  );
-}
-
-function CallLine({ message, onCallBack }: { message: Message; onCallBack?: () => void }) {
-  const { t } = useTranslation();
-  const onPhoto = useOnPhoto();
-  const missed = !!message.missed;
-  const quiet = onPhoto ? colors.onMediaSoft : colors.textSecondary;
-
-  return (
-    <View style={styles.system}>
-      <PressableScale style={styles.callLine} onPress={onCallBack} disabled={!onCallBack} scaleTo={0.96}>
-        <Ionicons name={missed ? 'call-outline' : 'call'} size={15} color={missed ? colors.danger : quiet} />
-        {/* The colour goes in the style: `Txt` lays `style` over its `color`. */}
-        <Txt style={[styles.systemText, { color: missed ? colors.danger : quiet }, onPhoto && styles.photoShadow]}>
-          {missed ? t('chat.callMissed') : t('chat.callDuration', { duration: fmtDuration(message.durationSec ?? 0) })}
-        </Txt>
-        {missed && onCallBack ? (
-          <Txt style={[styles.systemText, styles.systemStrong, { color: onPhoto ? palette.apricotCalm : colors.brandText }]}>
-            {' · '}
-            {t('chat.callBack')}
-          </Txt>
-        ) : null}
-        <Txt style={[styles.systemText, onPhoto && styles.photoSystem]}>
-          {'  '}
-          {clockTime(message.createdAt)}
-        </Txt>
-      </PressableScale>
-    </View>
-  );
-}
-
-/** A date's polaroid the user sent to this friend (0z157), drawn from the kept date. */
-function DatePhotoMessage({ dateId, caption }: { dateId: string; caption: string }) {
-  const { i18n } = useTranslation();
-  const record = useAppStore((s) => s.dates.find((d) => d.id === dateId));
-  const partner = useAppStore((s) => (record ? s.characters.find((c) => c.id === record.characterId) : undefined));
-  // A date whose friend is gone (blocked, deleted) keeps its caption as a plain line.
-  if (!record || !partner) return <SystemLine text={caption} />;
-  const when = new Date(record.createdAt).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
-  return <Polaroid character={partner} caption={caption} date={when} width={176} tilt={2} style={styles.datePhoto} />;
-}
-
-/** A Photo Booth picture sent to the chat, drawn from the kept photo; a tap opens it. */
-function BoothPhotoMessage({ photoId, character }: { photoId: string; character: Character }) {
-  const photo = useAppStore((s) => s.photos.find((p) => p.id === photoId));
-  if (!photo) return <View style={styles.photo} />;
-  return <BoothPicture photo={photo} character={character} width={fitWidth(photo.style, { width: 176, height: 240 })} />;
-}
-
 const styles = StyleSheet.create({
-  // A sent polaroid keeps clear of the next bubble's tilt.
-  datePhoto: { marginVertical: space.sm },
   // The held area carries the bubble's width cap, so the text bubble fills it.
   holdable: { flexShrink: 1, maxWidth: '72%' },
   // A bubble with a member's name or a time shares one column with them, which carries the cap instead.
@@ -933,8 +361,6 @@ const styles = StyleSheet.create({
   sender: { paddingLeft: space.xs },
   senderAccented: { fontWeight: '700' },
   timeTheirs: { paddingTop: 0, paddingRight: 0, paddingLeft: space.xs },
-  wide: { maxWidth: '100%' },
-  fill: { maxWidth: '100%' },
   // Room under the bubble for the reaction that hangs off its corner.
   withReaction: { marginBottom: space.xl + 2 },
   // The drop hangs off the bottom corner (the top corners carry the pin and tone marks). It overlaps
@@ -982,139 +408,5 @@ const styles = StyleSheet.create({
   },
   // The avatar stays level with the bubble, above the time's line (14pt + the 3pt gap).
   avatarOverTime: { marginBottom: 17 },
-  bubble: {
-    maxWidth: '72%',
-    paddingHorizontal: 13,
-    paddingVertical: space.sm,
-    borderRadius: CORNER,
-    // iOS squircle corners; Android ignores it.
-    borderCurve: 'continuous',
-  },
-  text: { fontSize: 17, lineHeight: 22, letterSpacing: -0.4 },
-  blockStack: { gap: space.sm },
-  actionBlock: { flexDirection: 'row', alignItems: 'stretch', gap: space.sm },
-  actionBar: { width: 2, borderRadius: 1, marginVertical: 2 },
-  actionBarTheirs: { backgroundColor: ink.accent, opacity: 0.55 },
-  actionBarMine: { backgroundColor: colors.bubbleSelfText, opacity: 0.4 },
-  actionBlockText: { flexShrink: 1, ...inkFace('sub'), fontStyle: 'italic' },
-  action: { fontStyle: 'italic' },
-  actionTheirs: { color: ink.text2 },
-  actionMine: { color: colors.bubbleSelfText, opacity: 0.8 },
-  bubbleMine: { backgroundColor: colors.bubbleSelf, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(235,173,132,0.34)' },
-  // White on the cream with a faint rim, so it holds on a white or light wallpaper too.
-  bubbleTheirs: { backgroundColor: colors.bubbleOther, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.bubbleOtherRim },
-  // A run's last bubble points down at its sender's side.
-  tailMine: { borderBottomRightRadius: TAIL },
-  tailTheirs: { borderBottomLeftRadius: TAIL },
-  bubbleMuted: { backgroundColor: colors.bubbleTranscript },
-  // Their bubble on a picture (an Art wallpaper): dark glass with a hairline rim (`useOnPhoto`).
-  photoBubble: { backgroundColor: colors.onMediaBubble, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.onMediaHairline },
-  photoAction: { color: colors.onMediaMuted },
-  photoSystem: { color: colors.onMediaSoft, textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
-  photoShadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
-  voiceWrap: { alignItems: 'flex-start', gap: space.xs, maxWidth: '72%' },
-  voiceWrapMine: { alignItems: 'flex-end' },
-  voiceBubble: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    maxWidth: '100%',
-    height: 38,
-    paddingVertical: 0,
-    paddingLeft: space.sm,
-    paddingRight: space.md,
-  },
-  play: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center', paddingLeft: 2 },
-  wave: { flexDirection: 'row', alignItems: 'center', gap: 2, height: 20, minWidth: 40 },
-  waveBar: { width: 3, borderRadius: 1.5, opacity: 0.5 },
-  waveBarPlayed: { opacity: 1 },
-  // A note with no sound: its disc says "text", a little quieter than a play button.
-  playText: { paddingLeft: 0, opacity: 0.85 },
-  voiceLength: { fontSize: 13, marginLeft: space.xs },
-  transcript: {
-    backgroundColor: colors.bubbleTranscript,
-    maxWidth: '100%',
-  },
-  photo: {
-    borderRadius: radius.lg,
-    borderCurve: 'continuous',
-    backgroundColor: colors.surfaceAlt,
-  },
-  receiptRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 3 },
   tapArea: { flexShrink: 1, maxWidth: '72%' },
-  receipt: { fontSize: 11, lineHeight: 14, color: colors.textSecondary, paddingTop: 3, paddingRight: space.xs },
-  receiptStrong: { fontWeight: '600', paddingTop: 0, paddingRight: 0 },
-  failed: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingTop: 3, paddingRight: space.xs },
-  failedText: { color: systemColors.red, paddingTop: 0, paddingRight: 0 },
-  system: { alignItems: 'center', paddingVertical: space.sm + 2, paddingHorizontal: space.xxl },
-  systemText: { fontSize: 12, lineHeight: 16, color: colors.textSecondary },
-  systemStrong: { fontWeight: '600' },
-  boardWrap: { alignItems: 'flex-end', paddingHorizontal: space.md, paddingVertical: space.xs },
-  boardNote: {
-    maxWidth: '78%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: space.xs,
-    paddingVertical: space.sm + 2,
-    paddingHorizontal: space.md,
-    borderRadius: 18,
-    backgroundColor: '#EFE8FF',
-    transform: [{ rotate: '-1.5deg' }],
-    ...shadows.card,
-  },
-  boardPin: { marginTop: 2 },
-  boardText: { flexShrink: 1, fontSize: 15, lineHeight: 20, color: '#2B2350' },
-  sceneHead: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  sceneCard: {
-    maxWidth: 300,
-    alignItems: 'center',
-    gap: 2,
-    paddingHorizontal: 14,
-    paddingTop: space.sm,
-    paddingBottom: 9,
-    borderRadius: inkRadius.chip,
-    borderCurve: 'continuous',
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  // A quiet dark glass on the picture, lighter than a bubble's, so it reads as a note, not a line.
-  sceneOnPhoto: { backgroundColor: colors.onMediaField, borderColor: colors.onMediaRim },
-  scenePlain: { backgroundColor: colors.surfaceAlt, borderColor: colors.borderStrong },
-  sceneTitle: { flexShrink: 1, fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.text, textAlign: 'center' },
-  sceneTitlePhoto: { color: colors.onMediaSoft },
-  sceneBody: { flexDirection: 'row', alignItems: 'center', gap: space.xs, maxWidth: '100%' },
-  sceneBodyOpen: { alignItems: 'center', gap: 2 },
-  sceneSetting: { flexShrink: 1, fontSize: 13, lineHeight: 18, fontStyle: 'italic' },
-  weekCard: {
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingVertical: space.md,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surface,
-    ...shadows.card,
-  },
-  weekRow: { flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' },
-  weekStat: { alignItems: 'center', gap: 4, minWidth: 56 },
-  weekValue: { fontSize: 17, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] },
-  callLine: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  // Lines up with their bubbles: past the avatar column.
-  quota: {
-    flexDirection: 'row',
-    gap: space.xs + 2,
-    paddingLeft: space.md + AVATAR + space.sm,
-    paddingRight: space.xxl,
-    paddingVertical: space.xs,
-  },
-  quotaIcon: { marginTop: 2 },
-  quotaText: { flex: 1 },
-  helpline: {
-    alignItems: 'center',
-    gap: space.sm,
-    marginHorizontal: space.xl,
-    padding: space.lg,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
 });
