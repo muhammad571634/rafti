@@ -1781,7 +1781,8 @@
     "publishKind": {
       "plan": "Plan",
       "diary": "Diary page",
-      "board": "Note on the board"
+      "board": "Note on the board",
+      "alarm": "Wake-up call"
     },
     "newPlan": "New plan",
     "planPlaceholder": "What is the plan?",
@@ -1806,7 +1807,8 @@
     "publishHint": {
       "plan": "A day and time with {{name}}",
       "diary": "Write about today",
-      "board": "Pin something for {{name}}"
+      "board": "Pin something for {{name}}",
+      "alarm": "{{name}} wakes you in their own voice"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1818,7 +1820,29 @@
     "metOn": "Met {{date}}",
     "messageFriend": "Message {{name}}",
     "monthCircle": "{{month}} circle",
-    "mostWith": "Most with {{name}} · {{percent}}"
+    "mostWith": "Most with {{name}} · {{percent}}",
+    "chaptersTitle": "Story chapters",
+    "chaptersWith": "Chapters with {{name}}",
+    "chapterOpen": "Unlocked",
+    "chapterLocked": "Unlocks at level {{level}}",
+    "datesTile": "Dates",
+    "togetherTile": "Together",
+    "togetherSub": "Photo · Quiz · Board",
+    "togetherWith": "Together with {{name}}",
+    "togetherHint": {
+      "photoBooth": "Polaroid, film and studio strips",
+      "quiz": "5 weekly questions in {{name}}’s voice",
+      "board": "Pinned stationery notes",
+      "scene": "Jump into a moment together"
+    },
+    "savedCount_one": "{{count}} saved",
+    "savedCount_other": "{{count}} saved",
+    "datesPlacesCount_one": "{{count}} place",
+    "datesPlacesCount_other": "{{count}} places",
+    "datesDoneCount_one": "{{count}} date",
+    "datesDoneCount_other": "{{count}} dates",
+    "pagesCount_one": "{{count}} page",
+    "pagesCount_other": "{{count}} pages"
   },
   "profile": {
     "title": "Profile",

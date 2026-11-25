@@ -22,8 +22,8 @@ import { ink, inkGutter } from '@/theme/ink';
 import type { Character, MomentKind, Relationship } from '@/types';
 
 const THUMB = 44;
-/** The cards' side margin, the same as Us' other cards. */
-const SIDE = 14;
+/** The cards' side margin, aligned to the Ink 20 pt gutter on Us. */
+const SIDE = inkGutter;
 /** Moments shown on Us before "See all". */
 const SHOWN = 3;
 
@@ -194,7 +194,7 @@ export function OurMoments({
       ) : (
         <View style={styles.cards}>
           {recent.map((item) => (
-            <MomentCard key={item.key} item={item} today={today} content={content(item)} face={face} onPress={open(item)} />
+            <MomentCard key={item.key} item={item} today={today} content={content(item)} face={face} calm highlightMilestone onPress={open(item)} />
           ))}
         </View>
       )}
@@ -203,14 +203,15 @@ export function OurMoments({
 }
 
 /**
- * One moment as an intimate editorial Ink+ glow card: soft diagonal wash of the kind's colour,
- * coloured kind label + timestamp on top, crisp title in the middle, and their words or ending
- * in serif italic underneath. Keeps full prop compatibility with `/moments/[characterId]`.
+ * One moment card: on Us (`calm` = true), a neutral Ink card with a 36 pt Apple tinted icon badge
+ * and no rainbow wash; on `/moments/[characterId]` (`calm` = false), preserves its diagonal glow
+ * wash untouched.
  */
 export function MomentCard({
   item,
   today,
   content,
+  calm = false,
   highlightMilestone = false,
   onPress,
 }: {
@@ -219,12 +220,15 @@ export function MomentCard({
   content: MomentContent;
   /** Kept in props for backward compatibility with `/moments/[characterId]`. */
   face?: string | number;
-  /** On the full Moments timeline, milestones wear a soft hue-tinted rim and serif headline. */
+  /** Neutral Ink card with a leading tinted icon tile (used on Us v3). */
+  calm?: boolean;
+  /** Milestones wear a soft hue-tinted rim and serif headline. */
   highlightMilestone?: boolean;
   onPress?: () => void;
 }) {
   const { t, i18n } = useTranslation();
-  const hue = KIND_TILE[item.kind].fill;
+  const tile = KIND_TILE[item.kind];
+  const hue = tile.fill;
   const labelHue = isDark ? hue : deeper(hue);
   const milestone = highlightMilestone && isMilestone(item.kind);
   const { kindLabel, headline, sub } = cardParts(item, content, t);
@@ -239,42 +243,49 @@ export function MomentCard({
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={[kindLabel, when, headline, content.hearts, sub].filter(Boolean).join(', ')}
-      style={[styles.card, milestone && { borderColor: `${hue}44` }]}>
-      <Gradient colors={[`${hue}33`, `${hue}00`]} start={{ x: 0, y: 0 }} end={{ x: 0.65, y: 0.85 }} style={StyleSheet.absoluteFill} />
-      <View style={styles.cardBody}>
-        <View style={styles.metaRow}>
-          <InkText variant="caption" color={labelHue} lines={1} style={styles.kindLabel}>
-            {kindLabel}
-          </InkText>
-          <InkText variant="footnote" color={ink.text3} lines={1} style={styles.tabular}>
-            {when}
-          </InkText>
-        </View>
-
-        <View style={styles.contentRow}>
-          <View style={styles.grow}>
-            <InkText variant={milestone ? 'cardSmall' : 'bodyStrong'} lines={2}>
-              {headline}
-            </InkText>
-            {content.hearts ? (
-              <View style={styles.heartsLine}>
-                <SFIcon ios="heart.fill" icon="heart" size={12} color={systemColors.pink} />
-                <InkText variant="caption" color={systemColors.pink} style={styles.tabular}>
-                  {content.hearts}
-                </InkText>
-                {sub ? (
-                  <InkText variant="quote" lines={1} style={styles.shrink}>
-                    {`· ${sub}`}
-                  </InkText>
-                ) : null}
-              </View>
-            ) : sub ? (
-              <InkText variant="quote" lines={2} style={styles.quote}>
-                {sub}
-              </InkText>
-            ) : null}
+      style={[styles.card, milestone && { borderColor: `${hue}55` }]}>
+      {!calm ? <Gradient colors={[`${hue}33`, `${hue}00`]} start={{ x: 0, y: 0 }} end={{ x: 0.65, y: 0.85 }} style={StyleSheet.absoluteFill} /> : null}
+      <View style={[styles.cardBody, calm && styles.calmRow]}>
+        {calm ? (
+          <View style={[styles.kindBadge, { backgroundColor: `${hue}24`, borderColor: `${hue}50` }]}>
+            <SFIcon ios={tile.ios} icon={tile.icon} size={17} color={labelHue} />
           </View>
-          {content.thumb ? <View style={styles.thumb}>{content.thumb}</View> : null}
+        ) : null}
+        <View style={styles.calmMain}>
+          <View style={styles.metaRow}>
+            <InkText variant="caption" color={labelHue} lines={1} style={styles.kindLabel}>
+              {kindLabel}
+            </InkText>
+            <InkText variant="footnote" color={ink.text3} lines={1} style={styles.tabular}>
+              {when}
+            </InkText>
+          </View>
+
+          <View style={styles.contentRow}>
+            <View style={styles.grow}>
+              <InkText variant={milestone ? 'cardSmall' : 'bodyStrong'} lines={2}>
+                {headline}
+              </InkText>
+              {content.hearts ? (
+                <View style={styles.heartsLine}>
+                  <SFIcon ios="heart.fill" icon="heart" size={12} color={systemColors.pink} />
+                  <InkText variant="caption" color={systemColors.pink} style={styles.tabular}>
+                    {content.hearts}
+                  </InkText>
+                  {sub ? (
+                    <InkText variant="quote" lines={1} style={styles.shrink}>
+                      {`· ${sub}`}
+                    </InkText>
+                  ) : null}
+                </View>
+              ) : sub ? (
+                <InkText variant="quote" lines={2} style={styles.quote}>
+                  {sub}
+                </InkText>
+              ) : null}
+            </View>
+            {content.thumb ? <View style={styles.thumb}>{content.thumb}</View> : null}
+          </View>
         </View>
       </View>
     </PressableScale>
@@ -366,6 +377,18 @@ const styles = StyleSheet.create({
     borderColor: ink.edge,
   },
   cardBody: { paddingVertical: 14, paddingHorizontal: 16, gap: 6 },
+  calmRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
+  kindBadge: {
+    width: 36,
+    height: 36,
+    marginTop: 1,
+    borderRadius: 11,
+    borderCurve: 'continuous',
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calmMain: { flex: 1, minWidth: 0, gap: 6 },
   metaRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   kindLabel: { flexShrink: 1, textTransform: 'capitalize' },
   contentRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },

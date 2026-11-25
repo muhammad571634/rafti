@@ -62,14 +62,16 @@ export interface TalkedWithProps {
   selectedId?: string;
   /** Tapping a circle switches Us to that friend. */
   onSelectFriend?: (characterId: string) => void;
+  /** When hosted inside a Sheet, omit the outer ground margin and duplicate title. */
+  inSheet?: boolean;
 }
 
 /**
- * Quiet Month Circle card at the bottom of Us (approved Ink+ prototype): calm night summary with
- * no loud yellow banner, proportional ringed friend portraits scaled by this month's share, and
- * direct tap-to-switch into any friend's bond.
+ * Quiet Month Circle summary (Us v3: hosted cleanly inside the Month Circle sheet from the top
+ * capsule, or inline as a card): proportional ringed friend portraits scaled by this month's share,
+ * and direct tap-to-switch into any friend's bond.
  */
-export const TalkedWith = memo(function TalkedWith({ selectedId, onSelectFriend }: TalkedWithProps) {
+export const TalkedWith = memo(function TalkedWith({ selectedId, onSelectFriend, inSheet = false }: TalkedWithProps) {
   const { t, i18n } = useTranslation();
   const characters = useAppStore((s) => s.characters);
   const relationships = useAppStore((s) => s.relationships);
@@ -112,7 +114,10 @@ export const TalkedWith = memo(function TalkedWith({ selectedId, onSelectFriend 
         <View style={[styles.ring, { borderColor: ring, borderWidth: active ? 2.5 : 2 }]}>
           <CharacterAvatar character={character} size={size} />
         </View>
-        <InkText variant="caption" color={active ? ink.text : ink.text2} lines={1} style={styles.tabular}>
+        <InkText variant="caption" color={active ? ink.text : ink.text2} lines={1}>
+          {name}
+        </InkText>
+        <InkText variant="caption" color={ring} lines={1} style={styles.tabular}>
           {percentText(s.percent)}
         </InkText>
       </PressableScale>
@@ -120,11 +125,15 @@ export const TalkedWith = memo(function TalkedWith({ selectedId, onSelectFriend 
   });
 
   return (
-    <View style={styles.card} accessibilityLabel={`${t('us.monthCircle', { month: monthTitle })}: ${summary}`}>
+    <View
+      style={[styles.card, inSheet && styles.sheetCard]}
+      accessibilityLabel={`${t('us.monthCircle', { month: monthTitle })}: ${summary}`}>
       <View style={styles.head}>
-        <InkText variant="cardSmall" accessibilityRole="header" style={styles.title}>
-          {t('us.monthCircle', { month: monthTitle })}
-        </InkText>
+        {!inSheet ? (
+          <InkText variant="cardSmall" accessibilityRole="header" style={styles.title}>
+            {t('us.monthCircle', { month: monthTitle })}
+          </InkText>
+        ) : null}
         <InkText variant="footnote" color={ink.text2} style={[styles.leader, styles.tabular]}>
           {t('us.mostWith', { name: nameOf(top), percent: percentText(top.percent) })}
         </InkText>
@@ -153,6 +162,7 @@ const styles = StyleSheet.create({
     borderColor: ink.edge,
     gap: 14,
   },
+  sheetCard: { marginHorizontal: 0, marginTop: 0 },
   head: {
     flexDirection: 'row',
     flexWrap: 'wrap',

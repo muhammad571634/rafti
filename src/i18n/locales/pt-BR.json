@@ -1781,7 +1781,8 @@
     "publishKind": {
       "plan": "Plano",
       "diary": "Página do diário",
-      "board": "Recado no mural"
+      "board": "Recado no mural",
+      "alarm": "Despertador"
     },
     "newPlan": "Novo plano",
     "planPlaceholder": "Qual é o plano?",
@@ -1806,7 +1807,8 @@
     "publishHint": {
       "plan": "Um dia e horário com {{name}}",
       "diary": "Escreva sobre o dia de hoje",
-      "board": "Fixe algo para {{name}}"
+      "board": "Fixe algo para {{name}}",
+      "alarm": "{{name}} acorda você com a própria voz"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1818,7 +1820,29 @@
     "metOn": "Desde {{date}}",
     "messageFriend": "Mensagem para {{name}}",
     "monthCircle": "Círculo · {{month}}",
-    "mostWith": "Mais com {{name}} · {{percent}}"
+    "mostWith": "Mais com {{name}} · {{percent}}",
+    "chaptersTitle": "Capítulos",
+    "chaptersWith": "Capítulos com {{name}}",
+    "chapterOpen": "Desbloqueado",
+    "chapterLocked": "Abre no nível {{level}}",
+    "datesTile": "Encontros",
+    "togetherTile": "Juntos",
+    "togetherSub": "Fotos · Quiz · Mural",
+    "togetherWith": "Juntos com {{name}}",
+    "togetherHint": {
+      "photoBooth": "Tiras Polaroid, filme e estúdio",
+      "quiz": "5 perguntas semanais na voz de {{name}}",
+      "board": "Bilhetes fixados no mural",
+      "scene": "Entrem em uma cena juntos"
+    },
+    "savedCount_one": "{{count}} salvo",
+    "savedCount_other": "{{count}} salvos",
+    "datesPlacesCount_one": "{{count}} lugar",
+    "datesPlacesCount_other": "{{count}} lugares",
+    "datesDoneCount_one": "{{count}} encontro",
+    "datesDoneCount_other": "{{count}} encontros",
+    "pagesCount_one": "{{count}} página",
+    "pagesCount_other": "{{count}} páginas"
   },
   "profile": {
     "title": "Perfil",

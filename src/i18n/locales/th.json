@@ -1747,7 +1747,8 @@
     "publishKind": {
       "plan": "แผนการ",
       "diary": "หน้าไดอารี่",
-      "board": "โน้ตบนกระดาน"
+      "board": "โน้ตบนกระดาน",
+      "alarm": "สายปลุกตอนเช้า"
     },
     "newPlan": "แผนการใหม่",
     "planPlaceholder": "มีแผนจะทำอะไร?",
@@ -1772,7 +1773,8 @@
     "publishHint": {
       "plan": "วันและเวลาร่วมกับ {{name}}",
       "diary": "เขียนเกี่ยวกับวันนี้",
-      "board": "ปักหมุดบางอย่างถึง {{name}}"
+      "board": "ปักหมุดบางอย่างถึง {{name}}",
+      "alarm": "{{name}} ปลุกคุณด้วยเสียงของตัวเอง"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1784,7 +1786,25 @@
     "metOn": "ตั้งแต่ {{date}}",
     "messageFriend": "แชทกับ {{name}}",
     "monthCircle": "วงสนทนา {{month}}",
-    "mostWith": "มากสุด {{name}} · {{percent}}"
+    "mostWith": "มากสุด {{name}} · {{percent}}",
+    "chaptersTitle": "บทเรื่องราว",
+    "chaptersWith": "บทเรื่องราวกับ {{name}}",
+    "chapterOpen": "ปลดล็อกแล้ว",
+    "chapterLocked": "ปลดล็อกที่เลเวล {{level}}",
+    "datesTile": "เดต",
+    "togetherTile": "ด้วยกัน",
+    "togetherSub": "รูปถ่าย · ควิซ · บอร์ด",
+    "togetherWith": "ด้วยกันกับ {{name}}",
+    "togetherHint": {
+      "photoBooth": "ถ่ายโพลารอยด์ ฟิล์ม และสตูดิโอ",
+      "quiz": "คำถามประจำสัปดาห์ 5 ข้อในเสียงของ {{name}}",
+      "board": "กระดาษโน้ตที่ปักไว้บนบอร์ด",
+      "scene": "เข้าสู่ฉากพิเศษด้วยกัน"
+    },
+    "savedCount_other": "จำไว้ {{count}} รายการ",
+    "datesPlacesCount_other": "{{count}} สถานที่",
+    "datesDoneCount_other": "{{count}} เดต",
+    "pagesCount_other": "{{count}} หน้า"
   },
   "profile": {
     "title": "โปรไฟล์",

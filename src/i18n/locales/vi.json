@@ -1747,7 +1747,8 @@
     "publishKind": {
       "plan": "Kế hoạch",
       "diary": "Trang nhật ký",
-      "board": "Ghi chú trên bảng tin"
+      "board": "Ghi chú trên bảng tin",
+      "alarm": "Báo thức"
     },
     "newPlan": "Kế hoạch mới",
     "planPlaceholder": "Kế hoạch là gì?",
@@ -1772,7 +1773,8 @@
     "publishHint": {
       "plan": "Một ngày và thời gian cùng {{name}}",
       "diary": "Viết về ngày hôm nay",
-      "board": "Ghim điều gì đó cho {{name}}"
+      "board": "Ghim điều gì đó cho {{name}}",
+      "alarm": "{{name}} đánh thức bạn bằng giọng thật"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1784,7 +1786,25 @@
     "metOn": "Từ {{date}}",
     "messageFriend": "Nhắn {{name}}",
     "monthCircle": "Vòng tròn {{month}}",
-    "mostWith": "Nhiều nhất {{name}} · {{percent}}"
+    "mostWith": "Nhiều nhất {{name}} · {{percent}}",
+    "chaptersTitle": "Chương truyện",
+    "chaptersWith": "Chương cùng {{name}}",
+    "chapterOpen": "Đã mở",
+    "chapterLocked": "Mở ở cấp {{level}}",
+    "datesTile": "Hẹn hò",
+    "togetherTile": "Cùng nhau",
+    "togetherSub": "Ảnh · Đố vui · Bảng tin",
+    "togetherWith": "Cùng {{name}}",
+    "togetherHint": {
+      "photoBooth": "Ảnh Polaroid, phim và phòng chụp",
+      "quiz": "5 câu hỏi hằng tuần bằng giọng {{name}}",
+      "board": "Giấy nhắn ghim trên bảng",
+      "scene": "Bước vào một phân cảnh cùng nhau"
+    },
+    "savedCount_other": "Đã nhớ {{count}}",
+    "datesPlacesCount_other": "{{count}} địa điểm",
+    "datesDoneCount_other": "{{count}} buổi hẹn",
+    "pagesCount_other": "{{count}} trang"
   },
   "profile": {
     "title": "Hồ sơ",

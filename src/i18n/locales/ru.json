@@ -1857,7 +1857,8 @@
     "publishKind": {
       "plan": "План",
       "diary": "Страница дневника",
-      "board": "Записка на доске"
+      "board": "Записка на доске",
+      "alarm": "Будильник"
     },
     "newPlan": "Новый план",
     "planPlaceholder": "Что у вас в планах?",
@@ -1882,7 +1883,8 @@
     "publishHint": {
       "plan": "День и время встречи с {{name}}",
       "diary": "Написать о сегодняшнем дне",
-      "board": "Прикрепить что-то для {{name}}"
+      "board": "Прикрепить что-то для {{name}}",
+      "alarm": "{{name}} разбудит вас своим голосом"
     },
     "daysLabel_few": "дня вместе",
     "daysLabel_many": "дней вместе",
@@ -1900,7 +1902,37 @@
     "metOn": "С {{date}}",
     "messageFriend": "Написать {{name}}",
     "monthCircle": "Круг · {{month}}",
-    "mostWith": "Больше с {{name}} · {{percent}}"
+    "mostWith": "Больше с {{name}} · {{percent}}",
+    "chaptersTitle": "Главы истории",
+    "chaptersWith": "Главы с {{name}}",
+    "chapterOpen": "Открыто",
+    "chapterLocked": "Откроется на уровне {{level}}",
+    "datesTile": "Свидания",
+    "togetherTile": "Вместе",
+    "togetherSub": "Фото · Квиз · Доска",
+    "togetherWith": "Вместе с {{name}}",
+    "togetherHint": {
+      "photoBooth": "Полароид, плёнка и фотополоски",
+      "quiz": "5 вопросов недели голосом {{name}}",
+      "board": "Записки на общей доске",
+      "scene": "Начать совместную сцену"
+    },
+    "savedCount_one": "{{count}} запись",
+    "savedCount_few": "{{count}} записи",
+    "savedCount_many": "{{count}} записей",
+    "savedCount_other": "{{count}} записей",
+    "datesPlacesCount_one": "{{count}} место",
+    "datesPlacesCount_few": "{{count}} места",
+    "datesPlacesCount_many": "{{count}} мест",
+    "datesPlacesCount_other": "{{count}} мест",
+    "datesDoneCount_one": "{{count}} свидание",
+    "datesDoneCount_few": "{{count}} свидания",
+    "datesDoneCount_many": "{{count}} свиданий",
+    "datesDoneCount_other": "{{count}} свиданий",
+    "pagesCount_one": "{{count}} страница",
+    "pagesCount_few": "{{count}} страницы",
+    "pagesCount_many": "{{count}} страниц",
+    "pagesCount_other": "{{count}} страниц"
   },
   "profile": {
     "title": "Профиль",

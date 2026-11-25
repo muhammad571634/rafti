@@ -4,37 +4,42 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { InkText } from '@/components/ink';
-import { MoreSheet } from '@/components/more-sheet';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIcon } from '@/components/ui';
+import { CharacterAvatar, EmptyState, GlassButton, PressableScale, Screen, SFIcon, Sheet } from '@/components/ui';
 import { BondShareSheet } from '@/components/us/bond-share-sheet';
+import { ChaptersSheet } from '@/components/us/chapters-sheet';
 import { LivingBondHero } from '@/components/us/living-bond-hero';
 import { OurMoments } from '@/components/us/moments';
 import { PlanCalendar } from '@/components/us/plan-calendar';
 import { PlanSheet, type NewPlan } from '@/components/us/plan-sheet';
 import { PublishSheet, type PublishKind } from '@/components/us/publish-sheet';
-import { TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
+import { TALK_HUES, TalkedWith, talkHue, useTalkShares } from '@/components/us/talked-with';
+import { TogetherSheet, type TogetherKind } from '@/components/us/together-sheet';
+import { isActiveMemory } from '@/economy/memory-limit';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { nextAlarmAt, ringsOnDay } from '@/lib/alarms';
 import { daysBetween, shortName } from '@/lib/format';
 import { reminderAt } from '@/lib/schedule';
 import { dateFromKey, dayKey, levelForIntimacy, shellCosts } from '@/mock';
+import { DATE_PLACES } from '@/mock/dates';
 import { displayName, shareReward, useAppStore } from '@/store/use-app-store';
 import { colors, friendAccent, hitSlop, space, systemColors, TAB_BAR_HEIGHT } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 
 /** The friend strip's portrait size and ring spacing. */
 const STORY = 50;
 const STORY_RING = 2;
 const STORY_GAP = 2;
-const WHITE = '#FFFFFF';
 
 /**
- * [Us]: one bond at a time — Living Bond Hero on top, unified Week/Month & Plans card in the
- * middle, editorial Our Moments below, and a quiet Month Circle + More at the foot.
+ * [Us] v3: one bond at a time on a clean 20 pt Ink grid — compact Month Circle header capsule +
+ * "+" Add to us, single Friend Strip, Living Bond Hero (tappable Story Chapters + Call + Share),
+ * 2x2 direct doors to existing full screens (Memories, Dates, Heartbeat Diary, Together), unified
+ * Week/Month & Plans card, and calm Our Moments below.
  */
 export default function UsScreen() {
   const { t, i18n } = useTranslation();
@@ -47,12 +52,19 @@ export default function UsScreen() {
   const characters = useAppStore((s) => s.characters);
   const conversations = useAppStore((s) => s.conversations);
   const schedules = useAppStore((s) => s.schedules);
+  const memories = useAppStore((s) => s.memories);
+  const dates = useAppStore((s) => s.dates);
+  const characterDiary = useAppStore((s) => s.characterDiary);
+  const myDiary = useAppStore((s) => s.diary);
   const removeSchedule = useAppStore((s) => s.removeSchedule);
   const addSchedule = useAppStore((s) => s.addSchedule);
   const spendShells = useAppStore((s) => s.spendShells);
   const wallet = useAppStore((s) => s.wallet);
+
   const [paywall, setPaywall] = useState<number | null>(null);
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [togetherOpen, setTogetherOpen] = useState(false);
+  const [chaptersOpen, setChaptersOpen] = useState(false);
+  const [circleOpen, setCircleOpen] = useState(false);
 
   const today = useDayKey();
   const [day, setDay] = useState(today);
@@ -100,6 +112,7 @@ export default function UsScreen() {
     (characterId: string) => {
       if (!bonds.some((b) => b.character.id === characterId)) return;
       setSelectedId(characterId);
+      setCircleOpen(false);
       scrollRef.current?.scrollTo({ y: 0, animated: true });
     },
     [bonds],
@@ -129,6 +142,7 @@ export default function UsScreen() {
     }
     return days;
   }, [friendMessages]);
+
   const shares = useTalkShares();
   const talkColor = talkHue(shares, activeId) ?? (activeId ? friendAccent(activeId).strong : undefined);
   const dayPlans = useMemo(
@@ -136,12 +150,46 @@ export default function UsScreen() {
     [plans, day],
   );
 
+  const memoryCount = useMemo(
+    () => (activeId ? memories.filter((m) => m.characterId === activeId && isActiveMemory(m)).length : 0),
+    [memories, activeId],
+  );
+  const dateCount = useMemo(
+    () => (activeId ? dates.filter((d) => d.characterId === activeId).length : 0),
+    [dates, activeId],
+  );
+  const diaryCount = useMemo(
+    () =>
+      activeId
+        ? characterDiary.filter((p) => p.characterId === activeId).length +
+          myDiary.filter((d) => d.sharedWithCharacterId === activeId).length
+        : 0,
+    [characterDiary, myDiary, activeId],
+  );
+
   const pickPublish = (kind: PublishKind) => {
     setPublishOpen(false);
     if (kind === 'plan') setPlanOpen(true);
+    else if (kind === 'alarm' && selected) router.push({ pathname: '/alarms/edit', params: { characterId: selected.character.id } });
     else if (kind === 'diary' && selected) router.push({ pathname: '/diary/write', params: { characterId: selected.character.id } });
     else if (kind === 'diary') router.push('/diary/write');
     else if (selected) router.push({ pathname: '/board/write', params: { characterId: selected.character.id } });
+  };
+
+  const pickTogether = (kind: TogetherKind) => {
+    setTogetherOpen(false);
+    if (!selected) return;
+    const cid = selected.character.id;
+    switch (kind) {
+      case 'photoBooth':
+        return router.push({ pathname: '/photo-booth', params: { partner: cid } });
+      case 'quiz':
+        return router.push({ pathname: '/quiz/[characterId]', params: { characterId: cid } });
+      case 'board':
+        return router.push('/board');
+      case 'scene':
+        if (friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });
+    }
   };
 
   const submitPlan = (plan: NewPlan) => {
@@ -165,7 +213,7 @@ export default function UsScreen() {
       />
       {unread > 0 ? (
         <View style={styles.badge} pointerEvents="none">
-          <InkText variant="caption" color={WHITE}>
+          <InkText variant="caption" color={ink.onBadge}>
             {unread > 99 ? '99+' : unread}
           </InkText>
         </View>
@@ -174,6 +222,29 @@ export default function UsScreen() {
   );
 
   const addButton = <GlassButton icon="add" accessibilityLabel={t('us.add')} onPress={() => setPublishOpen(true)} />;
+
+  const now = new Date();
+  const shortMonthRaw = new Intl.DateTimeFormat(i18n.language, { month: 'short' }).format(now);
+  const shortMonth = shortMonthRaw.charAt(0).toLocaleUpperCase(i18n.language) + shortMonthRaw.slice(1);
+  const longMonthRaw = new Intl.DateTimeFormat(i18n.language, { month: 'long' }).format(now);
+  const longMonth = longMonthRaw.charAt(0).toLocaleUpperCase(i18n.language) + longMonthRaw.slice(1);
+  const topShare = shares[0];
+  const topPercent = topShare ? (topShare.percent > 0 ? `${topShare.percent}%` : '<1%') : '';
+
+  const monthPill = topShare ? (
+    <PressableScale
+      scaleTo={0.94}
+      haptic
+      accessibilityRole="button"
+      accessibilityLabel={t('us.monthCircle', { month: longMonth })}
+      onPress={() => setCircleOpen(true)}
+      style={styles.monthCapsule}>
+      <View style={[styles.monthDot, { backgroundColor: TALK_HUES[0][0] }]} />
+      <InkText variant="caption" color={ink.text} lines={1} style={styles.tabular}>
+        {`${shortMonth} · ${topPercent}`}
+      </InkText>
+    </PressableScale>
+  ) : null;
 
   if (!selected) {
     return (
@@ -198,6 +269,7 @@ export default function UsScreen() {
   const { progress } = levelForIntimacy(relationship.intimacy);
   const conversation = conversations.find((c) => c.characterId === character.id);
   const days = daysBetween(relationship.anniversary) + 1;
+  const first = shortName(displayName(character, relationship));
 
   const daySchedule = (
     <View style={styles.scheduleWrap}>
@@ -279,6 +351,7 @@ export default function UsScreen() {
         <InkText variant="display" style={styles.grow}>
           {t('us.title')}
         </InkText>
+        {monthPill}
         {bell}
         {addButton}
       </View>
@@ -287,7 +360,7 @@ export default function UsScreen() {
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT + insets.bottom + space.xxl }}>
-        {/* 1. Quiet Friend Strip: active friend glows in their own accent, others recede calmly. */}
+        {/* 1. Single Quiet Friend Strip: active friend glows in their own accent, others recede calmly. */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.picker}>
           {bonds.map(({ character: c, relationship: r }) => {
             const active = c.id === character.id;
@@ -326,10 +399,52 @@ export default function UsScreen() {
           reward={reward}
           canChat={Boolean(conversation)}
           onOpenChat={() => conversation && router.push(`/chat/${conversation.id}`)}
+          onOpenChapters={() => setChaptersOpen(true)}
+          onCall={() => router.push(`/call/${character.id}`)}
           onShare={() => setSharing(true)}
         />
 
-        {/* 3. Unified Week / Month & Plans Card */}
+        {/* 3. 2x2 Direct Doors to Existing Full Screens (Memories, Dates, Heartbeat Diary, Together) */}
+        <View style={styles.tilesGrid}>
+          <View style={styles.tilesRow}>
+            <SharedTile
+              ios="sparkles"
+              icon="sparkles"
+              fill={systemColors.indigo}
+              title={t('memories.title')}
+              sub={t('us.savedCount', { count: memoryCount })}
+              onPress={() => router.push({ pathname: '/character/[id]/memories', params: { id: character.id } })}
+            />
+            <SharedTile
+              ios="heart.fill"
+              icon="heart"
+              fill={systemColors.pink}
+              title={t('us.datesTile')}
+              sub={dateCount > 0 ? t('us.datesDoneCount', { count: dateCount }) : t('us.datesPlacesCount', { count: DATE_PLACES.length })}
+              onPress={() => router.push({ pathname: '/dating', params: { partner: character.id } })}
+            />
+          </View>
+          <View style={styles.tilesRow}>
+            <SharedTile
+              ios="book.closed.fill"
+              icon="book"
+              fill={systemColors.orange}
+              title={t('home.short.diary')}
+              sub={t('us.pagesCount', { count: diaryCount })}
+              onPress={() => router.push('/diary')}
+            />
+            <SharedTile
+              ios="camera.fill"
+              icon="camera"
+              fill={systemColors.blue}
+              title={t('us.togetherTile')}
+              sub={t('us.togetherSub')}
+              onPress={() => setTogetherOpen(true)}
+            />
+          </View>
+        </View>
+
+        {/* 4. Unified Week / Month & Plans Card */}
         <View onLayout={(e) => (calendarY.current = e.nativeEvent.layout.y)}>
           <PlanCalendar
             value={day}
@@ -343,35 +458,15 @@ export default function UsScreen() {
           />
         </View>
 
-        {/* 4. Editorial Our Moments */}
+        {/* 5. Calm Editorial Our Moments */}
         <OurMoments character={character} relationship={relationship} today={today} onOpenDay={openDay} />
-
-        {/* 5. Quiet Month Circle */}
-        <TalkedWith selectedId={character.id} onSelectFriend={selectFromCircle} />
-
-        {/* 6. Quiet More Row */}
-        <View style={[styles.card, styles.moreCard]}>
-          <PressableScale
-            scaleTo={0.98}
-            dimOnPress={false}
-            accessibilityRole="button"
-            accessibilityLabel={t('more.title')}
-            onPress={() => setMoreOpen(true)}
-            style={styles.moreRow}>
-            <View style={styles.moreTile}>
-              <Ionicons name="ellipsis-horizontal" size={19} color={ink.text} />
-            </View>
-            <InkText style={styles.grow}>{t('more.title')}</InkText>
-            <Ionicons name="chevron-forward" size={16} color={ink.text3} />
-          </PressableScale>
-        </View>
       </ScrollView>
 
       <PublishSheet
         visible={publishOpen}
         onClose={() => setPublishOpen(false)}
         onPick={pickPublish}
-        name={shortName(displayName(character, relationship))}
+        name={first}
       />
       <PlanSheet
         visible={planOpen}
@@ -382,16 +477,28 @@ export default function UsScreen() {
         cost={shellCosts.planSetup}
       />
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
-      <MoreSheet
-        visible={moreOpen}
-        onClose={() => setMoreOpen(false)}
-        // From a friend's page the quiz and a scene are with that friend; truth or dare and a time skip play inside the chat.
-        hide={friendChatId ? ['truthOrDare', 'timeSkip', 'twist'] : ['truthOrDare', 'timeSkip', 'twist', 'scene']}
-        onChatPick={(key) => {
-          if (key === 'quiz') router.push({ pathname: '/quiz/[characterId]', params: { characterId: character.id } });
-          else if (key === 'scene' && friendChatId) router.push({ pathname: '/scenes/[conversationId]', params: { conversationId: friendChatId } });
-        }}
+      <TogetherSheet
+        visible={togetherOpen}
+        onClose={() => setTogetherOpen(false)}
+        name={first}
+        canScene={Boolean(friendChatId)}
+        onPick={pickTogether}
       />
+      <ChaptersSheet
+        visible={chaptersOpen}
+        onClose={() => setChaptersOpen(false)}
+        character={character}
+        relationship={relationship}
+        days={days}
+        onOpenProfile={() => router.push(`/character/${character.id}`)}
+      />
+      <Sheet
+        visible={circleOpen}
+        onClose={() => setCircleOpen(false)}
+        title={t('us.monthCircle', { month: longMonth })}
+        scroll>
+        <TalkedWith selectedId={character.id} onSelectFriend={selectFromCircle} inSheet />
+      </Sheet>
       <BondShareSheet
         visible={sharing}
         onClose={() => setSharing(false)}
@@ -400,6 +507,46 @@ export default function UsScreen() {
         days={days}
       />
     </Screen>
+  );
+}
+
+/** One compact 2x2 door card on Us with a coloured Apple iOS icon tile and wrapping 2-line labels. */
+function SharedTile({
+  ios,
+  icon,
+  fill,
+  title,
+  sub,
+  onPress,
+}: {
+  ios: SFSymbol;
+  icon: keyof typeof Ionicons.glyphMap;
+  fill: string;
+  title: string;
+  sub: string;
+  onPress: () => void;
+}) {
+  return (
+    <PressableScale
+      scaleTo={0.97}
+      haptic
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${title}, ${sub}`}
+      style={styles.tileCard}>
+      <View style={[styles.tileIcon, { backgroundColor: fill }]}>
+        <SFIcon ios={ios} icon={icon} size={18} color={ink.text} />
+      </View>
+      <View style={styles.tileText}>
+        <InkText variant="subStrong" lines={2}>
+          {title}
+        </InkText>
+        <InkText variant="caption" color={ink.text3} lines={2} style={styles.tabular}>
+          {sub}
+        </InkText>
+      </View>
+      <Ionicons name="chevron-forward" size={14} color={ink.text3} />
+    </PressableScale>
   );
 }
 
@@ -434,9 +581,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
-    paddingHorizontal: space.lg,
+    paddingHorizontal: inkGutter,
     paddingTop: space.sm,
     paddingBottom: space.xs,
+  },
+  monthCapsule: {
+    minHeight: 36,
+    paddingHorizontal: 11,
+    borderRadius: inkRadius.pill,
+    borderCurve: 'continuous',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  monthDot: {
+    width: 7,
+    height: 7,
+    borderRadius: inkRadius.pill,
   },
   // The red count on the bell, ringed in the ground colour so it reads as cut out of it.
   badge: {
@@ -453,7 +617,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: ink.ground,
   },
-  picker: { gap: 12, paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xs },
+  picker: { gap: 12, paddingHorizontal: inkGutter, paddingTop: space.sm, paddingBottom: space.xs },
   pick: { alignItems: 'center', gap: 5, width: STORY + (STORY_RING + STORY_GAP) * 2 + 4 },
   storyRing: {
     padding: STORY_GAP,
@@ -463,6 +627,44 @@ const styles = StyleSheet.create({
   storyRingIdle: {
     borderColor: ink.edge,
     opacity: 0.65,
+  },
+  tilesGrid: {
+    marginHorizontal: inkGutter,
+    marginTop: 14,
+    gap: 10,
+  },
+  tilesRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  tileCard: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 62,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 11,
+    paddingLeft: 12,
+    paddingRight: 10,
+    borderRadius: inkRadius.field,
+    borderCurve: 'continuous',
+    backgroundColor: ink.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  tileIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tileText: {
+    flex: 1,
+    minWidth: 0,
+    gap: 1,
   },
   scheduleWrap: { paddingVertical: 4 },
   pickedDayLabel: {
@@ -489,16 +691,4 @@ const styles = StyleSheet.create({
   planIcon: { width: 28, height: 28, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   timeTile: { minWidth: 46, justifyContent: 'center' },
   remind: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  card: {
-    marginHorizontal: 14,
-    borderRadius: inkRadius.card,
-    borderCurve: 'continuous',
-    backgroundColor: ink.card,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-    overflow: 'hidden',
-  },
-  moreCard: { marginTop: 16 },
-  moreRow: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 14, minHeight: 56 },
-  moreTile: { width: 32, height: 32, borderRadius: 8, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
 });

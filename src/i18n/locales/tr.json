@@ -1781,7 +1781,8 @@
     "publishKind": {
       "plan": "Plan",
       "diary": "Günlük sayfası",
-      "board": "Panodaki not"
+      "board": "Panodaki not",
+      "alarm": "Uyandırma çağrısı"
     },
     "newPlan": "Yeni plan",
     "planPlaceholder": "Plan nedir?",
@@ -1806,7 +1807,8 @@
     "publishHint": {
       "plan": "{{name}} ile bir gün ve saat",
       "diary": "Bugün hakkında yaz",
-      "board": "{{name}} için bir şey iliştir"
+      "board": "{{name}} için bir şey iliştir",
+      "alarm": "{{name}} seni kendi sesiyle uyandırır"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1818,7 +1820,29 @@
     "metOn": "{{date}} beri",
     "messageFriend": "{{name}} ile yazış",
     "monthCircle": "{{month}} çevresi",
-    "mostWith": "En çok {{name}} · {{percent}}"
+    "mostWith": "En çok {{name}} · {{percent}}",
+    "chaptersTitle": "Hikâye bölümleri",
+    "chaptersWith": "{{name}} ile bölümler",
+    "chapterOpen": "Açıldı",
+    "chapterLocked": "Seviye {{level}} olduğunda açılır",
+    "datesTile": "Buluşmalar",
+    "togetherTile": "Birlikte",
+    "togetherSub": "Foto · Test · Pano",
+    "togetherWith": "{{name}} ile birlikte",
+    "togetherHint": {
+      "photoBooth": "Polaroid, film ve stüdyo kareleri",
+      "quiz": "{{name}} sesiyle haftalık 5 soru",
+      "board": "Panoya iliştirilmiş notlar",
+      "scene": "Birlikte bir sahneye girin"
+    },
+    "savedCount_one": "{{count}} kayıtlı",
+    "savedCount_other": "{{count}} kayıtlı",
+    "datesPlacesCount_one": "{{count}} mekân",
+    "datesPlacesCount_other": "{{count}} mekân",
+    "datesDoneCount_one": "{{count}} buluşma",
+    "datesDoneCount_other": "{{count}} buluşma",
+    "pagesCount_one": "{{count}} sayfa",
+    "pagesCount_other": "{{count}} sayfa"
   },
   "profile": {
     "title": "Profil",

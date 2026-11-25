@@ -8,22 +8,23 @@ import { PressableScale, SFIcon, Sheet, ShellIcon } from '@/components/ui';
 import { shellCosts } from '@/mock';
 import { ink, inkRadius, inkTints } from '@/theme/ink';
 
-export type PublishKind = 'plan' | 'diary' | 'board';
+export type PublishKind = 'plan' | 'alarm' | 'diary' | 'board';
 
-/** What each costs, on its tile, before the tap (a diary page is free). */
-const COST: Record<PublishKind, number> = { plan: shellCosts.planSetup, diary: 0, board: shellCosts.boardNote };
+/** What each costs, on its tile, before the tap (wake-ups and diary pages are free). */
+const COST: Record<PublishKind, number> = { plan: shellCosts.planSetup, alarm: 0, diary: 0, board: shellCosts.boardNote };
 
 /**
- * Three tiles in deep Ink tints, as the new-chat sheet on Chats: a plan in the warm one, a diary
- * page in dusk, a board note in sea; white words on each.
+ * Four tiles in deep Ink tints: a plan in slate, a wake-up call in sleep indigo, a diary
+ * page in dusk, and a board note in sea; white words on each.
  */
 const OPTIONS: { kind: PublishKind; ios: SFSymbol; icon: keyof typeof Ionicons.glyphMap; fill: string }[] = [
   { kind: 'plan', ios: 'calendar', icon: 'calendar', fill: inkTints[2][0] },
+  { kind: 'alarm', ios: 'alarm.fill', icon: 'alarm', fill: inkTints[4][0] },
   { kind: 'diary', ios: 'book.closed.fill', icon: 'book', fill: inkTints[3][0] },
   { kind: 'board', ios: 'pin.fill', icon: 'pin', fill: inkTints[1][0] },
 ];
 
-/** The [Us] "+": add a plan, write a diary page or pin a note on the board. */
+/** The [Us] "+": add a plan, set a wake-up call, write a diary page or pin a note on the board. */
 export function PublishSheet({
   visible,
   onClose,
@@ -40,7 +41,7 @@ export function PublishSheet({
   // The diary page from here goes to this friend, so its hint says so (the diary's own words).
   const hint = (kind: PublishKind) => (kind === 'diary' ? t('diary.shareWith', { name }) : t(`us.publishHint.${kind}`, { name }));
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('us.add')}>
+    <Sheet visible={visible} onClose={onClose} title={t('us.add')} scroll>
       <View style={styles.tiles}>
         {OPTIONS.map(({ kind, ios, icon, fill }) => (
           <PressableScale

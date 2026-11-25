@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
@@ -11,10 +12,11 @@ import { FACE_AT, portraitPosition, sceneFocus } from '@/components/chat/chat-gr
 import { InkEm, InkText, PhotoGlassPill } from '@/components/ink';
 import { CharacterAvatar, characterImage, PressableScale, SFIcon, ShellIcon } from '@/components/ui';
 import { phrase } from '@/i18n';
+import { localCharacter } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { displayName } from '@/store/use-app-store';
-import { friendAccent, friendColor } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
+import { friendAccent, friendColor, hitSlop } from '@/theme';
+import { ink, inkGutter, inkRadius } from '@/theme/ink';
 import type { Character, Relationship } from '@/types';
 
 const SIDE_SCRIM = ['#13131A', 'rgba(19,19,26,0.90)', 'rgba(19,19,26,0.28)', 'rgba(19,19,26,0.10)'] as const;
@@ -34,13 +36,16 @@ export interface LivingBondHeroProps {
   reward: number;
   canChat: boolean;
   onOpenChat: () => void;
+  onOpenChapters?: () => void;
+  onCall?: () => void;
   onShare: () => void;
 }
 
 /**
- * The Living Bond Hero on Us (approved Ink+ prototype): the friend stands clear on the trailing
- * right side with a directional obsidian scrim and a quiet wash of their own accent, emotional
- * serif days headline on the left, a hairline closeness bar, and clear dark-glass actions below.
+ * The Living Bond Hero on Us (Us v3): the friend stands clear on the trailing right side with a
+ * directional obsidian scrim and a quiet wash of their own accent, tappable level/chapters pill on
+ * top, emotional serif days headline on the left, a hairline closeness bar, and clear dark-glass
+ * Message + Call + Share actions below.
  */
 export function LivingBondHero({
   character,
@@ -50,6 +55,8 @@ export function LivingBondHero({
   reward,
   canChat,
   onOpenChat,
+  onOpenChapters,
+  onCall,
   onShare,
 }: LivingBondHeroProps) {
   const { t, i18n } = useTranslation();
@@ -58,6 +65,10 @@ export function LivingBondHero({
   const first = shortName(full);
   const met = new Date(relationship.anniversary).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' });
   const toNext = Math.max(0, relationship.nextLevelAt - relationship.intimacy);
+
+  const shown = localCharacter(character);
+  const beats = shown.arc?.beats ?? [];
+  const openBeats = beats.filter((b) => relationship.level >= b.atLevel).length;
 
   const clamped = Math.max(0, Math.min(1, progress));
   const still = useReducedMotion();
@@ -78,6 +89,20 @@ export function LivingBondHero({
   const fallback = characterImage(character);
   const levelPill = `${t('home.hero.level', { level: relationship.level })} · ${phrase(relationship.levelTitle)}`;
   const shareA11y = `${t('common.share')}, ${days} ${t('us.daysLabel', { count: days })}${reward > 0 ? `, +${reward} ${t('common.shells')}` : ''}`;
+
+  const levelPillContent = (
+    <>
+      <InkText variant="caption" color={ink.text} lines={1} style={[styles.levelText, styles.tabular]}>
+        {levelPill}
+      </InkText>
+      {beats.length > 0 ? (
+        <InkText variant="caption" color={accent.strong} lines={1} style={styles.tabular}>
+          {`· ${openBeats}/${beats.length}`}
+        </InkText>
+      ) : null}
+      {onOpenChapters ? <Ionicons name="chevron-forward" size={12} color={accent.strong} /> : null}
+    </>
+  );
 
   return (
     <View style={styles.card}>
@@ -136,19 +161,27 @@ export function LivingBondHero({
       </View>
 
       <View style={styles.body}>
-        {/* Tapping the hero info opens the chat directly, keeping buttons un-nested for VoiceOver. */}
-        <PressableScale
-          scaleTo={0.99}
-          disabled={!canChat}
-          accessibilityRole="button"
-          accessibilityLabel={`${full}, ${t('us.level', { level: relationship.level })}, ${days} ${t('us.daysLabel', { count: days })}`}
-          onPress={onOpenChat}>
+        <View style={styles.topSection}>
+          {/* Kept outside the chat PressableScale so VoiceOver and TalkBack never encounter nested buttons. */}
           <View style={styles.badges}>
-            <View style={styles.levelBadge}>
-              <InkText variant="caption" color={ink.text} lines={1} style={styles.tabular}>
-                {levelPill}
-              </InkText>
-            </View>
+            {onOpenChapters ? (
+              <PressableScale
+                scaleTo={0.95}
+                hitSlop={hitSlop}
+                haptic
+                accessibilityRole="button"
+                accessibilityLabel={
+                  beats.length > 0
+                    ? `${levelPill}, ${openBeats}/${beats.length}, ${t('us.chaptersTitle')}`
+                    : `${levelPill}, ${t('us.chaptersTitle')}`
+                }
+                onPress={onOpenChapters}
+                style={styles.levelBadge}>
+                {levelPillContent}
+              </PressableScale>
+            ) : (
+              <View style={styles.levelBadge}>{levelPillContent}</View>
+            )}
             {relationship.streakDays > 0 ? (
               <View style={styles.streakBadge}>
                 <SFIcon ios="flame.fill" icon="flame" size={12} color={ink.streakText} />
@@ -159,25 +192,32 @@ export function LivingBondHero({
             ) : null}
           </View>
 
-          <View style={styles.headline}>
-            <InkText variant="numeralSmall" lines={1} adjustsFontSizeToFit minimumFontScale={0.78}>
-              {`${days} ${t('us.daysShort', { count: days })}`}
-            </InkText>
-            <InkText variant="cardSmall" lines={1} style={styles.withLine}>
-              <InkEm color={accent.strong}>{t('us.withFriend', { name: first })}</InkEm>
-            </InkText>
+          <PressableScale
+            scaleTo={0.99}
+            disabled={!canChat}
+            accessibilityRole="button"
+            accessibilityLabel={`${full}, ${t('us.level', { level: relationship.level })}, ${days} ${t('us.daysLabel', { count: days })}`}
+            onPress={onOpenChat}>
+            <View style={styles.headline}>
+              <InkText variant="numeralSmall" lines={1} adjustsFontSizeToFit minimumFontScale={0.78}>
+                {`${days} ${t('us.daysShort', { count: days })}`}
+              </InkText>
+              <InkText variant="cardSmall" lines={1} style={styles.withLine}>
+                <InkEm color={accent.strong}>{t('us.withFriend', { name: first })}</InkEm>
+              </InkText>
 
-            <View style={styles.track} onLayout={(e) => setTrackW(e.nativeEvent.layout.width)}>
-              {trackW > 0 ? (
-                <Animated.View style={[styles.fill, { width: trackW, backgroundColor: accent.strong }, fillStyle]} />
-              ) : null}
+              <View style={styles.track} onLayout={(e) => setTrackW(e.nativeEvent.layout.width)}>
+                {trackW > 0 ? (
+                  <Animated.View style={[styles.fill, { width: trackW, backgroundColor: accent.strong }, fillStyle]} />
+                ) : null}
+              </View>
+
+              <InkText variant="footnote" color={ink.photoLine} style={[styles.meta, styles.tabular]}>
+                {`${t('us.toLevel', { count: toNext, level: relationship.level + 1 })} · ${t('us.metOn', { date: met })}`}
+              </InkText>
             </View>
-
-            <InkText variant="footnote" color="rgba(255,255,255,0.68)" style={[styles.meta, styles.tabular]}>
-              {`${t('us.toLevel', { count: toNext, level: relationship.level + 1 })} · ${t('us.metOn', { date: met })}`}
-            </InkText>
-          </View>
-        </PressableScale>
+          </PressableScale>
+        </View>
 
         <View style={styles.actions}>
           <PhotoGlassPill
@@ -188,6 +228,17 @@ export function LivingBondHero({
             disabled={!canChat}
             onPress={onOpenChat}
           />
+          {onCall ? (
+            <PhotoGlassPill
+              haptic
+              ios="phone.fill"
+              icon="call-outline"
+              disabled={!character.voiceReady}
+              accessibilityLabel={t('characterProfile.call')}
+              onPress={onCall}
+              style={styles.callPill}
+            />
+          ) : null}
           <PhotoGlassPill
             haptic
             ios="square.and.arrow.up"
@@ -214,8 +265,8 @@ export function LivingBondHero({
 
 const styles = StyleSheet.create({
   card: {
-    marginHorizontal: 14,
-    marginTop: 14,
+    marginHorizontal: inkGutter,
+    marginTop: 12,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     overflow: 'hidden',
@@ -238,6 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 16,
   },
+  topSection: { gap: 0 },
   badges: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -245,7 +297,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   levelBadge: {
-    maxWidth: '76%',
+    maxWidth: '78%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: inkRadius.pill,
@@ -253,6 +308,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: ink.photoBadgeRim,
   },
+  levelText: { flexShrink: 1 },
   streakBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -284,6 +340,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  callPill: {
+    width: 42,
+    paddingHorizontal: 0,
   },
   reward: { flexDirection: 'row', alignItems: 'center', gap: 3 },
 });

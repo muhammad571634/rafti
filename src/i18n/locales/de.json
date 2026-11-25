@@ -1781,7 +1781,8 @@
     "publishKind": {
       "plan": "Plan",
       "diary": "Tagebuchseite",
-      "board": "Pinnwand-Notiz"
+      "board": "Pinnwand-Notiz",
+      "alarm": "Weckruf"
     },
     "newPlan": "Neuer Plan",
     "planPlaceholder": "Was steht an?",
@@ -1806,7 +1807,8 @@
     "publishHint": {
       "plan": "Tag und Uhrzeit mit {{name}}",
       "diary": "Über heute schreiben",
-      "board": "Notiz für {{name}} anheften"
+      "board": "Notiz für {{name}} anheften",
+      "alarm": "{{name}} weckt dich mit eigener Stimme"
     },
     "said": "{{name}}: {{text}}",
     "momentTitle": {
@@ -1818,7 +1820,29 @@
     "metOn": "Seit {{date}}",
     "messageFriend": "{{name}} schreiben",
     "monthCircle": "Kreis · {{month}}",
-    "mostWith": "Meist mit {{name}} · {{percent}}"
+    "mostWith": "Meist mit {{name}} · {{percent}}",
+    "chaptersTitle": "Kapitel",
+    "chaptersWith": "Kapitel mit {{name}}",
+    "chapterOpen": "Freigeschaltet",
+    "chapterLocked": "Ab Level {{level}} frei",
+    "datesTile": "Dates",
+    "togetherTile": "Zusammen",
+    "togetherSub": "Foto · Quiz · Pinnwand",
+    "togetherWith": "Zusammen mit {{name}}",
+    "togetherHint": {
+      "photoBooth": "Polaroid-, Film- und Studiostreifen",
+      "quiz": "5 Wochenfragen mit {{name}}s Stimme",
+      "board": "Angepinnte Briefnotizen",
+      "scene": "Gemeinsam in eine Szene starten"
+    },
+    "savedCount_one": "{{count}} gemerkt",
+    "savedCount_other": "{{count}} gemerkt",
+    "datesPlacesCount_one": "{{count}} Ort",
+    "datesPlacesCount_other": "{{count}} Orte",
+    "datesDoneCount_one": "{{count}} Date",
+    "datesDoneCount_other": "{{count}} Dates",
+    "pagesCount_one": "{{count}} Seite",
+    "pagesCount_other": "{{count}} Seiten"
   },
   "profile": {
     "title": "Profil",

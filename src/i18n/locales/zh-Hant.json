@@ -1747,7 +1747,8 @@
     "publishKind": {
       "plan": "新約定",
       "diary": "日記篇章",
-      "board": "板上便簽"
+      "board": "板上便簽",
+      "alarm": "晨間喚醒"
     },
     "newPlan": "新約定",
     "planPlaceholder": "具體是怎樣的約定呢？",
@@ -1772,7 +1773,8 @@
     "publishHint": {
       "plan": "與{{name}}相約的日子與時刻",
       "diary": "記錄今天的故事",
-      "board": "為{{name}}貼上一張便簽"
+      "board": "為{{name}}貼上一張便簽",
+      "alarm": "由 {{name}} 親口叫你起床"
     },
     "said": "{{name}}：{{text}}",
     "momentTitle": {
@@ -1784,7 +1786,25 @@
     "metOn": "相識於 {{date}}",
     "messageFriend": "傳訊給{{name}}",
     "monthCircle": "{{month}}互動圈",
-    "mostWith": "最常聊 {{name}} · {{percent}}"
+    "mostWith": "最常聊 {{name}} · {{percent}}",
+    "chaptersTitle": "故事篇章",
+    "chaptersWith": "與 {{name}} 的篇章",
+    "chapterOpen": "已解鎖",
+    "chapterLocked": "等級 {{level}} 解鎖",
+    "datesTile": "約會",
+    "togetherTile": "一起玩",
+    "togetherSub": "拍貼 · 問答 · 留言板",
+    "togetherWith": "與 {{name}} 一起",
+    "togetherHint": {
+      "photoBooth": "拍立得、底片與棚拍四格照",
+      "quiz": "用 {{name}} 的聲音玩每週 5 題默契問答",
+      "board": "釘在留言板上的信紙便條",
+      "scene": "一起走進專屬情境"
+    },
+    "savedCount_other": "已記住 {{count}} 則",
+    "datesPlacesCount_other": "{{count}} 個地點",
+    "datesDoneCount_other": "{{count}} 次約會",
+    "pagesCount_other": "{{count}} 頁"
   },
   "profile": {
     "title": "個人檔案",

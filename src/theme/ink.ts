@@ -37,6 +37,9 @@ export const ink = {
   /** Multi-stop dark scrim over portrait/story cards so overlaid text stays crisp and legible. */
   photoScrim: ['rgba(9,9,13,0.24)', 'rgba(9,9,13,0)', 'rgba(9,9,13,0.48)', 'rgba(9,9,13,0.94)'] as readonly [string, string, string, string],
   photoScrimStops: [0, 0.28, 0.58, 1] as readonly [number, number, number, number],
+  /** Directional left-to-right scrim for horizontal portrait banners inside sheets and cards. */
+  bannerScrim: ['#16161E', 'rgba(22,22,30,0.92)', 'rgba(22,22,30,0.22)'] as readonly [string, string, string],
+  bannerScrimStops: [0, 0.48, 1] as readonly [number, number, number],
   /** Translucent dark-glass backing behind incoming DM quotes on Spotlight photo cards. */
   photoBubble: 'rgba(9,9,13,0.48)',
   /** Secondary crisp light text and muted metadata drawn directly over darkened photography. */

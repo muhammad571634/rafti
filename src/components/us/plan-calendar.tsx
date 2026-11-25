@@ -10,7 +10,7 @@ import { PressableScale } from '@/components/ui';
 import { monthCells, startOfMonth, weekCells, weekdayNames } from '@/lib/calendar';
 import { dateFromKey, dayKey } from '@/mock';
 import { colors, radius, space, systemColors } from '@/theme';
-import { ink, inkPeachGlass, inkRadius } from '@/theme/ink';
+import { ink, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 
 export interface PlanCalendarProps {
   /** Selected day key */
@@ -213,7 +213,7 @@ export function PlanCalendar({ value, onChange, today, marked, talked, talkColor
 }
 
 const styles = StyleSheet.create({
-  root: { marginHorizontal: 14, marginTop: 16 },
+  root: { marginHorizontal: inkGutter, marginTop: 16 },
   card: {
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',

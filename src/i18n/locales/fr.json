@@ -1781,7 +1781,8 @@
     "publishKind": {
       "plan": "Projet",
       "diary": "Page de journal",
-      "board": "Mot sur le panneau"
+      "board": "Mot sur le panneau",
+      "alarm": "Réveil"
     },
     "newPlan": "Nouveau projet",
     "planPlaceholder": "Quel est le programme ?",
@@ -1806,7 +1807,8 @@
     "publishHint": {
       "plan": "Un jour et une heure avec {{name}}",
       "diary": "Raconter la journée d'aujourd'hui",
-      "board": "Épingler un mot pour {{name}}"
+      "board": "Épingler un mot pour {{name}}",
+      "alarm": "{{name}} vous réveille de sa voix"
     },
     "said": "{{name}} : {{text}}",
     "momentTitle": {
@@ -1818,7 +1820,29 @@
     "metOn": "Depuis {{date}}",
     "messageFriend": "Écrire à {{name}}",
     "monthCircle": "Cercle · {{month}}",
-    "mostWith": "Surtout {{name}} · {{percent}}"
+    "mostWith": "Surtout {{name}} · {{percent}}",
+    "chaptersTitle": "Chapitres",
+    "chaptersWith": "Chapitres avec {{name}}",
+    "chapterOpen": "Débloqué",
+    "chapterLocked": "Se débloque au niveau {{level}}",
+    "datesTile": "Rendez-vous",
+    "togetherTile": "Ensemble",
+    "togetherSub": "Photo · Quiz · Tableau",
+    "togetherWith": "Ensemble avec {{name}}",
+    "togetherHint": {
+      "photoBooth": "Bandes Polaroid, film et studio",
+      "quiz": "5 questions par semaine avec la voix de {{name}}",
+      "board": "Mots épinglés au tableau",
+      "scene": "Plongez dans une scène à deux"
+    },
+    "savedCount_one": "{{count}} gardé",
+    "savedCount_other": "{{count}} gardés",
+    "datesPlacesCount_one": "{{count}} lieu",
+    "datesPlacesCount_other": "{{count}} lieux",
+    "datesDoneCount_one": "{{count}} sortie",
+    "datesDoneCount_other": "{{count}} sorties",
+    "pagesCount_one": "{{count}} page",
+    "pagesCount_other": "{{count}} pages"
   },
   "profile": {
     "title": "Profil",
