@@ -2879,25 +2879,5 @@
     "body": "Arkadaşların yapay zekâ ile yanıt verir: onlara yazdıkların yapay zekâ hizmetimiz Google Gemini’ye gönderilir. Sohbetlerin ayrıca hesabına yedeklenir. Yedeklemeyi Profil’den kapatabilirsin.",
     "agree": "Kabul ediyorum",
     "notNow": "Şimdi değil"
-  },
-  "mood": {
-    "ask": "Nasılsın?",
-    "question": "Gerçekten nasılsın?",
-    "share": "Paylaş · {{name}}",
-    "message": "Ruh hâlim: {{word}}",
-    "band": {
-      "heavy": "Çok kötü",
-      "low": "Kötü",
-      "bitLow": "Biraz düşük",
-      "okay": "İdare eder",
-      "good": "İyi",
-      "great": "Çok iyi",
-      "wonderful": "Harika"
-    },
-    "stock": {
-      "low": "Hey. Buradayım. Ne olduğunu anlat ya da biraz öylece oturalım.",
-      "mid": "İdare eder, dürüst bir cevap. Aklında bir şey var mı?",
-      "high": "Buna bayıldım. Günü ne güzelleştirdi?"
-    }
   }
 }

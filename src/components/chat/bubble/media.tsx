@@ -4,13 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Polaroid } from '@/components/date/polaroid';
-import { InkText } from '@/components/ink';
-import { MoodGlyph } from '@/components/mood/mood-glyph';
 import { BoothPicture, fitWidth } from '@/components/photo-booth/booth-picture';
-import { isMoodBand, MOOD_KEYS } from '@/lib/mood';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space } from '@/theme';
-import { ink, inkRadius } from '@/theme/ink';
 import type { Character } from '@/types';
 
 import { SystemLine } from './notes';
@@ -54,36 +50,7 @@ export function BoothPhotoMessage({ photoId, character }: { photoId: string; cha
   return <BoothPicture photo={photo} character={character} width={fitWidth(photo.style, { width: 176, height: 240 })} />;
 }
 
-/** A mood check-in the user shared (Today's "How are you?"): the feeling's shape and its word, in the app's language. */
-export function MoodMessage({ band, text }: { band: number; text: string }) {
-  const { t } = useTranslation();
-  if (!isMoodBand(band)) return <SystemLine text={text} />;
-  const word = t(`mood.band.${MOOD_KEYS[band]}`);
-  return (
-    <View style={styles.mood} accessible accessibilityLabel={t('mood.message', { word })}>
-      <MoodGlyph band={band} size={40} />
-      <InkText variant="cardSmall" lines={2} style={styles.moodWord}>
-        {word}
-      </InkText>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  mood: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingVertical: space.xs,
-    paddingLeft: space.xs,
-    paddingRight: space.md,
-    borderRadius: inkRadius.row,
-    borderCurve: 'continuous',
-    backgroundColor: ink.card,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-  },
-  moodWord: { flexShrink: 1 },
   // A sent polaroid keeps clear of the next bubble's tilt.
   datePhoto: { marginVertical: space.sm },
   photo: {

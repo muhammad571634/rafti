@@ -37,3 +37,28 @@ export function resampleWave(levels: readonly number[], count: number): number[]
 export function barsFor(seconds: number): number {
   return Math.max(14, Math.min(WAVE_BARS, 12 + Math.round(seconds)));
 }
+
+/** Playback speeds offered while listening to a voice message. */
+export const VOICE_SPEEDS = [1, 1.5, 2] as const;
+export type VoiceSpeed = (typeof VOICE_SPEEDS)[number];
+
+/** Cycles voice message playback speed `1 -> 1.5 -> 2 -> 1`. */
+export function nextVoiceSpeed(current: VoiceSpeed): VoiceSpeed {
+  const idx = VOICE_SPEEDS.indexOf(current);
+  return VOICE_SPEEDS[(idx + 1) % VOICE_SPEEDS.length];
+}
+
+/** Clamps a horizontal gesture coordinate inside a padded waveform track into `0..1`. */
+export function voiceScrubFraction(x: number, width: number, inset = 4): number {
+  const usable = width - inset * 2;
+  if (usable <= 0 || !Number.isFinite(x)) return 0;
+  return Math.max(0, Math.min(1, (x - inset) / usable));
+}
+
+/** Rounded playback second at normalized progress `fraction` (0..1) for timestamp pills and tick detents. */
+export function voiceSecondAt(fraction: number, durationSec: number): number {
+  if (!(durationSec > 0) || !Number.isFinite(fraction)) return 0;
+  const clamped = Math.max(0, Math.min(1, fraction));
+  return Math.round(clamped * durationSec);
+}
+

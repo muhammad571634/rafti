@@ -866,11 +866,6 @@ export interface AppState {
   finishDate: (characterId: string, placeId: string, hearts: number, title: string) => DateRecord | null;
   /** Sends a date's polaroid to another friend's chat; they answer it (one reply, a picture message's price). */
   sendDatePhoto: (dateId: string, toCharacterId: string, caption: string) => SendResult;
-  /**
-   * Today's mood check-in: the band (0 heavy .. 6 wonderful) goes into that friend's chat as a mood card and
-   * they answer it (one reply, a text message's price). One a day: a second share the same day is 'dailyCap'.
-   */
-  shareMood: (characterId: string, band: number) => SendResult;
   /** Leaves a paid date before the end: no polaroid, and the place can be booked again. */
   leaveDate: () => void;
   /** The user's pick on a date the model plays: the next round is asked for at once, knowing it. */

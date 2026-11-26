@@ -2879,25 +2879,5 @@
     "body": "Seus amigos respondem com IA: o que você escreve para eles é enviado ao nosso serviço de IA, o Google Gemini. Suas conversas também ganham um backup na sua conta. Você pode desativar o backup no Perfil.",
     "agree": "Concordo",
     "notNow": "Agora não"
-  },
-  "mood": {
-    "ask": "Como você está?",
-    "question": "Como você está, de verdade?",
-    "share": "Enviar para {{name}}",
-    "message": "Meu humor: {{word}}",
-    "band": {
-      "heavy": "Muito mal",
-      "low": "Mal",
-      "bitLow": "Meio pra baixo",
-      "okay": "Normal",
-      "good": "Bem",
-      "great": "Muito bem",
-      "wonderful": "Incrível"
-    },
-    "stock": {
-      "low": "Ei. Tô aqui. Me conta o que aconteceu, ou a gente só fica junto um pouco.",
-      "mid": "Normal é sincero. Tá ótimo. Tem algo na cabeça?",
-      "high": "Adorei. O que deixou o dia bom?"
-    }
   }
 }

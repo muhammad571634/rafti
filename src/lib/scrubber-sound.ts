@@ -101,3 +101,15 @@ export function createScrubberSound(): ScrubberSound {
     },
   };
 }
+
+let sharedEngine: ScrubberSound | null = null;
+
+/**
+ * Shared lazy singleton for lists with many scrubbing controls (such as chat voice bubbles)
+ * so scrolling through dozens of messages allocates zero native audio players until the user scrubs.
+ */
+export function sharedScrubberSound(): ScrubberSound {
+  sharedEngine ??= createScrubberSound();
+  return sharedEngine;
+}
+

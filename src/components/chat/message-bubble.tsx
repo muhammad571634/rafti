@@ -7,7 +7,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { cleanReact } from '@/ai/react';
-import { BoothPhotoMessage, ChatPhoto, DatePhotoMessage, MoodMessage } from '@/components/chat/bubble/media';
+import { BoothPhotoMessage, ChatPhoto, DatePhotoMessage } from '@/components/chat/bubble/media';
 import {
   AgeCheckCard,
   AiNotice,
@@ -202,8 +202,6 @@ export const MessageBubble = memo(function MessageBubble({
         <DatePhotoMessage dateId={message.dateId} caption={message.text ?? ''} />
       ) : message.kind === 'image' && message.photoId ? (
         <BoothPhotoMessage photoId={message.photoId} character={character} />
-      ) : message.mood !== undefined ? (
-        <MoodMessage band={message.mood} text={message.text ?? ''} />
       ) : message.kind === 'image' && message.imageUri ? (
         <ChatPhoto uri={message.imageUri} aspect={message.imageAspect} />
       ) : (

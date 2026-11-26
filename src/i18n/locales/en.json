@@ -2879,25 +2879,5 @@
     "body": "Your friends answer with AI: what you write to them goes to our AI service, Google Gemini. Your chats are also backed up to your account. You can turn the backup off in Profile.",
     "agree": "Agree",
     "notNow": "Not now"
-  },
-  "mood": {
-    "ask": "How are you?",
-    "question": "How are you, really?",
-    "share": "Share with {{name}}",
-    "message": "Feeling: {{word}}",
-    "band": {
-      "heavy": "Heavy",
-      "low": "Low",
-      "bitLow": "A bit low",
-      "okay": "Okay",
-      "good": "Good",
-      "great": "Great",
-      "wonderful": "Wonderful"
-    },
-    "stock": {
-      "low": "Hey. I'm here. Tell me what happened, or we can just sit for a bit.",
-      "mid": "Okay is honest. I'll take it. Anything on your mind?",
-      "high": "I love that. What made today good?"
-    }
   }
 }

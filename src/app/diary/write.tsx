@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { DiaryMoodScrubber } from '@/components/diary/diary-mood-scrubber';
 import { CharacterAvatar, GlassButton, glassStyle, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
+import { DIARY_MOOD_HEX, DIARY_MOODS, diaryMoodIndex, diaryMoodNorm, diaryMoodRgba } from '@/lib/diary-mood';
 import { dayKey, dayKeyFromToday, dateFromKey } from '@/mock';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, radius, space, type } from '@/theme';
@@ -16,7 +18,6 @@ import type { DiaryMood } from '@/types';
 
 type Mark = 'bold' | 'underline' | 'strike' | 'italic';
 
-const MOODS: DiaryMood[] = ['happy', 'soft', 'blue', 'excited', 'tired'];
 const MARKS: { mark: Mark; label: string }[] = [
   { mark: 'bold', label: 'B' },
   { mark: 'underline', label: 'U' },
@@ -48,6 +49,7 @@ export default function DiaryWriteScreen() {
   const [marks, setMarks] = useState<Mark[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [mood, setMood] = useState<DiaryMood>('soft');
+  const [scrubbingMood, setScrubbingMood] = useState(false);
   // Opened from a friend's page on Us, the page is theirs to read unless the user picks "only me".
   const { characterId: forFriend } = useLocalSearchParams<{ characterId?: string }>();
   const [shareWith, setShareWith] = useState<string | undefined>(typeof forFriend === 'string' ? forFriend : undefined);
@@ -59,6 +61,19 @@ export default function DiaryWriteScreen() {
     [characters, conversations],
   );
   const reader = friends.find((c) => c.id === shareWith);
+  const moodLabels = useMemo<Record<DiaryMood, string>>(
+    () => ({
+      tired: t('diary.moods.tired'),
+      blue: t('diary.moods.blue'),
+      soft: t('diary.moods.soft'),
+      happy: t('diary.moods.happy'),
+      excited: t('diary.moods.excited'),
+    }),
+    [t],
+  );
+  const moodIdx = diaryMoodIndex(mood);
+  const moodHex = DIARY_MOOD_HEX[moodIdx];
+  const moodSealBg = diaryMoodRgba(diaryMoodNorm(moodIdx), 0.16);
 
   const toggleMark = (mark: Mark) =>
     setMarks((prev) => (prev.includes(mark) ? prev.filter((m) => m !== mark) : [...prev, mark]));
@@ -81,7 +96,7 @@ export default function DiaryWriteScreen() {
       images,
       // Only a friend the user chats with can read it (a stale or unknown id shares with no one).
       sharedWithCharacterId: reader?.id,
-      accentIndex: MOODS.indexOf(mood),
+      accentIndex: DIARY_MOODS.indexOf(mood),
     });
     router.back();
   };
@@ -125,25 +140,18 @@ export default function DiaryWriteScreen() {
         behavior="padding"
         keyboardVerticalOffset={BAR}>
         <ScrollView
+          scrollEnabled={!scrubbingMood}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + space.xl }]}
           keyboardShouldPersistTaps="handled">
           <Txt style={styles.section}>{t('diary.mood')}</Txt>
-          <View style={styles.moods}>
-            {MOODS.map((m) => (
-              <PressableScale
-                key={m}
-                scaleTo={0.95}
-                dimOnPress={false}
-                accessibilityState={{ selected: mood === m }}
-                onPress={() => setMood(m)}
-                style={[styles.chip, mood === m && styles.selected]}>
-                <Txt style={styles.chipText} color={mood === m ? colors.textOnPrimary : colors.text}>
-                  {t(`diary.moods.${m}`)}
-                </Txt>
-              </PressableScale>
-            ))}
-          </View>
+          <DiaryMoodScrubber
+            mood={mood}
+            labels={moodLabels}
+            accessibilityLabel={t('diary.mood')}
+            onChange={setMood}
+            onScrubChange={setScrubbingMood}
+          />
 
           <View style={styles.paper} onLayout={(e) => setPaperHeight(e.nativeEvent.layout.height)}>
             {/* Ruled lines under the text, on the same pitch as the handwriting. */}
@@ -151,6 +159,12 @@ export default function DiaryWriteScreen() {
               {Array.from({ length: Math.max(0, Math.floor((paperHeight - PAPER_PAD) / LINE)) }, (_, i) => (
                 <View key={i} style={[styles.rule, { top: PAPER_PAD + (i + 1) * LINE - 2 }]} />
               ))}
+            </View>
+            <View style={[styles.paperSeal, { backgroundColor: moodSealBg }]} pointerEvents="none">
+              <View style={[styles.paperSealDot, { backgroundColor: moodHex }]} />
+              <Txt style={styles.paperSealText} color={colors.paperText} lines={1}>
+                {moodLabels[mood]}
+              </Txt>
             </View>
             <TextInput
               value={body}
@@ -320,18 +334,7 @@ const styles = StyleSheet.create({
   dateText: { fontSize: 12 },
   save: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primaryFill, alignItems: 'center', justifyContent: 'center' },
   scroll: { paddingHorizontal: space.lg, paddingBottom: space.xl },
-  section: { marginTop: 22, marginBottom: 6, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase' },
-  moods: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  chip: {
-    height: 32,
-    paddingHorizontal: 14,
-    borderRadius: 16,
-    backgroundColor: colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  chipText: { fontSize: 15 },
-  selected: { backgroundColor: colors.primaryFill },
+  section: { marginTop: 22, marginBottom: 8, marginHorizontal: space.lg, fontSize: 13, color: colors.textSecondary, textTransform: 'uppercase' },
   paper: {
     marginTop: space.lg,
     minHeight: 240,
@@ -343,6 +346,26 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: PAPER,
     overflow: 'hidden',
+  },
+  paperSeal: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: radius.pill,
+    marginBottom: 6,
+  },
+  paperSealDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  paperSealText: {
+    fontSize: 12,
+    lineHeight: 15,
+    fontWeight: '600',
   },
   rule: { position: 'absolute', left: space.lg, right: space.lg, height: 1, backgroundColor: colors.paperLine },
   input: {

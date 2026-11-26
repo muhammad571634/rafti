@@ -30,17 +30,38 @@ export function stopNote() {
   playing.done();
 }
 
+export interface PlayNoteOptions {
+  from?: number;
+  rate?: number;
+  onProgress?: (at: number) => void;
+}
+
+function applyRate(player: AudioPlayer, rate: number | undefined) {
+  if (!rate || !Number.isFinite(rate)) return;
+  try {
+    player.shouldCorrectPitch = true;
+    player.setPlaybackRate(rate, 'high');
+  } catch {
+    // Some Android runtimes ignore high pitch correction; fall back cleanly.
+    try {
+      player.setPlaybackRate(rate);
+    } catch {
+      // Safe fallback to 1x.
+    }
+  }
+}
+
 async function startUriPlayer(
   uri: string,
   mine: number,
   done: () => void,
-  options: { from?: number; onProgress?: (at: number) => void } = {},
+  options: PlayNoteOptions = {},
 ): Promise<boolean> {
   await setAudioModeAsync(audioMode()).catch(() => {});
   if (mine !== turn) return true;
   let player: AudioPlayer;
   try {
-    player = createAudioPlayer(uri, { updateInterval: 80 });
+    player = createAudioPlayer(uri, { updateInterval: 40 });
   } catch {
     done();
     return false;
@@ -50,9 +71,10 @@ async function startUriPlayer(
   player.addListener('playbackStatusUpdate', (status) => {
     if (current?.player !== player) return;
     if (status.didJustFinish) return stopNote();
-    // The length is known once it loaded: a scrub's start point waits for it.
+    // The length is known once it loaded: a scrub's start point and speed wait for it.
     if (!started && status.isLoaded && status.duration > 0) {
       started = true;
+      if (options.rate && options.rate !== 1) applyRate(player, options.rate);
       if (options.from && options.from > 0) void player.seekTo(options.from * status.duration);
     }
     if (status.duration > 0) options.onProgress?.(Math.min(1, status.currentTime / status.duration));
@@ -65,7 +87,7 @@ async function startUriPlayer(
  * Plays a kept note; `done` runs when it ends or is stopped. False when its file is not on this phone.
  * `from` starts it part way (0-1, a scrub on a still note); `onProgress` hears how far it is (0-1).
  */
-export async function playNote(name: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
+export async function playNote(name: string, done: () => void, options: PlayNoteOptions = {}): Promise<boolean> {
   stopNote();
   const mine = turn;
   const uri = await noteUri(name);
@@ -77,7 +99,7 @@ export async function playNote(name: string, done: () => void, options: { from?:
  * Plays a local audio URI directly (e.g., an unsent voice note in review mode before sending).
  * Shares the same single-player session so recording or another play stops it cleanly.
  */
-export async function playUri(uri: string, done: () => void, options: { from?: number; onProgress?: (at: number) => void } = {}): Promise<boolean> {
+export async function playUri(uri: string, done: () => void, options: PlayNoteOptions = {}): Promise<boolean> {
   stopNote();
   const mine = turn;
   if (!uri) return false;
@@ -89,6 +111,13 @@ export function seekNote(at: number) {
   const player = current?.player;
   if (!player || !(player.duration > 0)) return;
   void player.seekTo(Math.max(0, Math.min(1, at)) * player.duration);
+}
+
+/** Changes playback speed (`1`, `1.5`, `2`) on the currently playing voice note. */
+export function setNoteRate(rate: number) {
+  const player = current?.player;
+  if (!player) return;
+  applyRate(player, rate);
 }
 
 /**

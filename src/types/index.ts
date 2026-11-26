@@ -345,8 +345,6 @@ export interface Message {
   dateId?: string;
   /** A board note's card in the chat (`BoardPost.id`): deleting the note takes the card with it. */
   boardId?: string;
-  /** A mood check-in shared into the chat: the band, 0 (heavy) to 6 (wonderful) (`src/lib/mood.ts`); `text` keeps its words. */
-  mood?: number;
   createdAt: string;
   readAt?: string;
   /** Local-only optimistic message waiting on the model */
@@ -1157,10 +1155,6 @@ export interface DailyState {
   /** Messages sent today, for the members' fair-use limit */
   messagesDay?: string;
   messagesSent?: number;
-  /** Today's mood check-in (`shareMood`): the day, the band (0..6) and the friend it went to. One a day. */
-  moodDay?: string;
-  mood?: number;
-  moodFriend?: string;
   /** Today's free messages used (`takeFreeMessage`, audit §6.3): the day they count, and how many. */
   freeDay?: string;
   freeUsed?: number;

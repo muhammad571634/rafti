@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { barsFor, resampleWave, waveFromMeter, WAVE_BARS } from './voice-wave';
+import { barsFor, nextVoiceSpeed, resampleWave, voiceScrubFraction, voiceSecondAt, waveFromMeter, WAVE_BARS } from './voice-wave';
 
 describe('a voice note\'s wave', () => {
   it('keeps WAVE_BARS bars from the meter, the loudest at 1', () => {
@@ -32,5 +32,22 @@ describe('a voice note\'s wave', () => {
     assert.equal(barsFor(1), 14);
     assert.equal(barsFor(10), 22);
     assert.equal(barsFor(60), WAVE_BARS);
+  });
+
+  it('cycles playback speed 1 -> 1.5 -> 2 -> 1', () => {
+    assert.equal(nextVoiceSpeed(1), 1.5);
+    assert.equal(nextVoiceSpeed(1.5), 2);
+    assert.equal(nextVoiceSpeed(2), 1);
+  });
+
+  it('clamps scrub coordinates and rounds playback seconds cleanly', () => {
+    assert.equal(voiceScrubFraction(4, 204, 4), 0);
+    assert.equal(voiceScrubFraction(200, 204, 4), 1);
+    assert.equal(voiceScrubFraction(102, 204, 4), 0.5);
+    assert.equal(voiceScrubFraction(-20, 204, 4), 0);
+    assert.equal(voiceScrubFraction(400, 204, 4), 1);
+    assert.equal(voiceSecondAt(0.5, 24), 12);
+    assert.equal(voiceSecondAt(1.4, 24), 24);
+    assert.equal(voiceSecondAt(0.5, 0), 0);
   });
 });
