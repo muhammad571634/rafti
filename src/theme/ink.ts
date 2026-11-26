@@ -202,6 +202,57 @@ export const inkReaction = {
 } as const;
 
 /**
+ * Liquid Gem ("Suyuq shisha") sculpted palettes for the six chat reactions (owner approved 2026-11-26):
+ * 3-stop luminous gem gradients (`stops`), crisp glass specular edge (`rim`), dark obsidian gem
+ * backing for stamped bubble drops (`badgeBg`), and inner high-contrast feature ink (`ink`).
+ */
+export const inkReactionGem = {
+  love: {
+    stops: ['#FFD0DB', '#FF5C82', '#C9184A'] as readonly [string, string, string],
+    rim: 'rgba(255,255,255,0.48)',
+    spec: 'rgba(255,255,255,0.82)',
+    badgeBg: '#2B0D18',
+    ink: '#FFFFFF',
+  },
+  laugh: {
+    stops: ['#FFF3B0', '#FFC43D', '#D97706'] as readonly [string, string, string],
+    rim: 'rgba(255,255,255,0.46)',
+    spec: 'rgba(255,255,255,0.78)',
+    badgeBg: '#2C1F0A',
+    ink: '#451A03',
+    tongue: '#FF6B8A',
+  },
+  wow: {
+    stops: ['#E0F7FF', '#56B9FF', '#1D4ED8'] as readonly [string, string, string],
+    rim: 'rgba(255,255,255,0.54)',
+    spec: 'rgba(255,255,255,0.90)',
+    badgeBg: '#0D2033',
+    ink: '#A5E4FF',
+  },
+  sad: {
+    stops: ['#E0E7FF', '#818CF8', '#3730A3'] as readonly [string, string, string],
+    rim: 'rgba(255,255,255,0.48)',
+    spec: 'rgba(255,255,255,0.84)',
+    badgeBg: '#141934',
+    ink: '#FFFFFF',
+  },
+  hyped: {
+    stops: ['#FFF0A8', '#FF8C32', '#DC2626'] as readonly [string, string, string],
+    rim: 'rgba(255,240,180,0.52)',
+    spec: '#FFF7CC',
+    badgeBg: '#2E160B',
+    ink: '#FFF7CC',
+  },
+  thumbs: {
+    stops: ['#D1FAE5', '#34D399', '#059669'] as readonly [string, string, string],
+    rim: 'rgba(255,255,255,0.46)',
+    spec: 'rgba(255,255,255,0.82)',
+    badgeBg: '#0B281E',
+    ink: '#FFFFFF',
+  },
+} as const;
+
+/**
  * Liquid Glass drawn without a live blur (owner's pick A, 2026-11-16, `docs/prototypes/tab-bar.html`): the Android
  * tab bar's dark glass. A Galaxy A51 cannot afford a blur layer per frame, so the glass is a near-opaque top-to-bottom
  * wash with a hairline rim and a lit top edge, no shadow; the current tab sits in a clear lens. Monochrome over colourful art

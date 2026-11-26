@@ -1,17 +1,29 @@
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { type RefObject, useEffect, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { BackHandler, type LayoutChangeEvent, Pressable, StyleSheet, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  type SharedValue,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withSpring,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { REACTS, type React as ReactionName } from '@/ai/react';
 import { type BubbleAnchor, HeldBubble } from '@/components/chat/message-bubble';
 import { ReactionGlyph } from '@/components/ink';
 import { PressableScale, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
+import { dockIndexFromX, dockWaveTransform } from '@/lib/reaction-motion';
+import { sharedReactionSound } from '@/lib/reaction-sound';
 import { colors, isDark, shadows, space } from '@/theme';
-import { ink, inkPeachGlass, inkReaction } from '@/theme/ink';
+import { ink, inkPeachGlass, inkRadius, inkReaction } from '@/theme/ink';
 import type { Message } from '@/types';
 
 const REACTIONS: readonly ReactionName[] = REACTS;
@@ -116,27 +128,14 @@ export function MessageMenu({
       ].filter((row) => row !== null);
 
   const reactions = (
-    <View style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
-      {REACTIONS.map((name) => {
+    <ReactionDock
+      current={message.reaction}
+      onPick={(name) => {
         const on = message.reaction === name;
-        return (
-          <PressableScale
-            key={name}
-            scaleTo={0.85}
-            style={[styles.reaction, on && styles.reactionOn]}
-            accessibilityRole="button"
-            accessibilityLabel={t('chat.react', { name: t(`chat.reactions.${name}`) })}
-            accessibilityState={{ selected: on }}
-            onPress={() => {
-              haptic.selection();
-              onReact(message, on ? undefined : name);
-            }}>
-            {/* Each in its own hue; the one you put is on your peach. */}
-            <ReactionGlyph name={name} color={inkReaction[name]} size={GLYPH} />
-          </PressableScale>
-        );
-      })}
-    </View>
+        haptic.selection();
+        onReact(message, on ? undefined : name);
+      }}
+    />
   );
   const menu = (
     <View
@@ -213,6 +212,166 @@ export function MessageMenu({
   );
 }
 
+/**
+ * Interactive macOS-Dock style reaction scrubber inside MessageMenu:
+ * supports both single tap and one-finger horizontal slide magnification (focused gem lifts
+ * 1.54×, neighbors wave gently, floating frosted emotion label appears above, micro-ticks click).
+ */
+function ReactionDock({
+  current,
+  onPick,
+}: {
+  current: string | undefined;
+  onPick: (name: ReactionName) => void;
+}) {
+  const { t } = useTranslation();
+  const reduced = useReducedMotion();
+  const activeIdx = useSharedValue(-1);
+  const widthSV = useSharedValue(REACT_W);
+  const [hovered, setHovered] = useState<ReactionName | null>(null);
+
+  const notifyHover = useCallback((idx: number) => {
+    if (idx < 0 || idx >= REACTIONS.length) {
+      setHovered(null);
+      return;
+    }
+    setHovered(REACTIONS[idx]);
+    haptic.selection();
+    sharedReactionSound().hoverTick();
+  }, []);
+
+  const commitIndex = useCallback(
+    (idx: number) => {
+      setHovered(null);
+      if (idx >= 0 && idx < REACTIONS.length) onPick(REACTIONS[idx]);
+    },
+    [onPick],
+  );
+
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const w = e.nativeEvent.layout.width;
+      if (w > 0) widthSV.value = w;
+    },
+    [widthSV],
+  );
+
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetX([-5, 5])
+        .onBegin((e) => {
+          'worklet';
+          const idx = dockIndexFromX(e.x, widthSV.value, 7, REACTIONS.length);
+          if (idx !== activeIdx.value) {
+            activeIdx.value = idx;
+            scheduleOnRN(notifyHover, idx);
+          }
+        })
+        .onUpdate((e) => {
+          'worklet';
+          const idx = dockIndexFromX(e.x, widthSV.value, 7, REACTIONS.length);
+          if (idx !== activeIdx.value) {
+            activeIdx.value = idx;
+            scheduleOnRN(notifyHover, idx);
+          }
+        })
+        .onEnd(() => {
+          'worklet';
+          const picked = activeIdx.value;
+          activeIdx.value = -1;
+          scheduleOnRN(commitIndex, picked);
+        })
+        .onFinalize(() => {
+          'worklet';
+          if (activeIdx.value !== -1) {
+            activeIdx.value = -1;
+            scheduleOnRN(notifyHover, -1);
+          }
+        }),
+    [widthSV, activeIdx, notifyHover, commitIndex],
+  );
+
+  return (
+    <View style={styles.dockWrap}>
+      {hovered ? (
+        <View pointerEvents="none" style={[styles.hoverPill, { borderColor: inkReaction[hovered] }]}>
+          <Txt style={[styles.hoverPillText, { color: inkReaction[hovered] }]} lines={1}>
+            {t(`chat.reactions.${hovered}`)}
+          </Txt>
+        </View>
+      ) : null}
+      <GestureDetector gesture={pan}>
+        <View onLayout={onLayout} style={[styles.glass, styles.reactions]} accessibilityRole="toolbar">
+          {REACTIONS.map((name, index) => (
+            <DockSlot
+              key={name}
+              name={name}
+              index={index}
+              selected={current === name}
+              activeIdx={activeIdx}
+              reduced={reduced}
+              label={t('chat.react', { name: t(`chat.reactions.${name}`) })}
+              onPress={() => onPick(name)}
+            />
+          ))}
+        </View>
+      </GestureDetector>
+    </View>
+  );
+}
+
+function DockSlot({
+  name,
+  index,
+  selected,
+  activeIdx,
+  reduced,
+  label,
+  onPress,
+}: {
+  name: ReactionName;
+  index: number;
+  selected: boolean;
+  activeIdx: SharedValue<number>;
+  reduced: boolean;
+  label: string;
+  onPress: () => void;
+}) {
+  const enter = useSharedValue(reduced ? 1 : 0);
+  useEffect(() => {
+    if (reduced) return;
+    enter.value = withDelay(index * 28, withSpring(1, { damping: 14, stiffness: 280 }));
+  }, [enter, index, reduced]);
+
+  const animStyle = useAnimatedStyle(() => {
+    const wave = reduced ? { scale: 1, translateY: 0, translateX: 0 } : dockWaveTransform(index, activeIdx.value);
+    const springCfg = { damping: 16, stiffness: 320 };
+    return {
+      opacity: enter.value,
+      transform: [
+        { translateX: withSpring(wave.translateX, springCfg) },
+        { translateY: withSpring(wave.translateY + (1 - enter.value) * 14, springCfg) },
+        { scale: withSpring(wave.scale * (0.65 + 0.35 * enter.value), springCfg) },
+      ],
+    };
+  }, [index, reduced]);
+
+  return (
+    <Animated.View style={animStyle}>
+      <PressableScale
+        scaleTo={0.86}
+        style={[styles.reaction, selected && styles.reactionOn]}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ selected }}
+        onPress={onPress}>
+        <ReactionGlyph name={name} color={inkReaction[name]} size={GLYPH} />
+      </PressableScale>
+    </Animated.View>
+  );
+}
+
 /** Android's back button closes the open menu instead of leaving the chat. */
 export function useBackToClose(open: boolean, onClose: () => void) {
   useEffect(() => {
@@ -266,6 +425,18 @@ const styles = StyleSheet.create({
     borderColor: colors.glassLine,
     ...shadows.raised,
   },
+  dockWrap: { alignItems: 'center' },
+  hoverPill: {
+    position: 'absolute',
+    top: -36,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.elevated,
+    borderWidth: StyleSheet.hairlineWidth,
+    zIndex: 4,
+  },
+  hoverPillText: { fontSize: 12, fontWeight: '600' },
   reactions: { height: 62, borderRadius: 31, flexDirection: 'row', alignItems: 'center', gap: 2, paddingHorizontal: 7 },
   reaction: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
   reactionOn: { backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },

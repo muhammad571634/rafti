@@ -2,10 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
-import { haptic } from '@/lib/haptics';
 import { useOnPhoto } from '@/components/chat/chat-ground';
+import { haptic } from '@/lib/haptics';
+import { elasticMicDrag } from '@/lib/reaction-motion';
+import { sharedScrubberSound } from '@/lib/scrubber-sound';
 import { colors, systemColors } from '@/theme';
 
 /** Past a tap, before the thumb would expect anything else. */
@@ -33,13 +35,28 @@ export interface HoldMicProps {
 
 /**
  * The composer's mic, as in WhatsApp and Instagram: hold to record, let go to send, slide left to
- * cancel, slide up to lock and go on hands free. A tap records hands free too, so the hold is a
- * shortcut and never the only way (HIG Gestures).
+ * cancel with elastic rubber-band resistance, slide up to lock hands free. A tap records hands free
+ * too, so the hold is a shortcut and never the only way (HIG Gestures).
  */
 export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, onLock, accessibilityLabel, accessibilityHint, style }: HoldMicProps) {
   const onPhoto = useOnPhoto();
+  const reduced = useReducedMotion();
   const pressed = useSharedValue(0);
-  const animated = useAnimatedStyle(() => ({ transform: [{ scale: 1 - pressed.value * 0.12 }], opacity: 1 - pressed.value * 0.15 }));
+  const dragX = useSharedValue(0);
+  const dragY = useSharedValue(0);
+  const cancelProgress = useSharedValue(0);
+
+  const animated = useAnimatedStyle(() => {
+    const holdBoost = recording ? 1.12 - cancelProgress.value * 0.18 : 1 - pressed.value * 0.1;
+    return {
+      transform: [
+        { translateX: reduced ? 0 : dragX.value },
+        { translateY: reduced ? 0 : dragY.value },
+        { scale: reduced ? 1 : holdBoost },
+      ],
+      opacity: 1 - pressed.value * 0.12,
+    };
+  }, [recording, reduced]);
 
   // The composer redraws while recording; the gesture stays one object and reads these.
   const latest = useRef({ onTap, onHoldStart, onHoldEnd, onLock });
@@ -57,6 +74,12 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, onLock, acce
   );
 
   const gesture = useMemo(() => {
+    const resetDrag = () => {
+      dragX.value = withSpring(0, { damping: 18, stiffness: 280 });
+      dragY.value = withSpring(0, { damping: 18, stiffness: 280 });
+      cancelProgress.value = withTiming(0, { duration: 140 });
+    };
+
     const hold = Gesture.Pan()
       .runOnJS(true)
       .hitSlop(REACH)
@@ -68,29 +91,49 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, onLock, acce
         thrown.current = false;
         holding.current = true;
         haptic.lift();
+        sharedScrubberSound().tick();
         latest.current.onHoldStart();
       })
       .onUpdate((e) => {
         if (thrown.current) return;
+        const absX = Math.abs(Math.min(0, e.translationX));
+        const absY = Math.abs(Math.min(0, e.translationY));
+
+        if (absY > absX && latest.current.onLock) {
+          dragX.value = 0;
+          dragY.value = elasticMicDrag(e.translationY, LOCK_AT * 0.85);
+          cancelProgress.value = 0;
+        } else {
+          dragY.value = 0;
+          dragX.value = elasticMicDrag(e.translationX, CANCEL_AT * 0.92);
+          cancelProgress.value = Math.min(1, absX / CANCEL_AT);
+        }
+
         if (e.translationY < -LOCK_AT && latest.current.onLock) {
           // Locked: the finger may go; the composer's own send and trash take over.
           thrown.current = true;
           holding.current = false;
+          resetDrag();
           haptic.selection();
+          sharedScrubberSound().settle();
           latest.current.onLock();
           return;
         }
         if (e.translationX > -CANCEL_AT) return;
         thrown.current = true;
+        resetDrag();
         haptic.selection();
+        sharedScrubberSound().settle();
         latest.current.onHoldEnd(false);
       })
       .onEnd((_e, success) => {
         holding.current = false;
+        resetDrag();
         if (!thrown.current) latest.current.onHoldEnd(success);
       })
       .onFinalize(() => {
         pressed.value = withTiming(0, { duration: 140 });
+        resetDrag();
       });
     const tap = Gesture.Tap()
       .runOnJS(true)
@@ -99,7 +142,7 @@ export function HoldMic({ recording, onTap, onHoldStart, onHoldEnd, onLock, acce
         if (success) latest.current.onTap();
       });
     return Gesture.Exclusive(hold, tap);
-  }, [pressed]);
+  }, [pressed, dragX, dragY, cancelProgress]);
 
   return (
     <GestureDetector gesture={gesture}>
