@@ -609,7 +609,8 @@
     "mute": "Mute",
     "unmute": "Unmute",
     "speaker": "Speaker",
-    "end": "End"
+    "end": "End",
+    "slideToAnswer": "Slide to answer"
   },
   "callHistory": {
     "title": "Calls",
@@ -1713,7 +1714,8 @@
     "reply": "Reply",
     "melodyOnly": "Melody",
     "earlier": "{{count}} min earlier",
-    "later": "{{count}} min later"
+    "later": "{{count}} min later",
+    "slideToWake": "Slide to wake"
   },
   "board": {
     "title": "Message board",

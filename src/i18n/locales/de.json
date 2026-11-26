@@ -609,7 +609,8 @@
     "mute": "Stumm",
     "unmute": "Laut",
     "speaker": "Lautsprecher",
-    "end": "Auflegen"
+    "end": "Auflegen",
+    "slideToAnswer": "Zum Annehmen schieben"
   },
   "callHistory": {
     "title": "Anrufe",
@@ -1713,7 +1714,8 @@
     "reply": "Antworten",
     "melodyOnly": "Melodie",
     "earlier": "{{count}} Min. früher",
-    "later": "{{count}} Min. später"
+    "later": "{{count}} Min. später",
+    "slideToWake": "Zum Aufwachen schieben"
   },
   "board": {
     "title": "Pinnwand",

@@ -609,7 +609,8 @@
     "mute": "Sesi kapat",
     "unmute": "Sesi aç",
     "speaker": "Hoparlör",
-    "end": "Sonlandır"
+    "end": "Sonlandır",
+    "slideToAnswer": "Açmak için kaydır"
   },
   "callHistory": {
     "title": "Aramalar",
@@ -1713,7 +1714,8 @@
     "reply": "Yanıt",
     "melodyOnly": "Melodi",
     "earlier": "{{count}} dk erken",
-    "later": "{{count}} dk geç"
+    "later": "{{count}} dk geç",
+    "slideToWake": "Uyanmak için kaydır"
   },
   "board": {
     "title": "Duyuru panosu",

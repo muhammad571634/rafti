@@ -4,12 +4,14 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { portraitOf } from '@/components/chat/chat-ground';
 import { useRadioPlayer } from '@/components/radio/radio-player';
 import { useRadioClip } from '@/components/radio/use-clips';
 import { Anim, PressableScale, Txt } from '@/components/ui';
+import { ElasticSlide } from '@/components/ui/elastic-slide';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { haptic } from '@/lib/haptics';
@@ -18,7 +20,7 @@ import { SNOOZE_MIN } from '@/lib/alarms';
 import { countsAsWakeReply, MAX_SNOOZES, WAKE_WINDOW_MIN } from '@/lib/morning-chain';
 import { useAppStore } from '@/store/use-app-store';
 import { fonts, gradients, space } from '@/theme';
-import { inkFace, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkRadius } from '@/theme/ink';
 
 import { showOverLockScreen, unlockPhone } from '../../../modules/alarm-screen';
 
@@ -48,6 +50,10 @@ export default function AlarmRingScreen() {
   const sendText = useAppStore((s) => s.sendText);
   const [now, setNow] = useState(() => new Date());
   const [draft, setDraft] = useState('');
+  const slideProgress = useSharedValue(0);
+  const dawnBloomStyle = useAnimatedStyle(() => ({
+    opacity: 0.06 + slideProgress.value * 0.56,
+  }));
   const { width, height } = useWindowDimensions();
   const picture = useMemo(() => (friend ? portraitOf(friend, width / height) : undefined), [friend, width, height]);
   // A Radio clip chosen as this alarm's voice plays while it rings, its words on screen.
@@ -185,17 +191,26 @@ export default function AlarmRingScreen() {
           </View>
         ) : null}
 
-        {/* As the iPhone's alarm: one big white button, Snooze in glass under it. */}
-        <PressableScale
-          onPress={task ? () => void sendReply() : stop}
-          scaleTo={0.97}
-          style={[styles.primary, task && !ready && styles.primaryWaiting]}
-          accessibilityRole="button"
-          accessibilityState={{ disabled: task && !ready }}>
-          <Txt style={styles.primaryText} lines={1}>
-            {t('alarms.imUp')}
-          </Txt>
-        </PressableScale>
+        {/* Standard wake-up uses the Elastic Liquid Glass slide; reply-to-wake keeps the send button + 3s hold. */}
+        {task ? (
+          <PressableScale
+            onPress={() => void sendReply()}
+            scaleTo={0.97}
+            style={[styles.primary, !ready && styles.primaryWaiting]}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !ready }}>
+            <Txt style={styles.primaryText} lines={1}>
+              {t('alarms.imUp')}
+            </Txt>
+          </PressableScale>
+        ) : (
+          <ElasticSlide
+            variant="alarm"
+            label={t('alarms.slideToWake')}
+            onComplete={stop}
+            progressOut={slideProgress}
+          />
+        )}
         {canSnooze ? (
           <PressableScale onPress={snooze} scaleTo={0.97} style={styles.snooze} accessibilityRole="button">
             <Txt style={styles.snoozeText}>{t('alarms.snoozeFor', { count: SNOOZE_MIN })}</Txt>
@@ -210,10 +225,21 @@ export default function AlarmRingScreen() {
     </KeyboardAvoidingView>
   );
 
+  const dawnBloom = (
+    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, dawnBloomStyle]}>
+      <LinearGradient
+        colors={[`${ink.accent}00`, `${ink.accent}44`, `${ink.accent}B8`]}
+        locations={[0.18, 0.62, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+    </Animated.View>
+  );
+
   if (!picture) {
     return (
       <LinearGradient colors={gradients.wake} style={styles.root}>
         <View style={[StyleSheet.absoluteFill, styles.dawnShade]} />
+        {dawnBloom}
         {content}
       </LinearGradient>
     );
@@ -227,6 +253,7 @@ export default function AlarmRingScreen() {
         locations={[0, 0.3, 0.5, 0.85]}
         style={StyleSheet.absoluteFill}
       />
+      {dawnBloom}
       {content}
     </View>
   );

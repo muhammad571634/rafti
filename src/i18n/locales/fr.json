@@ -609,7 +609,8 @@
     "mute": "Couper le son",
     "unmute": "Activer le son",
     "speaker": "Haut-parleur",
-    "end": "Raccrocher"
+    "end": "Raccrocher",
+    "slideToAnswer": "Glisser pour répondre"
   },
   "callHistory": {
     "title": "Appels",
@@ -1713,7 +1714,8 @@
     "reply": "Répondre",
     "melodyOnly": "Mélodie",
     "earlier": "{{count}} min plus tôt",
-    "later": "{{count}} min plus tard"
+    "later": "{{count}} min plus tard",
+    "slideToWake": "Glisser pour arrêter"
   },
   "board": {
     "title": "Panneau d'affichage",

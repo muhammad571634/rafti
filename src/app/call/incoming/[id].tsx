@@ -1,30 +1,26 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { Anim, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
+import { ElasticSlide } from '@/components/ui/elastic-slide';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { colors, gradients, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 /** Stop ringing after this long and log it as missed, like a real phone. */
 const RING_TIMEOUT_MS = 30_000;
 
 /**
  * "Get phone call from your bias": the character calls you. Full-bleed portrait,
- * name top-left, decline / accept at the bottom.
+ * contact poster header, pulsing rings, and an Elastic Liquid Glass slide-to-answer capsule
+ * with a clean glass Decline pill below.
  */
 export default function IncomingCallScreen() {
   const insets = useSafeAreaInsets();
@@ -40,6 +36,11 @@ export default function IncomingCallScreen() {
   const ringing = useAppStore((s) => s.incomingCall?.characterId === characterId);
   const acceptCall = useAppStore((s) => s.acceptCall);
   const declineCall = useAppStore((s) => s.declineCall);
+
+  const slideProgress = useSharedValue(0);
+  const answerGlowStyle = useAnimatedStyle(() => ({
+    opacity: 0.06 + slideProgress.value * 0.46,
+  }));
 
   const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
@@ -92,6 +93,13 @@ export default function IncomingCallScreen() {
             locations={[0, 0.34, 0.58, 1]}
             style={StyleSheet.absoluteFill}
           />
+          <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, answerGlowStyle]}>
+            <LinearGradient
+              colors={[`${systemColors.green}00`, `${systemColors.green}38`, `${systemColors.green}94`]}
+              locations={[0.25, 0.65, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
         </View>
       }>
       <View style={styles.top}>
@@ -109,63 +117,24 @@ export default function IncomingCallScreen() {
       </View>
 
       <View style={[styles.actions, { paddingBottom: Math.max(insets.bottom + space.xl, space.huge) }]}>
-        <CallAction
-          label={t('call.decline')}
-          color={systemColors.red}
+        <ElasticSlide
+          variant="call"
+          label={t('call.slideToAnswer')}
+          onComplete={accept}
+          progressOut={slideProgress}
+        />
+        <PressableScale
           onPress={decline}
-          icon={<MaterialCommunityIcons name="phone-hangup" size={32} color={colors.white} />}
-        />
-        <CallAction
-          label={t('call.accept')}
-          color={systemColors.green}
-          onPress={accept}
-          pulse
-          icon={<Ionicons name="call" size={30} color={colors.white} />}
-        />
+          scaleTo={0.96}
+          haptic
+          accessibilityRole="button"
+          accessibilityLabel={t('call.decline')}
+          style={styles.declinePill}>
+          <MaterialCommunityIcons name="phone-hangup" size={20} color={systemColors.red} />
+          <Txt style={styles.declineLabel}>{t('call.decline')}</Txt>
+        </PressableScale>
       </View>
     </Screen>
-  );
-}
-
-function CallAction({
-  label,
-  color,
-  icon,
-  pulse,
-  onPress,
-}: {
-  label: string;
-  color: string;
-  icon: React.ReactNode;
-  pulse?: boolean;
-  onPress: () => void;
-}) {
-  const t = useSharedValue(0);
-
-  useEffect(() => {
-    if (!pulse) return;
-    t.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 520, easing: Easing.out(Easing.quad) }),
-        withTiming(0, { duration: 520, easing: Easing.in(Easing.quad) }),
-      ),
-      -1,
-    );
-  }, [pulse, t]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: -t.value * 8 }, { rotate: `${(t.value - 0.5) * 16}deg` }],
-  }));
-
-  return (
-    <View style={styles.action}>
-      <PressableScale onPress={onPress} scaleTo={0.9} haptic accessibilityRole="button" accessibilityLabel={label}>
-        <View style={[styles.actionButton, { backgroundColor: color, shadowColor: color }]}>
-          <Animated.View style={animatedStyle}>{icon}</Animated.View>
-        </View>
-      </PressableScale>
-      <Txt style={styles.actionLabel}>{label}</Txt>
-    </View>
   );
 }
 
@@ -187,22 +156,20 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   rings: { position: 'absolute' },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 40,
+    gap: 14,
+    paddingHorizontal: space.xl,
     paddingBottom: space.huge,
   },
-  action: { width: 96, alignItems: 'center', gap: 10 },
-  actionButton: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
+  declinePill: {
+    height: 52,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
+    gap: 8,
   },
-  actionLabel: { fontSize: 15, fontWeight: '600', color: colors.white },
+  declineLabel: { fontSize: 16, fontWeight: '600', color: colors.white },
 });

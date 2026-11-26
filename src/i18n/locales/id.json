@@ -593,7 +593,8 @@
     "mute": "Bisukan",
     "unmute": "Batal bisukan",
     "speaker": "Speaker",
-    "end": "Akhiri"
+    "end": "Akhiri",
+    "slideToAnswer": "Geser untuk angkat"
   },
   "callHistory": {
     "title": "Panggilan",
@@ -1682,7 +1683,8 @@
     "reply": "Balas",
     "melodyOnly": "Melodi",
     "earlier": "{{count}} mnt lebih awal",
-    "later": "{{count}} mnt lebih lambat"
+    "later": "{{count}} mnt lebih lambat",
+    "slideToWake": "Geser untuk bangun"
   },
   "board": {
     "title": "Papan pesan",

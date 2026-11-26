@@ -609,7 +609,8 @@
     "mute": "Silenciar",
     "unmute": "Desilenciar",
     "speaker": "Altavoz",
-    "end": "Finalizar"
+    "end": "Finalizar",
+    "slideToAnswer": "Desliza para contestar"
   },
   "callHistory": {
     "title": "Llamadas",
@@ -1713,7 +1714,8 @@
     "reply": "Responder",
     "melodyOnly": "Melodía",
     "earlier": "{{count}} min antes",
-    "later": "{{count}} min después"
+    "later": "{{count}} min después",
+    "slideToWake": "Desliza para despertar"
   },
   "board": {
     "title": "Mural de notas",

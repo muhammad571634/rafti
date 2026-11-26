@@ -8,6 +8,7 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AlarmSkyRuler } from '@/components/alarms/alarm-sky-ruler';
 import { NIGHT_WHEEL } from '@/components/alarms/night';
 import { FACE, FACE_ON, NightFace as Face, NightRound as RoundButton, untilText } from '@/components/alarms/night-kit';
 import { TimeWheel } from '@/components/alarms/time-wheel';
@@ -16,6 +17,7 @@ import { PaywallSheet } from '@/components/paywall-sheet';
 import { CharacterAvatar, PressableScale, ShellIcon, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
+import { ALARM_STEP_MIN, skyPhaseForMinutes } from '@/lib/alarm-ruler';
 import { ALARM_SOUNDS, nextAlarmAt } from '@/lib/alarms';
 import { weekdayNames } from '@/lib/calendar';
 import { haptic } from '@/lib/haptics';
@@ -28,7 +30,7 @@ import type { Alarm, AlarmSound, Character } from '@/types';
 type Page = 'main' | 'sound';
 type Draft = Omit<Alarm, 'id' | 'createdAt' | 'enabled'>;
 
-const STEP_MIN = 15;
+const STEP_MIN = ALARM_STEP_MIN;
 const DEFAULT_HOUR = 7;
 /** How long the "set" moment stays before the sheet closes by itself. */
 const SET_MOMENT_MS = 2600;
@@ -64,6 +66,7 @@ export default function AlarmEditScreen() {
   const deleteAlarm = useAppStore((s) => s.deleteAlarm);
   const [paywall, setPaywall] = useState<number | null>(null);
   const [wheel, setWheel] = useState(false);
+  const [scrubbing, setScrubbing] = useState(false);
   const [setMoment, setSetMoment] = useState(false);
   const h12 = uses12Hour();
 
@@ -154,6 +157,15 @@ export default function AlarmEditScreen() {
   const shown = alarmTime(draft.hour, draft.minute, h12);
   const clock = shown.period ? `${shown.time} ${t(`alarms.${shown.period}`)}` : shown.time;
   const until = untilText(t, nextAlarmAt(draft, new Date()).getTime() - Date.now());
+  const skyPhase = skyPhaseForMinutes(draft.hour * 60 + draft.minute);
+  const skyTint =
+    skyPhase === 'dawn'
+      ? ink.accent
+      : skyPhase === 'day'
+        ? systemColors.blue
+        : skyPhase === 'evening'
+          ? systemColors.orange
+          : systemColors.indigo;
   // Monday first, as the Us calendar; the store keeps 0 = Sunday.
   const weekdays = weekdayNames(i18n.language).map((name, i) => ({ name, day: (i + 1) % 7 }));
   const melody = !friend;
@@ -233,7 +245,7 @@ export default function AlarmEditScreen() {
         <View style={styles.navSpacer} />
       </View>
 
-      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: space.xl }]} keyboardShouldPersistTaps="handled">
+      <ScrollView scrollEnabled={!scrubbing} contentContainerStyle={[styles.scroll, { paddingBottom: space.xl }]} keyboardShouldPersistTaps="handled">
         {page === 'main' ? (
           <>
             <Txt variant="caption" color={night.textSecondary} style={styles.groupTitle}>
@@ -263,6 +275,13 @@ export default function AlarmEditScreen() {
             </ScrollView>
 
             <View style={styles.timeCard}>
+              <LinearGradient
+                pointerEvents="none"
+                colors={[`${skyTint}2E`, `${skyTint}00`]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.85 }}
+                style={StyleSheet.absoluteFill}
+              />
               <View style={styles.timeRow}>
                 <RoundButton icon="remove" label={t('alarms.earlier', { count: STEP_MIN })} onPress={() => step(-STEP_MIN)} />
                 <Pressable
@@ -278,9 +297,17 @@ export default function AlarmEditScreen() {
                 </Pressable>
                 <RoundButton icon="add" label={t('alarms.later', { count: STEP_MIN })} onPress={() => step(STEP_MIN)} />
               </View>
+              <AlarmSkyRuler
+                hour={draft.hour}
+                minute={draft.minute}
+                h12={h12}
+                onChange={(hour, minute) => set({ hour, minute })}
+                onScrubbingChange={setScrubbing}
+                accessibilityLabel={clock}
+              />
               {wheel ? <TimeWheel hour={draft.hour} minute={draft.minute} h12={h12} tone={NIGHT_WHEEL} onChange={(hour, minute) => set({ hour, minute })} /> : null}
               <View style={styles.until}>
-                <Ionicons name="moon" size={15} color={night.primary} />
+                <Ionicons name={skyPhase === 'dawn' || skyPhase === 'day' ? 'sunny' : 'moon'} size={15} color={skyTint} />
                 <Txt variant="body" color={night.textSecondary}>
                   {until}
                 </Txt>
@@ -499,7 +526,7 @@ const styles = StyleSheet.create({
   faces: { flexDirection: 'row', alignItems: 'flex-end', gap: space.md, paddingHorizontal: space.lg },
   bell: { width: FACE, height: FACE, borderRadius: inkRadius.pill, backgroundColor: night.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
   bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
-  timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, alignItems: 'center', paddingVertical: space.md, gap: space.xs },
+  timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, overflow: 'hidden', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.sm, gap: space.sm },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
   timeBox: { minWidth: 196, alignItems: 'center' },

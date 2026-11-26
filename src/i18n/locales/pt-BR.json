@@ -609,7 +609,8 @@
     "mute": "Silenciar",
     "unmute": "Ativar som",
     "speaker": "Viva-voz",
-    "end": "Desligar"
+    "end": "Desligar",
+    "slideToAnswer": "Deslize para atender"
   },
   "callHistory": {
     "title": "Chamadas",
@@ -1713,7 +1714,8 @@
     "reply": "Responder",
     "melodyOnly": "Melodia",
     "earlier": "{{count}} min antes",
-    "later": "{{count}} min depois"
+    "later": "{{count}} min depois",
+    "slideToWake": "Deslize para acordar"
   },
   "board": {
     "title": "Mural de recados",

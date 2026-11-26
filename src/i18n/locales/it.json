@@ -609,7 +609,8 @@
     "mute": "Silenzia",
     "unmute": "Riattiva",
     "speaker": "Vivavoce",
-    "end": "Termina"
+    "end": "Termina",
+    "slideToAnswer": "Scorri per rispondere"
   },
   "callHistory": {
     "title": "Chiamate",
@@ -1713,7 +1714,8 @@
     "reply": "Rispondi",
     "melodyOnly": "Melodia",
     "earlier": "{{count}} min prima",
-    "later": "{{count}} min dopo"
+    "later": "{{count}} min dopo",
+    "slideToWake": "Scorri per svegliarti"
   },
   "board": {
     "title": "Bacheca dei messaggi",
