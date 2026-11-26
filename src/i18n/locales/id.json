@@ -1616,7 +1616,8 @@
     "pause": "Jeda",
     "resume": "Lanjutkan",
     "stop": "Berhenti",
-    "wakeUp": "Bangunkan"
+    "wakeUp": "Bangunkan",
+    "endsAt": "Selesai {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Alarm mati · balasan ini gratis",

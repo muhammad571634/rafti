@@ -1616,7 +1616,8 @@
     "pause": "Tạm dừng",
     "resume": "Tiếp tục",
     "stop": "Dừng",
-    "wakeUp": "Báo thức"
+    "wakeUp": "Báo thức",
+    "endsAt": "Đến {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Đã tắt báo thức · tin trả lời này miễn phí",

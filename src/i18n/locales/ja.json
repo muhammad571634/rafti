@@ -1616,7 +1616,8 @@
     "pause": "一時停止",
     "resume": "再開",
     "stop": "停止",
-    "wakeUp": "目覚まし"
+    "wakeUp": "目覚まし",
+    "endsAt": "{{time}}まで"
   },
   "alarms": {
     "offFree": "⏰ アラーム停止 · この返信は無料でした",

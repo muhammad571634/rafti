@@ -1647,7 +1647,8 @@
     "pause": "Pause",
     "resume": "Resume",
     "stop": "Stop",
-    "wakeUp": "Wake-up"
+    "wakeUp": "Wake-up",
+    "endsAt": "Ends {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Alarm off · this reply was free",

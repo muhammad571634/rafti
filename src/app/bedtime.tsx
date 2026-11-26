@@ -9,13 +9,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { NightFace, untilText } from '@/components/alarms/night-kit';
-import { InkIconButton, InkNavBar, InkText, PillButton } from '@/components/ink';
+import { RulerScrubber } from '@/components/alarms/ruler-scrubber';
+import { InkNavBar, InkText, PillButton } from '@/components/ink';
 import { CallPaywallSheet } from '@/components/plans/call-paywall-sheet';
 import { Anim, CharacterAvatar, DotMatrix, PressableScale, Screen, Txt, useScrolledPast } from '@/components/ui';
 import { hasPro } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { nextAlarmAt } from '@/lib/alarms';
+import { BEDTIME_DEFAULT_STEP, BEDTIME_TIMERS, bedtimeHaloEnergy, endsAtParts } from '@/lib/bedtime-timer';
 import { callClock } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
 import { useAppStore } from '@/store/use-app-store';
@@ -23,8 +25,6 @@ import { bottomRoom, friendAccent, space, systemColors } from '@/theme';
 import { ink, inkFace, inkGutter, inkPeachGlass, inkRadius } from '@/theme/ink';
 import type { Alarm, Character } from '@/types';
 
-/** Sleep timer steps for -/+, in minutes. */
-const TIMERS = [5, 10, 15, 20, 30, 45, 60, 90, 120];
 const FACE = 52;
 const STROKE = 7;
 const BED_BG = '#07070B';
@@ -45,7 +45,7 @@ export default function BedtimeScreen() {
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const { scrolled, onScroll } = useScrolledPast(34);
-  const artSize = Math.round(Math.min(220, Math.max(150, height * 0.25)));
+  const artSize = Math.round(Math.min(198, Math.max(144, height * 0.225)));
   const ringSize = Math.round(Math.min(276, Math.max(196, height * 0.33)));
 
   const characters = useAppStore((s) => s.characters);
@@ -63,17 +63,27 @@ export default function BedtimeScreen() {
   const [readerId, setReaderId] = useState(() =>
     askedPartner && known.some((c) => c.id === askedPartner) ? askedPartner : known[0]?.id,
   );
-  const [step, setStep] = useState(TIMERS.indexOf(20));
+  const [step, setStep] = useState(BEDTIME_DEFAULT_STEP);
+  const [scrubbing, setScrubbing] = useState(false);
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const [left, setLeft] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [locked, setLocked] = useState(false);
 
-  const minutes = TIMERS[step];
+  const minutes = BEDTIME_TIMERS[step];
   const reader = known.find((c) => c.id === readerId);
   const running = left != null;
   const name = reader ? friendName(reader, true) : '';
   const readerAccent = reader ? friendAccent(reader.id).strong : ink.accent;
-  const wake = useNextWake(alarms, characters);
+  const wake = useNextWake(alarms, characters, nowMs);
+
+  // Refresh "Ends HH:MM" and wake-up countdown on exact minute boundaries while configuring.
+  useEffect(() => {
+    if (running) return;
+    const waitMs = 60_000 - (Date.now() % 60_000) + 50;
+    const timer = setTimeout(() => setNowMs(Date.now()), waitMs);
+    return () => clearTimeout(timer);
+  }, [nowMs, running]);
 
   useEffect(() => {
     if (left == null || paused) return;
@@ -100,14 +110,18 @@ export default function BedtimeScreen() {
     setLeft(null);
     setPaused(false);
   };
-  const nudge = (by: number) => {
-    const next = Math.max(0, Math.min(TIMERS.length - 1, step + by));
-    if (next !== step) haptic.selection();
-    setStep(next);
-  };
+
+  const endsLabel = useMemo(() => {
+    const { hour, minute } = endsAtParts(new Date(nowMs), minutes);
+    const { time, period } = alarmTime(hour, minute, uses12Hour());
+    const formatted = period ? `${time} ${t(`alarms.${period}`)}` : time;
+    return t('bedtime.endsAt', { time: formatted });
+  }, [nowMs, minutes, t]);
+
+  const haloEnergy = bedtimeHaloEnergy(step, BEDTIME_TIMERS.length, scrubbing);
 
   const wakeLine = wake
-    ? `${wake.who ? friendName(wake.who, true) : wake.alarm.label || t('home.widget.wakeUp')} · ${untilText(t, wake.at.getTime() - Date.now())}`
+    ? `${wake.who ? friendName(wake.who, true) : wake.alarm.label || t('home.widget.wakeUp')} · ${untilText(t, wake.at.getTime() - nowMs)}`
     : '';
 
   return (
@@ -206,6 +220,7 @@ export default function BedtimeScreen() {
       ) : (
         <>
           <ScrollView
+            scrollEnabled={!scrubbing}
             onScroll={onScroll}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
@@ -216,7 +231,7 @@ export default function BedtimeScreen() {
 
             <View style={styles.hero}>
               <View style={{ width: artSize, height: artSize }}>
-                <DotMatrix size={artSize} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={0.45} />
+                <DotMatrix size={artSize} color={NIGHT_DOTS} color2={NIGHT_DOTS_EDGE} cells={17} energy={haloEnergy} />
                 {reader ? <DreamFace character={reader} size={Math.round(artSize * FACE_SHARE)} /> : null}
               </View>
               <InkText variant="card" style={styles.heroTitle} lines={2}>
@@ -245,16 +260,15 @@ export default function BedtimeScreen() {
             ) : null}
 
             {reader ? (
-              <View style={styles.timerCard} accessibilityLabel={`${t('bedtime.setTimer')}, ${t('radio.minutes', { count: minutes })}`}>
-                <InkIconButton icon="remove" size={20} accessibilityLabel={t('bedtime.setTimer')} onPress={() => nudge(-1)} style={styles.stepBtn} />
-                <View style={styles.timerValue}>
-                  <Ionicons name="timer-outline" size={20} color={ink.text2} />
-                  <Txt style={styles.timerText} lines={1} maxFontSizeMultiplier={1.2}>
-                    {t('radio.minutes', { count: minutes })}
-                  </Txt>
-                </View>
-                <InkIconButton icon="add" size={20} accessibilityLabel={t('bedtime.setTimer')} onPress={() => nudge(1)} style={styles.stepBtn} />
-              </View>
+              <RulerScrubber
+                steps={BEDTIME_TIMERS}
+                stepIndex={step}
+                valueLabel={t('radio.minutes', { count: minutes })}
+                endsLabel={endsLabel}
+                accessibilityLabel={t('bedtime.setTimer')}
+                onChange={setStep}
+                onScrubChange={setScrubbing}
+              />
             ) : null}
 
             {wake ? (
@@ -329,10 +343,10 @@ export default function BedtimeScreen() {
 }
 
 /** The next alarm that rings, who wakes you with it, and its time as the phone writes it. */
-function useNextWake(alarms: Alarm[], characters: Character[]) {
+function useNextWake(alarms: Alarm[], characters: Character[], nowMs: number) {
   const { t } = useTranslation();
   return useMemo(() => {
-    const now = new Date();
+    const now = new Date(nowMs);
     const next = alarms
       .filter((a) => a.enabled)
       .map((a) => ({ alarm: a, at: nextAlarmAt(a, now) }))
@@ -344,7 +358,7 @@ function useNextWake(alarms: Alarm[], characters: Character[]) {
       time: period ? `${time} ${t(`alarms.${period}`)}` : time,
       who: next.alarm.characterId ? characters.find((c) => c.id === next.alarm.characterId) : undefined,
     };
-  }, [alarms, characters, t]);
+  }, [alarms, characters, nowMs, t]);
 }
 
 const NIGHT_DOTS = '#A78BFA';
@@ -401,7 +415,7 @@ function TimerRing({ size, share, children }: { size: number; share: number; chi
 const styles = StyleSheet.create({
   ambient: { position: 'absolute', top: 0, left: 0, right: 0, height: 280 },
   flex: { flex: 1 },
-  scroll: { gap: 16 },
+  scroll: { gap: 14 },
   title: { marginHorizontal: inkGutter, marginTop: 2 },
   proPill: {
     height: 28,
@@ -412,27 +426,10 @@ const styles = StyleSheet.create({
     borderColor: PRO_RIM,
     justifyContent: 'center',
   },
-  hero: { alignItems: 'center', gap: 10 },
+  hero: { alignItems: 'center', gap: 8 },
   dream: { alignItems: 'center', justifyContent: 'center' },
   heroTitle: { marginHorizontal: inkGutter, textAlign: 'center' },
   faces: { flexGrow: 1, justifyContent: 'center', gap: 14, paddingHorizontal: inkGutter },
-  timerCard: {
-    marginHorizontal: inkGutter,
-    minHeight: 76,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    borderRadius: inkRadius.card,
-    borderCurve: 'continuous',
-    backgroundColor: ink.card,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: ink.edge,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  stepBtn: { width: 44, height: 44, borderRadius: 22 },
-  timerValue: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  timerText: { ...inkFace('numeralSmall'), fontSize: 28, lineHeight: 34, color: ink.text },
   wakeCard: {
     marginHorizontal: inkGutter,
     minHeight: 72,

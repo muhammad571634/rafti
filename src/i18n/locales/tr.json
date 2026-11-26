@@ -1647,7 +1647,8 @@
     "pause": "Duraklat",
     "resume": "Devam et",
     "stop": "Durdur",
-    "wakeUp": "Uyanma"
+    "wakeUp": "Uyanma",
+    "endsAt": "Bitiş {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Alarm kapandı · bu yanıt ücretsizdi",

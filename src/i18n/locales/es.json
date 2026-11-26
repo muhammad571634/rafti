@@ -1647,7 +1647,8 @@
     "pause": "Pausar",
     "resume": "Reanudar",
     "stop": "Detener",
-    "wakeUp": "Despertador"
+    "wakeUp": "Despertador",
+    "endsAt": "Hasta {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Alarma apagada · esta respuesta fue gratis",

@@ -1616,7 +1616,8 @@
     "pause": "暫停",
     "resume": "繼續",
     "stop": "結束",
-    "wakeUp": "叫醒"
+    "wakeUp": "叫醒",
+    "endsAt": "至 {{time}}"
   },
   "alarms": {
     "offFree": "⏰ 鬧鐘已關閉 · 這則回覆免費",

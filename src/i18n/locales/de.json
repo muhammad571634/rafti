@@ -1647,7 +1647,8 @@
     "pause": "Pause",
     "resume": "Fortsetzen",
     "stop": "Stopp",
-    "wakeUp": "Wecker"
+    "wakeUp": "Wecker",
+    "endsAt": "Bis {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Wecker aus · diese Antwort war gratis",

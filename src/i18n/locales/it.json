@@ -1647,7 +1647,8 @@
     "pause": "Metti in pausa",
     "resume": "Riprendi",
     "stop": "Ferma",
-    "wakeUp": "Sveglia"
+    "wakeUp": "Sveglia",
+    "endsAt": "Fino alle {{time}}"
   },
   "alarms": {
     "offFree": "⏰ Sveglia spenta · questa risposta era gratis",
