@@ -15,6 +15,21 @@
       },
       "channel": "preview"
     },
+    "ios-simulator": {
+      "extends": "preview",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "ios-simulator-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "node": "24.14.0",
+      "channel": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
     "production": {
       "node": "24.14.0",
       "channel": "production"
