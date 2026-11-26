@@ -873,7 +873,12 @@
     "yourNote": "Tu nota",
     "swap": "Intercambiar notas",
     "depthKicker": "{{n}} mensajes juntos",
-    "depthPrompt": "Lo que nunca te dije"
+    "depthPrompt": "Lo que nunca te dije",
+    "holdSeal": "Mantén el sello para abrir",
+    "sealReady": "Listo para romper",
+    "streakDay": "Día {{count}}",
+    "streakPearl": "Día {{count}} · Perla",
+    "streakGold": "Día {{count}} · Oro"
   },
   "store": {
     "title": "Tienda",

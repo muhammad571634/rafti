@@ -852,7 +852,12 @@
     "yourNote": "나의 쪽지",
     "swap": "쪽지 교환하기",
     "depthKicker": "함께한 메시지 {{n}}개",
-    "depthPrompt": "한 번도 말하지 못한 것"
+    "depthPrompt": "한 번도 말하지 못한 것",
+    "holdSeal": "봉인을 꾹 눌러 열기",
+    "sealReady": "열 준비 완료",
+    "streakDay": "{{count}}일째",
+    "streakPearl": "{{count}}일째 · 진주",
+    "streakGold": "{{count}}일째 · 골드"
   },
   "store": {
     "title": "상점",

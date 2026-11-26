@@ -873,7 +873,12 @@
     "yourNote": "Your note",
     "swap": "Swap notes",
     "depthKicker": "{{n}} messages together",
-    "depthPrompt": "What I never told you"
+    "depthPrompt": "What I never told you",
+    "holdSeal": "Hold the seal to open",
+    "sealReady": "Ready to break",
+    "streakDay": "Day {{count}}",
+    "streakPearl": "Day {{count}} · Pearl",
+    "streakGold": "Day {{count}} · Gold"
   },
   "store": {
     "title": "Store",

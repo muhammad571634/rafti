@@ -852,7 +852,12 @@
     "yourNote": "Lời nhắn của bạn",
     "swap": "Trao đổi lời nhắn",
     "depthKicker": "{{n}} tin nhắn bên nhau",
-    "depthPrompt": "Điều mình chưa từng nói với cậu"
+    "depthPrompt": "Điều mình chưa từng nói với cậu",
+    "holdSeal": "Nhấn giữ dấu sáp để mở",
+    "sealReady": "Sẵn sàng bẻ niêm",
+    "streakDay": "Ngày {{count}}",
+    "streakPearl": "Ngày {{count}} · Ngọc trai",
+    "streakGold": "Ngày {{count}} · Vàng"
   },
   "store": {
     "title": "Cửa hàng",

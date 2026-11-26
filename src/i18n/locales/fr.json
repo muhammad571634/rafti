@@ -873,7 +873,12 @@
     "yourNote": "Votre mot",
     "swap": "Échanger les mots",
     "depthKicker": "{{n}} messages ensemble",
-    "depthPrompt": "Ce que je ne t’ai jamais dit"
+    "depthPrompt": "Ce que je ne t’ai jamais dit",
+    "holdSeal": "Maintenez le sceau pour ouvrir",
+    "sealReady": "Prêt à briser",
+    "streakDay": "Jour {{count}}",
+    "streakPearl": "Jour {{count}} · Perle",
+    "streakGold": "Jour {{count}} · Or"
   },
   "store": {
     "title": "Boutique",

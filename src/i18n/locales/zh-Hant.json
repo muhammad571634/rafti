@@ -852,7 +852,12 @@
     "yourNote": "你的便籤",
     "swap": "交換便籤",
     "depthKicker": "一起聊了 {{n}} 則訊息",
-    "depthPrompt": "我從沒對你說過的話"
+    "depthPrompt": "我從沒對你說過的話",
+    "holdSeal": "長按封蠟即可開啟",
+    "sealReady": "可以拆封",
+    "streakDay": "第 {{count}} 天",
+    "streakPearl": "第 {{count}} 天 · 珍珠",
+    "streakGold": "第 {{count}} 天 · 鎏金"
   },
   "store": {
     "title": "商店",

@@ -1,5 +1,6 @@
 import { StyleSheet, TextStyle } from 'react-native';
 
+import { WAX_CRACK_WARM, WAX_GOLD_PALETTE, WAX_PEARL_PALETTE } from '@/lib/wax-seal';
 import { night, palette } from './colors';
 import { fonts } from './typography';
 
@@ -308,4 +309,38 @@ export const inkPeachGlass = {
   trackRim: 'rgba(255,255,255,0.13)',
   /** Tier 2 flat neutral crystal glass tint when a gradient layer isn't used (active chips, tiles, pills). */
   flat: 'rgba(255,255,255,0.13)',
+} as const;
+
+/**
+ * Live Voice Call Liquid Aurora tokens (owner approved 2026-11-27): calm fallbacks when Skia is
+ * unavailable and luminous listening/thinking highlights over blurred call photography.
+ */
+export const inkCallAura = {
+  fallbackAccent: '#EBAD84',
+  listenRim: '#E0F7FF',
+  thinkingHalo: 'rgba(255,255,255,0.88)',
+  thinkingTrail: 'rgba(255,255,255,0.32)',
+  ringFallback: 'rgba(255,255,255,0.52)',
+} as const;
+
+/**
+ * Secret Note Wax Seal ("Mumlu muhrni sindirib ochish", owner approved 2026-11-27): obsidian
+ * envelope flap glass sheen, deep wax shadows, and daily retention tier finishes (Pearl at Day 3+,
+ * Molten Gold at Day 7+ or Depth Keepsakes).
+ */
+export const inkWaxSeal = {
+  flapTop: 'rgba(255,255,255,0.085)',
+  flapBottom: 'rgba(255,255,255,0.015)',
+  flapEdge: 'rgba(255,255,255,0.14)',
+  waxDarkEdge: '#150A10',
+  embossShadow: 'rgba(0,0,0,0.44)',
+  fissureCore: 'rgba(12,6,10,0.78)',
+  sheen: 'rgba(255,255,255,0.26)',
+  crackWarm: WAX_CRACK_WARM,
+  sparkWhite: '#FFFFFF',
+  swappedMint: '#5FE0C4',
+  swappedFill: 'rgba(95,224,196,0.12)',
+  swappedRim: 'rgba(95,224,196,0.30)',
+  pearl: WAX_PEARL_PALETTE,
+  gold: WAX_GOLD_PALETTE,
 } as const;

@@ -873,7 +873,12 @@
     "yourNote": "Senin notun",
     "swap": "Notları değiş tokuş et",
     "depthKicker": "Birlikte {{n}} mesaj",
-    "depthPrompt": "Sana hiç söylemediğim şey"
+    "depthPrompt": "Sana hiç söylemediğim şey",
+    "holdSeal": "Açmak için mührü basılı tut",
+    "sealReady": "Kırmaya hazır",
+    "streakDay": "{{count}}. gün",
+    "streakPearl": "{{count}}. gün · İnci",
+    "streakGold": "{{count}}. gün · Altın"
   },
   "store": {
     "title": "Mağaza",

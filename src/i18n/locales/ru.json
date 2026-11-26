@@ -929,7 +929,12 @@
     "depthKicker": "{{n}} сообщений вместе",
     "depthPrompt": "Что я тебе так и не сказал",
     "depthPrompt_male": "Что я тебе так и не сказал",
-    "depthPrompt_female": "Что я тебе так и не сказала"
+    "depthPrompt_female": "Что я тебе так и не сказала",
+    "holdSeal": "Удерживайте печать",
+    "sealReady": "Можно сломать",
+    "streakDay": "День {{count}}",
+    "streakPearl": "День {{count}} · Жемчуг",
+    "streakGold": "День {{count}} · Золото"
   },
   "store": {
     "title": "Магазин",

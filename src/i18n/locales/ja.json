@@ -852,7 +852,12 @@
     "yourNote": "あなたのメモ",
     "swap": "メモを交換する",
     "depthKicker": "一緒に{{n}}通",
-    "depthPrompt": "ずっと言えなかったこと"
+    "depthPrompt": "ずっと言えなかったこと",
+    "holdSeal": "封蝋を長押しして開く",
+    "sealReady": "開封できます",
+    "streakDay": "{{count}}日目",
+    "streakPearl": "{{count}}日目 · 真珠",
+    "streakGold": "{{count}}日目 · 金箔"
   },
   "store": {
     "title": "ストア",

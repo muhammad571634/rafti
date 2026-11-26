@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
@@ -8,28 +8,31 @@ import Animated, {
   useSharedValue,
   withDelay,
   withSequence,
-  withSpring,
   withTiming,
+  type SharedValue,
 } from 'react-native-reanimated';
+import Svg, { Path } from 'react-native-svg';
 
-import { Anim, Txt } from '@/components/ui';
+import { Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
-import { colors, fonts, space } from '@/theme';
-import { ink, inkFace, inkRadius } from '@/theme/ink';
+import { WAX_SHARDS, waxPaletteFor, type WaxPalette, type WaxSealTier, type WaxShardSpec } from '@/lib/wax-seal';
+import { colors, fonts } from '@/theme';
+import { ink, inkFace, inkRadius, inkWaxSeal } from '@/theme/ink';
 
 /** Calm dark-glass lock fill (shared default for `SealedRow` and `OpenedNote`). */
-export const LOCK_BG = 'rgba(9,9,13,0.48)';
+export const LOCK_BG = ink.photoBadge;
 
-const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
+const EASE_OUT = Easing.bezier(0.22, 1, 0.36, 1);
 const EASE_IN_OUT = Easing.bezier(0.77, 0, 0.175, 1);
+
 /**
- * The beats (seen on the A51, 2026-11-07): the lock turns while the card keeps its sealed size;
- * at OPEN_AT the card glides to the note's size (the screen's 320 ms layout glide) with the words
- * still hidden; at WORDS_AT, once the card is nearly there, the words rise, the letter plays and
- * the success haptic lands. Showing words during the glide drew them over the card below.
+ * Beats for the Wax Seal Shatter & Envelope Unfold reveal:
+ * - 0 ms: wax halves + crumbs + sparks burst outward while the 3D envelope V-flap lifts away.
+ * - 140 ms: editorial serif letter + friend header glide upward cleanly as the card resizes.
+ * - 760 ms: burst overlay unmounts cleanly (zero idle GPU work after reveal).
  */
-const OPEN_AT = 340;
-const WORDS_AT = OPEN_AT + 400;
+const WORDS_AT = 140;
+const SHATTER_DONE_AT = 760;
 
 function formatLetter(text: string): string {
   const clean = text.trim();
@@ -40,6 +43,7 @@ function formatLetter(text: string): string {
 
 /**
  * The sealed row: dark-glass lock + "Their note is sealed" + hint.
+ * Exported for backward compatibility with secondary callers.
  */
 export function SealedRow({ title, hint, accentColor = ink.accent }: { title: string; hint: string; accentColor?: string }) {
   return (
@@ -56,34 +60,33 @@ export function SealedRow({ title, hint, accentColor = ink.accent }: { title: st
 }
 
 /**
- * Their note, opened (our own motion, iOS manner, 2026-11-07, upgraded to Ink Night+): on swap
- * (`reveal`), the friend-accent dark-glass lock turns open with a spring, the sealed row lifts away,
- * the optional friend attribution header + editorial serif words rise while an accent rim breathes
- * once around the card, and the love-letter Lottie plays above them; one success haptic lands with
- * the words. Reduced motion: a plain crossfade. Opened earlier: header + serif letter directly.
+ * Their note, opened (upgraded 2026-11-27 for "Mumlu muhrni sindirib ochish"):
+ * Right as the wax seal cracks (`reveal === true`), two fractured wax halves, wax crumbs, and
+ * tier-colored sparks burst outward on the UI thread while the 3D envelope V-flap folds away,
+ * an accent rim blooms once around the card, and the editorial serif letter glides smoothly up.
+ * Reduced motion: calm crossfade without shards. Opened earlier: header + serif letter directly.
  */
 export function OpenedNote({
   text,
-  sealedTitle,
-  sealedHint,
   reveal,
   accentColor = ink.accent,
+  waxTier = 'friend',
   header,
 }: {
   text: string;
-  sealedTitle: string;
-  sealedHint: string;
+  sealedTitle?: string;
+  sealedHint?: string;
   reveal: boolean;
   accentColor?: string;
+  waxTier?: WaxSealTier;
   header?: ReactNode;
 }) {
   const reduced = useReducedMotion();
-  const [sealGone, setSealGone] = useState(!reveal);
-  const [open, setOpen] = useState(!reveal);
-  const [letter, setLetter] = useState(false);
+  const pal = useMemo(() => waxPaletteFor(waxTier, accentColor), [waxTier, accentColor]);
+  const [showShatter, setShowShatter] = useState(reveal && !reduced);
 
-  const unlock = useSharedValue(reveal ? 0 : 1);
-  const sealOut = useSharedValue(reveal ? 0 : 1);
+  const burst = useSharedValue(0);
+  const flap = useSharedValue(reveal ? 0 : 1);
   const words = useSharedValue(reveal ? 0 : 1);
   const glow = useSharedValue(0);
 
@@ -91,84 +94,154 @@ export function OpenedNote({
     if (!reveal) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
     if (reduced) {
-      unlock.set(1);
-      sealOut.set(withTiming(1, { duration: 200 }));
-      words.set(withTiming(1, { duration: 260 }));
-      setOpen(true);
-      timers.push(setTimeout(haptic.success, 120));
+      words.set(withTiming(1, { duration: 240 }));
+      timers.push(setTimeout(haptic.success, 80));
     } else {
-      unlock.set(withSpring(1, { duration: 460, dampingRatio: 0.55 }));
-      sealOut.set(withDelay(OPEN_AT - 40, withTiming(1, { duration: 260, easing: EASE_OUT })));
+      burst.set(withTiming(1, { duration: 640, easing: EASE_OUT }));
+      flap.set(withTiming(1, { duration: 480, easing: EASE_OUT }));
       words.set(withDelay(WORDS_AT, withTiming(1, { duration: 440, easing: EASE_OUT })));
       glow.set(
-        withDelay(
-          WORDS_AT - 80,
-          withSequence(withTiming(1, { duration: 260, easing: EASE_OUT }), withTiming(0, { duration: 900, easing: EASE_IN_OUT })),
+        withSequence(
+          withTiming(1, { duration: 240, easing: EASE_OUT }),
+          withTiming(0, { duration: 860, easing: EASE_IN_OUT }),
         ),
       );
-      timers.push(setTimeout(() => setOpen(true), OPEN_AT));
-      timers.push(setTimeout(haptic.success, WORDS_AT));
-      timers.push(setTimeout(() => setLetter(true), WORDS_AT));
+      timers.push(setTimeout(() => setShowShatter(false), SHATTER_DONE_AT));
     }
-    timers.push(setTimeout(() => setSealGone(true), reduced ? 240 : OPEN_AT + 300));
     return () => timers.forEach(clearTimeout);
-    // Plays once, on the swap that opened it.
+    // Plays once on the swap that broke the seal.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const closedLock = useAnimatedStyle(() => ({
-    opacity: 1 - unlock.get(),
-    transform: [{ rotate: `${unlock.get() * 14}deg` }, { scale: 1 - unlock.get() * 0.15 }],
-  }));
-  const openLock = useAnimatedStyle(() => ({
-    opacity: Math.min(1, unlock.get() * 1.6),
-    transform: [{ rotate: `${(1 - unlock.get()) * -18}deg` }, { scale: 0.85 + unlock.get() * 0.15 }],
-  }));
-  const seal = useAnimatedStyle(() => ({
-    opacity: 1 - sealOut.get(),
-    transform: [{ translateY: reduced ? 0 : -8 * sealOut.get() }, { scale: 1 - 0.03 * sealOut.get() }],
-  }));
   const body = useAnimatedStyle(() => ({
-    opacity: words.get(),
-    transform: [{ translateY: reduced ? 0 : 10 * (1 - words.get()) }, { scale: reduced ? 1 : 0.98 + 0.02 * words.get() }],
+    opacity: words.value,
+    transform: [
+      { translateY: reduced ? 0 : 14 * (1 - words.value) },
+      { scale: reduced ? 1 : 0.975 + 0.025 * words.value },
+    ],
   }));
-  const edge = useAnimatedStyle(() => ({ opacity: glow.get() }));
+
+  const flapStyle = useAnimatedStyle(() => ({
+    opacity: 1 - flap.value,
+    transform: [
+      { perspective: 640 },
+      { translateY: -flap.value * 24 },
+      { rotateX: `${flap.value * 145}deg` },
+    ],
+  }));
+
+  const edge = useAnimatedStyle(() => ({ opacity: glow.value }));
 
   return (
     <View>
       {reveal && !reduced ? (
-        <Animated.View pointerEvents="none" style={[styles.glow, { borderColor: `${accentColor}77` }, edge]} />
+        <Animated.View pointerEvents="none" style={[styles.glow, { borderColor: `${pal.accent}88` }, edge]} />
       ) : null}
 
-      {open ? (
-        <Animated.View style={body}>
-          {header ? <View style={styles.headerWrap}>{header}</View> : null}
-          {/* The letter's room is kept from the start, so the card changes size only once. */}
-          {reveal ? <View style={styles.letter}>{letter ? <Anim name="loveLetter" size={112} loop={false} /> : null}</View> : null}
-          <Txt style={styles.noteText}>{formatLetter(text)}</Txt>
-        </Animated.View>
-      ) : null}
+      <Animated.View style={body}>
+        {header ? <View style={styles.headerWrap}>{header}</View> : null}
+        <Txt style={styles.noteText}>{formatLetter(text)}</Txt>
+      </Animated.View>
 
-      {sealGone ? null : (
-        // In the flow until the card opens (it holds the sealed size), then laid over the top as it lifts away.
-        <Animated.View pointerEvents="none" style={[open ? styles.sealLayer : null, seal]}>
-          <View style={styles.row}>
-            <View style={[styles.lock, { borderColor: `${accentColor}52` }]}>
-              <Animated.View style={[styles.lockIcon, closedLock]}>
-                <Ionicons name="lock-closed" size={17} color={accentColor} />
-              </Animated.View>
-              <Animated.View style={[styles.lockIcon, openLock]}>
-                <Ionicons name="lock-open" size={17} color={accentColor} />
-              </Animated.View>
-            </View>
-            <View style={styles.flex}>
-              <Txt style={styles.sealed}>{sealedTitle}</Txt>
-              <Txt style={styles.muted}>{sealedHint}</Txt>
-            </View>
+      {showShatter ? (
+        <View pointerEvents="none" style={styles.shatterLayer}>
+          {/* 3D folding envelope V-flap lifting out of the way */}
+          <Animated.View style={[styles.flapFold, flapStyle]}>
+            <Svg width="100%" height="100%" viewBox="0 0 360 92" preserveAspectRatio="none">
+              <Path d="M0,0 L360,0 L180,82 Z" fill={inkWaxSeal.flapTop} />
+              <Path d="M0,0 L180,82 L360,0" fill="none" stroke={pal.accent} strokeOpacity={0.5} strokeWidth={1.4} />
+            </Svg>
+          </Animated.View>
+
+          {/* Flying broken wax halves, crumbs & luminous sparks */}
+          <View style={styles.shardOrigin}>
+            {WAX_SHARDS.map((spec, idx) => (
+              <ShardPiece key={idx} spec={spec} progress={burst} palette={pal} />
+            ))}
           </View>
-        </Animated.View>
-      )}
+        </View>
+      ) : null}
     </View>
+  );
+}
+
+function ShardPiece({
+  spec,
+  progress,
+  palette,
+}: {
+  spec: WaxShardSpec;
+  progress: SharedValue<number>;
+  palette: WaxPalette;
+}) {
+  const animStyle = useAnimatedStyle(() => {
+    const t = progress.value;
+    // Slight parabolic gravity arc (`t * t * 34`) for natural physical weight
+    const gravity = spec.kind === 'spark' ? 14 : 36;
+    const x = spec.dx * t;
+    const y = spec.dy * t + t * t * gravity;
+    const rot = spec.rotDeg * t;
+    const fadeStart = spec.kind === 'spark' ? 0.35 : 0.45;
+    const opacity = t < fadeStart ? 1 : Math.max(0, 1 - (t - fadeStart) / (1 - fadeStart));
+    const scale = spec.kind === 'spark' ? 1 - t * 0.45 : 1 - t * 0.12;
+    return {
+      opacity,
+      transform: [{ translateX: x }, { translateY: y }, { rotate: `${rot}deg` }, { scale }],
+    };
+  });
+
+  if (spec.kind === 'halfLeft' || spec.kind === 'halfRight') {
+    const isLeft = spec.kind === 'halfLeft';
+    return (
+      <Animated.View style={[styles.shardAbs, animStyle]}>
+        <Svg width={spec.size} height={spec.size * 1.45} viewBox="0 0 32 46">
+          <Path
+            d={
+              isLeft
+                ? 'M22,2 A21,21 0 0,0 22,44 L26,31 L18,22 L27,13 Z'
+                : 'M10,2 A21,21 0 0,1 10,44 L6,31 L14,22 L5,13 Z'
+            }
+            fill={palette.mid}
+            stroke={palette.rim}
+            strokeWidth={1.6}
+          />
+        </Svg>
+      </Animated.View>
+    );
+  }
+
+  if (spec.kind === 'chunk') {
+    return (
+      <Animated.View
+        style={[
+          styles.shardAbs,
+          {
+            width: spec.size,
+            height: spec.size * 0.85,
+            borderRadius: spec.size * 0.3,
+            backgroundColor: palette.mid,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: palette.rim,
+          },
+          animStyle,
+        ]}
+      />
+    );
+  }
+
+  return (
+    <Animated.View
+      style={[
+        styles.shardAbs,
+        {
+          width: spec.size,
+          height: spec.size,
+          borderRadius: spec.size / 2,
+          backgroundColor: palette.spark,
+        },
+        animStyle,
+      ]}
+    />
   );
 }
 
@@ -184,18 +257,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  lockIcon: { position: 'absolute' },
   sealed: { ...inkFace('subStrong'), color: colors.text },
   muted: { ...inkFace('footnote'), color: ink.text2 },
   headerWrap: { marginBottom: 12 },
-  sealLayer: { position: 'absolute', top: 0, left: 0, right: 0 },
-  letter: { width: 112, height: 112, alignSelf: 'center', marginTop: -space.sm },
   noteText: {
     fontFamily: fonts.serif,
     fontSize: 17.5,
     lineHeight: 26.5,
     letterSpacing: -0.2,
-    color: 'rgba(255,255,255,0.94)',
+    color: ink.text,
   },
   glow: {
     position: 'absolute',
@@ -206,5 +276,32 @@ const styles = StyleSheet.create({
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     borderWidth: 1.5,
+  },
+  shatterLayer: {
+    position: 'absolute',
+    top: -18,
+    left: -18,
+    right: -18,
+    bottom: -18,
+    overflow: 'visible',
+  },
+  flapFold: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 92,
+  },
+  shardOrigin: {
+    position: 'absolute',
+    top: 56,
+    left: '50%',
+    width: 0,
+    height: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shardAbs: {
+    position: 'absolute',
   },
 });

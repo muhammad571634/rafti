@@ -852,7 +852,12 @@
     "yourNote": "Catatanmu",
     "swap": "Tukar catatan",
     "depthKicker": "{{n}} pesan bersama",
-    "depthPrompt": "Yang tak pernah kukatakan padamu"
+    "depthPrompt": "Yang tak pernah kukatakan padamu",
+    "holdSeal": "Tahan segel untuk membuka",
+    "sealReady": "Siap dibuka",
+    "streakDay": "Hari {{count}}",
+    "streakPearl": "Hari {{count}} · Mutiara",
+    "streakGold": "Hari {{count}} · Emas"
   },
   "store": {
     "title": "Toko",

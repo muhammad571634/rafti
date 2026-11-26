@@ -852,7 +852,12 @@
     "yourNote": "โน้ตของคุณ",
     "swap": "แลกเปลี่ยนโน้ต",
     "depthKicker": "{{n}} ข้อความที่มีด้วยกัน",
-    "depthPrompt": "สิ่งที่ฉันไม่เคยบอกเธอ"
+    "depthPrompt": "สิ่งที่ฉันไม่เคยบอกเธอ",
+    "holdSeal": "กดค้างที่ตราประทับเพื่อเปิด",
+    "sealReady": "พร้อมแกะผนึก",
+    "streakDay": "วันที่ {{count}}",
+    "streakPearl": "วันที่ {{count}} · ไข่มุก",
+    "streakGold": "วันที่ {{count}} · ทองคำ"
   },
   "store": {
     "title": "ร้านค้า",

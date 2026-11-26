@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { type ComponentRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
@@ -10,29 +10,28 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { InkFriendPill, InkGlassPill, InkNavBar, InkText, PillButton } from '@/components/ink';
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { OpenedNote } from '@/components/secret-note/opened-note';
+import { WaxSealEnvelope } from '@/components/secret-note/wax-seal';
 import { Anim, CharacterAvatar, EmptyState, PressableScale, Screen, ShellIcon, useScrolledPast } from '@/components/ui';
 import { localSecretNote } from '@/i18n/content';
 import { shortName } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import { secretNoteDisplayDay, waxPaletteFor, waxSealTier } from '@/lib/wax-seal';
 import { shellCosts } from '@/mock';
 import { displayName, useAppStore } from '@/store/use-app-store';
 import { friendAccent, space } from '@/theme';
-import { ink, inkFace, inkGutter, inkRadius } from '@/theme/ink';
+import { ink, inkFace, inkGutter, inkRadius, inkWaxSeal } from '@/theme/ink';
 
 const MAX_LENGTH = 400;
 /** Cards glide to their new height when a note opens or arrives (on-screen move: ease-in-out). */
 const GLIDE = LinearTransition.duration(320).easing(Easing.bezier(0.77, 0, 0.175, 1));
-const SWAPPED_MINT = '#5FE0C4';
-const SWAPPED_FILL = 'rgba(95,224,196,0.12)';
-const SWAPPED_RIM = 'rgba(95,224,196,0.30)';
-const DOCK_BG = 'rgba(9,9,13,0.94)';
 
 /**
- * Secret Note (approved Ink Night+ prototype): a daily question and two sealed notes. The friend
- * identity pill stays pinned in the sticky Apple HIG top bar before and after swap; their card
- * shifts from Thinking / Sealed (dark-glass accent lock + envelope crease) into an editorial serif
- * letter with their avatar and name intact; Your note wears a hairline edge that lights in their
- * accent on focus.
+ * Secret Note (Ink Night+ with approved "1. Bosib sindirish" Hold-to-Crack Wax Seal, 2026-11-27):
+ * a daily question and two sealed notes. The friend identity pill stays pinned in the sticky Apple
+ * HIG top bar; their card renders as an obsidian linen envelope with a sculpted 3D wax seal whose
+ * finish evolves with daily return streaks (Friend Wax → Day 3 Pearl → Day 7 / Keepsake Gold).
+ * Pressing and holding the seal (or tapping Swap notes) cracks the wax with tactile creaks,
+ * shatters the halves, folds open the 3D flap, and reveals their editorial serif letter.
  */
 export default function SecretNoteScreen() {
   const insets = useSafeAreaInsets();
@@ -46,6 +45,7 @@ export default function SecretNoteScreen() {
   const character = useAppStore((s) => s.characters.find((c) => c.id === characterId));
   const relationship = useAppStore((s) => (characterId ? s.relationships[characterId] : undefined));
   const notes = useAppStore((s) => s.notes);
+  const shells = useAppStore((s) => s.wallet.shells);
   const ensureSecretNote = useAppStore((s) => s.ensureSecretNote);
   const newSecretNote = useAppStore((s) => s.newSecretNote);
   const writeNote = useAppStore((s) => s.writeNote);
@@ -55,6 +55,11 @@ export default function SecretNoteScreen() {
   const [paywall, setPaywall] = useState<number | null>(null);
   const [justOpened, setJustOpened] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [nudgeNote, setNudgeNote] = useState(false);
+  const [autoCrackSeq, setAutoCrackSeq] = useState(0);
+
+  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const nudgeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const rawNote = useMemo(() => notes.find((n) => n.characterId === characterId), [notes, characterId]);
   const note = rawNote ? localSecretNote(rawNote) : undefined;
@@ -62,6 +67,15 @@ export default function SecretNoteScreen() {
   useEffect(() => {
     if (characterId) ensureSecretNote(characterId);
   }, [characterId, ensureSecretNote]);
+
+  useEffect(() => () => clearTimeout(nudgeTimer.current), []);
+
+  const focusNoteWithNudge = useCallback(() => {
+    setNudgeNote(true);
+    clearTimeout(nudgeTimer.current);
+    nudgeTimer.current = setTimeout(() => setNudgeNote(false), 900);
+    inputRef.current?.focus();
+  }, []);
 
   if (!character || !note) {
     return (
@@ -88,22 +102,57 @@ export default function SecretNoteScreen() {
   const canExchange = note.status === 'ready' && note.myNote.trim().length > 0;
   const fullName = displayName(character, relationship);
   const short = shortName(fullName);
+  const initial = (short.trim().charAt(0) || '?').toUpperCase();
   const accent = friendAccent(character.id);
 
-  const exchange = () => {
+  const displayDay = secretNoteDisplayDay(notes, exchanged);
+  const tier = waxSealTier(displayDay, !!note.depth);
+  const sealPalette = waxPaletteFor(tier, accent.strong);
+  const streakLabel =
+    tier === 'gold' && displayDay >= 7
+      ? t('secretNote.streakGold', { count: displayDay })
+      : tier === 'pearl'
+        ? t('secretNote.streakPearl', { count: displayDay })
+        : displayDay >= 2
+          ? t('secretNote.streakDay', { count: displayDay })
+          : undefined;
+
+  const canAfford = !!note.depth || shells >= shellCosts.secretNote;
+
+  const checkAffordable = () => {
+    if (!canAfford) {
+      setPaywall(shellCosts.secretNote);
+      return false;
+    }
+    return true;
+  };
+
+  const commitExchange = () => {
     const result = exchangeNote(note.id);
-    if (result === 'noShells') setPaywall(shellCosts.secretNote);
+    if (result === 'noShells') {
+      setPaywall(shellCosts.secretNote);
+      return false;
+    }
     if (result === 'ok') {
       haptic.success();
       setJustOpened(true);
+      return true;
     }
+    return false;
+  };
+
+  const requestSwapFromButton = () => {
+    if (!canExchange) return;
+    if (!checkAffordable()) return;
+    // Play the full hold-crack fracture sequence before committing exchange.
+    setAutoCrackSeq((s) => s + 1);
   };
 
   return (
     <Screen background={ink.ground}>
       <LinearGradient
         pointerEvents="none"
-        colors={[`${accent.strong}2A`, `${accent.strong}00`]}
+        colors={[`${sealPalette.accent}2A`, `${sealPalette.accent}00`]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={styles.ambient}
@@ -149,15 +198,15 @@ export default function SecretNoteScreen() {
             {note.prompt}
           </InkText>
 
-          {/* Their note: friend-accent diagonal wash, sealed/composing state or revealed serif letter. */}
+          {/* Their note: friend/tier diagonal wash, Hold-to-Crack Wax Seal envelope or revealed serif letter. */}
           <Animated.View
             layout={GLIDE}
             style={[
               styles.card,
-              { borderColor: exchanged ? `${accent.strong}44` : 'rgba(255,255,255,0.10)' },
+              { borderColor: exchanged ? `${sealPalette.accent}48` : ink.edge },
             ]}>
             <LinearGradient
-              colors={[`${accent.strong}${exchanged ? '2E' : '38'}`, `${accent.strong}00`]}
+              colors={[`${sealPalette.accent}${exchanged ? '2A' : '32'}`, `${sealPalette.accent}00`]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0.8, y: 0.85 }}
               style={StyleSheet.absoluteFill}
@@ -167,10 +216,9 @@ export default function SecretNoteScreen() {
                 <OpenedNote
                   key={note.id}
                   text={note.theirNote ?? ''}
-                  sealedTitle={t('secretNote.sealedTitle', { name: short })}
-                  sealedHint={t('secretNote.sealedHint')}
                   reveal={justOpened}
                   accentColor={accent.strong}
+                  waxTier={tier}
                   header={
                     <View style={styles.openedHeader}>
                       <View style={styles.whoRow}>
@@ -184,9 +232,9 @@ export default function SecretNoteScreen() {
                       <View
                         style={[
                           styles.unlockBadge,
-                          { backgroundColor: `${accent.strong}24`, borderColor: `${accent.strong}4A` },
+                          { backgroundColor: `${sealPalette.accent}24`, borderColor: `${sealPalette.accent}4A` },
                         ]}>
-                        <Ionicons name="lock-open" size={13} color={accent.strong} />
+                        <Ionicons name="lock-open" size={13} color={sealPalette.rim} />
                       </View>
                     </View>
                   }
@@ -213,7 +261,7 @@ export default function SecretNoteScreen() {
                     <InkText variant="subStrong" color={ink.text} lines={1}>
                       {t('secretNote.theirNote', { name: short })}
                     </InkText>
-                    <InkText variant="quote" color="rgba(255,255,255,0.70)" lines={1} style={styles.thinkingLine}>
+                    <InkText variant="quote" color={ink.photoLine} lines={1} style={styles.thinkingLine}>
                       {t('secretNote.thinking')}
                     </InkText>
                   </View>
@@ -226,42 +274,24 @@ export default function SecretNoteScreen() {
                 </InkText>
               </Animated.View>
             ) : (
-              <Animated.View entering={FadeIn.duration(220)} style={styles.cardPad}>
-                <View style={styles.cardTop}>
-                  <View style={[styles.avatarRingLg, { borderColor: accent.strong }]}>
-                    <CharacterAvatar character={character} size={38} />
-                  </View>
-                  <View style={styles.flex}>
-                    <InkText variant="subStrong" color={ink.text} lines={1}>
-                      {t('secretNote.sealedTitle', { name: short })}
-                    </InkText>
-                    <InkText variant="footnote" color={ink.text2} lines={2} style={styles.sealedHint}>
-                      {t('secretNote.sealedHint')}
-                    </InkText>
-                  </View>
-                  <View style={[styles.sealLock, { borderColor: `${accent.strong}52` }]}>
-                    <Ionicons name="lock-closed" size={16} color={accent.strong} />
-                  </View>
-                </View>
-
-                {/* Subtle sealed envelope crease divider */}
-                <View style={styles.creaseRow}>
-                  <LinearGradient
-                    colors={[`${accent.strong}55`, 'rgba(255,255,255,0.06)']}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={styles.creaseLine}
-                  />
-                  <InkText variant="caption" color={accent.strong} style={styles.creaseText}>
-                    {t('home.widget.sealed')}
-                  </InkText>
-                  <LinearGradient
-                    colors={['rgba(255,255,255,0.06)', `${accent.strong}55`]}
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
-                    style={styles.creaseLine}
-                  />
-                </View>
+              <Animated.View entering={FadeIn.duration(220)}>
+                <WaxSealEnvelope
+                  key={note.id}
+                  character={character}
+                  initial={initial}
+                  accentColor={accent.strong}
+                  tier={tier}
+                  sealedTitle={t('secretNote.sealedTitle', { name: short })}
+                  hintText={canExchange ? t('secretNote.holdSeal') : t('secretNote.sealedHint')}
+                  streakLabel={streakLabel}
+                  creaseLabel={canExchange ? t('secretNote.sealReady') : t('home.widget.sealed')}
+                  accessibilityLabel={t('secretNote.swap')}
+                  canBreak={canExchange}
+                  autoCrackSeq={autoCrackSeq}
+                  onBeforeStart={checkAffordable}
+                  onBreak={commitExchange}
+                  onNeedNote={focusNoteWithNudge}
+                />
               </Animated.View>
             )}
           </Animated.View>
@@ -279,9 +309,13 @@ export default function SecretNoteScreen() {
             layout={GLIDE}
             style={[
               styles.field,
-              { borderColor: focused && !exchanged ? `${accent.strong}77` : 'rgba(255,255,255,0.09)' },
+              {
+                borderColor:
+                  (focused || nudgeNote) && !exchanged ? `${sealPalette.accent}88` : ink.edge,
+              },
             ]}>
             <TextInput
+              ref={inputRef}
               value={note.myNote}
               onChangeText={(text) => writeNote(note.id, text.slice(0, MAX_LENGTH))}
               onFocus={() => setFocused(true)}
@@ -299,12 +333,12 @@ export default function SecretNoteScreen() {
 
           {exchanged ? (
             <Animated.View
-              entering={justOpened ? FadeInDown.delay(560).duration(320).easing(Easing.bezier(0.23, 1, 0.32, 1)) : undefined}
+              entering={justOpened ? FadeInDown.delay(420).duration(320).easing(Easing.bezier(0.23, 1, 0.32, 1)) : undefined}
               style={styles.doneWrap}>
               <View style={styles.donePill}>
-                <Ionicons name="checkmark-circle" size={16} color={SWAPPED_MINT} />
-                <InkText variant="footnoteStrong" color={SWAPPED_MINT}>
-                  {t('secretNote.exchanged')}
+                <Ionicons name="checkmark-circle" size={16} color={inkWaxSeal.swappedMint} />
+                <InkText variant="footnoteStrong" color={inkWaxSeal.swappedMint}>
+                  {streakLabel ? `${t('secretNote.exchanged')} · ${streakLabel}` : t('secretNote.exchanged')}
                 </InkText>
               </View>
             </Animated.View>
@@ -313,7 +347,7 @@ export default function SecretNoteScreen() {
 
         {exchanged ? null : (
           <View style={[styles.foot, { paddingBottom: insets.bottom + space.md }]}>
-            <PillButton label={t('secretNote.swap')} onPress={exchange} disabled={!canExchange} style={styles.swap} />
+            <PillButton label={t('secretNote.swap')} onPress={requestSwapFromButton} disabled={!canExchange} style={styles.swap} />
             {/* A keepsake (`depth`) is the friend's gift: no price. */}
             {note.depth ? (
               <View style={styles.price}>
@@ -376,15 +410,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  avatarRingLg: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1.8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
   unlockBadge: {
     width: 28,
     height: 28,
@@ -398,37 +423,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: inkRadius.pill,
-    backgroundColor: 'rgba(9,9,13,0.45)',
+    backgroundColor: ink.photoBadge,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.10)',
+    borderColor: ink.edge,
   },
-  sealedHint: { marginTop: 1 },
-  sealLock: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(9,9,13,0.48)',
-    borderWidth: StyleSheet.hairlineWidth,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  creaseRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  creaseLine: { flex: 1, height: StyleSheet.hairlineWidth },
-  creaseText: { fontSize: 11, letterSpacing: 0.5, textTransform: 'uppercase' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   labelRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 22, marginHorizontal: inkGutter + 4 },
   count: { fontVariant: ['tabular-nums'] },
   field: {
     marginTop: 8,
     marginHorizontal: inkGutter,
-    minHeight: 172,
+    minHeight: 152,
     padding: 18,
     borderRadius: inkRadius.card,
     borderCurve: 'continuous',
     backgroundColor: ink.card,
     borderWidth: StyleSheet.hairlineWidth,
   },
-  input: { minHeight: 136, padding: 0, ...inkFace('body'), fontSize: 16, lineHeight: 23, color: ink.text },
+  input: { minHeight: 116, padding: 0, ...inkFace('body'), fontSize: 16, lineHeight: 23, color: ink.text },
   doneWrap: { alignItems: 'center', marginTop: 18 },
   donePill: {
     flexDirection: 'row',
@@ -437,16 +449,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: inkRadius.pill,
-    backgroundColor: SWAPPED_FILL,
+    backgroundColor: inkWaxSeal.swappedFill,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: SWAPPED_RIM,
+    borderColor: inkWaxSeal.swappedRim,
   },
   foot: {
     paddingHorizontal: inkGutter,
     paddingTop: 12,
     alignItems: 'center',
     gap: 7,
-    backgroundColor: DOCK_BG,
+    backgroundColor: ink.dock,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: ink.edge,
   },
