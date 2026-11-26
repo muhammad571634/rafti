@@ -374,7 +374,6 @@ export default function UsScreen() {
           canChat={Boolean(conversation)}
           onOpenChat={() => conversation && router.push(`/chat/${conversation.id}`)}
           onOpenChapters={() => setChaptersOpen(true)}
-          onCall={() => router.push(`/call/${character.id}`)}
           onShare={() => setSharing(true)}
         />
 

@@ -26,6 +26,21 @@ export const haptic = {
   success: () => play(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)),
   /** A task failed, such as a wrong invite code (Notification, error). */
   error: () => play(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)),
+  /**
+   * Warm double heartbeat ("lub-dub") for emotional milestones (level-ups, bond pulses).
+   * Returns a cleanup function that cancels the second beat if the screen unmounts mid-pulse.
+   */
+  heartbeat: (): (() => void) => {
+    if (Platform.OS === 'web' || useAppStore.getState().settings.haptics === false) return () => {};
+    const nightQuiet = hourVolume(1) < 1;
+    const lub = nightQuiet ? Haptics.ImpactFeedbackStyle.Light : Haptics.ImpactFeedbackStyle.Medium;
+    const dub = nightQuiet ? Haptics.ImpactFeedbackStyle.Medium : Haptics.ImpactFeedbackStyle.Heavy;
+    play(() => Haptics.impactAsync(lub));
+    const timer = setTimeout(() => {
+      play(() => Haptics.impactAsync(dub));
+    }, 210);
+    return () => clearTimeout(timer);
+  },
   /** A switch flipped. Android only: iOS's UISwitch plays its own. */
   toggle: (on: boolean) => {
     if (Platform.OS !== 'android') return;

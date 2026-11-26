@@ -713,6 +713,7 @@ export default function ChatRoomScreen() {
       ) : (
         <LevelUpModal
           event={levelUp?.characterId === character.id ? levelUp : null}
+          character={character}
           characterName={name}
           onClose={dismissLevelUp}
         />

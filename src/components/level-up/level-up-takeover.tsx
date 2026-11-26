@@ -25,6 +25,7 @@ import { characterImage } from '@/components/ui/avatar';
 import { PressableScale } from '@/components/ui/pressable-scale';
 import { phrase } from '@/i18n';
 import { haptic } from '@/lib/haptics';
+import { createHeartbeatSound } from '@/lib/heartbeat-sound';
 import { hourVolume } from '@/lib/night-hour';
 import { tierForLevel } from '@/mock/user';
 import type { LevelUpEvent } from '@/store/use-app-store';
@@ -32,7 +33,7 @@ import { fonts, night, palette } from '@/theme';
 import { inkPeachGlass } from '@/theme/ink';
 import type { Character } from '@/types';
 
-import { easeOut, seg, spring } from './motion';
+import { easeOut, HEARTBEAT_GAP_SEC, heartbeatScale, seg, spring } from './motion';
 
 /*
  "Closer", the Ink way (owner approved the prototype docs/prototypes/closer-ink.html, 2026-11-13):
@@ -132,15 +133,25 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
     if (!reduced) {
       breath.set(withDelay((CLOSE + ECHO_FOR) * 1000, withRepeat(withTiming(1, { duration: BREATH_MS / 2, easing: Easing.inOut(Easing.sin) }), -1, true)));
     }
-    // The chime, timed so its top note lands on the close; it follows the phone's silent switch.
+    // The chime and soft double heartbeat land together when the ring closes; both follow silent mode.
     const chime = createAudioPlayer(require('@/assets/sounds/level-up.wav'));
+    const heartbeat = createHeartbeatSound();
     chime.volume = hourVolume(0.8);
-    const timers = [setTimeout(() => chime.play(), SOUND_AT * 1000), setTimeout(() => haptic.success(), CLOSE * 1000)];
+    let cancelHb: (() => void) | undefined;
+    const timers = [
+      setTimeout(() => chime.play(), SOUND_AT * 1000),
+      setTimeout(() => heartbeat.play(), Math.max(0, (CLOSE - 0.03) * 1000)),
+      setTimeout(() => {
+        cancelHb = haptic.heartbeat();
+      }, CLOSE * 1000),
+    ];
     return () => {
       timers.forEach(clearTimeout);
+      cancelHb?.();
       cancelAnimation(clock);
       cancelAnimation(breath);
       chime.remove();
+      heartbeat.dispose();
     };
     // Plays once per moment.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,14 +183,24 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
     };
   });
   const faceStyle = useAnimatedStyle(() => {
-    const p = reduced ? seg(clock.get(), 0, REDUCED_FADE) : easeOut(seg(clock.get(), FACE_AT, FACE_AT + FACE_FOR));
-    return { opacity: p, transform: [{ scale: reduced ? 1 : 0.9 + 0.1 * p }] };
+    const t = clock.get();
+    const p = reduced ? seg(t, 0, REDUCED_FADE) : easeOut(seg(t, FACE_AT, FACE_AT + FACE_FOR));
+    const hb = reduced ? 1 : heartbeatScale(t - CLOSE);
+    return { opacity: p, transform: [{ scale: (reduced ? 1 : 0.9 + 0.1 * p) * hb }] };
   });
   const echoStyle = useAnimatedStyle(() => {
     const e = seg(clock.get(), CLOSE, CLOSE + ECHO_FOR);
-    return { opacity: reduced || e <= 0 || e >= 1 ? 0 : (1 - e) * 0.7, transform: [{ scale: 1 + 0.22 * easeOut(e) }] };
+    return { opacity: reduced || e <= 0 || e >= 1 ? 0 : (1 - e) * 0.72, transform: [{ scale: 1 + 0.24 * easeOut(e) }] };
   });
-  const breatheStyle = useAnimatedStyle(() => ({ transform: [{ scale: 1 + 0.022 * breath.get() }] }));
+  const echo2Style = useAnimatedStyle(() => {
+    const start = CLOSE + HEARTBEAT_GAP_SEC;
+    const e = seg(clock.get(), start, start + ECHO_FOR * 1.15);
+    return { opacity: reduced || e <= 0 || e >= 1 ? 0 : (1 - e) * 0.56, transform: [{ scale: 1 + 0.34 * easeOut(e) }] };
+  });
+  const breatheStyle = useAnimatedStyle(() => {
+    const hb = reduced ? 1 : heartbeatScale(clock.get() - CLOSE);
+    return { transform: [{ scale: (1 + 0.022 * breath.get()) * hb }] };
+  });
   const glowStyle = useAnimatedStyle(() => {
     const t = clock.get();
     const on = reduced ? 0.6 * seg(t, 0, REDUCED_FADE) : 0.35 * seg(t, 0.1, 0.8) + 0.45 * seg(t, CLOSE, CLOSE + 0.5);
@@ -250,6 +271,7 @@ function Moment({ event, character, characterName, onClose }: LevelUpTakeoverPro
                   </Canvas>
                 </Animated.View>
                 <Animated.View pointerEvents="none" style={[styles.echo, { borderColor: accentLight }, echoStyle]} />
+                <Animated.View pointerEvents="none" style={[styles.echo, { borderColor: accent }, echo2Style]} />
                 <Animated.View style={[styles.face, faceStyle]}>
                   {/* No picture (or it fails to load): their initial in white on a dark disc; only the ring wears the peach (owner). */}
                   <ExpoLinearGradient colors={['#2C2C2E', '#1C1C1E']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.mono]}>

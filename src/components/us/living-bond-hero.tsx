@@ -1,10 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
@@ -39,15 +48,14 @@ export interface LivingBondHeroProps {
   canChat: boolean;
   onOpenChat: () => void;
   onOpenChapters?: () => void;
-  onCall?: () => void;
   onShare: () => void;
 }
 
 /**
  * The Living Bond Hero on Us (Us v3): the friend stands clear on the trailing right side with a
  * directional obsidian scrim and a quiet wash of their own accent, tappable level/chapters pill on
- * top, emotional serif days headline on the left, a hairline closeness bar, and clear dark-glass
- * Message + Call + Share actions below.
+ * top, emotional serif days headline on the left, a living breathing closeness bar, and clear
+ * dark-glass Message + Share actions below.
  */
 export function LivingBondHero({
   character,
@@ -58,7 +66,6 @@ export function LivingBondHero({
   canChat,
   onOpenChat,
   onOpenChapters,
-  onCall,
   onShare,
 }: LivingBondHeroProps) {
   const { t, i18n } = useTranslation();
@@ -74,17 +81,46 @@ export function LivingBondHero({
 
   const clamped = Math.max(0, Math.min(1, progress));
   const still = useReducedMotion();
+  const focused = useIsFocused();
   const [trackW, setTrackW] = useState(0);
   const fill = useSharedValue(clamped);
+  const flow = useSharedValue(0);
   useEffect(() => {
-    fill.value = still ? clamped : withTiming(clamped, { duration: 280 });
+    fill.value = still ? clamped : withTiming(clamped, { duration: 360, easing: Easing.out(Easing.cubic) });
   }, [clamped, still, fill]);
+  // Finite 2-pass living light sweep on tab arrival, friend switch, or closeness gain:
+  // feels alive every time you look, while keeping the idle Us tab at 0 GPU frames (docs/performance.md).
+  useEffect(() => {
+    if (still || !focused || trackW <= 0) {
+      cancelAnimation(flow);
+      flow.value = 0;
+      return;
+    }
+    flow.value = 0;
+    flow.value = withRepeat(withTiming(1, { duration: 1900, easing: Easing.inOut(Easing.sin) }), 2, false);
+    return () => cancelAnimation(flow);
+  }, [still, focused, trackW, character.id, clamped, flow]);
   const fillStyle = useAnimatedStyle(
     () => ({
       transform: [{ translateX: -(1 - Math.max(0, Math.min(1, fill.value))) * trackW }],
     }),
     [trackW],
   );
+  const shimmerStyle = useAnimatedStyle(() => {
+    const span = Math.max(1, trackW);
+    const envelope = Math.sin(flow.value * Math.PI);
+    return {
+      opacity: still ? 0 : envelope * 0.78,
+      transform: [{ translateX: (flow.value * 1.6 - 0.5) * span }],
+    };
+  }, [trackW, still]);
+  const tipStyle = useAnimatedStyle(() => {
+    const pulse = Math.sin(flow.value * Math.PI);
+    return {
+      opacity: still ? 0.85 : 0.78 + 0.22 * pulse,
+      transform: [{ scale: still ? 1 : 0.95 + 0.2 * pulse }],
+    };
+  }, [still]);
 
   const tall = PORTRAITS[character.id];
   const wide = HEROES[character.id];
@@ -210,7 +246,20 @@ export function LivingBondHero({
 
               <View style={styles.track} onLayout={(e) => setTrackW(e.nativeEvent.layout.width)}>
                 {trackW > 0 ? (
-                  <Animated.View style={[styles.fill, { width: trackW, backgroundColor: accent.strong }, fillStyle]} />
+                  <Animated.View style={[styles.fill, { width: trackW, backgroundColor: accent.strong }, fillStyle]}>
+                    {!still ? (
+                      <Animated.View pointerEvents="none" style={[styles.shimmer, { width: Math.max(48, trackW * 0.42) }, shimmerStyle]}>
+                        <LinearGradient
+                          colors={[`${accent.strong}00`, ink.photoGlassRim, ink.text, ink.photoGlassRim, `${accent.strong}00`]}
+                          locations={[0, 0.28, 0.5, 0.72, 1]}
+                          start={{ x: 0, y: 0.5 }}
+                          end={{ x: 1, y: 0.5 }}
+                          style={StyleSheet.absoluteFill}
+                        />
+                      </Animated.View>
+                    ) : null}
+                    {clamped > 0.04 ? <Animated.View pointerEvents="none" style={[styles.fillTip, tipStyle]} /> : null}
+                  </Animated.View>
                 ) : null}
               </View>
 
@@ -230,17 +279,6 @@ export function LivingBondHero({
             disabled={!canChat}
             onPress={onOpenChat}
           />
-          {onCall ? (
-            <PhotoGlassPill
-              haptic
-              ios="phone.fill"
-              icon="call-outline"
-              disabled={!character.voiceReady}
-              accessibilityLabel={t('characterProfile.call')}
-              onPress={onCall}
-              style={styles.callPill}
-            />
-          ) : null}
           <PhotoGlassPill
             haptic
             ios="square.and.arrow.up"
@@ -328,7 +366,7 @@ const styles = StyleSheet.create({
   },
   withLine: { marginTop: 1 },
   track: {
-    height: 6,
+    height: 7,
     borderRadius: inkRadius.pill,
     backgroundColor: ink.hairlineFill,
     overflow: 'hidden',
@@ -337,6 +375,22 @@ const styles = StyleSheet.create({
   fill: {
     height: '100%',
     borderRadius: inkRadius.pill,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  shimmer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+  },
+  fillTip: {
+    position: 'absolute',
+    right: 1,
+    width: 5,
+    height: 5,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.text,
   },
   meta: { marginTop: 7 },
   tabular: { fontVariant: ['tabular-nums'] },
@@ -344,10 +398,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-  },
-  callPill: {
-    width: 42,
-    paddingHorizontal: 0,
   },
   reward: { flexDirection: 'row', alignItems: 'center', gap: 3 },
 });
