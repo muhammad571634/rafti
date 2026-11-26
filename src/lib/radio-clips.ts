@@ -35,6 +35,28 @@ export function clipDuration(lines: string[]) {
   return Math.max(1, Math.ceil(lines.reduce((sum, line) => sum + lineSeconds(line), 0)));
 }
 
+/** Start time (in seconds) of each line, matching `lineAt` and `lineSeconds`. */
+export function lineStartSeconds(lines: string[]): number[] {
+  const starts: number[] = [];
+  let acc = 0;
+  for (let i = 0; i < lines.length; i++) {
+    starts.push(acc);
+    acc += lineSeconds(lines[i]);
+  }
+  return starts;
+}
+
+/** Parses a `#RRGGBB` accent hex into normalized `[r, g, b]` floats (`0..1`) for SkSL shaders. */
+export function hexToRgb01(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  if (clean.length !== 6) return [0.922, 0.678, 0.518];
+  const r = parseInt(clean.slice(0, 2), 16);
+  const g = parseInt(clean.slice(2, 4), 16);
+  const b = parseInt(clean.slice(4, 6), 16);
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return [0.922, 0.678, 0.518];
+  return [r / 255, g / 255, b / 255];
+}
+
 /** The line being said `elapsed` seconds in; the last line once the clip is over. */
 export function lineAt(lines: string[], elapsed: number) {
   let end = 0;

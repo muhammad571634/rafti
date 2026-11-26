@@ -15,6 +15,8 @@ interface RadioPlayer {
   toggle: (kind: 'clip' | 'sound', id: string, total: number) => void;
   /** Starts `id` from the top, whatever was playing. */
   play: (kind: 'clip' | 'sound', id: string, total: number) => void;
+  /** Jumps the active item to `seconds` (clamped to `[0, total]`). */
+  seek: (seconds: number) => void;
   stop: () => void;
 }
 
@@ -60,6 +62,13 @@ export const useRadioPlayer = create<RadioPlayer>()((set, get) => ({
     // A finished item plays again from the top.
     set({ playing: true, elapsed: s.elapsed >= s.total ? 0 : s.elapsed });
     startClock();
+  },
+  seek: (seconds) => {
+    const s = get();
+    if (!s.id || s.total <= 0) return;
+    const clamped = Math.max(0, Math.min(s.total, seconds));
+    set({ elapsed: clamped });
+    if (s.playing) startClock();
   },
   stop: () => {
     stopClock();

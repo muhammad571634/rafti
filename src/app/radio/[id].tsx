@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -17,10 +17,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { InkIconButton, InkText } from '@/components/ink';
 import { CARD_SHADOW } from '@/components/plans/store-look';
 import { useRadioPlayer } from '@/components/radio/radio-player';
+import { RadioWaveScrubber } from '@/components/radio/radio-wave-scrubber';
 import { useRadioClip } from '@/components/radio/use-clips';
 import { CharacterAvatar, characterImage, DotMatrix, EmptyState, MODULE_GLYPH, PressableScale, Screen } from '@/components/ui';
-import { duration } from '@/lib/format';
-import { lineAt } from '@/lib/radio-clips';
+import { haptic } from '@/lib/haptics';
+import { lineAt, lineStartSeconds } from '@/lib/radio-clips';
+import { sharedScrubberSound } from '@/lib/scrubber-sound';
 import { useAppStore } from '@/store/use-app-store';
 import { bottomRoom, colors, friendAccent, immersive, space, systemColors } from '@/theme';
 import { ink, inkRadius } from '@/theme/ink';
@@ -49,6 +51,7 @@ export default function ClipPlayerScreen() {
   const markHeard = useAppStore((s) => s.markRadioGiftHeard);
   const hasChat = useAppStore((s) => !!clip && s.conversations.some((c) => c.characterId === clip.character.id));
   const [sent, setSent] = useState(false);
+  const [scrubPreview, setScrubPreview] = useState<number | null>(null);
   const toast = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const playable = !!clip && !clip.locked;
@@ -87,6 +90,8 @@ export default function ClipPlayerScreen() {
 
   const back = <InkIconButton icon="chevron-down" size={22} accessibilityLabel={t('common.back')} onPress={() => router.back()} />;
 
+  const lineStarts = useMemo(() => (clip ? lineStartSeconds(clip.lines) : []), [clip]);
+
   if (!clip || clip.locked) {
     return (
       <Screen background={ink.ground}>
@@ -97,10 +102,18 @@ export default function ClipPlayerScreen() {
   }
 
   const elapsed = loaded ? player.elapsed : 0;
-  const current = loaded ? lineAt(clip.lines, elapsed) : -1;
+  const shownElapsed = scrubPreview ?? elapsed;
+  const current = loaded || scrubPreview !== null ? lineAt(clip.lines, shownElapsed) : -1;
   const image = characterImage(clip.character);
-  const progress = clip.durationSec ? Math.min(1, elapsed / clip.durationSec) : 0;
   const accent = friendAccent(clip.character.id);
+
+  const jumpToLine = (idx: number) => {
+    const startSec = lineStarts[idx] ?? 0;
+    if (!loaded) player.play('clip', clip.id, clip.durationSec);
+    player.seek(startSec);
+    haptic.selection();
+    sharedScrubberSound().settle();
+  };
 
   const send = () => {
     if (!shareRadioClip(clip.id)) return;
@@ -156,28 +169,42 @@ export default function ClipPlayerScreen() {
         </View>
 
         <View style={styles.words}>
-          {clip.lines.map((line, i) => (
-            <InkText key={i} variant={i === current ? 'bodyStrong' : 'body'} color={i === current ? immersive.label : immersive.secondaryLabel}>
-              {line}
-            </InkText>
-          ))}
+          {clip.lines.map((line, i) => {
+            const active = i === current;
+            return (
+              <Pressable
+                key={i}
+                onPress={() => jumpToLine(i)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                style={[styles.wordRow, active && { backgroundColor: accent.soft }]}>
+                <View style={[styles.wordBar, active && { backgroundColor: accent.strong }]} />
+                <InkText
+                  variant={active ? 'bodyStrong' : 'body'}
+                  color={active ? immersive.label : immersive.secondaryLabel}
+                  style={styles.wordText}>
+                  {line}
+                </InkText>
+              </Pressable>
+            );
+          })}
         </View>
       </ScrollView>
 
       <View style={[styles.controls, { paddingBottom: bottomRoom(insets.bottom, space.lg) + space.sm }]}>
-        <View style={styles.meter}>
-          <View style={styles.track}>
-            <View style={[styles.fill, { backgroundColor: accent.strong, width: `${Math.round(progress * 100)}%` }]} />
-          </View>
-          <View style={styles.times}>
-            <InkText variant="caption" color={immersive.secondaryLabel} style={styles.clock}>
-              {duration(elapsed)}
-            </InkText>
-            <InkText variant="caption" color={immersive.secondaryLabel} style={styles.clock}>
-              {`-${duration(Math.max(0, clip.durationSec - elapsed))}`}
-            </InkText>
-          </View>
-        </View>
+        <RadioWaveScrubber
+          elapsed={elapsed}
+          durationSec={clip.durationSec}
+          playing={playing}
+          accentColor={accent.strong}
+          lines={clip.lines}
+          lineStarts={lineStarts}
+          onSeek={(sec) => {
+            if (!loaded) player.play('clip', clip.id, clip.durationSec);
+            player.seek(sec);
+          }}
+          onScrubPreview={setScrubPreview}
+        />
 
         <View style={styles.buttons}>
           <PressableScale
@@ -246,13 +273,11 @@ const styles = StyleSheet.create({
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 16 },
   },
-  words: { gap: 10, padding: 18, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: immersive.card },
-  controls: { gap: 18, paddingHorizontal: space.xl, paddingTop: space.md },
-  meter: { gap: 6 },
-  track: { height: 5, borderRadius: inkRadius.pill, overflow: 'hidden', backgroundColor: immersive.fill },
-  fill: { height: '100%', borderRadius: 3 },
-  times: { flexDirection: 'row', justifyContent: 'space-between' },
-  clock: { fontVariant: ['tabular-nums'] },
+  words: { gap: 6, padding: 12, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: immersive.card },
+  wordRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 14 },
+  wordBar: { width: 3, height: 18, borderRadius: inkRadius.pill, marginTop: 2 },
+  wordText: { flex: 1 },
+  controls: { gap: 16, paddingHorizontal: space.xl, paddingTop: space.md },
   buttons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   side: { width: 52, height: 52, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
   sideFill: { backgroundColor: immersive.fill },
