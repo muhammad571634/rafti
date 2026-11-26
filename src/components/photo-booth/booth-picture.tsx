@@ -3,13 +3,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image as RNImage, Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { CharacterAvatar, characterImage, SFIcon, Txt } from '@/components/ui';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { useSelfieUri } from '@/lib/booth-selfies';
+import { POLAROID_DEV_DELAY_MS, POLAROID_DEV_MS } from '@/lib/polaroid-motion';
 import { colors, fonts, palette, shadows, warmPaper } from '@/theme';
+import { ink } from '@/theme/ink';
 import type { BoothPhoto, BoothStyle, Character } from '@/types';
 
 import { FrameBackdrop, FrameStickers } from './frame-card';
@@ -280,12 +282,17 @@ function YouImage({ you, size }: { you: You; size: number }) {
   );
 }
 
-/** A white layer that fades out, as a print develops. */
+/** Darkroom chemical emulsion veil that clarifies smoothly from deep mist into crisp print. */
 function Developer() {
-  const fog = useSharedValue(1);
+  const reduced = useReducedMotion();
+  const fog = useSharedValue(reduced ? 0 : 0.94);
   useEffect(() => {
-    fog.value = withTiming(0, { duration: 2400 });
-  }, [fog]);
+    if (reduced) return;
+    fog.value = withDelay(
+      POLAROID_DEV_DELAY_MS,
+      withTiming(0, { duration: POLAROID_DEV_MS, easing: Easing.out(Easing.cubic) }),
+    );
+  }, [fog, reduced]);
   const fade = useAnimatedStyle(() => ({ opacity: fog.value }));
   return <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.fog, fade]} />;
 }
@@ -295,7 +302,7 @@ const pad2 = (n: number) => String(n).padStart(2, '0');
 const styles = StyleSheet.create({
   // Its own stacking context, so the look's blend layers mix only with this photo.
   frame: { overflow: 'hidden', isolation: 'isolate', backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
-  fog: { backgroundColor: palette.white },
+  fog: { backgroundColor: ink.ground },
   duo: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row' },
   pane: { overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   youEmpty: { backgroundColor: palette.gray100, alignItems: 'center', justifyContent: 'center' },

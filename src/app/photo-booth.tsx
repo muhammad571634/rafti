@@ -22,6 +22,7 @@ import {
   Txt,
   useScrolledPast,
 } from '@/components/ui';
+import { PolaroidReveal } from '@/components/ui/polaroid-reveal';
 import { photoQuota } from '@/economy/plans';
 import { useFriendName } from '@/hooks/use-friend-name';
 import { phrase } from '@/i18n';
@@ -234,14 +235,15 @@ export default function PhotoBoothScreen() {
             />
             {fresh && partner ? (
               <>
-                <BoothPicture
-                  key={fresh.id}
-                  photo={fresh}
-                  character={partner}
-                  width={fitWidth(fresh.style, stage)}
-                  develop
-                  style={fresh.style === 'polaroid' ? styles.tilt : undefined}
-                />
+                <PolaroidReveal key={fresh.id} active withSlot>
+                  <BoothPicture
+                    photo={fresh}
+                    character={partner}
+                    width={fitWidth(fresh.style, stage)}
+                    develop
+                    style={fresh.style === 'polaroid' ? styles.tilt : undefined}
+                  />
+                </PolaroidReveal>
                 <SendPill photo={fresh} style={styles.send} />
               </>
             ) : partner ? (

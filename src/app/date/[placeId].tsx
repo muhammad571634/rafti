@@ -8,10 +8,12 @@ import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View, type View
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { JellyHeart } from '@/components/date/jelly-heart';
 import { Polaroid, sceneImage } from '@/components/date/polaroid';
 import { DateShareSheet } from '@/components/date/share-sheet';
 import { artLook, placeLook, TicketBadge } from '@/components/date/ticket';
 import { Anim, Button, CharacterAvatar, InsetGroup, PressableScale, Screen, Sheet, Txt } from '@/components/ui';
+import { PolaroidReveal } from '@/components/ui/polaroid-reveal';
 import { shortName } from '@/lib/format';
 import { localized } from '@/i18n/content';
 import { fill as fillLine } from '@/i18n/voice';
@@ -21,8 +23,6 @@ import { bottomRoom, colors, hitSlop, immersive, moduleFills, nightColors, shado
 import { inkFace, inkRadius } from '@/theme/ink';
 import type { DateRecord } from '@/types';
 
-/** Hearts on the photo and in the reply pill (iOS systemPink, lighter on the photo). */
-const HEART_ON_PHOTO = '#FF6B8A';
 // The round is always dark (`immersive`), so its pinks are the night ones.
 const PINK = '#FF6B8A';
 const PINK_SOFT = '#3A1520';
@@ -121,13 +121,15 @@ export default function DateScreen() {
         <ScrollView contentContainerStyle={[styles.end, { paddingBottom: insets.bottom + space.xl }]}>
           {/* Captured as the picture: a fixed paper ground (the same in dark mode) and room for the tilt. */}
           <View ref={shot} collapsable={false} style={styles.shot}>
-            <Polaroid
-              character={character}
-              caption={t('date.caption', { place: title, name })}
-              date={when}
-              width={Math.min(260, width - space.xxl * 2)}
-              tilt={-2}
-            />
+            <PolaroidReveal active withVeil>
+              <Polaroid
+                character={character}
+                caption={t('date.caption', { place: title, name })}
+                date={when}
+                width={Math.min(260, width - space.xxl * 2)}
+                tilt={-2}
+              />
+            </PolaroidReveal>
           </View>
           <Txt style={styles.ending} center>
             {t(`date.ending.${record.ending}`)}
@@ -275,7 +277,7 @@ export default function DateScreen() {
           ))}
         </View>
         <View style={[styles.glass, styles.hearts]} accessibilityLabel={`${hearts}`}>
-          <Ionicons name="heart" size={15} color={HEART_ON_PHOTO} />
+          <JellyHeart hearts={hearts} maxHearts={live ? total * 3 : maxHearts(place)} size={22} />
           <Txt style={styles.heartsText}>{hearts}</Txt>
         </View>
       </View>
