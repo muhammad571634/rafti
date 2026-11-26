@@ -2878,5 +2878,25 @@
     "body": "I tuoi amici rispondono con l’IA: ciò che scrivi loro viene inviato al nostro servizio di IA, Google Gemini. Le tue chat vengono anche salvate come backup nel tuo account. Puoi disattivare il backup nel Profilo.",
     "agree": "Accetto",
     "notNow": "Non ora"
+  },
+  "mood": {
+    "ask": "Come stai?",
+    "question": "Come stai, davvero?",
+    "share": "Condividi con {{name}}",
+    "message": "Umore: {{word}}",
+    "band": {
+      "heavy": "Malissimo",
+      "low": "Male",
+      "bitLow": "Un po' giù",
+      "okay": "Così così",
+      "good": "Bene",
+      "great": "Benissimo",
+      "wonderful": "Alla grande"
+    },
+    "stock": {
+      "low": "Ehi. Sono qui. Raccontami cos'è successo, o restiamo un po' così.",
+      "mid": "Così così è sincero. Va bene. Hai qualcosa per la testa?",
+      "high": "Che bello. Cosa ha reso la giornata così bella?"
+    }
   }
 }

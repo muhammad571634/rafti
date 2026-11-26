@@ -8,14 +8,15 @@ import type { AppState, INTIMACY, LiveDate, addMoment, appendMessage, displayNam
 import type { Getter, RawSetter, Setter } from './slice-types';
 import { uid } from './ids';
 import i18n from '@/i18n';
-import { dateDoneCue, datePhotoCue, quizDoneCue, worldQuizCue } from '@/ai/moment-prompt';
+import { dateDoneCue, datePhotoCue, moodCue, quizDoneCue, worldQuizCue } from '@/ai/moment-prompt';
 import { localized } from '@/i18n/content';
 import { gameAnswerCue, gameAskCue } from '@/lib/chat-steer';
 import { buildThemeRounds, checkTheme, cleanScene, cleanTitle, moodAt, moodOpen, themeCost } from '@/lib/date-themes';
 import { shortName } from '@/lib/format';
+import { isMoodBand, MOOD_KEYS, moodTone } from '@/lib/mood';
 import { checkQuiz, cleanQuiz, wonWorldQuiz } from '@/lib/quiz';
 import { eventOn } from '@/lib/world-story';
-import { afterDateLine, datePhotoReply, shellCosts } from '@/mock';
+import { afterDateLine, datePhotoReply, shellCosts, todayKey } from '@/mock';
 import { themePools } from '@/mock/date-themes';
 import { DATE_PLACES, type DateRound, dateEnding, datePlaceById, maxHearts } from '@/mock/dates';
 import { DARES_FOR_THEM, DARES_FOR_YOU, TRUTHS_FOR_THEM, TRUTHS_FOR_YOU, quizReply } from '@/mock/games';
@@ -40,7 +41,7 @@ export interface GameDeps {
   writeWithModel: typeof writeWithModel;
 }
 
-type GameActions = Pick<AppState, 'beginDate' | 'leaveDate' | 'pickDateChoice' | 'retryDateRound' | 'saveDateTheme' | 'deleteDateTheme' | 'beginThemeDate' | 'finishDate' | 'sendDatePhoto' | 'finishQuiz' | 'saveQuiz' | 'deleteQuiz' | 'finishWorldQuiz' | 'saveFrame' | 'deleteFrame' | 'playTruthOrDare'>;
+type GameActions = Pick<AppState, 'beginDate' | 'leaveDate' | 'pickDateChoice' | 'retryDateRound' | 'saveDateTheme' | 'deleteDateTheme' | 'beginThemeDate' | 'finishDate' | 'sendDatePhoto' | 'shareMood' | 'finishQuiz' | 'saveQuiz' | 'deleteQuiz' | 'finishWorldQuiz' | 'saveFrame' | 'deleteFrame' | 'playTruthOrDare'>;
 
 /** The slice, made once with the store's chat helpers: its actions plus the date runner other store code calls. */
 export function createGames(deps: GameDeps) {
@@ -231,6 +232,36 @@ export function createGames(deps: GameDeps) {
         lines: [datePhotoReply(friend.gender)],
         gain: INTIMACY.text,
         cue: datePhotoCue(partnerName, caption, record.ending, sameWorld),
+      });
+      return 'sent';
+    },
+
+    shareMood: (characterId, band) => {
+      const state = get();
+      const day = todayKey();
+      if (!isMoodBand(band) || state.blockedIds.includes(characterId) || !state.characters.some((c) => c.id === characterId)) return 'empty';
+      if (state.daily.moodDay === day) return 'dailyCap';
+      const conversationId = state.conversations.find((c) => c.characterId === characterId)?.id ?? get().addFriend(characterId);
+      // Their answer is one model reply, so it is paid as a text: today's free count first, then a shell (docs/cost-ledger.md).
+      if (!chargeMessage(get, shellCosts.textMessage, 'chat', conversationId)) return 'noShells';
+      countMessage(set, get);
+      set((s) => ({ daily: { ...s.daily, moodDay: day, mood: band, moodFriend: characterId } }));
+      const word = i18n.t(`mood.band.${MOOD_KEYS[band]}`);
+      appendMessage(set, get, conversationId, {
+        id: uid('m'),
+        conversationId,
+        author: 'me',
+        kind: 'text',
+        mood: band,
+        // What the chat list, search and the memory pass read; the bubble draws the card from `mood`.
+        text: i18n.t('mood.message', { word }),
+        createdAt: new Date().toISOString(),
+      });
+      touchStreak(set, get, characterId);
+      scheduleReply(set, get, conversationId, {
+        lines: [i18n.t(`mood.stock.${moodTone(band)}`)],
+        gain: INTIMACY.text,
+        cue: moodCue(band),
       });
       return 'sent';
     },

@@ -22,6 +22,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DailyRewardSheet } from '@/components/daily-reward-sheet';
 import { GroupAvatar } from '@/components/group-avatar';
 import { InkText, listReorder } from '@/components/ink';
+import { MoodGlyph } from '@/components/mood/mood-glyph';
+import { MoodSheet } from '@/components/mood/mood-sheet';
 import { featuredFriendOf, heroTopHeight, lastTalkedFriendOf, TodayHero } from '@/components/today-hero';
 import { moreModules, TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
@@ -61,6 +63,8 @@ const LOGO_BELOW_MID = LOGO_MAX * (1 - 252.5 / 356);
 const CAPSULE = 40;
 /** A waiting face and the gap after it: the separators start where the words do (iOS inset rows). */
 const FACE = 44;
+/** The Today row's shape: a warm band, an invitation rather than a guess at how they feel. */
+const MOOD_INVITE = 5;
 const noop = () => {};
 
 /** Apple interactive springs for lifting a widget and sliding neighbours into place. */
@@ -113,6 +117,9 @@ export default function HomeScreen() {
   const spinReady = useAppStore((s) => s.daily.spinDay !== today || s.daily.spinsUsed < FREE_SPINS_PER_DAY);
   const giftWaiting = useAppStore((s) => !checkInStatus(s.daily, today).claimed);
   const stepWaiting = useFirstSteps().ready;
+  // Once a day: "How are you?" until the mood went to a friend today.
+  const moodShared = useAppStore((s) => s.daily.moodDay === today);
+  const [moodOpen, setMoodOpen] = useState(false);
 
   const slots = useMemo(() => {
     const two = stored.slice(0, TODAY_SLOTS);
@@ -468,6 +475,30 @@ export default function HomeScreen() {
           </View>
         ) : null}
 
+        {hero && !moodShared ? (
+          <PressableScale
+            scaleTo={0.98}
+            accessibilityRole="button"
+            accessibilityLabel={t('mood.ask')}
+            onPress={() => {
+              if (editing) {
+                finishEditing();
+                return;
+              }
+              haptic.tap();
+              setMoodOpen(true);
+            }}
+            style={[styles.card, styles.row, styles.moodRow, waiting ? styles.moodAfter : styles.firstCard]}>
+            <View style={styles.moodIcon}>
+              <MoodGlyph band={MOOD_INVITE} size={30} />
+            </View>
+            <InkText variant="bodyStrong" lines={2} style={styles.flex}>
+              {t('mood.ask')}
+            </InkText>
+            <Ionicons name="chevron-forward" size={18} color={ink.text3} />
+          </PressableScale>
+        ) : null}
+
         {anyWidget || editing ? (
           <View style={styles.widgetBlock} onLayout={(e) => (widgetsY.current = e.nativeEvent.layout.y)}>
             <View style={styles.widgets}>
@@ -534,7 +565,7 @@ export default function HomeScreen() {
             if (editing) setEditing(false);
             setMoreOpen(true);
           }}
-          style={[styles.card, styles.row, styles.moreRow, !waiting && !anyWidget && !editing && !!hero && styles.firstCard]}>
+          style={[styles.card, styles.row, styles.moreRow, !waiting && moodShared && !anyWidget && !editing && !!hero && styles.firstCard]}>
           <IconStack items={moreModules(covered).map((m) => moduleTile(m.key))} size={30} max={4} />
           <InkText variant="bodyStrong" lines={1} style={styles.flex}>
             {t('more.title')}
@@ -596,6 +627,7 @@ export default function HomeScreen() {
         </View>
       </Sheet>
 
+      {hero ? <MoodSheet visible={moodOpen} onClose={() => setMoodOpen(false)} characterId={hero.character.id} /> : null}
       <DailyRewardSheet />
       <WelcomeBack />
     </Screen>
@@ -1031,6 +1063,9 @@ const styles = StyleSheet.create({
   },
   solo: { paddingRight: space.lg, paddingVertical: 10, minHeight: 72 },
   moreRow: { marginTop: space.md, minHeight: 60, paddingRight: space.lg },
+  moodRow: { minHeight: 60, paddingRight: space.lg },
+  moodAfter: { marginTop: space.md },
+  moodIcon: { width: FACE, height: FACE, borderRadius: 14, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center', backgroundColor: ink.raised },
   badge: {
     minWidth: 22,
     height: 22,

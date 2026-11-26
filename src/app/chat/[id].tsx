@@ -293,7 +293,8 @@ export default function ChatRoomScreen() {
   const block = useMemo(() => steerBlock(data, !!typing), [data, typing]);
   const burstIds = useMemo(() => new Set(exchange?.burst.map((m) => m.id) ?? []), [exchange]);
   const swipeable = canRedo && (versions?.versions.length ?? 0) > 1;
-  const editableId = exchange?.anchor.kind === 'text' && !exchange.anchor.pending ? exchange.anchor.id : undefined;
+  // A mood card is a check-in, not words to rewrite: it is never offered for editing.
+  const editableId = exchange?.anchor.kind === 'text' && !exchange.anchor.pending && exchange.anchor.mood === undefined ? exchange.anchor.id : undefined;
   const stepVersion = useCallback(
     (delta: 1 | -1) => {
       if (!conversationId || !versions) return;

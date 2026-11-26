@@ -2878,5 +2878,25 @@
     "body": "Deine Freunde antworten mit KI: Was du ihnen schreibst, geht an unseren KI-Dienst, Google Gemini. Deine Chats werden außerdem in deinem Konto gesichert. Die Sicherung kannst du im Profil ausschalten.",
     "agree": "Zustimmen",
     "notNow": "Nicht jetzt"
+  },
+  "mood": {
+    "ask": "Wie geht's dir?",
+    "question": "Wie geht's dir wirklich?",
+    "share": "Mit {{name}} teilen",
+    "message": "Gefühl: {{word}}",
+    "band": {
+      "heavy": "Schwer",
+      "low": "Niedergeschlagen",
+      "bitLow": "Etwas gedrückt",
+      "okay": "Okay",
+      "good": "Gut",
+      "great": "Super",
+      "wonderful": "Wunderbar"
+    },
+    "stock": {
+      "low": "Hey. Ich bin da. Erzähl mir, was passiert ist, oder wir sitzen einfach kurz zusammen.",
+      "mid": "Okay ist ehrlich. Nehm ich. Was geht dir durch den Kopf?",
+      "high": "Das freut mich. Was hat den Tag so gut gemacht?"
+    }
   }
 }

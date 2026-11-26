@@ -2831,5 +2831,25 @@
     "body": "Bạn bè của bạn trả lời bằng AI: những gì bạn viết sẽ được gửi đến dịch vụ AI của chúng tôi là Google Gemini. Các cuộc trò chuyện cũng được sao lưu vào tài khoản của bạn. Bạn có thể tắt sao lưu trong Hồ sơ.",
     "agree": "Đồng ý",
     "notNow": "Để sau"
+  },
+  "mood": {
+    "ask": "Bạn thế nào?",
+    "question": "Thật lòng thì bạn thế nào?",
+    "share": "Gửi cho {{name}}",
+    "message": "Tâm trạng: {{word}}",
+    "band": {
+      "heavy": "Rất nặng nề",
+      "low": "Buồn",
+      "bitLow": "Hơi buồn",
+      "okay": "Bình thường",
+      "good": "Tốt",
+      "great": "Rất tốt",
+      "wonderful": "Tuyệt vời"
+    },
+    "stock": {
+      "low": "Này. Mình ở đây. Kể mình nghe chuyện gì đã xảy ra, hoặc mình cứ ngồi cạnh nhau một lúc.",
+      "mid": "Bình thường cũng là thật lòng. Có gì trong đầu không?",
+      "high": "Thích quá! Hôm nay có gì vui vậy?"
+    }
   }
 }

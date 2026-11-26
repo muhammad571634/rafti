@@ -2878,5 +2878,25 @@
     "body": "Tus amigos responden con IA: lo que les escribes se envía a nuestro servicio de IA, Google Gemini. Tus chats también se guardan como copia de seguridad en tu cuenta. Puedes desactivar la copia en Perfil.",
     "agree": "Aceptar",
     "notNow": "Ahora no"
+  },
+  "mood": {
+    "ask": "¿Cómo estás?",
+    "question": "¿Cómo estás, de verdad?",
+    "share": "Compartir con {{name}}",
+    "message": "Mi ánimo: {{word}}",
+    "band": {
+      "heavy": "Fatal",
+      "low": "Mal",
+      "bitLow": "Regular",
+      "okay": "Normal",
+      "good": "Bien",
+      "great": "Muy bien",
+      "wonderful": "Genial"
+    },
+    "stock": {
+      "low": "Oye. Aquí estoy. Cuéntame qué pasó, o simplemente quedémonos un rato.",
+      "mid": "Normal es sincero. Me vale. ¿Algo en la cabeza?",
+      "high": "Me encanta. ¿Qué hizo bueno el día?"
+    }
   }
 }

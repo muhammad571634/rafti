@@ -161,6 +161,27 @@ export const quizDoneCue = (title: string, matches: number, total: number) => [
   `NEXT: You and they just finished a quiz together, "${title}", and matched on ${matches} of ${total}. React to the score in your own voice: short, and true to how you feel about it.`,
 ];
 
+/** The mood bands in the words the prompt uses (`src/lib/mood.ts` order, heavy to wonderful). */
+const MOOD_WORDS = ['heavy', 'low', 'a bit low', 'okay', 'good', 'great', 'wonderful'] as const;
+
+/**
+ * They shared how they feel today with the mood check-in (Today's "How are you?"): one honest word
+ * on a scale from heavy to wonderful. A friend answers the feeling, never the feature.
+ */
+export const moodCue = (band: number) => {
+  const word = MOOD_WORDS[Math.min(Math.max(band, 0), MOOD_WORDS.length - 1)];
+  return [
+    `NEXT: They just told you how they feel today: "${word}" (on a scale from heavy to wonderful). It is a quiet check-in, not a chat line.`,
+    band <= 2
+      ? '- They are not okay. Be gentle and present as who you are to them; ask what happened or offer to just stay. No advice, no cheering up on command.'
+      : band === 3
+        ? '- An honest "okay". Take it as it is, and leave a door open in case there is more.'
+        : '- They feel good. Be glad with them in your own temper and ask what made the day.',
+    '- Never name the app, a slider or a check-in. Remember how they felt today and bring it back later the way a friend would.',
+    '- Short, like a real text.',
+  ];
+};
+
 /**
  * A polaroid from the user's date with another friend, sent to you (0z157). Like a booth picture it
  * never leaves the phone: you react to the news, never to how anyone in it looks.

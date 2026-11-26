@@ -2831,5 +2831,25 @@
     "body": "Teman-temanmu membalas dengan AI: apa yang kamu tulis dikirim ke layanan AI kami, Google Gemini. Chatmu juga dicadangkan ke akunmu. Kamu bisa mematikan cadangan di Profil.",
     "agree": "Setuju",
     "notNow": "Nanti saja"
+  },
+  "mood": {
+    "ask": "Apa kabar?",
+    "question": "Apa kabar, sebenarnya?",
+    "share": "Bagikan ke {{name}}",
+    "message": "Perasaan: {{word}}",
+    "band": {
+      "heavy": "Berat",
+      "low": "Sedih",
+      "bitLow": "Agak sedih",
+      "okay": "Biasa",
+      "good": "Baik",
+      "great": "Senang",
+      "wonderful": "Luar biasa"
+    },
+    "stock": {
+      "low": "Hei. Aku di sini. Ceritakan apa yang terjadi, atau kita diam saja sebentar.",
+      "mid": "Biasa itu jujur. Aku terima. Ada yang kamu pikirkan?",
+      "high": "Senang dengarnya. Apa yang bikin harimu baik?"
+    }
   }
 }

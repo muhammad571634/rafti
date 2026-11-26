@@ -2878,5 +2878,25 @@
     "body": "Tes amis répondent grâce à l’IA : ce que tu leur écris est envoyé à notre service d’IA, Google Gemini. Tes discussions sont aussi sauvegardées sur ton compte. Tu peux désactiver la sauvegarde dans Profil.",
     "agree": "J’accepte",
     "notNow": "Pas maintenant"
+  },
+  "mood": {
+    "ask": "Ça va ?",
+    "question": "Ça va, vraiment ?",
+    "share": "Partager avec {{name}}",
+    "message": "Humeur : {{word}}",
+    "band": {
+      "heavy": "Très mal",
+      "low": "Mal",
+      "bitLow": "Bof",
+      "okay": "Ça va",
+      "good": "Bien",
+      "great": "Très bien",
+      "wonderful": "Génial"
+    },
+    "stock": {
+      "low": "Hé. Je suis là. Raconte-moi ce qui s'est passé, ou restons juste un moment ensemble.",
+      "mid": "« Ça va », c’est honnête. Je prends. Quelque chose en tête ?",
+      "high": "J'adore. Qu'est-ce qui a rendu ta journée si bien ?"
+    }
   }
 }
