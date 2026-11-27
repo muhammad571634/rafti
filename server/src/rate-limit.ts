@@ -93,3 +93,52 @@ export function windowLimiter(limit: number, windowMs: number, now: () => number
     return true;
   };
 }
+
+const DAY_MS = 86_400_000;
+
+export interface DailyQuotaStore {
+  consumeDailyQuota?(scope: string, bucket: string, amount: number, limit: number): Promise<boolean>;
+}
+
+/**
+ * Daily budget backed by Postgres (`consume_daily_quota`) so limits survive deploys and hold across
+ * multiple API machines. Falls back seamlessly to an in-memory `windowBudget` when no DB is
+ * configured or on a transient DB/migration error (logging once per bucket) so real users are never
+ * hit with 500s during an outage.
+ */
+export function persistentDailyBudget(opts: {
+  bucket: string;
+  limit: number;
+  store?: DailyQuotaStore | null;
+  now?: () => number;
+  onFallback?: (bucket: string, error: unknown) => void;
+}) {
+  const fallback = windowBudget(opts.limit, DAY_MS, opts.now);
+  let warned = false;
+  return async (key: string, amount: number): Promise<boolean> => {
+    if (opts.limit <= 0 || amount <= 0 || amount > opts.limit) return false;
+    const consume = opts.store?.consumeDailyQuota;
+    if (!consume) return fallback(key, amount);
+    try {
+      return await consume(key, opts.bucket, amount, opts.limit);
+    } catch (error) {
+      if (!warned) {
+        warned = true;
+        opts.onFallback?.(opts.bucket, error);
+      }
+      return fallback(key, amount);
+    }
+  };
+}
+
+/** Daily 1-hit rate limiter backed by Postgres (`consume_daily_quota`), with in-memory fallback. */
+export function persistentDailyLimiter(opts: {
+  bucket: string;
+  limit: number;
+  store?: DailyQuotaStore | null;
+  now?: () => number;
+  onFallback?: (bucket: string, error: unknown) => void;
+}) {
+  const budget = persistentDailyBudget(opts);
+  return (key: string) => budget(key, 1);
+}

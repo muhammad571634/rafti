@@ -74,6 +74,11 @@ export interface Db {
   ping?(): Promise<void>;
   /** What the model cost since the UTC day began, at list price, for the day's budget (`llm/gate.ts`); null when it cannot be read. */
   modelSpendToday?(): Promise<number | null>;
+  /**
+   * Atomically consumes `amount` units from `(scope, bucket)` for today's UTC day if `used + amount <= limit`
+   * (`consume_daily_quota` in supabase/migrations/*_b16_daily_quotas.sql). Returns true when admitted.
+   */
+  consumeDailyQuota?(scope: string, bucket: string, amount: number, limit: number): Promise<boolean>;
   /** First call creates the profile and wallet and pays the welcome gift; later calls only read. */
   bootstrap(userId: string, input: BootstrapInput): Promise<BootstrapResult>;
   /** One row of the cost log (`usage_events`, server only, never shown to users). */

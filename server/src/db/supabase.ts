@@ -345,7 +345,20 @@ export function supabaseDb(opts: { url: string; secretKey: string }): Db {
       },
     },
 
+    async consumeDailyQuota(scope, bucket, amount, limit) {
+      const { data, error } = await client.rpc('consume_daily_quota', {
+        p_scope: scope,
+        p_bucket: bucket,
+        p_amount: amount,
+        p_limit: limit,
+      });
+      if (error) throw new Error(`consumeDailyQuota: ${error.message}`);
+      return data === true;
+    },
+
     async deleteUser(userId) {
+      // Remove rolling daily quota rows tied to this user id (ignore if B16 migration is not yet applied).
+      await client.from('daily_quotas').delete().eq('scope', userId);
       const { error } = await client.auth.admin.deleteUser(userId);
       if (error) throw new Error(`deleteUser: ${error.message}`);
     },

@@ -7,10 +7,11 @@ import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import * as Updates from 'expo-updates';
-import { LEGAL_URLS, SUPPORT_EMAIL } from '@/ai/safety';
+import { SUPPORT_EMAIL } from '@/ai/safety';
 import { connectAccount, deleteServerAccount } from '@/ai/account';
 import { serverModel } from '@/ai/server';
 import { DangerRow, Group, LinkRow, ProfileTop, SwitchRow } from '@/components/character/kit';
+import { LegalSheet, openLegalDocument } from '@/components/privacy/legal-sheet';
 import {
   Button,
   CharacterAvatar,
@@ -71,16 +72,11 @@ const FILL = {
   sound: systemColors.green,
 };
 
-/** The legal rows that have a published page to open (`LEGAL_URLS`). */
-const legalRows = (
-  [
-    ['privacy', 'lock-closed'],
-    ['terms', 'document-text'],
-  ] as const
-).flatMap(([key, icon]) => {
-  const url = LEGAL_URLS[key];
-  return url ? [{ key, url, icon: icon as IoniconName }] : [];
-});
+/** Legal documents shown in Profile: open the hosted URL once live, else the in-app `LegalSheet`. */
+const LEGAL_ITEMS = [
+  { key: 'privacy', icon: 'lock-closed' },
+  { key: 'terms', icon: 'document-text' },
+] as const satisfies readonly { key: 'privacy' | 'terms'; icon: IoniconName }[];
 
 /**
  * Who you are, in the merged look (0z156; was the aurora page of 2026-10-21): Apple's white ground, your
@@ -92,6 +88,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const router = useRouter();
+  const [legalDoc, setLegalDoc] = useState<'privacy' | 'terms' | null>(null);
   // Past the photo and name, the top row shows the name.
   const { scrolled, onScroll } = useScrolledPast(170);
 
@@ -300,9 +297,9 @@ export default function ProfileScreen() {
       ? [{ key: 'blocked', label: t('safety.blocked'), icon: 'hand-left' as IoniconName, fill: FILL.grey, meta: String(blocked.length), onPress: () => setBlockedOpen(true) }]
       : []),
     { key: 'support', label: t('safety.support'), icon: 'mail' as IoniconName, fill: FILL.support, onPress: () => void Linking.openURL(`mailto:${SUPPORT_EMAIL}`) },
-    // Privacy and terms open the published pages; no row until they are online (`LEGAL_URLS`).
+    // Privacy and terms open the hosted pages once live, or the in-app reader until then.
     // Account (sign-in) waits for Sign in with Apple, so it has no row yet either.
-    ...legalRows.map(({ key, url, icon }) => ({ key, label: t(`profile.${key}`), icon, fill: FILL[key], onPress: () => void Linking.openURL(url) })),
+    ...LEGAL_ITEMS.map(({ key, icon }) => ({ key, label: t(`profile.${key}`), icon, fill: FILL[key], onPress: () => openLegalDocument(key, setLegalDoc) })),
   ];
 
   return (
@@ -547,6 +544,7 @@ export default function ProfileScreen() {
         </View>
       </Sheet>
 
+      <LegalSheet kind={legalDoc} onClose={() => setLegalDoc(null)} />
     </Screen>
   );
 }

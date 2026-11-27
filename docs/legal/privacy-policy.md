@@ -14,16 +14,20 @@ Gates: the published text is true only when all of these hold. Until then it is 
 2. Server logs carry no message content. Done (checked 2026-11-16): `[reply]`, `[group]` and
    `[stats]` print counts, models and costs only (`server/src/app.ts`, `server/src/index.ts`).
 3. The deletions promised under "How long we keep it" run on a schedule: reports 12 months after
-   they are made, usage records after 13 months. Neither job exists yet.
+   they are made and usage records after 13 months are scheduled in `b4_purges.sql`; `app_events`
+   (13 months) and `daily_quotas` (7 days) are added in `b16_daily_quotas.sql`. Done once `b16` is
+   applied.
 4. The owner fills in the brackets: legal name, address, contact email (`sigmazam.app` waits for
    the domain), and the country whose law applies.
 5. A lawyer reads it (road-to-launch item 8), including GDPR (EU/UK) and CCPA (California) wording
    for the markets in `marketing/playbook.md`.
-6. The site hosts it, and Profile → Privacy and the onboarding line link to it: set
-   `LEGAL_URLS` in `src/ai/safety.ts` (the Privacy and Terms rows appear in Profile only once a URL
-   is set, since 0z173).
-7. Voice replies (ElevenLabs), payments (Apple, Google, RevenueCat) and server pushes (Firebase)
-   are not in the app yet. Add each one here when it ships.
+6. The site hosts it (`docs/legal/web/privacy.html` ready for `sigmazam.app/privacy`): set
+   `LEGAL_URLS` in `src/ai/safety.ts`. Until `LEGAL_URLS` is set, Profile, Plans, and Onboarding
+   open the in-app `LegalSheet` reader (`src/components/privacy/legal-sheet.tsx`) so no link is
+   ever dead.
+7. Payments (Apple, Google, RevenueCat) and server pushes (Firebase) are not in the app yet. Add
+   each one here when it ships (ElevenLabs voice calls and the community catalogue are covered
+   below).
 
 The store forms (Apple's App Privacy, Google Play's Data safety) are at the end, under the same gates.
 

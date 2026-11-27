@@ -69,7 +69,7 @@ import type { SpeechProvider } from './speech/elevenlabs.ts';
 import { lineSigner } from './speech/sign.ts';
 import { speechOnly } from '../../src/lib/reply-engine/narration.ts';
 import { costUsd, promptVersion } from './llm/usage.ts';
-import { MODEL_LIMITS, windowBudget, windowLimiter, type ModelLimits } from './rate-limit.ts';
+import { MODEL_LIMITS, persistentDailyBudget, persistentDailyLimiter, windowLimiter, type ModelLimits } from './rate-limit.ts';
 
 /** The plans a test subscription may name (`PLANS`). */
 const PLAN_IDS = Object.keys(PLANS) as PlanId[];
@@ -441,12 +441,17 @@ export function createApp(
   const app = new Hono();
   const db = opts.db ?? null;
   const limits = { ...MODEL_LIMITS, ...opts.limits };
+  const onQuotaFallback = (bucket: string, error: unknown) => {
+    console.warn(`[quota] ${bucket} falling back to memory: ${String((error as Error).message).slice(0, 80)}`);
+  };
+  const dailyLimit = (bucket: string, limit: number) => persistentDailyLimiter({ bucket, limit, store: db, onFallback: onQuotaFallback });
+  const dailyBudget = (bucket: string, limit: number) => persistentDailyBudget({ bucket, limit, store: db, onFallback: onQuotaFallback });
   const userMinute = windowLimiter(limits.userPerMinute, MINUTE_MS);
-  const userDay = windowLimiter(limits.userPerDay, DAY_MS);
-  const firstTextDay = windowLimiter(limits.firstTextPerDay, DAY_MS);
+  const userDay = dailyLimit('user_day', limits.userPerDay);
+  const firstTextDay = dailyLimit('first_text', limits.firstTextPerDay);
   const userData = windowLimiter(limits.dataPerMinute, MINUTE_MS);
   const addressData = windowLimiter(limits.addressDataPerMinute, MINUTE_MS);
-  const sideDay = windowLimiter(limits.sidePerDay, DAY_MS);
+  const sideDay = dailyLimit('side_day', limits.sidePerDay);
   let photosInFlight = 0;
 
   /**
@@ -548,18 +553,18 @@ export function createApp(
     return c.json({ error: 'noShells', wallet: await db!.walletState(userId).catch(() => null) }, 402);
   }
   // Accounts start anonymous and free, so reports have their own cap.
-  const reportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
-  const eventsDay = windowLimiter(EVENT_BATCHES_PER_DAY, DAY_MS);
+  const reportDay = dailyLimit('report', REPORT_LIMITS.perDay);
+  const eventsDay = dailyLimit('events', EVENT_BATCHES_PER_DAY);
   // Shares a day per user (each one is a model review) and community reports a day per user.
-  const publishDay = windowLimiter(COMMUNITY_PUBLISHES_PER_DAY, DAY_MS);
-  const communityReportDay = windowLimiter(REPORT_LIMITS.perDay, DAY_MS);
+  const publishDay = dailyLimit('publish', COMMUNITY_PUBLISHES_PER_DAY);
+  const communityReportDay = dailyLimit('community_report', REPORT_LIMITS.perDay);
   // Template uses a minute per user: a burst past this is a script, not a person (template-library.md §3).
   const templateMinute = windowLimiter(30, 60_000);
   // The template numbers are the same for everyone: read them at most every five minutes.
   let templateStats: { at: number; stats: Record<string, TemplateStats> } | null = null;
   // Characters read aloud a day: each user's, and the whole service's (a stop on the voice bill).
-  const userVoiceDay = windowBudget(opts.speech?.userCharsPerDay ?? 0, DAY_MS);
-  const serviceVoiceDay = windowBudget(opts.speech?.charsPerDay ?? 0, DAY_MS);
+  const userVoiceDay = dailyBudget('voice_user', opts.speech?.userCharsPerDay ?? 0);
+  const serviceVoiceDay = dailyBudget('voice_all', opts.speech?.charsPerDay ?? 0);
   const signer = opts.signer ?? lineSigner();
   const addressMinute = windowLimiter(limits.addressPerMinute, MINUTE_MS);
   const addressDay = windowLimiter(limits.addressPerDay, DAY_MS);
@@ -630,8 +635,8 @@ export function createApp(
       const token = bearer(c.req.header('authorization'));
       const userId = token ? await accountOf(token) : null;
       if (!userId) return c.json({ error: 'signIn' }, 401);
-      if (!userMinute(userId) || !userDay(userId)) return c.json({ error: 'busy' }, 429);
-      if (!TALK_ROUTES.has(c.req.path) && !sideDay(userId)) return c.json({ error: 'busy' }, 429);
+      if (!userMinute(userId) || !(await userDay(userId))) return c.json({ error: 'busy' }, 429);
+      if (!TALK_ROUTES.has(c.req.path) && !(await sideDay(userId))) return c.json({ error: 'busy' }, 429);
     }
     await next();
   };
@@ -958,7 +963,7 @@ export function createApp(
     if (!userId) return c.json({ error: 'signIn' }, 401);
     const report = cleanReport(await readJson(c));
     if (!report) return c.json({ error: 'badInput' }, 400);
-    if (!reportDay(userId)) return c.json({ error: 'busy' }, 429);
+    if (!(await reportDay(userId))) return c.json({ error: 'busy' }, 429);
     try {
       await db.saveReport(userId, report);
       console.log(`[report] ${report.reason} ${report.characterId}`);
@@ -998,7 +1003,7 @@ export function createApp(
     const localId = typeof body?.localId === 'string' ? body.localId.trim() : '';
     const card = cleanCard(body?.card);
     if (!card || !isKey(localId)) return c.json({ error: 'badInput' }, 400);
-    if (!publishDay(userId)) return c.json({ error: 'busy' }, 429);
+    if (!(await publishDay(userId))) return c.json({ error: 'busy' }, 429);
     const reason = await reviewCard(c, card);
     const status = reason ? 'rejected' : 'live';
     try {
@@ -1057,7 +1062,7 @@ export function createApp(
     const body = await readJson(c);
     const reason = typeof body?.reason === 'string' ? body.reason.trim().slice(0, 40) : '';
     if (!isUuid(id) || !reason) return c.json({ error: 'badInput' }, 400);
-    if (!communityReportDay(userId)) return c.json({ error: 'busy' }, 429);
+    if (!(await communityReportDay(userId))) return c.json({ error: 'busy' }, 429);
     const status = await db.community.report(userId, id, reason, REPORTS_TO_HIDE);
     if (!status) return c.json({ error: 'notFound' }, 404);
     console.log(`[community] report ${reason} -> ${status}`);
@@ -1097,7 +1102,7 @@ export function createApp(
     if (!userId) return c.json({ error: 'signIn' }, 401);
     const batch = cleanEventBatch(await readJson(c));
     if (!batch) return c.json({ error: 'badInput' }, 400);
-    if (!eventsDay(userId)) return c.json({ error: 'busy' }, 429);
+    if (!(await eventsDay(userId))) return c.json({ error: 'busy' }, 429);
     try {
       await db.saveEvents(userId, batch);
       return c.json({ kept: batch.events.length, skipped: batch.skipped });
@@ -1136,7 +1141,7 @@ export function createApp(
     request.input = { ...request.input, user, replyLanguage: replyLanguageOf({ ...request.input, user }) };
     // Written ahead for pushes nobody may read: capped per account a day, and side work for the gate.
     const userId = await signedIn(c);
-    if (userId && !firstTextDay(userId)) return c.json({ error: 'busy' }, 429);
+    if (userId && !(await firstTextDay(userId))) return c.json({ error: 'busy' }, 429);
     return modelCall(c, request.kind, layoutPrompt(firstTextParts(request)), parseTouchReply, { template: 'initiative', side: true });
   });
 
@@ -1242,7 +1247,7 @@ export function createApp(
     // What a voice can say: the narration in *stars* stays on the screen.
     const words = speechOnly(request.text).trim();
     if (!words) return c.json({ error: 'badInput' }, 400);
-    if (!userVoiceDay(userId, words.length) || !serviceVoiceDay('all', words.length)) return c.json({ error: 'noVoice' }, 503);
+    if (!(await userVoiceDay(userId, words.length)) || !(await serviceVoiceDay('all', words.length))) return c.json({ error: 'noVoice' }, 503);
     const started = Date.now();
     try {
       const { audio, model } = await speech.provider.speak(words, speech.provider.voiceFor(request), SPEAK_TIMEOUT_MS);

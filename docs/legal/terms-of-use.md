@@ -17,10 +17,10 @@ Gates before it may be published:
 3. Payments ship (Google Play Billing, StoreKit). Until then the "Plans and payments" section
    describes how it will work. The trial, prices and allowances must match `src/economy/plans.ts`
    and the store listing on the day it ships.
-4. A public catalogue of user-made characters ships, or the "Characters you make" section loses
-   its sentence about publishing.
-5. Hosted on the site, and Profile → Terms and the onboarding line link to it
-   (`src/app/profile.tsx`; the buttons do nothing today).
+4. Public catalogue of user-made characters shipped (`b14_community_characters.sql`); keep the
+   "Characters you make" section in step with moderation rules.
+5. Ready-to-host page in `docs/legal/web/terms.html` (for `sigmazam.app/terms`). Profile, Plans,
+   and Onboarding open the in-app `LegalSheet` until `LEGAL_URLS` in `src/ai/safety.ts` is set.
 
 ---
 

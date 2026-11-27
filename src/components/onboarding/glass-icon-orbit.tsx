@@ -11,6 +11,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { BRAND, BRAND_ASPECT } from '@/assets/brand/registry';
+import { LegalSheet, openLegalDocument } from '@/components/privacy/legal-sheet';
+import type { LegalDocKind } from '@/lib/legal-docs';
+import { ink } from '@/theme/ink';
 
 // Ported from Native Cook's "Glass Icon Orbit" block (owner, 2026-11-08: use the block's own code,
 // swap in our icons; https://nativecook.dev/blocks/glass-icon-orbit/, source
@@ -329,6 +332,7 @@ export function GlassIconOrbit({ autoPlay = true, onStart, top }: Props) {
   const [active, setActive] = useState(AppState.currentState === 'active');
   // Start shows once the mascot has jumped out the first time (at once under Reduce Motion).
   const [ready, setReady] = useState(reduced);
+  const [legalDoc, setLegalDoc] = useState<LegalDocKind | null>(null);
   useEffect(() => {
     if (ready) return;
     const timer = setTimeout(() => setReady(true), JUMP_END * 1000);
@@ -454,10 +458,26 @@ export function GlassIconOrbit({ autoPlay = true, onStart, top }: Props) {
               <Text style={styles.legal} maxFontSizeMultiplier={1.3}>
                 {t('onboarding.legal')}
               </Text>
+              <View style={styles.legalLinks}>
+                <Pressable onPress={() => openLegalDocument('terms', setLegalDoc)} hitSlop={8} accessibilityRole="link">
+                  <Text style={styles.legalLink} maxFontSizeMultiplier={1.3}>
+                    {t('plans.terms')}
+                  </Text>
+                </Pressable>
+                <Text style={styles.legalDot} accessible={false}>
+                  ·
+                </Text>
+                <Pressable onPress={() => openLegalDocument('privacy', setLegalDoc)} hitSlop={8} accessibilityRole="link">
+                  <Text style={styles.legalLink} maxFontSizeMultiplier={1.3}>
+                    {t('plans.privacy')}
+                  </Text>
+                </Pressable>
+              </View>
             </Animated.View>
           ) : null}
         </View>
       </View>
+      <LegalSheet kind={legalDoc} onClose={() => setLegalDoc(null)} />
     </View>
   );
 }
@@ -474,9 +494,12 @@ const styles = StyleSheet.create({
   footer: { position: 'absolute', left: 24, right: 24, bottom: 0 },
   heading: { fontSize: 28, lineHeight: 32, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.8 },
   sub: { marginTop: 8, fontSize: 16, lineHeight: 22, color: 'rgba(255,255,255,0.6)' },
-  startRoom: { minHeight: 128 },
+  startRoom: { minHeight: 148 },
   button: { marginTop: 20, height: 58, borderRadius: 29, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
   pressed: { opacity: 0.85 },
   action: { fontSize: 17, fontWeight: '700', color: '#000000' },
   legal: { marginTop: 10, textAlign: 'center', fontSize: 12, lineHeight: 16, color: 'rgba(255,255,255,0.45)' },
+  legalLinks: { marginTop: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  legalLink: { fontSize: 12, lineHeight: 16, fontWeight: '600', color: ink.text2, textDecorationLine: 'underline' },
+  legalDot: { fontSize: 12, lineHeight: 16, color: ink.text3 },
 });

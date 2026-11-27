@@ -5,11 +5,13 @@ import type { TFunction } from 'i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { LegalSheet, openLegalDocument } from '@/components/privacy/legal-sheet';
 import { MODULE_GLYPH, PressableScale, SFIcon, ShellIcon, Txt } from '@/components/ui';
 import { planStatus, PLANS, TRIAL } from '@/economy/plans';
 import { PLAN_PORTRAITS, QUICK_CREATES_PER_DAY } from '@/economy/quick-create';
 import { count } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
+import type { LegalDocKind } from '@/lib/legal-docs';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, glyphOn, moduleFills, space, systemColors, systemGround } from '@/theme';
 import { inkFace, inkRadius } from '@/theme/ink';
@@ -83,6 +85,7 @@ export function PlanPicker({
   const [selected, setSelected] = useState<PlanId>(
     initialPlan ?? (current && !current.trial ? current.plan : TRIAL.plan),
   );
+  const [legalDoc, setLegalDoc] = useState<LegalDocKind | null>(null);
 
   // The store's free days go to new subscribers only, once per account, on Pro yearly.
   const trialOffer = !wallet.trialUsed && !current;
@@ -237,13 +240,13 @@ export function PlanPicker({
         <Txt style={styles.renew}>{t('plans.renewNote', { store: storeName(t) })}</Txt>
         <View style={styles.links}>
           <TextLink label={t('plans.restore')} onPress={onRestore} />
-          {/* Terms and Privacy open the hosted pages once they are live (same as Profile). */}
-          <TextLink label={t('plans.terms')} />
-          <TextLink label={t('plans.privacy')} />
+          <TextLink label={t('plans.terms')} onPress={() => openLegalDocument('terms', setLegalDoc)} />
+          <TextLink label={t('plans.privacy')} onPress={() => openLegalDocument('privacy', setLegalDoc)} />
         </View>
       </ScrollView>
 
       <StoreBuyBar label={cta.label} caption={cta.caption} disabled={isCurrent} onPress={buy} />
+      <LegalSheet kind={legalDoc} onClose={() => setLegalDoc(null)} />
     </>
   );
 }

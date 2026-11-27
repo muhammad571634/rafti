@@ -339,3 +339,24 @@ describe('the server counts messages itself (0z260, take_message)', () => {
     assert.equal(w.asked[0].use, false);
   });
 });
+
+describe('persistent daily rate limits across server restarts (B16)', () => {
+  it('enforces userPerDay across two separate server instances sharing one database store', async () => {
+    const counts = new Map<string, number>();
+    const db = makeDb({
+      async consumeDailyQuota(scope, bucket, amount, limit) {
+        const key = `${scope}:${bucket}`;
+        const used = counts.get(key) ?? 0;
+        if (used + amount > limit) return false;
+        counts.set(key, used + amount);
+        return true;
+      },
+    });
+    const appA = createApp(answering, { timeoutMs: 1000, db, limits: { userPerDay: 2 } });
+    const appB = createApp(answering, { timeoutMs: 1000, db, limits: { userPerDay: 2 } });
+    assert.equal((await reply(appA)).status, 200);
+    assert.equal((await reply(appB)).status, 200);
+    // Third request hits the shared persistent cap even on a brand-new server instance.
+    assert.equal((await reply(appB)).status, 429);
+  });
+});

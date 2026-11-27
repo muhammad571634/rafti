@@ -14,12 +14,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AlarmRuntime } from '@/components/alarms/alarm-runtime';
 import { LaunchIntro } from '@/components/launch/launch-intro';
-import { useAiConsent } from '@/components/privacy/use-ai-consent';
+import { startChatBackup, useAiConsent } from '@/components/privacy/use-ai-consent';
 import { AlertHost, Button, Mascot, Txt } from '@/components/ui';
 import { initI18n } from '@/i18n';
 import { useAnalytics } from '@/hooks/use-analytics';
 import { startAnalytics } from '@/lib/analytics';
 import { startAwayClock } from '@/lib/away-clock';
+import { shouldEnableBackup, shouldSyncOnLaunch } from '@/lib/backup-default';
 import { noDuplicatePush } from '@/lib/no-duplicate-push';
 import { useAppStore } from '@/store/use-app-store';
 import { colors, space } from '@/theme';
@@ -177,8 +178,11 @@ function OnboardingGate() {
 function AiConsentGate() {
   const hydrated = useAppStore((s) => s.hydrated);
   const onboarded = useAppStore((s) => !!s.user.onboardedAt);
+  const settings = useAppStore((s) => s.settings);
+  const setSetting = useAppStore((s) => s.setSetting);
   const { agreed, ask } = useAiConsent();
   const [asked, setAsked] = useState(false);
+  const [synced, setSynced] = useState(false);
   const due = hydrated && onboarded && !agreed && !asked;
 
   useEffect(() => {
@@ -189,6 +193,20 @@ function AiConsentGate() {
     }, 900);
     return () => clearTimeout(id);
   }, [due, ask]);
+
+  // Turn on chat & memory backup automatically for accounts that already agreed to the AI consent
+  // notice (without ever overriding an explicit opt-out in Profile) and run a background restore/sync
+  // once per launch so memories and chats stay safe across reinstalls or new phones.
+  useEffect(() => {
+    if (!hydrated || !onboarded || !agreed) return;
+    if (shouldEnableBackup(settings)) {
+      setSetting('serverMessages', true);
+    }
+    if (!synced && shouldSyncOnLaunch(settings)) {
+      setSynced(true);
+      void startChatBackup().catch(() => {});
+    }
+  }, [hydrated, onboarded, agreed, settings, setSetting, synced]);
 
   return null;
 }
