@@ -124,7 +124,7 @@
     },
     "bondLevel": "羈絆等級 {{level}}",
     "hero": {
-      "level": "Lv {{level}}",
+      "level": "等級 {{level}}",
       "open": "開啟與{{name}}的對話"
     },
     "gift": {
@@ -177,7 +177,7 @@
     "voiceReady": "已有語音",
     "voiceTraining": "語音訓練中",
     "createCharacter": "建立角色",
-    "noResults": "未找到符合搜尋條件的角色。",
+    "noResults": "目前沒有符合搜尋的人。",
     "add": "新增",
     "friends": "好友",
     "results": "找到{{count}}個結果",
@@ -252,7 +252,7 @@
   "chatList": {
     "title": "對話",
     "empty": "尚無對話",
-    "emptyHint": "探索並尋找一位角色，主動打個招呼吧。",
+    "emptyHint": "找個人，先打聲招呼吧。",
     "pinned": "已置頂",
     "muted": "已靜音",
     "newChat": "新對話",
@@ -375,11 +375,11 @@
     "sending": "傳送中",
     "voiceConsent": {
       "title": "讓對方聽見你的聲音？",
-      "body": "為了理解語音訊息，角色會將其傳送至我們的 AI 服務 Google Gemini。"
+      "body": "為了理解語音訊息，Sigmazam 會將其傳送至我們的 AI 服務 Google Gemini。"
     },
     "photoConsent": {
       "title": "要讓對方看你的照片嗎?",
-      "body": "為了讓角色看到照片,照片會傳送到我們的 AI 服務 Google Gemini。",
+      "body": "為了讓朋友看到照片，Sigmazam 會將其傳送至我們的 AI 服務 Google Gemini。",
       "allow": "允許",
       "notNow": "稍後再說"
     },
@@ -573,7 +573,7 @@
   "levelUp": {
     "title": "你們邁入了新階段。",
     "subtitle": "{{name}}感覺與你更親近了。",
-    "levelLabel": "{{title}} · Lv {{level}}",
+    "levelLabel": "{{title}} · 等級 {{level}}",
     "unlocked": "角色設定中已解鎖新的關係選項。",
     "closer": "與 {{name}} 更近了",
     "newPage": "你們的故事翻開了新的一頁",
@@ -599,7 +599,7 @@
   "callHistory": {
     "title": "通話",
     "empty": "尚無通話記錄",
-    "emptyHint": "撥打電話給角色後，記錄將會出現在這裡。",
+    "emptyHint": "打給朋友後，通話紀錄會顯示在這裡。",
     "all": "全部",
     "missed": "未接",
     "earlier": "較早",
@@ -615,7 +615,7 @@
     "anniversary": "自{{date}}起相伴",
     "voiceCall": "語音通話",
     "characterMemories": "回憶",
-    "characterSettings": "角色檔案",
+    "characterSettings": "朋友檔案",
     "editCharacter": "編輯角色",
     "chatSettings": "對話設定",
     "searchHistory": "搜尋訊息",
@@ -644,7 +644,7 @@
       "long": "豐富"
     },
     "sectionChat": "當前對話",
-    "sectionCharacter": "角色",
+    "sectionCharacter": "朋友",
     "sectionManage": "管理",
     "block": "封鎖",
     "voiceRepliesPlanHint": "文字附帶語音回覆，為Pro會員專屬權益。",
@@ -768,7 +768,7 @@
     "emptyHint": "動筆寫下第一頁往往是最難的一步。",
     "write": "記錄",
     "info": "關於日記",
-    "infoBody": "你分享的日記將由該角色親自閱讀。他們會認真回信，記住對你而言重要的事，並在未來的對話中提及。",
+    "infoBody": "你分享的日記頁面會由那位朋友閱讀。對方會寫下回覆、記住重要的事，之後也可能在聊天中提起。",
     "pages_other": "{{count}}頁",
     "moods": {
       "happy": "開心",
@@ -952,7 +952,7 @@
     "empty": "尚無聯絡人",
     "emptyHint": "所有與你交談過的角色都會出現在這裡。",
     "create": "建立新角色",
-    "level": "Lv {{level}}"
+    "level": "等級 {{level}}"
   },
   "scenes": {
     "title": "場景",
@@ -1083,22 +1083,22 @@
   },
   "streams": {
     "title": "連麥直播",
-    "sheetHint": "圍觀兩位角色的趣味互動",
+    "sheetHint": "看兩位朋友暢聊任何話題",
     "new": "發起直播",
-    "empty": "觀看兩位角色即興暢聊",
-    "emptyHint": "挑選兩位角色與一個話題，他們將暢聊互動，由你靜靜圍觀。",
+    "empty": "看兩位朋友聊天",
+    "emptyHint": "選兩位朋友和一個話題。他們聊天，你觀看。",
     "live": "進行中",
     "topic": "話題",
     "topicPlaceholder": "你想讓他們聊些什麼？",
     "whoTalks": "參與角色",
-    "pickOne": "選擇角色",
+    "pickOne": "選擇對象",
     "remove": "移除{{name}}",
-    "others": "更多角色",
+    "others": "更多人",
     "start": "開啟直播",
     "freeToday_other": "免費 · 今日剩餘{{count}}次免費暢聊",
     "costs_other": "{{count}}個貝殼 · 當前擁有{{shells}}個",
     "problems": {
-      "pair": "請挑選兩位角色",
+      "pair": "請選擇兩個人",
       "topic": "請為他們擬定一個探討的話題",
       "crisis": "此內容無法發起直播。如果你遇到困難，聊天室隨時為你提供陪伴。",
       "minors": "直播不可涉及未成年人或學生角色",
@@ -1430,7 +1430,7 @@
       "lateStudio": "深夜工作室",
       "rooftop": "無星夜的天台"
     },
-    "level": "Lv {{level}}",
+    "level": "等級 {{level}}",
     "places": {
       "rainyWalk": "細雨街道",
       "aquarium": "海洋水族館",
@@ -1492,8 +1492,8 @@
     "mood": "情感氛圍",
     "moodHint": {
       "friendly": "無門檻開放",
-      "flirty": "達到 Lv {{level}} 解鎖",
-      "sweet": "達到 Lv {{level}} 解鎖"
+      "flirty": "達到等級 {{level}} 解鎖",
+      "sweet": "達到等級 {{level}} 解鎖"
     },
     "who": "邀約對象",
     "only": "專屬於{{name}}",
@@ -2008,17 +2008,17 @@
     "family": "至親家人",
     "title": "親密度如何演進",
     "body": "每一次深談、通話與約會，都會讓你們的心靠得更近。每邁入一個新階段，你都可以在角色設定中解鎖全新羈絆身份，對方的回應也會同步變得更為契合。",
-    "levels": "Lv {{from}} - {{to}}",
-    "level": "Lv {{level}}",
+    "levels": "等級 {{from}}–{{to}}",
+    "level": "等級 {{level}}",
     "unlocks": "所享權益",
     "nothing": "每段動人相遇所萌芽的原點。",
     "youAreHere": "當前所在階段",
     "relationship": "羈絆設定",
     "pick": "挑選你們彼此的專屬稱呼定位",
     "none": "未設定特定稱呼",
-    "toNext": "距離 Lv {{level}} 還差 {{count}} 點親密度",
+    "toNext": "距離等級 {{level}} 還差 {{count}}",
     "max": "已達到最高親密等級",
-    "lockedAt": "Lv {{level}} 方可解鎖",
+    "lockedAt": "等級 {{level}}",
     "labelTitle": "對於{{name}}來說，你扮演著怎樣的角色？",
     "labelHint": "僅可選擇你當前親密度等級已解鎖的羈絆稱謂。",
     "pickShort": "挑選稱呼"

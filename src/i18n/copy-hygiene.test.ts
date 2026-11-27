@@ -63,8 +63,57 @@ describe('copy hygiene across all 14 locales', () => {
 
   it('keeps Turkish level suffix grammatically safe for every number', () => {
     const tr = all.tr;
-    assert.equal(tr['closeness.toNext']?.includes("{{level}}'"), false, 'Turkish must not attach a hardcoded vowel-harmony suffix to {{level}}');
+    for (const k of ['closeness.toNext', 'dateTheme.moodHint.flirty', 'dateTheme.moodHint.sweet']) {
+      assert.equal(tr[k]?.includes("{{level}}'"), false, `Turkish ${k} must not attach a hardcoded vowel-harmony suffix to {{level}}`);
+    }
     assert.equal(tr['call.shareMessage']?.includes('mm'), false, 'Turkish call.shareMessage typo must stay fixed');
+  });
+
+  it('uses full localized Level wording instead of gaming Lv abbreviations across all 14 locales', () => {
+    const levelKeys = [
+      'home.hero.level',
+      'levelUp.levelLabel',
+      'contacts.level',
+      'dating.level',
+      'dateTheme.moodHint.flirty',
+      'dateTheme.moodHint.sweet',
+      'closeness.levels',
+      'closeness.level',
+      'closeness.toNext',
+      'closeness.lockedAt',
+    ];
+    const abbrRe = /(?<![\p{L}])(Lv|Nv|Niv|Nív|Liv|Ур\.)(?![\p{L}])/iu;
+    const bad: string[] = [];
+    for (const [code, map] of Object.entries(all)) {
+      for (const k of levelKeys) {
+        if (abbrRe.test(map[k] ?? '')) bad.push(`${code}:${k}=${map[k]}`);
+      }
+    }
+    assert.deepEqual(bad, []);
+  });
+
+  it('follows the Friend vs Character glossary in active-relationship and privacy copy', () => {
+    const en = all.en;
+    for (const k of [
+      'find.noResults',
+      'chatList.emptyHint',
+      'callHistory.emptyHint',
+      'diary.infoBody',
+      'chat.voiceConsent.body',
+      'chat.photoConsent.body',
+      'characterSettings.characterSettings',
+      'characterSettings.sectionCharacter',
+      'streams.sheetHint',
+      'streams.empty',
+      'streams.emptyHint',
+      'streams.pickOne',
+      'streams.others',
+      'streams.problems.pair',
+    ]) {
+      assert.equal(/\bcharacters?\b/i.test(en[k] ?? ''), false, `en:${k} should use friend/someone/Sigmazam instead of character`);
+    }
+    assert.ok(en['chat.voiceConsent.body']?.includes('Sigmazam'));
+    assert.ok(en['chat.photoConsent.body']?.includes('Sigmazam'));
   });
 
   it('keeps Russian and French singular user copy in warm informal register (ты / tu)', () => {

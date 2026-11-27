@@ -127,7 +127,7 @@
     },
     "bondLevel": "nivel de vínculo {{level}}",
     "hero": {
-      "level": "Nv {{level}}",
+      "level": "Nivel {{level}}",
       "open": "Abrir chat con {{name}}"
     },
     "gift": {
@@ -181,7 +181,7 @@
     "voiceReady": "Voz lista",
     "voiceTraining": "Entrenando voz",
     "createCharacter": "Crear personaje",
-    "noResults": "Ningún personaje coincide con esa búsqueda todavía.",
+    "noResults": "Nadie coincide con esa búsqueda todavía.",
     "add": "Agregar",
     "friends": "Amigos",
     "results": "{{count}} encontrados",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Chats",
     "empty": "Aún no hay conversaciones",
-    "emptyHint": "Encuentra un personaje y salúdalo primero.",
+    "emptyHint": "Encuentra a alguien y saluda primero.",
     "pinned": "Fijados",
     "muted": "Silenciados",
     "newChat": "Nuevo chat",
@@ -382,11 +382,11 @@
     "sending": "Enviando",
     "voiceConsent": {
       "title": "¿Dejas que oiga tu voz?",
-      "body": "Para entender un mensaje de voz, tu personaje lo envía a nuestro servicio de IA, Google Gemini."
+      "body": "Para entender un mensaje de voz, Sigmazam lo envía a nuestro servicio de IA, Google Gemini."
     },
     "photoConsent": {
       "title": "¿Pueden ver tus fotos?",
-      "body": "Para que tu personaje vea una foto, esta se envía a nuestro servicio de IA, Google Gemini.",
+      "body": "Para que tu amigo vea una foto, Sigmazam la envía a nuestro servicio de IA, Google Gemini.",
       "allow": "Permitir",
       "notNow": "Ahora no"
     },
@@ -589,7 +589,7 @@
   "levelUp": {
     "title": "Has alcanzado una nueva etapa.",
     "subtitle": "{{name}} se siente un poco más cerca de ti.",
-    "levelLabel": "{{title}} · Nv {{level}}",
+    "levelLabel": "{{title}} · Nivel {{level}}",
     "unlocked": "Nuevas relaciones desbloqueadas en sus ajustes.",
     "closer": "Más cerca de {{name}}",
     "newPage": "Se abrió una nueva página de tu historia",
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Llamadas",
     "empty": "Aún no hay llamadas",
-    "emptyHint": "Llama a un personaje y aparecerá aquí.",
+    "emptyHint": "Llama a un amigo y aparecerá aquí.",
     "all": "Todas",
     "missed": "Perdidas",
     "earlier": "Anteriores",
@@ -631,7 +631,7 @@
     "anniversary": "Juntos desde el {{date}}",
     "voiceCall": "Llamada de voz",
     "characterMemories": "Recuerdos",
-    "characterSettings": "Perfil del personaje",
+    "characterSettings": "Perfil del amigo",
     "editCharacter": "Editar personaje",
     "chatSettings": "Ajustes de chat",
     "searchHistory": "Buscar mensajes",
@@ -660,7 +660,7 @@
       "long": "Larga"
     },
     "sectionChat": "Este chat",
-    "sectionCharacter": "Personaje",
+    "sectionCharacter": "Amigo",
     "sectionManage": "Administrar",
     "block": "Bloquear",
     "voiceRepliesPlanHint": "Notas de voz además de texto. Incluidas con Pro.",
@@ -786,7 +786,7 @@
     "emptyHint": "La primera página siempre es la más difícil.",
     "write": "Escribir",
     "info": "Sobre el diario",
-    "infoBody": "Las páginas que compartas serán leídas por ese personaje. Te responderá, recordará lo importante y podrá mencionarlo en sus chats más adelante.",
+    "infoBody": "Las páginas que compartes las lee la persona que elijas. Te responde, recuerda lo importante y puede volver a salir en tus chats más adelante.",
     "pages_one": "{{count}} página",
     "pages_other": "{{count}} páginas",
     "moods": {
@@ -974,7 +974,7 @@
     "empty": "Aún no hay contactos",
     "emptyHint": "Todas las personas con las que hables aparecerán aquí.",
     "create": "Crear un personaje",
-    "level": "Nv {{level}}"
+    "level": "Nivel {{level}}"
   },
   "scenes": {
     "title": "Escenas",
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Transmisiones",
-    "sheetHint": "Mira a dos personajes conversar sobre lo que sea",
+    "sheetHint": "Mira a dos amigos hablar de cualquier tema",
     "new": "Nueva transmisión",
-    "empty": "Mira a dos personajes conversar",
-    "emptyHint": "Elige dos personajes y un tema. Ellos hablarán y tú observarás.",
+    "empty": "Mira a dos amigos hablar",
+    "emptyHint": "Elige a dos amigos y un tema. Ellos hablan, tú miras.",
     "live": "En vivo",
     "topic": "Tema",
     "topicPlaceholder": "¿De qué deberían hablar?",
     "whoTalks": "Quiénes conversan",
-    "pickOne": "Elige un personaje",
+    "pickOne": "Elige a alguien",
     "remove": "Quitar a {{name}}",
-    "others": "Más personajes",
+    "others": "Más personas",
     "start": "Iniciar transmisión",
     "freeToday_one": "Gratis · queda {{count}} ronda gratis hoy",
     "freeToday_other": "Gratis · quedan {{count}} rondas gratis hoy",
     "costs_one": "{{count}} concha · tienes {{shells}}",
     "costs_other": "{{count}} conchas · tienes {{shells}}",
     "problems": {
-      "pair": "Elige dos personajes",
+      "pair": "Elige a dos personas",
       "topic": "Dales un tema sobre el que hablar",
       "crisis": "Esto no puede ser una transmisión. Si estás pasando por un momento difícil, el chat está aquí para ti.",
       "minors": "Las transmisiones no pueden involucrar a menores o personajes en edad escolar",
@@ -1460,7 +1460,7 @@
       "lateStudio": "Noche de trabajo en el estudio",
       "rooftop": "Terraza sin estrellas"
     },
-    "level": "Nv {{level}}",
+    "level": "Nivel {{level}}",
     "places": {
       "rainyWalk": "Calle lluviosa",
       "aquarium": "Acuario",
@@ -1522,8 +1522,8 @@
     "mood": "Ambiente",
     "moodHint": {
       "friendly": "cualquiera",
-      "flirty": "desde Nv {{level}}",
-      "sweet": "desde Nv {{level}}"
+      "flirty": "desde nivel {{level}}",
+      "sweet": "desde nivel {{level}}"
     },
     "who": "Con quién",
     "only": "Solo {{name}}",
@@ -2048,17 +2048,17 @@
     "family": "Familia",
     "title": "Cómo funciona la cercanía",
     "body": "Cada charla, llamada y cita los acerca más. Cada etapa te permite elegir un nuevo tipo de relación en sus ajustes, y hablarán en consecuencia.",
-    "levels": "Nv {{from}}-{{to}}",
-    "level": "Nv {{level}}",
+    "levels": "Niveles {{from}}–{{to}}",
+    "level": "Nivel {{level}}",
     "unlocks": "Desbloquea",
     "nothing": "Donde comienza cada amistad.",
     "youAreHere": "Estás aquí",
     "relationship": "Relación",
     "pick": "Elige qué son el uno para el otro",
     "none": "Sin etiqueta",
-    "toNext": "{{count}} para Nv {{level}}",
+    "toNext": "{{count}} para nivel {{level}}",
     "max": "Nivel más alto alcanzado",
-    "lockedAt": "Nv {{level}}",
+    "lockedAt": "Nivel {{level}}",
     "labelTitle": "¿Qué eres para {{name}}?",
     "labelHint": "Solo se pueden elegir etiquetas desbloqueadas por tu etapa actual.",
     "pickShort": "Elige una"

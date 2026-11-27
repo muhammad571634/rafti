@@ -127,7 +127,7 @@
     },
     "bondLevel": "Band-Stufe {{level}}",
     "hero": {
-      "level": "Lv {{level}}",
+      "level": "Stufe {{level}}",
       "open": "Chat mit {{name}} öffnen"
     },
     "gift": {
@@ -181,7 +181,7 @@
     "voiceReady": "Stimme bereit",
     "voiceTraining": "Stimme lernt noch",
     "createCharacter": "Figur erstellen",
-    "noResults": "Noch keine passende Figur gefunden.",
+    "noResults": "Zu dieser Suche passt noch niemand.",
     "add": "Hinzufügen",
     "friends": "Freunde",
     "results": "{{count}} gefunden",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Chats",
     "empty": "Noch keine Chats",
-    "emptyHint": "Finde eine Figur und sag hallo.",
+    "emptyHint": "Finde jemanden und sag zuerst Hallo.",
     "pinned": "Fixiert",
     "muted": "Stumm",
     "newChat": "Neuer Chat",
@@ -382,11 +382,11 @@
     "sending": "Senden…",
     "voiceConsent": {
       "title": "Darf man deine Stimme hören?",
-      "body": "Um eine Sprachnachricht zu verstehen, sendet dein Charakter sie an unseren KI-Dienst Google Gemini."
+      "body": "Um eine Sprachnachricht zu verstehen, sendet Sigmazam sie an unseren KI-Dienst Google Gemini."
     },
     "photoConsent": {
       "title": "Dürfen sie deine Fotos sehen?",
-      "body": "Damit dein Charakter ein Foto sehen kann, geht es an unseren KI-Dienst, Google Gemini.",
+      "body": "Damit dein Freund ein Foto sehen kann, sendet Sigmazam es an unseren KI-Dienst Google Gemini.",
       "allow": "Erlauben",
       "notNow": "Nicht jetzt"
     },
@@ -589,7 +589,7 @@
   "levelUp": {
     "title": "Ihr habt eine neue Stufe erreicht.",
     "subtitle": "{{name}} fühlt sich dir noch näher.",
-    "levelLabel": "{{title}} · Lv {{level}}",
+    "levelLabel": "{{title}} · Stufe {{level}}",
     "unlocked": "Neue Beziehungsarten in den Einstellungen freigeschaltet.",
     "closer": "Näher bei {{name}}",
     "newPage": "Eine neue Seite eurer Geschichte ist offen",
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Anrufe",
     "empty": "Noch keine Anrufe",
-    "emptyHint": "Rufe eine Figur an, damit sie hier erscheint.",
+    "emptyHint": "Rufe einen Freund an, dann erscheint der Anruf hier.",
     "all": "Alle",
     "missed": "Verpasst",
     "earlier": "Früher",
@@ -631,7 +631,7 @@
     "anniversary": "Zusammen seit {{date}}",
     "voiceCall": "Sprachanruf",
     "characterMemories": "Erinnerungen",
-    "characterSettings": "Figurenprofil",
+    "characterSettings": "Profil",
     "editCharacter": "Figur bearbeiten",
     "chatSettings": "Chat-Einstellungen",
     "searchHistory": "Nachrichten suchen",
@@ -660,7 +660,7 @@
       "long": "Lang"
     },
     "sectionChat": "Dieser Chat",
-    "sectionCharacter": "Figur",
+    "sectionCharacter": "Freund",
     "sectionManage": "Verwalten",
     "block": "Blockieren",
     "voiceRepliesPlanHint": "Sprachnachrichten zusätzlich zum Text. In Pro enthalten.",
@@ -786,7 +786,7 @@
     "emptyHint": "Die erste Seite ist immer die schwerste.",
     "write": "Schreiben",
     "info": "Über das Tagebuch",
-    "infoBody": "Geteilte Seiten werden von dieser Figur gelesen. Sie antwortet, merkt sich Wichtiges und spricht es später im Chat an.",
+    "infoBody": "Geteilte Seiten liest die Person, mit der du sie teilst. Du bekommst eine Antwort, Wichtiges bleibt in Erinnerung und kann später im Chat wieder auftauchen.",
     "pages_one": "{{count}} Seite",
     "pages_other": "{{count}} Seiten",
     "moods": {
@@ -974,7 +974,7 @@
     "empty": "Noch keine Kontakte",
     "emptyHint": "Alle, mit denen du sprichst, erscheinen hier.",
     "create": "Figur erstellen",
-    "level": "Lv {{level}}"
+    "level": "Stufe {{level}}"
   },
   "scenes": {
     "title": "Szenen",
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Streams",
-    "sheetHint": "Sieh zu, wie zwei Figuren über ein Thema sprechen",
+    "sheetHint": "Schau zwei Freunden beim Reden über alles zu",
     "new": "Neuer Stream",
-    "empty": "Zwei Figuren beim Reden zusehen",
-    "emptyHint": "Wähle zwei Figuren und ein Thema. Sie sprechen, du schaust zu.",
+    "empty": "Schau zwei Freunden beim Reden zu",
+    "emptyHint": "Wähle zwei Freunde und ein Thema. Sie reden, du schaust zu.",
     "live": "Live",
     "topic": "Thema",
     "topicPlaceholder": "Worüber sollen sie sprechen?",
     "whoTalks": "Wer spricht",
-    "pickOne": "Figur wählen",
+    "pickOne": "Jemanden auswählen",
     "remove": "{{name}} entfernen",
-    "others": "Weitere Figuren",
+    "others": "Weitere Personen",
     "start": "Stream starten",
     "freeToday_one": "Gratis · noch {{count}} freie Runde heute",
     "freeToday_other": "Gratis · noch {{count}} freie Runden heute",
     "costs_one": "{{count}} Muschel · du hast {{shells}}",
     "costs_other": "{{count}} Muscheln · du hast {{shells}}",
     "problems": {
-      "pair": "Wähle zwei Figuren aus",
+      "pair": "Wähle zwei Personen",
       "topic": "Gib ihnen ein Gesprächsthema",
       "crisis": "Dies kann kein Stream sein. Wenn du Hilfe brauchst, ist der Chat für dich da.",
       "minors": "Streams dürfen keine Minderjährigen oder Schulkinder betreffen",
@@ -1460,7 +1460,7 @@
       "lateStudio": "Spät nachts im Atelier",
       "rooftop": "Dach ohne Sterne"
     },
-    "level": "Lv {{level}}",
+    "level": "Stufe {{level}}",
     "places": {
       "rainyWalk": "Regnerische Straße",
       "aquarium": "Aquarium",
@@ -1522,8 +1522,8 @@
     "mood": "Stimmung",
     "moodHint": {
       "friendly": "jeder",
-      "flirty": "ab Lv {{level}}",
-      "sweet": "ab Lv {{level}}"
+      "flirty": "ab Stufe {{level}}",
+      "sweet": "ab Stufe {{level}}"
     },
     "who": "Mit wem",
     "only": "Nur {{name}}",
@@ -2048,17 +2048,17 @@
     "family": "Familie",
     "title": "Wie Nähe funktioniert",
     "body": "Jeder Chat, Anruf und jedes Date bringt euch näher. Jede Stufe schaltet neue Beziehungsformen frei, an die sich die Figur anpasst.",
-    "levels": "Lv {{from}}-{{to}}",
-    "level": "Lv {{level}}",
+    "levels": "Stufen {{from}}–{{to}}",
+    "level": "Stufe {{level}}",
     "unlocks": "Schaltet frei",
     "nothing": "Hier beginnt jede Freundschaft.",
     "youAreHere": "Hier bist du",
     "relationship": "Beziehung",
     "pick": "Wählt, was ihr füreinander seid",
     "none": "Keine Bezeichnung",
-    "toNext": "{{count}} bis Lv {{level}}",
+    "toNext": "{{count}} bis Stufe {{level}}",
     "max": "Höchste Stufe erreicht",
-    "lockedAt": "Lv {{level}}",
+    "lockedAt": "Stufe {{level}}",
     "labelTitle": "Was bist du für {{name}}?",
     "labelHint": "Nur in deiner aktuellen Stufe freigeschaltete Bezeichnungen sind wählbar.",
     "pickShort": "Auswählen"

@@ -127,7 +127,7 @@
     },
     "bondLevel": "livello di legame {{level}}",
     "hero": {
-      "level": "Liv {{level}}",
+      "level": "Livello {{level}}",
       "open": "Apri la chat con {{name}}"
     },
     "gift": {
@@ -181,7 +181,7 @@
     "voiceReady": "Voce pronta",
     "voiceTraining": "Addestramento voce",
     "createCharacter": "Crea personaggio",
-    "noResults": "Nessun personaggio corrisponde a questa ricerca.",
+    "noResults": "Nessuno corrisponde ancora a questa ricerca.",
     "add": "Aggiungi",
     "friends": "Amici",
     "results": "{{count}} trovati",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Chat",
     "empty": "Nessuna conversazione ancora",
-    "emptyHint": "Trova un personaggio e salutalo per iniziare.",
+    "emptyHint": "Trova qualcuno e saluta per primo.",
     "pinned": "Fissate",
     "muted": "Silenziate",
     "newChat": "Nuova chat",
@@ -382,11 +382,11 @@
     "sending": "Invio in corso",
     "voiceConsent": {
       "title": "Vuoi far sentire la tua voce?",
-      "body": "Per capire un messaggio vocale, il tuo personaggio lo invia al nostro servizio di IA, Google Gemini."
+      "body": "Per capire un messaggio vocale, Sigmazam lo invia al nostro servizio IA, Google Gemini."
     },
     "photoConsent": {
       "title": "Vuoi fargli vedere le tue foto?",
-      "body": "Perché il tuo personaggio veda una foto, questa viene inviata al nostro servizio di IA, Google Gemini.",
+      "body": "Per permettere al tuo amico di vedere una foto, Sigmazam la invia al nostro servizio IA, Google Gemini.",
       "allow": "Consenti",
       "notNow": "Non ora"
     },
@@ -589,7 +589,7 @@
   "levelUp": {
     "title": "Hai raggiunto un nuovo traguardo.",
     "subtitle": "{{name}} si sente un po' più vicino a te.",
-    "levelLabel": "{{title}} · Liv {{level}}",
+    "levelLabel": "{{title}} · Livello {{level}}",
     "unlocked": "Nuovi livelli di relazione sbloccati nelle impostazioni.",
     "closer": "Più vicini, tu e {{name}}",
     "newPage": "Si è aperta una nuova pagina della vostra storia",
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Chiamate",
     "empty": "Nessuna chiamata ancora",
-    "emptyHint": "Chiama un personaggio e apparirà qui.",
+    "emptyHint": "Chiama un amico e la chiamata apparirà qui.",
     "all": "Tutte",
     "missed": "Perse",
     "earlier": "Precedenti",
@@ -631,7 +631,7 @@
     "anniversary": "Insieme dal {{date}}",
     "voiceCall": "Chiamata vocale",
     "characterMemories": "Ricordi",
-    "characterSettings": "Profilo personaggio",
+    "characterSettings": "Profilo dell’amico",
     "editCharacter": "Modifica personaggio",
     "chatSettings": "Impostazioni chat",
     "searchHistory": "Cerca nei messaggi",
@@ -660,7 +660,7 @@
       "long": "Lunga"
     },
     "sectionChat": "Questa chat",
-    "sectionCharacter": "Personaggio",
+    "sectionCharacter": "Amico",
     "sectionManage": "Gestisci",
     "block": "Blocca",
     "voiceRepliesPlanHint": "Messaggi vocali oltre al testo. Inclusi con Pro.",
@@ -786,7 +786,7 @@
     "emptyHint": "La prima pagina è sempre la più difficile.",
     "write": "Scrivi",
     "info": "Informazioni sul diario",
-    "infoBody": "Le pagine che condividi vengono lette da quel personaggio. Ti risponderà, ricorderà ciò che conta e potrebbe parlarne nelle vostre chat future.",
+    "infoBody": "Le pagine che condividi vengono lette dalla persona scelta, che ti risponde, ricorda ciò che conta e potrà riparlarne in chat.",
     "pages_one": "{{count}} pagina",
     "pages_other": "{{count}} pagine",
     "moods": {
@@ -974,7 +974,7 @@
     "empty": "Nessun contatto ancora",
     "emptyHint": "Tutti quelli con cui parli appariranno qui.",
     "create": "Crea un personaggio",
-    "level": "Liv {{level}}"
+    "level": "Livello {{level}}"
   },
   "scenes": {
     "title": "Scene",
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Dirette",
-    "sheetHint": "Guarda due personaggi parlare di qualsiasi cosa",
+    "sheetHint": "Guarda due amici parlare di qualsiasi cosa",
     "new": "Nuova diretta",
-    "empty": "Guarda due personaggi parlare",
-    "emptyHint": "Scegli due personaggi e un argomento. Loro parlano, tu guardi.",
+    "empty": "Guarda due amici parlare",
+    "emptyHint": "Scegli due amici e un argomento. Loro parlano, tu guardi.",
     "live": "Dal vivo",
     "topic": "Argomento",
     "topicPlaceholder": "Di cosa dovrebbero parlare?",
     "whoTalks": "Chi parla",
-    "pickOne": "Scegli un personaggio",
+    "pickOne": "Scegli qualcuno",
     "remove": "Rimuovi {{name}}",
-    "others": "Altri personaggi",
+    "others": "Altre persone",
     "start": "Avvia diretta",
     "freeToday_one": "Gratis · {{count}} turno gratuito rimasto oggi",
     "freeToday_other": "Gratis · {{count}} turni gratuiti rimasti oggi",
     "costs_one": "{{count}} conchiglia · ne hai {{shells}}",
     "costs_other": "{{count}} conchiglie · ne hai {{shells}}",
     "problems": {
-      "pair": "Scegli due personaggi",
+      "pair": "Scegli due persone",
       "topic": "Dai loro un argomento di discussione",
       "crisis": "Non può essere una diretta. Se stai attraversando un momento difficile, la chat è qui per te.",
       "minors": "Le dirette non possono coinvolgere minori o personaggi in età scolare",
@@ -1460,7 +1460,7 @@
       "lateStudio": "Tarda notte nello studio",
       "rooftop": "Tetto, senza stelle"
     },
-    "level": "Liv {{level}}",
+    "level": "Livello {{level}}",
     "places": {
       "rainyWalk": "Strada sotto la pioggia",
       "aquarium": "Acquario",
@@ -1522,8 +1522,8 @@
     "mood": "Atmosfera",
     "moodHint": {
       "friendly": "chiunque",
-      "flirty": "dal Liv {{level}}",
-      "sweet": "dal Liv {{level}}"
+      "flirty": "dal livello {{level}}",
+      "sweet": "dal livello {{level}}"
     },
     "who": "Con chi",
     "only": "Solo {{name}}",
@@ -2048,17 +2048,17 @@
     "family": "Famiglia",
     "title": "Come funziona l'affinità",
     "body": "Ogni chat, chiamata e appuntamento vi avvicina. A ogni livello puoi scegliere un nuovo tipo di relazione nelle sue impostazioni, e lui/lei si adatterà.",
-    "levels": "Liv {{from}}-{{to}}",
-    "level": "Liv {{level}}",
+    "levels": "Livelli {{from}}–{{to}}",
+    "level": "Livello {{level}}",
     "unlocks": "Sblocchi",
     "nothing": "Da dove inizia ogni amicizia.",
     "youAreHere": "Ti trovi qui",
     "relationship": "Relazione",
     "pick": "Scegli cosa siete l'uno per l'altra",
     "none": "Nessuna etichetta",
-    "toNext": "{{count}} al Liv {{level}}",
+    "toNext": "{{count}} al livello {{level}}",
     "max": "Livello massimo raggiunto",
-    "lockedAt": "Liv {{level}}",
+    "lockedAt": "Livello {{level}}",
     "labelTitle": "Cosa sei per {{name}}?",
     "labelHint": "Si possono scegliere solo le etichette sbloccate dal tuo livello attuale.",
     "pickShort": "Scegline una"

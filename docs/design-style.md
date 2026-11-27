@@ -177,7 +177,16 @@ intro keeps its own three taps (approved, timed to the motion).
 ## 7. Words
 
 - English UI, sentence case, short. Say what happens and what it costs; no exclamation marks
-  except a welcome.
+  except a welcome. Use true ellipsis (`…`), `"midnight"` (not `"00:00"`), and full `"Level"`
+  (never `"Lv"` / `"Ур."` / `"Niv"`).
+- **One glossary (`Friend` vs `Character`):** Inside an active relationship or daily life (chats,
+  calls, diary, settings, streams), call them **friend** or **someone** (and in privacy notices,
+  **Sigmazam** sends audio/photos to the AI service). Keep **character** / **AI character** for the
+  creation studio, catalogue discovery, safety/age rules, mandatory AI disclosures, and share-poster
+  badges.
+- **Warm register in every locale:** informal singular (`ты` in Russian, `tu` in French, `du` in
+  German, `tú` in Spanish, `sen` in Turkish), gender-neutral where a language marks gender. Guarded
+  by `src/i18n/copy-hygiene.test.ts`.
 - Same price, same words everywhere (`src/components/plans/copy.ts` holds the plan wording).
 - No pressure: options shown side by side and equal, no fake timers, no hidden prices.
 

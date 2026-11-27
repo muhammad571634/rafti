@@ -127,7 +127,7 @@
     },
     "bondLevel": "bond level {{level}}",
     "hero": {
-      "level": "Lv {{level}}",
+      "level": "Level {{level}}",
       "open": "Open chat with {{name}}"
     },
     "gift": {
@@ -181,7 +181,7 @@
     "voiceReady": "Voice ready",
     "voiceTraining": "Voice training",
     "createCharacter": "Create character",
-    "noResults": "No characters match that search yet.",
+    "noResults": "No one matches that search yet.",
     "add": "Add",
     "friends": "Friends",
     "results": "{{count}} found",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Chats",
     "empty": "No conversations yet",
-    "emptyHint": "Find a character and say hi first.",
+    "emptyHint": "Find someone and say hi first.",
     "pinned": "Pinned",
     "muted": "Muted",
     "newChat": "New chat",
@@ -382,11 +382,11 @@
     "sending": "Sending",
     "voiceConsent": {
       "title": "Let them hear your voice?",
-      "body": "To understand a voice message, your character sends it to our AI service, Google Gemini."
+      "body": "To understand a voice message, Sigmazam sends it to our AI service, Google Gemini."
     },
     "photoConsent": {
       "title": "Let them see your photos?",
-      "body": "To see a photo, your character sends it to our AI service, Google Gemini.",
+      "body": "So your friend can see a photo, Sigmazam sends it to our AI service, Google Gemini.",
       "allow": "Allow",
       "notNow": "Not now"
     },
@@ -589,7 +589,7 @@
   "levelUp": {
     "title": "You've reached a new stage.",
     "subtitle": "{{name}} feels a little closer to you.",
-    "levelLabel": "{{title}} · Lv {{level}}",
+    "levelLabel": "{{title}} · Level {{level}}",
     "unlocked": "New relationships unlocked in their settings.",
     "closer": "Closer to {{name}}",
     "newPage": "A new page of your story is open",
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Calls",
     "empty": "No calls yet",
-    "emptyHint": "Call a character and it will show up here.",
+    "emptyHint": "Call a friend and it will show up here.",
     "all": "All",
     "missed": "Missed",
     "earlier": "Earlier",
@@ -631,7 +631,7 @@
     "anniversary": "Together since {{date}}",
     "voiceCall": "Voice call",
     "characterMemories": "Memories",
-    "characterSettings": "Character profile",
+    "characterSettings": "Friend profile",
     "editCharacter": "Edit character",
     "chatSettings": "Chat settings",
     "searchHistory": "Search messages",
@@ -660,7 +660,7 @@
       "long": "Long"
     },
     "sectionChat": "This chat",
-    "sectionCharacter": "Character",
+    "sectionCharacter": "Friend",
     "sectionManage": "Manage",
     "block": "Block",
     "voiceRepliesPlanHint": "Voice notes as well as text. They come with Pro.",
@@ -786,7 +786,7 @@
     "emptyHint": "The first page is always the hardest.",
     "write": "Write",
     "info": "About the diary",
-    "infoBody": "Pages you share are read by that character. They write back, remember what matters, and it may come up in your chats later.",
+    "infoBody": "Pages you share are read by your friend. They write back, remember what matters, and it may come up in your chats later.",
     "pages_one": "{{count}} page",
     "pages_other": "{{count}} pages",
     "moods": {
@@ -974,7 +974,7 @@
     "empty": "No contacts yet",
     "emptyHint": "Everyone you talk to shows up here.",
     "create": "Create a character",
-    "level": "Lv {{level}}"
+    "level": "Level {{level}}"
   },
   "scenes": {
     "title": "Scenes",
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Streams",
-    "sheetHint": "Watch two characters talk about anything",
+    "sheetHint": "Watch two friends talk about anything",
     "new": "New stream",
-    "empty": "Watch two characters talk",
-    "emptyHint": "Pick two characters and a topic. They talk, you watch.",
+    "empty": "Watch two friends talk",
+    "emptyHint": "Pick two friends and a topic. They talk, you watch.",
     "live": "Live",
     "topic": "Topic",
     "topicPlaceholder": "What should they talk about?",
     "whoTalks": "Who talks",
-    "pickOne": "Pick a character",
+    "pickOne": "Pick someone",
     "remove": "Take {{name}} out",
-    "others": "More characters",
+    "others": "More people",
     "start": "Start stream",
     "freeToday_one": "Free · {{count}} free round left today",
     "freeToday_other": "Free · {{count}} free rounds left today",
     "costs_one": "{{count}} shell · you have {{shells}}",
     "costs_other": "{{count}} shells · you have {{shells}}",
     "problems": {
-      "pair": "Pick two characters",
+      "pair": "Pick two people",
       "topic": "Give them something to talk about",
       "crisis": "This can't be a stream. If you're going through something, the chat is here for you.",
       "minors": "Streams can't involve minors or school-age characters",
@@ -1460,7 +1460,7 @@
       "lateStudio": "Late night in the studio",
       "rooftop": "Rooftop, no stars"
     },
-    "level": "Lv {{level}}",
+    "level": "Level {{level}}",
     "places": {
       "rainyWalk": "Rainy street",
       "aquarium": "Aquarium",
@@ -1522,8 +1522,8 @@
     "mood": "Mood",
     "moodHint": {
       "friendly": "anyone",
-      "flirty": "from Lv {{level}}",
-      "sweet": "from Lv {{level}}"
+      "flirty": "from level {{level}}",
+      "sweet": "from level {{level}}"
     },
     "who": "Who with",
     "only": "Only {{name}}",
@@ -2048,17 +2048,17 @@
     "family": "Family",
     "title": "How closeness works",
     "body": "Every chat, call and date brings you closer. Each stage lets you pick a new kind of relationship in their settings, and they talk to you to match.",
-    "levels": "Lv {{from}}-{{to}}",
-    "level": "Lv {{level}}",
+    "levels": "Levels {{from}}–{{to}}",
+    "level": "Level {{level}}",
     "unlocks": "Unlocks",
     "nothing": "Where every friendship starts.",
     "youAreHere": "You are here",
     "relationship": "Relationship",
     "pick": "Pick what you are to each other",
     "none": "No label",
-    "toNext": "{{count}} to Lv {{level}}",
+    "toNext": "{{count}} to level {{level}}",
     "max": "Highest level reached",
-    "lockedAt": "Lv {{level}}",
+    "lockedAt": "Level {{level}}",
     "labelTitle": "What are you to {{name}}?",
     "labelHint": "Only labels your stage has unlocked can be picked.",
     "pickShort": "Pick one"

@@ -124,7 +124,7 @@
     },
     "bondLevel": "絆レベル {{level}}",
     "hero": {
-      "level": "Lv {{level}}",
+      "level": "レベル {{level}}",
       "open": "{{name}}とのチャットを開く"
     },
     "gift": {
@@ -177,7 +177,7 @@
     "voiceReady": "ボイスあり",
     "voiceTraining": "ボイス準備中",
     "createCharacter": "キャラクター作成",
-    "noResults": "一致するキャラクターが見つかりません。",
+    "noResults": "条件に合う人がまだ見つかりません。",
     "add": "追加",
     "friends": "友達",
     "results": "{{count}}件見つかりました",
@@ -252,7 +252,7 @@
   "chatList": {
     "title": "チャット",
     "empty": "まだ会話がありません",
-    "emptyHint": "キャラクターを見つけて挨拶してみましょう。",
+    "emptyHint": "誰かを見つけて、まずあいさつしてみましょう。",
     "pinned": "ピン留め",
     "muted": "ミュート中",
     "newChat": "新しいチャット",
@@ -375,11 +375,11 @@
     "sending": "送信中",
     "voiceConsent": {
       "title": "声を聞かせますか？",
-      "body": "ボイスメッセージを理解するため、キャラクターは当社のAIサービスGoogle Geminiに送信します。"
+      "body": "ボイスメッセージを理解するため、SigmazamはAIサービス（Google Gemini）に送信します。"
     },
     "photoConsent": {
       "title": "写真を見せますか?",
-      "body": "キャラクターが写真を見るために、写真は当社のAIサービス Google Gemini に送信されます。",
+      "body": "友達が写真を見られるように、SigmazamはAIサービス（Google Gemini）に送信します。",
       "allow": "許可",
       "notNow": "今はしない"
     },
@@ -573,7 +573,7 @@
   "levelUp": {
     "title": "新しい段階に到達しました。",
     "subtitle": "{{name}}との距離が少し縮まりました。",
-    "levelLabel": "{{title}} · Lv {{level}}",
+    "levelLabel": "{{title}} · レベル {{level}}",
     "unlocked": "設定で新しい関係性がアンロックされました。",
     "closer": "{{name}}ともっと近くに",
     "newPage": "ふたりの物語に新しいページ",
@@ -599,7 +599,7 @@
   "callHistory": {
     "title": "通話",
     "empty": "通話履歴はまだありません",
-    "emptyHint": "キャラクターに通話すると、ここに履歴が表示されます。",
+    "emptyHint": "友達に通話すると、ここに履歴が表示されます。",
     "all": "すべて",
     "missed": "不在着信",
     "earlier": "過去",
@@ -615,7 +615,7 @@
     "anniversary": "{{date}}から一緒",
     "voiceCall": "音声通話",
     "characterMemories": "思い出",
-    "characterSettings": "キャラクタープロフィール",
+    "characterSettings": "友達のプロフィール",
     "editCharacter": "キャラクター編集",
     "chatSettings": "チャット設定",
     "searchHistory": "メッセージ検索",
@@ -644,7 +644,7 @@
       "long": "長め"
     },
     "sectionChat": "このチャット",
-    "sectionCharacter": "キャラクター",
+    "sectionCharacter": "友達",
     "sectionManage": "管理",
     "block": "ブロック",
     "voiceRepliesPlanHint": "テキストに加え音声でも返信します。Proに含まれています。",
@@ -768,7 +768,7 @@
     "emptyHint": "最初の1ページ目が一番難しいものです。",
     "write": "書く",
     "info": "日記について",
-    "infoBody": "共有したページは相手のキャラクターが読みます。お返事を書いて内容を覚え、今後のチャットの話題になることもあります。",
+    "infoBody": "共有したページはその友達が読みます。返事を書いてくれたり、大切なことを覚えていて後のチャットで話題にしたりします。",
     "pages_other": "{{count}}ページ",
     "moods": {
       "happy": "うれしい",
@@ -952,7 +952,7 @@
     "empty": "連絡先がまだありません",
     "emptyHint": "会話した全員がここに表示されます。",
     "create": "キャラクターを作成",
-    "level": "Lv {{level}}"
+    "level": "レベル {{level}}"
   },
   "scenes": {
     "title": "シーン",
@@ -1083,22 +1083,22 @@
   },
   "streams": {
     "title": "配信",
-    "sheetHint": "ふたりのキャラクターの会話を観賞",
+    "sheetHint": "2人の友達が好きなテーマで話すのを眺める",
     "new": "新しい配信",
-    "empty": "ふたりの会話を観賞する",
-    "emptyHint": "ふたりのキャラクターとテーマを選びます。ふたりが話し、あなたは見守ります。",
+    "empty": "2人の友達の会話を見る",
+    "emptyHint": "2人の友達とテーマを選ぶだけ。会話するのを眺められます。",
     "live": "配信中",
     "topic": "テーマ",
     "topicPlaceholder": "ふたりに何を話してほしいですか？",
     "whoTalks": "話すキャラクター",
-    "pickOne": "キャラクターを選択",
+    "pickOne": "誰かを選ぶ",
     "remove": "{{name}}を外す",
-    "others": "他のキャラクター",
+    "others": "ほかの人",
     "start": "配信を開始",
     "freeToday_other": "無料 · 今日の無料枠残り{{count}}回",
     "costs_other": "{{count}}シェル · 所持: {{shells}}",
     "problems": {
-      "pair": "キャラクターを2人選んでください",
+      "pair": "2人選んでください",
       "topic": "話すテーマを入力してください",
       "crisis": "これは配信テーマにできません。辛いときはチャットでお話ししてください。",
       "minors": "配信に未成年や就学年齢のキャラクターを含めることはできません",
@@ -1430,7 +1430,7 @@
       "lateStudio": "深夜のスタジオ",
       "rooftop": "星のない屋上"
     },
-    "level": "Lv {{level}}",
+    "level": "レベル {{level}}",
     "places": {
       "rainyWalk": "雨の街角",
       "aquarium": "水族館",
@@ -1492,8 +1492,8 @@
     "mood": "雰囲気",
     "moodHint": {
       "friendly": "誰でも",
-      "flirty": "Lv {{level}}から",
-      "sweet": "Lv {{level}}から"
+      "flirty": "レベル {{level}}から",
+      "sweet": "レベル {{level}}から"
     },
     "who": "相手",
     "only": "{{name}}のみ",
@@ -2008,17 +2008,17 @@
     "family": "家族",
     "title": "絆の仕組み",
     "body": "チャット、通話、デートを重ねるごとに絆が深まります。各段階で新しい関係性を設定できるようになり、相手の接し方も変化します。",
-    "levels": "Lv {{from}}〜{{to}}",
-    "level": "Lv {{level}}",
+    "levels": "レベル {{from}}〜{{to}}",
+    "level": "レベル {{level}}",
     "unlocks": "アンロック",
     "nothing": "すべての友情がここから始まります。",
     "youAreHere": "現在の位置",
     "relationship": "関係性",
     "pick": "お互いの関係を選択",
     "none": "指定なし",
-    "toNext": "Lv {{level}}まであと{{count}}",
+    "toNext": "レベル {{level}}まであと{{count}}",
     "max": "最高レベル到達",
-    "lockedAt": "Lv {{level}}",
+    "lockedAt": "レベル {{level}}",
     "labelTitle": "{{name}}にとってあなたは？",
     "labelHint": "現在のレベルでアンロックされている関係のみ選択できます。",
     "pickShort": "選択する"

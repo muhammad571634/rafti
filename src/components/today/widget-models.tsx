@@ -635,7 +635,8 @@ function useBondModel(): WidgetModel {
       faces: friend ? [friend] : [],
       ...(bond && friend
         ? {
-            figure: t('home.hero.level', { level: bond.level }),
+            figure: String(bond.level),
+            unit: t('us.ringLevel'),
             progress: levelForIntimacy(bond.intimacy).progress,
             line: t('home.widget.toNext', { name: nameOf(friend), count: toGo }),
             lineLines: 2,

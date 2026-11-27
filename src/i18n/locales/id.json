@@ -124,7 +124,7 @@
     },
     "bondLevel": "level ikatan {{level}}",
     "hero": {
-      "level": "Lv {{level}}",
+      "level": "Level {{level}}",
       "open": "Buka obrolan dengan {{name}}"
     },
     "gift": {
@@ -177,7 +177,7 @@
     "voiceReady": "Suara siap",
     "voiceTraining": "Pelatihan suara",
     "createCharacter": "Buat karakter",
-    "noResults": "Belum ada karakter yang cocok dengan pencarian itu.",
+    "noResults": "Belum ada yang cocok dengan pencarian itu.",
     "add": "Tambah",
     "friends": "Teman",
     "results": "{{count}} ditemukan",
@@ -252,7 +252,7 @@
   "chatList": {
     "title": "Obrolan",
     "empty": "Belum ada percakapan",
-    "emptyHint": "Cari karakter dan sapa mereka terlebih dahulu.",
+    "emptyHint": "Temukan seseorang dan sapa duluan.",
     "pinned": "Disematkan",
     "muted": "Dibisukan",
     "newChat": "Obrolan baru",
@@ -375,11 +375,11 @@
     "sending": "Mengirim",
     "voiceConsent": {
       "title": "Izinkan mendengar suaramu?",
-      "body": "Untuk memahami pesan suara, karaktermu mengirimnya ke layanan AI kami, Google Gemini."
+      "body": "Untuk memahami pesan suara, Sigmazam mengirimkannya ke layanan AI kami, Google Gemini."
     },
     "photoConsent": {
       "title": "Izinkan mereka melihat fotomu?",
-      "body": "Agar karaktermu bisa melihat foto, foto itu dikirim ke layanan AI kami, Google Gemini.",
+      "body": "Agar temanmu bisa melihat foto, Sigmazam mengirimkannya ke layanan AI kami, Google Gemini.",
       "allow": "Izinkan",
       "notNow": "Nanti saja"
     },
@@ -573,7 +573,7 @@
   "levelUp": {
     "title": "Kamu mencapai tahap baru.",
     "subtitle": "{{name}} merasa sedikit lebih dekat denganmu.",
-    "levelLabel": "{{title}} · Lv {{level}}",
+    "levelLabel": "{{title}} · Level {{level}}",
     "unlocked": "Hubungan baru telah terbuka di pengaturan mereka.",
     "closer": "Lebih dekat dengan {{name}}",
     "newPage": "Halaman baru kisah kalian terbuka",
@@ -599,7 +599,7 @@
   "callHistory": {
     "title": "Panggilan",
     "empty": "Belum ada panggilan",
-    "emptyHint": "Telepon karakter dan riwayatnya akan muncul di sini.",
+    "emptyHint": "Telepon seorang teman dan panggilannya akan muncul di sini.",
     "all": "Semua",
     "missed": "Tak terjawab",
     "earlier": "Sebelumnya",
@@ -615,7 +615,7 @@
     "anniversary": "Bersama sejak {{date}}",
     "voiceCall": "Panggilan suara",
     "characterMemories": "Kenangan",
-    "characterSettings": "Profil karakter",
+    "characterSettings": "Profil teman",
     "editCharacter": "Edit karakter",
     "chatSettings": "Pengaturan obrolan",
     "searchHistory": "Cari pesan",
@@ -644,7 +644,7 @@
       "long": "Panjang"
     },
     "sectionChat": "Obrolan ini",
-    "sectionCharacter": "Karakter",
+    "sectionCharacter": "Teman",
     "sectionManage": "Kelola",
     "block": "Blokir",
     "voiceRepliesPlanHint": "Catatan suara selain teks. Tersedia dengan paket Pro.",
@@ -768,7 +768,7 @@
     "emptyHint": "Halaman pertama selalu yang paling sulit.",
     "write": "Tulis",
     "info": "Tentang buku harian",
-    "infoBody": "Halaman yang kamu bagikan akan dibaca oleh karakter itu. Mereka akan membalas, mengingat hal yang penting, dan mungkin mengungkitnya dalam obrolan nanti.",
+    "infoBody": "Halaman yang kamu bagikan dibaca oleh temanmu. Dia membalas, mengingat hal penting, dan bisa membahasnya lagi di obrolanmu nanti.",
     "pages_other": "{{count}} halaman",
     "moods": {
       "happy": "Senang",
@@ -952,7 +952,7 @@
     "empty": "Belum ada kontak",
     "emptyHint": "Semua teman bicaramu akan muncul di sini.",
     "create": "Buat karakter",
-    "level": "Lv {{level}}"
+    "level": "Level {{level}}"
   },
   "scenes": {
     "title": "Adegan",
@@ -1083,22 +1083,22 @@
   },
   "streams": {
     "title": "Siaran",
-    "sheetHint": "Tonton dua karakter mengobrol tentang apa saja",
+    "sheetHint": "Tonton dua teman mengobrol tentang apa saja",
     "new": "Siaran baru",
-    "empty": "Tonton dua karakter mengobrol",
-    "emptyHint": "Pilih dua karakter dan satu topik. Mereka mengobrol, kamu menonton.",
+    "empty": "Tonton dua teman mengobrol",
+    "emptyHint": "Pilih dua teman dan satu topik. Mereka mengobrol, kamu menonton.",
     "live": "Langsung",
     "topic": "Topik",
     "topicPlaceholder": "Tentang apa mereka harus berbicara?",
     "whoTalks": "Siapa yang bicara",
-    "pickOne": "Pilih karakter",
+    "pickOne": "Pilih seseorang",
     "remove": "Keluarkan {{name}}",
-    "others": "Karakter lainnya",
+    "others": "Orang lainnya",
     "start": "Mulai siaran",
     "freeToday_other": "Gratis · sisa {{count}} putaran gratis hari ini",
     "costs_other": "{{count}} kerang · kamu punya {{shells}}",
     "problems": {
-      "pair": "Pilih dua karakter",
+      "pair": "Pilih dua orang",
       "topic": "Beri mereka topik untuk dibicarakan",
       "crisis": "Ini tidak bisa dijadikan siaran. Jika kamu sedang mengalami masa sulit, obrolan siap untukmu.",
       "minors": "Siaran tidak boleh melibatkan anak di bawah umur atau usia sekolah",
@@ -1430,7 +1430,7 @@
       "lateStudio": "Larut malam di studio",
       "rooftop": "Atap gedung tanpa bintang"
     },
-    "level": "Lv {{level}}",
+    "level": "Level {{level}}",
     "places": {
       "rainyWalk": "Jalanan berhujan",
       "aquarium": "Akuarium",
@@ -1492,8 +1492,8 @@
     "mood": "Suasana",
     "moodHint": {
       "friendly": "siapa saja",
-      "flirty": "dari Lv {{level}}",
-      "sweet": "dari Lv {{level}}"
+      "flirty": "mulai Level {{level}}",
+      "sweet": "mulai Level {{level}}"
     },
     "who": "Dengan siapa",
     "only": "Hanya {{name}}",
@@ -2008,17 +2008,17 @@
     "family": "Keluarga",
     "title": "Cara kerja kedekatan",
     "body": "Setiap obrolan, panggilan, dan kencan membuat kalian semakin dekat. Setiap tahap memungkinkanmu memilih jenis hubungan baru di pengaturan mereka, dan mereka akan menyesuaikan gaya bicaranya.",
-    "levels": "Lv {{from}}-{{to}}",
-    "level": "Lv {{level}}",
+    "levels": "Level {{from}}–{{to}}",
+    "level": "Level {{level}}",
     "unlocks": "Membuka",
     "nothing": "Awal mula setiap pertemanan.",
     "youAreHere": "Kamu di sini",
     "relationship": "Hubungan",
     "pick": "Pilih status hubungan kalian",
     "none": "Tanpa label",
-    "toNext": "{{count}} menuju Lv {{level}}",
+    "toNext": "{{count}} menuju Level {{level}}",
     "max": "Tingkat tertinggi tercapai",
-    "lockedAt": "Lv {{level}}",
+    "lockedAt": "Level {{level}}",
     "labelTitle": "Siapa kamu bagi {{name}}?",
     "labelHint": "Hanya label yang telah dibuka oleh tahapmu yang dapat dipilih.",
     "pickShort": "Pilih satu"

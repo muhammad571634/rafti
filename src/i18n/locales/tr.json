@@ -181,7 +181,7 @@
     "voiceReady": "Ses hazır",
     "voiceTraining": "Ses eğitiliyor",
     "createCharacter": "Karakter oluştur",
-    "noResults": "Bu aramaya uygun karakter henüz yok.",
+    "noResults": "Bu aramayla eşleşen kimse yok.",
     "add": "Ekle",
     "friends": "Arkadaşlar",
     "results": "{{count}} bulundu",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Sohbetler",
     "empty": "Henüz sohbet yok",
-    "emptyHint": "Bir karakter bul ve önce sen selam ver.",
+    "emptyHint": "Birini bul ve ilk selamı sen ver.",
     "pinned": "Sabitlenenler",
     "muted": "Sessize alınanlar",
     "newChat": "Yeni sohbet",
@@ -382,11 +382,11 @@
     "sending": "Gönderiliyor",
     "voiceConsent": {
       "title": "Sesini duyabilsin mi?",
-      "body": "Karakterinin bir sesli mesajı anlayabilmesi için mesaj, yapay zekâ hizmetimiz Google Gemini’ye gönderilir."
+      "body": "Sesli mesajı anlayabilmek için Sigmazam bunu yapay zekâ hizmetimiz Google Gemini’ye gönderir."
     },
     "photoConsent": {
       "title": "Fotoğraflarını görebilsin mi?",
-      "body": "Karakterinin bir fotoğrafı görebilmesi için fotoğraf, yapay zekâ hizmetimiz Google Gemini'ye gönderilir.",
+      "body": "Arkadaşının fotoğrafı görebilmesi için Sigmazam bunu yapay zekâ hizmetimiz Google Gemini’ye gönderir.",
       "allow": "İzin ver",
       "notNow": "Şimdi değil"
     },
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Aramalar",
     "empty": "Henüz arama yok",
-    "emptyHint": "Bir karakteri aradığında burada görünecektir.",
+    "emptyHint": "Bir arkadaşını ara, araman burada görünsün.",
     "all": "Tümü",
     "missed": "Cevapsız",
     "earlier": "Daha önce",
@@ -631,7 +631,7 @@
     "anniversary": "{{date}} tarihinden beri birlikte",
     "voiceCall": "Sesli arama",
     "characterMemories": "Anılar",
-    "characterSettings": "Karakter profili",
+    "characterSettings": "Arkadaş profili",
     "editCharacter": "Karakteri düzenle",
     "chatSettings": "Sohbet ayarları",
     "searchHistory": "Mesajlarda ara",
@@ -660,7 +660,7 @@
       "long": "Uzun"
     },
     "sectionChat": "Bu sohbet",
-    "sectionCharacter": "Karakter",
+    "sectionCharacter": "Arkadaş",
     "sectionManage": "Yönet",
     "block": "Engelle",
     "voiceRepliesPlanHint": "Metinle birlikte sesli notlar. Pro ile birlikte gelir.",
@@ -786,7 +786,7 @@
     "emptyHint": "İlk sayfayı yazmak her zaman en zorudur.",
     "write": "Yaz",
     "info": "Günlük hakkında",
-    "infoBody": "Paylaştığın sayfalar o karakter tarafından okunur. Yanıt verirler, önemli şeyleri hatırlarlar ve bu daha sonra sohbetlerinizde karşına çıkabilir.",
+    "infoBody": "Paylaştığın sayfaları arkadaşın okur. Sana yanıt yazar, önemli olanları hatırlar ve ileride sohbetlerinizde geçebilir.",
     "pages_one": "{{count}} sayfa",
     "pages_other": "{{count}} sayfa",
     "moods": {
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Canlı Yayınlar",
-    "sheetHint": "İki karakterin her konuda konuşmasını izle",
+    "sheetHint": "İki arkadaşın her konuda sohbetini izle",
     "new": "Yeni yayın",
-    "empty": "İki karakterin konuşmasını izle",
-    "emptyHint": "İki karakter ve bir konu seç. Onlar konuşsun, sen izle.",
+    "empty": "İki arkadaşın sohbetini izle",
+    "emptyHint": "İki arkadaş ve bir konu seç. Onlar konuşsun, sen izle.",
     "live": "Canlı",
     "topic": "Konu",
     "topicPlaceholder": "Ne hakkında konuşsunlar?",
     "whoTalks": "Kimin konuştuğu",
-    "pickOne": "Bir karakter seç",
+    "pickOne": "Birini seç",
     "remove": "{{name}} çıkar",
-    "others": "Daha fazla karakter",
+    "others": "Diğer kişiler",
     "start": "Yayını başlat",
     "freeToday_one": "Ücretsiz · bugün {{count}} ücretsiz tur hakkı kaldı",
     "freeToday_other": "Ücretsiz · bugün {{count}} ücretsiz tur hakkı kaldı",
     "costs_one": "{{count}} kabuk · sende {{shells}} var",
     "costs_other": "{{count}} kabuk · sende {{shells}} var",
     "problems": {
-      "pair": "İki karakter seç",
+      "pair": "İki kişi seç",
       "topic": "Konuşacakları bir konu belirle",
       "crisis": "Bu bir yayın olamaz. Zor bir dönemden geçiyorsan sohbet senin için burada.",
       "minors": "Yayınlar reşit olmayanları veya okul çağındaki karakterleri içeremez",
@@ -1522,8 +1522,8 @@
     "mood": "Ruh hali",
     "moodHint": {
       "friendly": "herkes",
-      "flirty": "Seviye {{level}}'den itibaren",
-      "sweet": "Seviye {{level}}'den itibaren"
+      "flirty": "{{level}}. seviyeden itibaren",
+      "sweet": "{{level}}. seviyeden itibaren"
     },
     "who": "Kiminle",
     "only": "Yalnızca {{name}}",
@@ -2048,7 +2048,7 @@
     "family": "Aile",
     "title": "Yakınlık nasıl çalışır?",
     "body": "Her sohbet, arama ve buluşma sizi yakınlaştırır. Her aşama ayarlarında yeni bir ilişki türü seçmeni sağlar ve seninle buna uygun konuşurlar.",
-    "levels": "Seviye {{from}}-{{to}}",
+    "levels": "Seviye {{from}}–{{to}}",
     "level": "Seviye {{level}}",
     "unlocks": "Açılanlar",
     "nothing": "Her arkadaşlığın başladığı yer.",

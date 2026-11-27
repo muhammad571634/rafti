@@ -127,7 +127,7 @@
     },
     "bondLevel": "niveau de lien {{level}}",
     "hero": {
-      "level": "Niv {{level}}",
+      "level": "Niveau {{level}}",
       "open": "Ouvrir la discussion avec {{name}}"
     },
     "gift": {
@@ -181,7 +181,7 @@
     "voiceReady": "Voix prête",
     "voiceTraining": "Voix en apprentissage",
     "createCharacter": "Créer un personnage",
-    "noResults": "Aucun personnage ne correspond à cette recherche pour l'instant.",
+    "noResults": "Personne ne correspond encore à cette recherche.",
     "add": "Ajouter",
     "friends": "Amis",
     "results": "{{count}} trouvés",
@@ -257,7 +257,7 @@
   "chatList": {
     "title": "Discussions",
     "empty": "Aucune conversation pour l'instant",
-    "emptyHint": "Trouve un personnage et dis-lui bonjour.",
+    "emptyHint": "Trouve quelqu’un et dis-lui bonjour.",
     "pinned": "Épinglées",
     "muted": "En sourdine",
     "newChat": "Nouvelle discussion",
@@ -382,11 +382,11 @@
     "sending": "Envoi en cours",
     "voiceConsent": {
       "title": "Laisser entendre ta voix ?",
-      "body": "Pour comprendre un message vocal, ton personnage l'envoie à notre service d'IA, Google Gemini."
+      "body": "Pour comprendre un message vocal, Sigmazam l’envoie à notre service d’IA, Google Gemini."
     },
     "photoConsent": {
       "title": "Partager tes photos ?",
-      "body": "Pour que ton personnage voie une photo, elle est envoyée à notre service d’IA, Google Gemini.",
+      "body": "Pour que ton ami voie une photo, Sigmazam l’envoie à notre service d’IA, Google Gemini.",
       "allow": "Autoriser",
       "notNow": "Pas maintenant"
     },
@@ -589,7 +589,7 @@
   "levelUp": {
     "title": "Tu as franchi une nouvelle étape.",
     "subtitle": "{{name}} se sent un peu plus proche de toi.",
-    "levelLabel": "{{title}} · Niv {{level}}",
+    "levelLabel": "{{title}} · Niveau {{level}}",
     "unlocked": "Nouvelles relations débloquées dans ses paramètres.",
     "closer": "Plus proche de {{name}}",
     "newPage": "Une nouvelle page de ton histoire s’ouvre",
@@ -615,7 +615,7 @@
   "callHistory": {
     "title": "Appels",
     "empty": "Aucun appel pour l'instant",
-    "emptyHint": "Appelle un personnage et il apparaîtra ici.",
+    "emptyHint": "Appelle un ami et l’appel apparaîtra ici.",
     "all": "Tous",
     "missed": "Manqués",
     "earlier": "Précédents",
@@ -631,7 +631,7 @@
     "anniversary": "Ensemble depuis le {{date}}",
     "voiceCall": "Appel vocal",
     "characterMemories": "Souvenirs",
-    "characterSettings": "Profil du personnage",
+    "characterSettings": "Profil de l’ami",
     "editCharacter": "Modifier le personnage",
     "chatSettings": "Paramètres de discussion",
     "searchHistory": "Rechercher des messages",
@@ -660,7 +660,7 @@
       "long": "Long"
     },
     "sectionChat": "Cette discussion",
-    "sectionCharacter": "Personnage",
+    "sectionCharacter": "Ami",
     "sectionManage": "Gérer",
     "block": "Bloquer",
     "voiceRepliesPlanHint": "Des messages vocaux en plus du texte. Inclus avec Pro.",
@@ -786,7 +786,7 @@
     "emptyHint": "La première page est toujours la plus difficile.",
     "write": "Écrire",
     "info": "À propos du journal",
-    "infoBody": "Les pages que tu partages sont lues par ce personnage. Il te répond, se rappelle ce qui compte, et cela pourra ressurgir dans tes discussions.",
+    "infoBody": "Les pages que tu partages sont lues par la personne choisie, qui te répond, retient ce qui compte et peut en reparler dans tes discussions.",
     "pages_one": "{{count}} page",
     "pages_other": "{{count}} pages",
     "moods": {
@@ -974,7 +974,7 @@
     "empty": "Aucun contact pour l'instant",
     "emptyHint": "Toutes les personnes avec qui tu parles apparaîtront ici.",
     "create": "Créer un personnage",
-    "level": "Niv {{level}}"
+    "level": "Niveau {{level}}"
   },
   "scenes": {
     "title": "Scènes",
@@ -1107,24 +1107,24 @@
   },
   "streams": {
     "title": "Directs",
-    "sheetHint": "Regarde deux personnages échanger sur n’importe quel sujet",
+    "sheetHint": "Regarde deux amis échanger sur n’importe quel sujet",
     "new": "Nouveau direct",
-    "empty": "Regarde deux personnages discuter",
-    "emptyHint": "Choisis deux personnages et un sujet. Ils discutent, tu observes.",
+    "empty": "Regarde deux amis discuter",
+    "emptyHint": "Choisis deux amis et un sujet. Ils discutent, tu observes.",
     "live": "En direct",
     "topic": "Sujet",
     "topicPlaceholder": "De quoi devraient-ils parler ?",
     "whoTalks": "Qui discute",
-    "pickOne": "Choisir un personnage",
+    "pickOne": "Choisis quelqu’un",
     "remove": "Retirer {{name}}",
-    "others": "Autres personnages",
+    "others": "Autres personnes",
     "start": "Lancer le direct",
     "freeToday_one": "Gratuit · {{count}} tour gratuit restant aujourd'hui",
     "freeToday_other": "Gratuit · {{count}} tours gratuits restants aujourd'hui",
     "costs_one": "{{count}} coquillage · tu as {{shells}}",
     "costs_other": "{{count}} coquillages · tu as {{shells}}",
     "problems": {
-      "pair": "Choisis deux personnages",
+      "pair": "Choisis deux personnes",
       "topic": "Donne-leur un sujet de discussion",
       "crisis": "Ceci ne peut pas être un direct. Si tu vis un moment difficile, la discussion est là pour toi.",
       "minors": "Les directs ne peuvent pas concerner des mineurs ou des écoliers",
@@ -1460,7 +1460,7 @@
       "lateStudio": "Soirée tardive en atelier",
       "rooftop": "Toit sans étoiles"
     },
-    "level": "Niv {{level}}",
+    "level": "Niveau {{level}}",
     "places": {
       "rainyWalk": "Rue sous la pluie",
       "aquarium": "Aquarium",
@@ -1522,8 +1522,8 @@
     "mood": "Ambiance",
     "moodHint": {
       "friendly": "tous",
-      "flirty": "dès Niv {{level}}",
-      "sweet": "dès Niv {{level}}"
+      "flirty": "dès le niveau {{level}}",
+      "sweet": "dès le niveau {{level}}"
     },
     "who": "Avec qui",
     "only": "{{name}} uniquement",
@@ -2048,17 +2048,17 @@
     "family": "Famille",
     "title": "Comment fonctionne la complicité",
     "body": "Chaque discussion, appel et rendez-vous vous rapproche. Chaque palier débloque un nouveau statut dans leurs paramètres, et ils s'adapteront en conséquence.",
-    "levels": "Niv {{from}}-{{to}}",
-    "level": "Niv {{level}}",
+    "levels": "Niveaux {{from}}–{{to}}",
+    "level": "Niveau {{level}}",
     "unlocks": "Débloque",
     "nothing": "Là où commence chaque amitié.",
     "youAreHere": "Tu es ici",
     "relationship": "Relation",
     "pick": "Choisis votre lien mutuel",
     "none": "Sans étiquette",
-    "toNext": "{{count}} jusqu'au Niv {{level}}",
+    "toNext": "{{count}} jusqu’au niveau {{level}}",
     "max": "Niveau maximal atteint",
-    "lockedAt": "Niv {{level}}",
+    "lockedAt": "Niveau {{level}}",
     "labelTitle": "Que représentes-tu pour {{name}} ?",
     "labelHint": "Seuls les statuts débloqués par ton niveau peuvent être choisis.",
     "pickShort": "En choisir un"
