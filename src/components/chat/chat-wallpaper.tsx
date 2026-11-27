@@ -24,7 +24,7 @@ export function ChatWallpaper({ hidden }: { hidden?: boolean }) {
 }
 
 /** A scallop shell: fan of ribs over a small hinge. */
-function Shell({ size, color = palette.apricot300, style }: { size: number; color?: string; style: object }) {
+function Shell({ size, color = palette.apricotCalm, style }: { size: number; color?: string; style: object }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 40 40" style={style}>
       <G fill="none" stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">

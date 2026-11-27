@@ -1,13 +1,15 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space } from '@/theme';
+import { radius, space, themed, useThemed, useTokens } from '@/theme';
+import { ink, inkPeachGlass } from '@/theme/ink';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
 
 /**
- * `primary` is the one solid apricot action on a screen; `secondary` is the quiet
- * white button beside it. No gradients or glow: colour alone marks the main action.
+ * `primary` is the one soft peach action on a screen: a flat calm peach with ink-brown text (the
+ * old lighter top read as a shine, owner 2026-11-18); `secondary` is the quiet button beside it.
  */
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'soft' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -25,7 +27,8 @@ export interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 48 };
+// lg is iOS's large control (50 pt); sm reaches the 44 pt target through hitSlop.
+const heights: Record<ButtonSize, number> = { sm: 34, md: 44, lg: 50 };
 
 export function Button({
   label,
@@ -39,31 +42,45 @@ export function Button({
   right,
   style,
 }: ButtonProps) {
-  const fg = foreground(variant);
+  const styles = useThemed(sheet);
+  // A primary that cannot be pressed goes grey, as iOS does (peach at low opacity read brown at night).
+  const off = variant === 'primary' && !!disabled && !loading;
+  const peachGlass = variant === 'primary' && !off;
+  const fg = off ? ink.text3 : peachGlass ? inkPeachGlass.ctaText : foreground(variant);
 
   return (
     <PressableScale
       onPress={onPress}
       disabled={disabled || loading}
+      hitSlop={size === 'sm' ? 5 : undefined}
       style={[
         styles.base,
         {
-          height: heights[size],
+          minHeight: heights[size],
+          paddingVertical: size === 'sm' ? 4 : 6,
           borderRadius: size === 'sm' ? radius.sm : radius.md,
           paddingHorizontal: size === 'sm' ? space.md : space.xl,
-          backgroundColor: background(variant),
+          backgroundColor: off ? ink.raised : peachGlass ? 'transparent' : background(variant),
         },
+        peachGlass && styles.peachRim,
         bordered(variant) && styles.border,
         full && styles.full,
         style,
       ]}>
+      {peachGlass ? <LinearGradient colors={inkPeachGlass.ctaFill} style={StyleSheet.absoluteFill} pointerEvents="none" /> : null}
       <View style={styles.row}>
         {loading ? (
           <ActivityIndicator size="small" color={fg} />
         ) : (
           <>
             {left}
-            <Txt variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'} color={fg}>
+            <Txt
+              variant={size === 'sm' ? 'smallStrong' : 'bodyStrong'}
+              color={fg}
+              lines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.75}
+              maxFontSizeMultiplier={1.4}>
               {label}
             </Txt>
             {right}
@@ -75,9 +92,10 @@ export function Button({
 }
 
 function background(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
-      return colors.primary;
+      return colors.primaryFill;
     case 'secondary':
       return colors.surface;
     case 'accent':
@@ -92,14 +110,16 @@ function background(variant: ButtonVariant) {
 }
 
 function foreground(variant: ButtonVariant) {
+  const { colors } = useTokens();
   switch (variant) {
     case 'primary':
-    case 'accent':
       return colors.textOnPrimary;
+    case 'accent':
+      return colors.white;
     case 'secondary':
       return colors.text;
     case 'soft':
-      return colors.primary;
+      return colors.brandText;
     case 'danger':
       return colors.danger;
     default:
@@ -109,20 +129,26 @@ function foreground(variant: ButtonVariant) {
 
 const bordered = (variant: ButtonVariant) => variant === 'secondary' || variant === 'ghost';
 
-const styles = StyleSheet.create({
-  base: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  border: {
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  full: { alignSelf: 'stretch' },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    base: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    peachRim: {
+      borderWidth: 1,
+      borderColor: inkPeachGlass.ctaRim,
+    },
+    border: {
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    full: { alignSelf: 'stretch' },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: space.sm,
+    },
+  }),
+);

@@ -1,0 +1,28 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-17T19:05:00Z" },
+  "title": "Who do you miss",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 440, "title": "Before: today in Find", "radius": 28 },
+    "A-empty.dc.html": { "x": 470, "y": 0, "w": 390, "h": 440, "title": "A: one invitation card (nobody yet)", "radius": 28 },
+    "A-pick.dc.html": { "x": 940, "y": 0, "w": 390, "h": 640, "title": "A: tap Choose: who do you miss?", "radius": 28 },
+    "A-filled.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 440, "title": "A: with two of them", "radius": 28 },
+    "B-empty.dc.html": { "x": 470, "y": 760, "w": 390, "h": 440, "title": "B: the seats breathe (nobody yet)", "radius": 28 },
+    "B-filled.dc.html": { "x": 940, "y": 760, "w": 390, "h": 440, "title": "B: with two of them", "radius": 28 }
+  },
+  "order": ["Main.dc.html", "A-empty.dc.html", "A-pick.dc.html", "A-filled.dc.html", "B-empty.dc.html", "B-filled.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Find: Who do you miss?", "kind": "title1", "maxW": 1800 },
+    "how": {
+      "x": -560,
+      "y": 0,
+      "w": 480,
+      "size": "m",
+      "fill": "blue",
+      "text": "Find → \"Who do you miss?\": hozir 8 ta uzuq chiziqli + doira (Mom, Dad…) — tugallanmagan ko'rinadi.\n\nA — bitta jonli taklif kartasi: kodda chizilgan yumshoq siluetlar (real odam yo'q) sekin nafas oladi, \"Talk to them again\" va oq \"Choose\" tugmasi. Bosilsa: kimni sog'inasiz — 8 ta rol (har biri o'z rangida). Keyin hozirgi oyna (qahramon tanlash, ism) avvalgidek. Kimdir tanlangach, kartada ularning yuzlari va kichik \"+\".\n\nB — qator qoladi, lekin uzuq chiziq va + o'rniga har o'rinda nafas olayotgan rangli siluet; tanlanganlari yuz bilan.\n\nTavsiyam: A — ekranda bitta katta g'oya, toza. Ranglar — qahramon ranglari (yangi rang yo'q), ikonlar iOS uslubida. Tanlang: A yoki B."
+    }
+  },
+  "designSystems": []
+}

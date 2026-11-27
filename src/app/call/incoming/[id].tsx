@@ -1,31 +1,29 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Anim, CharacterAvatar, PressableScale, Screen, Txt, characterImage } from '@/components/ui';
+import { ElasticSlide } from '@/components/ui/elastic-slide';
 import { displayName, useAppStore } from '@/store/use-app-store';
-import { colors, gradients, radius, space } from '@/theme';
+import { colors, gradients, space, systemColors } from '@/theme';
+import { ink, inkRadius } from '@/theme/ink';
 
 /** Stop ringing after this long and log it as missed, like a real phone. */
 const RING_TIMEOUT_MS = 30_000;
 
 /**
  * "Get phone call from your bias": the character calls you. Full-bleed portrait,
- * name top-left, decline / accept at the bottom.
+ * contact poster header, pulsing rings, and an Elastic Liquid Glass slide-to-answer capsule
+ * with a clean glass Decline pill below.
  */
 export default function IncomingCallScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const characterId = Array.isArray(id) ? id[0] : id;
 
@@ -38,6 +36,11 @@ export default function IncomingCallScreen() {
   const ringing = useAppStore((s) => s.incomingCall?.characterId === characterId);
   const acceptCall = useAppStore((s) => s.acceptCall);
   const declineCall = useAppStore((s) => s.declineCall);
+
+  const slideProgress = useSharedValue(0);
+  const answerGlowStyle = useAnimatedStyle(() => ({
+    opacity: 0.06 + slideProgress.value * 0.46,
+  }));
 
   const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
@@ -85,15 +88,26 @@ export default function IncomingCallScreen() {
               blurRadius={6}
             />
           ) : null}
-          <LinearGradient colors={gradients.incoming} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.08)', 'rgba(0,0,0,0.08)', 'rgba(0,0,0,0.62)']}
+            locations={[0, 0.34, 0.58, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, answerGlowStyle]}>
+            <LinearGradient
+              colors={[`${systemColors.green}00`, `${systemColors.green}38`, `${systemColors.green}94`]}
+              locations={[0.25, 0.65, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
         </View>
       }>
       <View style={styles.top}>
-        <Txt variant="h1" color={colors.white}>
-          {displayName(character, relationship)}
-        </Txt>
-        <Txt variant="bodyStrong" color="rgba(255,255,255,0.85)">
+        <Txt style={styles.slot} center>
           {slot ? t(`call.${slot}`) : t('call.calling')}
+        </Txt>
+        <Txt style={styles.name} center lines={2}>
+          {displayName(character, relationship)}
         </Txt>
       </View>
 
@@ -102,84 +116,60 @@ export default function IncomingCallScreen() {
         <CharacterAvatar character={character} size={150} ring ringColor="rgba(255,255,255,0.9)" />
       </View>
 
-      <View style={styles.actions}>
-        <CallAction
-          label={t('call.decline')}
-          color={colors.danger}
+      <View style={[styles.actions, { paddingBottom: Math.max(insets.bottom + space.xl, space.huge) }]}>
+        <ElasticSlide
+          variant="call"
+          label={t('call.slideToAnswer')}
+          onComplete={accept}
+          progressOut={slideProgress}
+        />
+        <PressableScale
           onPress={decline}
-          icon={<MaterialCommunityIcons name="phone-hangup" size={30} color={colors.white} />}
-        />
-        <CallAction
-          label={t('call.accept')}
-          color={colors.success}
-          onPress={accept}
-          pulse
-          icon={<Ionicons name="call" size={28} color={colors.white} />}
-        />
+          scaleTo={0.96}
+          haptic
+          accessibilityRole="button"
+          accessibilityLabel={t('call.decline')}
+          style={styles.declinePill}>
+          <MaterialCommunityIcons name="phone-hangup" size={20} color={systemColors.red} />
+          <Txt style={styles.declineLabel}>{t('call.decline')}</Txt>
+        </PressableScale>
       </View>
     </Screen>
   );
 }
 
-function CallAction({
-  label,
-  color,
-  icon,
-  pulse,
-  onPress,
-}: {
-  label: string;
-  color: string;
-  icon: React.ReactNode;
-  pulse?: boolean;
-  onPress: () => void;
-}) {
-  const t = useSharedValue(0);
-
-  useEffect(() => {
-    if (!pulse) return;
-    t.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 520, easing: Easing.out(Easing.quad) }),
-        withTiming(0, { duration: 520, easing: Easing.in(Easing.quad) }),
-      ),
-      -1,
-    );
-  }, [pulse, t]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: -t.value * 8 }, { rotate: `${(t.value - 0.5) * 16}deg` }],
-  }));
-
-  return (
-    <View style={styles.action}>
-      <PressableScale onPress={onPress} scaleTo={0.9} haptic accessibilityRole="button" accessibilityLabel={label}>
-        <Animated.View style={[styles.actionButton, { backgroundColor: color }, animatedStyle]}>{icon}</Animated.View>
-      </PressableScale>
-      <Txt variant="smallStrong" color={colors.white}>
-        {label}
-      </Txt>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   missing: { padding: space.xl },
-  top: { paddingHorizontal: space.xxl, paddingTop: space.xxl, gap: space.xs },
+  // Name centred up top, the way an iOS contact poster sets it (canvas "CallIncoming", 2026-10-21).
+  top: { paddingHorizontal: space.xl, paddingTop: 38, gap: 4, alignItems: 'center' },
+  slot: { fontSize: 17, fontWeight: '500', letterSpacing: -0.2, color: 'rgba(255,255,255,0.82)' },
+  name: {
+    fontSize: 44,
+    lineHeight: 50,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+    color: colors.white,
+    textShadowColor: 'rgba(0,0,0,0.25)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 16,
+  },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   rings: { position: 'absolute' },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: space.xxl,
+    gap: 14,
+    paddingHorizontal: space.xl,
     paddingBottom: space.huge,
   },
-  action: { alignItems: 'center', gap: space.sm },
-  actionButton: {
-    width: 70,
-    height: 70,
-    borderRadius: radius.pill,
+  declinePill: {
+    height: 52,
+    borderRadius: inkRadius.pill,
+    backgroundColor: ink.photoGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.photoGlassRim,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
   },
+  declineLabel: { fontSize: 16, fontWeight: '600', color: colors.white },
 });

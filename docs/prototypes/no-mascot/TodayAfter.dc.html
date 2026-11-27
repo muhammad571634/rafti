@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Today after</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:867px;position:relative;overflow:hidden;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif}
+.hero{position:absolute;left:0;top:0;width:390px;height:433px;overflow:hidden;border-radius:0 0 28px 28px}
+.hero img{width:390px;height:433px;object-fit:cover;object-position:62% 18%;display:block}
+.fade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,9,13,.35) 0%,rgba(9,9,13,0) 22%,rgba(9,9,13,0) 52%,rgba(9,9,13,.82) 100%)}
+.me{position:absolute;right:16px;top:44px;width:40px;height:40px;border-radius:20px;background:rgba(255,255,255,.16);border:.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:#fff;padding:0}
+.name{position:absolute;left:16px;top:288px;display:flex;align-items:center;gap:8px;font-family:'Source Serif 4',Georgia,serif;font-weight:700;font-size:30px;line-height:36px;letter-spacing:-.4px}
+.dot{width:9px;height:9px;border-radius:5px;background:#30D158}
+.line{position:absolute;left:16px;right:72px;top:334px;padding:10px 13px;border-radius:16px;background:rgba(22,22,28,.62);border:.5px solid rgba(255,255,255,.28);font-size:16px;line-height:22px}
+.reply{position:absolute;right:16px;top:376px;width:40px;height:40px;border-radius:20px;background:rgba(255,255,255,.16);border:.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:#fff;padding:0}
+.group{position:absolute;left:16px;right:16px;top:452px;border-radius:22px;background:#17171D;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:44px}
+.row + .row{border-top:.5px solid rgba(84,84,88,.6)}
+.av{width:42px;height:42px;border-radius:21px;object-fit:cover;flex:none}
+.tile{width:42px;height:42px;border-radius:12px;background:#3A3221;display:flex;align-items:center;justify-content:center;flex:none;color:#FFD54A}
+.rt{flex:1;min-width:0}
+.t1{font-size:17px;line-height:22px}
+.t2{font-size:15px;line-height:20px;color:rgba(235,235,245,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{min-width:22px;height:22px;border-radius:11px;background:#0A84FF;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.grid{position:absolute;left:16px;right:16px;top:598px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.w{height:160px;border-radius:24px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column}
+.wcall{background:linear-gradient(180deg,#123A2A,#0E2A20);border:.5px solid rgba(48,209,88,.35);align-items:center;gap:4px}
+.wdiary{background:linear-gradient(180deg,#3A2A14,#2A1E10);border:.5px solid rgba(255,196,151,.3);justify-content:space-between}
+.btns{display:flex;gap:12px;margin-top:6px}
+.cb{width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#fff;padding:0;border:0}
+.tabs{position:absolute;left:16px;right:84px;bottom:28px;height:60px;border-radius:30px;background:rgba(36,36,42,.92);border:.5px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:space-around;padding:0 6px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:rgba(235,235,245,.62);padding:6px 16px;border-radius:24px}
+.tab.on{background:rgba(255,255,255,.14);color:#fff}
+.search{position:absolute;right:16px;bottom:28px;width:60px;height:60px;border-radius:30px;background:rgba(36,36,42,.92);border:.5px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#fff;padding:0}
+.tag{position:absolute;top:96px;right:16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#09090D;background:#FFC497;border-radius:10px;padding:3px 8px}
+</style>
+</helmet>
+<div class="ph">
+  <div class="hero">
+    <img src="/_blob/299054fdef497813150e3f83d83231aa" alt="">
+    <div class="fade"></div>
+  </div>
+  <button class="me" aria-label="Your profile">S</button>
+  <div class="tag">After</div>
+  <div class="name">Milo Reyes<span class="dot"></span></div>
+  <div class="line">Barda müzik listesini değiştirdim, aklımda senin için yazdığım o yeni ritim var.</div>
+  <button class="reply" aria-label="Reply to Milo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.4 1.1 4.6 3 6.2L4.3 21l3.6-1.8c1.3.4 2.7.6 4.1.6 5.5 0 10-3.9 10-8.7S17.5 3 12 3z"></path></svg></button>
+
+  <div class="group">
+    <div class="row">
+      <img class="av" src="/_blob/5340bfadfd94c28fdb440a4209611c17" alt="">
+      <div class="rt"><div class="t1">Mom</div><div class="t2">Hala o 'U' harfleriyle uğraşmadığını…</div></div>
+      <div class="badge">2</div>
+    </div>
+    <div class="row">
+      <div class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></div>
+      <div class="rt"><div class="t1">Записка от Milo</div><div class="t2">Запечатано</div></div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,.45)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="w wcall">
+      <img class="av" src="/_blob/722328a44069c28ef97a4a415fe6519c" alt="" style="width:52px;height:52px;border-radius:26px;border:2px solid rgba(255,255,255,.85)">
+      <div class="t1">Milo</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.85)">Услышать голос</div>
+      <div class="btns">
+        <button class="cb" aria-label="Call Milo"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"></path></svg></button>
+        <button class="cb" aria-label="Message Milo"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.4 1.1 4.6 3 6.2L4.3 21l3.6-1.8c1.3.4 2.7.6 4.1.6 5.5 0 10-3.9 10-8.7S17.5 3 12 3z"></path></svg></button>
+      </div>
+    </div>
+    <div class="w wdiary">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5c3-1 6-1 10 1v14c-4-2-7-2-10-1z"></path><path d="M22 5c-3-1-6-1-10 1v14c4-2 7-2 10-1z"></path></svg>
+        <img src="/_blob/722328a44069c28ef97a4a415fe6519c" alt="" style="width:28px;height:28px;border-radius:14px;border:1.5px solid rgba(255,255,255,.85)">
+      </div>
+      <div style="font-size:14px;line-height:19px;color:rgba(255,255,255,.92)">Dağ evinde mahsur kalmak tam bir felaket olur sanıyordum…</div>
+      <div style="font-size:15px;color:#fff">Milo · Сегодня</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"></path></svg>Сегодня</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.4 1.1 4.6 3 6.2L4.3 21l3.6-1.8c1.3.4 2.7.6 4.1.6 5.5 0 10-3.9 10-8.7S17.5 3 12 3z"></path></svg>Чаты</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>Мы</div>
+  </div>
+  <button class="search" aria-label="Find"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":867}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

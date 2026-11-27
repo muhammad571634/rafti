@@ -1,0 +1,521 @@
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import type { TFunction } from 'i18next';
+import { useState } from 'react';
+import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
+
+import { InkText } from '@/components/ink';
+import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, type ModuleKey } from '@/components/ui';
+import { colors, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
+import { ink as inkTokens, inkRadius, inkType, inkWidget } from '@/theme/ink';
+import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
+import type { SFSymbol } from 'sf-symbols-typescript';
+
+import type { Character, WidgetKind } from '@/types';
+
+/** Every widget, in the gallery's order. */
+export const WIDGET_KINDS: WidgetKind[] = [
+  'calls',
+  'diary',
+  'date',
+  'sleep',
+  'gifts',
+  'store',
+  'photos',
+  'radio',
+  'board',
+  'contacts',
+  'bond',
+];
+
+/** The Today tile a widget stands in for; Bond has none. */
+export const WIDGET_MODULE: Record<WidgetKind, ModuleKey | null> = {
+  calls: 'calls',
+  diary: 'diary',
+  date: 'date',
+  sleep: 'sleep',
+  gifts: 'gifts',
+  store: 'store',
+  photos: 'photo',
+  radio: 'radio',
+  board: 'board',
+  contacts: 'contacts',
+  bond: null,
+};
+
+const LABEL_KEY: Record<WidgetKind, string> = {
+  calls: 'home.short.calls',
+  diary: 'home.short.diary',
+  date: 'home.short.dating',
+  sleep: 'home.short.bedtime',
+  gifts: 'home.short.gifts',
+  store: 'home.short.store',
+  photos: 'home.short.photo',
+  radio: 'home.short.radio',
+  board: 'home.short.board',
+  contacts: 'home.short.contacts',
+  bond: 'home.widget.bond',
+};
+
+/** A widget's name, as the gallery and VoiceOver say it. */
+export const widgetLabel = (kind: WidgetKind, t: TFunction) => t(LABEL_KEY[kind]);
+
+/** Near square, as an iOS small widget, so a plan's or a note's words fit whole (owner, 2026-11-05). */
+export const WIDGET_HEIGHT = 172;
+
+/** What one widget shows; `WidgetView` draws it the same way in every slot and in the gallery. */
+export interface WidgetModel {
+  kind: WidgetKind;
+  label: string;
+  /** Quiet Apple-widget identity or live status label beside the top-left glyph. */
+  kicker?: string;
+  /** Optional static semantic dot beside `kicker` (Active Date, Radio On Air). */
+  liveDot?: boolean;
+  /** Optional semantic accent for progress bars and live indicators. */
+  accentColor?: string;
+  /** Optional contextual top-left glyph override (e.g. alarm clock on Sleep when showing an alarm, calendar on Date when showing a plan). */
+  icon?: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
+  faces: Character[];
+  badge?: string;
+  /** A big number or time, with an optional word after it */
+  figure?: string;
+  unit?: string;
+  title?: string;
+  /** How many lines the title may take (a plan's name: two); on iOS it shrinks a little before it is cut. */
+  titleLines?: number;
+  line: string;
+  /** A small face before `line`: who the plan is with, who wakes you (the top row keeps one button only). */
+  lineFace?: Character;
+  /** How many lines `line` may take (Bond's "7 to the next level" runs long in Russian): one by default. */
+  lineLines?: number;
+  /** What comes after the main thing, as list rows with a small face each (the next plans, more alarms). */
+  list?: { face?: Character; text: string }[];
+  /** A row of seven: weekday letters (an alarm's days) or dots (the check-in week); `on` in ink. */
+  days?: { label?: string; on: boolean }[];
+  photo?: string | number;
+  onPress: () => void;
+  /** A friend as a contact card: their face in the middle, `title` their name, `line` under it (Calls). */
+  person?: Character;
+  /** The mark on the contact card's face: green "can call", red "missed their call". */
+  personDot?: 'call' | 'missed';
+  /** Words shown as they are, large: the widget is the thing itself (the board's note). */
+  quote?: string;
+  /** How far toward the next step, 0-1, as a filling bar (Bond). */
+  progress?: number;
+  /** Round buttons that each do one thing (HIG Widgets: a few clear actions), in the corner or under a person. */
+  buttons?: WidgetButton[];
+  /** The one main thing as a dark pill along the foot (Gifts: Spin). */
+  pill?: { label: string; onPress: () => void };
+}
+
+/** One round widget button: a glyph, what it says to VoiceOver, what it does. */
+export interface WidgetButton {
+  glyph: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
+  label: string;
+  onPress: () => void;
+  /** `go`: the one thing to do now, white on green (call back a missed call). */
+  tone?: 'go';
+}
+
+/** The sizes words step down through to fit (`FitText`); the last is the floor, then they are cut. */
+const QUOTE_SIZES = [15, 14, 13, 12] as const;
+const SUBTITLE_SIZES = [15, 14, 13] as const;
+const TITLE_SIZES = [17, 16, 15] as const;
+
+/**
+ * One widget card. `preview` draws it inert, for the gallery. Its buttons are siblings of the
+ * card's own press area, never inside it: a button in a button breaks on web.
+ *
+ * Each widget shows what it does by its face, as iOS widgets do (owner, 2026-11-04): a friend to
+ * call is a contact card with call and message buttons, the board shows the note itself, the bond
+ * a bar filling toward the next level, the shells a balance with "+", the daily spin a dark pill.
+ */
+export function WidgetView({
+  model,
+  height = WIDGET_HEIGHT,
+  preview,
+  editing,
+  onPress,
+  onLongPress,
+}: {
+  model: WidgetModel;
+  height?: number;
+  preview?: boolean;
+  editing?: boolean;
+  /** Replaces the widget's own tap (edit mode: open the gallery for this slot). */
+  onPress?: () => void;
+  onLongPress?: () => void;
+}) {
+  // Photos is `photo`; Bond is the only widget with no module tile.
+  const key = WIDGET_MODULE[model.kind] ?? 'bond';
+  const tone = moduleColors[key];
+  const onPhoto = model.photo != null;
+  const ink = onPhoto ? colors.white : colors.text;
+  const sub = onPhoto ? inkWidget.subOnPhoto : inkWidget.sub;
+  const tint = moduleTints[key] ?? moduleTints.bond;
+  // At night: stained glass instead of the flat deep tint (`moduleGlass`).
+  const glass = !onPhoto && moduleGlass ? (moduleGlass[key] ?? moduleGlass.bond) : null;
+  const buttons = model.buttons ?? [];
+  // In edit mode (or the gallery) a tap belongs to the card, so its buttons do nothing.
+  const inert = preview || editing || !!onPress;
+  const person = model.person;
+  const reservedRight = buttons.length > 0 ? buttons.length * (BUTTON + 6) + 4 : 0;
+  const hasFacesOrBadge = model.faces.length > 0 || !!model.badge;
+
+  const words = (
+    <View style={model.pill ? styles.abovePill : undefined}>
+      {model.quote ? (
+        // The thing itself, whole where it fits: a step smaller before it is cut, never tiny.
+        <FitText key={model.quote} text={model.quote} lines={4} sizes={QUOTE_SIZES} style={[inkType.quote, styles.quote]} color={ink} />
+      ) : (
+        <>
+          {model.figure ? (
+            <View style={styles.figureLine}>
+              <InkText variant="figureLarge" color={ink} lines={1} style={styles.shrink}>
+                {model.figure}
+              </InkText>
+              {model.unit ? (
+                <InkText variant="subStrong" color={sub} lines={1} style={styles.shrink}>
+                  {model.unit}
+                </InkText>
+              ) : null}
+            </View>
+          ) : null}
+          {model.title && model.titleLines && model.titleLines > 1 ? (
+            // A plan's or a clip's name, whole where it fits.
+            <FitText
+              key={model.title}
+              text={model.title}
+              lines={model.titleLines}
+              sizes={model.figure ? SUBTITLE_SIZES : TITLE_SIZES}
+              style={model.figure ? inkType.subStrong : inkType.bodyStrong}
+              color={ink}
+            />
+          ) : model.title ? (
+            <InkText variant={model.figure ? 'subStrong' : 'bodyStrong'} color={ink} lines={1}>
+              {model.title}
+            </InkText>
+          ) : null}
+        </>
+      )}
+      {model.days ? (
+        <View style={styles.days}>
+          {model.days.map((d, i) =>
+            d.label != null ? (
+              <InkText key={i} variant="caption" color={ink} maxFontSizeMultiplier={1.25} style={[styles.dayLetter, { opacity: d.on ? 1 : 0.45 }]}>
+                {d.label}
+              </InkText>
+            ) : (
+              <View key={i} style={[styles.dayDot, d.on && { backgroundColor: ink }]} />
+            ),
+          )}
+        </View>
+      ) : null}
+      {model.progress != null ? (
+        <View style={styles.track}>
+          <View
+            style={[
+              styles.bar,
+              {
+                width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%`,
+                backgroundColor: model.accentColor ?? inkTokens.accent,
+              },
+            ]}
+          />
+        </View>
+      ) : null}
+      {model.pill || !model.line ? null : model.lineFace ? (
+        <View style={styles.lineRow}>
+          <CharacterAvatar character={model.lineFace} size={18} />
+          <InkText variant="footnoteStrong" color={sub} lines={model.lineLines ?? 1} style={styles.flexText}>
+            {model.line}
+          </InkText>
+        </View>
+      ) : (
+        <InkText variant="footnoteStrong" color={sub} lines={model.lineLines ?? 1}>
+          {model.line}
+        </InkText>
+      )}
+      {model.list && !model.pill
+        ? // What comes after, as list rows under the first (a forecast's next days), each with its face.
+          model.list.map((row, i) => (
+            <View key={i} style={styles.afterRow}>
+              {row.face ? (
+                <CharacterAvatar character={row.face} size={18} />
+              ) : (
+                <View style={styles.afterDotBox}>
+                  <View style={[styles.afterDot, { backgroundColor: ink }]} />
+                </View>
+              )}
+              <InkText variant="footnoteStrong" color={sub} lines={1} style={styles.flexText}>
+                {row.text}
+              </InkText>
+            </View>
+          ))
+        : null}
+    </View>
+  );
+
+  const glyphSize = model.kicker ? 18 : 24;
+  const body = person ? (
+    // A contact card: the face in the middle, the name, a word on it; the buttons sit below.
+    <View style={styles.person}>
+      <View>
+        <CharacterAvatar character={person} size={46} ring ringColor={colors.white} />
+        <View style={[styles.callDot, model.personDot === 'missed' && styles.missedDot]}>
+          <Ionicons name="call" size={10} color={colors.white} />
+        </View>
+      </View>
+      <InkText variant="bodyStrong" color={ink} lines={1} style={styles.personName}>
+        {model.title}
+      </InkText>
+      <InkText variant="footnoteStrong" color={sub} lines={1}>
+        {model.line}
+      </InkText>
+    </View>
+  ) : (
+    <>
+      <View style={[styles.top, reservedRight > 0 && { paddingRight: reservedRight }]}>
+        {onPhoto ? (
+          <View />
+        ) : (
+          <View style={[styles.kickerRow, !hasFacesOrBadge && styles.kickerGrow]}>
+            {model.icon ? (
+              <SFIcon ios={model.icon.ios} icon={model.icon.icon} size={glyphSize} color={ink} weight="light" />
+            ) : (
+              <ModuleLine name={key} size={glyphSize} color={ink} />
+            )}
+            {model.kicker ? (
+              <>
+                {model.liveDot ? (
+                  <View style={[styles.liveDot, { backgroundColor: model.accentColor ?? systemColors.green }]} />
+                ) : null}
+                <InkText variant="caption" color={inkWidget.kicker} lines={1} style={styles.kickerText}>
+                  {model.kicker}
+                </InkText>
+              </>
+            ) : null}
+          </View>
+        )}
+        {hasFacesOrBadge ? (
+          <View style={styles.faces}>
+            {model.faces.slice(0, 3).map((c, i) => (
+              <CharacterAvatar key={c.id} character={c} size={26} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
+            ))}
+            {model.badge ? (
+              <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
+                <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk} maxFontSizeMultiplier={1.25}>
+                  {model.badge}
+                </InkText>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+      </View>
+      {words}
+    </>
+  );
+
+  return (
+    <View
+      style={[
+        styles.card,
+        !onPhoto && { backgroundColor: glass ? 'transparent' : tint },
+        glass && { borderWidth: StyleSheet.hairlineWidth, borderColor: glass.rim },
+        { height },
+      ]}>
+      {glass ? (
+        <>
+          <LinearGradient colors={[glass.from, glass.to]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <View style={styles.topSheen} pointerEvents="none" />
+        </>
+      ) : null}
+      {onPhoto ? (
+        <>
+          <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
+          <Image source={model.photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
+          <LinearGradient colors={inkWidget.photoScrim} locations={[0, 0.42, 1]} style={StyleSheet.absoluteFill} />
+        </>
+      ) : null}
+      {preview ? (
+        <View style={styles.fill}>{body}</View>
+      ) : (
+        <PressableScale
+          scaleTo={0.98}
+          accessibilityRole="button"
+          accessibilityLabel={model.label}
+          onPress={onPress ?? model.onPress}
+          onLongPress={onLongPress}
+          delayLongPress={350}
+          style={styles.fill}>
+          {body}
+        </PressableScale>
+      )}
+      {buttons.length ? (
+        <View style={person ? styles.buttonsFoot : styles.buttonsTop} pointerEvents={inert ? 'none' : 'box-none'}>
+          {buttons.map((b) => (
+            <PressableScale
+              key={b.label}
+              scaleTo={0.88}
+              hitSlop={6}
+              accessibilityRole="button"
+              accessibilityLabel={b.label}
+              onPress={b.onPress}
+              style={[styles.button, onPhoto && styles.buttonOnPhoto, b.tone === 'go' && styles.buttonGo]}>
+              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={17} color={b.tone === 'go' ? colors.white : ink} weight="medium" />
+            </PressableScale>
+          ))}
+        </View>
+      ) : null}
+      {model.pill ? (
+        <View style={styles.pillWrap} pointerEvents={inert ? 'none' : 'box-none'}>
+          <PressableScale scaleTo={0.94} accessibilityRole="button" accessibilityLabel={model.pill.label} onPress={model.pill.onPress} style={styles.pill}>
+            <InkText variant="subStrong" color={colors.textOnInk} lines={1} maxFontSizeMultiplier={1.25}>
+              {model.pill.label}
+            </InkText>
+          </PressableScale>
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+/**
+ * Words that should show whole: at their size when they fit in `lines`, else a step smaller, down to
+ * the last of `sizes`, then cut. A hidden twin with no line limit counts the lines. Not
+ * `adjustsFontSizeToFit`: Android ignores its `minimumFontScale`, and a diary page came out
+ * microscopic on the A51 (2026-11-05), while plain cutting lost the end of a short note.
+ */
+function FitText({
+  text,
+  lines,
+  sizes,
+  style,
+  color,
+}: {
+  text: string;
+  lines: number;
+  sizes: readonly number[];
+  style: StyleProp<TextStyle>;
+  color: string;
+}) {
+  // New words start again from the largest size: callers key this by its text.
+  const [step, setStep] = useState(0);
+  const last = sizes.length - 1;
+  const size = sizes[Math.min(step, last)];
+  const fit = { fontSize: size, lineHeight: Math.round(size * 1.27) };
+  return (
+    <View>
+      <InkText style={[style, fit]} color={color} lines={lines}>
+        {text}
+      </InkText>
+      {step < last ? (
+        <InkText
+          style={[style, fit, styles.twin]}
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          onTextLayout={(e) => {
+            // Only from the size it measured: a late layout of an older size moves nothing.
+            if (e.nativeEvent.lines.length > lines) setStep((s) => (s === step ? Math.min(s + 1, last) : s));
+          }}>
+          {text}
+        </InkText>
+      ) : null}
+    </View>
+  );
+}
+
+/** A widget button's size: an iOS glass circle the thumb finds (46 pt with its hit slop). */
+const BUTTON = 34;
+
+const styles = StyleSheet.create({
+  card: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
+  topSheen: {
+    position: 'absolute',
+    top: 0,
+    left: 16,
+    right: 16,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: inkWidget.topSheen,
+    zIndex: 1,
+  },
+  shrink: { flexShrink: 1 },
+  fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
+  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 6 },
+  kickerRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minWidth: 0, flexShrink: 1 },
+  kickerGrow: { flex: 1 },
+  kickerText: { flexShrink: 1, letterSpacing: 0.2 },
+  liveDot: { width: 6, height: 6, borderRadius: inkRadius.pill },
+  faces: { flexDirection: 'row', alignItems: 'center' },
+  overlap: { marginLeft: -8 },
+  badge: {
+    height: 24,
+    paddingHorizontal: 9,
+    borderRadius: inkRadius.pill,
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+  },
+  badgeInk: { backgroundColor: colors.text },
+  // A word that does not fit beside its number goes under it; the number is never cut ("… new pages"
+  // in the gallery's narrow card, Russian, A51 2026-11-05).
+  figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
+  days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
+  dayLetter: { width: 16, textAlign: 'center' },
+  dayDot: { width: 9, height: 9, borderRadius: inkRadius.pill, backgroundColor: inkWidget.dayDotOff },
+  afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  lineRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
+  afterDot: { width: 5, height: 5, borderRadius: inkRadius.pill, opacity: 0.5 },
+  flexText: { flexShrink: 1 },
+  // The note itself, in its own words: the widget is the note.
+  quote: { marginBottom: 4 },
+  // FitText's line counter: laid out like the words, never seen.
+  twin: { position: 'absolute', top: 0, left: 0, right: 0, opacity: 0 },
+  // Toward the next level: an ink bar in a soft track, as a battery widget fills.
+  track: {
+    height: 6,
+    borderRadius: inkRadius.pill,
+    marginTop: 8,
+    marginBottom: 6,
+    backgroundColor: inkWidget.trackBg,
+    overflow: 'hidden',
+  },
+  bar: { height: 6, borderRadius: inkRadius.pill, backgroundColor: inkTokens.accent },
+  person: { flex: 1, alignItems: 'center', paddingTop: 0 },
+  personName: { marginTop: 6 },
+  // Calm iOS tinted glass circle on the card, crisp hairline rim.
+  button: {
+    width: BUTTON,
+    height: BUTTON,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: inkWidget.buttonBg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkWidget.buttonRim,
+  },
+  buttonGo: { backgroundColor: systemColors.green, borderColor: inkWidget.buttonOnPhotoRim },
+  // Clear glass on a picture (the clear-glass rule), never a white disc.
+  buttonOnPhoto: { backgroundColor: inkWidget.buttonOnPhotoBg, borderWidth: StyleSheet.hairlineWidth, borderColor: inkWidget.buttonOnPhotoRim },
+  buttonsTop: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 6 },
+  buttonsFoot: { position: 'absolute', left: 0, right: 0, bottom: 12, flexDirection: 'row', justifyContent: 'center', gap: 14 },
+  abovePill: { marginBottom: 44 },
+  pillWrap: { position: 'absolute', left: 14, right: 14, bottom: 14 },
+  // The one main thing, as a dark pill (the Payme and iOS wallet buttons).
+  pill: { minHeight: 36, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.text },
+  callDot: {
+    position: 'absolute',
+    right: -3,
+    bottom: -3,
+    width: 18,
+    height: 18,
+    borderRadius: inkRadius.pill,
+    borderWidth: 2,
+    borderColor: colors.white,
+    backgroundColor: systemColors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  missedDot: { backgroundColor: systemColors.red },
+});

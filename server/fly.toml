@@ -1,0 +1,43 @@
+# The Sigmazam API on Fly.io. Deploy from the repo root:
+#   flyctl deploy . --config server/fly.toml --dockerfile server/Dockerfile --ha=false
+# Tokyo, next to the Supabase project (AWS ap-northeast-1). Keys are Fly secrets, never here.
+app = "sigmazam-api"
+primary_region = "nrt"
+# A deploy waits for the replies being written (the server finishes them within 25 s, src/index.ts).
+kill_signal = "SIGTERM"
+kill_timeout = "30s"
+
+[env]
+  PORT = "8080"
+  HOST = "0.0.0.0"
+  # Accounts that may start a plan with no store behind it until billing exists (0z142): the owner's
+  # A51. Remove before the store launch (docs/road-to-launch.md, launch checklist).
+  TEST_SUBSCRIBERS = "9d8d2e57-5f10-4132-a4e3-adc6d7b30ba1"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # Always on: a stopped machine would make the first reply wait for a cold start.
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  # Requests at once per machine: past the soft limit the proxy prefers another machine, at the hard
+  # limit it queues. The model gate inside is narrower (120 calls, src/llm/gate.ts); the rest is
+  # wallet and sync traffic. A second machine: `flyctl scale count 2` plus the LINE_SIGN_KEY secret
+  # (docs/scale-plan.md).
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 400
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

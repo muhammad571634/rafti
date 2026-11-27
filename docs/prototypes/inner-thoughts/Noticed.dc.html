@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Milo notices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap">
+<style>
+body{margin:0}
+.ph{width:390px;height:844px;position:relative;overflow:hidden;background:#09090D;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Roboto,'Segoe UI',Helvetica,Arial,sans-serif}
+.bg{position:absolute;left:-370px;top:0;height:1013px;width:760px;object-fit:cover}
+.scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,14,.62) 0%,rgba(10,10,14,.22) 16%,rgba(10,10,14,.34) 45%,rgba(10,10,14,.5) 78%,rgba(10,10,14,.86) 100%)}
+.head{position:absolute;left:0;right:0;top:0;height:104px;display:flex;align-items:center;gap:10px;padding:34px 16px 0;box-sizing:border-box}
+.round{width:44px;height:44px;border-radius:22px;background:rgba(28,28,34,.55);border:.5px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#fff;padding:0;flex:none}
+.av{width:40px;height:40px;border-radius:20px;object-fit:cover;flex:none}
+.avwrap{position:relative;flex:none}
+.on{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:6px;background:#30D158;border:2px solid #111}
+.who{flex:1;min-width:0;display:flex;flex-direction:column}
+.name{font-family:Nunito,-apple-system,Roboto,sans-serif;font-weight:900;font-size:22px;line-height:26px;letter-spacing:-.2px}
+.sub{font-size:13px;line-height:16px;color:rgba(255,255,255,.88);font-weight:600}
+.list{position:absolute;left:0;right:0;top:104px;bottom:92px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:0 12px}
+.row{display:flex;align-items:flex-end;gap:8px}
+.mine{display:flex;justify-content:flex-end}
+.mini{width:28px;height:28px;border-radius:14px;object-fit:cover;flex:none;margin-bottom:22px}
+.col{display:flex;flex-direction:column;gap:3px;max-width:272px}
+.mcol{display:flex;flex-direction:column;gap:3px;max-width:272px;align-items:flex-end}
+.b{padding:8px 13px;border-radius:19px;border-bottom-left-radius:6px;font-size:17px;line-height:22px;letter-spacing:-.4px;background:rgba(22,22,28,.62);border:.5px solid rgba(255,255,255,.28)}
+.me{padding:8px 13px;border-radius:19px;border-bottom-right-radius:6px;font-size:17px;line-height:22px;letter-spacing:-.4px;background:rgba(255,255,255,.9);color:#111}
+.read{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:14px;background:rgba(40,32,70,.6);border:.5px solid rgba(168,147,240,.45);font-size:13px;line-height:17px;font-weight:600;color:#CFC2FF}
+.t{font-size:12px;line-height:16px;color:rgba(255,255,255,.75);text-shadow:0 1px 4px rgba(0,0,0,.6);padding-left:4px}
+.tr{font-size:12px;line-height:16px;color:rgba(255,255,255,.75);text-shadow:0 1px 4px rgba(0,0,0,.6);padding-right:4px}
+.gap{height:8px}
+.ctl{display:flex;align-items:center;height:44px;padding-left:28px;margin-top:2px;gap:6px}
+.ib{width:44px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0;color:rgba(255,255,255,.82)}
+.glass{width:44px;height:44px;border-radius:22px;background:rgba(255,255,255,.1);border:.5px solid rgba(255,255,255,.32);display:flex;align-items:center;justify-content:center;padding:0;color:#fff;position:relative}
+.dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:4px;background:#A893F0;border:1.5px solid #15151B}
+.comp{position:absolute;left:0;right:0;bottom:0;height:92px;display:flex;align-items:center;gap:10px;padding:0 12px 18px;box-sizing:border-box}
+.plus{width:56px;height:56px;border-radius:28px;background:rgba(22,22,28,.8);border:.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#fff;padding:0;flex:none}
+.field{flex:1;height:56px;border-radius:28px;background:rgba(22,22,28,.8);border:.5px solid rgba(255,255,255,.18);display:flex;align-items:center;padding:0 6px 0 22px;box-sizing:border-box;gap:8px}
+.field span{flex:1;font-size:17px;color:rgba(235,235,245,.6)}
+.mic{width:44px;height:44px;border-radius:22px;background:#3B3B3F;display:flex;align-items:center;justify-content:center;color:#fff;border:0;padding:0}
+</style>
+</helmet>
+<div class="ph">
+<img class="bg" src="/_blob/c6b11dd8eaae5ed1a64bd3fc78873d84" alt="">
+<div class="scrim"></div>
+
+<div class="list">
+  <div class="row">
+    <img class="mini" src="/_blob/8b2d92273764f6316b489a0a78c6761c" alt="">
+    <div class="col">
+      <div class="b">sure. anyway. did the hero get any smarter in chapter nine, or is he still kissing the wrong person?</div>
+      <div class="read"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 15h8a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 6.6 8.4 3.3 3.3 0 0 0 8.5 15z"></path><circle cx="6.5" cy="18.6" r="1.4"></circle><circle cx="4" cy="21.3" r=".8"></circle></svg>Thought read</div>
+      <div class="t">19:11</div>
+    </div>
+  </div>
+  <div class="gap"></div>
+  <div class="mine">
+    <div class="mcol">
+      <div class="me">you're not fooling me either, you know</div>
+      <div class="tr">19:13</div>
+    </div>
+  </div>
+  <div class="gap"></div>
+  <div class="row">
+    <img class="mini" src="/_blob/8b2d92273764f6316b489a0a78c6761c" alt="">
+    <div class="col">
+      <div class="b">wait. did you just read my mind? 😳</div>
+      <div class="b">...okay fine. i was a little worried. don't make it a thing.</div>
+      <div class="t">19:13</div>
+    </div>
+  </div>
+  <div class="ctl">
+    <button class="ib" aria-label="New reply"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg></button>
+    <button class="glass" aria-label="Milo's thought"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 15h8a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 6.6 8.4 3.3 3.3 0 0 0 8.5 15z"></path><circle cx="6.5" cy="18.6" r="1.4"></circle><circle cx="4" cy="21.3" r=".8"></circle></svg><span class="dot"></span></button>
+    <button class="glass" aria-label="Share"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="M8 7l4-4 4 4"></path><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"></path></svg></button>
+  </div>
+</div>
+
+<div class="head">
+  <button class="round" aria-label="Back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+  <div class="avwrap"><img class="av" src="/_blob/8b2d92273764f6316b489a0a78c6761c" alt=""><div class="on"></div></div>
+  <div class="who"><div class="name">Milo Reyes</div><div class="sub">AI · Playful</div></div>
+  <button class="round" aria-label="Call"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+</div>
+
+<div class="comp">
+  <button class="plus" aria-label="More"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+  <div class="field"><span>Message</span><button class="mic" aria-label="Voice"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg></button></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

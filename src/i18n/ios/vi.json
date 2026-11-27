@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam sử dụng micro để bạn gửi tin nhắn thoại và gọi điện với bạn bè.",
+    "NSCameraUsageDescription": "Sigmazam sử dụng máy ảnh để bạn chụp ảnh cùng bạn bè trong Phòng chụp ảnh.",
+    "NSPhotoLibraryUsageDescription": "Sigmazam truy cập thư viện ảnh để bạn gửi ảnh trong cuộc trò chuyện hoặc chọn ảnh cho nhân vật."
+  }
+}

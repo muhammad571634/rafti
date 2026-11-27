@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam menggunakan mikrofon agar kamu bisa mengirim pesan suara dan menelepon teman-temanmu.",
+    "NSCameraUsageDescription": "Sigmazam menggunakan kamera agar kamu bisa berfoto bersama teman di Photo Booth.",
+    "NSPhotoLibraryUsageDescription": "Sigmazam membuka fotomu agar kamu bisa mengirim foto di chat atau memilih gambar untuk karakter."
+  }
+}

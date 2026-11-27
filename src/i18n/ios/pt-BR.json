@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "O Sigmazam usa o microfone para você enviar mensagens de voz e fazer chamadas com seus amigos.",
+    "NSCameraUsageDescription": "O Sigmazam usa a câmera para você tirar fotos junto com seus amigos na Cabine de Fotos.",
+    "NSPhotoLibraryUsageDescription": "O Sigmazam acessa suas fotos para você enviar uma no chat ou escolher uma imagem para um personagem."
+  }
+}

@@ -1,6 +1,6 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, shadows, space } from '@/theme';
+import { radius, shadows, space, themed, useThemed } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 
@@ -14,6 +14,7 @@ export interface CardProps {
 }
 
 export function Card({ children, onPress, style, padded = true, variant = 'raised' }: CardProps) {
+  const styles = useThemed(sheet);
   const cardStyle: StyleProp<ViewStyle> = [
     styles.base,
     variant === 'raised' && shadows.card,
@@ -33,16 +34,18 @@ export function Card({ children, onPress, style, padded = true, variant = 'raise
   return <View style={cardStyle}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
-  base: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-  },
-  padded: {
-    padding: space.lg,
-  },
-  outlined: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-});
+const sheet = themed(({ colors }) =>
+  StyleSheet.create({
+    base: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+    },
+    padded: {
+      padding: space.lg,
+    },
+    outlined: {
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+    },
+  }),
+);

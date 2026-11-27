@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam usa il microfono per permetterti di inviare messaggi vocali e fare chiamate con i tuoi amici.",
+    "NSCameraUsageDescription": "Sigmazam usa la fotocamera per scattare una foto insieme ai tuoi amici nella Cabina Foto.",
+    "NSPhotoLibraryUsageDescription": "Sigmazam accede alle tue foto per inviarne una in chat o scegliere un’immagine per un personaggio."
+  }
+}

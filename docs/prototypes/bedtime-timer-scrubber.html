@@ -1,0 +1,2029 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uyqu taymeri — Scrubber prototipi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<style>
+  /* Bedtime timer scrubber prototype (2026-11-26).
+     Interaction concepts inspired by Scrubbers (MIT, haplollc/Scrubbers) — RulerFace bell-curve
+     swelling and TapeFace precision scrolling dial — rebuilt cleanly in Sigmazam's Ink Night+
+     Bedtime look (src/app/bedtime.tsx, src/theme/ink.ts). */
+  :root {
+    --stage: #111116;
+    --bed-bg: #07070B;
+    --card: #16161E;
+    --raised: rgba(118, 118, 128, 0.24);
+    --thumb: #636366;
+    --edge: rgba(255, 255, 255, 0.08);
+    --edge-hi: rgba(255, 255, 255, 0.16);
+    --text: #FFFFFF;
+    --text2: rgba(235, 235, 245, 0.62);
+    --text3: rgba(235, 235, 245, 0.48);
+    --peach: #EBAD84;
+    --peach-rim: rgba(255, 228, 206, 0.36);
+    --on-peach: #2B1305;
+    --lavender: #A78BFA;
+    --pro-bg: rgba(217, 166, 245, 0.16);
+    --pro-rim: rgba(217, 166, 245, 0.34);
+    --pro-ink: #D9A6F5;
+    --green: #30D158;
+    --dock-bg: rgba(7, 7, 11, 0.94);
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --sys: -apple-system, 'SF Pro Text', 'SF Pro Display', Roboto, system-ui, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--stage);
+    color: var(--text);
+    font-family: var(--sys);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding: 22px 16px 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Studio header (plain Uzbek for owner review) */
+  .studio-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    max-width: 440px;
+    text-align: center;
+  }
+
+  .studio-head h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+  }
+
+  .studio-head p {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .seg {
+    display: flex;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--raised);
+    border: 0.5px solid var(--edge);
+    width: min(410px, 100%);
+  }
+
+  .seg button {
+    flex: 1;
+    min-height: 38px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text2);
+    font: 600 13.5px var(--sys);
+    cursor: pointer;
+    padding: 0 8px;
+    transition: background 180ms ease, color 180ms ease;
+    white-space: nowrap;
+  }
+
+  .seg button.on {
+    background: var(--thumb);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  }
+
+  .sub-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: min(410px, 100%);
+  }
+
+  .chip {
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: 999px;
+    border: 0.5px solid var(--edge);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text2);
+    font: 600 12.5px var(--sys);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+
+  .chip.on {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(235, 173, 132, 0.52);
+    color: var(--peach);
+  }
+
+  .chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* iPhone 390x844 frame */
+  .phone {
+    width: min(390px, 100%);
+    height: 844px;
+    border-radius: 48px;
+    background: var(--bed-bg);
+    position: relative;
+    overflow: hidden;
+    border: 9px solid #000000;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.12),
+      0 32px 90px rgba(0, 0, 0, 0.72);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .ambient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 280px;
+    background: linear-gradient(180deg, rgba(167, 139, 250, 0.21) 0%, rgba(7, 7, 11, 0) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Status bar */
+  .status-bar {
+    position: relative;
+    z-index: 4;
+    height: 44px;
+    padding: 14px 26px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.2px;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 108px;
+    height: 28px;
+    border-radius: 18px;
+    background: #000;
+  }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0.92;
+  }
+
+  /* Sticky HIG Nav Bar */
+  .nav-bar {
+    position: relative;
+    z-index: 4;
+    height: 44px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    background: var(--raised);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 140ms ease, background 140ms ease;
+  }
+
+  .nav-back:active { transform: scale(0.92); }
+
+  .pro-pill {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--pro-bg);
+    border: 0.5px solid var(--pro-rim);
+    color: var(--pro-ink);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Setup view */
+  .setup-view {
+    position: relative;
+    z-index: 2;
+    height: calc(100% - 88px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 0 0 108px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .setup-view::-webkit-scrollbar { display: none; }
+
+  .screen-title {
+    margin: 0 20px;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 33px;
+    line-height: 38px;
+    letter-spacing: -0.5px;
+  }
+
+  /* Hero DotMatrix + DreamFace */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: -2px;
+  }
+
+  .hero-art {
+    position: relative;
+    width: 174px;
+    height: 174px;
+    display: grid;
+    place-items: center;
+  }
+
+  .hero-art canvas {
+    width: 174px;
+    height: 174px;
+    display: block;
+  }
+
+  .dream-face {
+    position: absolute;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    transition: opacity 220ms ease, transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+
+  .dream-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dream-face .fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .dream-melt {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(7, 7, 11, 0) 56%, rgba(7, 7, 11, 0.92) 100%);
+    pointer-events: none;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26px;
+    letter-spacing: -0.25px;
+    text-align: center;
+  }
+
+  /* Friend strip */
+  .faces {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    padding: 2px 20px 0;
+  }
+
+  .face-btn {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .face-ring {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 2px;
+    border: 2px solid transparent;
+    transition: border-color 200ms ease, transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    display: grid;
+    place-items: center;
+  }
+
+  .face-btn:active .face-ring { transform: scale(0.93); }
+
+  .face-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    background: #23232F;
+  }
+
+  .face-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .face-avatar .fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .face-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    transition: color 180ms ease;
+  }
+
+  .face-btn.on .face-name { color: var(--text); }
+
+  /* Timer card (Ink card: 28px radius, hairline rim) */
+  .timer-card {
+    margin: 0 20px;
+    border-radius: 28px;
+    background: var(--card);
+    border: 0.5px solid var(--edge);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .timer-card.dragging {
+    border-color: rgba(235, 173, 132, 0.34);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Scrubber mode layout (Ruler & Tape) */
+  .scrubber-body {
+    padding: 14px 16px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .timer-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 2px;
+  }
+
+  .timer-readout {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .timer-icon {
+    color: var(--text2);
+    display: grid;
+    place-items: center;
+    transition: color 180ms ease;
+  }
+
+  .timer-card.dragging .timer-icon { color: var(--peach); }
+
+  .timer-num {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 32px;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--text);
+    transform-origin: left center;
+    transition: transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1), color 180ms ease;
+  }
+
+  .timer-card.dragging .timer-num {
+    transform: scale(1.05);
+    color: #FFF3EA;
+  }
+
+  .ends-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .haptic-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--peach);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 90ms ease, transform 90ms ease;
+  }
+
+  .haptic-dot.pop {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+
+  /* Ruler & Tape interactive canvas area */
+  .scrub-track {
+    position: relative;
+    height: 58px;
+    width: 100%;
+    touch-action: none;
+    cursor: grab;
+    outline: none;
+    border-radius: 14px;
+  }
+
+  .scrub-track:active { cursor: grabbing; }
+
+  .scrub-track:focus-visible {
+    box-shadow: 0 0 0 2px rgba(235, 173, 132, 0.55);
+  }
+
+  .scrub-track canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .tape-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  }
+
+  /* Scale anchors beneath Ruler */
+  .scale-row {
+    position: relative;
+    height: 18px;
+    margin: 0 12px;
+  }
+
+  .scale-mark {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--text3);
+    font: 600 11px var(--sys);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 6px;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+
+  .scale-mark:hover { color: var(--text2); }
+
+  .scale-mark.active {
+    color: var(--peach);
+  }
+
+  /* Tape quick hint / marks */
+  .tape-pills {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    gap: 4px;
+  }
+
+  .tape-pill {
+    border: 0;
+    background: transparent;
+    color: var(--text3);
+    font: 600 11.5px var(--sys);
+    font-variant-numeric: tabular-nums;
+    padding: 2px 7px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+
+  .tape-pill:hover { color: var(--text2); }
+
+  .tape-pill.active {
+    background: rgba(255, 255, 255, 0.11);
+    color: var(--peach);
+  }
+
+  /* Current (- 20 min +) layout */
+  .legacy-row {
+    min-height: 76px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .step-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    border: 0.5px solid rgba(255, 255, 255, 0.10);
+    background: var(--raised);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 140ms ease, opacity 140ms ease;
+  }
+
+  .step-btn:active { transform: scale(0.92); }
+  .step-btn:disabled { opacity: 0.32; cursor: default; }
+
+  .legacy-val {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Wake-up card */
+  .wake-card {
+    margin: 0 20px;
+    min-height: 70px;
+    padding: 12px 15px;
+    border-radius: 28px;
+    background: var(--card);
+    border: 0.5px solid var(--edge);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .wake-tile {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: var(--green);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .wake-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .wake-time {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 25px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wake-sub {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .wake-ava-ring {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid #E8749C;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #23232F;
+  }
+
+  .wake-ava-ring img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Anchored bottom dock */
+  .dock {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    padding: 12px 20px 24px;
+    background: var(--dock-bg);
+    border-top: 0.5px solid var(--edge);
+  }
+
+  .cta-pill {
+    width: 100%;
+    height: 54px;
+    border-radius: 999px;
+    border: 1px solid var(--peach-rim);
+    background: var(--peach);
+    color: var(--on-peach);
+    font: 600 17px var(--sys);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 150ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+
+  .cta-pill:active { transform: scale(0.97); }
+
+  .home-bar {
+    position: absolute;
+    bottom: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 4.5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.34);
+    z-index: 9;
+    pointer-events: none;
+  }
+
+  /* Running whisper state (exact match to bedtime.tsx running view) */
+  .running-view {
+    position: relative;
+    z-index: 3;
+    height: calc(100% - 88px);
+    padding: 8px 20px 30px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .phone.is-running .setup-view,
+  .phone.is-running .dock,
+  .phone.is-running .pro-pill {
+    display: none;
+  }
+
+  .phone.is-running .running-view {
+    display: flex;
+  }
+
+  .whisper-pill {
+    height: 36px;
+    padding: 0 13px 0 5px;
+    border-radius: 999px;
+    background: rgba(22, 22, 30, 0.86);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .whisper-ring {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid #E8749C;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .whisper-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .wave-bars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5px;
+    height: 14px;
+  }
+
+  .wave-bars span {
+    width: 2.5px;
+    border-radius: 2px;
+    background: var(--peach);
+    animation: wavePulse 1.1s ease-in-out infinite;
+  }
+
+  .wave-bars span:nth-child(1) { height: 6px; animation-delay: 0s; }
+  .wave-bars span:nth-child(2) { height: 12px; animation-delay: 0.2s; }
+  .wave-bars span:nth-child(3) { height: 8px; animation-delay: 0.4s; }
+  .wave-bars.paused span { animation: none; height: 4px; opacity: 0.4; }
+
+  @keyframes wavePulse {
+    0%, 100% { transform: scaleY(0.45); opacity: 0.65; }
+    50% { transform: scaleY(1); opacity: 1; }
+  }
+
+  .ring-wrap {
+    position: relative;
+    width: 256px;
+    height: 256px;
+    display: grid;
+    place-items: center;
+  }
+
+  .ring-wrap svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .ring-inner {
+    position: relative;
+    width: 204px;
+    height: 204px;
+    display: grid;
+    place-items: center;
+  }
+
+  .ring-inner canvas { width: 204px; height: 204px; display: block; }
+
+  .ring-inner .dream-face { width: 102px; height: 102px; }
+
+  .countdown-num {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 52px;
+    line-height: 58px;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .run-controls {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+
+  .ctrl-btn {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 0;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 140ms ease;
+  }
+
+  .ctrl-btn:active { transform: scale(0.93); }
+
+  .ctrl-stop {
+    background: var(--raised);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .ctrl-stop-sq {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--text);
+  }
+
+  .ctrl-play {
+    background: var(--peach);
+    border: 1px solid var(--peach-rim);
+    color: var(--on-peach);
+  }
+
+  .wake-pill-bottom {
+    margin-top: auto;
+    height: 38px;
+    padding: 0 14px 0 6px;
+    border-radius: 999px;
+    background: rgba(22, 22, 30, 0.84);
+    border: 0.5px solid var(--edge);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .wake-pill-time {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer-hint {
+    max-width: 410px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text2);
+    text-align: center;
+  }
+
+  .footer-hint b { color: var(--text); font-weight: 600; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="studio-head">
+  <h1>Uyqu taymeri prototipi</h1>
+  <p>Barmoq yoki sichqoncha bilan chizg‘ichni chapga-o‘ngga surib ko‘ring. Yuqoridan 3 usulni solishtiring va <b>Sleep together</b> tugmasini bosib taymer jarayonini ham tekshiring.</p>
+</div>
+
+<div class="seg" role="tablist" aria-label="Taymer ko‘rinishi">
+  <button id="tab-ruler" class="on" role="tab" aria-selected="true">Chizg‘ich · Tavsiya</button>
+  <button id="tab-tape" role="tab" aria-selected="false">Lenta</button>
+  <button id="tab-legacy" role="tab" aria-selected="false">Hozirgi (- / +)</button>
+</div>
+
+<div class="sub-controls">
+  <button id="btn-steps-9" class="chip on" type="button"><span class="dot"></span>9 qadam (5–120)</button>
+  <button id="btn-steps-5m" class="chip" type="button"><span class="dot"></span>Har 5 daqiqa</button>
+  <button id="btn-sound" class="chip on" type="button"><span class="dot"></span>Taktil tovush</button>
+</div>
+
+<div class="phone" id="phone">
+  <div class="ambient"></div>
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span id="status-clock">22:45</span>
+    <div class="dynamic-island"></div>
+    <div class="status-icons" aria-hidden="true">
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <rect x="0.5" y="7" width="2.5" height="3.5" rx="0.8" fill="#fff"/>
+        <rect x="4.5" y="5" width="2.5" height="5.5" rx="0.8" fill="#fff"/>
+        <rect x="8.5" y="2.8" width="2.5" height="7.7" rx="0.8" fill="#fff"/>
+        <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.8" fill="#fff"/>
+      </svg>
+      <svg width="23" height="11" viewBox="0 0 23 11" fill="none">
+        <rect x="0.6" y="0.6" width="18.8" height="9.8" rx="2.6" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+        <rect x="2.2" y="2.2" width="14.5" height="6.6" rx="1.4" fill="#fff"/>
+        <path d="M21 3.7V7.3" stroke="rgba(255,255,255,0.45)" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Nav bar -->
+  <div class="nav-bar">
+    <button class="nav-back" id="btn-back" type="button" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+    <div class="pro-pill">Pro</div>
+  </div>
+
+  <!-- SETUP VIEW -->
+  <div class="setup-view">
+    <div class="screen-title">Bedtime</div>
+
+    <div class="hero">
+      <div class="hero-art">
+        <canvas id="dot-setup"></canvas>
+        <div class="dream-face" id="setup-dream">
+          <img id="setup-dream-img" alt="Clara">
+          <div class="fallback hidden" id="setup-dream-fb">C</div>
+          <div class="dream-melt"></div>
+        </div>
+      </div>
+      <div class="hero-title" id="hero-title">Sleep with Clara</div>
+    </div>
+
+    <div class="faces" id="face-strip"></div>
+
+    <!-- TIMER CARD -->
+    <div class="timer-card" id="timer-card">
+      <!-- Mode 1: Ruler (Bell-curve swelling ticks) -->
+      <div class="scrubber-body" id="panel-ruler">
+        <div class="timer-top">
+          <div class="timer-readout">
+            <span class="timer-icon" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="13" r="8"/>
+                <path d="M12 9v4l2.6 1.6"/>
+                <path d="M9.5 2.5h5"/>
+              </svg>
+            </span>
+            <span class="timer-num" id="ruler-num">20 min</span>
+          </div>
+          <div class="ends-meta">
+            <span class="haptic-dot" id="ruler-haptic"></span>
+            <span id="ruler-ends">Ends 23:05</span>
+          </div>
+        </div>
+
+        <div class="scrub-track" id="ruler-track" tabindex="0" role="slider" aria-label="Sleep timer" aria-valuemin="5" aria-valuemax="120" aria-valuenow="20">
+          <canvas id="ruler-canvas"></canvas>
+        </div>
+
+        <div class="scale-row" id="ruler-scale"></div>
+      </div>
+
+      <!-- Mode 2: Tape (Fixed center needle + scrolling dial tape) -->
+      <div class="scrubber-body hidden" id="panel-tape">
+        <div class="timer-top">
+          <div class="timer-readout">
+            <span class="timer-icon" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="13" r="8"/>
+                <path d="M12 9v4l2.6 1.6"/>
+                <path d="M9.5 2.5h5"/>
+              </svg>
+            </span>
+            <span class="timer-num" id="tape-num">20 min</span>
+          </div>
+          <div class="ends-meta">
+            <span class="haptic-dot" id="tape-haptic"></span>
+            <span id="tape-ends">Ends 23:05</span>
+          </div>
+        </div>
+
+        <div class="scrub-track tape-mask" id="tape-track" tabindex="0" role="slider" aria-label="Sleep timer dial" aria-valuemin="5" aria-valuemax="120" aria-valuenow="20">
+          <canvas id="tape-canvas"></canvas>
+        </div>
+
+        <div class="tape-pills" id="tape-pills"></div>
+      </div>
+
+      <!-- Mode 3: Legacy (- 20 min +) -->
+      <div class="legacy-row hidden" id="panel-legacy">
+        <button class="step-btn" id="legacy-minus" type="button" aria-label="Decrease">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M5 12h14"/>
+          </svg>
+        </button>
+        <div class="legacy-val">
+          <span class="timer-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="13" r="8"/>
+              <path d="M12 9v4l2.6 1.6"/>
+              <path d="M9.5 2.5h5"/>
+            </svg>
+          </span>
+          <span class="timer-num" id="legacy-num">20 min</span>
+        </div>
+        <button class="step-btn" id="legacy-plus" type="button" aria-label="Increase">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- WAKE-UP CARD -->
+    <div class="wake-card">
+      <div class="wake-tile" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="13" r="7.5"/>
+          <path d="M12 9.5V13l2.4 1.6"/>
+          <path d="M5.2 4.8L3 7"/>
+          <path d="M18.8 4.8L21 7"/>
+        </svg>
+      </div>
+      <div class="wake-meta">
+        <div class="wake-time">07:00</div>
+        <div class="wake-sub" id="wake-sub">Clara · in 8h 15m</div>
+      </div>
+      <div class="wake-ava-ring" id="wake-ring">
+        <img id="wake-ava-img" alt="Clara">
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.42)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- RUNNING VIEW -->
+  <div class="running-view">
+    <div class="whisper-pill">
+      <div class="whisper-ring" id="run-pill-ring">
+        <img id="run-pill-img" alt="">
+      </div>
+      <span id="run-pill-text">Clara is whispering</span>
+      <div class="wave-bars" id="run-wave"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="ring-wrap">
+      <svg width="256" height="256" viewBox="0 0 256 256">
+        <circle cx="128" cy="128" r="124.5" stroke="rgba(255,255,255,0.08)" stroke-width="7" fill="none"/>
+        <circle id="ring-progress" cx="128" cy="128" r="124.5" stroke="#EBAD84" stroke-width="7" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-inner">
+        <canvas id="dot-run"></canvas>
+        <div class="dream-face">
+          <img id="run-dream-img" alt="">
+          <div class="fallback hidden" id="run-dream-fb">C</div>
+          <div class="dream-melt"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="countdown-num" id="countdown-num">20:00</div>
+
+    <div class="run-controls">
+      <button class="ctrl-btn ctrl-stop" id="btn-stop" type="button" aria-label="Stop">
+        <span class="ctrl-stop-sq"></span>
+      </button>
+      <button class="ctrl-btn ctrl-play" id="btn-pause" type="button" aria-label="Pause">
+        <svg id="icon-pause" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4.5" width="4.2" height="15" rx="1.6"/>
+          <rect x="13.8" y="4.5" width="4.2" height="15" rx="1.6"/>
+        </svg>
+        <svg id="icon-play" class="hidden" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5.2c0-1.1 1.2-1.8 2.1-1.2l9.7 6.8c.8.5.8 1.8 0 2.4L10.1 20c-.9.6-2.1-.1-2.1-1.2V5.2z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="wake-pill-bottom">
+      <div class="whisper-ring" id="run-wake-ring">
+        <img id="run-wake-img" alt="">
+      </div>
+      <span class="wake-pill-time">07:00</span>
+      <span style="color:var(--text2)">Clara</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM DOCK -->
+  <div class="dock">
+    <button class="cta-pill" id="btn-start" type="button">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/>
+      </svg>
+      <span>Sleep together</span>
+    </button>
+  </div>
+
+  <div class="home-bar"></div>
+</div>
+
+<p class="footer-hint">
+  <b>Chizg‘ich (Ruler):</b> barmoq ostida chiziqchalar to‘lqin kabi ko‘tariladi va yuqoridagi LED nur ham birga nafas oladi.<br>
+  <b>Lenta (Tape):</b> markazdagi igna joyida turadi, ostidagi chizg‘ich inersiya bilan yumshoq aylanadi.
+</p>
+
+<script>
+(() => {
+  /* =========================================================================
+     DATA & STATE
+     ========================================================================= */
+  const FRIENDS = [
+    { id: 'c_milo',  name: 'Milo',  accent: '#6E9BFF', img: '../../assets/avatars/c_milo_avatar.jpg',  grad: ['#3558A8', '#5F8DFF'] },
+    { id: 'c_sam',   name: 'Sam',   accent: '#4FD1A0', img: '../../assets/avatars/c_sam_avatar.jpg',   grad: ['#1F6B57', '#4FD1A0'] },
+    { id: 'c_roman', name: 'Roman', accent: '#A893F0', img: '../../assets/avatars/c_roman_avatar.jpg', grad: ['#4B3C82', '#A893F0'] },
+    { id: 'c_ethan', name: 'Ethan', accent: '#FF9F4A', img: '../../assets/avatars/c_ethan_avatar.jpg', grad: ['#8E4B1E', '#FF9F4A'] },
+    { id: 'c_clara', name: 'Clara', accent: '#E8749C', img: '../../assets/avatars/c_clara_avatar.jpg', grad: ['#7D2F4C', '#E8749C'] },
+  ];
+
+  const STEPS_CURATED = [5, 10, 15, 20, 30, 45, 60, 90, 120];
+  const STEPS_5MIN = Array.from({ length: 24 }, (_, i) => (i + 1) * 5); // 5..120 every 5m
+
+  const state = {
+    mode: 'ruler', // 'ruler' | 'tape' | 'legacy'
+    steps: STEPS_CURATED,
+    stepIdx: 3, // 20 min
+    friendIdx: 4, // Clara
+    soundOn: true,
+    dragging: false,
+    running: false,
+    paused: false,
+    leftSec: 0,
+    totalSec: 0,
+    tickTimer: null,
+  };
+
+  /* =========================================================================
+     SUBTLE TACTILE TICK SOUND (simulates iOS Taptic Engine on desktop)
+     ========================================================================= */
+  let audioCtx = null;
+  function playTick(strong = false) {
+    if (!state.soundOn) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(strong ? 1350 : 1850, now);
+      osc.frequency.exponentialRampToValueAtTime(strong ? 420 : 640, now + 0.012);
+      gain.gain.setValueAtTime(strong ? 0.055 : 0.032, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.014);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.016);
+    } catch (_) {}
+  }
+
+  function flashHaptic(dotId) {
+    const el = document.getElementById(dotId);
+    if (!el) return;
+    el.classList.add('pop');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('pop'), 110);
+  }
+
+  /* =========================================================================
+     TIME FORMATTING (Ends HH:MM synced to real clock or evening baseline)
+     ========================================================================= */
+  function nowMinutesOfDay() {
+    const d = new Date();
+    return d.getHours() * 60 + d.getMinutes();
+  }
+
+  function formatClock(totalMin) {
+    const m = ((totalMin % 1440) + 1440) % 1440;
+    const hh = String(Math.floor(m / 60)).padStart(2, '0');
+    const mm = String(m % 60).padStart(2, '0');
+    return `${hh}:${mm}`;
+  }
+
+  function formatDuration(min) {
+    return `${min} min`;
+  }
+
+  function formatMMSS(sec) {
+    const s = Math.max(0, Math.floor(sec));
+    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    return `${mm}:${ss}`;
+  }
+
+  function updateClockAndWake() {
+    const nowM = nowMinutesOfDay();
+    document.getElementById('status-clock').textContent = formatClock(nowM);
+    const wakeMin = 7 * 60; // 07:00
+    let diff = wakeMin - nowM;
+    if (diff <= 0) diff += 1440;
+    const h = Math.floor(diff / 60);
+    const m = diff % 60;
+    const until = h > 0 ? (m > 0 ? `in ${h}h ${m}m` : `in ${h}h`) : `in ${m}m`;
+    document.getElementById('wake-sub').textContent = `Clara · ${until}`;
+  }
+
+  /* =========================================================================
+     DOM REFERENCES & FRIEND SWITCHING
+     ========================================================================= */
+  const phoneEl = document.getElementById('phone');
+  const timerCardEl = document.getElementById('timer-card');
+  const setupDreamImg = document.getElementById('setup-dream-img');
+  const setupDreamFb = document.getElementById('setup-dream-fb');
+  const runDreamImg = document.getElementById('run-dream-img');
+  const runDreamFb = document.getElementById('run-dream-fb');
+  const runPillImg = document.getElementById('run-pill-img');
+  const runPillRing = document.getElementById('run-pill-ring');
+  const runPillText = document.getElementById('run-pill-text');
+  const heroTitleEl = document.getElementById('hero-title');
+  const wakeAvaImg = document.getElementById('wake-ava-img');
+  const runWakeImg = document.getElementById('run-wake-img');
+
+  function bindAvatar(imgEl, fbEl, friend) {
+    imgEl.onerror = () => {
+      imgEl.classList.add('hidden');
+      if (fbEl) {
+        fbEl.classList.remove('hidden');
+        fbEl.textContent = friend.name[0];
+        fbEl.style.background = `linear-gradient(135deg, ${friend.grad[0]}, ${friend.grad[1]})`;
+      }
+    };
+    imgEl.onload = () => {
+      imgEl.classList.remove('hidden');
+      if (fbEl) fbEl.classList.add('hidden');
+    };
+    imgEl.src = friend.img;
+  }
+
+  // Wake card belongs to Clara (matches current live A51 state)
+  bindAvatar(wakeAvaImg, null, FRIENDS[4]);
+  bindAvatar(runWakeImg, null, FRIENDS[4]);
+
+  function renderFaces() {
+    const strip = document.getElementById('face-strip');
+    strip.innerHTML = '';
+    FRIENDS.forEach((f, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'face-btn' + (i === state.friendIdx ? ' on' : '');
+      btn.innerHTML = `
+        <div class="face-ring" style="border-color:${i === state.friendIdx ? f.accent : 'transparent'}">
+          <div class="face-avatar">
+            <img alt="${f.name}">
+            <div class="fallback hidden">${f.name[0]}</div>
+          </div>
+        </div>
+        <span class="face-name">${f.name}</span>
+      `;
+      const img = btn.querySelector('img');
+      const fb = btn.querySelector('.fallback');
+      bindAvatar(img, fb, f);
+      btn.addEventListener('click', () => {
+        if (state.friendIdx === i) return;
+        state.friendIdx = i;
+        playTick(true);
+        applyFriend();
+      });
+      strip.appendChild(btn);
+    });
+  }
+
+  function applyFriend() {
+    const f = FRIENDS[state.friendIdx];
+    heroTitleEl.textContent = `Sleep with ${f.name}`;
+    runPillText.textContent = `${f.name} is whispering`;
+    runPillRing.style.borderColor = f.accent;
+    bindAvatar(setupDreamImg, setupDreamFb, f);
+    bindAvatar(runDreamImg, runDreamFb, f);
+    bindAvatar(runPillImg, null, f);
+    const btns = document.querySelectorAll('.face-btn');
+    btns.forEach((b, i) => {
+      const on = i === state.friendIdx;
+      b.classList.toggle('on', on);
+      b.querySelector('.face-ring').style.borderColor = on ? FRIENDS[i].accent : 'transparent';
+    });
+  }
+
+  /* =========================================================================
+     READOUT & ARIA SYNC
+     ========================================================================= */
+  function currentMinutes() {
+    return state.steps[state.stepIdx];
+  }
+
+  function syncReadout() {
+    const mins = currentMinutes();
+    const label = formatDuration(mins);
+    const ends = `Ends ${formatClock(nowMinutesOfDay() + mins)}`;
+
+    document.getElementById('ruler-num').textContent = label;
+    document.getElementById('ruler-ends').textContent = ends;
+    document.getElementById('tape-num').textContent = label;
+    document.getElementById('tape-ends').textContent = ends;
+    document.getElementById('legacy-num').textContent = label;
+
+    document.getElementById('legacy-minus').disabled = state.stepIdx <= 0;
+    document.getElementById('legacy-plus').disabled = state.stepIdx >= state.steps.length - 1;
+
+    document.getElementById('ruler-track').setAttribute('aria-valuenow', String(mins));
+    document.getElementById('tape-track').setAttribute('aria-valuenow', String(mins));
+
+    // Highlight active scale anchor & tape quick pill
+    document.querySelectorAll('#ruler-scale .scale-mark').forEach((el) => {
+      el.classList.toggle('active', Number(el.dataset.min) === mins);
+    });
+    document.querySelectorAll('#tape-pills .tape-pill').forEach((el) => {
+      el.classList.toggle('active', Number(el.dataset.min) === mins);
+    });
+  }
+
+  /* =========================================================================
+     EXACT DOTMATRIX LED SHADER (ported 1:1 from src/components/ui/dot-matrix.tsx)
+     ========================================================================= */
+  const setupDotCanvas = document.getElementById('dot-setup');
+  const runDotCanvas = document.getElementById('dot-run');
+
+  function setupHiDPI(canvas, w, h) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+  }
+
+  function smoothstep(e0, e1, x) {
+    const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  const COL1 = [167, 139, 250]; // #A78BFA NIGHT_DOTS
+  const COL2 = [235, 173, 132]; // #EBAD84 NIGHT_DOTS_EDGE
+
+  function drawDotMatrix(canvas, size, timeSec, energy) {
+    const ctx = setupHiDPI(canvas, size, size);
+    ctx.clearRect(0, 0, size, size);
+    const cells = 17;
+    const cell = size / cells;
+    const breath = 0.5 + 0.5 * Math.sin(timeSec * 0.75);
+    const amp = (0.3 + 0.7 * energy) * (0.72 + 0.28 * breath);
+
+    for (let gy = 0; gy < cells; gy++) {
+      for (let gx = 0; gx < cells; gx++) {
+        const cx = (gx + 0.5) * cell;
+        const cy = (gy + 0.5) * cell;
+        const uvx = (cx / size) * 2 - 1;
+        const uvy = (cy / size) * 2 - 1;
+        const d = Math.hypot(uvx, uvy);
+        if (d > 1.04) continue;
+        // Skip dots completely hidden under DreamFace to save work
+        if (d < 0.44) continue;
+
+        const ang = Math.atan2(uvy, uvx);
+        const ripple = 0.5 + 0.5 * Math.sin(d * 8.0 - timeSec * 2.0);
+        const swirl = 0.5 + 0.5 * Math.sin(ang * 3.0 + d * 5.0 - timeSec * 0.9);
+        const wave = ripple * 0.65 + swirl * 0.35;
+        const r = cell * 0.5 * (0.22 + 0.68 * wave * amp) * (1.0 - 0.45 * d);
+        const edge = 1.0 - smoothstep(0.82, 1.04, d);
+        const mixK = Math.max(0, Math.min(1, d * 0.9 + 0.25 * Math.sin(timeSec * 0.4 + ang)));
+        const lit = 0.32 + 0.68 * wave;
+        const cr = Math.round((COL1[0] + (COL2[0] - COL1[0]) * mixK) * lit);
+        const cg = Math.round((COL1[1] + (COL2[1] - COL1[1]) * mixK) * lit);
+        const cb = Math.round((COL1[2] + (COL2[2] - COL1[2]) * mixK) * lit);
+
+        // Soft outer bloom
+        const bloomAlpha = 0.28 * wave * amp * edge;
+        if (bloomAlpha > 0.01) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r * 1.9, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${cr},${cg},${cb},${bloomAlpha.toFixed(3)})`;
+          ctx.fill();
+        }
+
+        // Crisp LED core
+        const coreAlpha = Math.min(1, 0.92 * edge);
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(0.7, r), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${coreAlpha.toFixed(3)})`;
+        ctx.fill();
+      }
+    }
+  }
+
+  /* =========================================================================
+     MODE 1: RULER SCRUBBER (Bell-curve swelling ticks — Scrubbers RulerFace)
+     ========================================================================= */
+  const rulerTrack = document.getElementById('ruler-track');
+  const rulerCanvas = document.getElementById('ruler-canvas');
+  const rulerScaleEl = document.getElementById('ruler-scale');
+  const RULER_INSET = 12;
+
+  const rulerPhys = {
+    pos: 3 / (STEPS_CURATED.length - 1), // normalized 0..1
+    target: 3 / (STEPS_CURATED.length - 1),
+    vel: 0,
+    lifted: 0,
+    liftedTarget: 0,
+    dragging: false,
+  };
+
+  function buildRulerScale() {
+    rulerScaleEl.innerHTML = '';
+    const anchors = [5, 15, 30, 60, 120];
+    const maxIdx = state.steps.length - 1;
+    anchors.forEach((m) => {
+      const idx = state.steps.indexOf(m);
+      if (idx < 0) return;
+      const pct = (idx / maxIdx) * 100;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'scale-mark';
+      btn.dataset.min = String(m);
+      btn.textContent = `${m}m`;
+      btn.style.left = `${pct}%`;
+      btn.addEventListener('click', () => {
+        setStepIndex(idx, true);
+      });
+      rulerScaleEl.appendChild(btn);
+    });
+    syncReadout();
+  }
+
+  function pointerToRulerNorm(clientX) {
+    const rect = rulerTrack.getBoundingClientRect();
+    const usable = Math.max(1, rect.width - RULER_INSET * 2);
+    return Math.max(0, Math.min(1, (clientX - rect.left - RULER_INSET) / usable));
+  }
+
+  function updateRulerFromClientX(clientX) {
+    const norm = pointerToRulerNorm(clientX);
+    rulerPhys.pos = norm;
+    rulerPhys.target = norm;
+    rulerPhys.vel = 0;
+    const maxIdx = state.steps.length - 1;
+    const nearest = Math.round(norm * maxIdx);
+    if (nearest !== state.stepIdx) {
+      state.stepIdx = nearest;
+      playTick(false);
+      flashHaptic('ruler-haptic');
+      syncReadout();
+    }
+  }
+
+  rulerTrack.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    rulerTrack.setPointerCapture(e.pointerId);
+    rulerPhys.dragging = true;
+    rulerPhys.liftedTarget = 1;
+    state.dragging = true;
+    timerCardEl.classList.add('dragging');
+    updateRulerFromClientX(e.clientX);
+  });
+
+  rulerTrack.addEventListener('pointermove', (e) => {
+    if (!rulerPhys.dragging) return;
+    updateRulerFromClientX(e.clientX);
+  });
+
+  function endRulerDrag() {
+    if (!rulerPhys.dragging) return;
+    rulerPhys.dragging = false;
+    rulerPhys.liftedTarget = 0;
+    state.dragging = false;
+    timerCardEl.classList.remove('dragging');
+    // Magnetic spring snap to exact detent
+    const maxIdx = state.steps.length - 1;
+    rulerPhys.target = state.stepIdx / maxIdx;
+    playTick(true);
+  }
+
+  rulerTrack.addEventListener('pointerup', endRulerDrag);
+  rulerTrack.addEventListener('pointercancel', endRulerDrag);
+
+  rulerTrack.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const dir = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) > 0 ? 1 : -1;
+    setStepIndex(state.stepIdx + dir, true);
+  }, { passive: false });
+
+  function drawRuler() {
+    const rect = rulerTrack.getBoundingClientRect();
+    if (rect.width < 10) return;
+    const w = rect.width;
+    const h = rect.height;
+    const ctx = setupHiDPI(rulerCanvas, w, h);
+    ctx.clearRect(0, 0, w, h);
+
+    const trackW = w - RULER_INSET * 2;
+    const indicatorX = RULER_INSET + rulerPhys.pos * trackW;
+    const midY = h * 0.52;
+
+    // Exact RulerFace Gaussian bell-curve geometry
+    const sigma = trackW * 0.145;
+    const rest = 7;
+    const swell = 25 + 8 * rulerPhys.lifted;
+    const spacing = 6.5;
+    const count = Math.floor(trackW / spacing);
+    const maxIdx = state.steps.length - 1;
+
+    // Subtle peach aura behind the swollen bell zone
+    const aura = ctx.createRadialGradient(indicatorX, midY, 2, indicatorX, midY, sigma * 1.15);
+    aura.addColorStop(0, `rgba(235, 173, 132, ${(0.12 + 0.12 * rulerPhys.lifted).toFixed(3)})`);
+    aura.addColorStop(0.55, `rgba(167, 139, 250, ${(0.05 + 0.05 * rulerPhys.lifted).toFixed(3)})`);
+    aura.addColorStop(1, 'rgba(235, 173, 132, 0)');
+    ctx.fillStyle = aura;
+    ctx.fillRect(0, 0, w, h);
+
+    // Subtle detent dots at exact step positions along the baseline
+    for (let s = 0; s <= maxIdx; s++) {
+      const sx = RULER_INSET + (s / maxIdx) * trackW;
+      const d = Math.abs(sx - indicatorX);
+      if (d < 4) continue;
+      const bell = Math.exp(-0.5 * (d / sigma) ** 2);
+      ctx.beginPath();
+      ctx.arc(sx, h - 4, 1.35, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(235, 235, 245, ${(0.16 + 0.30 * bell).toFixed(3)})`;
+      ctx.fill();
+    }
+
+    // Hairline ticks with smooth Gaussian swell
+    for (let i = 0; i <= count; i++) {
+      const x = RULER_INSET + (i / count) * trackW;
+      const dist = Math.abs(x - indicatorX);
+      if (dist < 2.6) continue; // make clean space for the center needle
+
+      const bell = Math.exp(-0.5 * (dist / sigma) ** 2);
+      const tickH = rest + swell * bell;
+      const alpha = 0.16 + 0.58 * bell;
+
+      // Colour drifts smoothly from cool slate -> night lavender -> warm peach near needle
+      const warm = Math.pow(bell, 2.2);
+      const r = Math.round(190 + (235 - 190) * warm);
+      const g = Math.round(188 + (173 - 188) * warm);
+      const b = Math.round(230 + (132 - 230) * warm);
+
+      ctx.strokeStyle = `rgba(${r},${g},${b},${alpha.toFixed(3)})`;
+      ctx.lineWidth = bell > 0.6 ? 1.55 : 1.15;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x, midY - tickH / 2);
+      ctx.lineTo(x, midY + tickH / 2);
+      ctx.stroke();
+    }
+
+    // Luminous center indicator needle (Sigmazam brand peach)
+    const needleH = rest + swell + 8;
+    const needleW = 2.8 + 0.6 * rulerPhys.lifted;
+    ctx.save();
+    ctx.shadowColor = `rgba(235, 173, 132, ${(0.42 + 0.36 * rulerPhys.lifted).toFixed(3)})`;
+    ctx.shadowBlur = 10 + 6 * rulerPhys.lifted;
+    ctx.fillStyle = '#EBAD84';
+    const nx = indicatorX - needleW / 2;
+    const ny = midY - needleH / 2;
+    ctx.beginPath();
+    ctx.roundRect(nx, ny, needleW, needleH, needleW / 2);
+    ctx.fill();
+
+    // Crisp cream specular filament down the center of the needle
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255, 246, 236, 0.72)';
+    ctx.beginPath();
+    ctx.roundRect(indicatorX - 0.55, ny + 3, 1.1, needleH - 6, 0.55);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /* =========================================================================
+     MODE 2: TAPE SCRUBBER (Fixed center needle + precision scrolling tape)
+     ========================================================================= */
+  const tapeTrack = document.getElementById('tape-track');
+  const tapeCanvas = document.getElementById('tape-canvas');
+  const tapePillsEl = document.getElementById('tape-pills');
+
+  const TAPE_STEP_PX = 56; // pixels per selectable step on the tape
+
+  const tapePhys = {
+    idx: 3,        // continuous step index (can have fractional & rubber-band overshoot)
+    target: 3,
+    vel: 0,        // steps per second
+    lifted: 0,
+    liftedTarget: 0,
+    dragging: false,
+    lastX: 0,
+    lastT: 0,
+    freeCoasting: false,
+  };
+
+  function buildTapePills() {
+    tapePillsEl.innerHTML = '';
+    const picks = [5, 15, 20, 30, 60, 120];
+    picks.forEach((m) => {
+      const idx = state.steps.indexOf(m);
+      if (idx < 0) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tape-pill';
+      btn.dataset.min = String(m);
+      btn.textContent = `${m}m`;
+      btn.addEventListener('click', () => setStepIndex(idx, true));
+      tapePillsEl.appendChild(btn);
+    });
+    syncReadout();
+  }
+
+  tapeTrack.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    tapeTrack.setPointerCapture(e.pointerId);
+    tapePhys.dragging = true;
+    tapePhys.freeCoasting = false;
+    tapePhys.liftedTarget = 1;
+    tapePhys.vel = 0;
+    tapePhys.lastX = e.clientX;
+    tapePhys.lastT = performance.now();
+    state.dragging = true;
+    timerCardEl.classList.add('dragging');
+  });
+
+  tapeTrack.addEventListener('pointermove', (e) => {
+    if (!tapePhys.dragging) return;
+    const now = performance.now();
+    const dx = e.clientX - tapePhys.lastX;
+    const dt = Math.max(4, now - tapePhys.lastT) / 1000;
+    tapePhys.lastX = e.clientX;
+    tapePhys.lastT = now;
+
+    // Dragging tape left moves to higher minutes (natural Apple dial scrolling)
+    let deltaIdx = -dx / TAPE_STEP_PX;
+    const maxIdx = state.steps.length - 1;
+    // Rubber-band edge resistance beyond 0 or maxIdx
+    if ((tapePhys.idx < 0 && deltaIdx < 0) || (tapePhys.idx > maxIdx && deltaIdx > 0)) {
+      deltaIdx *= 0.28;
+    }
+    tapePhys.idx += deltaIdx;
+    tapePhys.vel = tapePhys.vel * 0.45 + (deltaIdx / dt) * 0.55;
+
+    const clamped = Math.max(0, Math.min(maxIdx, Math.round(tapePhys.idx)));
+    if (clamped !== state.stepIdx) {
+      state.stepIdx = clamped;
+      playTick(false);
+      flashHaptic('tape-haptic');
+      syncReadout();
+    }
+  });
+
+  function endTapeDrag() {
+    if (!tapePhys.dragging) return;
+    tapePhys.dragging = false;
+    tapePhys.liftedTarget = 0;
+    state.dragging = false;
+    timerCardEl.classList.remove('dragging');
+    const maxIdx = state.steps.length - 1;
+    if (Math.abs(tapePhys.vel) > 1.2 && tapePhys.idx > 0 && tapePhys.idx < maxIdx) {
+      tapePhys.freeCoasting = true;
+    } else {
+      tapePhys.target = Math.max(0, Math.min(maxIdx, Math.round(tapePhys.idx)));
+      playTick(true);
+    }
+  }
+
+  tapeTrack.addEventListener('pointerup', endTapeDrag);
+  tapeTrack.addEventListener('pointercancel', endTapeDrag);
+
+  tapeTrack.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const dir = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) > 0 ? 1 : -1;
+    setStepIndex(state.stepIdx + dir, true);
+  }, { passive: false });
+
+  function drawTape() {
+    const rect = tapeTrack.getBoundingClientRect();
+    if (rect.width < 10) return;
+    const w = rect.width;
+    const h = rect.height;
+    const ctx = setupHiDPI(tapeCanvas, w, h);
+    ctx.clearRect(0, 0, w, h);
+
+    const centerX = w / 2;
+    const tickBaseY = h * 0.48;
+    const maxIdx = state.steps.length - 1;
+    const subDivs = 4; // 4 minor ticks between each step
+
+    // Soft glow behind fixed center needle
+    const glow = ctx.createRadialGradient(centerX, tickBaseY, 2, centerX, tickBaseY, 44);
+    glow.addColorStop(0, `rgba(235, 173, 132, ${(0.16 + 0.14 * tapePhys.lifted).toFixed(3)})`);
+    glow.addColorStop(1, 'rgba(235, 173, 132, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(centerX - 48, 0, 96, h);
+
+    // Draw minor + major ticks across visible range
+    const visibleSteps = Math.ceil(w / 2 / TAPE_STEP_PX) + 1;
+    const startMajor = Math.max(0, Math.floor(tapePhys.idx - visibleSteps));
+    const endMajor = Math.min(maxIdx, Math.ceil(tapePhys.idx + visibleSteps));
+
+    for (let s = startMajor; s <= endMajor; s++) {
+      // Minor ticks between s and s+1
+      if (s < maxIdx) {
+        for (let k = 1; k < subDivs; k++) {
+          const fracIdx = s + k / subDivs;
+          const x = centerX + (fracIdx - tapePhys.idx) * TAPE_STEP_PX;
+          if (x < -10 || x > w + 10) continue;
+          const near = Math.exp(-0.5 * ((x - centerX) / 48) ** 2);
+          const th = 8 + 4 * near;
+          ctx.strokeStyle = `rgba(235, 235, 245, ${(0.14 + 0.24 * near).toFixed(3)})`;
+          ctx.lineWidth = 1.1;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x, tickBaseY - th / 2);
+          ctx.lineTo(x, tickBaseY + th / 2);
+          ctx.stroke();
+        }
+      }
+
+      // Major step tick + label
+      const x = centerX + (s - tapePhys.idx) * TAPE_STEP_PX;
+      const dist = Math.abs(x - centerX);
+      const near = Math.exp(-0.5 * (dist / 42) ** 2);
+      const th = 16 + 8 * near;
+
+      if (dist > 3.5) {
+        ctx.strokeStyle = `rgba(235, 235, 245, ${(0.28 + 0.50 * near).toFixed(3)})`;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x, tickBaseY - th / 2);
+        ctx.lineTo(x, tickBaseY + th / 2);
+        ctx.stroke();
+      }
+
+      // Step numeral tucked cleanly below tick
+      ctx.font = `600 10.5px -apple-system, 'SF Pro Text', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = dist < 14
+        ? `rgba(235, 173, 132, ${(0.72 + 0.28 * near).toFixed(3)})`
+        : `rgba(235, 235, 245, ${(0.28 + 0.30 * near).toFixed(3)})`;
+      ctx.fillText(String(state.steps[s]), x, tickBaseY + 13);
+    }
+
+    // Fixed centered peach indicator needle
+    const needleH = 30 + 6 * tapePhys.lifted;
+    const needleW = 2.8 + 0.5 * tapePhys.lifted;
+    ctx.save();
+    ctx.shadowColor = `rgba(235, 173, 132, ${(0.45 + 0.35 * tapePhys.lifted).toFixed(3)})`;
+    ctx.shadowBlur = 10 + 5 * tapePhys.lifted;
+    ctx.fillStyle = '#EBAD84';
+    ctx.beginPath();
+    ctx.roundRect(centerX - needleW / 2, tickBaseY - needleH / 2 - 2, needleW, needleH, needleW / 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /* =========================================================================
+     UNIFIED STEP SETTER + KEYBOARD ACCESSIBILITY
+     ========================================================================= */
+  function setStepIndex(nextIdx, animate = true) {
+    const maxIdx = state.steps.length - 1;
+    const clamped = Math.max(0, Math.min(maxIdx, nextIdx));
+    const changed = clamped !== state.stepIdx;
+    state.stepIdx = clamped;
+
+    const norm = clamped / maxIdx;
+    rulerPhys.target = norm;
+    tapePhys.target = clamped;
+    tapePhys.freeCoasting = false;
+
+    if (!animate) {
+      rulerPhys.pos = norm;
+      rulerPhys.vel = 0;
+      tapePhys.idx = clamped;
+      tapePhys.vel = 0;
+    } else if (changed) {
+      playTick(false);
+      flashHaptic(state.mode === 'ruler' ? 'ruler-haptic' : 'tape-haptic');
+    }
+    syncReadout();
+  }
+
+  function onSliderKey(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      setStepIndex(state.stepIdx + 1, true);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setStepIndex(state.stepIdx - 1, true);
+    }
+  }
+  rulerTrack.addEventListener('keydown', onSliderKey);
+  tapeTrack.addEventListener('keydown', onSliderKey);
+
+  document.getElementById('legacy-minus').addEventListener('click', () => setStepIndex(state.stepIdx - 1, true));
+  document.getElementById('legacy-plus').addEventListener('click', () => setStepIndex(state.stepIdx + 1, true));
+
+  /* =========================================================================
+     MODE & GRANULARITY SWITCHING
+     ========================================================================= */
+  function setMode(mode) {
+    state.mode = mode;
+    document.getElementById('tab-ruler').classList.toggle('on', mode === 'ruler');
+    document.getElementById('tab-tape').classList.toggle('on', mode === 'tape');
+    document.getElementById('tab-legacy').classList.toggle('on', mode === 'legacy');
+    document.getElementById('tab-ruler').setAttribute('aria-selected', String(mode === 'ruler'));
+    document.getElementById('tab-tape').setAttribute('aria-selected', String(mode === 'tape'));
+    document.getElementById('tab-legacy').setAttribute('aria-selected', String(mode === 'legacy'));
+
+    document.getElementById('panel-ruler').classList.toggle('hidden', mode !== 'ruler');
+    document.getElementById('panel-tape').classList.toggle('hidden', mode !== 'tape');
+    document.getElementById('panel-legacy').classList.toggle('hidden', mode !== 'legacy');
+
+    // Sync physics cleanly to current step
+    setStepIndex(state.stepIdx, false);
+    playTick(true);
+  }
+
+  document.getElementById('tab-ruler').addEventListener('click', () => setMode('ruler'));
+  document.getElementById('tab-tape').addEventListener('click', () => setMode('tape'));
+  document.getElementById('tab-legacy').addEventListener('click', () => setMode('legacy'));
+
+  function setGranularity(nextSteps) {
+    const oldMin = currentMinutes();
+    state.steps = nextSteps;
+    // Pick closest minute in the new scale
+    let best = 0;
+    let bestDiff = Infinity;
+    nextSteps.forEach((m, i) => {
+      const diff = Math.abs(m - oldMin);
+      if (diff < bestDiff) { bestDiff = diff; best = i; }
+    });
+    state.stepIdx = best;
+    document.getElementById('btn-steps-9').classList.toggle('on', nextSteps === STEPS_CURATED);
+    document.getElementById('btn-steps-5m').classList.toggle('on', nextSteps === STEPS_5MIN);
+    buildRulerScale();
+    buildTapePills();
+    setStepIndex(best, false);
+    playTick(true);
+  }
+
+  document.getElementById('btn-steps-9').addEventListener('click', () => setGranularity(STEPS_CURATED));
+  document.getElementById('btn-steps-5m').addEventListener('click', () => setGranularity(STEPS_5MIN));
+
+  document.getElementById('btn-sound').addEventListener('click', (e) => {
+    state.soundOn = !state.soundOn;
+    e.currentTarget.classList.toggle('on', state.soundOn);
+    if (state.soundOn) playTick(true);
+  });
+
+  /* =========================================================================
+     LIVE RUNNING COUNTDOWN PREVIEW (matches src/app/bedtime.tsx running state)
+     ========================================================================= */
+  const ringCircle = document.getElementById('ring-progress');
+  const RING_LEN = 2 * Math.PI * 124.5;
+  ringCircle.style.strokeDasharray = `${RING_LEN} ${RING_LEN}`;
+
+  function renderCountdown() {
+    document.getElementById('countdown-num').textContent = formatMMSS(state.leftSec);
+    const share = state.totalSec > 0 ? state.leftSec / state.totalSec : 0;
+    ringCircle.style.strokeDashoffset = String(RING_LEN * (1 - share));
+    document.getElementById('icon-pause').classList.toggle('hidden', state.paused);
+    document.getElementById('icon-play').classList.toggle('hidden', !state.paused);
+    document.getElementById('run-wave').classList.toggle('paused', state.paused);
+  }
+
+  function startBedtime() {
+    playTick(true);
+    state.running = true;
+    state.paused = false;
+    state.totalSec = currentMinutes() * 60;
+    state.leftSec = state.totalSec;
+    phoneEl.classList.add('is-running');
+    renderCountdown();
+    clearInterval(state.tickTimer);
+    state.tickTimer = setInterval(() => {
+      if (!state.running || state.paused) return;
+      state.leftSec -= 1;
+      if (state.leftSec <= 0) {
+        stopBedtime();
+        return;
+      }
+      renderCountdown();
+    }, 1000);
+  }
+
+  function stopBedtime() {
+    playTick(true);
+    state.running = false;
+    state.paused = false;
+    clearInterval(state.tickTimer);
+    phoneEl.classList.remove('is-running');
+  }
+
+  document.getElementById('btn-start').addEventListener('click', startBedtime);
+  document.getElementById('btn-stop').addEventListener('click', stopBedtime);
+  document.getElementById('btn-back').addEventListener('click', () => {
+    if (state.running) stopBedtime();
+  });
+  document.getElementById('btn-pause').addEventListener('click', () => {
+    playTick(true);
+    state.paused = !state.paused;
+    renderCountdown();
+  });
+
+  /* =========================================================================
+     MAIN 60-120FPS ANIMATION & SPRING PHYSICS LOOP
+     ========================================================================= */
+  let lastTs = performance.now();
+  let dotClock = 1.2;
+  let dotEnergy = 0.45;
+
+  function stepSpring(val, target, vel, stiffness, damping, dt) {
+    const force = (target - val) * stiffness;
+    const nextVel = (vel + force * dt) * Math.exp(-damping * dt);
+    const nextVal = val + nextVel * dt;
+    return [nextVal, nextVel];
+  }
+
+  function frame(ts) {
+    const dt = Math.min(0.04, Math.max(0.001, (ts - lastTs) / 1000));
+    lastTs = ts;
+
+    // 1. Ruler spring physics
+    if (!rulerPhys.dragging) {
+      const [np, nv] = stepSpring(rulerPhys.pos, rulerPhys.target, rulerPhys.vel, 320, 24, dt);
+      rulerPhys.pos = np;
+      rulerPhys.vel = nv;
+    }
+    rulerPhys.lifted += (rulerPhys.liftedTarget - rulerPhys.lifted) * Math.min(1, dt * 16);
+
+    // 2. Tape inertia & magnetic snap physics
+    const maxIdx = state.steps.length - 1;
+    if (!tapePhys.dragging) {
+      if (tapePhys.freeCoasting) {
+        tapePhys.idx += tapePhys.vel * dt;
+        tapePhys.vel *= Math.exp(-5.4 * dt);
+
+        // Soft edge bounce
+        if (tapePhys.idx < 0 || tapePhys.idx > maxIdx) {
+          tapePhys.freeCoasting = false;
+          tapePhys.target = Math.max(0, Math.min(maxIdx, Math.round(tapePhys.idx)));
+        }
+
+        const clamped = Math.max(0, Math.min(maxIdx, Math.round(tapePhys.idx)));
+        if (clamped !== state.stepIdx) {
+          state.stepIdx = clamped;
+          playTick(false);
+          flashHaptic('tape-haptic');
+          syncReadout();
+        }
+
+        if (Math.abs(tapePhys.vel) < 0.75) {
+          tapePhys.freeCoasting = false;
+          tapePhys.target = clamped;
+          playTick(true);
+        }
+      } else {
+        const [ni, nv] = stepSpring(tapePhys.idx, tapePhys.target, tapePhys.vel, 290, 23, dt);
+        tapePhys.idx = ni;
+        tapePhys.vel = nv;
+      }
+    }
+    tapePhys.lifted += (tapePhys.liftedTarget - tapePhys.lifted) * Math.min(1, dt * 16);
+
+    // 3. DotMatrix halo breathing — gently swells while scrubbing or running
+    const normMin = state.stepIdx / Math.max(1, maxIdx);
+    const targetEnergy = state.running
+      ? (state.paused ? 0.2 : 0.9)
+      : (state.dragging ? 0.62 + 0.22 * normMin : 0.42 + 0.14 * normMin);
+    dotEnergy += (targetEnergy - dotEnergy) * Math.min(1, dt * 5);
+    if (!state.running || !state.paused) dotClock += dt;
+
+    if (state.running) {
+      drawDotMatrix(runDotCanvas, 204, dotClock, dotEnergy);
+    } else {
+      drawDotMatrix(setupDotCanvas, 174, dotClock, dotEnergy);
+      if (state.mode === 'ruler') drawRuler();
+      if (state.mode === 'tape') drawTape();
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  /* =========================================================================
+     INIT
+     ========================================================================= */
+  renderFaces();
+  applyFriend();
+  buildRulerScale();
+  buildTapePills();
+  updateClockAndWake();
+  setInterval(updateClockAndWake, 30000);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

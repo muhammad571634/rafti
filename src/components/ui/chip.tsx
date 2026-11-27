@@ -1,6 +1,6 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, radius, space } from '@/theme';
+import { radius, space, useTokens } from '@/theme';
 
 import { PressableScale } from './pressable-scale';
 import { Txt } from './text';
@@ -19,9 +19,10 @@ export interface ChipProps {
  * their tints). Without `onPress` it is a plain label, not a disabled button.
  */
 export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipProps) {
+  const { colors } = useTokens();
   const activeBg = tone === 'accent' ? colors.accentSoft : tone === 'neutral' ? colors.surfaceAlt : colors.text;
   const activeFg =
-    tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnPrimary;
+    tone === 'accent' ? colors.accent : tone === 'neutral' ? colors.text : colors.textOnInk;
   const activeBorder = tone === 'primary' ? colors.text : activeFg;
 
   const pillStyle = [
@@ -32,7 +33,13 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
     style,
   ];
   const text = (
-    <Txt variant="smallStrong" color={active ? activeFg : colors.textSecondary}>
+    <Txt
+      variant="smallStrong"
+      color={active ? activeFg : colors.textSecondary}
+      lines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.8}
+      maxFontSizeMultiplier={1.35}>
       {label}
     </Txt>
   );
@@ -56,7 +63,8 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
 const styles = StyleSheet.create({
   base: {
     paddingHorizontal: space.lg,
-    height: 34,
+    paddingVertical: 5,
+    minHeight: 34,
     borderRadius: radius.pill,
     borderWidth: 1,
     alignItems: 'center',

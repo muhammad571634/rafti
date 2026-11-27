@@ -1,0 +1,97 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import type { SFSymbol } from 'sf-symbols-typescript';
+
+import { InkText } from '@/components/ink';
+import { type FolderItem, PressableScale, Sheet, SymbolTile } from '@/components/ui';
+import { systemColors } from '@/theme';
+import { ink, inkRadius, inkTints } from '@/theme/ink';
+
+export type TogetherKind = 'photoBooth' | 'quiz' | 'scene';
+
+interface Option {
+  kind: TogetherKind;
+  ios: SFSymbol;
+  icon: keyof typeof Ionicons.glyphMap;
+  /** The choice's own icon colour: the same tile on the Us door's folder and on its row here. */
+  tile: string;
+  /** The row's deep Ink tint. */
+  fill: string;
+}
+
+const OPTIONS: readonly Option[] = [
+  { kind: 'photoBooth', ios: 'camera.fill', icon: 'camera', tile: systemColors.blue, fill: inkTints[0][0] },
+  { kind: 'quiz', ios: 'sparkles', icon: 'sparkles', tile: systemColors.indigo, fill: inkTints[4][0] },
+  { kind: 'scene', ios: 'film.fill', icon: 'film', tile: systemColors.pink, fill: inkTints[5][0] },
+];
+
+/** What the sheet holds, for the door that opens it (`IconStack`): the scene only with a chat to play it in. */
+export function togetherFolder(canScene: boolean): FolderItem[] {
+  return OPTIONS.filter((o) => canScene || o.kind !== 'scene').map((o) => ({ fill: o.tile, ios: o.ios, icon: o.icon }));
+}
+
+export interface TogetherSheetProps {
+  visible: boolean;
+  onClose: () => void;
+  name: string;
+  canScene: boolean;
+  onPick: (kind: TogetherKind) => void;
+}
+
+/**
+ * Friend-scoped "Together" sheet on Us: deep Ink-tinted cards matching PublishSheet, each opening the
+ * full-screen Photo Booth, Couple Quiz or Scene picker for this friend. The board is the "+" sheet's
+ * (pin a note), so it is not here twice (2026-11-25).
+ */
+export function TogetherSheet({ visible, onClose, name, canScene, onPick }: TogetherSheetProps) {
+  const { t } = useTranslation();
+
+  const titleOf = (kind: TogetherKind): string => {
+    switch (kind) {
+      case 'photoBooth':
+        return t('photoBooth.title');
+      case 'quiz':
+        return t('chat.attachments.quiz');
+      case 'scene':
+        return t('chat.attachments.scene');
+    }
+  };
+
+  const shown = OPTIONS.filter((o) => canScene || o.kind !== 'scene');
+
+  return (
+    <Sheet visible={visible} onClose={onClose} title={t('us.togetherWith', { name })} scroll>
+      <View style={styles.tiles}>
+        {shown.map(({ kind, ios, icon, tile, fill }) => (
+          <PressableScale
+            key={kind}
+            scaleTo={0.97}
+            onPress={() => onPick(kind)}
+            accessibilityRole="button"
+            accessibilityLabel={titleOf(kind)}
+            style={[styles.tile, { backgroundColor: fill }]}>
+            <SymbolTile fill={tile} ios={ios} icon={icon} size={44} />
+            <InkText variant="bodyStrong" lines={2} style={styles.text}>
+              {titleOf(kind)}
+            </InkText>
+            <Ionicons name="chevron-forward" size={17} color={ink.text2} />
+          </PressableScale>
+        ))}
+      </View>
+    </Sheet>
+  );
+}
+
+const styles = StyleSheet.create({
+  tiles: { gap: 10 },
+  tile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    padding: 14,
+    borderRadius: inkRadius.field,
+    borderCurve: 'continuous',
+  },
+  text: { flex: 1, minWidth: 0 },
+});
