@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { memo, useEffect, useMemo, useReducer, useRef, type ComponentProps, type ReactElement } from 'react';
+import { createContext, memo, useContext, useEffect, useMemo, useReducer, useRef, type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppState } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
@@ -14,6 +14,8 @@ import { alarmTime, uses12Hour } from '@/lib/alarm-format';
 import { helplineToday } from '@/lib/daily-note';
 import { relativeStamp, shortName } from '@/lib/format';
 import {
+  alarmCountdown,
+  earliest,
   freeShellsLeft,
   missedCall,
   nextRelativeWakeAt,
@@ -21,9 +23,10 @@ import {
   resolveGiftsAction,
   resolveSleepWidget,
 } from '@/lib/today-widgets';
-import { DAILY_CHECK_IN, dateFromKey, dayKey, FREE_SPINS_PER_DAY, levelForIntimacy } from '@/mock';
+import { DAILY_CHECK_IN, dateFromKey, dayKey, FREE_SPINS_PER_DAY, levelForIntimacy, shellCosts } from '@/mock';
 import { DATE_PLACES } from '@/mock/dates';
 import { checkInStatus, minutesOf, useAppStore } from '@/store/use-app-store';
+import { night } from '@/theme';
 import type { Character, Conversation, WidgetKind } from '@/types';
 
 import { widgetLabel, WidgetView, type WidgetModel } from './widgets';
@@ -76,7 +79,7 @@ function friendIdsOf(s: { conversations: Conversation[] }): string[] {
 }
 
 /** What every widget needs: words, routes, the day, unblocked characters by id and their short names. */
-function useKit() {
+function useKitValue() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const today = useDayKey();
@@ -105,7 +108,19 @@ function useKit() {
     return { t, lang: i18n.language, router, today, byId, has, nameOf, pick, label: (kind: WidgetKind) => widgetLabel(kind, t) };
   }, [t, i18n.language, router, today, characters, blockedIds, nicknames]);
 }
-type Kit = ReturnType<typeof useKit>;
+type Kit = ReturnType<typeof useKitValue>;
+
+const WidgetKitContext = createContext<Kit | null>(null);
+
+/** Shares one character lookup and translation bundle across all Today and Gallery widgets. */
+export function WidgetKitProvider({ children }: { children: ReactNode }) {
+  const value = useKitValue();
+  return <WidgetKitContext.Provider value={value}>{children}</WidgetKitContext.Provider>;
+}
+
+function useKit(): Kit {
+  return useContext(WidgetKitContext)!;
+}
 
 const useHeroId = () => useAppStore((s) => featuredFriendOf(s)?.character.id);
 const useFriendIds = () => useAppStore(useShallow(friendIdsOf));
@@ -140,8 +155,9 @@ function useCallsModel(): WidgetModel {
   const heroId = useHeroId();
   const friendIds = useFriendIds();
   const calls = useAppStore((s) => s.calls);
-  const callMinutes = useAppStore((s) => Math.floor(minutesOf(s.wallet, 'call', Date.now()).total / 60));
+  const wallet = useAppStore((s) => s.wallet);
   const [tick, wake] = useClock();
+  const callMinutes = useMemo(() => Math.floor(minutesOf(wallet, 'call', Date.now() + tick * 0).total / 60), [wallet, tick]);
   const missed = useMemo(
     () => missedCall(calls.filter((c) => k.has(c.characterId)), Date.now() + tick * 0),
     [calls, k, tick],
@@ -221,6 +237,7 @@ function useDiaryModel(): WidgetModel {
     return {
       kind: 'diary',
       label: label('diary'),
+      kicker: label('diary'),
       faces: [],
       ...(fresh.length
         ? {
@@ -293,6 +310,8 @@ function useDateModel(): WidgetModel {
       return {
         kind: 'date',
         label: label('date'),
+        kicker: label('date'),
+        liveDot: true,
         faces: [],
         badge: '1',
         title: placeTitle,
@@ -316,16 +335,18 @@ function useDateModel(): WidgetModel {
     if (state.mode === 'plan') {
       const { plan, nextPlan } = state;
       const planFriend = byId.get(plan.characterId);
+      const dayText = dayWord(k, plan.date);
       return {
         kind: 'date',
         label: label('date'),
+        kicker: dayText,
         icon: { ios: 'calendar', icon: 'calendar-outline' },
         faces: [],
-        figure: plan.time ?? dayWord(k, plan.date),
+        figure: plan.time || undefined,
         title: plan.title,
         titleLines: 2,
-        line: [plan.time ? dayWord(k, plan.date) : '', planFriend && !nextPlan ? nameOf(planFriend) : ''].filter(Boolean).join(' · '),
-        lineFace: planFriend,
+        line: planFriend && !nextPlan ? nameOf(planFriend) : '',
+        lineFace: planFriend && !nextPlan ? planFriend : undefined,
         list: nextPlan
           ? [{ face: byId.get(nextPlan.characterId), text: `${dayWord(k, nextPlan.date)}${nextPlan.time ? ` ${nextPlan.time}` : ''} · ${nextPlan.title}` }]
           : undefined,
@@ -346,6 +367,7 @@ function useDateModel(): WidgetModel {
     return {
       kind: 'date',
       label: label('date'),
+      kicker: label('date'),
       faces: [],
       title: label('date'),
       line: t('home.widget.planDate'),
@@ -365,9 +387,8 @@ function useDateModel(): WidgetModel {
 }
 
 /**
- * Sleep: the next alarm large (in 12h/24h phone format) with who wakes you; tapping an active alarm
- * opens `/alarms`, tapping empty opens `/bedtime?partner=<hero>`, and `+` opens `/alarms/edit` with
- * that friend pre-selected.
+ * Sleep: the next alarm large (in 12h/24h phone format) with live countdown & who wakes you; tapping
+ * an active alarm opens `/alarms`, tapping empty opens `/bedtime?partner=<hero>`, and `+` opens `/alarms/edit`.
  */
 function useSleepModel(): WidgetModel {
   const k = useKit();
@@ -375,11 +396,16 @@ function useSleepModel(): WidgetModel {
   const alarms = useAppStore((s) => s.alarms);
   const h12 = uses12Hour();
   const [tick, wake] = useClock();
+  const nowMs = Date.now() + tick * 0;
   const state = useMemo(
-    () => resolveSleepWidget({ alarms, now: Date.now() + tick * 0, heroId, hasCharacter: k.has }),
-    [alarms, heroId, k.has, tick],
+    () => resolveSleepWidget({ alarms, now: nowMs, heroId, hasCharacter: k.has }),
+    [alarms, heroId, k.has, nowMs],
   );
-  useWakeAt(state.changesAt, wake);
+  const countdown = useMemo(
+    () => (state.mode === 'alarm' ? alarmCountdown(state.alarm, nowMs) : null),
+    [state, nowMs],
+  );
+  useWakeAt(earliest(state.changesAt, countdown?.nextWakeAt), wake);
 
   return useMemo(() => {
     const { t, router, byId, nameOf, label, lang } = k;
@@ -404,9 +430,15 @@ function useSleepModel(): WidgetModel {
       const weekday = (d: number) => new Date(2026, 10, 1 + d).toLocaleDateString(lang, { weekday: 'narrow' });
       const openBedtime = () =>
         router.push(state.bedtimePartnerId ? { pathname: '/bedtime', params: { partner: state.bedtimePartnerId } } : '/bedtime');
+      const countdownText = countdown
+        ? countdown.hours > 0
+          ? t('alarms.inTime', { h: countdown.hours, m: countdown.minutes })
+          : t('alarms.inMinutes', { m: countdown.minutes })
+        : undefined;
       return {
         kind: 'sleep',
         label: label('sleep'),
+        kicker: countdownText,
         icon: { ios: 'alarm', icon: 'alarm-outline' },
         faces: [],
         figure: mainClock.time,
@@ -426,6 +458,7 @@ function useSleepModel(): WidgetModel {
     return {
       kind: 'sleep',
       label: label('sleep'),
+      kicker: label('sleep'),
       faces: [],
       title: label('sleep'),
       line: t('home.widget.setWake'),
@@ -437,7 +470,7 @@ function useSleepModel(): WidgetModel {
         { glyph: { ios: 'plus', icon: 'add' }, label: t('home.widget.setWake'), onPress: openNewAlarm },
       ],
     };
-  }, [k, state, h12]);
+  }, [k, state, h12, countdown]);
 }
 
 /** Gifts: unifies check-in week, free daily spin, and First Steps rewards so More badge and widget always match. */
@@ -460,6 +493,7 @@ function useGiftsModel(): WidgetModel {
     return {
       kind: 'gifts',
       label: label('gifts'),
+      kicker: label('gifts'),
       faces: [],
       badge:
         action === 'spin'
@@ -495,13 +529,20 @@ function useStoreModel(): WidgetModel {
   const free = useAppStore((s) => freeShellsLeft(s.wallet, k.today));
   return useMemo(() => {
     const { t, router, label } = k;
+    const approxMessages = Math.floor(shells / shellCosts.textMessage);
     return {
       kind: 'store',
       label: label('store'),
+      kicker: label('store'),
       faces: [],
       figure: String(shells),
       unit: t('home.widget.shells'),
-      line: free > 0 ? t('home.gift.freeLeft', { count: free }) : label('store'),
+      line:
+        free > 0
+          ? t('home.gift.freeLeft', { count: free })
+          : approxMessages > 0
+            ? t('store.balanceHint', { count: approxMessages })
+            : t('profile.getMore'),
       lineLines: 2,
       onPress: () => router.push('/store/ledger'),
       buttons: [{ glyph: { ios: 'plus', icon: 'add' }, label: t('profile.getMore'), onPress: () => router.push('/store/shell?tab=shells') }],
@@ -549,10 +590,12 @@ function useRadioModel(): WidgetModel {
     return {
       kind: 'radio',
       label: label('radio'),
+      kicker: clip ? t('home.widget.onAir') : label('radio'),
+      liveDot: !!clip,
       faces: friend ? [friend] : [],
       title: clip && friend ? clip.title : label('radio'),
       titleLines: 2,
-      line: clip && friend ? `${t('home.widget.onAir')} · ${nameOf(friend)} · ${length}` : t('home.widget.tuneIn'),
+      line: clip && friend ? `${nameOf(friend)} · ${length}` : t('home.widget.tuneIn'),
       onPress: () => router.push('/radio'),
       buttons: clip
         ? [{ glyph: { ios: 'play.fill', icon: 'play' }, label: clip.title, onPress: () => router.push({ pathname: '/radio/[id]', params: { id: clip.id } }) }]
@@ -580,6 +623,7 @@ function useBoardModel(): WidgetModel {
     return {
       kind: 'board',
       label: label('board'),
+      kicker: label('board'),
       faces: friend ? [friend] : [],
       title: label('board'),
       quote: post && friend && !quiet ? (post.replied && post.reply ? post.reply : post.text) : undefined,
@@ -605,15 +649,16 @@ function useContactsModel(): WidgetModel {
   const k = useKit();
   const friendIds = useFriendIds();
   return useMemo(() => {
-    const { t, router, label } = k;
+    const { t, router, label, nameOf } = k;
     const friends = k.pick(friendIds);
     return {
       kind: 'contacts',
       label: label('contacts'),
+      kicker: label('contacts'),
       faces: friends.slice(0, 2),
       figure: String(friends.length),
       unit: t('home.widget.friends', { count: friends.length }),
-      line: label('contacts'),
+      line: friends.length ? friends.slice(0, 3).map(nameOf).join(', ') : t('home.todo.meet'),
       onPress: () => router.push('/contacts'),
       buttons: [{ glyph: { ios: 'person.badge.plus', icon: 'person-add-outline' }, label: t('home.todo.meet'), onPress: () => router.navigate('/(tabs)/find') }],
     };
@@ -632,6 +677,8 @@ function useBondModel(): WidgetModel {
     return {
       kind: 'bond',
       label: label('bond'),
+      kicker: label('bond'),
+      accentColor: friend ? night.friendAccent(friend.id).strong : undefined,
       faces: friend ? [friend] : [],
       ...(bond && friend
         ? {
@@ -682,8 +729,10 @@ const WIDGETS: Record<WidgetKind, (p: ViewProps) => ReactElement> = {
   bond: BondWidget,
 };
 
-/** One widget with its live content; another kind is another component, so its state starts fresh. */
+/** One widget with its live content; shares `WidgetKitProvider` when mounted under Today. */
 export const LiveWidget = memo(function LiveWidget({ kind, ...view }: { kind: WidgetKind } & ViewProps) {
+  const kit = useContext(WidgetKitContext);
   const Widget = WIDGETS[kind];
-  return <Widget {...view} />;
+  const node = <Widget {...view} />;
+  return kit ? node : <WidgetKitProvider>{node}</WidgetKitProvider>;
 });

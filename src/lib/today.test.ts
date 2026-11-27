@@ -3,12 +3,15 @@ import { describe, it } from 'node:test';
 
 import {
   awakeAt,
+  findReadyNoteId,
   fourWidgets,
   freshDayNote,
   hoverSlotAt,
   nextHeroWakeAt,
   nextMidnightAt,
+  placeWidgetInSlot,
   previewSlideForSlot,
+  readyNoteIdOf,
   slotOrigin,
   swapWidgetSlots,
 } from './today';
@@ -94,5 +97,49 @@ describe('calm Today', () => {
 
     assert.deepEqual(swapWidgetSlots(['calls', 'diary', 'date', 'sleep'], 0, 2), ['date', 'diary', 'calls', 'sleep']);
     assert.deepEqual(swapWidgetSlots(['calls', null, 'date', 'sleep'], 2, 1), ['calls', 'date', null, 'sleep']);
+  });
+
+  it('places or swaps widgets in slots without dead taps', () => {
+    const initial = ['calls', 'diary', 'date', 'sleep'] as const;
+    assert.deepEqual(placeWidgetInSlot(initial, 1, 'diary'), ['calls', 'diary', 'date', 'sleep']);
+    assert.deepEqual(placeWidgetInSlot(initial, 0, 'store'), ['store', 'diary', 'date', 'sleep']);
+    // Picking an already-placed widget swaps it cleanly into the target slot.
+    assert.deepEqual(placeWidgetInSlot(initial, 0, 'date'), ['date', 'diary', 'calls', 'sleep']);
+    assert.deepEqual(placeWidgetInSlot(['calls', null, 'date', 'sleep'], 1, 'date'), ['calls', 'date', null, 'sleep']);
+    // Out-of-bounds is a safe copy.
+    assert.deepEqual(placeWidgetInSlot(initial, -1, 'store'), ['calls', 'diary', 'date', 'sleep']);
+  });
+
+  it('finds ready daily notes once per relevant input change and skips helpline days', () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const base = {
+      notes: [] as { id: string; characterId: string; status: 'composing' | 'ready'; date: string }[],
+      blockedIds: [] as string[],
+      characters: [{ id: 'c1' }, { id: 'c2' }],
+      conversations: [
+        { id: 'chat1', characterId: 'c1' },
+        { id: 'chat2', characterId: 'c2' },
+      ],
+      messages: {
+        chat1: [{ id: 'm1', card: 'helpline', createdAt: new Date().toISOString() }],
+        chat2: [{ id: 'm2', createdAt: new Date().toISOString() }],
+      },
+    };
+    assert.equal(findReadyNoteId(base as unknown as Parameters<typeof findReadyNoteId>[0]), undefined);
+
+    const withReady = {
+      ...base,
+      notes: [
+        { id: 'n1', characterId: 'c1', status: 'ready', date: today },
+        { id: 'n2', characterId: 'c2', status: 'ready', date: today },
+      ],
+    };
+    assert.equal(findReadyNoteId(withReady as unknown as Parameters<typeof findReadyNoteId>[0]), 'n2');
+
+    const withBlocked = { ...withReady, blockedIds: ['c2'] };
+    assert.equal(readyNoteIdOf(withBlocked as unknown as Parameters<typeof readyNoteIdOf>[0]), undefined);
+    assert.equal(readyNoteIdOf(withReady as unknown as Parameters<typeof readyNoteIdOf>[0]), 'n2');
+    // Cached exact reference hit.
+    assert.equal(readyNoteIdOf(withReady as unknown as Parameters<typeof readyNoteIdOf>[0]), 'n2');
   });
 });

@@ -217,6 +217,24 @@ export function resolveSleepWidget<
   };
 }
 
+/**
+ * Computes live countdown ("hours + minutes") until the alarm's next ring plus the exact
+ * timestamp when the displayed minute next decrements, so Sleep stays fresh with zero polling.
+ */
+export function alarmCountdown(
+  alarm: Pick<Alarm, 'hour' | 'minute' | 'repeat'>,
+  now: number,
+): { hours: number; minutes: number; ringAt: number; nextWakeAt: number } {
+  const ringAt = nextAlarmAt(alarm, new Date(now)).getTime();
+  const remainingMs = Math.max(0, ringAt - now);
+  const totalMin = Math.max(1, Math.ceil(remainingMs / MINUTE));
+  const hours = Math.floor(totalMin / 60);
+  const minutes = totalMin % 60;
+  const nextDropAt = ringAt - (totalMin - 1) * MINUTE + 50;
+  const nextWakeAt = Math.min(ringAt + 50, Math.max(now + 50, nextDropAt));
+  return { hours, minutes, ringAt, nextWakeAt };
+}
+
 export type GiftsWidgetAction = 'spin' | 'checkIn' | 'firstStep' | 'none';
 
 /**

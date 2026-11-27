@@ -55,7 +55,8 @@ import { isAskReach } from '@/lib/reach-ask';
 import { shownIdeas } from '@/lib/reply-ideas';
 import { type OffReason, type Rating, ratingOf } from '@/lib/reply-rating';
 import { shownLines } from '@/lib/scenes';
-import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey, todayKey } from '@/mock';
+import { useDayKey } from '@/hooks/use-day-key';
+import { CREAM_BG, shellCosts, backgroundsById, chatArtBackgroundsById, dayKey } from '@/mock';
 import { callsIncluded, displayName, minutesOf, shareReward, useAppStore } from '@/store/use-app-store';
 // Always dark (appearance B, owner 2026-11-11): the chat reads the night tokens in both themes.
 import { nightColors as colors, friendAccent, space } from '@/theme';
@@ -82,6 +83,7 @@ export default function ChatRoomScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const listRef = useRef<FlatList<Message>>(null);
+  const today = useDayKey();
 
   const conversation = useAppStore((s) => s.conversations.find((c) => c.id === conversationId));
   const character = useAppStore((s) => s.characters.find((c) => c.id === conversation?.characterId));
@@ -89,14 +91,19 @@ export default function ChatRoomScreen() {
   const relationship = useAppStore((s) => (conversation ? s.relationships[conversation.characterId] : undefined));
   const typing = useAppStore((s) => (conversationId ? !!s.typing[conversationId] : false));
   const levelUp = useAppStore((s) => s.levelUp);
-  const shells = useAppStore((s) => s.wallet.shells);
+  const wallet = useAppStore((s) => s.wallet);
+  const shells = wallet.shells;
   // Pro or the trial: out of minutes means a top-up; otherwise the plans sheet.
-  const withCalls = useAppStore((s) => callsIncluded(s.wallet));
+  const withCalls = useMemo(() => callsIncluded(wallet), [wallet]);
+  const callMinutes = useMemo(() => minutesOf(wallet, 'call').total, [wallet]);
   const animations = useAppStore((s) => s.settings.chatAnimation);
-  const missedToday = useAppStore((s) =>
-    s.calls.some(
-      (c) => c.characterId === conversation?.characterId && c.missed && dayKey(c.startedAt) === todayKey(),
-    ),
+  const calls = useAppStore((s) => s.calls);
+  const missedToday = useMemo(
+    () =>
+      calls.some(
+        (c) => c.characterId === conversation?.characterId && c.missed && dayKey(c.startedAt) === today,
+      ),
+    [calls, conversation?.characterId, today],
   );
 
   const sendText = useAppStore((s) => s.sendText);
@@ -135,7 +142,6 @@ export default function ChatRoomScreen() {
   const [why, setWhy] = useState<Message | null>(null);
   /** Calling with no minutes: free users see what Basic adds, members can top up. */
   const [callGate, setCallGate] = useState<'paywall' | 'out' | null>(null);
-  const callMinutes = useAppStore((s) => minutesOf(s.wallet, 'call').total);
 
   const reactToMessage = useAppStore((s) => s.reactToMessage);
   const deleteMessage = useAppStore((s) => s.deleteMessage);
@@ -152,7 +158,13 @@ export default function ChatRoomScreen() {
   const showReplyVersion = useAppStore((s) => s.showReplyVersion);
   const markNextUsed = useAppStore((s) => s.markNextUsed);
   // Branches this chat kept (0z286): the More sheet shows its row only when there are some.
-  const branchCount = useAppStore((s) => s.branches.filter((b) => b.conversationId === conversationId).length);
+  const branchCount = useAppStore((s) => {
+    let count = 0;
+    for (let i = 0; i < s.branches.length; i++) {
+      if (s.branches[i].conversationId === conversationId) count += 1;
+    }
+    return count;
+  });
   const [branchesOpen, setBranchesOpen] = useState(false);
   const editLastMessage = useAppStore((s) => s.editLastMessage);
   const rewindTo = useAppStore((s) => s.rewindTo);
@@ -200,7 +212,16 @@ export default function ChatRoomScreen() {
 
   /** Scrolls to a line and tints it for a moment (a search result, a reply's quote). */
   const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  useEffect(() => () => clearTimeout(flashTimer.current), []);
+  const scrollRetryTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const threadOpenTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(
+    () => () => {
+      clearTimeout(flashTimer.current);
+      clearTimeout(scrollRetryTimer.current);
+      clearTimeout(threadOpenTimer.current);
+    },
+    [],
+  );
   const goToMessage = useCallback(
     (id: string) => {
       if (!conversationId) return;
@@ -363,6 +384,22 @@ export default function ChatRoomScreen() {
     [character, animations, openedAt, data, shown, lastMine, flash, callBack, openMenu, toggleLove, conversationId, answerIdea, afterIdea, swipeable, burstIds, swipeOffset, stepVersion, pinnedIds, retry, you, theirName, goToMessage, startReply, newestLineId],
   );
 
+  const mood = useMemo(
+    () => (character ? currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion : 'calm'),
+    [character, relationship?.mood, data.length],
+  );
+  const name = character ? displayName(character, relationship) : '';
+  const openCharacterIntro = useCallback(() => {
+    if (character) router.push(`/character/${character.id}`);
+  }, [character, router]);
+  const listFooter = useMemo(
+    () =>
+      character ? (
+        <IntroCard character={character} name={name} locale={locale} level={relationship?.level} onPress={openCharacterIntro} />
+      ) : undefined,
+    [character, name, locale, relationship?.level, openCharacterIntro],
+  );
+
   // The keyboard (audit Step 3.4): with keyboard-controller in the APK the composer rides the keyboard
   // frame by frame, the list lifts its newest lines by the same distance, and a drag down on the chat
   // takes the keyboard with the finger on Android too (iOS Messages). Older APKs keep the padding box.
@@ -503,10 +540,11 @@ export default function ChatRoomScreen() {
     }
   };
 
-  const name = displayName(character, relationship);
-
   const startCall = () => {
-    if (callMinutes > 0) return router.push(`/call/${character.id}`);
+    // Re-read wallet minutes at tap time in case an earlier balance expired at midnight.
+    if (minutesOf(useAppStore.getState().wallet, 'call').total > 0 || callMinutes > 0) {
+      return router.push(`/call/${character.id}`);
+    }
     setCallGate(withCalls ? 'out' : 'paywall');
   };
   // The invitation under their reply opens what the + panel would; the button goes once tapped.
@@ -521,8 +559,6 @@ export default function ChatRoomScreen() {
     setCallGate(null);
     router.push(route);
   };
-  // How they feel right now, under their name (canvas v3: alive); it fades back to their usual self.
-  const mood = currentMood(relationship?.mood, temperamentFor(character), Date.now()).emotion;
 
   // The list scrolls under a glass header (iOS Messages); this much room keeps its first line clear.
   const headerRoom = insets.top + HEADER_ROOM;
@@ -606,19 +642,15 @@ export default function ChatRoomScreen() {
                 </>
               }
               // The footer of an inverted list sits above the oldest line: who they are, first.
-              ListFooterComponent={
-                <IntroCard
-                  character={character}
-                  name={name}
-                  locale={locale}
-                  level={relationship?.level}
-                  onPress={() => router.push(`/character/${character.id}`)}
-                />
-              }
+              ListFooterComponent={listFooter}
               // A row far up is not measured yet: jump near it, then aim again.
               onScrollToIndexFailed={(info) => {
                 listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
-                setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }), 120);
+                clearTimeout(scrollRetryTimer.current);
+                scrollRetryTimer.current = setTimeout(
+                  () => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.5 }),
+                  120,
+                );
               }}
             />
             {onPicture ? <PictureEdge top={pictureTop} /> : null}
@@ -863,7 +895,8 @@ export default function ChatRoomScreen() {
         onOpenThread={(threadId) => {
           setWhy(null);
           // One sheet at a time: iOS cannot show the next while the last one is still leaving.
-          setTimeout(() => setThreadOpen(threadId), Platform.OS === 'ios' ? 350 : 0);
+          clearTimeout(threadOpenTimer.current);
+          threadOpenTimer.current = setTimeout(() => setThreadOpen(threadId), Platform.OS === 'ios' ? 350 : 0);
         }}
       />
       <ThreadSheet threadId={threadOpen} onClose={() => setThreadOpen(null)} />

@@ -7,8 +7,8 @@ import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { InkText } from '@/components/ink';
 import { CharacterAvatar, ModuleLine, PressableScale, SFIcon, type ModuleKey } from '@/components/ui';
-import { colors, isDark, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
-import { ink as inkTokens, inkRadius, inkType } from '@/theme/ink';
+import { colors, moduleColors, moduleGlass, moduleTints, systemColors } from '@/theme';
+import { ink as inkTokens, inkRadius, inkType, inkWidget } from '@/theme/ink';
 import type { Ionicons as IoniconsSet } from '@expo/vector-icons';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
@@ -68,6 +68,12 @@ export const WIDGET_HEIGHT = 172;
 export interface WidgetModel {
   kind: WidgetKind;
   label: string;
+  /** Quiet Apple-widget identity or live status label beside the top-left glyph. */
+  kicker?: string;
+  /** Optional static semantic dot beside `kicker` (Active Date, Radio On Air). */
+  liveDot?: boolean;
+  /** Optional semantic accent for progress bars and live indicators. */
+  accentColor?: string;
   /** Optional contextual top-left glyph override (e.g. alarm clock on Sleep when showing an alarm, calendar on Date when showing a plan). */
   icon?: { ios: SFSymbol; icon: keyof typeof IoniconsSet.glyphMap };
   faces: Character[];
@@ -144,21 +150,18 @@ export function WidgetView({
   // Photos is `photo`; Bond is the only widget with no module tile.
   const key = WIDGET_MODULE[model.kind] ?? 'bond';
   const tone = moduleColors[key];
-  // A picture keeps its scrim and white words; every other widget wears its module's light tint
-  // with ink on it (the playful skin, four-tab prototype). The line under a title stays full ink:
-  // a faded ink fails contrast on every tint.
   const onPhoto = model.photo != null;
   const ink = onPhoto ? colors.white : colors.text;
-  const sub = onPhoto ? SUB : colors.text;
+  const sub = onPhoto ? inkWidget.subOnPhoto : inkWidget.sub;
   const tint = moduleTints[key] ?? moduleTints.bond;
   // At night: stained glass instead of the flat deep tint (`moduleGlass`).
   const glass = !onPhoto && moduleGlass ? (moduleGlass[key] ?? moduleGlass.bond) : null;
-  // The board widget is a note pinned up: a little tilt and a strip of tape (flattened while jiggling in edit mode).
-  const pinned = model.kind === 'board' && !onPhoto && !editing;
   const buttons = model.buttons ?? [];
   // In edit mode (or the gallery) a tap belongs to the card, so its buttons do nothing.
   const inert = preview || editing || !!onPress;
   const person = model.person;
+  const reservedRight = buttons.length > 0 ? buttons.length * (BUTTON + 6) + 4 : 0;
+  const hasFacesOrBadge = model.faces.length > 0 || !!model.badge;
 
   const words = (
     <View style={model.pill ? styles.abovePill : undefined}>
@@ -211,7 +214,15 @@ export function WidgetView({
       ) : null}
       {model.progress != null ? (
         <View style={styles.track}>
-          <View style={[styles.bar, { width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%` }]} />
+          <View
+            style={[
+              styles.bar,
+              {
+                width: `${Math.round(Math.max(0.04, Math.min(1, model.progress)) * 100)}%`,
+                backgroundColor: model.accentColor ?? inkTokens.accent,
+              },
+            ]}
+          />
         </View>
       ) : null}
       {model.pill || !model.line ? null : model.lineFace ? (
@@ -246,6 +257,7 @@ export function WidgetView({
     </View>
   );
 
+  const glyphSize = model.kicker ? 18 : 24;
   const body = person ? (
     // A contact card: the face in the middle, the name, a word on it; the buttons sit below.
     <View style={styles.person}>
@@ -264,26 +276,42 @@ export function WidgetView({
     </View>
   ) : (
     <>
-      <View style={styles.top}>
+      <View style={[styles.top, reservedRight > 0 && { paddingRight: reservedRight }]}>
         {onPhoto ? (
           <View />
-        ) : model.icon ? (
-          <SFIcon ios={model.icon.ios} icon={model.icon.icon} size={28} color={ink} weight="light" />
         ) : (
-          <ModuleLine name={key} size={28} color={ink} />
+          <View style={[styles.kickerRow, !hasFacesOrBadge && styles.kickerGrow]}>
+            {model.icon ? (
+              <SFIcon ios={model.icon.ios} icon={model.icon.icon} size={glyphSize} color={ink} weight="light" />
+            ) : (
+              <ModuleLine name={key} size={glyphSize} color={ink} />
+            )}
+            {model.kicker ? (
+              <>
+                {model.liveDot ? (
+                  <View style={[styles.liveDot, { backgroundColor: model.accentColor ?? systemColors.green }]} />
+                ) : null}
+                <InkText variant="caption" color={inkWidget.kicker} lines={1} style={styles.kickerText}>
+                  {model.kicker}
+                </InkText>
+              </>
+            ) : null}
+          </View>
         )}
-        <View style={[styles.faces, buttons.length > 0 && { marginRight: buttons.length * (BUTTON + 8) }]}>
-          {model.faces.slice(0, 3).map((c, i) => (
-            <CharacterAvatar key={c.id} character={c} size={28} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
-          ))}
-          {model.badge ? (
-            <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
-              <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk} maxFontSizeMultiplier={1.25}>
-                {model.badge}
-              </InkText>
-            </View>
-          ) : null}
-        </View>
+        {hasFacesOrBadge ? (
+          <View style={styles.faces}>
+            {model.faces.slice(0, 3).map((c, i) => (
+              <CharacterAvatar key={c.id} character={c} size={26} ring ringColor={colors.white} style={i > 0 && styles.overlap} />
+            ))}
+            {model.badge ? (
+              <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
+                <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk} maxFontSizeMultiplier={1.25}>
+                  {model.badge}
+                </InkText>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
       </View>
       {words}
     </>
@@ -295,18 +323,19 @@ export function WidgetView({
         styles.card,
         !onPhoto && { backgroundColor: glass ? 'transparent' : tint },
         glass && { borderWidth: StyleSheet.hairlineWidth, borderColor: glass.rim },
-        pinned && styles.pinned,
         { height },
       ]}>
       {glass ? (
-        <LinearGradient colors={[glass.from, glass.to]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <>
+          <LinearGradient colors={[glass.from, glass.to]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <View style={styles.topSheen} pointerEvents="none" />
+        </>
       ) : null}
-      {pinned ? <View style={styles.tape} pointerEvents="none" /> : null}
       {onPhoto ? (
         <>
           <LinearGradient colors={tone} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
           <Image source={model.photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} />
-          <LinearGradient colors={PHOTO_SCRIM} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={inkWidget.photoScrim} locations={[0, 0.42, 1]} style={StyleSheet.absoluteFill} />
         </>
       ) : null}
       {preview ? (
@@ -329,12 +358,12 @@ export function WidgetView({
             <PressableScale
               key={b.label}
               scaleTo={0.88}
-              hitSlop={4}
+              hitSlop={6}
               accessibilityRole="button"
               accessibilityLabel={b.label}
               onPress={b.onPress}
               style={[styles.button, onPhoto && styles.buttonOnPhoto, b.tone === 'go' && styles.buttonGo]}>
-              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={18} color={b.tone === 'go' ? colors.white : ink} weight="medium" />
+              <SFIcon ios={b.glyph.ios} icon={b.glyph.icon} size={17} color={b.tone === 'go' ? colors.white : ink} weight="medium" />
             </PressableScale>
           ))}
         </View>
@@ -397,30 +426,27 @@ function FitText({
   );
 }
 
-/** A widget button's size: an iOS glass circle the thumb finds (44 pt with its hit slop). */
-const BUTTON = 36;
-const PHOTO_SCRIM = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.62)'] as const;
-/** The line under a widget's title: white, a step quieter. */
-const SUB = 'rgba(255,255,255,0.85)';
+/** A widget button's size: an iOS glass circle the thumb finds (46 pt with its hit slop). */
+const BUTTON = 34;
 
 const styles = StyleSheet.create({
   card: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
-  shrink: { flexShrink: 1 },
-  // Flat colour, no elevation: Android would lift the card over the "−" badge and its neighbours.
-  pinned: { transform: [{ rotate: '-1.6deg' }] },
-  tape: {
+  topSheen: {
     position: 'absolute',
     top: 0,
-    alignSelf: 'center',
-    width: 54,
-    height: 12,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-    backgroundColor: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.7)',
+    left: 16,
+    right: 16,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: inkWidget.topSheen,
     zIndex: 1,
   },
+  shrink: { flexShrink: 1 },
   fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, padding: 14, justifyContent: 'space-between' },
-  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 6 },
+  kickerRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minWidth: 0, flexShrink: 1 },
+  kickerGrow: { flex: 1 },
+  kickerText: { flexShrink: 1, letterSpacing: 0.2 },
+  liveDot: { width: 6, height: 6, borderRadius: inkRadius.pill },
   faces: { flexDirection: 'row', alignItems: 'center' },
   overlap: { marginLeft: -8 },
   badge: {
@@ -436,7 +462,7 @@ const styles = StyleSheet.create({
   figureLine: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 6 },
   days: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, marginBottom: 2, paddingRight: 4 },
   dayLetter: { width: 16, textAlign: 'center' },
-  dayDot: { width: 9, height: 9, borderRadius: inkRadius.pill, backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)' },
+  dayDot: { width: 9, height: 9, borderRadius: inkRadius.pill, backgroundColor: inkWidget.dayDotOff },
   afterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   lineRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   afterDotBox: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
@@ -446,32 +472,33 @@ const styles = StyleSheet.create({
   quote: { marginBottom: 4 },
   // FitText's line counter: laid out like the words, never seen.
   twin: { position: 'absolute', top: 0, left: 0, right: 0, opacity: 0 },
-  // Toward the next level: an ink bar in a soft track, as a battery widget fills (owner: the milk
-  // stays, no colour added inside).
+  // Toward the next level: an ink bar in a soft track, as a battery widget fills.
   track: {
     height: 6,
     borderRadius: inkRadius.pill,
     marginTop: 8,
     marginBottom: 6,
-    backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.7)',
+    backgroundColor: inkWidget.trackBg,
     overflow: 'hidden',
   },
   bar: { height: 6, borderRadius: inkRadius.pill, backgroundColor: inkTokens.accent },
   person: { flex: 1, alignItems: 'center', paddingTop: 0 },
   personName: { marginTop: 6 },
-  // A soft white circle on the tint (the prototype's buttons), a faint one on a deep tint.
+  // Calm iOS tinted glass circle on the card, crisp hairline rim.
   button: {
     width: BUTTON,
     height: BUTTON,
     borderRadius: inkRadius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.75)',
+    backgroundColor: inkWidget.buttonBg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: inkWidget.buttonRim,
   },
-  buttonGo: { backgroundColor: systemColors.green },
+  buttonGo: { backgroundColor: systemColors.green, borderColor: inkWidget.buttonOnPhotoRim },
   // Clear glass on a picture (the clear-glass rule), never a white disc.
-  buttonOnPhoto: { backgroundColor: 'rgba(255,255,255,0.22)', borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.5)' },
-  buttonsTop: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 },
+  buttonOnPhoto: { backgroundColor: inkWidget.buttonOnPhotoBg, borderWidth: StyleSheet.hairlineWidth, borderColor: inkWidget.buttonOnPhotoRim },
+  buttonsTop: { position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 6 },
   buttonsFoot: { position: 'absolute', left: 0, right: 0, bottom: 12, flexDirection: 'row', justifyContent: 'center', gap: 14 },
   abovePill: { marginBottom: 44 },
   pillWrap: { position: 'absolute', left: 14, right: 14, bottom: 14 },

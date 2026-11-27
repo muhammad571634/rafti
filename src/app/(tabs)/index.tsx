@@ -25,18 +25,17 @@ import { InkText, listReorder } from '@/components/ink';
 import { featuredFriendOf, heroTopHeight, lastTalkedFriendOf, TodayHero } from '@/components/today-hero';
 import { moreModules, TodayMoreSheet } from '@/components/today/more-apps';
 import { hideWelcome, WelcomeBack } from '@/components/today/welcome-back';
-import { LiveWidget } from '@/components/today/widget-models';
+import { LiveWidget, WidgetKitProvider } from '@/components/today/widget-models';
 import { WIDGET_HEIGHT, WIDGET_KINDS, WIDGET_MODULE, widgetLabel } from '@/components/today/widgets';
 import { CharacterAvatar, IconStack, ModuleLine, moduleTile, PressableScale, Screen, Sheet, SymbolTile, UserAvatar, type ModuleKey } from '@/components/ui';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useFirstSteps } from '@/hooks/use-first-steps';
 import { useInboxUnread } from '@/hooks/use-inbox-unread';
 import { useReorderOnly } from '@/hooks/use-reorder-only';
-import { helplineToday } from '@/lib/daily-note';
 import { shortName } from '@/lib/format';
 import { groupTitle } from '@/lib/group-chat';
 import { haptic } from '@/lib/haptics';
-import { previewSlideForSlot, swapWidgetSlots, TODAY_SLOTS } from '@/lib/today';
+import { placeWidgetInSlot, previewSlideForSlot, readyNoteIdOf, swapWidgetSlots, TODAY_SLOTS } from '@/lib/today';
 import { waitingThreadsFirst } from '@/lib/waiting';
 import { FREE_SPINS_PER_DAY } from '@/mock';
 import { checkInStatus, displayName, useAppStore } from '@/store/use-app-store';
@@ -189,13 +188,7 @@ export default function HomeScreen() {
   const reorderOnly = useReorderOnly(listed.map((f) => `${f.kind}:${f.id}`));
 
   // The first ready note whose friend is unblocked and not on a helpline day.
-  const noteId = useAppStore((s) =>
-    s.notes.find((n) => {
-      if (n.status !== 'ready' || s.blockedIds.includes(n.characterId) || !s.characters.some((c) => c.id === n.characterId)) return false;
-      const chatId = s.conversations.find((c) => c.characterId === n.characterId)?.id;
-      return !helplineToday((chatId && s.messages[chatId]) || []);
-    })?.id,
-  );
+  const noteId = useAppStore(readyNoteIdOf);
   const note = useMemo(() => notes.find((n) => n.id === noteId), [notes, noteId]);
   const noteFrom = note ? charactersById.get(note.characterId) : undefined;
   const noteName = noteFrom ? shortName(displayName(noteFrom, relationships[noteFrom.id])) : '';
@@ -219,12 +212,11 @@ export default function HomeScreen() {
 
   const place = (kind: WidgetKind) => {
     if (gallerySlot === null) return;
-    if (slots[gallerySlot] === kind) {
-      setGallerySlot(null);
-      return;
+    const next = placeWidgetInSlot(slots, gallerySlot, kind);
+    if (next.some((item, idx) => item !== slots[idx])) {
+      haptic.selection();
+      setSlots(next);
     }
-    haptic.selection();
-    setSlots(slots.map((k, j) => (j === gallerySlot ? kind : k)));
     setGallerySlot(null);
   };
 
@@ -332,6 +324,7 @@ export default function HomeScreen() {
 
   return (
     <Screen background={ink.ground} edgeToEdge={onPhoto} statusBarStyle={onPhoto && !pastHero ? 'light' : undefined}>
+      <WidgetKitProvider>
       <ScrollView
         ref={scrollRef}
         scrollEnabled={activeDrag === null}
@@ -470,6 +463,32 @@ export default function HomeScreen() {
 
         {anyWidget || editing ? (
           <View style={styles.widgetBlock} onLayout={(e) => (widgetsY.current = e.nativeEvent.layout.y)}>
+            <View style={styles.widgetHead}>
+              <InkText variant="footnoteStrong" color={ink.text2}>
+                {t('home.widget.gallery')}
+              </InkText>
+              {editing ? (
+                <PressableScale scaleTo={0.94} hitSlop={hitSlop} accessibilityRole="button" onPress={finishEditing} style={styles.editPillDone}>
+                  <InkText variant="caption" color={inkPeachGlass.ctaText} maxFontSizeMultiplier={1.25}>
+                    {t('home.widget.done')}
+                  </InkText>
+                </PressableScale>
+              ) : (
+                <PressableScale
+                  scaleTo={0.94}
+                  hitSlop={hitSlop}
+                  accessibilityRole="button"
+                  onPress={() => {
+                    haptic.tap();
+                    startEditing();
+                  }}
+                  style={styles.editPill}>
+                  <InkText variant="caption" color={ink.text2} maxFontSizeMultiplier={1.25}>
+                    {t('common.edit')}
+                  </InkText>
+                </PressableScale>
+              )}
+            </View>
             <View style={styles.widgets}>
               {slots.map((kind, i) => {
                 const slide = previewSlideForSlot(i, activeDrag, hoverSlot, half, tile, space.md);
@@ -516,13 +535,6 @@ export default function HomeScreen() {
                 return null;
               })}
             </View>
-            {editing ? (
-              <PressableScale scaleTo={0.94} accessibilityRole="button" onPress={finishEditing} style={styles.done}>
-                <InkText variant="bodyStrong" color={inkPeachGlass.ctaText}>
-                  {t('home.widget.done')}
-                </InkText>
-              </PressableScale>
-            ) : null}
           </View>
         ) : null}
 
@@ -571,10 +583,9 @@ export default function HomeScreen() {
                 <PressableScale
                   key={kind}
                   scaleTo={0.96}
-                  disabled={usedElsewhere}
                   accessibilityRole="button"
                   accessibilityLabel={label}
-                  accessibilityState={{ disabled: usedElsewhere, selected: current }}
+                  accessibilityState={{ selected: current }}
                   onPress={() => place(kind)}
                   style={[styles.galleryItem, { width: galleryHalf }, usedElsewhere && styles.used]}>
                   <View style={[styles.galleryFrame, current && styles.galleryCurrent]}>
@@ -595,6 +606,7 @@ export default function HomeScreen() {
             })}
         </View>
       </Sheet>
+      </WidgetKitProvider>
 
       <DailyRewardSheet />
       <WelcomeBack />
@@ -824,7 +836,7 @@ const Slot = memo(function Slot({
 
   const drag = Gesture.Pan()
     .enabled(editing)
-    .activateAfterLongPress(130)
+    .minDistance(8)
     .onStart(() => {
       'worklet';
       hover.value = -1;
@@ -957,16 +969,31 @@ const styles = StyleSheet.create({
   photoGlass: { backgroundColor: ink.photoGlass, borderWidth: StyleSheet.hairlineWidth, borderColor: ink.photoGlassRim },
   softGlass: { backgroundColor: ink.raised },
   round: { width: 44, height: 44, borderRadius: inkRadius.pill, alignItems: 'center', justifyContent: 'center' },
-  done: {
-    alignSelf: 'flex-end',
-    height: 44,
-    marginTop: space.md,
-    marginRight: space.lg,
-    paddingHorizontal: 18,
-    borderRadius: 22,
+  widgetHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    marginBottom: space.sm,
+  },
+  editPill: {
+    minHeight: 28,
+    paddingHorizontal: 12,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: ink.edge,
+  },
+  editPillDone: {
+    minHeight: 28,
+    paddingHorizontal: 14,
+    borderRadius: inkRadius.pill,
+    alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: inkPeachGlass.ctaSolid,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: inkPeachGlass.ctaRim,
   },
   card: {
@@ -1044,6 +1071,6 @@ const styles = StyleSheet.create({
   galleryItem: { width: '47%', gap: space.sm },
   galleryFrame: { borderRadius: inkRadius.card, borderCurve: 'continuous', overflow: 'hidden' },
   galleryCurrent: { borderWidth: 2, borderColor: inkPeachGlass.rim },
-  used: { opacity: 0.42 },
+  used: { opacity: 0.78 },
   galleryLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 4 },
 });

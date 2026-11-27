@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  alarmCountdown,
   alarmsInOrder,
   earliest,
   freeShellsLeft,
@@ -265,5 +266,26 @@ describe('contextual widget chains: Date, Sleep, Gifts', () => {
       resolveGiftsAction({ daily: { spinDay: TODAY, spinsUsed: 1 }, today: TODAY, checkInClaimed: true, stepReady: false }),
       'none',
     );
+  });
+
+  it('computes live alarm countdowns and exact minute rollover boundaries', () => {
+    const alarm = { hour: 21, minute: 30, repeat: [] };
+    // NOW is 15:00:00 -> 6h 30m left; next minute decrement happens 50ms after 15:00 -> 15:01? No, at 15:00:00 it is 390m -> drops to 389m at 15:00:00.001? Let's test 15:00:20 too.
+    const exact = alarmCountdown(alarm, NOW);
+    assert.equal(exact.hours, 6);
+    assert.equal(exact.minutes, 30);
+    assert.equal(exact.ringAt, at(21, 30));
+
+    // At 21:14:40 -> ceil(15m 20s) = 16m -> next drop at 21:15:00 + 50ms.
+    const almost = alarmCountdown(alarm, at(21, 14) + 40_000);
+    assert.equal(almost.hours, 0);
+    assert.equal(almost.minutes, 16);
+    assert.equal(almost.nextWakeAt, at(21, 15) + 50);
+
+    // Morning alarm wraps cleanly to next day.
+    const morning = alarmCountdown({ hour: 7, minute: 15, repeat: [] }, NOW);
+    assert.equal(morning.hours, 16);
+    assert.equal(morning.minutes, 15);
+    assert.equal(morning.ringAt, at(7, 15, 8));
   });
 });

@@ -344,3 +344,21 @@ export const inkWaxSeal = {
   pearl: WAX_PEARL_PALETTE,
   gold: WAX_GOLD_PALETTE,
 } as const;
+
+/**
+ * Apple iOS Dark Mode small widget surface & contrast tokens: subtle top specular sheen, calm
+ * translucent buttons, track fills, and photo scrim without raw colour literals in widget views.
+ */
+export const inkWidget = {
+  topSheen: 'rgba(255,255,255,0.22)',
+  buttonBg: 'rgba(255,255,255,0.14)',
+  buttonRim: 'rgba(255,255,255,0.18)',
+  buttonOnPhotoBg: 'rgba(20,20,26,0.44)',
+  buttonOnPhotoRim: 'rgba(255,255,255,0.34)',
+  trackBg: 'rgba(255,255,255,0.14)',
+  dayDotOff: 'rgba(255,255,255,0.20)',
+  kicker: 'rgba(255,255,255,0.68)',
+  photoScrim: ['rgba(9,9,13,0.08)', 'rgba(9,9,13,0.16)', 'rgba(9,9,13,0.74)'] as readonly [string, string, string],
+  subOnPhoto: 'rgba(255,255,255,0.86)',
+  sub: 'rgba(235,235,245,0.76)',
+} as const;

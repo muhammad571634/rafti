@@ -18,6 +18,7 @@ import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/cre
 import { PaywallSheet } from '@/components/paywall-sheet';
 import { Screen, useScrolledPast } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
+import { useDayKey } from '@/hooks/use-day-key';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
 import { clearCreation, loadCreation, saveCreation } from '@/lib/create-draft-storage';
 import { type CreateForm, type CreateSection, firstProblemSection, hasContent, problemsBySection, sameForm } from '@/lib/create-flow';
@@ -123,13 +124,16 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   const [share, setShare] = useState(editing?.visibility === 'public');
   const shareChanged = !!editing && share !== (editing.visibility === 'public');
   const locale = useAppStore((s) => s.user.locale);
+  const today = useDayKey();
   const realAi = useAppStore((s) => !!s.settings.realAi);
-  const quickLeft = useAppStore((s) => quickCreatesToday(s.quickCreates, s.wallet));
+  const quickCreates = useAppStore((s) => s.quickCreates);
+  const wallet = useAppStore((s) => s.wallet);
   const takeQuickCreate = useAppStore((s) => s.takeQuickCreate);
   const payForPortrait = useAppStore((s) => s.payForPortrait);
-  const subscription = useAppStore((s) => s.wallet.subscription);
-  const shells = useAppStore((s) => s.wallet.shells);
-  const quickMax = quickCreatesPerDay(subscription, Date.now());
+  const subscription = wallet.subscription;
+  const shells = wallet.shells;
+  const quickLeft = useMemo(() => quickCreatesToday(quickCreates, wallet), [quickCreates, wallet, today]);
+  const quickMax = useMemo(() => quickCreatesPerDay(subscription, Date.now()), [subscription, today]);
   // Today's drafts are used up but a bigger plan writes more: the button offers one.
   const quickUpsell = quickLeft === 0 && createTier(subscription, Date.now()) !== 'pro';
   const language = baseLanguage(locale);
@@ -163,6 +167,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
 
   /** Drafts and fields arrive after a wait; one that lands after leaving, or after Back, is dropped. */
   const run = useRef(0);
+  const submittingRef = useRef(false);
   const alive = useRef(true);
   useEffect(
     () => () => {
@@ -195,21 +200,41 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
 
   /** A cloned voice made before (no stock voice): kept until a stock one is picked. */
   const ownVoice = !!editing && !editing.voicePreset && !form.preset;
-  const voice: VoiceChoice | null = ownVoice ? { kind: 'trained' } : form.preset ? { kind: 'preset', preset: form.preset } : null;
+  const voice: VoiceChoice | null = useMemo(
+    () => (ownVoice ? { kind: 'trained' } : form.preset ? { kind: 'preset', preset: form.preset } : null),
+    [ownVoice, form.preset],
+  );
   const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !form.imageUri && !!form.look.trim();
   const totalCost = drawsPortrait ? portraitPrice(subscription, Date.now()) : 0;
-  const problems = checkCreation({
-    name: form.name,
-    age: form.age,
-    bio: form.bio,
-    greeting: form.greeting,
-    hasPhoto: !!form.imageUri,
-    look: form.look,
-    more: [form.tagline, form.opening, form.quirk, form.scenario, ...form.greetings, form.definition, ...form.starters, form.backstory, form.likes, form.dislikes, form.relation, form.mask],
-    voice,
-    voiceConsent: true,
-    needsPicture: PORTRAITS_AVAILABLE,
-  });
+  const problems = useMemo(
+    () =>
+      checkCreation({
+        name: form.name,
+        age: form.age,
+        bio: form.bio,
+        greeting: form.greeting,
+        hasPhoto: !!form.imageUri,
+        look: form.look,
+        more: [
+          form.tagline,
+          form.opening,
+          form.quirk,
+          form.scenario,
+          ...form.greetings,
+          form.definition,
+          ...form.starters,
+          form.backstory,
+          form.likes,
+          form.dislikes,
+          form.relation,
+          form.mask,
+        ],
+        voice,
+        voiceConsent: true,
+        needsPicture: PORTRAITS_AVAILABLE,
+      }),
+    [form, voice],
+  );
   const shown = checked ? problemsBySection(problems) : {};
   const problemText = (section: CreateSection) => (shown[section] ? t(`createCharacter.problems.${shown[section]}`) : null);
   const changed = editing ? !sameForm(form, initial) || shareChanged : false;
@@ -267,20 +292,27 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
     setError(null);
     setPhase('writing');
     const mine = ++run.current;
-    const result = await requestDraft({ idea, sparks, role: ideaRole, language }, realAi);
-    if (!alive.current || run.current !== mine) return;
-    if (!result.ok) {
+    try {
+      const result = await requestDraft({ idea, sparks, role: ideaRole, language }, realAi);
+      if (!alive.current || run.current !== mine) return;
+      if (!result.ok) {
+        setPhase('idea');
+        haptic.error();
+        return setIdeaProblem(t(`createCharacter.quick.problems.${result.problem}`));
+      }
+      // Only a draft that came back counts against today's free ones.
+      takeQuickCreate();
+      setForm((f) => fromDraft(f, result.draft));
+      setChecked(false);
+      setKept(null);
+      setPhase('form');
+      haptic.success();
+    } catch {
+      if (!alive.current || run.current !== mine) return;
       setPhase('idea');
       haptic.error();
-      return setIdeaProblem(t(`createCharacter.quick.problems.${result.problem}`));
+      setIdeaProblem(t('createCharacter.quick.problems.busy'));
     }
-    // Only a draft that came back counts against today's free ones.
-    takeQuickCreate();
-    setForm((f) => fromDraft(f, result.draft));
-    setChecked(false);
-    setKept(null);
-    setPhase('form');
-    haptic.success();
   };
 
   /** ✦: one field written again from what the page holds now. Free, and not counted. */
@@ -290,38 +322,45 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
     setError(null);
     const attempt = (asked.current[field] ?? 0) + 1;
     asked.current[field] = attempt;
-    const value = await requestField(
-      field,
-      {
-        name: form.name,
-        tagline: form.tagline,
-        bio: form.bio,
-        look: form.look,
-        greeting: form.greeting,
-        quirk: form.quirk,
-        scenario: form.scenario,
-        backstory: form.backstory,
-        role: form.role,
-        speakingStyle: form.style,
-        tags: form.traits,
-        gender: form.gender,
-        age: Number(form.age) || undefined,
-        likes: thingsOf(form.likes),
-        dislikes: thingsOf(form.dislikes),
-      },
-      language,
-      attempt,
-      realAi,
-    );
-    if (!alive.current) return;
-    setBusy(null);
-    if (value == null) {
+    try {
+      const value = await requestField(
+        field,
+        {
+          name: form.name,
+          tagline: form.tagline,
+          bio: form.bio,
+          look: form.look,
+          greeting: form.greeting,
+          quirk: form.quirk,
+          scenario: form.scenario,
+          backstory: form.backstory,
+          role: form.role,
+          speakingStyle: form.style,
+          tags: form.traits,
+          gender: form.gender,
+          age: Number(form.age) || undefined,
+          likes: thingsOf(form.likes),
+          dislikes: thingsOf(form.dislikes),
+        },
+        language,
+        attempt,
+        realAi,
+      );
+      if (!alive.current) return;
+      if (value == null) {
+        haptic.error();
+        return setError(t('createCharacter.quick.problems.busy'));
+      }
+      // What they hide comes back as a whole arc: the secret shows, the beats ride along for it.
+      if (typeof value === 'object' && !Array.isArray(value)) return set({ secret: value.secret, arcBeats: value.beats, arcFor: value.secret });
+      set(fieldPatch(field, value));
+    } catch {
+      if (!alive.current) return;
       haptic.error();
-      return setError(t('createCharacter.quick.problems.busy'));
+      setError(t('createCharacter.quick.problems.busy'));
+    } finally {
+      if (alive.current) setBusy(null);
     }
-    // What they hide comes back as a whole arc: the secret shows, the beats ride along for it.
-    if (typeof value === 'object' && !Array.isArray(value)) return set({ secret: value.secret, arcBeats: value.beats, arcFor: value.secret });
-    set(fieldPatch(field, value));
   };
 
   /**
@@ -331,21 +370,28 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   const pickImage = async (from: 'library' | 'camera') => {
     setPhotoMenu(false);
     const options: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.9, allowsEditing: true, aspect: [4, 5], exif: false };
-    if (from === 'camera') {
-      const allowed = await ImagePicker.requestCameraPermissionsAsync();
-      if (!allowed.granted) {
-        return showAlert(t('photoBooth.cameraOff'), undefined, [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: t('notifications.openSettings'), onPress: () => void Linking.openSettings() },
-        ]);
+    try {
+      if (from === 'camera') {
+        const allowed = await ImagePicker.requestCameraPermissionsAsync();
+        if (!allowed.granted) {
+          return showAlert(t('photoBooth.cameraOff'), undefined, [
+            { text: t('common.cancel'), style: 'cancel' },
+            { text: t('notifications.openSettings'), onPress: () => void Linking.openSettings() },
+          ]);
+        }
+      }
+      const result = from === 'camera' ? await ImagePicker.launchCameraAsync(options) : await ImagePicker.launchImageLibraryAsync(options);
+      const asset = result.canceled ? undefined : result.assets[0];
+      if (!asset) return;
+      setError(null);
+      const kept = await keepCharacterPicture(asset.uri);
+      if (alive.current) set({ imageUri: kept });
+    } catch {
+      if (alive.current) {
+        haptic.error();
+        setError(t('createCharacter.quick.problems.busy'));
       }
     }
-    const result = from === 'camera' ? await ImagePicker.launchCameraAsync(options) : await ImagePicker.launchImageLibraryAsync(options);
-    const asset = result.canceled ? undefined : result.assets[0];
-    if (!asset) return;
-    setError(null);
-    const kept = await keepCharacterPicture(asset.uri);
-    if (alive.current) set({ imageUri: kept });
   };
 
   /** Character.AI's "insert a chat": the latest lines of your chat with them join the sample dialog. */
@@ -405,6 +451,7 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
   };
 
   const submit = async () => {
+    if (submittingRef.current) return;
     if (problems.length > 0) {
       setChecked(true);
       haptic.error();
@@ -439,38 +486,51 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
       haptic.success();
       return leave();
     }
+    submittingRef.current = true;
     setCreating(true);
-    // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
-    let avatarUri = form.imageUri;
-    if (drawsPortrait) {
-      setDrawing(true);
-      const drawn = await requestPortrait(form.look);
-      if (!alive.current) return;
-      setDrawing(false);
-      if (drawn && payForPortrait()) avatarUri = drawn;
+    try {
+      // Without a photo their picture is drawn from their looks, once, and paid for only if it came back.
+      let avatarUri = form.imageUri;
+      if (drawsPortrait) {
+        setDrawing(true);
+        const drawn = await requestPortrait(form.look);
+        if (!alive.current) return;
+        setDrawing(false);
+        if (drawn && payForPortrait()) avatarUri = drawn;
+      }
+      const ids = addCharacter({
+        ...fields(),
+        avatarUri,
+        handle: '@you',
+        series: 'My Creations',
+        accentIndex: accent,
+        voiceReady: true,
+        isOfficial: false,
+        fromTemplate: template?.id,
+      });
+      // Made a story template their own: counted once on the server (Find's real numbers).
+      if (template) {
+        void withAccount((token) => serverTemplates.add(token, template.id, 'own')).catch(() => null);
+        dropStoryHi(template.id);
+      }
+      if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
+      if (canShare && share) void shareCharacter(ids.characterId, true);
+      void clearCreation();
+      setMade(ids);
+      setPhase('meet');
+      haptic.success();
+    } catch {
+      if (alive.current) {
+        haptic.error();
+        setError(t('createCharacter.quick.problems.busy'));
+      }
+    } finally {
+      submittingRef.current = false;
+      if (alive.current) {
+        setDrawing(false);
+        setCreating(false);
+      }
     }
-    const ids = addCharacter({
-      ...fields(),
-      avatarUri,
-      handle: '@you',
-      series: 'My Creations',
-      accentIndex: accent,
-      voiceReady: true,
-      isOfficial: false,
-      fromTemplate: template?.id,
-    });
-    // Made a story template their own: counted once on the server (Find's real numbers).
-    if (template) {
-      void withAccount((token) => serverTemplates.add(token, template.id, 'own')).catch(() => null);
-      dropStoryHi(template.id);
-    }
-    if (ownWorld) setLoreLink(ownWorld, ids.characterId, true);
-    if (canShare && share) void shareCharacter(ids.characterId, true);
-    void clearCreation();
-    setCreating(false);
-    setMade(ids);
-    setPhase('meet');
-    haptic.success();
   };
 
   const label = (key: string) => t(`createCharacter.${key}`);

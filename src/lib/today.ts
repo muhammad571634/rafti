@@ -1,4 +1,5 @@
-import type { DayLog, WidgetKind } from '@/types';
+import { helplineToday } from './daily-note';
+import type { Character, Conversation, DayLog, Message, SecretNote, WidgetKind } from '../types';
 
 /**
  * Pure parts of the calm Today (audit 2026-11-15 §6.1, approved prototype `docs/prototypes/today-calm.html`):
@@ -147,3 +148,83 @@ export function swapWidgetSlots<T>(slots: readonly T[], from: number, to: number
   [next[from], next[to]] = [next[to], next[from]];
   return next;
 }
+
+/**
+ * Places `kind` into `slotIndex` cleanly: if `kind` already lives in another slot, swaps the two
+ * slots so tapping an active widget in the Widget Gallery moves/swaps it instead of blocking the tap.
+ */
+export function placeWidgetInSlot(
+  slots: readonly (WidgetKind | null)[],
+  slotIndex: number,
+  kind: WidgetKind,
+): (WidgetKind | null)[] {
+  if (slotIndex < 0 || slotIndex >= slots.length) return [...slots];
+  if (slots[slotIndex] === kind) return [...slots];
+  const existingIndex = slots.indexOf(kind);
+  if (existingIndex >= 0) {
+    return swapWidgetSlots(slots, existingIndex, slotIndex);
+  }
+  return slots.map((item, i) => (i === slotIndex ? kind : item));
+}
+
+export interface ReadyNoteInputs {
+  notes: readonly SecretNote[];
+  blockedIds: readonly string[];
+  characters: readonly Pick<Character, 'id'>[];
+  conversations: readonly Pick<Conversation, 'id' | 'characterId'>[];
+  messages: Record<string, readonly Message[] | undefined>;
+}
+
+/** Picks the first ready note whose friend is unblocked and not on a helpline day. */
+export function findReadyNoteId(input: ReadyNoteInputs): string | undefined {
+  let hasReady = false;
+  for (let i = 0; i < input.notes.length; i++) {
+    if (input.notes[i].status === 'ready') {
+      hasReady = true;
+      break;
+    }
+  }
+  if (!hasReady) return undefined;
+
+  for (let i = 0; i < input.notes.length; i++) {
+    const n = input.notes[i];
+    if (n.status !== 'ready') continue;
+    if (input.blockedIds.includes(n.characterId)) continue;
+    if (!input.characters.some((c) => c.id === n.characterId)) continue;
+    const chatId = input.conversations.find((c) => c.characterId === n.characterId)?.id;
+    const chat = (chatId && input.messages[chatId]) || [];
+    if (!helplineToday(chat)) return n.id;
+  }
+  return undefined;
+}
+
+/** Memoized selector for `findReadyNoteId`, avoiding full message scans when unrelated state changes. */
+export const readyNoteIdOf = (() => {
+  let cache: { inputs: ReadyNoteInputs; id: string | undefined } | undefined;
+  return (s: ReadyNoteInputs): string | undefined => {
+    const last = cache?.inputs;
+    if (
+      cache &&
+      last &&
+      last.notes === s.notes &&
+      last.blockedIds === s.blockedIds &&
+      last.characters === s.characters &&
+      last.conversations === s.conversations &&
+      last.messages === s.messages
+    ) {
+      return cache.id;
+    }
+    const id = findReadyNoteId(s);
+    cache = {
+      inputs: {
+        notes: s.notes,
+        blockedIds: s.blockedIds,
+        characters: s.characters,
+        conversations: s.conversations,
+        messages: s.messages,
+      },
+      id,
+    };
+    return id;
+  };
+})();
