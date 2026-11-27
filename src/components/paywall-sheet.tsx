@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Divider, moduleTile, PressableScale, Sheet, ShellBadge, ShellIcon, SymbolTile, Txt } from '@/components/ui';
-import { TRIAL } from '@/economy/plans';
+import { PLANS, TRIAL } from '@/economy/plans';
 import { track } from '@/lib/analytics';
 import { screenName } from '@/lib/analytics-events';
+import { count } from '@/lib/format';
 import { useFreeMessagesLeft } from '@/lib/use-free-messages';
 import {
   FREE_SPINS_PER_DAY,
@@ -97,7 +98,11 @@ export function PaywallSheet({
             : wallet.trialUsed
               ? t('paywall.getBasic')
               : t('plans.tryTrial', { count: TRIAL.days }),
-          meta: member ? t('paywall.proMeta') : freeUsed ? t('paywall.planChatMeta') : t('paywall.planMeta'),
+          meta: member
+            ? t('paywall.proMeta', { shells: count(PLANS.pro.shells) })
+            : freeUsed
+              ? t('paywall.planChatMeta')
+              : t('paywall.planMeta'),
           onPress: () =>
             go(member || !wallet.trialUsed ? '/store/shell?tab=plans&plan=proAnnual' : '/store/shell?tab=plans&plan=basic'),
         },

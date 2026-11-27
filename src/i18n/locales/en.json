@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "With Your Favorite Character"
+    "tagline": "Always someone to talk to"
   },
   "common": {
     "ok": "OK",
@@ -22,8 +22,8 @@
     "confirm": "Confirm",
     "retry": "Retry",
     "seeAll": "See all",
-    "loading": "Loading...",
-    "thinking": "Thinking...",
+    "loading": "Loading…",
+    "thinking": "Thinking…",
     "today": "Today",
     "yesterday": "Yesterday",
     "tomorrow": "Tomorrow",
@@ -45,15 +45,15 @@
   },
   "home": {
     "modules": {
-      "shellStore": "Shell Store",
-      "dating": "Dating",
+      "shellStore": "Store",
+      "dating": "Dates",
       "heartbeatDiary": "Heartbeat Diary",
       "photoBooth": "Photo Booth",
-      "myContacts": "My Contacts",
+      "myContacts": "Contacts",
       "radio": "Radio",
-      "freeGifts": "Free Gifts",
-      "callHistory": "Call History",
-      "bulletinBoard": "Bulletin Board",
+      "freeGifts": "Free gifts",
+      "callHistory": "Calls",
+      "bulletinBoard": "Message board",
       "bedtime": "Bedtime"
     },
     "today": "Today",
@@ -277,8 +277,8 @@
     "caughtUp": "All caught up",
     "noGroups": "No groups yet",
     "typing": "typing…",
-    "markRead": "Mark as Read",
-    "markUnread": "Mark as Unread",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
     "read": "Read",
     "previewVoice": "Voice message",
     "previewPhoto": "Photo",
@@ -447,7 +447,7 @@
     "off": {
       "character": "Not like {{name}}",
       "listen": "Didn't listen",
-      "repeat": "Repeats itself",
+      "repeat": "Keeps repeating",
       "long": "Too long",
       "short": "Too short",
       "sense": "Doesn't make sense"
@@ -534,7 +534,7 @@
     "rewindToHere": "Rewind to here",
     "pin": "Pin to Memories",
     "unpin": "Unpin",
-    "pinnedToast": "Pinned to Story",
+    "pinnedToast": "Pinned to Memories",
     "rewind": "Rewind",
     "rewindTitle_one": "Rewind? 1 later message goes to Branches",
     "rewindTitle_other": "Rewind? {{count}} later messages go to Branches",
@@ -573,7 +573,7 @@
     "body_other": "You need {{count}} shells for that. Pick any way to get them:",
     "chatBody": "Your message is saved. Pick any way to keep talking:",
     "freeUsedBody": "Today's free messages are used. Your message is saved. Pick any way to keep talking:",
-    "freeBack": "Free messages come back tomorrow at 00:00.",
+    "freeBack": "Free messages reset at midnight.",
     "planChatMeta": "Talk without a daily count",
     "spin": "Free spin",
     "spinMeta": "Up to +{{count}} shells",
@@ -582,12 +582,12 @@
     "getShellsStarter": "First pack {{count}} for {{price}}",
     "getBasic": "Get Basic",
     "planMeta": "Shells every month",
-    "comeBack": "Free shells come back tomorrow at 00:00.",
+    "comeBack": "Free shells reset at midnight.",
     "getPro": "Get Pro",
-    "proMeta": "5,000 shells a month, calls and voice replies"
+    "proMeta": "{{shells}} shells a month, calls and voice replies"
   },
   "levelUp": {
-    "title": "Ta-da! You've reached a new stage.",
+    "title": "You've reached a new stage.",
     "subtitle": "{{name}} feels a little closer to you.",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "New relationships unlocked in their settings.",
@@ -596,8 +596,8 @@
     "readIt": "Read it"
   },
   "call": {
-    "connecting": "connecting...",
-    "calling": "is calling you...",
+    "connecting": "Connecting…",
+    "calling": "Incoming call",
     "morning": "Good-morning call",
     "night": "Good-night call",
     "accept": "Accept",
@@ -605,7 +605,7 @@
     "incoming": "Incoming",
     "outgoing": "Outgoing",
     "missed": "Missed",
-    "shareMessage": "I'm on a call with {{name}} on Sigmazam~",
+    "shareMessage": "On a call with {{name}} on Sigmazam.",
     "mute": "Mute",
     "unmute": "Unmute",
     "speaker": "Speaker",
@@ -773,7 +773,7 @@
   "diary": {
     "title": "Heartbeat Diary",
     "myDiary": "My diary",
-    "writePlaceholder": "Write down what made your heart flutter. Maybe someone you care about will read it…",
+    "writePlaceholder": "Write about your day. Share it with someone if you'd like…",
     "photo": "Photo",
     "removePhoto": "Remove photo",
     "removePhotoHint": "Long press to remove",
@@ -827,7 +827,7 @@
     "afterDate": "Written after your date on {{date}}",
     "pageOf": "Page {{index}} of {{count}}",
     "replyIn": "Reply to {{name}} in chat",
-    "replyDraft": "I read your diary...",
+    "replyDraft": "I read your diary…",
     "calendar": "Pick a day",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
@@ -861,9 +861,9 @@
   "secretNote": {
     "title": "Secret note",
     "gone": "This note is no longer here",
-    "theirNote": "{{name}}'s Note",
-    "placeholder": "Type your idea...",
-    "thinking": "Thinking...",
+    "theirNote": "{{name}}'s note",
+    "placeholder": "Write your note…",
+    "thinking": "Thinking…",
     "counter": "{{count}}/400",
     "newQuestion": "New question",
     "exchanged": "Notes swapped",
@@ -888,7 +888,7 @@
     "costListen": "Voice replies",
     "costCall": "Voice calls",
     "costPhotoBooth": "Photo Booth shot",
-    "costSecretNote": "Secret Note exchange",
+    "costSecretNote": "Secret note",
     "costVoiceClone": "Voice cloning",
     "purchased": "+{{count}} shells",
     "balanceHint_one": "Enough for about {{count}} message",
@@ -1279,7 +1279,7 @@
     "private": "Only me",
     "public": "Share in Find",
     "create": "Create · {{count}} shells",
-    "creating": "Cloning voice...",
+    "creating": "Cloning voice…",
     "tooLarge": "{{name}} is over 10MB",
     "age": "Age",
     "gender": "Gender",
@@ -1444,7 +1444,7 @@
     "secretPlaceholder": "Something they will only tell you later"
   },
   "dating": {
-    "title": "Dating",
+    "title": "Dates",
     "walletTitle": "Dates",
     "kindDate": "Date",
     "opensAt": "Opens at",
@@ -1664,13 +1664,13 @@
     "inMinutes": "in {{m}} min",
     "noneOn": "All alarms are off",
     "entry": "Alarms",
-    "add": "Add Alarm",
-    "edit": "Edit Alarm",
+    "add": "Add alarm",
+    "edit": "Edit alarm",
     "cancel": "Cancel",
     "save": "Save",
     "back": "Back",
     "delete": "Delete",
-    "deleteAlarm": "Delete Alarm",
+    "deleteAlarm": "Delete alarm",
     "empty": "No alarms",
     "repeat": "Repeat",
     "label": "Label",
@@ -1699,7 +1699,7 @@
       "softBells": "Soft Bells",
       "lighthouse": "Lighthouse"
     },
-    "wakeLine": "Good morning, sleepyhead. Time to get up ☀️",
+    "wakeLine": "Good morning. Time to wake up.",
     "ringing": "Time to get up",
     "hour": "Hour",
     "minute": "Minute",
@@ -1895,7 +1895,7 @@
     "completeTitle": "Complete your profile",
     "shells": "Shells",
     "getMore": "Get more",
-    "tryPlus": "Try Plus",
+    "tryPro": "Try Pro",
     "manage": "Manage",
     "editPhoto": "Edit photo",
     "inviteOffer": "Invite +{{count}}",
@@ -1912,8 +1912,8 @@
     "generic": "Something went wrong.",
     "network": "No connection.",
     "notFound": "Not found.",
-    "crashTitle": "Sigmazam tripped over a pebble",
-    "crashBody": "Something went wrong on this screen. Your chats and shells are safe."
+    "crashTitle": "Something went wrong",
+    "crashBody": "This screen ran into a problem. Your chats and shells are safe."
   },
   "a11y": {
     "back": "Back",
@@ -2288,11 +2288,11 @@
       "gifts": "Gifts and spins",
       "alarms": "Alarms"
     },
-    "giftWaiting": "🎁 Today's gift: {{count}} shells. Open the app before midnight to get it.",
-    "giftLadder": "🎁 Day {{day}} gift: {{count}} shells. Miss today and the ladder starts over.",
-    "streak": "🔥 {{count}} days in a row with {{name}}. The streak ends at midnight: one message keeps it.",
-    "streakLast": "⏳ Last call: your {{count}}-day streak with {{name}} ends at midnight.",
-    "shellsBurn": "🐚 {{count}} free shells burn at midnight. Spend them on a chat or a call."
+    "giftWaiting": "Today's gift: {{count}} shells waiting until midnight.",
+    "giftLadder": "Day {{day}} gift: {{count}} shells. Claim before midnight to keep your streak.",
+    "streak": "{{count}} days in a row with {{name}}. Say hi before midnight to keep it going.",
+    "streakLast": "Your {{count}}-day streak with {{name}} ends at midnight.",
+    "shellsBurn": "You still have {{count}} free shells today — they reset at midnight."
   },
   "notifications": {
     "title": "Notifications",
@@ -2436,7 +2436,7 @@
     "freeShellsLeft": "{{count}} left today",
     "freeShellsNone": "None left today",
     "callsAndVoice": "Calls and voice replies",
-    "freeNote": "Messages are free up to {{count}} a day. Free shells come back every day at 00:00.",
+    "freeNote": "Messages are free up to {{count}} a day. Free shells reset at midnight.",
     "tryTrial_one": "Try Pro free for {{count}} day",
     "tryTrial_other": "Try Pro free for {{count}} days",
     "planSection": "Plan",

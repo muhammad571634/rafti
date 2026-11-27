@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam uses the microphone so you can send voice messages and talk on voice calls with your friends.",
+    "NSCameraUsageDescription": "Sigmazam uses the camera so you can take a photo together with your friends in the Photo Booth.",
+    "NSPhotoLibraryUsageDescription": "Sigmazam opens your photos so you can send one in a chat or choose a picture for a character."
+  }
+}

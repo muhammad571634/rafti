@@ -213,11 +213,11 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
     <View style={styles.error}>
       <Mascot size={120} />
       <Txt variant="h3" center>
-        {t('errors.crashTitle', { defaultValue: 'Sigmazam tripped over a pebble' })}
+        {t('errors.crashTitle', { defaultValue: 'Something went wrong' })}
       </Txt>
       <Txt variant="body" color={colors.textSecondary} center>
         {t('errors.crashBody', {
-          defaultValue: 'Something went wrong on this screen. Your chats and shells are safe.',
+          defaultValue: 'This screen ran into a problem. Your chats and shells are safe.',
         })}
       </Txt>
       <Button label={t('common.retry', { defaultValue: 'Retry' })} onPress={() => void retry()} full />

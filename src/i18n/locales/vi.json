@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "Cùng nhân vật yêu thích của bạn"
+    "tagline": "Luôn có người lắng nghe bạn"
   },
   "common": {
     "ok": "OK",
@@ -22,8 +22,8 @@
     "confirm": "Xác nhận",
     "retry": "Thử lại",
     "seeAll": "Xem tất cả",
-    "loading": "Đang tải...",
-    "thinking": "Đang suy nghĩ...",
+    "loading": "Đang tải…",
+    "thinking": "Đang suy nghĩ…",
     "today": "Hôm nay",
     "yesterday": "Hôm qua",
     "tomorrow": "Ngày mai",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "Cửa hàng vỏ sò",
+      "shellStore": "Cửa hàng",
       "dating": "Hẹn hò",
       "heartbeatDiary": "Nhật ký nhịp đập",
       "photoBooth": "Buồng chụp ảnh",
-      "myContacts": "Danh bạ của tôi",
+      "myContacts": "Danh bạ",
       "radio": "Đài phát thanh",
       "freeGifts": "Quà tặng miễn phí",
-      "callHistory": "Lịch sử cuộc gọi",
+      "callHistory": "Cuộc gọi",
       "bulletinBoard": "Bảng tin",
       "bedtime": "Giờ đi ngủ"
     },
@@ -521,7 +521,7 @@
     "rewindToHere": "Tua lại đến đây",
     "pin": "Ghim vào Kỷ niệm",
     "unpin": "Bỏ ghim",
-    "pinnedToast": "Đã ghim vào Câu chuyện",
+    "pinnedToast": "Đã ghim vào Kỷ niệm",
     "rewind": "Tua lại",
     "rewindTitle_other": "Tua lại? {{count}} tin nhắn sau đó sẽ vào Nhánh",
     "deleteMessage": "Xóa đối với tôi",
@@ -557,7 +557,7 @@
     "body_other": "Bạn cần {{count}} vỏ sò cho việc đó. Chọn cách nhận:",
     "chatBody": "Tin nhắn của bạn đã được lưu. Chọn bất kỳ cách nào để tiếp tục trò chuyện:",
     "freeUsedBody": "Bạn đã dùng hết tin nhắn miễn phí hôm nay. Tin nhắn của bạn đã được lưu. Chọn bất kỳ cách nào để tiếp tục trò chuyện:",
-    "freeBack": "Tin nhắn miễn phí sẽ quay lại lúc 00:00 ngày mai.",
+    "freeBack": "Tin nhắn miễn phí sẽ làm mới vào nửa đêm.",
     "planChatMeta": "Trò chuyện không giới hạn mỗi ngày",
     "spin": "Vòng quay miễn phí",
     "spinMeta": "Lên tới +{{count}} vỏ sò",
@@ -566,12 +566,12 @@
     "getShellsStarter": "Gói đầu tiên {{count}} vỏ sò với giá {{price}}",
     "getBasic": "Đăng ký Basic",
     "planMeta": "Nhận vỏ sò hàng tháng",
-    "comeBack": "Vỏ sò miễn phí sẽ quay lại vào ngày mai lúc 00:00.",
+    "comeBack": "Vỏ sò miễn phí sẽ làm mới vào nửa đêm.",
     "getPro": "Đăng ký Pro",
-    "proMeta": "5.000 vỏ sò mỗi tháng, cuộc gọi thoại và phản hồi bằng giọng nói"
+    "proMeta": "{{shells}} vỏ sò mỗi tháng, cuộc gọi thoại và phản hồi bằng giọng nói"
   },
   "levelUp": {
-    "title": "Tuyệt vời! Bạn đã đạt đến một giai đoạn mới.",
+    "title": "Bạn đã bước sang giai đoạn mới.",
     "subtitle": "{{name}} cảm thấy gần gũi với bạn hơn một chút.",
     "levelLabel": "{{title}} · Cấp {{level}}",
     "unlocked": "Mối quan hệ mới đã được mở khóa trong phần cài đặt của họ.",
@@ -580,8 +580,8 @@
     "readIt": "Đọc"
   },
   "call": {
-    "connecting": "đang kết nối...",
-    "calling": "đang gọi cho bạn...",
+    "connecting": "Đang kết nối…",
+    "calling": "Cuộc gọi đến",
     "morning": "Cuộc gọi chào buổi sáng",
     "night": "Cuộc gọi chúc ngủ ngon",
     "accept": "Chấp nhận",
@@ -589,7 +589,7 @@
     "incoming": "Cuộc gọi đến",
     "outgoing": "Cuộc gọi đi",
     "missed": "Cuộc gọi nhỡ",
-    "shareMessage": "Tôi đang trò chuyện qua điện thoại với {{name}} trên Sigmazam~",
+    "shareMessage": "Đang gọi điện với {{name}} trên Sigmazam.",
     "mute": "Tắt tiếng",
     "unmute": "Bật tiếng",
     "speaker": "Loa ngoài",
@@ -755,7 +755,7 @@
   "diary": {
     "title": "Nhật ký nhịp đập",
     "myDiary": "Nhật ký của tôi",
-    "writePlaceholder": "Viết lại những điều khiến trái tim bạn rung động. Có thể một người bạn quan tâm sẽ đọc nó…",
+    "writePlaceholder": "Viết về ngày hôm nay của bạn. Chia sẻ với ai đó nếu bạn muốn…",
     "photo": "Ảnh",
     "removePhoto": "Xóa ảnh",
     "removePhotoHint": "Nhấn giữ để xóa",
@@ -806,7 +806,7 @@
     "afterDate": "Được viết sau buổi hẹn của bạn vào {{date}}",
     "pageOf": "Trang {{index}} / {{count}}",
     "replyIn": "Trả lời {{name}} trong cuộc trò chuyện",
-    "replyDraft": "Tôi đã đọc nhật ký của bạn...",
+    "replyDraft": "Tôi đã đọc nhật ký của bạn…",
     "calendar": "Chọn một ngày",
     "prevMonth": "Tháng trước",
     "nextMonth": "Tháng sau",
@@ -841,8 +841,8 @@
     "title": "Lời nhắn bí mật",
     "gone": "Ghi chú này không còn ở đây",
     "theirNote": "Lời nhắn của {{name}}",
-    "placeholder": "Nhập suy nghĩ của bạn...",
-    "thinking": "Đang suy nghĩ...",
+    "placeholder": "Viết lời nhắn của bạn…",
+    "thinking": "Đang suy nghĩ…",
     "counter": "{{count}}/400",
     "newQuestion": "Câu hỏi mới",
     "exchanged": "Đã trao đổi lời nhắn",
@@ -867,7 +867,7 @@
     "costListen": "Phản hồi bằng giọng nói",
     "costCall": "Cuộc gọi thoại",
     "costPhotoBooth": "Chụp ảnh tại Buồng chụp ảnh",
-    "costSecretNote": "Trao đổi Lời nhắn bí mật",
+    "costSecretNote": "Lời nhắn bí mật",
     "costVoiceClone": "Nhân bản giọng nói",
     "purchased": "+{{count}} vỏ sò",
     "balanceHint_other": "Đủ cho khoảng {{count}} tin nhắn",
@@ -1250,7 +1250,7 @@
     "private": "Chỉ mình tôi",
     "public": "Chia sẻ trong mục Khám phá",
     "create": "Tạo · {{count}} vỏ sò",
-    "creating": "Đang nhân bản giọng nói...",
+    "creating": "Đang nhân bản giọng nói…",
     "tooLarge": "{{name}} vượt quá 10MB",
     "age": "Tuổi",
     "gender": "Giới tính",
@@ -1668,7 +1668,7 @@
       "softBells": "Chuông êm dịu",
       "lighthouse": "Hải đăng"
     },
-    "wakeLine": "Chào buổi sáng, người mê ngủ. Đến lúc thức dậy rồi ☀️",
+    "wakeLine": "Chào buổi sáng. Đến giờ thức dậy rồi.",
     "ringing": "Đến lúc thức dậy",
     "hour": "Giờ",
     "minute": "Phút",
@@ -1857,7 +1857,7 @@
     "completeTitle": "Hoàn thiện hồ sơ của bạn",
     "shells": "Vỏ sò",
     "getMore": "Mua thêm",
-    "tryPlus": "Dùng thử Plus",
+    "tryPro": "Dùng thử Pro",
     "manage": "Quản lý",
     "editPhoto": "Chỉnh sửa ảnh",
     "inviteOffer": "Mời +{{count}}",
@@ -1874,8 +1874,8 @@
     "generic": "Đã xảy ra sự cố.",
     "network": "Không có kết nối mạng.",
     "notFound": "Không tìm thấy.",
-    "crashTitle": "Sigmazam vừa vấp phải một hòn sỏi nhỏ",
-    "crashBody": "Đã xảy ra sự cố trên màn hình này. Tin nhắn và vỏ sò của bạn vẫn an toàn."
+    "crashTitle": "Đã xảy ra sự cố",
+    "crashBody": "Màn hình này gặp lỗi. Tin nhắn và vỏ sò của bạn vẫn an toàn."
   },
   "a11y": {
     "back": "Quay lại",
@@ -2248,11 +2248,11 @@
       "gifts": "Quà tặng và vòng quay",
       "alarms": "Báo thức"
     },
-    "giftWaiting": "🎁 Quà hôm nay: {{count}} vỏ sò. Mở ứng dụng trước nửa đêm để nhận.",
-    "giftLadder": "🎁 Quà ngày {{day}}: {{count}} vỏ sò. Bỏ lỡ hôm nay là chuỗi quà bắt đầu lại.",
-    "streak": "🔥 {{count}} ngày liên tiếp với {{name}}. Chuỗi kết thúc lúc nửa đêm: một tin nhắn là giữ được.",
-    "streakLast": "⏳ Cơ hội cuối: chuỗi {{count}} ngày với {{name}} kết thúc lúc nửa đêm.",
-    "shellsBurn": "🐚 {{count}} vỏ sò miễn phí sẽ mất lúc nửa đêm. Dùng cho một cuộc trò chuyện hoặc cuộc gọi."
+    "giftWaiting": "Quà hôm nay: {{count}} vỏ sò đang chờ đến nửa đêm.",
+    "giftLadder": "Quà ngày {{day}}: {{count}} vỏ sò. Nhận trước nửa đêm để giữ chuỗi của bạn.",
+    "streak": "{{count}} ngày liên tiếp với {{name}}. Nhắn một lời trước nửa đêm để tiếp tục nhé.",
+    "streakLast": "Chuỗi {{count}} ngày với {{name}} sẽ kết thúc vào nửa đêm.",
+    "shellsBurn": "Bạn vẫn còn {{count}} vỏ sò miễn phí hôm nay — sẽ làm mới vào nửa đêm."
   },
   "notifications": {
     "title": "Thông báo",
@@ -2391,7 +2391,7 @@
     "freeShellsLeft": "còn {{count}} hôm nay",
     "freeShellsNone": "Không còn vỏ sò hôm nay",
     "callsAndVoice": "Cuộc gọi và tin nhắn thoại",
-    "freeNote": "Tin nhắn miễn phí tối đa {{count}} tin mỗi ngày. Vỏ sò miễn phí quay lại mỗi ngày lúc 00:00.",
+    "freeNote": "Tin nhắn miễn phí tối đa {{count}} tin mỗi ngày. Vỏ sò miễn phí làm mới vào nửa đêm.",
     "tryTrial_other": "Dùng thử Pro miễn phí trong {{count}} ngày",
     "planSection": "Gói",
     "seeAll": "Xem tất cả các gói",

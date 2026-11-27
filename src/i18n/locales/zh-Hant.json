@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "與你喜愛的角色在一起"
+    "tagline": "隨時都有人陪你聊聊"
   },
   "common": {
     "ok": "好",
@@ -22,8 +22,8 @@
     "confirm": "確認",
     "retry": "重試",
     "seeAll": "查看全部",
-    "loading": "載入中...",
-    "thinking": "思考中...",
+    "loading": "載入中…",
+    "thinking": "思考中…",
     "today": "今天",
     "yesterday": "昨天",
     "tomorrow": "明天",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "貝殼商店",
+      "shellStore": "商店",
       "dating": "約會",
       "heartbeatDiary": "心動日記",
       "photoBooth": "拍照館",
       "myContacts": "通訊錄",
       "radio": "廣播",
       "freeGifts": "免費禮物",
-      "callHistory": "通話記錄",
+      "callHistory": "通話",
       "bulletinBoard": "留言板",
       "bedtime": "哄睡"
     },
@@ -521,7 +521,7 @@
     "rewindToHere": "倒退至此處",
     "pin": "釘選至回憶",
     "unpin": "取消釘選",
-    "pinnedToast": "已釘選至故事",
+    "pinnedToast": "已釘選至回憶",
     "rewind": "倒退",
     "rewindTitle_other": "要倒轉嗎？之後的 {{count}} 則訊息會移到分支",
     "deleteMessage": "僅為我刪除",
@@ -557,7 +557,7 @@
     "body_other": "此操作需要{{count}}個貝殼。請選擇取得方式：",
     "chatBody": "你的訊息已暫存。請選擇取得貝殼的方式以繼續：",
     "freeUsedBody": "今天的免費訊息已用完。你的訊息已暫存。請選擇取得貝殼的方式以繼續：",
-    "freeBack": "免費訊息將於明天 00:00 恢復。",
+    "freeBack": "免費訊息將於午夜重置。",
     "planChatMeta": "不限每日則數聊天",
     "spin": "免費轉盤",
     "spinMeta": "最高可得 +{{count}} 貝殼",
@@ -566,12 +566,12 @@
     "getShellsStarter": "新人首購禮包 {{count}}個僅需 {{price}}",
     "getBasic": "升級 Basic",
     "planMeta": "每月領取貝殼",
-    "comeBack": "免費貝殼將於明日00:00刷新。",
+    "comeBack": "免費貝殼將於午夜重置。",
     "getPro": "升級 Pro",
-    "proMeta": "每月5,000貝殼、專屬通話與語音回覆"
+    "proMeta": "每月 {{shells}} 貝殼、通話與語音回覆"
   },
   "levelUp": {
-    "title": "太棒了！你們的關係邁入了新階段。",
+    "title": "你們邁入了新階段。",
     "subtitle": "{{name}}感覺與你更親近了。",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "角色設定中已解鎖新的關係選項。",
@@ -580,8 +580,8 @@
     "readIt": "閱讀"
   },
   "call": {
-    "connecting": "正在連線...",
-    "calling": "正在致電給你...",
+    "connecting": "正在連線…",
+    "calling": "來電",
     "morning": "早安電話",
     "night": "晚安電話",
     "accept": "接聽",
@@ -589,7 +589,7 @@
     "incoming": "來電",
     "outgoing": "撥出",
     "missed": "未接",
-    "shareMessage": "我正在Sigmazam上與{{name}}語音通話中~",
+    "shareMessage": "正在 Sigmazam 上與 {{name}} 通話。",
     "mute": "靜音",
     "unmute": "取消靜音",
     "speaker": "擴音",
@@ -755,7 +755,7 @@
   "diary": {
     "title": "心動日記",
     "myDiary": "我的日記",
-    "writePlaceholder": "記錄下讓你怦然心動的瞬間。或許你在乎的人正期待著閱讀它…",
+    "writePlaceholder": "寫下你今天的日常。想分享的話，也可以讓在乎的人讀到…",
     "photo": "相片",
     "removePhoto": "移除相片",
     "removePhotoHint": "長按移除",
@@ -806,7 +806,7 @@
     "afterDate": "寫於{{date}}約會之後",
     "pageOf": "第{{index}}頁 / 共{{count}}頁",
     "replyIn": "在對話中回覆{{name}}",
-    "replyDraft": "我讀了你的日記...",
+    "replyDraft": "我讀了你的日記…",
     "calendar": "選擇日期",
     "prevMonth": "上個月",
     "nextMonth": "下個月",
@@ -841,8 +841,8 @@
     "title": "秘密便籤",
     "gone": "此便籤已不存在",
     "theirNote": "{{name}}的便籤",
-    "placeholder": "寫下你的心緒...",
-    "thinking": "思考中...",
+    "placeholder": "寫下你的便籤…",
+    "thinking": "思考中…",
     "counter": "{{count}}/400",
     "newQuestion": "新問題",
     "exchanged": "便籤已交換",
@@ -867,7 +867,7 @@
     "costListen": "語音回覆",
     "costCall": "語音通話",
     "costPhotoBooth": "拍照館合影",
-    "costSecretNote": "交換秘密便籤",
+    "costSecretNote": "秘密便籤",
     "costVoiceClone": "語音複製",
     "purchased": "+{{count}} 貝殼",
     "balanceHint_other": "大約可發送{{count}}條訊息",
@@ -1250,7 +1250,7 @@
     "private": "僅自己可見",
     "public": "發布至「探索」公開庫",
     "create": "建立 · {{count}}個貝殼",
-    "creating": "語音複製中...",
+    "creating": "語音複製中…",
     "tooLarge": "{{name}}已超過10MB限制",
     "age": "年齡",
     "gender": "性別",
@@ -1668,7 +1668,7 @@
       "softBells": "清脆銅鈴",
       "lighthouse": "遠方燈塔"
     },
-    "wakeLine": "早安，小懶蟲。該起床迎接新的一天囉 ☀️",
+    "wakeLine": "早安，該起床了。",
     "ringing": "起床時間到囉",
     "hour": "時",
     "minute": "分",
@@ -1857,7 +1857,7 @@
     "completeTitle": "完善你的個人資料",
     "shells": "貝殼",
     "getMore": "購買更多",
-    "tryPlus": "試用 Plus",
+    "tryPro": "試用 Pro",
     "manage": "方案管理",
     "editPhoto": "更換頭像",
     "inviteOffer": "每邀好友 +{{count}}",
@@ -1874,8 +1874,8 @@
     "generic": "發生了一點意外狀況。",
     "network": "無網路連線。",
     "notFound": "未找到相關內容。",
-    "crashTitle": "Sigmazam不小心被小石子絆了一下",
-    "crashBody": "當前畫面出現了一點小差錯。請放心，你的對話記錄與貝殼資產皆安然無恙。"
+    "crashTitle": "發生了一點問題",
+    "crashBody": "這個畫面出現了錯誤。你的對話紀錄與貝殼都很安全。"
   },
   "a11y": {
     "back": "返回上一頁",
@@ -2248,11 +2248,11 @@
       "gifts": "福利與轉盤領取",
       "alarms": "每日晨喚鬧鐘"
     },
-    "giftWaiting": "🎁 今日禮物：{{count}} 個貝殼。午夜前打開 App 領取。",
-    "giftLadder": "🎁 第 {{day}} 天禮物：{{count}} 個貝殼。今天錯過就要從頭開始。",
-    "streak": "🔥 和 {{name}} 連續 {{count}} 天。連續紀錄在午夜中斷，一則訊息就能延續。",
-    "streakLast": "⏳ 最後機會：你和 {{name}} 的 {{count}} 天連續紀錄將在午夜中斷。",
-    "shellsBurn": "🐚 {{count}} 個免費貝殼會在午夜消失。拿去聊天或通話吧。"
+    "giftWaiting": "今日禮物：{{count}} 個貝殼，午夜前皆可領取。",
+    "giftLadder": "第 {{day}} 天禮物：{{count}} 個貝殼。午夜前領取即可延續連續紀錄。",
+    "streak": "和 {{name}} 連續 {{count}} 天了。午夜前打聲招呼就能延續紀錄。",
+    "streakLast": "你和 {{name}} 的 {{count}} 天連續紀錄將於午夜結束。",
+    "shellsBurn": "今天還有 {{count}} 個免費貝殼，將於午夜重置。"
   },
   "notifications": {
     "title": "推播通知",
@@ -2391,7 +2391,7 @@
     "freeShellsLeft": "今日尚餘 {{count}} 個",
     "freeShellsNone": "今日免費配額已用完",
     "callsAndVoice": "通話與原聲回覆權益",
-    "freeNote": "每天前 {{count}} 則訊息免費。每日免費貝殼額度於午夜00:00準時刷新補充。",
+    "freeNote": "每天前 {{count}} 則訊息免費。免費貝殼每天於午夜重置。",
     "tryTrial_other": "免費體驗 Pro {{count}} 天",
     "planSection": "方案會員中心",
     "seeAll": "瀏覽全部訂閱方案",

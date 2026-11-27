@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "Mit deiner Lieblingsfigur"
+    "tagline": "Immer jemand zum Reden"
   },
   "common": {
     "ok": "OK",
@@ -22,8 +22,8 @@
     "confirm": "Bestätigen",
     "retry": "Wiederholen",
     "seeAll": "Alle ansehen",
-    "loading": "Laden...",
-    "thinking": "Denkt nach...",
+    "loading": "Laden…",
+    "thinking": "Denkt nach…",
     "today": "Heute",
     "yesterday": "Gestern",
     "tomorrow": "Morgen",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "Muschel-Shop",
-      "dating": "Dating",
+      "shellStore": "Shop",
+      "dating": "Dates",
       "heartbeatDiary": "Herzschlag-Tagebuch",
       "photoBooth": "Fotobox",
-      "myContacts": "Meine Kontakte",
+      "myContacts": "Kontakte",
       "radio": "Radio",
       "freeGifts": "Gratis-Geschenke",
-      "callHistory": "Anrufverlauf",
+      "callHistory": "Anrufe",
       "bulletinBoard": "Pinnwand",
       "bedtime": "Schlafenszeit"
     },
@@ -379,7 +379,7 @@
     "inputPlaceholder": "Nachricht",
     "read": "Gelesen",
     "delivered": "Zugestellt",
-    "sending": "Senden...",
+    "sending": "Senden…",
     "voiceConsent": {
       "title": "Darf man deine Stimme hören?",
       "body": "Um eine Sprachnachricht zu verstehen, sendet dein Charakter sie an unseren KI-Dienst Google Gemini."
@@ -534,7 +534,7 @@
     "rewindToHere": "Bis hierhin zurückspulen",
     "pin": "In Erinnerungen pinnen",
     "unpin": "Lösen",
-    "pinnedToast": "An Geschichte gepinnt",
+    "pinnedToast": "In Erinnerungen gepinnt",
     "rewind": "Zurückspulen",
     "rewindTitle_one": "Zurückspulen? 1 spätere Nachricht kommt zu Verzweigungen",
     "rewindTitle_other": "Zurückspulen? {{count}} spätere Nachrichten kommen zu Verzweigungen",
@@ -573,7 +573,7 @@
     "body_other": "Du brauchst {{count}} Muscheln dafür. Wähle deinen Weg:",
     "chatBody": "Deine Nachricht ist gespeichert. Wähle, wie du weitersprechen willst:",
     "freeUsedBody": "Die Gratis-Nachrichten für heute sind aufgebraucht. Deine Nachricht ist gespeichert. Wähle, wie du weitersprechen willst:",
-    "freeBack": "Gratis-Nachrichten gibt es morgen ab 00:00 Uhr wieder.",
+    "freeBack": "Gratis-Nachrichten werden um Mitternacht zurückgesetzt.",
     "planChatMeta": "Ohne Tageslimit schreiben",
     "spin": "Glücksrad",
     "spinMeta": "Bis zu +{{count}} Muscheln",
@@ -582,12 +582,12 @@
     "getShellsStarter": "Erstes Paket: {{count}} für {{price}}",
     "getBasic": "Basic holen",
     "planMeta": "Jeden Monat Muscheln",
-    "comeBack": "Gratis-Muscheln gibt es morgen ab 00:00 Uhr.",
+    "comeBack": "Gratis-Muscheln werden um Mitternacht zurückgesetzt.",
     "getPro": "Pro holen",
-    "proMeta": "5.000 Muscheln monatlich, Anrufe und Sprachnachrichten"
+    "proMeta": "{{shells}} Muscheln monatlich, Anrufe und Sprachnachrichten"
   },
   "levelUp": {
-    "title": "Tada! Ihr habt eine neue Stufe erreicht.",
+    "title": "Ihr habt eine neue Stufe erreicht.",
     "subtitle": "{{name}} fühlt sich dir noch näher.",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "Neue Beziehungsarten in den Einstellungen freigeschaltet.",
@@ -596,8 +596,8 @@
     "readIt": "Lesen"
   },
   "call": {
-    "connecting": "verbindet...",
-    "calling": "ruft dich an...",
+    "connecting": "Verbindet…",
+    "calling": "Eingehender Anruf",
     "morning": "Guten-Morgen-Anruf",
     "night": "Gute-Nacht-Anruf",
     "accept": "Annehmen",
@@ -605,7 +605,7 @@
     "incoming": "Eingehend",
     "outgoing": "Ausgehend",
     "missed": "Verpasst",
-    "shareMessage": "Ich telefoniere gerade mit {{name}} auf Sigmazam~",
+    "shareMessage": "Gerade im Anruf mit {{name}} auf Sigmazam.",
     "mute": "Stumm",
     "unmute": "Laut",
     "speaker": "Lautsprecher",
@@ -773,7 +773,7 @@
   "diary": {
     "title": "Herzschlag-Tagebuch",
     "myDiary": "Mein Tagebuch",
-    "writePlaceholder": "Schreib auf, was dein Herz berührt hat. Vielleicht liest es jemand, der dir wichtig ist…",
+    "writePlaceholder": "Schreib über deinen Tag. Wenn du magst, teile ihn mit jemandem…",
     "photo": "Foto",
     "removePhoto": "Foto entfernen",
     "removePhotoHint": "Lange drücken zum Entfernen",
@@ -827,7 +827,7 @@
     "afterDate": "Geschrieben nach eurem Date am {{date}}",
     "pageOf": "Seite {{index}} von {{count}}",
     "replyIn": "{{name}} im Chat antworten",
-    "replyDraft": "Ich habe dein Tagebuch gelesen...",
+    "replyDraft": "Ich habe dein Tagebuch gelesen…",
     "calendar": "Tag wählen",
     "prevMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat",
@@ -862,8 +862,8 @@
     "title": "Geheimnotiz",
     "gone": "Diese Notiz existiert nicht mehr",
     "theirNote": "Notiz von {{name}}",
-    "placeholder": "Schreibe deinen Gedanken...",
-    "thinking": "Denkt nach...",
+    "placeholder": "Schreib deine Notiz…",
+    "thinking": "Denkt nach…",
     "counter": "{{count}}/400",
     "newQuestion": "Neue Frage",
     "exchanged": "Notizen getauscht",
@@ -888,7 +888,7 @@
     "costListen": "Sprachantworten",
     "costCall": "Sprachanrufe",
     "costPhotoBooth": "Fotobox-Bild",
-    "costSecretNote": "Geheimnotiz-Austausch",
+    "costSecretNote": "Geheimnotiz",
     "costVoiceClone": "Stimmenklonen",
     "purchased": "+{{count}} Muscheln",
     "balanceHint_one": "Reicht für ca. {{count}} Nachricht",
@@ -1279,7 +1279,7 @@
     "private": "Nur ich",
     "public": "In Finden teilen",
     "create": "Erstellen · {{count}} Muscheln",
-    "creating": "Klone Stimme...",
+    "creating": "Klone Stimme…",
     "tooLarge": "{{name}} ist über 10 MB groß",
     "age": "Alter",
     "gender": "Geschlecht",
@@ -1444,7 +1444,7 @@
     "secretPlaceholder": "Etwas, das er dir erst später erzählt"
   },
   "dating": {
-    "title": "Dating",
+    "title": "Dates",
     "walletTitle": "Dates",
     "kindDate": "Date",
     "opensAt": "Öffnet ab",
@@ -1699,7 +1699,7 @@
       "softBells": "Sanfte Glocken",
       "lighthouse": "Leuchtturm"
     },
-    "wakeLine": "Guten Morgen, Schlafmütze. Zeit aufzustehen ☀️",
+    "wakeLine": "Guten Morgen. Zeit aufzustehen.",
     "ringing": "Zeit zum Aufstehen",
     "hour": "Stunde",
     "minute": "Minute",
@@ -1895,7 +1895,7 @@
     "completeTitle": "Profil vervollständigen",
     "shells": "Muscheln",
     "getMore": "Mehr holen",
-    "tryPlus": "Plus testen",
+    "tryPro": "Pro testen",
     "manage": "Verwalten",
     "editPhoto": "Foto ändern",
     "inviteOffer": "Einladen +{{count}}",
@@ -1912,8 +1912,8 @@
     "generic": "Etwas ist schiefgelaufen.",
     "network": "Keine Verbindung.",
     "notFound": "Nicht gefunden.",
-    "crashTitle": "Sigmazam ist gestolpert",
-    "crashBody": "Ein Fehler ist aufgetreten. Deine Chats und Muscheln sind sicher."
+    "crashTitle": "Etwas ist schiefgelaufen",
+    "crashBody": "Auf diesem Bildschirm gab es ein Problem. Deine Chats und Muscheln sind sicher."
   },
   "a11y": {
     "back": "Zurück",
@@ -2288,11 +2288,11 @@
       "gifts": "Geschenke und Drehs",
       "alarms": "Wecker"
     },
-    "giftWaiting": "🎁 Dein Geschenk heute: {{count}} Muscheln. Öffne die App vor Mitternacht.",
-    "giftLadder": "🎁 Geschenk Tag {{day}}: {{count}} Muscheln. Verpasst du heute, beginnt die Leiter neu.",
-    "streak": "🔥 {{count}} Tage am Stück mit {{name}}. Die Serie endet um Mitternacht: eine Nachricht hält sie.",
-    "streakLast": "⏳ Letzte Chance: deine Serie mit {{name}} ({{count}} Tage) endet um Mitternacht.",
-    "shellsBurn": "🐚 {{count}} Gratis-Muscheln verfallen um Mitternacht. Nutze sie für einen Chat oder einen Anruf."
+    "giftWaiting": "Dein Geschenk heute: {{count}} Muscheln warten bis Mitternacht.",
+    "giftLadder": "Geschenk Tag {{day}}: {{count}} Muscheln. Hol es dir vor Mitternacht für deine Serie.",
+    "streak": "{{count}} Tage am Stück mit {{name}}. Schreib kurz vor Mitternacht, damit die Serie weitergeht.",
+    "streakLast": "Deine {{count}}-Tage-Serie mit {{name}} endet um Mitternacht.",
+    "shellsBurn": "Du hast heute noch {{count}} Gratis-Muscheln – sie werden um Mitternacht zurückgesetzt."
   },
   "notifications": {
     "title": "Mitteilungen",
@@ -2436,7 +2436,7 @@
     "freeShellsLeft": "Noch {{count}} heute übrig",
     "freeShellsNone": "Heute keine mehr übrig",
     "callsAndVoice": "Anrufe und Sprachantworten",
-    "freeNote": "Nachrichten sind bis zu {{count}} pro Tag gratis. Gratis-Muscheln gibt es jeden Tag ab 00:00 Uhr neu.",
+    "freeNote": "Nachrichten sind bis zu {{count}} pro Tag gratis. Gratis-Muscheln werden um Mitternacht zurückgesetzt.",
     "tryTrial_one": "Pro {{count}} Tag gratis testen",
     "tryTrial_other": "Pro {{count}} Tage gratis testen",
     "planSection": "Abo",

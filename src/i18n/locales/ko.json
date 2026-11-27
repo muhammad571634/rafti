@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "가장 좋아하는 캐릭터와 함께"
+    "tagline": "언제든 이야기할 누군가"
   },
   "common": {
     "ok": "확인",
@@ -22,8 +22,8 @@
     "confirm": "확인",
     "retry": "다시 시도",
     "seeAll": "전체 보기",
-    "loading": "불러오는 중...",
-    "thinking": "생각하는 중...",
+    "loading": "불러오는 중…",
+    "thinking": "생각하는 중…",
     "today": "오늘",
     "yesterday": "어제",
     "tomorrow": "내일",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "조개 상점",
+      "shellStore": "스토어",
       "dating": "데이트",
       "heartbeatDiary": "두근두근 일기",
       "photoBooth": "포토부스",
-      "myContacts": "내 연락처",
+      "myContacts": "연락처",
       "radio": "라디오",
       "freeGifts": "무료 선물",
-      "callHistory": "통화 기록",
+      "callHistory": "통화",
       "bulletinBoard": "게시판",
       "bedtime": "취침 시간"
     },
@@ -521,7 +521,7 @@
     "rewindToHere": "여기로 되돌리기",
     "pin": "추억에 고정",
     "unpin": "고정 해제",
-    "pinnedToast": "스토리에 고정되었습니다",
+    "pinnedToast": "추억에 고정되었습니다",
     "rewind": "되돌리기",
     "rewindTitle_other": "되감을까요? 이후 메시지 {{count}}개는 분기로 가요",
     "deleteMessage": "나에게서만 삭제",
@@ -557,7 +557,7 @@
     "body_other": "이 기능을 사용하려면 {{count}} 조개가 필요합니다. 충전 방법을 선택하세요:",
     "chatBody": "메시지가 저장되었습니다. 대화를 이어갈 방법을 선택하세요:",
     "freeUsedBody": "오늘의 무료 메시지를 모두 썼어요. 메시지가 저장되었습니다. 대화를 이어갈 방법을 선택하세요:",
-    "freeBack": "무료 메시지는 내일 00:00에 다시 채워져요.",
+    "freeBack": "무료 메시지는 자정에 초기화됩니다.",
     "planChatMeta": "하루 제한 없이 대화",
     "spin": "무료 룰렛",
     "spinMeta": "최대 +{{count}} 조개",
@@ -566,12 +566,12 @@
     "getShellsStarter": "첫 패키지 {{count}}개 {{price}}",
     "getBasic": "Basic 구독",
     "planMeta": "매달 조개 지급",
-    "comeBack": "무료 조개는 내일 00:00에 충전됩니다.",
+    "comeBack": "무료 조개는 자정에 초기화됩니다.",
     "getPro": "Pro 구독",
-    "proMeta": "매달 5,000 조개, 음성 통화 및 음성 답변"
+    "proMeta": "매달 {{shells}} 조개, 음성 통화 및 음성 답변"
   },
   "levelUp": {
-    "title": "축하합니다! 새로운 단계에 도달했습니다.",
+    "title": "새로운 단계에 도달했습니다.",
     "subtitle": "{{name}}와(과) 조금 더 가까워졌습니다.",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "설정에서 새로운 관계 설정을 이용할 수 있습니다.",
@@ -580,8 +580,8 @@
     "readIt": "읽기"
   },
   "call": {
-    "connecting": "연결 중...",
-    "calling": "전화 거는 중...",
+    "connecting": "연결 중…",
+    "calling": "수신 전화",
     "morning": "모닝콜",
     "night": "취침 전 통화",
     "accept": "받기",
@@ -589,7 +589,7 @@
     "incoming": "수신",
     "outgoing": "발신",
     "missed": "부재중",
-    "shareMessage": "Sigmazam에서 {{name}}와(과) 통화 중이에요~",
+    "shareMessage": "Sigmazam에서 {{name}}와 통화 중이에요.",
     "mute": "음소거",
     "unmute": "음소거 해제",
     "speaker": "스피커폰",
@@ -755,7 +755,7 @@
   "diary": {
     "title": "두근두근 일기",
     "myDiary": "나의 일기",
-    "writePlaceholder": "마음이 설렜던 순간을 적어보세요. 소중한 사람이 읽어줄지도 몰라요…",
+    "writePlaceholder": "오늘 있었던 일을 적어보세요. 원하면 누군가와 나눌 수 있어요…",
     "photo": "사진",
     "removePhoto": "사진 삭제",
     "removePhotoHint": "길게 눌러 삭제",
@@ -806,7 +806,7 @@
     "afterDate": "{{date}} 데이트 후 작성됨",
     "pageOf": "{{count}}페이지 중 {{index}}페이지",
     "replyIn": "대화방에서 {{name}}에게 답장하기",
-    "replyDraft": "네 일기 읽었어...",
+    "replyDraft": "네 일기 읽었어…",
     "calendar": "날짜 선택",
     "prevMonth": "이전 달",
     "nextMonth": "다음 달",
@@ -841,8 +841,8 @@
     "title": "비밀 쪽지",
     "gone": "더 이상 존재하지 않는 쪽지입니다",
     "theirNote": "{{name}}의 쪽지",
-    "placeholder": "생각을 입력하세요...",
-    "thinking": "생각하는 중...",
+    "placeholder": "쪽지를 적어보세요…",
+    "thinking": "생각하는 중…",
     "counter": "{{count}}/400",
     "newQuestion": "새로운 질문",
     "exchanged": "쪽지를 교환했습니다",
@@ -867,7 +867,7 @@
     "costListen": "음성 답변",
     "costCall": "음성 통화",
     "costPhotoBooth": "포토부스 촬영",
-    "costSecretNote": "비밀 쪽지 교환",
+    "costSecretNote": "비밀 쪽지",
     "costVoiceClone": "음성 복제",
     "purchased": "+{{count}} 조개",
     "balanceHint_other": "메시지 약 {{count}}건 분량",
@@ -1250,7 +1250,7 @@
     "private": "나만 보기",
     "public": "찾기에서 공개",
     "create": "만들기 · {{count}} 조개",
-    "creating": "목소리 복제 중...",
+    "creating": "목소리 복제 중…",
     "tooLarge": "{{name}}의 크기가 10MB를 초과합니다",
     "age": "나이",
     "gender": "성별",
@@ -1668,7 +1668,7 @@
       "softBells": "부드러운 종소리",
       "lighthouse": "등대"
     },
-    "wakeLine": "좋은 아침, 잠꾸러기야. 일어날 시간이야 ☀️",
+    "wakeLine": "좋은 아침이에요. 일어날 시간이에요.",
     "ringing": "일어날 시간입니다",
     "hour": "시",
     "minute": "분",
@@ -1857,7 +1857,7 @@
     "completeTitle": "프로필 완성하기",
     "shells": "조개",
     "getMore": "더 충전하기",
-    "tryPlus": "Plus 이용하기",
+    "tryPro": "Pro 이용하기",
     "manage": "관리",
     "editPhoto": "사진 변경",
     "inviteOffer": "초대 시 +{{count}}",
@@ -1874,7 +1874,7 @@
     "generic": "문제가 발생했습니다.",
     "network": "인터넷 연결이 없습니다.",
     "notFound": "찾을 수 없습니다.",
-    "crashTitle": "Sigmazam이 작은 돌부리에 걸려 넘어졌어요",
+    "crashTitle": "문제가 발생했어요",
     "crashBody": "이 화면에서 오류가 발생했습니다. 대화와 조개는 안전하게 보관되어 있습니다."
   },
   "a11y": {
@@ -2248,11 +2248,11 @@
       "gifts": "선물 및 룰렛",
       "alarms": "알람"
     },
-    "giftWaiting": "🎁 오늘의 선물: 조개 {{count}}개. 자정 전에 앱을 열어 받으세요.",
-    "giftLadder": "🎁 {{day}}일차 선물: 조개 {{count}}개. 오늘 놓치면 처음부터 다시 시작해요.",
-    "streak": "🔥 {{name}}와 {{count}}일 연속. 자정에 끊겨요. 메시지 하나면 이어져요.",
-    "streakLast": "⏳ 마지막 기회: {{name}}와의 {{count}}일 연속이 자정에 끊겨요.",
-    "shellsBurn": "🐚 무료 조개 {{count}}개가 자정에 사라져요. 채팅이나 통화에 써 보세요."
+    "giftWaiting": "오늘의 선물: 조개 {{count}}개가 자정까지 기다리고 있어요.",
+    "giftLadder": "{{day}}일차 선물: 조개 {{count}}개. 자정 전에 받아 연속 출석을 이어가세요.",
+    "streak": "{{name}}와 {{count}}일 연속 대화 중이에요. 자정 전에 인사를 건네 이어가세요.",
+    "streakLast": "{{name}}와의 {{count}}일 연속 기록이 자정에 끝나요.",
+    "shellsBurn": "오늘 무료 조개 {{count}}개가 남아 있어요. 자정에 초기화됩니다."
   },
   "notifications": {
     "title": "알림",
@@ -2391,7 +2391,7 @@
     "freeShellsLeft": "오늘 남은 수량 {{count}}개",
     "freeShellsNone": "오늘 남은 수량 없음",
     "callsAndVoice": "통화 및 음성 답변",
-    "freeNote": "메시지는 하루 {{count}}개까지 무료입니다. 무료 조개는 매일 00:00에 다시 충전됩니다.",
+    "freeNote": "메시지는 하루 {{count}}개까지 무료입니다. 무료 조개는 매일 자정에 초기화됩니다.",
     "tryTrial_other": "Pro {{count}}일 무료 체험하기",
     "planSection": "플랜",
     "seeAll": "모든 플랜 보기",

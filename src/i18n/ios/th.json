@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam ใช้ไมโครโฟนเพื่อให้คุณส่งข้อความเสียงและโทรคุยกับเพื่อนได้",
+    "NSCameraUsageDescription": "Sigmazam ใช้กล้องเพื่อให้คุณถ่ายรูปคู่กับเพื่อนในตู้ถ่ายรูปได้",
+    "NSPhotoLibraryUsageDescription": "Sigmazam เข้าถึงรูปภาพของคุณเพื่อส่งรูปในแชทหรือเลือกรูปให้ตัวละคร"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam, arkadaşlarına sesli mesaj gönderebilmen ve sesli arama yapabilmen için mikrofonu kullanır.",
+    "NSCameraUsageDescription": "Sigmazam, Fotoğraf Kabini’nde arkadaşlarınla fotoğraf çekebilmen için kamerayı kullanır.",
+    "NSPhotoLibraryUsageDescription": "Sigmazam, sohbette fotoğraf gönderebilmen veya bir karakter için görsel seçebilmen için fotoğraflarına erişir."
+  }
+}

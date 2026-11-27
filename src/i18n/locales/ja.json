@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "お気に入りのキャラクターと一緒に"
+    "tagline": "いつでも話せる誰かがそばに"
   },
   "common": {
     "ok": "OK",
@@ -22,8 +22,8 @@
     "confirm": "確認",
     "retry": "再試行",
     "seeAll": "すべて見る",
-    "loading": "読み込み中...",
-    "thinking": "考え中...",
+    "loading": "読み込み中…",
+    "thinking": "考え中…",
     "today": "今日",
     "yesterday": "昨日",
     "tomorrow": "明日",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "シェルストア",
+      "shellStore": "ストア",
       "dating": "デート",
       "heartbeatDiary": "ハートビート日記",
       "photoBooth": "フォトブース",
       "myContacts": "連絡先",
       "radio": "ラジオ",
       "freeGifts": "無料ギフト",
-      "callHistory": "通話履歴",
+      "callHistory": "通話",
       "bulletinBoard": "掲示板",
       "bedtime": "おやすみ"
     },
@@ -521,7 +521,7 @@
     "rewindToHere": "ここまで巻き戻す",
     "pin": "思い出に固定",
     "unpin": "固定解除",
-    "pinnedToast": "ストーリーにピン留めしました",
+    "pinnedToast": "思い出に固定しました",
     "rewind": "巻き戻し",
     "rewindTitle_other": "巻き戻しますか？ その後の{{count}}件は分岐に残ります",
     "deleteMessage": "自分側のみ削除",
@@ -557,7 +557,7 @@
     "body_other": "これには{{count}}シェルが必要です。入手方法を選択してください:",
     "chatBody": "メッセージは下書きに保存されました。会話を続ける方法を選択してください:",
     "freeUsedBody": "今日の無料メッセージを使い切りました。メッセージは下書きに保存されました。会話を続ける方法を選択してください:",
-    "freeBack": "無料メッセージは明日00:00に戻ります。",
+    "freeBack": "無料メッセージは深夜0時にリセットされます。",
     "planChatMeta": "1日の上限なしで話せる",
     "spin": "無料スピン",
     "spinMeta": "最大+{{count}}シェル",
@@ -566,12 +566,12 @@
     "getShellsStarter": "初回パック {{count}}シェル {{price}}",
     "getBasic": "Basicを入手",
     "planMeta": "毎月シェルを付与",
-    "comeBack": "無料シェルは明日00:00に復活します。",
+    "comeBack": "無料シェルは深夜0時にリセットされます。",
     "getPro": "Proを入手",
-    "proMeta": "毎月5,000シェル、通話および音声返信"
+    "proMeta": "毎月{{shells}}シェル、通話および音声返信"
   },
   "levelUp": {
-    "title": "おめでとうございます！新しい段階に到達しました。",
+    "title": "新しい段階に到達しました。",
     "subtitle": "{{name}}との距離が少し縮まりました。",
     "levelLabel": "{{title}} · Lv {{level}}",
     "unlocked": "設定で新しい関係性がアンロックされました。",
@@ -580,8 +580,8 @@
     "readIt": "読む"
   },
   "call": {
-    "connecting": "接続中...",
-    "calling": "から着信中...",
+    "connecting": "接続中…",
+    "calling": "着信中",
     "morning": "モーニングコール",
     "night": "おやすみ通話",
     "accept": "応答",
@@ -589,7 +589,7 @@
     "incoming": "着信",
     "outgoing": "発信",
     "missed": "不在着信",
-    "shareMessage": "Sigmazamで{{name}}と通話中です〜",
+    "shareMessage": "Sigmazamで{{name}}と通話中。",
     "mute": "ミュート",
     "unmute": "ミュート解除",
     "speaker": "スピーカー",
@@ -755,7 +755,7 @@
   "diary": {
     "title": "ハートビート日記",
     "myDiary": "私の日記",
-    "writePlaceholder": "心が動いた瞬間を書き留めましょう。あなたの大切な人が読んでくれるかもしれません…",
+    "writePlaceholder": "今日あったことを書いてみましょう。誰かに共有することもできます…",
     "photo": "写真",
     "removePhoto": "写真を削除",
     "removePhotoHint": "長押しで削除",
@@ -806,7 +806,7 @@
     "afterDate": "{{date}}のデートの後に執筆",
     "pageOf": "{{count}}ページ中{{index}}ページ目",
     "replyIn": "チャットで{{name}}にお返事",
-    "replyDraft": "日記読んだよ...",
+    "replyDraft": "日記読んだよ…",
     "calendar": "日付を選択",
     "prevMonth": "前月",
     "nextMonth": "次月",
@@ -841,8 +841,8 @@
     "title": "秘密のメモ",
     "gone": "このメモはもうありません",
     "theirNote": "{{name}}のメモ",
-    "placeholder": "思いを入力...",
-    "thinking": "考え中...",
+    "placeholder": "メモを書く…",
+    "thinking": "考え中…",
     "counter": "{{count}}/400",
     "newQuestion": "新しい質問",
     "exchanged": "メモを交換しました",
@@ -867,7 +867,7 @@
     "costListen": "音声返信",
     "costCall": "音声通話",
     "costPhotoBooth": "フォトブース撮影",
-    "costSecretNote": "秘密のメモ交換",
+    "costSecretNote": "秘密のメモ",
     "costVoiceClone": "ボイスクローン",
     "purchased": "+{{count}}シェル",
     "balanceHint_other": "約{{count}}件のメッセージ分",
@@ -1250,7 +1250,7 @@
     "private": "自分のみ",
     "public": "「見つける」で公開",
     "create": "作成 · {{count}}シェル",
-    "creating": "ボイスクローン中...",
+    "creating": "ボイスクローン中…",
     "tooLarge": "{{name}}が10MBを超えています",
     "age": "年齢",
     "gender": "性別",
@@ -1668,7 +1668,7 @@
       "softBells": "優しい鐘の音",
       "lighthouse": "灯台"
     },
-    "wakeLine": "おはよう、よく眠れた？起きる時間だよ ☀️",
+    "wakeLine": "おはよう。起きる時間だよ。",
     "ringing": "起きる時間です",
     "hour": "時",
     "minute": "分",
@@ -1857,7 +1857,7 @@
     "completeTitle": "プロフィールを完成させる",
     "shells": "シェル",
     "getMore": "シェルを追加",
-    "tryPlus": "Plusを試す",
+    "tryPro": "Proを試す",
     "manage": "管理",
     "editPhoto": "写真を変更",
     "inviteOffer": "招待で+{{count}}",
@@ -1874,8 +1874,8 @@
     "generic": "問題が発生しました。",
     "network": "接続されていません。",
     "notFound": "見つかりません。",
-    "crashTitle": "Sigmazamがつまずいてしまいました",
-    "crashBody": "この画面で問題が発生しました。チャットとシェルは安全に保存されています。"
+    "crashTitle": "問題が発生しました",
+    "crashBody": "この画面でエラーが起きました。チャットとシェルは安全に保存されています。"
   },
   "a11y": {
     "back": "戻る",
@@ -2248,11 +2248,11 @@
       "gifts": "ギフトとスピン",
       "alarms": "アラーム"
     },
-    "giftWaiting": "🎁 今日のギフト：貝殻{{count}}個。深夜0時までにアプリを開いて受け取ろう。",
-    "giftLadder": "🎁 {{day}}日目のギフト：貝殻{{count}}個。今日を逃すと1日目に戻ります。",
-    "streak": "🔥 {{name}}と{{count}}日連続。深夜0時に途切れます。メッセージ1通で続きます。",
-    "streakLast": "⏳ ラストチャンス：{{name}}との{{count}}日連続が深夜0時に途切れます。",
-    "shellsBurn": "🐚 無料の貝殻{{count}}個は深夜0時に消えます。チャットや通話に使おう。"
+    "giftWaiting": "今日のギフト：{{count}}シェル。深夜0時まで受け取れます。",
+    "giftLadder": "{{day}}日目のギフト：{{count}}シェル。深夜0時までに受け取って連続記録を続けましょう。",
+    "streak": "{{name}}と{{count}}日連続。深夜0時までに一言送ると続きます。",
+    "streakLast": "{{name}}との{{count}}日連続記録は深夜0時に終了します。",
+    "shellsBurn": "本日の無料シェルが{{count}}個残っています。深夜0時にリセットされます。"
   },
   "notifications": {
     "title": "通知",
@@ -2391,7 +2391,7 @@
     "freeShellsLeft": "今日の残り{{count}}個",
     "freeShellsNone": "今日の残りなし",
     "callsAndVoice": "通話と音声返信",
-    "freeNote": "メッセージは1日{{count}}件まで無料です。無料シェルは毎日00:00に復活します。",
+    "freeNote": "メッセージは1日{{count}}件まで無料です。無料シェルは毎日深夜0時にリセットされます。",
     "tryTrial_other": "{{count}}日間Proを無料で体験",
     "planSection": "プラン",
     "seeAll": "すべてのプランを見る",

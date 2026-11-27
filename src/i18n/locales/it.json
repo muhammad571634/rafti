@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "Con il tuo personaggio preferito"
+    "tagline": "Sempre qualcuno con cui parlare"
   },
   "common": {
     "ok": "OK",
@@ -22,8 +22,8 @@
     "confirm": "Conferma",
     "retry": "Riprova",
     "seeAll": "Mostra tutti",
-    "loading": "Caricamento...",
-    "thinking": "Sto pensando...",
+    "loading": "Caricamento…",
+    "thinking": "Sto pensando…",
     "today": "Oggi",
     "yesterday": "Ieri",
     "tomorrow": "Domani",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "Negozio conchiglie",
+      "shellStore": "Negozio",
       "dating": "Appuntamenti",
       "heartbeatDiary": "Diario del battito",
       "photoBooth": "Cabina fotografica",
-      "myContacts": "I miei contatti",
+      "myContacts": "Contatti",
       "radio": "Radio",
       "freeGifts": "Regali gratuiti",
-      "callHistory": "Cronologia chiamate",
+      "callHistory": "Chiamate",
       "bulletinBoard": "Bacheca",
       "bedtime": "Buonanotte"
     },
@@ -534,7 +534,7 @@
     "rewindToHere": "Riavvolgi fino a qui",
     "pin": "Fissa nei ricordi",
     "unpin": "Rimuovi",
-    "pinnedToast": "Fissato nella storia",
+    "pinnedToast": "Fissato nei ricordi",
     "rewind": "Riavvolgi",
     "rewindTitle_one": "Riavvolgere? 1 messaggio successivo va nei Rami",
     "rewindTitle_other": "Riavvolgere? {{count}} messaggi successivi vanno nei Rami",
@@ -573,7 +573,7 @@
     "body_other": "Ti servono {{count}} conchiglie per questo. Scegli un modo per ottenerle:",
     "chatBody": "Il tuo messaggio è salvato. Scegli un modo per continuare a chattare:",
     "freeUsedBody": "Hai usato i messaggi gratis di oggi. Il tuo messaggio è salvato. Scegli un modo per continuare a chattare:",
-    "freeBack": "I messaggi gratis tornano domani alle 00:00.",
+    "freeBack": "I messaggi gratis si rinnovano a mezzanotte.",
     "planChatMeta": "Chatta senza limite giornaliero",
     "spin": "Giro gratuito",
     "spinMeta": "Fino a +{{count}} conchiglie",
@@ -582,12 +582,12 @@
     "getShellsStarter": "Primo pacchetto {{count}} per {{price}}",
     "getBasic": "Passa a Basic",
     "planMeta": "Conchiglie ogni mese",
-    "comeBack": "Le conchiglie gratuite tornano domani a mezzanotte.",
+    "comeBack": "Le conchiglie gratuite si rinnovano a mezzanotte.",
     "getPro": "Passa a Pro",
-    "proMeta": "5.000 conchiglie al mese, chiamate e risposte vocali"
+    "proMeta": "{{shells}} conchiglie al mese, chiamate e risposte vocali"
   },
   "levelUp": {
-    "title": "Ta-da! Hai raggiunto un nuovo livello.",
+    "title": "Hai raggiunto un nuovo traguardo.",
     "subtitle": "{{name}} si sente un po' più vicino a te.",
     "levelLabel": "{{title}} · Liv {{level}}",
     "unlocked": "Nuovi livelli di relazione sbloccati nelle impostazioni.",
@@ -596,8 +596,8 @@
     "readIt": "Leggi"
   },
   "call": {
-    "connecting": "connessione in corso...",
-    "calling": "ti sta chiamando...",
+    "connecting": "Connessione…",
+    "calling": "Chiamata in arrivo",
     "morning": "Chiamata del buongiorno",
     "night": "Chiamata della buonanotte",
     "accept": "Rispondi",
@@ -605,7 +605,7 @@
     "incoming": "In arrivo",
     "outgoing": "In uscita",
     "missed": "Persa",
-    "shareMessage": "Sono al telefono con {{name}} su Sigmazam~",
+    "shareMessage": "Al telefono con {{name}} su Sigmazam.",
     "mute": "Silenzia",
     "unmute": "Riattiva",
     "speaker": "Vivavoce",
@@ -773,7 +773,7 @@
   "diary": {
     "title": "Diario del battito",
     "myDiary": "Il mio diario",
-    "writePlaceholder": "Scrivi ciò che ti ha fatto battere il cuore. Forse qualcuno a cui tieni lo leggerà…",
+    "writePlaceholder": "Scrivi della tua giornata. Condividila con qualcuno se ti va…",
     "photo": "Foto",
     "removePhoto": "Rimuovi foto",
     "removePhotoHint": "Tieni premuto per rimuovere",
@@ -827,7 +827,7 @@
     "afterDate": "Scritto dopo l'appuntamento del {{date}}",
     "pageOf": "Pagina {{index}} di {{count}}",
     "replyIn": "Rispondi a {{name}} in chat",
-    "replyDraft": "Ho letto il tuo diario...",
+    "replyDraft": "Ho letto il tuo diario…",
     "calendar": "Scegli un giorno",
     "prevMonth": "Mese precedente",
     "nextMonth": "Mese successivo",
@@ -862,8 +862,8 @@
     "title": "Nota segreta",
     "gone": "Questa nota non è più disponibile",
     "theirNote": "Nota di {{name}}",
-    "placeholder": "Scrivi la tua idea...",
-    "thinking": "Sto pensando...",
+    "placeholder": "Scrivi il tuo biglietto…",
+    "thinking": "Sto pensando…",
     "counter": "{{count}}/400",
     "newQuestion": "Nuova domanda",
     "exchanged": "Note scambiate",
@@ -888,7 +888,7 @@
     "costListen": "Risposte vocali",
     "costCall": "Chiamate vocali",
     "costPhotoBooth": "Scatto cabina fotografica",
-    "costSecretNote": "Scambio di note segrete",
+    "costSecretNote": "Biglietto segreto",
     "costVoiceClone": "Clonazione vocale",
     "purchased": "+{{count}} conchiglie",
     "balanceHint_one": "Sufficiente per circa {{count}} messaggio",
@@ -1279,7 +1279,7 @@
     "private": "Solo io",
     "public": "Condividi in Trova",
     "create": "Crea · {{count}} conchiglie",
-    "creating": "Clonazione voce in corso...",
+    "creating": "Clonazione voce in corso…",
     "tooLarge": "{{name}} supera i 10MB",
     "age": "Età",
     "gender": "Genere",
@@ -1699,7 +1699,7 @@
       "softBells": "Campanelle dolci",
       "lighthouse": "Faro"
     },
-    "wakeLine": "Buongiorno, dormiglione. È ora di alzarsi ☀️",
+    "wakeLine": "Buongiorno. È ora di svegliarsi.",
     "ringing": "È ora di alzarsi",
     "hour": "Ora",
     "minute": "Minuto",
@@ -1895,7 +1895,7 @@
     "completeTitle": "Completa il tuo profilo",
     "shells": "Conchiglie",
     "getMore": "Ottieni di più",
-    "tryPlus": "Prova Plus",
+    "tryPro": "Prova Pro",
     "manage": "Gestisci",
     "editPhoto": "Modifica foto",
     "inviteOffer": "Invita +{{count}}",
@@ -1912,8 +1912,8 @@
     "generic": "Si è verificato un errore.",
     "network": "Nessuna connessione.",
     "notFound": "Non trovato.",
-    "crashTitle": "Sigmazam è inciampato su un sasso",
-    "crashBody": "Si è verificato un errore in questa schermata. Le tue chat e le conchiglie sono al sicuro."
+    "crashTitle": "Qualcosa è andato storto",
+    "crashBody": "Questa schermata ha riscontrato un problema. Le tue chat e le conchiglie sono al sicuro."
   },
   "a11y": {
     "back": "Indietro",
@@ -2288,11 +2288,11 @@
       "gifts": "Regali e giri",
       "alarms": "Sveglie"
     },
-    "giftWaiting": "🎁 Regalo di oggi: {{count}} conchiglie. Apri l’app prima di mezzanotte.",
-    "giftLadder": "🎁 Regalo del giorno {{day}}: {{count}} conchiglie. Salta oggi e la scala riparte da capo.",
-    "streak": "🔥 {{count}} giorni di fila con {{name}}. La serie finisce a mezzanotte: basta un messaggio.",
-    "streakLast": "⏳ Ultima occasione: la tua serie di {{count}} giorni con {{name}} finisce a mezzanotte.",
-    "shellsBurn": "🐚 {{count}} conchiglie gratis scadono a mezzanotte. Usale per una chat o una chiamata."
+    "giftWaiting": "Regalo di oggi: {{count}} conchiglie disponibili fino a mezzanotte.",
+    "giftLadder": "Regalo del giorno {{day}}: {{count}} conchiglie. Ritiralo prima di mezzanotte per mantenere la serie.",
+    "streak": "{{count}} giorni di fila con {{name}}. Scrivi prima di mezzanotte per continuarla.",
+    "streakLast": "La tua serie di {{count}} giorni con {{name}} finisce a mezzanotte.",
+    "shellsBurn": "Hai ancora {{count}} conchiglie gratis oggi: si rinnovano a mezzanotte."
   },
   "notifications": {
     "title": "Notifiche",
@@ -2436,7 +2436,7 @@
     "freeShellsLeft": "{{count}} rimaste oggi",
     "freeShellsNone": "Nessuna rimasta oggi",
     "callsAndVoice": "Chiamate e risposte vocali",
-    "freeNote": "I messaggi sono gratis fino a {{count}} al giorno. Le conchiglie gratuite tornano ogni giorno alle 00:00.",
+    "freeNote": "I messaggi sono gratis fino a {{count}} al giorno. Le conchiglie gratuite si rinnovano a mezzanotte.",
     "tryTrial_one": "Prova Pro gratis per {{count}} giorno",
     "tryTrial_other": "Prova Pro gratis per {{count}} giorni",
     "planSection": "Piano",

@@ -361,7 +361,7 @@ export default function ProfileScreen() {
           <PressableScale
             scaleTo={0.97}
             accessibilityRole="button"
-            accessibilityLabel={`${t('profile.myPlan')}, ${planName}, ${plan ? t('profile.manage') : t('profile.tryPlus')}`}
+            accessibilityLabel={`${t('profile.myPlan')}, ${planName}, ${plan ? t('profile.manage') : t('profile.tryPro')}`}
             style={styles.tile}
             onPress={() => router.push(plan ? '/my-plan' : '/store/shell?tab=plans')}>
             <View style={styles.tileHead}>
@@ -375,7 +375,7 @@ export default function ProfileScreen() {
             </Txt>
             <View style={[styles.tilePill, styles.violetPill]}>
               <Txt style={[styles.tilePillText, styles.violetInk]} lines={1} maxFontSizeMultiplier={1.2}>
-                {plan ? t('profile.manage') : t('profile.tryPlus')}
+                {plan ? t('profile.manage') : t('profile.tryPro')}
               </Txt>
             </View>
           </PressableScale>

@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazamは、ボイスメッセージの送信や友達との音声通話のためにマイクを使用します。",
+    "NSCameraUsageDescription": "Sigmazamは、フォトブースで友達と一緒に写真を撮るためにカメラを使用します。",
+    "NSPhotoLibraryUsageDescription": "Sigmazamは、チャットで写真を送ったりキャラクターの画像を選んだりするために写真にアクセスします。"
+  }
+}

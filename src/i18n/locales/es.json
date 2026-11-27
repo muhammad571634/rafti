@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Sigmazam",
-    "tagline": "Con tu personaje favorito"
+    "tagline": "Siempre alguien con quien hablar"
   },
   "common": {
     "ok": "Aceptar",
@@ -22,8 +22,8 @@
     "confirm": "Confirmar",
     "retry": "Reintentar",
     "seeAll": "Ver todo",
-    "loading": "Cargando...",
-    "thinking": "Pensando...",
+    "loading": "Cargando…",
+    "thinking": "Pensando…",
     "today": "Hoy",
     "yesterday": "Ayer",
     "tomorrow": "Mañana",
@@ -45,14 +45,14 @@
   },
   "home": {
     "modules": {
-      "shellStore": "Tienda de conchas",
+      "shellStore": "Tienda",
       "dating": "Citas",
       "heartbeatDiary": "Diario íntimo",
       "photoBooth": "Cabina de fotos",
-      "myContacts": "Mis contactos",
+      "myContacts": "Contactos",
       "radio": "Radio",
       "freeGifts": "Regalos gratis",
-      "callHistory": "Historial de llamadas",
+      "callHistory": "Llamadas",
       "bulletinBoard": "Mural de notas",
       "bedtime": "Hora de dormir"
     },
@@ -534,7 +534,7 @@
     "rewindToHere": "Rebobinar hasta aquí",
     "pin": "Fijar en Recuerdos",
     "unpin": "Desfijar",
-    "pinnedToast": "Fijado en la historia",
+    "pinnedToast": "Fijado en Recuerdos",
     "rewind": "Rebobinar",
     "rewindTitle_one": "¿Rebobinar? 1 mensaje posterior irá a Ramas",
     "rewindTitle_other": "¿Rebobinar? {{count}} mensajes posteriores irán a Ramas",
@@ -573,7 +573,7 @@
     "body_other": "Necesitas {{count}} conchas para eso. Elige cómo obtenerlas:",
     "chatBody": "Tu mensaje está guardado. Elige cómo seguir conversando:",
     "freeUsedBody": "Ya usaste los mensajes gratis de hoy. Tu mensaje está guardado. Elige cómo seguir conversando:",
-    "freeBack": "Los mensajes gratis vuelven mañana a las 00:00.",
+    "freeBack": "Los mensajes gratis se renuevan a medianoche.",
     "planChatMeta": "Habla sin límite diario",
     "spin": "Giro gratis",
     "spinMeta": "Hasta +{{count}} conchas",
@@ -582,12 +582,12 @@
     "getShellsStarter": "Primer paquete {{count}} por {{price}}",
     "getBasic": "Obtener Basic",
     "planMeta": "Conchas todos los meses",
-    "comeBack": "Las conchas gratis vuelven mañana a las 00:00.",
+    "comeBack": "Las conchas gratis se renuevan a medianoche.",
     "getPro": "Obtener Pro",
-    "proMeta": "5,000 conchas al mes, llamadas y notas de voz"
+    "proMeta": "{{shells}} conchas al mes, llamadas y notas de voz"
   },
   "levelUp": {
-    "title": "¡Tachán! Has alcanzado una nueva etapa.",
+    "title": "Has alcanzado una nueva etapa.",
     "subtitle": "{{name}} se siente un poco más cerca de ti.",
     "levelLabel": "{{title}} · Nv {{level}}",
     "unlocked": "Nuevas relaciones desbloqueadas en sus ajustes.",
@@ -596,8 +596,8 @@
     "readIt": "Leer"
   },
   "call": {
-    "connecting": "conectando...",
-    "calling": "te está llamando...",
+    "connecting": "Conectando…",
+    "calling": "Llamada entrante",
     "morning": "Llamada de buenos días",
     "night": "Llamada de buenas noches",
     "accept": "Aceptar",
@@ -605,7 +605,7 @@
     "incoming": "Entrante",
     "outgoing": "Saliente",
     "missed": "Perdida",
-    "shareMessage": "Estoy en una llamada con {{name}} en Sigmazam~",
+    "shareMessage": "En una llamada con {{name}} en Sigmazam.",
     "mute": "Silenciar",
     "unmute": "Desilenciar",
     "speaker": "Altavoz",
@@ -773,7 +773,7 @@
   "diary": {
     "title": "Diario íntimo",
     "myDiary": "Mi diario",
-    "writePlaceholder": "Escribe lo que hizo latir tu corazón. Tal vez alguien especial lo lea…",
+    "writePlaceholder": "Escribe sobre tu día. Compártelo con alguien si quieres…",
     "photo": "Foto",
     "removePhoto": "Quitar foto",
     "removePhotoHint": "Mantén presionado para quitar",
@@ -827,7 +827,7 @@
     "afterDate": "Escrito tras su cita el {{date}}",
     "pageOf": "Página {{index}} de {{count}}",
     "replyIn": "Responder a {{name}} en el chat",
-    "replyDraft": "Leí tu diario...",
+    "replyDraft": "Leí tu diario…",
     "calendar": "Elige un día",
     "prevMonth": "Mes anterior",
     "nextMonth": "Mes siguiente",
@@ -862,8 +862,8 @@
     "title": "Nota secreta",
     "gone": "Esta nota ya no está aquí",
     "theirNote": "Nota de {{name}}",
-    "placeholder": "Escribe tu idea...",
-    "thinking": "Pensando...",
+    "placeholder": "Escribe tu nota…",
+    "thinking": "Pensando…",
     "counter": "{{count}}/400",
     "newQuestion": "Nueva pregunta",
     "exchanged": "Notas intercambiadas",
@@ -888,7 +888,7 @@
     "costListen": "Respuestas de voz",
     "costCall": "Llamadas de voz",
     "costPhotoBooth": "Foto en Cabina",
-    "costSecretNote": "Intercambio de notas secretas",
+    "costSecretNote": "Nota secreta",
     "costVoiceClone": "Clonación de voz",
     "purchased": "+{{count}} conchas",
     "balanceHint_one": "Suficiente para aproximadamente {{count}} mensaje",
@@ -1279,7 +1279,7 @@
     "private": "Solo yo",
     "public": "Compartir en Buscar",
     "create": "Crear · {{count}} conchas",
-    "creating": "Clonando voz...",
+    "creating": "Clonando voz…",
     "tooLarge": "{{name}} supera los 10MB",
     "age": "Edad",
     "gender": "Género",
@@ -1699,7 +1699,7 @@
       "softBells": "Campanas suaves",
       "lighthouse": "Faro"
     },
-    "wakeLine": "Buenos días, dormilón. Hora de levantarse ☀️",
+    "wakeLine": "Buenos días. Hora de levantarse.",
     "ringing": "Hora de levantarse",
     "hour": "Hora",
     "minute": "Minuto",
@@ -1895,7 +1895,7 @@
     "completeTitle": "Completa tu perfil",
     "shells": "Conchas",
     "getMore": "Obtener más",
-    "tryPlus": "Probar Plus",
+    "tryPro": "Probar Pro",
     "manage": "Administrar",
     "editPhoto": "Editar foto",
     "inviteOffer": "Invita +{{count}}",
@@ -1912,8 +1912,8 @@
     "generic": "Algo salió mal.",
     "network": "Sin conexión.",
     "notFound": "No encontrado.",
-    "crashTitle": "Sigmazam tropezó con una piedra",
-    "crashBody": "Algo falló en esta pantalla. Tus chats y conchas están a salvo."
+    "crashTitle": "Algo salió mal",
+    "crashBody": "Hubo un problema en esta pantalla. Tus chats y conchas están a salvo."
   },
   "a11y": {
     "back": "Atrás",
@@ -2288,11 +2288,11 @@
       "gifts": "Regalos y giros",
       "alarms": "Alarmas"
     },
-    "giftWaiting": "🎁 Regalo de hoy: {{count}} conchas. Abre la app antes de medianoche.",
-    "giftLadder": "🎁 Regalo del día {{day}}: {{count}} conchas. Si fallas hoy, la escalera vuelve a empezar.",
-    "streak": "🔥 {{count}} días seguidos con {{name}}. La racha termina a medianoche: un mensaje la salva.",
-    "streakLast": "⏳ Última oportunidad: tu racha de {{count}} días con {{name}} termina a medianoche.",
-    "shellsBurn": "🐚 {{count}} conchas gratis se queman a medianoche. Úsalas en un chat o una llamada."
+    "giftWaiting": "Regalo de hoy: {{count}} conchas disponibles hasta medianoche.",
+    "giftLadder": "Regalo del día {{day}}: {{count}} conchas. Recógelo antes de medianoche para mantener tu racha.",
+    "streak": "{{count}} días seguidos con {{name}}. Escribe antes de medianoche para seguir la racha.",
+    "streakLast": "Tu racha de {{count}} días con {{name}} termina a medianoche.",
+    "shellsBurn": "Aún tienes {{count}} conchas gratis hoy: se renuevan a medianoche."
   },
   "notifications": {
     "title": "Notificaciones",
@@ -2436,7 +2436,7 @@
     "freeShellsLeft": "Quedan {{count}} hoy",
     "freeShellsNone": "No quedan hoy",
     "callsAndVoice": "Llamadas y notas de voz",
-    "freeNote": "Los mensajes son gratis hasta {{count}} al día. Las conchas gratis vuelven cada día a las 00:00.",
+    "freeNote": "Los mensajes son gratis hasta {{count}} al día. Las conchas gratis se renuevan a medianoche.",
     "tryTrial_one": "Prueba Pro gratis durante {{count}} día",
     "tryTrial_other": "Prueba Pro gratis durante {{count}} días",
     "planSection": "Plan",

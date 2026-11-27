@@ -110,7 +110,22 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "locales": {},
+    "locales": {
+      "en": "./src/i18n/ios/en.json",
+      "es": "./src/i18n/ios/es.json",
+      "pt-BR": "./src/i18n/ios/pt-BR.json",
+      "fr": "./src/i18n/ios/fr.json",
+      "de": "./src/i18n/ios/de.json",
+      "it": "./src/i18n/ios/it.json",
+      "ja": "./src/i18n/ios/ja.json",
+      "ko": "./src/i18n/ios/ko.json",
+      "zh-Hant": "./src/i18n/ios/zh-Hant.json",
+      "id": "./src/i18n/ios/id.json",
+      "vi": "./src/i18n/ios/vi.json",
+      "th": "./src/i18n/ios/th.json",
+      "ru": "./src/i18n/ios/ru.json",
+      "tr": "./src/i18n/ios/tr.json"
+    },
     "extra": {
       "router": {
         "asyncRoutes": {

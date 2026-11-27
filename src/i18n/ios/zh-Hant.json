@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "NSMicrophoneUsageDescription": "Sigmazam 需要使用麥克風，讓你傳送語音訊息並與朋友語音通話。",
+    "NSCameraUsageDescription": "Sigmazam 需要使用相機，讓你在拍貼機中與朋友合照。",
+    "NSPhotoLibraryUsageDescription": "Sigmazam 需要存取你的照片，讓你在聊天中傳送圖片或為角色選擇頭像。"
+  }
+}
