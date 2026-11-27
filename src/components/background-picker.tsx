@@ -12,7 +12,8 @@ import type { Picture } from '@/components/chat/chat-ground';
 import { TitleTop } from '@/components/character/kit';
 import { glassStyle, PressableScale, Screen, Txt } from '@/components/ui';
 import { backgroundsById, chatArtBackgrounds, chatArtBackgroundsById, chatBackgrounds, CREAM_BG, PORTRAIT_BG } from '@/mock';
-import { colors as phoneColors, fonts, gradients, gradientStops, night, space } from '@/theme';
+import { colors as phoneColors, gradients, gradientStops, night, space } from '@/theme';
+import { inkFace } from '@/theme/ink';
 
 // Always dark (appearance B, owner 2026-11-11): it dresses a chat, and every chat is dark.
 const { colors, playful } = night;
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
   portraitRowOn: { borderColor: colors.primary },
   portraitThumb: { width: 46, height: 60, borderRadius: 14, backgroundColor: playful.chip },
   portraitCopy: { flex: 1, gap: 2 },
-  portraitTitle: { fontFamily: fonts.playful, fontSize: 18, lineHeight: 23, color: playful.ink },
+  portraitTitle: { ...inkFace('bodyStrong'), color: playful.ink },
   portraitName: { fontSize: 13, color: colors.textSecondary },
   portraitCheck: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary },
   segment: { marginTop: space.lg, marginHorizontal: space.lg },
@@ -235,5 +236,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tileName: { marginTop: 6, fontFamily: fonts.playfulBold, fontSize: 12.5, color: colors.textSecondary },
+  tileName: { marginTop: 6, ...inkFace('caption'), color: colors.textSecondary },
 });

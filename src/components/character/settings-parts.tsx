@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
-import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground';
 import { InkText } from '@/components/ink';
@@ -107,7 +107,7 @@ export function SettingsHeroCard({
           <Txt
             style={[styles.heroSince, picture && styles.heroShadow, { color: picture ? 'rgba(255,255,255,0.74)' : hue.ink }]}
             lines={1}
-            maxFontSizeMultiplier={1.25}>
+            maxFontSizeMultiplier={1.4}>
             {sinceLine}
           </Txt>
         ) : null}
@@ -207,7 +207,7 @@ export function SettingsClosenessCard({
             <InkText variant="cardSmall" style={styles.stageTitle} lines={2}>
               {stageTitle}
             </InkText>
-            <Txt style={[styles.levelLine, styles.tabular]} lines={1} maxFontSizeMultiplier={1.25}>
+            <Txt style={[styles.levelLine, styles.tabular]} lines={1} maxFontSizeMultiplier={1.45}>
               {levelLine}
             </Txt>
           </View>
@@ -232,12 +232,12 @@ export function SettingsClosenessCard({
         accessibilityRole="button"
         accessibilityLabel={`${relationshipLabel}, ${relationshipValue}`}
         style={({ pressed }) => [styles.relRow, pressed && styles.rowPressed]}>
-        <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.3}>
+        <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.6}>
           {relationshipLabel}
         </Txt>
         <View style={styles.relTrailing}>
           <View style={[styles.relPill, { backgroundColor: `${accent.strong}20` }]}>
-            <Txt style={[styles.relPillText, { color: accent.strong }]} lines={1} maxFontSizeMultiplier={1.2}>
+            <Txt style={[styles.relPillText, { color: accent.strong }]} lines={1} maxFontSizeMultiplier={1.25}>
               {relationshipValue}
             </Txt>
           </View>
@@ -271,7 +271,7 @@ export function SettingsSwitchRow({
       <View style={[styles.iconTile, { backgroundColor: fill }]}>
         <Ionicons name={icon} size={17} color={colors.white} />
       </View>
-      <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.3}>
+      <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.6}>
         {label}
       </Txt>
       <Toggle value={value} disabled={disabled} onChange={onChange} onColor={systemColors.green} accessibilityLabel={label} />
@@ -295,7 +295,7 @@ export function SettingsChoiceBlock<T extends string>({
 }) {
   return (
     <View style={[styles.choiceBlock, !last && styles.rowBorder]}>
-      <Txt style={styles.choiceLabel} maxFontSizeMultiplier={1.25}>
+      <Txt style={styles.choiceLabel} maxFontSizeMultiplier={1.5}>
         {label}
       </Txt>
       <View style={styles.segTrack} accessibilityRole="tablist" accessibilityLabel={label}>
@@ -356,12 +356,12 @@ export function SettingsLinkRow({
       <View style={[styles.iconTile, { backgroundColor: fill }]}>
         <Ionicons name={icon} size={17} color={colors.white} />
       </View>
-      <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.3}>
+      <Txt style={styles.rowTitle} maxFontSizeMultiplier={1.6}>
         {label}
       </Txt>
       <View style={styles.linkTrailing}>
         {meta ? (
-          <Txt style={[styles.linkMeta, styles.tabular]} lines={1} maxFontSizeMultiplier={1.25}>
+          <Txt style={[styles.linkMeta, styles.tabular]} lines={1} maxFontSizeMultiplier={1.4}>
             {meta}
           </Txt>
         ) : null}
@@ -390,7 +390,7 @@ export function SettingsDangerRow({
       accessibilityLabel={label}
       style={({ pressed }) => [styles.dangerRow, !last && styles.rowBorder, pressed && styles.rowPressed]}>
       <Ionicons name={icon} size={18} color={ink.danger} style={styles.dangerIcon} />
-      <Txt style={styles.dangerLabel} maxFontSizeMultiplier={1.3}>
+      <Txt style={styles.dangerLabel} maxFontSizeMultiplier={1.6}>
         {label}
       </Txt>
     </Pressable>
@@ -433,11 +433,11 @@ export function SettingsSheetOption({
         pressed && !locked && styles.rowPressed,
       ]}>
       <View style={styles.flex}>
-        <Txt style={[styles.sheetTitle, link && styles.sheetLinkTitle]} maxFontSizeMultiplier={1.3}>
+        <Txt style={[styles.sheetTitle, link && styles.sheetLinkTitle]} maxFontSizeMultiplier={1.6}>
           {title}
         </Txt>
         {meta ? (
-          <Txt style={styles.sheetMeta} maxFontSizeMultiplier={1.25}>
+          <Txt style={styles.sheetMeta} maxFontSizeMultiplier={1.6}>
             {meta}
           </Txt>
         ) : null}

@@ -63,7 +63,7 @@ describe('copy hygiene across all 14 locales', () => {
 
   it('keeps Turkish level suffix grammatically safe for every number', () => {
     const tr = all.tr;
-    for (const k of ['closeness.toNext', 'dateTheme.moodHint.flirty', 'dateTheme.moodHint.sweet']) {
+    for (const k of ['closeness.toNext', 'dateTheme.moodNote.from', 'dateTheme.moodNote.locked']) {
       assert.equal(tr[k]?.includes("{{level}}'"), false, `Turkish ${k} must not attach a hardcoded vowel-harmony suffix to {{level}}`);
     }
     assert.equal(tr['call.shareMessage']?.includes('mm'), false, 'Turkish call.shareMessage typo must stay fixed');
@@ -75,8 +75,8 @@ describe('copy hygiene across all 14 locales', () => {
       'levelUp.levelLabel',
       'contacts.level',
       'dating.level',
-      'dateTheme.moodHint.flirty',
-      'dateTheme.moodHint.sweet',
+      'dateTheme.moodNote.from',
+      'dateTheme.moodNote.locked',
       'closeness.levels',
       'closeness.level',
       'closeness.toNext',
@@ -109,11 +109,54 @@ describe('copy hygiene across all 14 locales', () => {
       'streams.pickOne',
       'streams.others',
       'streams.problems.pair',
+      'dateTheme.moodNote.locked',
     ]) {
       assert.equal(/\bcharacters?\b/i.test(en[k] ?? ''), false, `en:${k} should use friend/someone/Sigmazam instead of character`);
     }
     assert.ok(en['chat.voiceConsent.body']?.includes('Sigmazam'));
     assert.ok(en['chat.photoConsent.body']?.includes('Sigmazam'));
+    assert.equal(all.ru['dateTheme.moodNote.locked']?.includes('персонаж'), false, 'ru:dateTheme.moodNote.locked should say друг');
+    assert.equal(all.ja['dateTheme.moodNote.locked']?.includes('キャラクター'), false, 'ja:dateTheme.moodNote.locked should say 友達');
+  });
+
+  it('keeps retired dead locale keys removed across all 14 locales', () => {
+    const retired = [
+      'dateTheme.moodHint.flirty',
+      'dateTheme.moodHint.sweet',
+      'dateTheme.roundHint.3',
+      'plans.period.pro',
+      'plans.calls.pro',
+      'home.gift.cellClaimed_other',
+      'chat.streakShort_other',
+    ];
+    const lingering: string[] = [];
+    for (const [code, map] of Object.entries(all)) {
+      for (const k of retired) {
+        if (k in map) lingering.push(`${code}:${k}`);
+      }
+    }
+    assert.deepEqual(lingering, []);
+  });
+
+  it('retires legacy Fredoka and Nunito fonts across src/', () => {
+    const srcDir = path.join(ROOT, 'src');
+    const hits: string[] = [];
+    const scan = (dir: string) => {
+      for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, ent.name);
+        if (ent.isDirectory()) {
+          if (ent.name !== 'locales' && ent.name !== 'content') scan(full);
+          continue;
+        }
+        if (!/\.(ts|tsx)$/.test(ent.name) || ent.name === 'copy-hygiene.test.ts') continue;
+        const text = fs.readFileSync(full, 'utf8');
+        if (/(?:@expo-google-fonts\/(?:fredoka|nunito)|Fredoka_|Nunito_|fonts\.(?:display|displaySemi|playful|playfulBold))/.test(text)) {
+          hits.push(path.relative(ROOT, full));
+        }
+      }
+    };
+    scan(srcDir);
+    assert.deepEqual(hits, []);
   });
 
   it('keeps Russian and French singular user copy in warm informal register (ты / tu)', () => {

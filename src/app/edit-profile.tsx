@@ -131,7 +131,7 @@ export default function EditProfileScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={phrase(interest)}
                 style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}>
-                <Txt style={styles.chipText} maxFontSizeMultiplier={1.3}>
+                <Txt style={styles.chipText} maxFontSizeMultiplier={1.5}>
                   {phrase(interest)}
                 </Txt>
               </Pressable>

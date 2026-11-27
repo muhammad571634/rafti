@@ -89,7 +89,7 @@ export function FriendMoments({ character, isFriend, onContinue }: { character: 
 
   return (
     <View style={styles.wrap}>
-      <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+      <Txt style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.6}>
         {t('scenes.title')}
       </Txt>
       <ScrollView
@@ -210,17 +210,17 @@ function MomentCard({
 
       <View style={{ height: Math.round(height * PICTURE_SHARE) }} />
       <View style={styles.words}>
-        <Txt style={styles.cardTitle} maxFontSizeMultiplier={1.3}>
+        <Txt style={styles.cardTitle} maxFontSizeMultiplier={1.5}>
           {scene.title}
         </Txt>
-        <Txt style={styles.setting} maxFontSizeMultiplier={1.3}>
+        <Txt style={styles.setting} maxFontSizeMultiplier={1.6}>
           {scene.setting}
         </Txt>
         {quote ? (
           <View style={styles.said}>
             <CharacterAvatar character={character} size={28} />
             <View style={styles.bubble}>
-              <Txt style={styles.line} maxFontSizeMultiplier={1.3}>
+              <Txt style={styles.line} maxFontSizeMultiplier={1.6}>
                 {scene.opening}
               </Txt>
             </View>
@@ -229,7 +229,7 @@ function MomentCard({
         {/* The whole card is the button; this is its label, drawn as the glass pill it would be. */}
         <View style={[styles.pill, styles.glassLook]}>
           <SFIcon ios="bubble.left.fill" icon="chatbubble" size={16} color={colors.onMedia} />
-          <Txt style={styles.pillText} lines={1} maxFontSizeMultiplier={1.2}>
+          <Txt style={styles.pillText} lines={1} maxFontSizeMultiplier={1.3}>
             {action}
           </Txt>
         </View>

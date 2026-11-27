@@ -40,7 +40,7 @@ export function ClosenessSheet({
 
   return (
     <Sheet visible={visible} onClose={onClose} title={t('closeness.title')} scroll>
-      <Txt style={styles.body} maxFontSizeMultiplier={1.25}>
+      <Txt style={styles.body} maxFontSizeMultiplier={1.6}>
         {t('closeness.body')}
       </Txt>
 
@@ -60,16 +60,16 @@ export function ClosenessSheet({
                 <Ionicons name={tier.from === 0 ? 'heart-outline' : 'heart'} size={17} color={tint} />
               </View>
               <View style={styles.flex}>
-                <Txt style={styles.tierTitle} maxFontSizeMultiplier={1.3}>
+                <Txt style={styles.tierTitle} maxFontSizeMultiplier={1.6}>
                   {phrase(tier.title)}
                 </Txt>
                 {here ? (
-                  <Txt style={[styles.hereLabel, { color: tintText }]} maxFontSizeMultiplier={1.25}>
+                  <Txt style={[styles.hereLabel, { color: tintText }]} maxFontSizeMultiplier={1.5}>
                     {t('closeness.youAreHere')}
                   </Txt>
                 ) : null}
               </View>
-              <Txt style={[styles.levels, styles.tabular]} maxFontSizeMultiplier={1.25}>
+              <Txt style={[styles.levels, styles.tabular]} maxFontSizeMultiplier={1.45}>
                 {tier.from === tier.to
                   ? t('closeness.level', { level: tier.from })
                   : t('closeness.levels', { from: tier.from, to: tier.to })}
@@ -81,13 +81,13 @@ export function ClosenessSheet({
               <View style={styles.detail}>
                 {tier.labels.length ? (
                   <>
-                    <Txt style={styles.unlocks} maxFontSizeMultiplier={1.2}>
+                    <Txt style={styles.unlocks} maxFontSizeMultiplier={1.5}>
                       {t('closeness.unlocks')}
                     </Txt>
                     <View style={styles.labels}>
                       {tier.labels.map((label) => (
                         <View key={label} style={[styles.labelChip, { backgroundColor: `${tint}20` }]}>
-                          <Txt style={[styles.labelText, { color: tintText }]} maxFontSizeMultiplier={1.2}>
+                          <Txt style={[styles.labelText, { color: tintText }]} maxFontSizeMultiplier={1.4}>
                             {phrase(label)}
                           </Txt>
                         </View>
@@ -95,7 +95,7 @@ export function ClosenessSheet({
                     </View>
                   </>
                 ) : (
-                  <Txt style={styles.emptyDetail} maxFontSizeMultiplier={1.25}>
+                  <Txt style={styles.emptyDetail} maxFontSizeMultiplier={1.6}>
                     {t('closeness.nothing')}
                   </Txt>
                 )}

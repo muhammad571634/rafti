@@ -317,7 +317,7 @@ export default function CharacterSettingsScreen() {
 
         {/* Without Pro (or the trial) voice replies do not play; the footer says so, iOS style. */}
         {!hasPlan && character.voiceReady ? (
-          <Txt style={styles.footerHint} maxFontSizeMultiplier={1.25}>
+          <Txt style={styles.footerHint} maxFontSizeMultiplier={1.6}>
             {t('characterSettings.voiceRepliesPlanHint')}
           </Txt>
         ) : null}
@@ -420,7 +420,7 @@ export default function CharacterSettingsScreen() {
           maxLength={30}
           autoFocus
         />
-        <Txt style={styles.hint} maxFontSizeMultiplier={1.25}>
+        <Txt style={styles.hint} maxFontSizeMultiplier={1.6}>
           {t('characterSettings.nicknameHint')}
         </Txt>
         <PillButton
@@ -479,7 +479,7 @@ export default function CharacterSettingsScreen() {
         onClose={() => setLabelOpen(false)}
         title={t('closeness.labelTitle', { name: shortName(name) })}
         scroll>
-        <Txt style={styles.labelHint} maxFontSizeMultiplier={1.25}>
+        <Txt style={styles.labelHint} maxFontSizeMultiplier={1.6}>
           {t('closeness.labelHint')}
         </Txt>
         <View style={styles.sheetCard}>

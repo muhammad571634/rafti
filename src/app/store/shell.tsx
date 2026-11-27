@@ -230,10 +230,10 @@ function ShellsTab({
           {/* The figure over its word, both kept clear of the Free pill: side by side, "11 655
               ракушек" ran under it (A51, 2026-11-11). */}
           <View style={styles.balanceAmount}>
-            <Txt style={styles.balanceValue} lines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+            <Txt style={styles.balanceValue} lines={1} adjustsFontSizeToFit minimumFontScale={0.6} maxFontSizeMultiplier={1.4}>
               {count(wallet.shells)}
             </Txt>
-            <Txt style={styles.balanceUnit} lines={1}>
+            <Txt style={styles.balanceUnit} lines={1} maxFontSizeMultiplier={1.35}>
               {t('store.shellsUnit')}
             </Txt>
           </View>

@@ -160,7 +160,7 @@ export function Card({
       {title || right ? (
         <View style={styles.cardHead}>
           {title ? (
-            <Txt style={[styles.cardTitle, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+            <Txt style={[styles.cardTitle, styles.grow]} accessibilityRole="header" maxFontSizeMultiplier={1.6}>
               {title}
             </Txt>
           ) : (
@@ -288,7 +288,7 @@ export function Chip({ label, on, onPress, icon }: { label: string; on: boolean;
       accessibilityState={{ selected: on }}
       style={[styles.chip, on && styles.chipOn]}>
       {icon}
-      <Txt style={[styles.chipText, on && styles.chipTextOn]} maxFontSizeMultiplier={1.3}>
+      <Txt style={[styles.chipText, on && styles.chipTextOn]} maxFontSizeMultiplier={1.5}>
         {label}
       </Txt>
     </PressableScale>

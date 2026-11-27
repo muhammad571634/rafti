@@ -187,6 +187,12 @@ intro keeps its own three taps (approved, timed to the motion).
 - **Warm register in every locale:** informal singular (`ты` in Russian, `tu` in French, `du` in
   German, `tú` in Spanish, `sen` in Turkish), gender-neutral where a language marks gender. Guarded
   by `src/i18n/copy-hygiene.test.ts`.
+- **Fonts & Dynamic Type (0z383):** native system face (SF Pro / Roboto) for all UI & reading copy
+  across all 14 scripts, `SourceSerif4_600SemiBold` / `Italic` for Ink editorial titles & big
+  numerals, and `Caveat_600SemiBold` (per-weight import) for diary/polaroid handwriting. Legacy
+  `Fredoka` and `Nunito` are retired (guarded by `copy-hygiene.test.ts`). Scrollable body/row copy
+  scales up to ≥ 1.6× (or uncapped); fixed-height widgets/figures/pills use `minHeight` and
+  graceful caps (`1.25`–`1.4×`) so large Accessibility text never clips.
 - Same price, same words everywhere (`src/components/plans/copy.ts` holds the plan wording).
 - No pressure: options shown side by side and equal, no fake timers, no hidden prices.
 

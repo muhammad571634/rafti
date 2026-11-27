@@ -56,7 +56,8 @@ export function Button({
       style={[
         styles.base,
         {
-          height: heights[size],
+          minHeight: heights[size],
+          paddingVertical: size === 'sm' ? 4 : 6,
           borderRadius: size === 'sm' ? radius.sm : radius.md,
           paddingHorizontal: size === 'sm' ? space.md : space.xl,
           backgroundColor: off ? ink.raised : peachGlass ? 'transparent' : background(variant),
@@ -78,7 +79,8 @@ export function Button({
               color={fg}
               lines={1}
               adjustsFontSizeToFit
-              minimumFontScale={0.75}>
+              minimumFontScale={0.75}
+              maxFontSizeMultiplier={1.4}>
               {label}
             </Txt>
             {right}

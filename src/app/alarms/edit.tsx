@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
   bellOn: { width: FACE_ON, height: FACE_ON, borderRadius: inkRadius.pill, backgroundColor: inkPeachGlass.flat, borderWidth: 1, borderColor: inkPeachGlass.rim },
   timeCard: { marginHorizontal: space.lg, borderRadius: inkRadius.card, borderCurve: 'continuous', backgroundColor: night.surface, overflow: 'hidden', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.sm, gap: space.sm },
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
-  // A steady box, so -/+ do not shift as the digits change width (Fredoka's are proportional).
+  // A steady box, so -/+ do not shift as the digits change width.
   timeBox: { minWidth: 196, alignItems: 'center' },
   bigTime: { ...inkFace('numeral'), color: night.text },
   period: { ...inkFace('card'), color: night.textSecondary },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   lead: { flexDirection: 'row', alignItems: 'center', gap: space.md, flexShrink: 1 },
   footer: { paddingHorizontal: space.lg, paddingTop: space.sm },
   cta: { height: 56, borderRadius: inkRadius.pill, overflow: 'hidden', borderWidth: 1, borderColor: inkPeachGlass.ctaRim, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm },
-  // System bold, not Fredoka: the button's words come in every script (Fredoka has Latin only).
+  // System bold: the button's words come in every script.
   ctaText: { ...inkFace('bodyStrong'), color: inkPeachGlass.ctaText },
   price: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: space.sm + 2, paddingVertical: 4, borderRadius: 14, backgroundColor: ink.tintFill },
   priceText: { ...inkFace('subStrong'), color: inkPeachGlass.ctaText },

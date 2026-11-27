@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: PAPER.online,
   },
   headText: { flex: 1, minWidth: 0, gap: 2 },
-  name: { fontFamily: fonts.playful, fontSize: 28, lineHeight: 34, color: PAPER.ink },
+  name: { fontFamily: fonts.serif, fontSize: 28, lineHeight: 34, letterSpacing: -0.4, color: PAPER.ink },
   mood: { fontSize: 13, fontWeight: '600', color: PAPER.soft },
   badge: {
     alignSelf: 'flex-start',
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   appTile: { width: 20, height: 20, borderRadius: 6, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: PAPER.peach },
   appMascot: { width: 18, height: 18 },
-  badgeText: { flexShrink: 1, fontFamily: fonts.playfulBold, fontSize: 12, color: PAPER.ink },
+  badgeText: { flexShrink: 1, fontFamily: fonts.body, fontWeight: '700', fontSize: 12, color: PAPER.ink },
   // The poster's own content: under the head, above the band.
   body: { position: 'absolute', left: 16, right: 16, top: 146, bottom: BAND_H + 12 },
   band: {

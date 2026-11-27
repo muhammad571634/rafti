@@ -38,7 +38,8 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
       color={active ? activeFg : colors.textSecondary}
       lines={1}
       adjustsFontSizeToFit
-      minimumFontScale={0.8}>
+      minimumFontScale={0.8}
+      maxFontSizeMultiplier={1.35}>
       {label}
     </Txt>
   );
@@ -62,7 +63,8 @@ export function Chip({ label, active, onPress, style, tone = 'primary' }: ChipPr
 const styles = StyleSheet.create({
   base: {
     paddingHorizontal: space.lg,
-    height: 34,
+    paddingVertical: 5,
+    minHeight: 34,
     borderRadius: radius.pill,
     borderWidth: 1,
     alignItems: 'center',

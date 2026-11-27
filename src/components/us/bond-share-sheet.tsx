@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   head: { position: 'absolute', left: 18, right: 18, top: 22, flexDirection: 'row', alignItems: 'center', gap: 10 },
   headFace: { width: 44, height: 44, borderRadius: 22, padding: 2, backgroundColor: 'rgba(255,255,255,0.9)' },
   headText: { flex: 1, minWidth: 0 },
-  headName: { fontFamily: fonts.playful, fontSize: 17, lineHeight: 21, color: ON_PHOTO },
+  headName: { fontFamily: fonts.body, fontWeight: '700', fontSize: 17, lineHeight: 21, color: ON_PHOTO },
   headMood: { fontSize: 12, fontWeight: '600', color: ON_PHOTO_SOFT },
   badge: {
     position: 'absolute',
@@ -182,10 +182,10 @@ const styles = StyleSheet.create({
   },
   appTile: { width: 20, height: 20, borderRadius: 6, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: PAPER.peach },
   appMascot: { width: 18, height: 18 },
-  badgeText: { fontFamily: fonts.playfulBold, fontSize: 12, color: ON_PHOTO },
+  badgeText: { fontFamily: fonts.body, fontWeight: '700', fontSize: 12, color: ON_PHOTO },
   bond: { position: 'absolute', left: 20, right: 20, top: 336, alignItems: 'center' },
-  days: { marginTop: 2, fontFamily: fonts.playful, fontSize: 72, lineHeight: 80, color: ON_PHOTO, fontVariant: ['tabular-nums'] },
-  daysLabel: { marginTop: -6, fontFamily: fonts.playfulBold, fontSize: 17, lineHeight: 22, color: ON_PHOTO },
+  days: { marginTop: 2, fontFamily: fonts.serif, fontSize: 72, lineHeight: 78, letterSpacing: -1.5, color: ON_PHOTO, fontVariant: ['tabular-nums', 'lining-nums'] },
+  daysLabel: { marginTop: -4, fontFamily: fonts.body, fontWeight: '600', fontSize: 17, lineHeight: 22, color: ON_PHOTO },
   stats: { alignSelf: 'stretch', flexDirection: 'row', gap: 8, marginTop: 16 },
   stat: {
     flex: 1,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   statTop: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  statValue: { flexShrink: 1, fontFamily: fonts.playful, fontSize: 17, lineHeight: 21, color: ON_PHOTO, fontVariant: ['tabular-nums'] },
+  statValue: { flexShrink: 1, fontFamily: fonts.body, fontWeight: '700', fontSize: 17, lineHeight: 21, color: ON_PHOTO, fontVariant: ['tabular-nums'] },
   statLabel: { fontSize: 11, fontWeight: '600', color: ON_PHOTO_SOFT },
   pill: {
     position: 'absolute',

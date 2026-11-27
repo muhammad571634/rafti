@@ -17,7 +17,7 @@ import type { Character } from '@/types';
 /**
  * A friend's profile and chat settings in the four tabs' look (design-style §10, 0z152): the ground
  * ground, round head buttons, their picture as Find's photo card (radius 30, bottom scrim, white
- * Nunito name, clear glass), white radius-24 cards with heavy titles, big round quick actions and
+ * serif name, clear glass), white radius-24 cards with heavy titles, big round quick actions and
  * one peach button. Switches stay the app's `Toggle`, choices a soft segmented control.
  */
 

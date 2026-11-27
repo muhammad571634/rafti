@@ -200,7 +200,7 @@ export function WidgetView({
         <View style={styles.days}>
           {model.days.map((d, i) =>
             d.label != null ? (
-              <InkText key={i} variant="caption" color={ink} style={[styles.dayLetter, { opacity: d.on ? 1 : 0.45 }]}>
+              <InkText key={i} variant="caption" color={ink} maxFontSizeMultiplier={1.25} style={[styles.dayLetter, { opacity: d.on ? 1 : 0.45 }]}>
                 {d.label}
               </InkText>
             ) : (
@@ -278,7 +278,7 @@ export function WidgetView({
           ))}
           {model.badge ? (
             <View style={[styles.badge, !onPhoto && styles.badgeInk]}>
-              <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk}>
+              <InkText variant="caption" color={onPhoto ? tone[1] : colors.textOnInk} maxFontSizeMultiplier={1.25}>
                 {model.badge}
               </InkText>
             </View>
@@ -342,7 +342,7 @@ export function WidgetView({
       {model.pill ? (
         <View style={styles.pillWrap} pointerEvents={inert ? 'none' : 'box-none'}>
           <PressableScale scaleTo={0.94} accessibilityRole="button" accessibilityLabel={model.pill.label} onPress={model.pill.onPress} style={styles.pill}>
-            <InkText variant="subStrong" color={colors.textOnInk} lines={1}>
+            <InkText variant="subStrong" color={colors.textOnInk} lines={1} maxFontSizeMultiplier={1.25}>
               {model.pill.label}
             </InkText>
           </PressableScale>

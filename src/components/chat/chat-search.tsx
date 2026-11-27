@@ -8,7 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, NO_RESULTS, PressableScale, Screen, Txt } from '@/components/ui';
 import { searchMessages } from '@/lib/chat-search';
 import { relativeStamp } from '@/lib/format';
-import { colors, fonts, space, systemGround } from '@/theme';
+import { colors, space, systemGround } from '@/theme';
+import { inkFace } from '@/theme/ink';
 import type { Message } from '@/types';
 
 /**
@@ -158,8 +159,8 @@ const styles = StyleSheet.create({
     backgroundColor: systemGround.card,
   },
   input: { flex: 1, padding: 0, fontSize: 17, letterSpacing: -0.4, color: colors.text },
-  cancel: { fontFamily: fonts.playfulBold, fontSize: 16 },
-  count: { marginTop: 20, marginBottom: 8, marginHorizontal: space.lg + 6, fontFamily: fonts.playfulBold, fontSize: 15, color: colors.textSecondary },
+  cancel: { ...inkFace('bodyStrong') },
+  count: { marginTop: 20, marginBottom: 8, marginHorizontal: space.lg + 6, ...inkFace('subStrong'), color: colors.textSecondary },
   row: {
     marginHorizontal: space.lg,
     flexDirection: 'row',

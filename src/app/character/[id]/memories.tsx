@@ -358,7 +358,7 @@ function Meter({
       />
 
       <View style={styles.meterHead}>
-        <Txt style={[styles.flex, styles.meterTitle]} maxFontSizeMultiplier={1.3}>
+        <Txt style={[styles.flex, styles.meterTitle]} maxFontSizeMultiplier={1.5}>
           {full ? t('memories.allOpenCount', { count: total }) : t('memories.open', { count: total, limit: FREE_MEMORY_LIMIT })}
         </Txt>
         {locked > 0 && onOpenUnlock ? (

@@ -11,7 +11,6 @@
     "backToRadio": "ラジオに戻る",
     "cancel": "キャンセル",
     "done": "完了",
-    "next": "次へ",
     "back": "戻る",
     "close": "閉じる",
     "share": "シェア",
@@ -22,18 +21,12 @@
     "confirm": "確認",
     "retry": "再試行",
     "seeAll": "すべて見る",
-    "loading": "読み込み中…",
     "thinking": "考え中…",
     "today": "今日",
     "yesterday": "昨日",
     "tomorrow": "明日",
-    "now": "たった今",
     "shells": "シェル",
     "free": "無料",
-    "unlock": "アンロック",
-    "comingSoon": "近日公開",
-    "on": "オン",
-    "off": "オフ",
     "atLeast": "{{count}}+",
     "range": "{{min}}〜{{max}}"
   },
@@ -56,17 +49,9 @@
       "bulletinBoard": "掲示板",
       "bedtime": "おやすみ"
     },
-    "today": "今日",
-    "explore": "見つける",
     "todo": {
-      "spin": "無料スピン",
       "note": "{{name}}からのメモ",
-      "meet": "新しいキャラクターに出会う",
-      "diary": "{{name}}があなたについて書きました",
-      "diaryHint": "日記の新しいページ",
-      "plan": "{{title}}",
-      "planHint": "{{name}}がリマインドします",
-      "planAt": "{{time}} · {{name}}がリマインドします"
+      "meet": "新しいキャラクターに出会う"
     },
     "short": {
       "store": "ストア",
@@ -87,14 +72,12 @@
       "asleep": "寝てる"
     },
     "chooseWidgets": "ウィジェットを選ぶ",
-    "and": "と",
     "widget": {
       "call": "{{name}}に通話",
       "minutesLeft_other": "残り{{count}}分",
       "hearVoice": "声を聞く",
       "newPages_other": "新しいページ",
       "writeToday": "今日の日記を書く",
-      "pageOf": "{{name}}のページ",
       "planDate": "予定を立てる",
       "wakeUp": "目覚まし",
       "wakeWith": "{{label}} · {{name}}",
@@ -104,7 +87,6 @@
       "toNext": "{{name}} · 次のレベルまであと{{count}}",
       "oneFree": "無料1回",
       "readyNow": "準備完了",
-      "dailyGift": "デイリーギフト",
       "tomorrow": "明日また来てください",
       "shells": "シェル",
       "friends_other": "友達",
@@ -115,9 +97,7 @@
       "answered": "{{name}}が返信しました",
       "noteTo": "{{name}}へのメモ",
       "pinNote": "メモを固定",
-      "edit": "編集",
       "done": "完了",
-      "add": "ウィジェットを追加",
       "addHere": "ここにウィジェットを追加",
       "remove": "{{name}}を削除",
       "gallery": "ウィジェット"
@@ -128,23 +108,11 @@
       "open": "{{name}}とのチャットを開く"
     },
     "gift": {
-      "title": "デイリーギフト",
-      "progress": "{{day}}/{{total}}",
-      "plus": "+{{count}}",
-      "claimSurprise": "サプライズを開く",
-      "cellClaimed_other": "{{day}}日目、獲得済み、{{count}}シェル",
-      "cellToday": "今日、{{day}}日目、{{amount}}シェル",
-      "cellLater": "{{day}}日目、{{amount}}シェル",
-      "claimed": "獲得済み +{{count}}",
-      "claim": "受け取る +{{count}}",
-      "freeLeft": "無料残り{{count}}個 · 24時に消滅します",
-      "freeUsed": "今日の無料シェルは使い切りました"
-    },
-    "chats": "チャット"
+      "freeLeft": "無料残り{{count}}個 · 24時に消滅します"
+    }
   },
   "dailyReward": {
     "title": "デイリーチェックイン",
-    "day": "7日中{{day}}日目",
     "dayShort": "{{day}}日目",
     "rule": "無料シェルが優先して消費され、24時にリセットされます。7日目に大きな報酬があります。",
     "collectAmount": "+{{count}}個受け取る"
@@ -159,7 +127,6 @@
   },
   "find": {
     "title": "見つける",
-    "searchPlaceholder": "キャラクター",
     "who": {
       "everyone": "全員",
       "male": "彼",
@@ -175,22 +142,14 @@
     },
     "category": "カテゴリー",
     "voiceReady": "ボイスあり",
-    "voiceTraining": "ボイス準備中",
     "createCharacter": "キャラクター作成",
     "noResults": "条件に合う人がまだ見つかりません。",
-    "add": "追加",
     "friends": "友達",
-    "results": "{{count}}件見つかりました",
     "openWorld": "{{world}}を開く",
-    "characters": "キャラクター",
     "canCall": "通話可能",
-    "seeAll": "すべて見る",
-    "whoLabel": "表示中: {{who}}",
-    "newSection": "新着",
     "proFirst": "Pro先行",
     "newBadge": "新着",
     "worlds": "関係",
-    "talkNow": "今すぐ話す",
     "missTitle": "誰に会いたいですか？",
     "missLine": "もう一度話そう",
     "missChoose": "選ぶ",
@@ -199,15 +158,12 @@
     "yourRole": "{{name}}、あなたの{{role}}",
     "sayHi": "挨拶する",
     "topHit": "トップヒット",
-    "charactersSection": "キャラクター",
     "closeSearch": "検索を閉じる",
     "recentlyViewed": "最近見た",
     "recentSearches": "最近の検索",
     "clear": "クリア",
     "surprise": "おまかせ",
     "searchWorld": "{{world}}を検索",
-    "addFriend": "{{name}}を追加",
-    "isFriend": "{{name}}は友達です",
     "searchAllPlaceholder": "人物、グループシーン、ストーリー",
     "createShort": "作成",
     "lensPeople": "人物",
@@ -242,12 +198,8 @@
     "chat": "メッセージ",
     "call": "音声通話",
     "secretNote": "秘密のメモ",
-    "friends": "{{date}}からの友達",
     "voiceTraining": "ボイスの準備中です。準備ができ次第、通話がアンロックされます。",
-    "memories": "思い出",
-    "settings": "チャット設定",
-    "levelLine": "レベル {{level}} · {{title}}",
-    "progress": "{{current}} / {{next}}"
+    "memories": "思い出"
   },
   "chatList": {
     "title": "チャット",
@@ -288,11 +240,9 @@
     "newGroupHint": "ひとつのチャットに2〜3人の友達",
     "needFriends": "まず友達を2人作りましょう",
     "pickTitle": "友達を2人または3人選択",
-    "pickBody": "あなたとも、お互い同士とも会話します。",
     "nameLabel": "グループ名",
     "optional": "任意",
     "create": "グループを作成",
-    "createShort": "作成",
     "unpick": "{{name}}を外す",
     "pickOneMore": "もう1人選ぶ",
     "costNote": "メッセージは通常のチャットと同じように数えます。",
@@ -310,14 +260,11 @@
     "info": "グループ情報",
     "rename": "名前変更",
     "save": "保存",
-    "membersTitle": "メンバー",
     "membersCount": "メンバー · {{count}}/{{max}}",
     "add": "追加",
-    "limitNote": "グループは最大3人までです。レベルと思い出は個別のチャットで成長します。",
     "addMember": "友達を追加",
     "addMemberTitle": "グループに追加",
     "noOneToAdd": "現在チャットしている全員がすでに参加しています。",
-    "settings": "設定",
     "mute": "ミュート",
     "delete": "グループを削除",
     "deleteTitle": "このグループを削除しますか？",
@@ -368,7 +315,6 @@
     },
     "notifyOff": "通知がオフになっているため、{{name}}からのメッセージが届きません。",
     "notifyOffAction": "オンにする",
-    "ideaEditHint": "送信前に長押しして編集",
     "inputPlaceholder": "メッセージ",
     "read": "既読",
     "delivered": "配信済み",
@@ -433,7 +379,6 @@
       "serious": "真剣に"
     },
     "newReply": "別の返信",
-    "rateUp": "良い返信",
     "rateDown": "気になる返信",
     "offTitle": "何が気になりましたか？",
     "off": {
@@ -535,8 +480,6 @@
       "thumbs": "いいね"
     },
     "aiCharacter": "AIキャラクター",
-    "shareHint": "{{name}}とのチャットをそのままカードに。ストーリーに投稿したり、友だちに送ったりできます。",
-    "streakShort_other": "{{count}}日",
     "voiceQuota": "今月の音声返信上限に達しました。{{date}}にリセットされます。テキストでの返信は継続します。",
     "addMinutes": "分を追加",
     "mood": {
@@ -571,7 +514,6 @@
     "proMeta": "毎月{{shells}}シェル、通話および音声返信"
   },
   "levelUp": {
-    "title": "新しい段階に到達しました。",
     "subtitle": "{{name}}との距離が少し縮まりました。",
     "levelLabel": "{{title}} · レベル {{level}}",
     "unlocked": "設定で新しい関係性がアンロックされました。",
@@ -611,15 +553,9 @@
     "clearTitle": "すべての通話を消去しますか？"
   },
   "characterSettings": {
-    "title": "設定",
-    "anniversary": "{{date}}から一緒",
-    "voiceCall": "音声通話",
     "characterMemories": "思い出",
     "characterSettings": "友達のプロフィール",
     "editCharacter": "キャラクター編集",
-    "chatSettings": "チャット設定",
-    "searchHistory": "メッセージ検索",
-    "changeBackground": "チャット背景",
     "clearChat": "チャットをクリア",
     "reset": "関係をリセット",
     "clearChatConfirm": "このチャットのすべてのメッセージを削除しますか？思い出は保持されます。",
@@ -627,9 +563,7 @@
     "nickname": "相手を何と呼びますか？",
     "nicknameHint": "この名前はあなたにのみ表示されます。",
     "voiceReplies": "音声返信",
-    "voiceRepliesHint": "テキストだけでなく音声メッセージでも返信します。",
     "messagesFirst": "相手からメッセージを送る",
-    "messagesFirstHint": "朝晩の挨拶、通話、リマインダーなど。",
     "chatAnimation": "チャットアニメーション",
     "replyStyle": "返信スタイル",
     "replyStyles": {
@@ -643,10 +577,7 @@
       "auto": "自動",
       "long": "長め"
     },
-    "sectionChat": "このチャット",
     "sectionCharacter": "友達",
-    "sectionManage": "管理",
-    "block": "ブロック",
     "voiceRepliesPlanHint": "テキストに加え音声でも返信します。Proに含まれています。",
     "blockName": "{{name}}をブロック",
     "since": "{{date}}から",
@@ -658,16 +589,13 @@
     "none": "なし"
   },
   "search": {
-    "title": "メッセージ検索",
     "placeholder": "このチャットを検索",
     "empty": "見つかりませんでした",
-    "hint": "チャットから覚えている単語を入力してください。",
     "count_other": "{{count}}件のメッセージ",
     "you": "あなた"
   },
   "memories": {
     "title": "思い出",
-    "subtitle": "{{name}}があなたについて覚えていること。",
     "empty": "まだ思い出がありません",
     "emptyHint": "会話を続けましょう。予定や日記、ちょっとした好みがここに保存されます。",
     "addManual": "思い出を追加",
@@ -759,9 +687,6 @@
     "photo": "写真",
     "removePhoto": "写真を削除",
     "removePhotoHint": "長押しで削除",
-    "shareTitle": "誰がこのページを読めますか？",
-    "shareWith": "{{name}}に読んでもらう",
-    "shareWithNobody": "非公開にする",
     "mood": "今日の気分",
     "replyTitle": "{{name}}からのお返事",
     "empty": "まだ何も書かれていません",
@@ -797,21 +722,16 @@
     "readThis": "このページを読む",
     "openLast": "最新ページを開く",
     "chatWith": "{{name}}とチャット",
-    "openMine": "自分のページを開く",
     "rulesTitle": "日記の仕組み",
     "rulesBody": "今日チャットやデートをすると、明日の朝に相手があなたについての日記を書きます。",
     "gotIt": "了解",
-    "wroteAt": "{{time}}に執筆",
     "afterChat": "{{date}}のチャットの後に執筆",
     "afterDate": "{{date}}のデートの後に執筆",
     "pageOf": "{{count}}ページ中{{index}}ページ目",
-    "replyIn": "チャットで{{name}}にお返事",
     "replyDraft": "日記読んだよ…",
     "calendar": "日付を選択",
     "prevMonth": "前月",
     "nextMonth": "次月",
-    "today": "今日",
-    "hasPages": "点がある日に日記があります",
     "sortNewest": "新しい順",
     "sortOldest": "古い順",
     "rules": {
@@ -843,7 +763,6 @@
     "theirNote": "{{name}}のメモ",
     "placeholder": "メモを書く…",
     "thinking": "考え中…",
-    "counter": "{{count}}/400",
     "newQuestion": "新しい質問",
     "exchanged": "メモを交換しました",
     "question": "今日の質問",
@@ -902,12 +821,9 @@
     },
     "title": "無料ギフト",
     "day": "{{count}}日目",
-    "wheel": "ルーレット",
     "spin": "回す",
     "won": "{{count}}シェル当たりました！",
-    "reward": "+{{count}}シェル",
     "copyCode": "招待コードをコピー",
-    "inviteProgress": "今週の招待 {{count}} / {{total}}",
     "inviteNow": "招待する",
     "inviteMessage": "Sigmazamで一緒にお話ししよう！私の招待コード【{{code}}】を使って登録し、翌日戻ってくるとふたりとも{{count}}シェルもらえます。",
     "haveCode": "コードをお持ちですか？",
@@ -931,7 +847,6 @@
     "inviteRulesNote": "するとふたりとも無期限の{{count}}シェルがもらえます。1週間に最大{{total}}人まで招待可能。",
     "checkIn": "デイリーチェックイン",
     "dayOf": "{{total}}日中{{day}}日目",
-    "spinsFree": "無料スピン1回",
     "spinsNone": "明日また来てください",
     "moreShells": "もっとシェルを獲得",
     "shareTitle": "Sigmazamをシェア",
@@ -992,9 +907,6 @@
     "title": "ワールドブック",
     "new": "新しいワールドブック",
     "edit": "ワールドブックを編集",
-    "worlds": "世界観",
-    "yours": "自作",
-    "servesWorld": "その世界の全員が把握",
     "servesWorldNamed": "{{world}}の全員が把握",
     "servesFriends": "{{names}}が使用中",
     "notUsed": "チャットでまだ使用されていません",
@@ -1415,11 +1327,7 @@
     "secretPlaceholder": "あとになって打ち明けること"
   },
   "dating": {
-    "title": "デート",
     "walletTitle": "デート",
-    "kindDate": "デート",
-    "opensAt": "解放条件:",
-    "closenessLabel": "解放条件:",
     "more": "もっと見る",
     "pastDates_other": "過去のデート{{count}}件を見る",
     "locked": "レベル{{level}}で解放",
@@ -1439,23 +1347,10 @@
       "rooftop": "屋上"
     },
     "choosePartner": "誰と出かけますか？",
-    "album": "ふたりのデート · {{count}}",
     "rounds": "ラウンド",
-    "closeness": "親密度",
-    "shells": "シェル",
     "start": "{{name}}とデートを始める",
     "noFriends": "まずチャットを始めましょう",
-    "ownCard": "自作デート",
-    "ownMade": "{{count}}件作成済み",
-    "ownNone": "作成する",
-    "ownTitle": "あなただけのデート",
-    "ownHint": "シーンを書くと、友達が一緒に演じてくれます。",
-    "ownOnly": "あなただけが見られます。",
     "make": "デートを作成",
-    "withOne": "{{name}}限定",
-    "withAnyone": "誰とでも",
-    "themeMeta": "{{who}} · {{rounds}}ラウンド · {{mood}}",
-    "mood": "雰囲気",
     "moods": {
       "friendly": "親しみやすい",
       "flirty": "甘い",
@@ -1471,7 +1366,6 @@
     "titleEdit": "デートを編集",
     "scene": "シーン設定",
     "scenePlaceholder": "湖畔の静かな場所を見つけたけれど、カモたちがサンドイッチを狙っていて…",
-    "sceneHint": "始まりの状況です。相手がその続きを一緒に進めます。",
     "where": "場所",
     "wherePlaceholder": "湖畔のピクニック",
     "picture": "イラスト",
@@ -1484,17 +1378,7 @@
       "night": "夜空"
     },
     "rounds": "ラウンド数",
-    "roundHint": {
-      "3": "サクッと",
-      "5": "標準",
-      "8": "じっくり"
-    },
     "mood": "雰囲気",
-    "moodHint": {
-      "friendly": "誰でも",
-      "flirty": "レベル {{level}}から",
-      "sweet": "レベル {{level}}から"
-    },
     "who": "相手",
     "only": "{{name}}のみ",
     "anyFriend": "誰とでも",
@@ -1509,10 +1393,8 @@
     "moodNote": {
       "anyone": "チャット相手の全員",
       "from": "レベル{{level}}から",
-      "locked": "各キャラクターとのレベル{{level}}で解放"
+      "locked": "それぞれの友達とのレベル{{level}}で解放"
     },
-    "needScene": "まずシーンを入力してください",
-    "needTitle": "場所の名前を入力してください",
     "crisisTitle": "これはデートに設定できません",
     "crisisBody": "辛い思いをされているようです。今日いつでもお話しを聞くことができます。"
   },
@@ -1548,8 +1430,6 @@
   },
   "radio": {
     "title": "ラジオ",
-    "subtitle": "心地よいBGMをお届けします。",
-    "stop": "停止",
     "minutes": "{{count}}分",
     "tracks": {
       "rain": "窓を打つ雨",
@@ -1608,14 +1488,9 @@
     "setTimer": "スリープタイマー",
     "start": "一緒に眠る",
     "remaining": "残り{{time}}",
-    "who": "相手",
     "sleepWith": "{{name}}と一緒に眠る",
-    "what": "囁き声と穏やかなホワイトノイズ",
     "whispering": "{{name}}が囁いています",
     "noVoices": "まずボイスのある友達とチャットしてください",
-    "fades": "0:00に自動でフェードアウトします",
-    "stopsAfter": "{{count}}分後に自動停止します",
-    "withPro": "Pro特典",
     "proTitle": "おやすみ機能はPro特典です",
     "hearWhisper": "{{name}}の囁き声を聴く",
     "sampleLine": "目を閉じて。ずっとそばにいるよ。",
@@ -1718,24 +1593,15 @@
   },
   "us": {
     "title": "ふたり",
-    "talkedWith": "話した相手 · {{month}}",
-    "whoTalked": "話した相手",
-    "mostTalked": "一番話した",
-    "ofMonth": "今月の{{percent}}",
     "yourDays": "あなたの毎日",
-    "showMore": "他{{count}}件を表示",
     "level": "レベル {{level}}",
     "intimacy": "親密度 {{count}}",
-    "streak": "{{count}}日連続",
-    "daysTogether": "一緒に{{count}}日",
-    "toNext": "次のレベルまであと{{count}}",
     "moments": "ふたりのモーメント",
     "noMoments": "一緒に過ごした大切な瞬間がここに記録されます。",
     "noRelationships": "まだ誰もいません",
     "noRelationshipsHint": "チャットを始めると、ここにふたりの絆が育まれます。",
     "momentText": {
-      "met": "友達になりました",
-      "arc": "打ち明けた:{{title}}"
+      "met": "友達になりました"
     },
     "daysLabel_other": "一緒に過ごした日数",
     "daysShort_other": "日",
@@ -1745,13 +1611,11 @@
     "statIntimacy": "親密度",
     "statStreak": "日連続",
     "statMet": "出会った日",
-    "shareHint": "あなたと{{name}}をそのままカードに。ストーリーに投稿したり、友だちに送ったりできます。",
     "nothingPlanned": "予定はありません",
     "plan": "予定",
     "calendarMore": "今月をすべて表示",
     "calendarLess": "1週間のみ表示",
     "add": "追加",
-    "publish": "ふたりの記録に追加",
     "publishKind": {
       "plan": "予定",
       "diary": "日記のページ",
@@ -1760,11 +1624,7 @@
     },
     "newPlan": "新しい予定",
     "planPlaceholder": "どんな予定ですか？",
-    "anyTime": "時間は指定しない",
     "atTime": "時間を指定する",
-    "earlier": "15分前",
-    "later": "15分後",
-    "addPlan": "予定を追加",
     "filter": {
       "all": "すべて",
       "together": "一緒に",
@@ -1871,8 +1731,6 @@
     "chatBackup": "チャットのバックアップ"
   },
   "errors": {
-    "generic": "問題が発生しました。",
-    "network": "接続されていません。",
     "notFound": "見つかりません。",
     "crashTitle": "問題が発生しました",
     "crashBody": "この画面でエラーが起きました。チャットとシェルは安全に保存されています。"
@@ -1882,7 +1740,6 @@
     "call": "通話",
     "callBack": "かけ直す",
     "chatSettings": "チャット設定",
-    "more": "その他のオプション",
     "attach": "添付",
     "send": "送信",
     "stopReply": "返信を中止",
@@ -1894,11 +1751,9 @@
     "unpin": "ピン留め解除",
     "deleteMemory": "思い出を削除",
     "lockedMemory": "ロックされた思い出",
-    "removeClip": "音声クリップを削除",
     "sortPages": "ページの並び順を変更",
     "about": "情報",
     "addPhoto": "写真を追加",
-    "hideKeyboard": "キーボードを閉じる",
     "clearSearch": "検索をクリア",
     "removePlan": "予定を削除",
     "unreadTab": "{{label}}、未読{{count}}件",
@@ -2030,7 +1885,6 @@
       "warm": "心温まるエンディング",
       "funny": "楽しいエンディング"
     },
-    "diaryTomorrow": "明日の日記",
     "hearts": "ハート",
     "heartsOf": "{{n}} / {{max}}",
     "diaryOf": "{{name}}の日記",
@@ -2074,9 +1928,7 @@
     "dailyCalls": "デイリー通話",
     "noVoices": "まだボイスのあるキャラクターがいません。",
     "morning": "朝",
-    "night": "夜",
-    "earlier": "30分早く",
-    "later": "30分遅く"
+    "night": "夜"
   },
   "quizHome": {
     "selfTitle": "{{name}}のことをどれくらい知っていますか？",
@@ -2143,7 +1995,6 @@
     "plain": "なし",
     "make": "作成",
     "fit": "フレームはポラロイド、フィルム、スタジオを彩ります。",
-    "worldFrame": "{{world}}フレーム",
     "lockedHint": "ワールドクイズで獲得",
     "mineHint": "自作のフレーム。タップして再編集。",
     "worldHint": "{{world}}クイズで獲得済み。",
@@ -2193,7 +2044,6 @@
   },
   "editProfile": {
     "title": "プロフィール編集",
-    "complete": "{{percent}}%",
     "basics": "基本情報",
     "name": "名前",
     "pronouns": "代名詞",
@@ -2316,8 +2166,6 @@
   "plans": {
     "tabPlans": "プラン",
     "tabShells": "シェル",
-    "headline": "もっと話そう。もっと声を聞こう。",
-    "sub": "メッセージは1日{{count}}件まで無料です。プランなら1日の上限なしで話せて、毎月シェルが届きます。Proは通話とボイスも使えます。",
     "name": {
       "basic": "Basic",
       "pro": "Pro",
@@ -2328,24 +2176,9 @@
       "pro": "月額{{price}}",
       "proAnnual": "年額{{price}}"
     },
-    "perMonth": "{{price}}/月",
-    "period": {
-      "pro": "月払い",
-      "proAnnual": "年払い"
-    },
-    "periodSave": "{{percent}}%お得",
     "freeDays_other": "{{count}}日間無料",
-    "calls": {
-      "pro": "毎月{{time}}の通話",
-      "proAnnual": "毎月{{time}}の通話"
-    },
-    "voice": {
-      "pro": "毎月{{time}}の音声返信",
-      "proAnnual": "毎月{{time}}の音声返信"
-    },
     "hours_other": "{{count}}時間",
     "minutes": "{{count}}分",
-    "finePrint": "メッセージは1日{{count}}件まで無料です。プランなら上限なし。プランのシェルは毎月届き無期限です。毎日の無料シェルは24時に失効します。通話可能時間は更新日にリセットされ繰り越されません。プランは{{store}}の設定で解約するまで自動更新されます。",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "restore": "購入を復元",
@@ -2411,15 +2244,12 @@
     "minLeftMonth": "今月残り{{count}}分",
     "minLeft": "残り{{count}}分",
     "perMonthSave": "{{price}}/月 · {{percent}}%お得",
-    "bestValue": "一番お得",
     "shellsMonth": "毎月{{amount}}シェル付与",
-    "remembers": "すべてを記憶",
     "chatOnly": "チャット専用",
     "photosMonth": "毎月フォトブース撮影{{count}}回",
     "bedtime": "毎晩のおやすみ囁きボイス",
     "newCharacters": "新キャラクター先行利用",
     "shellsNote": "プランの{{amount}}シェルは次回{{date}}に付与されます。",
-    "withPro": "Pro特典",
     "choose": "プランを選択",
     "row": {
       "proAnnual": "Pro 年払い",

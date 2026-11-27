@@ -11,7 +11,6 @@
     "backToRadio": "Radyoya Dön",
     "cancel": "İptal",
     "done": "Bitti",
-    "next": "İleri",
     "back": "Geri",
     "close": "Kapat",
     "share": "Paylaş",
@@ -22,18 +21,12 @@
     "confirm": "Onayla",
     "retry": "Tekrar dene",
     "seeAll": "Tümünü gör",
-    "loading": "Yükleniyor…",
     "thinking": "Düşünüyor…",
     "today": "Bugün",
     "yesterday": "Dün",
     "tomorrow": "Yarın",
-    "now": "şimdi",
     "shells": "Kabuklar",
     "free": "Ücretsiz",
-    "unlock": "Kilidi aç",
-    "comingSoon": "Çok yakında",
-    "on": "Açık",
-    "off": "Kapalı",
     "atLeast": "{{count}}+",
     "range": "{{min}} - {{max}}"
   },
@@ -56,17 +49,9 @@
       "bulletinBoard": "Mesaj panosu",
       "bedtime": "Uyku Vakti"
     },
-    "today": "Bugün",
-    "explore": "Keşfet",
     "todo": {
-      "spin": "Ücretsiz çevirme",
       "note": "{{name}}'den not",
-      "meet": "Yeni biriyle tanış",
-      "diary": "{{name}} senin hakkında yazdı",
-      "diaryHint": "Günlüklerinde yeni bir sayfa",
-      "plan": "{{title}}",
-      "planHint": "{{name}} sana hatırlatacak",
-      "planAt": "{{time}} · {{name}} sana hatırlatacak"
+      "meet": "Yeni biriyle tanış"
     },
     "short": {
       "store": "Mağaza",
@@ -87,7 +72,6 @@
       "asleep": "Uyuyor"
     },
     "chooseWidgets": "Widget seç",
-    "and": "ve",
     "widget": {
       "call": "{{name}} ara",
       "minutesLeft_one": "{{count}} dk kaldı",
@@ -96,7 +80,6 @@
       "newPages_one": "yeni sayfa",
       "newPages_other": "yeni sayfa",
       "writeToday": "Bugünün sayfasını yaz",
-      "pageOf": "{{name}} sayfası",
       "planDate": "Bir şeyler planla",
       "wakeUp": "Uyanma",
       "wakeWith": "{{label}} · {{name}}",
@@ -106,7 +89,6 @@
       "toNext": "{{name}} · sonraki seviyeye {{count}}",
       "oneFree": "1 ücretsiz",
       "readyNow": "Şimdi hazır",
-      "dailyGift": "Günlük hediye",
       "tomorrow": "Yarın tekrar gel",
       "shells": "kabuk",
       "friends_one": "arkadaş",
@@ -118,9 +100,7 @@
       "answered": "{{name}} yanıtladı",
       "noteTo": "{{name}} için not",
       "pinNote": "Not iliştir",
-      "edit": "Düzenle",
       "done": "Bitti",
-      "add": "Araç takımı ekle",
       "addHere": "Buraya araç takımı ekle",
       "remove": "{{name}} kaldır",
       "gallery": "Araç Takımları"
@@ -131,24 +111,11 @@
       "open": "{{name}} ile sohbeti aç"
     },
     "gift": {
-      "title": "Günlük hediye",
-      "progress": "{{day}}/{{total}}",
-      "plus": "+{{count}}",
-      "claimSurprise": "Sürprizi aç",
-      "cellClaimed_one": "{{day}}. gün, toplandı, {{count}} kabuk",
-      "cellClaimed_other": "{{day}}. gün, toplandı, {{count}} kabuk",
-      "cellToday": "Bugün, {{day}}. gün, {{amount}} kabuk",
-      "cellLater": "{{day}}. gün, {{amount}} kabuk",
-      "claimed": "Alındı +{{count}}",
-      "claim": "Al +{{count}}",
-      "freeLeft": "{{count}} ücretsiz kaldı · gece yarısı biter",
-      "freeUsed": "Bugünün ücretsiz kabukları tükendi"
-    },
-    "chats": "Sohbetler"
+      "freeLeft": "{{count}} ücretsiz kaldı · gece yarısı biter"
+    }
   },
   "dailyReward": {
     "title": "Günlük giriş",
-    "day": "{{day}} / 7. Gün",
     "dayShort": "{{day}}. Gün",
     "rule": "Ücretsiz kabuklar önce harcanır ve gece yarısı biter. 7. gün büyük ödüldür.",
     "collectAmount": "Al +{{count}}"
@@ -163,7 +130,6 @@
   },
   "find": {
     "title": "Keşfet",
-    "searchPlaceholder": "Karakterler",
     "who": {
       "everyone": "Herkes",
       "male": "Erkek",
@@ -179,22 +145,14 @@
     },
     "category": "Kategori",
     "voiceReady": "Ses hazır",
-    "voiceTraining": "Ses eğitiliyor",
     "createCharacter": "Karakter oluştur",
     "noResults": "Bu aramayla eşleşen kimse yok.",
-    "add": "Ekle",
     "friends": "Arkadaşlar",
-    "results": "{{count}} bulundu",
     "openWorld": "{{world}} dünyasını aç",
-    "characters": "karakter",
     "canCall": "aranabilir",
-    "seeAll": "Tümünü gör",
-    "whoLabel": "Gösterilen: {{who}}",
-    "newSection": "Yeni",
     "proFirst": "Önce Pro",
     "newBadge": "Yeni",
     "worlds": "İlişkiler",
-    "talkNow": "Şimdi konuş",
     "missTitle": "Kimi özledin?",
     "missLine": "Onlarla yeniden konuş",
     "missChoose": "Seç",
@@ -203,15 +161,12 @@
     "yourRole": "{{name}}, senin {{role}}",
     "sayHi": "Selam ver",
     "topHit": "En popüler",
-    "charactersSection": "Karakterler",
     "closeSearch": "Aramayı kapat",
     "recentlyViewed": "Son görüntülenenler",
     "recentSearches": "Son aramalar",
     "clear": "Temizle",
     "surprise": "Beni şaşırt",
     "searchWorld": "{{world}} içinde ara",
-    "addFriend": "{{name}} ekle",
-    "isFriend": "{{name}} senin arkadaşın",
     "searchAllPlaceholder": "Kişiler, grup sahneleri, hikâyeler",
     "createShort": "Oluştur",
     "lensPeople": "Kişiler",
@@ -247,12 +202,8 @@
     "chat": "Mesaj",
     "call": "Sesli arama",
     "secretNote": "Gizli not",
-    "friends": "{{date}} tarihinden beri arkadaş",
     "voiceTraining": "Sesleri hala eğitiliyor. Hazır olduğunda aramalar açılacak.",
-    "memories": "Anılar",
-    "settings": "Sohbet ayarları",
-    "levelLine": "Seviye {{level}} · {{title}}",
-    "progress": "{{current}} / {{next}}"
+    "memories": "Anılar"
   },
   "chatList": {
     "title": "Sohbetler",
@@ -293,11 +244,9 @@
     "newGroupHint": "Bir sohbette 2 veya 3 arkadaş",
     "needFriends": "Önce 2 arkadaş edin",
     "pickTitle": "2 veya 3 arkadaş seç",
-    "pickBody": "Seninle ve birbirleriyle konuşacaklar.",
     "nameLabel": "Grup adı",
     "optional": "isteğe bağlı",
     "create": "Grup oluştur",
-    "createShort": "Oluştur",
     "unpick": "{{name}} çıkar",
     "pickOneMore": "Bir kişi daha seç",
     "costNote": "Mesajlar her sohbetteki gibi sayılır.",
@@ -316,14 +265,11 @@
     "info": "Grup",
     "rename": "Yeniden adlandır",
     "save": "Kaydet",
-    "membersTitle": "Üyeler",
     "membersCount": "Üyeler · {{count}} / {{max}}",
     "add": "Ekle",
-    "limitNote": "Grupta en fazla 3 kişi. Seviyeler ve anılar bire bir sohbetlerinde gelişir.",
     "addMember": "Arkadaş ekle",
     "addMemberTitle": "Gruba ekle",
     "noOneToAdd": "Sohbet ettiğin herkes zaten burada.",
-    "settings": "Ayarlar",
     "mute": "Sessize al",
     "delete": "Grubu sil",
     "deleteTitle": "Bu grup silinsin mi?",
@@ -375,7 +321,6 @@
     },
     "notifyOff": "Bildirimler kapalı olduğundan {{name}} mesajları sana ulaşamaz.",
     "notifyOffAction": "Aç",
-    "ideaEditHint": "Göndermeden önce değiştirmek için uzun bas",
     "inputPlaceholder": "Mesaj",
     "read": "Okundu",
     "delivered": "İletildi",
@@ -441,7 +386,6 @@
       "serious": "Ciddiyetle"
     },
     "newReply": "Yeni yanıt",
-    "rateUp": "İyi yanıt",
     "rateDown": "Kötü yanıt",
     "offTitle": "Sorun neydi?",
     "off": {
@@ -549,9 +493,6 @@
       "thumbs": "beğeni"
     },
     "aiCharacter": "Yapay zeka karakteri",
-    "shareHint": "{{name}} ile sohbetin hazır bir kartta: hikâyende paylaş ya da birine gönder.",
-    "streakShort_one": "{{count}} gün",
-    "streakShort_other": "{{count}} gün",
     "voiceQuota": "Sesli yanıt kotan bu ay doldu, {{date}} tarihinde yenilenecek. Metin yanıtları devam ediyor.",
     "addMinutes": "Dakika ekle",
     "mood": {
@@ -587,7 +528,6 @@
     "proMeta": "Ayda {{shells}} kabuk, sesli aramalar ve sesli yanıtlar"
   },
   "levelUp": {
-    "title": "Yeni bir aşamaya ulaştın.",
     "subtitle": "{{name}} sana biraz daha yakın hissediyor.",
     "levelLabel": "{{title}} · Seviye {{level}}",
     "unlocked": "Karakter ayarlarında yeni ilişki türleri açıldı.",
@@ -627,15 +567,9 @@
     "clearTitle": "Tüm aramalar temizlensin mi?"
   },
   "characterSettings": {
-    "title": "Ayarlar",
-    "anniversary": "{{date}} tarihinden beri birlikte",
-    "voiceCall": "Sesli arama",
     "characterMemories": "Anılar",
     "characterSettings": "Arkadaş profili",
     "editCharacter": "Karakteri düzenle",
-    "chatSettings": "Sohbet ayarları",
-    "searchHistory": "Mesajlarda ara",
-    "changeBackground": "Sohbet arka planı",
     "clearChat": "Sohbeti temizle",
     "reset": "İlişkiyi sıfırla",
     "clearChatConfirm": "Bu sohbetin tüm mesajları silinsin mi? Anılar saklanır.",
@@ -643,9 +577,7 @@
     "nickname": "Ona nasıl sesleniyorsun?",
     "nicknameHint": "Bu ismi sadece sen görürsün.",
     "voiceReplies": "Sesli yanıtlar",
-    "voiceRepliesHint": "Metinle birlikte sesli mesaj olarak da yanıt verirler.",
     "messagesFirst": "Önce onlar yazsın",
-    "messagesFirstHint": "Sabah ve gece selamları, aramalar ve hatırlatıcılar.",
     "chatAnimation": "Sohbet animasyonları",
     "replyStyle": "Yanıt stili",
     "replyStyles": {
@@ -659,10 +591,7 @@
       "auto": "Otomatik",
       "long": "Uzun"
     },
-    "sectionChat": "Bu sohbet",
     "sectionCharacter": "Arkadaş",
-    "sectionManage": "Yönet",
-    "block": "Engelle",
     "voiceRepliesPlanHint": "Metinle birlikte sesli notlar. Pro ile birlikte gelir.",
     "blockName": "{{name}} engelle",
     "since": "{{date}} tarihinden beri",
@@ -674,17 +603,14 @@
     "none": "Yok"
   },
   "search": {
-    "title": "Mesajlarda ara",
     "placeholder": "Bu sohbette ara",
     "empty": "Hiçbir şey bulunamadı",
-    "hint": "Sohbetten hatırladığın bir kelimeyi yaz.",
     "count_one": "{{count}} mesaj",
     "count_other": "{{count}} mesaj",
     "you": "Sen"
   },
   "memories": {
     "title": "Anılar",
-    "subtitle": "{{name}} senin hakkında neler hatırlıyor.",
     "empty": "Henüz anı yok",
     "emptyHint": "Sohbete devam et. Planlar, günlük sayfaları ve küçük detaylar buraya kaydedilir.",
     "addManual": "Anı ekle",
@@ -777,9 +703,6 @@
     "photo": "Fotoğraf",
     "removePhoto": "Fotoğrafı kaldır",
     "removePhotoHint": "Kaldırmak için uzun bas",
-    "shareTitle": "Bu sayfayı kimler okuyabilir?",
-    "shareWith": "{{name}} okumasına izin ver",
-    "shareWithNobody": "Gizli tut",
     "mood": "Bugünkü ruh hali",
     "replyTitle": "{{name}} yanıt yazdı",
     "empty": "Henüz bir şey yazılmadı",
@@ -818,21 +741,16 @@
     "readThis": "Bu sayfayı oku",
     "openLast": "Son sayfayı aç",
     "chatWith": "{{name}} ile sohbet et",
-    "openMine": "Sayfalarımı aç",
     "rulesTitle": "Günlük nasıl çalışır?",
     "rulesBody": "Bugün biriyle sohbet et veya buluşmaya çık, yarın sabah senin hakkında bir sayfa yazsınlar.",
     "gotIt": "Anladım",
-    "wroteAt": "{{time}} saatinde yazdı",
     "afterChat": "{{date}} tarihindeki sohbetinizden sonra yazıldı",
     "afterDate": "{{date}} tarihindeki buluşmanızdan sonra yazıldı",
     "pageOf": "Sayfa {{index}} / {{count}}",
-    "replyIn": "{{name}} sohbette yanıt ver",
     "replyDraft": "Günlüğünü okudum…",
     "calendar": "Bir gün seç",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
-    "today": "Bugün",
-    "hasPages": "Noktalı günlerde sayfalar var",
     "sortNewest": "Önce en yeni",
     "sortOldest": "Önce en eski",
     "rules": {
@@ -864,7 +782,6 @@
     "theirNote": "Not · {{name}}",
     "placeholder": "Notunu yaz…",
     "thinking": "Düşünüyor…",
-    "counter": "{{count}}/400",
     "newQuestion": "Yeni soru",
     "exchanged": "Notlar değiş tokuş edildi",
     "question": "Bugünün sorusu",
@@ -924,12 +841,9 @@
     },
     "title": "Ücretsiz hediyeler",
     "day": "{{count}}. Gün",
-    "wheel": "Şans çarkı",
     "spin": "Çevir",
     "won": "{{count}} kabuk kazandın!",
-    "reward": "+{{count}} kabuk",
     "copyCode": "Davet kodunu kopyala",
-    "inviteProgress": "Bu hafta {{total}} davetten {{count}} tanesi",
     "inviteNow": "Davet et",
     "inviteMessage": "Sigmazam'da benimle sohbet etmeye gel. {{code}} kodumla katıl: ertesi gün geri geldiğinde ikimiz de {{count}} kabuk kazanırız.",
     "haveCode": "Kodun var mı?",
@@ -953,7 +867,6 @@
     "inviteRulesNote": "Sonra ikiniz de süresi dolmayan {{count}} kabuk kazanırsınız. Haftada en fazla {{total}} arkadaş.",
     "checkIn": "Günlük giriş",
     "dayOf": "{{total}} günün {{day}}. günü",
-    "spinsFree": "1 ücretsiz çevirme",
     "spinsNone": "Yarın tekrar gel",
     "moreShells": "Daha fazla kabuk",
     "shareTitle": "Sigmazam'ı Paylaş",
@@ -1014,9 +927,6 @@
     "title": "Dünya kitapları",
     "new": "Yeni dünya kitabı",
     "edit": "Dünya kitabını düzenle",
-    "worlds": "Dünyalar",
-    "yours": "Seninkiler",
-    "servesWorld": "Oradaki herkes bunu bilir",
     "servesWorldNamed": "{{world}} içindeki herkes bunu bilir",
     "servesFriends": "{{names}} tarafından kullanılır",
     "notUsed": "Henüz bir sohbette kullanılmadı",
@@ -1444,11 +1354,7 @@
     "secretPlaceholder": "Sana ancak sonra anlatacağı bir şey"
   },
   "dating": {
-    "title": "Buluşmalar",
     "walletTitle": "Buluşmalar",
-    "kindDate": "Buluşma",
-    "opensAt": "Açılma seviyesi:",
-    "closenessLabel": "Açılma seviyesi:",
     "more": "Daha Fazla",
     "pastDates_one": "Geçmiş {{count}} buluşmayı gör",
     "pastDates_other": "Geçmiş {{count}} buluşmayı gör",
@@ -1469,23 +1375,10 @@
       "rooftop": "Çatı katı"
     },
     "choosePartner": "Kiminle gideceksin?",
-    "album": "Buluşmalarımız · {{count}}",
     "rounds": "tur",
-    "closeness": "yakınlık",
-    "shells": "kabuk",
     "start": "{{name}} ile buluşmaya başla",
     "noFriends": "Önce bir sohbet başlat",
-    "ownCard": "Kendininki",
-    "ownMade": "{{count}} oluşturuldu",
-    "ownNone": "Bir tane yaz",
-    "ownTitle": "Kendi buluşmaların",
-    "ownHint": "Bir sahne yaz. Arkadaşın seninle birlikte oynasın.",
-    "ownOnly": "Buluşmalarını sadece sen görürsün.",
     "make": "Buluşma oluştur",
-    "withOne": "{{name}} ile",
-    "withAnyone": "Herhangi biriyle",
-    "themeMeta": "{{who}} · {{rounds}} tur · {{mood}}",
-    "mood": "ruh hali",
     "moods": {
       "friendly": "Arkadaşça",
       "flirty": "Flörtöz",
@@ -1501,7 +1394,6 @@
     "titleEdit": "Buluşmayı düzenle",
     "scene": "Sahne",
     "scenePlaceholder": "Göl kenarında sessiz bir yer bulduk ama ördeklerin sandviçlerimiz için başka planları vardı…",
-    "sceneHint": "Nasıl başladığı. Arkadaşın gerisini seninle birlikte oynar.",
     "where": "Mekan",
     "wherePlaceholder": "Göl kenarında piknik",
     "picture": "Görünüm",
@@ -1514,17 +1406,7 @@
       "night": "Gece gökyüzü"
     },
     "rounds": "Turlar",
-    "roundHint": {
-      "3": "hızlı",
-      "5": "olağan",
-      "8": "uzun"
-    },
     "mood": "Ruh hali",
-    "moodHint": {
-      "friendly": "herkes",
-      "flirty": "{{level}}. seviyeden itibaren",
-      "sweet": "{{level}}. seviyeden itibaren"
-    },
     "who": "Kiminle",
     "only": "Yalnızca {{name}}",
     "anyFriend": "Herhangi bir arkadaş",
@@ -1538,11 +1420,9 @@
     "preview": "Önizleme",
     "moodNote": {
       "anyone": "Sohbet ettiğin herkes",
-      "from": "Seviye {{level}}'den itibaren",
-      "locked": "Her arkadaşınla Seviye {{level}}'de açılır"
+      "from": "{{level}}. seviyeden itibaren",
+      "locked": "Her arkadaşınla {{level}}. seviyede açılır"
     },
-    "needScene": "Önce sahneyi yaz",
-    "needTitle": "Mekanı adlandır",
     "crisisTitle": "Bu bir buluşma olamaz",
     "crisisBody": "Şu anda durumlar ağır görünüyor. Biri bugün seninle konuşabilir."
   },
@@ -1578,8 +1458,6 @@
   },
   "radio": {
     "title": "Radyo",
-    "subtitle": "Arka planda yumuşak bir şeyler.",
-    "stop": "Durdur",
     "minutes": "{{count}} dk",
     "tracks": {
       "rain": "Pencerede yağmur",
@@ -1639,14 +1517,9 @@
     "setTimer": "Uyku zamanlayıcısı",
     "start": "Birlikte uyu",
     "remaining": "{{time}} kaldı",
-    "who": "Kiminle",
     "sleepWith": "{{name}} ile uyu",
-    "what": "Fısıltılar ve yumuşak beyaz gürültü",
     "whispering": "{{name}} fısıldıyor",
     "noVoices": "Önce sesi olan bir arkadaşla konuş",
-    "fades": "00:00'da kendiliğinden yavaşça söner",
-    "stopsAfter": "{{count}} dakika sonra kendiliğinden durur",
-    "withPro": "Pro ile birlikte gelir",
     "proTitle": "Uyku Vakti Pro ile gelir",
     "hearWhisper": "{{name}} fısıltısını duy",
     "sampleLine": "Gözlerini kapat. Hemen yanındayım.",
@@ -1749,24 +1622,15 @@
   },
   "us": {
     "title": "Biz",
-    "talkedWith": "Kiminle konuştun · {{month}}",
-    "whoTalked": "Kiminle konuştun",
-    "mostTalked": "En çok konuşulan",
-    "ofMonth": "ayının {{percent}}",
     "yourDays": "Günlerin",
-    "showMore": "{{count}} tane daha göster",
     "level": "Seviye {{level}}",
     "intimacy": "{{count}} samimiyet",
-    "streak": "{{count}} günlük seri",
-    "daysTogether": "birlikte {{count}} gün",
-    "toNext": "sonraki seviyeye {{count}}",
     "moments": "Anlarımız",
     "noMoments": "Birlikte geçirdiğiniz anlar buraya kaydedilecek.",
     "noRelationships": "Henüz kimse yok",
     "noRelationshipsHint": "Bir sohbet başlat ve bağınız burada büyüsün.",
     "momentText": {
-      "met": "Arkadaş oldunuz",
-      "arc": "Açıldı: {{title}}"
+      "met": "Arkadaş oldunuz"
     },
     "daysLabel_one": "birlikte gün",
     "daysLabel_other": "birlikte gün",
@@ -1779,13 +1643,11 @@
     "statIntimacy": "samimiyet",
     "statStreak": "günlük seri",
     "statMet": "ilk tanışma",
-    "shareHint": "Sen ve {{name}} hazır bir kartta: hikâyende paylaş ya da birine gönder.",
     "nothingPlanned": "Planlanmış bir şey yok",
     "plan": "Plan",
     "calendarMore": "Tüm ayı göster",
     "calendarLess": "Bir haftayı göster",
     "add": "Ekle",
-    "publish": "Biz'e ekle",
     "publishKind": {
       "plan": "Plan",
       "diary": "Günlük sayfası",
@@ -1794,11 +1656,7 @@
     },
     "newPlan": "Yeni plan",
     "planPlaceholder": "Plan nedir?",
-    "anyTime": "Herhangi bir zaman",
     "atTime": "Belirli bir saatte",
-    "earlier": "15 dakika önce",
-    "later": "15 dakika sonra",
-    "addPlan": "Plan ekle",
     "filter": {
       "all": "Tümü",
       "together": "Birlikte",
@@ -1909,8 +1767,6 @@
     "chatBackup": "Sohbet yedeği"
   },
   "errors": {
-    "generic": "Bir şeyler ters gitti.",
-    "network": "Bağlantı yok.",
     "notFound": "Bulunamadı.",
     "crashTitle": "Bir sorun oluştu",
     "crashBody": "Bu ekranda bir hata oldu. Sohbetlerin ve kabukların güvende."
@@ -1920,7 +1776,6 @@
     "call": "Ara",
     "callBack": "Geri ara",
     "chatSettings": "Sohbet ayarları",
-    "more": "Daha fazla seçenek",
     "attach": "Ekle",
     "send": "Gönder",
     "stopReply": "Yanıtı durdur",
@@ -1932,11 +1787,9 @@
     "unpin": "Sabitlemeyi kaldır",
     "deleteMemory": "Anıyı sil",
     "lockedMemory": "Kilitli anı",
-    "removeClip": "Ses klibini kaldır",
     "sortPages": "Sayfa sırasını değiştir",
     "about": "Hakkında",
     "addPhoto": "Fotoğraf ekle",
-    "hideKeyboard": "Klavyeyi gizle",
     "clearSearch": "Aramayı temizle",
     "removePlan": "Planı kaldır",
     "unreadTab": "{{label}}, {{count}} okunmamış",
@@ -2070,7 +1923,6 @@
       "warm": "Sıcak son",
       "funny": "Eğlenceli son"
     },
-    "diaryTomorrow": "Günlük yarın",
     "hearts": "Kalpler",
     "heartsOf": "{{max}} üzerinden {{n}}",
     "diaryOf": "{{name}} günlüğü",
@@ -2114,9 +1966,7 @@
     "dailyCalls": "Günlük aramalar",
     "noVoices": "Henüz kimsenin sesi yok.",
     "morning": "Sabah",
-    "night": "Gece",
-    "earlier": "30 dakika önce",
-    "later": "30 dakika sonra"
+    "night": "Gece"
   },
   "quizHome": {
     "selfTitle": "{{name}} ne kadar iyi tanıyorsun?",
@@ -2183,7 +2033,6 @@
     "plain": "Sade",
     "make": "Yap",
     "fit": "Çerçeveler Polaroid, Film ve Stüdyoyu süsler.",
-    "worldFrame": "{{world}} çerçevesi",
     "lockedHint": "Bir dünya testinde kazan",
     "mineHint": "Kendi yaptığın bir çerçeve. Düzenlemek için tekrar dokun.",
     "worldHint": "{{world}} testinde kazanıldı.",
@@ -2233,7 +2082,6 @@
   },
   "editProfile": {
     "title": "Profili düzenle",
-    "complete": "%{{percent}}",
     "basics": "Temel bilgiler",
     "name": "Ad",
     "pronouns": "Zamirler",
@@ -2356,8 +2204,6 @@
   "plans": {
     "tabPlans": "Planlar",
     "tabShells": "Kabuklar",
-    "headline": "Daha fazla konuş. Onları daha çok duy.",
-    "sub": "Mesajlar günde {{count}} taneye kadar ücretsiz. Planlarla günlük sınır olmadan konuşur, her ay kabuk alırsın; Pro aramaları ve sesi ekler.",
     "name": {
       "basic": "Basic",
       "pro": "Pro",
@@ -2368,26 +2214,11 @@
       "pro": "Ayda {{price}}",
       "proAnnual": "Yılda {{price}}"
     },
-    "perMonth": "{{price}}/ay",
-    "period": {
-      "pro": "Aylık",
-      "proAnnual": "Yıllık"
-    },
-    "periodSave": "%{{percent}} tasarruf et",
     "freeDays_one": "{{count}} gün ücretsiz",
     "freeDays_other": "{{count}} gün ücretsiz",
-    "calls": {
-      "pro": "Ayda {{time}} arama",
-      "proAnnual": "Ayda {{time}} arama"
-    },
-    "voice": {
-      "pro": "Ayda {{time}} sesli yanıt",
-      "proAnnual": "Ayda {{time}} sesli yanıt"
-    },
     "hours_one": "{{count}} saat",
     "hours_other": "{{count}} saat",
     "minutes": "{{count}} dk",
-    "finePrint": "Mesajlar günde {{count}} taneye kadar ücretsiz. Planla günlük sınır yok. Plan kabukları her ay gelir ve süresi asla dolmaz; günlük ücretsiz kabuklar gece yarısı biter. Dakikalar yenileme tarihinde sıfırlanır ve devretmez. Planlar, {{store}} ayarlarından iptal edene kadar otomatik olarak yenilenir.",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "restore": "Satın alımları geri yükle",
@@ -2458,15 +2289,12 @@
     "minLeftMonth": "bu ay {{count}} dk kaldı",
     "minLeft": "{{count}} dk kaldı",
     "perMonthSave": "{{price}}/ay · %{{percent}} tasarruf",
-    "bestValue": "En avantajlı",
     "shellsMonth": "Her ay {{amount}} kabuk",
-    "remembers": "Her şeyi hatırlar",
     "chatOnly": "Yalnızca sohbet",
     "photosMonth": "Ayda {{count}} Fotoğraf Kabini resmi",
     "bedtime": "Her gece uyku vakti fısıltıları",
     "newCharacters": "Yeni karakterlere ilk erişim",
     "shellsNote": "{{amount}} plan kabuğu {{date}} tarihinde tekrar verilir.",
-    "withPro": "Pro ile",
     "choose": "Bir plan seç",
     "row": {
       "proAnnual": "Pro Yıllık",

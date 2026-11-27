@@ -74,7 +74,7 @@ export function InkGlassPill({
       onPress={onPress}
       style={[styles.pill, style]}>
       {icon ? <Ionicons name={icon} size={14} color={iconColor} /> : null}
-      <InkText variant="footnoteStrong" color={ink.accent} lines={1} style={styles.pillText}>
+      <InkText variant="footnoteStrong" color={ink.accent} lines={1} maxFontSizeMultiplier={1.3} style={styles.pillText}>
         {label}
       </InkText>
     </PressableScale>
@@ -96,7 +96,7 @@ export function InkFriendPill({ character, name, ringColor, onPress, accessibili
       <View style={[styles.avatarRing, { borderColor: ringColor }]}>
         <CharacterAvatar character={character} size={24} />
       </View>
-      <InkText variant="footnoteStrong" color={ink.text} lines={1} style={styles.friendName}>
+      <InkText variant="footnoteStrong" color={ink.text} lines={1} maxFontSizeMultiplier={1.3} style={styles.friendName}>
         {name}
       </InkText>
     </>
@@ -207,8 +207,9 @@ const styles = StyleSheet.create({
   },
   spacer: { width: BTN, height: BTN },
   pill: {
-    height: 36,
+    minHeight: 36,
     paddingHorizontal: 13,
+    paddingVertical: 5,
     borderRadius: inkRadius.pill,
     borderCurve: 'continuous',
     backgroundColor: ink.raised,
@@ -221,10 +222,11 @@ const styles = StyleSheet.create({
   },
   pillText: { flexShrink: 1 },
   friendPill: {
-    height: 34,
+    minHeight: 34,
     maxWidth: '100%',
     paddingLeft: 4,
     paddingRight: 11,
+    paddingVertical: 3,
     borderRadius: inkRadius.pill,
     borderCurve: 'continuous',
     backgroundColor: PILL_BG,
