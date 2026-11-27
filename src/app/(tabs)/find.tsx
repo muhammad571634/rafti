@@ -26,7 +26,17 @@ import { MissCard, RoleSheet } from '@/components/find/miss-card';
 import { InkChip, InkText, PillButton } from '@/components/ink';
 import { useEarlyAccess } from '@/components/plans/early-access';
 import { GroupStoryGrid, GroupStorySheet, GroupStoryStrip, useStartGroupStory } from '@/components/stories/group-stories';
-import { StoryChips, storiesFor, StorySheet, TROPE_SHELVES, type TropeShelf, useStartStory } from '@/components/stories/stories-shelf';
+import {
+  StoryChips,
+  StoryGrid,
+  StoryPhotoCard,
+  storiesFor,
+  StorySheet,
+  TROPE_SHELVES,
+  type TropeShelf,
+  useStartStory,
+  useStoryPicture,
+} from '@/components/stories/stories-shelf';
 import { StoryHookCard } from '@/components/stories/story-hook-card';
 import { useTemplateStats } from '@/components/stories/use-template-stats';
 import { CharacterAvatar, EmptyState, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon, Sheet } from '@/components/ui';
@@ -65,7 +75,6 @@ type CircleFilter = CastCircle | 'all';
 const MAX_WIDTH = 520;
 const STORY_PAGE_SIZE = 20;
 const SEARCH_TEMPLATES_CAP = 24;
-const PICK_STORY_WIDTH = 268;
 
 const heroOf = (c: Character) => {
   const key = portraitKey(c);
@@ -83,6 +92,8 @@ export default function FindScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  // Two and a bit picture cards across, so the next one peeks and says "swipe".
+  const pickStoryWidth = Math.round(Math.min(184, (width - inkGutter) / 2.3));
   const scrollRef = useRef<ScrollViewInstance>(null);
   useScrollToTop(scrollRef);
 
@@ -100,6 +111,7 @@ export default function FindScreen() {
   const early = useEarlyAccess((conversationId) => router.push(`/chat/${conversationId}`));
   const startGroupStory = useStartGroupStory();
   const startStory = useStartStory();
+  const storyPicture = useStoryPicture();
   const templateStats = useTemplateStats();
 
   const characters = useMemo(
@@ -171,7 +183,6 @@ export default function FindScreen() {
 
   const shelfStories = useMemo(() => storiesFor(storyTrope, gender, templateStats, weights), [storyTrope, gender, templateStats, weights]);
   const shelfTrending = useMemo(() => trendingIds(shelfStories, templateStats), [shelfStories, templateStats]);
-  const shelfQuiet = useMemo(() => allNew(shelfStories, templateStats, shelfTrending), [shelfStories, templateStats, shelfTrending]);
   const visibleStories = useMemo(() => shelfStories.slice(0, storyLimit), [shelfStories, storyLimit]);
 
   const ownTemplateMap = useMemo(() => {
@@ -438,20 +449,7 @@ export default function FindScreen() {
           ) : lens === 'stories' ? (
             <>
               <StoryChips value={storyTrope} onChange={(next) => next !== 'groups' && setStoryTrope(next)} shelves={TROPE_SHELVES} />
-              <View style={styles.hookList}>
-                {visibleStories.map((item) => (
-                  <StoryHookCard
-                    key={item.id}
-                    item={item}
-                    own={ownTemplateMap.get(item.id)}
-                    stats={templateStats[item.id]}
-                    trending={shelfTrending.has(item.id)}
-                    quiet={shelfQuiet}
-                    onPress={() => startStory(item)}
-                    onStory={() => setOpenStory(item)}
-                  />
-                ))}
-              </View>
+              <StoryGrid items={visibleStories} stats={templateStats} trending={shelfTrending} onOpen={setOpenStory} />
               {storyLimit < shelfStories.length ? (
                 <View style={styles.moreWrap}>
                   <PillButton
@@ -615,14 +613,15 @@ export default function FindScreen() {
                   />
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalRow}>
                     {pickStoriesTop.map((item) => (
-                      <StoryHookCard
+                      <StoryPhotoCard
                         key={item.id}
                         item={item}
-                        own={ownTemplateMap.get(item.id)}
+                        name={ownTemplateMap.get(item.id)?.name}
+                        picture={storyPicture(item.id)}
                         stats={templateStats[item.id]}
                         trending={pickTrending.has(item.id)}
                         quiet={pickQuiet}
-                        width={PICK_STORY_WIDTH}
+                        width={pickStoryWidth}
                         onPress={() => startStory(item)}
                         onStory={() => setOpenStory(item)}
                       />
