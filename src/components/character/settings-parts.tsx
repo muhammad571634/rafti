@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { FACE_AT, portraitOf, stretchLeft } from '@/components/chat/chat-ground';
-import { InkText } from '@/components/ink';
+import { InkText, PhotoGlassPill } from '@/components/ink';
 import { CharacterAvatar, PressableScale, Toggle, Txt } from '@/components/ui';
 import { haptic } from '@/lib/haptics';
 import { colors, friendColor, hitSlop, systemColors, type Accent } from '@/theme';
@@ -40,12 +40,17 @@ export function SettingsHeroCard({
   moodLine,
   sinceLine,
   accent,
+  photoLabel,
+  onChangePhoto,
 }: {
   character: Character;
   name: string;
   moodLine: string;
   sinceLine?: string | null;
   accent: Accent;
+  /** "Change photo": a round glass camera button on the picture, for a friend the user may re-picture. */
+  photoLabel?: string;
+  onChangePhoto?: () => void;
 }) {
   const { width: screen } = useWindowDimensions();
   const width = Math.max(240, screen - inkGutter * 2);
@@ -93,7 +98,18 @@ export function SettingsHeroCard({
         </Txt>
       </View>
 
-      <View style={[styles.heroFoot, picture && styles.heroFootLeading]}>
+      {onChangePhoto ? (
+        <PhotoGlassPill
+          ios="camera.fill"
+          icon="camera"
+          iconSize={17}
+          accessibilityLabel={photoLabel}
+          onPress={onChangePhoto}
+          style={styles.photoButton}
+        />
+      ) : null}
+
+      <View style={[styles.heroFoot, picture ? styles.heroFootLeading : onChangePhoto ? styles.heroFootClear : null]}>
         <Txt
           style={[styles.heroName, picture && styles.heroShadow, { color: picture ? ink.text : hue.ink }]}
           lines={2}
@@ -491,6 +507,8 @@ const styles = StyleSheet.create({
   moodText: { ...inkFace('caption'), fontSize: 12, lineHeight: 15, fontWeight: '600', color: ink.text },
   heroFoot: { position: 'absolute', left: 16, right: 16, bottom: 15 },
   heroFootLeading: { right: '38%' },
+  heroFootClear: { right: 64 },
+  photoButton: { position: 'absolute', right: 12, bottom: 12, width: 42, paddingHorizontal: 0 },
   heroName: { ...inkFace('title'), fontSize: 28, lineHeight: 32 },
   heroSince: { ...inkFace('footnote'), fontSize: 13, lineHeight: 17, marginTop: 3 },
   heroShadow: { textShadowColor: colors.onMediaShadow, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 8 },

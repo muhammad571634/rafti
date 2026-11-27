@@ -5,6 +5,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
+import { portraitKey } from '@/components/ui/avatar';
 import { coverFocus, PORTRAIT_ASPECT, portraitFace, portraitStretch, stretchLeft } from '@/lib/portrait-focus';
 import { colors, gradients, gradientStops } from '@/theme';
 import type { Character } from '@/types';
@@ -37,16 +38,18 @@ export const FACE_AT = 0.68;
 
 /**
  * Their picture for a frame `aspect` (width / height) wide, with their face at `at` of its width (the
- * middle by default, `FACE_AT` on a card with words on it): the tall portrait, else the wide scene
+ * middle by default, `FACE_AT` on a card with words on it): the tall portrait (theirs or their story
+ * template's, see `portraitKey`), else the wide scene
  * slid to `at`, else the photo a creator gave them. A tall or square picture cannot slide, so it is
  * drawn `stretch` frames wide instead. Undefined when there is none: the caller falls back.
  */
 export function portraitOf(character: Character, aspect: number, at = 0.5): Picture | undefined {
   const stretch = 2 * Math.max(at, 1 - at);
-  const tall = PORTRAITS[character.id];
-  if (tall != null) {
+  const key = portraitKey(character);
+  const tall = key ? PORTRAITS[key] : undefined;
+  if (key && tall != null) {
     // Each painting has its face somewhere else: draw it only as wide as its face needs, then slide.
-    const face = portraitFace(character.id);
+    const face = portraitFace(key);
     const wide = portraitStretch(face, aspect, at, stretch);
     return { source: tall, position: asPosition(coverFocus(face, PORTRAIT_ASPECT, aspect * wide, at)), stretch: wide, faceX: face.x };
   }

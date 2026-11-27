@@ -29,10 +29,30 @@ export const PORTRAIT_FACES: Record<string, FacePoint> = {
   c_yuna: { x: 0.81, y: 0.16 },
 };
 
+/** The story templates' scenes (docs/nano-banana-story-templates.md), keyed by template id, measured on the paintings (2026-11-27). */
+export const TEMPLATE_FACES: Record<string, FacePoint> = {
+  t_noah: { x: 0.6, y: 0.27 },
+  t_maya: { x: 0.58, y: 0.2 },
+  t_lucas: { x: 0.62, y: 0.3 },
+  t_ivy: { x: 0.62, y: 0.22 },
+  t_adrian: { x: 0.52, y: 0.27 },
+  t_kira: { x: 0.62, y: 0.2 },
+  t_aurora: { x: 0.66, y: 0.3 },
+  t_alexander: { x: 0.62, y: 0.2 },
+  t_isabella: { x: 0.64, y: 0.23 },
+  t_kane: { x: 0.66, y: 0.19 },
+  t_raven: { x: 0.56, y: 0.5 },
+  t_elliot: { x: 0.68, y: 0.35 },
+  t_camille: { x: 0.58, y: 0.23 },
+  t_scarlett: { x: 0.66, y: 0.23 },
+  t_oliver: { x: 0.6, y: 0.29 },
+  t_cassian: { x: 0.56, y: 0.25 },
+};
+
 /** A portrait without a measured face: the upper middle, where a painting of one person puts it. */
 const UNKNOWN: FacePoint = { x: 0.5, y: 0.2 };
 
-export const portraitFace = (characterId: string): FacePoint => PORTRAIT_FACES[characterId] ?? UNKNOWN;
+export const portraitFace = (characterId: string): FacePoint => PORTRAIT_FACES[characterId] ?? TEMPLATE_FACES[characterId] ?? UNKNOWN;
 
 /** Where a face lands down a frame: its upper third, clear of a header and of words at the bottom. */
 export const FACE_DOWN = 0.3;

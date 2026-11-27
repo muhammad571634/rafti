@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { AVATARS } from '@/assets/avatars/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { InkChip, InkText, PillButton } from '@/components/ink';
 import { Avatar, PressableScale, Sheet } from '@/components/ui';
 import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
@@ -122,8 +124,11 @@ export function StoryGrid({
   const characters = useAppStore((s) => s.characters);
   // Made their own in Create: the card shows their friend (picture and name), as a tap opens that one.
   const ownOf = (id: string) => characters.filter((c) => c.fromTemplate === id && c.handle !== '@stories' && !c.isOfficial).at(-1);
-  const pictured = items.filter((item) => !!ownOf(item.id)?.avatarUri);
-  const plain = items.filter((item) => !ownOf(item.id)?.avatarUri);
+  const hiOf = (id: string) => characters.find((c) => c.fromTemplate === id && c.handle === '@stories' && !c.isOfficial);
+  // The picture the user gave them (in Create or in their settings) wins; else the story's own painting.
+  const pictureOf = (id: string): string | number | undefined => (ownOf(id) ?? hiOf(id))?.avatarUri ?? PORTRAITS[id];
+  const pictured = items.filter((item) => pictureOf(item.id) != null);
+  const plain = items.filter((item) => pictureOf(item.id) == null);
   const quiet = allNew(items, stats, trending);
   return (
     <>
@@ -134,6 +139,7 @@ export function StoryGrid({
               key={item.id}
               item={item}
               own={ownOf(item.id)}
+              picture={pictureOf(item.id)}
               width={cardWidth}
               stats={stats[item.id]}
               trending={trending.has(item.id)}
@@ -181,6 +187,7 @@ function CountBadge({ stats, trending, inline = false }: { stats?: TemplateStats
 function StoryCard({
   item: written,
   own,
+  picture,
   width,
   stats,
   trending,
@@ -190,6 +197,7 @@ function StoryCard({
 }: {
   item: StoryTemplate;
   own?: Character;
+  picture?: string | number;
   width: number;
   stats?: TemplateStats;
   trending: boolean;
@@ -209,9 +217,9 @@ function StoryCard({
       accessibilityLabel={`${card.name}. ${item.hook}. ${card.tagline ?? ''}`}
       onPress={onPress}
       style={[styles.card, { width }]}>
-      {own?.avatarUri ? (
+      {picture != null ? (
         <View style={styles.photo}>
-          <Image source={own.avatarUri} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <Image source={picture} style={StyleSheet.absoluteFill} contentFit="cover" transition={150} accessible={false} />
           <LinearGradient colors={['transparent', ink.scrim]} style={styles.scrim} />
           {quiet ? <View /> : <CountBadge stats={stats} trending={trending} />}
         </View>
@@ -279,7 +287,15 @@ export function StorySheet({ template: written, stats, onClose }: { template: St
       {card ? (
         <View style={styles.sheet}>
           <View style={styles.head}>
-            <Avatar name={card.name} accentIndex={card.accentIndex ?? 0} size={64} />
+            <PressableScale
+              accessibilityRole="button"
+              accessibilityLabel={t('createCharacter.flow.changePhoto')}
+              onPress={makeOwn}>
+              <Avatar source={AVATARS[written?.id ?? '']} name={card.name} accentIndex={card.accentIndex ?? 0} size={64} />
+              <View style={styles.photoBadge}>
+                <Ionicons name="camera" size={13} color={ink.text} />
+              </View>
+            </PressableScale>
             <View style={styles.grow}>
               <InkText variant="bodyStrong">{template?.hook}</InkText>
               <InkText variant="footnote" color={ink.text3}>
@@ -328,6 +344,19 @@ const styles = StyleSheet.create({
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   photo: { aspectRatio: 3 / 4, justifyContent: 'flex-end', alignItems: 'flex-start', padding: 12, backgroundColor: ink.raised },
   scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '40%' },
+  photoBadge: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: ink.raised,
+    borderWidth: 2,
+    borderColor: ink.ground,
+  },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: inkRadius.chip, backgroundColor: ink.photoBadge },
   badgeInline: { backgroundColor: ink.raised },
   hookList: { gap: 10, paddingHorizontal: inkGutter },

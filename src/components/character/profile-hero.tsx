@@ -9,7 +9,7 @@ import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
 import { portraitPosition } from '@/components/chat/chat-ground';
 import { InkText } from '@/components/ink';
-import { CharacterAvatar, characterImage, PressableScale } from '@/components/ui';
+import { CharacterAvatar, characterImage, portraitKey, PressableScale } from '@/components/ui';
 import { friendAccent, friendColor, hitSlop, systemColors } from '@/theme';
 import { SOLID_GLASS, useReduceTransparency } from '@/theme/a11y';
 import { ink, inkRadius } from '@/theme/ink';
@@ -44,7 +44,8 @@ export function ProfileHero({ character, name, eyebrow, tagline, voiceReady, top
   const hue = friendColor(character.id);
   const height = Math.round(Math.min(width * 1.0, 400)) + topInset;
 
-  const tall = PORTRAITS[character.id];
+  const key = portraitKey(character);
+  const tall = key ? PORTRAITS[key] : undefined;
   const wide = HEROES[character.id];
   const rawSource = tall ?? wide ?? characterImage(character);
   const source = broken ? undefined : rawSource;
@@ -55,7 +56,7 @@ export function ProfileHero({ character, name, eyebrow, tagline, voiceReady, top
         <Image
           source={typeof source === 'string' ? { uri: source } : source}
           contentFit="cover"
-          contentPosition={tall ? (portraitPosition(character.id, width / height) ?? { left: '50%', top: '16%' }) : { left: '50%', top: '18%' }}
+          contentPosition={tall ? (portraitPosition(key ?? character.id, width / height) ?? { left: '50%', top: '16%' }) : { left: '50%', top: '18%' }}
           transition={150}
           style={StyleSheet.absoluteFill}
           onError={() => setBroken(true)}

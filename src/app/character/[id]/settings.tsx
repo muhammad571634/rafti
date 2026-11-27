@@ -19,9 +19,11 @@ import {
   SettingsSwitchRow,
 } from '@/components/character/settings-parts';
 import { ClosenessSheet } from '@/components/closeness-sheet';
+import { PhotoSheet } from '@/components/create/form-parts';
+import { usePickCharacterPicture } from '@/components/create/use-pick-picture';
 import { InkGlassPill, InkNavBar, PillButton } from '@/components/ink';
 import { planDate } from '@/components/plans/copy';
-import { Screen, Sheet, Txt, useScrolledPast } from '@/components/ui';
+import { Screen, Sheet, templatePortrait, Txt, useScrolledPast } from '@/components/ui';
 import { isActiveMemory } from '@/economy/memory-limit';
 import { forgetFriendNow } from '@/hooks/use-forget-friend';
 import { phrase } from '@/i18n';
@@ -96,6 +98,9 @@ export default function CharacterSettingsScreen() {
   const chatPersonas = useAppStore((s) => s.chatPersonas);
   const setChatPersona = useAppStore((s) => s.setChatPersona);
   const lorebooks = useAppStore((s) => s.lorebooks);
+  const updateCharacter = useAppStore((s) => s.updateCharacter);
+  const pickPicture = usePickCharacterPicture();
+  const [photoOpen, setPhotoOpen] = useState(false);
 
   const [personaOpen, setPersonaOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -116,6 +121,20 @@ export default function CharacterSettingsScreen() {
 
   const name = displayName(character, relationship);
   const own = !character.isOfficial;
+  // Any friend that is not the official cast can wear a picture the user picks (owner, 2026-11-27);
+  // a story friend's painting comes back with "Original photo".
+  const storyArt = templatePortrait(character);
+  const changePicture = async (from: 'library' | 'camera') => {
+    setPhotoOpen(false);
+    try {
+      const uri = await pickPicture(from);
+      if (!uri) return;
+      updateCharacter(character.id, { avatarUri: uri });
+      haptic.success();
+    } catch {
+      haptic.error();
+    }
+  };
   const accent = friendAccent(character.id);
 
   // Everything with them goes: their photos too, and the user's selfies in them must not stay behind.
@@ -259,7 +278,15 @@ export default function CharacterSettingsScreen() {
         onScroll={onScroll}
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingTop: 4, paddingBottom: insets.bottom + space.huge }}>
-        <SettingsHeroCard character={character} name={name} moodLine={moodLine} sinceLine={sinceLine} accent={accent} />
+        <SettingsHeroCard
+          character={character}
+          name={name}
+          moodLine={moodLine}
+          sinceLine={sinceLine}
+          accent={accent}
+          photoLabel={t(character.avatarUri || storyArt != null ? 'createCharacter.flow.changePhoto' : 'createCharacter.flow.addPhoto')}
+          onChangePhoto={own ? () => setPhotoOpen(true) : undefined}
+        />
 
         <View style={styles.quickRow}>
           {quick.map((q) => (
@@ -533,6 +560,18 @@ export default function CharacterSettingsScreen() {
           })}
         </View>
       </Sheet>
+      <PhotoSheet
+        visible={photoOpen}
+        hasPhoto={!!character.avatarUri || storyArt != null}
+        canRemove={!!character.avatarUri}
+        removeLabel={storyArt != null ? t('createCharacter.flow.originalPhoto') : undefined}
+        onClose={() => setPhotoOpen(false)}
+        onPick={(from) => void changePicture(from)}
+        onRemove={() => {
+          setPhotoOpen(false);
+          updateCharacter(character.id, { avatarUri: undefined });
+        }}
+      />
     </Screen>
   );
 }

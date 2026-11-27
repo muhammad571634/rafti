@@ -25,6 +25,7 @@ export const gradientOf = (accent: number) => avatarGradients[accent % avatarGra
 /** Cinema hero photo card matching Find: tap the photo or the top-right glass pill to set their picture. */
 export function HeroCard({
   imageUri,
+  fallback,
   name,
   tagline,
   accent,
@@ -34,6 +35,8 @@ export function HeroCard({
   onLayout,
 }: {
   imageUri?: string;
+  /** The picture they wear without one of the user's (a story friend's painting). */
+  fallback?: number;
   name: string;
   tagline: string;
   accent: number;
@@ -45,8 +48,8 @@ export function HeroCard({
   return (
     <View onLayout={onLayout} style={styles.heroWrap}>
       <PressableScale onPress={onPhoto} scaleTo={0.985} accessibilityRole="button" accessibilityLabel={photoLabel} style={styles.hero}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+        {imageUri || fallback != null ? (
+          <Image source={imageUri ? { uri: imageUri } : fallback} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={imageUri ? 'center' : 'top'} transition={200} />
         ) : (
           <LinearGradient colors={gradientOf(accent)} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, styles.heroCenter]}>
             <Txt style={styles.initial} maxFontSizeMultiplier={1}>
@@ -204,12 +207,18 @@ export function ShareRow({ share, onShare, editing }: { share: boolean; onShare:
 export function PhotoSheet({
   visible,
   hasPhoto,
+  canRemove = hasPhoto,
+  removeLabel,
   onClose,
   onPick,
   onRemove,
 }: {
   visible: boolean;
   hasPhoto: boolean;
+  /** The last row shows only when there is a picture of the user's to drop (defaults to `hasPhoto`). */
+  canRemove?: boolean;
+  /** "Original photo" for a story friend, whose painting comes back; "Remove photo" otherwise. */
+  removeLabel?: string;
   onClose: () => void;
   onPick: (from: 'library' | 'camera') => void;
   onRemove: () => void;
@@ -220,7 +229,13 @@ export function PhotoSheet({
     <Sheet visible={visible} onClose={onClose} title={label(hasPhoto ? 'flow.changePhoto' : 'flow.addPhoto')}>
       <ListRow title={label('flow.choosePhoto')} left={<Ionicons name="images-outline" size={22} color={colors.text} />} onPress={() => onPick('library')} />
       <ListRow title={label('flow.takePhoto')} left={<Ionicons name="camera-outline" size={22} color={colors.text} />} onPress={() => onPick('camera')} />
-      {hasPhoto ? <ListRow title={label('flow.removePhoto')} left={<Ionicons name="trash-outline" size={22} color={systemColors.red} />} onPress={onRemove} /> : null}
+      {canRemove ? (
+        removeLabel ? (
+          <ListRow title={removeLabel} left={<Ionicons name="arrow-undo-outline" size={22} color={colors.text} />} onPress={onRemove} />
+        ) : (
+          <ListRow title={label('flow.removePhoto')} left={<Ionicons name="trash-outline" size={22} color={systemColors.red} />} onPress={onRemove} />
+        )
+      ) : null}
     </Sheet>
   );
 }

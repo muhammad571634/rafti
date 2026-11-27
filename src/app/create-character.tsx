@@ -1,9 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BackHandler, KeyboardAvoidingView, Linking, Platform, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Platform, ScrollView, type ScrollViewInstance, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { actionOf, chatToDefinition, checkIdea, type DraftField, definitionToText, type Spark, textToDefinition } from '@/ai/character-draft';
@@ -12,11 +11,12 @@ import { baseLanguage } from '@/ai/reply-language';
 import { DialogField, HeroCard, InlineAction, Lines, PhotoSheet, ShareRow } from '@/components/create/form-parts';
 import { BOTTOM_BAR_SPACE, BottomBar, Card, Chip, ChipGroup, CreateHead, Disclosure, Field, FieldPair, GreetingMeter, ModeSwitch, Rewrite } from '@/components/create/kit';
 import { MeetMoment } from '@/components/create/meet-moment';
+import { usePickCharacterPicture } from '@/components/create/use-pick-picture';
 import { coachGreeting } from '@/lib/greeting-coach';
 import { COMMUNITY_OPEN } from '@/lib/community-gate';
 import { ContinueCard, DotWait, QuickIdea, WritingSteps } from '@/components/create/quick-create';
 import { PaywallSheet } from '@/components/paywall-sheet';
-import { Screen, useScrolledPast } from '@/components/ui';
+import { Screen, templatePortrait, useScrolledPast } from '@/components/ui';
 import { createTier, portraitPrice, quickCreatesPerDay } from '@/economy/quick-create';
 import { useDayKey } from '@/hooks/use-day-key';
 import { useKeyboardVisible } from '@/hooks/use-keyboard-visible';
@@ -59,7 +59,6 @@ import { avatarGradients, space } from '@/theme';
 import { ink, inkPeachGlass } from '@/theme/ink';
 import type { Character, CharacterRole } from '@/types';
 import { showAlert } from '@/lib/alert';
-import { keepCharacterPicture } from '@/lib/character-picture';
 import { type StoryTemplate, templateById } from '@/lib/templates';
 import { localTemplate } from '@/i18n/content';
 import { serverTemplates } from '@/ai/server';
@@ -204,7 +203,9 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
     () => (ownVoice ? { kind: 'trained' } : form.preset ? { kind: 'preset', preset: form.preset } : null),
     [ownVoice, form.preset],
   );
-  const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !form.imageUri && !!form.look.trim();
+  // A story friend wears the story's painting until the user gives them a picture of their own.
+  const storyArt = templatePortrait({ fromTemplate: editing?.fromTemplate ?? template?.id });
+  const drawsPortrait = PORTRAITS_AVAILABLE && !editing && !form.imageUri && storyArt == null && !!form.look.trim();
   const totalCost = drawsPortrait ? portraitPrice(subscription, Date.now()) : 0;
   const problems = useMemo(
     () =>
@@ -367,24 +368,13 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
    * Their picture from the gallery or the camera: any picture (owner, 2026-11-19), cropped 4:5, made
    * smaller and kept in the app's own folder. It stays on this phone (creator-ecosystem.md §0).
    */
+  const pickPicture = usePickCharacterPicture();
   const pickImage = async (from: 'library' | 'camera') => {
     setPhotoMenu(false);
-    const options: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.9, allowsEditing: true, aspect: [4, 5], exif: false };
     try {
-      if (from === 'camera') {
-        const allowed = await ImagePicker.requestCameraPermissionsAsync();
-        if (!allowed.granted) {
-          return showAlert(t('photoBooth.cameraOff'), undefined, [
-            { text: t('common.cancel'), style: 'cancel' },
-            { text: t('notifications.openSettings'), onPress: () => void Linking.openSettings() },
-          ]);
-        }
-      }
-      const result = from === 'camera' ? await ImagePicker.launchCameraAsync(options) : await ImagePicker.launchImageLibraryAsync(options);
-      const asset = result.canceled ? undefined : result.assets[0];
-      if (!asset) return;
+      const kept = await pickPicture(from);
+      if (!kept) return;
       setError(null);
-      const kept = await keepCharacterPicture(asset.uri);
       if (alive.current) set({ imageUri: kept });
     } catch {
       if (alive.current) {
@@ -613,11 +603,12 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
           <ScrollView ref={scroll} onScroll={onScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: BOTTOM_BAR_SPACE + space.xl }}>
             <HeroCard
               imageUri={form.imageUri}
+              fallback={storyArt}
               name={form.name}
               tagline={form.tagline}
               accent={accent}
               namePlaceholder={label('namePlaceholder')}
-              photoLabel={label(form.imageUri ? 'flow.changePhoto' : 'flow.addPhoto')}
+              photoLabel={label(form.imageUri || storyArt != null ? 'flow.changePhoto' : 'flow.addPhoto')}
               onPhoto={() => setPhotoMenu(true)}
               onLayout={at('who')}
             />
@@ -792,7 +783,9 @@ function CharacterForm({ editing, template }: { editing?: Character; template?: 
       <PaywallSheet need={paywall} onClose={() => setPaywall(null)} />
       <PhotoSheet
         visible={photoMenu}
-        hasPhoto={!!form.imageUri}
+        hasPhoto={!!form.imageUri || storyArt != null}
+        canRemove={!!form.imageUri}
+        removeLabel={storyArt != null ? label('flow.originalPhoto') : undefined}
         onClose={() => setPhotoMenu(false)}
         onPick={(from) => void pickImage(from)}
         onRemove={() => {

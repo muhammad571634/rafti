@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { AVATARS } from '@/assets/avatars/registry';
+import { PORTRAITS } from '@/assets/portraits/registry';
 import { avatarGradients, colors, palette, radius } from '@/theme';
 import type { Character, User } from '@/types';
 
@@ -101,6 +102,20 @@ const bundledAvatar = (character: Character): number | undefined =>
   AVATARS[character.id] ?? (character.fromTemplate ? AVATARS[character.fromTemplate] : undefined);
 
 /** Bundled seed art is keyed by character id (or group story member mark); created characters carry their own uri. */
+/**
+ * Which tall painting (`PORTRAITS` key) is theirs: their own (the cast), else their story template's
+ * while the user has not given them a picture of their own (a changed picture wins everywhere).
+ */
+export const portraitKey = (character: Character): string | undefined => {
+  if (PORTRAITS[character.id] != null) return character.id;
+  if (!character.avatarUri && character.fromTemplate && PORTRAITS[character.fromTemplate] != null) return character.fromTemplate;
+  return undefined;
+};
+
+/** The story template painting a template friend wears when the user has not changed it. */
+export const templatePortrait = (character: Pick<Character, 'fromTemplate'>): number | undefined =>
+  character.fromTemplate ? PORTRAITS[character.fromTemplate] : undefined;
+
 export const characterImage = (character: Character): string | number | undefined =>
   character.avatarUri ?? bundledAvatar(character);
 

@@ -34,23 +34,23 @@ angle, a different scene each time.
 Using NAME from the picture you just made, create a square 1:1 avatar for a small round icon. Solo tight head-and-shoulders shot of only that person, face filling most of the frame, turned slightly to one side with the same emotion, never a straight-on ID photo. Keep the exact same face, hair, skin tone, clothes, colours, light and cinematic 2.5D semi-realistic rendering with no outlines. Softly blurred background from the same scene so the face reads at a tiny size. No other people, no text, signature or logo.
 ```
 
-## Status (batch 1: 8 men, 8 women, every trope)
-- [ ] 1. Noah (`t_noah`), best friend
-- [ ] 2. Maya (`t_maya`), best friend
-- [ ] 3. Lucas (`t_lucas`), close to home
-- [ ] 4. Ivy (`t_ivy`), close to home
-- [ ] 5. Adrian (`t_adrian`), likes you
-- [ ] 6. Kira (`t_kira`), likes you
-- [ ] 7. Aurora (`t_aurora`), likes you
-- [ ] 8. Alexander (`t_alexander`), married
-- [ ] 9. Isabella (`t_isabella`), married
-- [ ] 10. Kane (`t_kane`), dangerous
-- [ ] 11. Raven (`t_raven`), dangerous
-- [ ] 12. Elliot (`t_elliot`), boss
-- [ ] 13. Camille (`t_camille`), boss
-- [ ] 14. Scarlett (`t_scarlett`), enemies
-- [ ] 15. Oliver (`t_oliver`), ex
-- [ ] 16. Cassian (`t_cassian`), fantasy
+## Status (batch 1: 8 men, 8 women, every trope): drawn and wired 2026-11-27 (0z387)
+- [x] 1. Noah (`t_noah`), best friend
+- [x] 2. Maya (`t_maya`), best friend
+- [x] 3. Lucas (`t_lucas`), close to home
+- [x] 4. Ivy (`t_ivy`), close to home
+- [x] 5. Adrian (`t_adrian`), likes you
+- [x] 6. Kira (`t_kira`), likes you
+- [x] 7. Aurora (`t_aurora`), likes you
+- [x] 8. Alexander (`t_alexander`), married
+- [x] 9. Isabella (`t_isabella`), married
+- [x] 10. Kane (`t_kane`), dangerous
+- [x] 11. Raven (`t_raven`), dangerous
+- [x] 12. Elliot (`t_elliot`), boss
+- [x] 13. Camille (`t_camille`), boss
+- [x] 14. Scarlett (`t_scarlett`), enemies
+- [x] 15. Oliver (`t_oliver`), ex
+- [x] 16. Cassian (`t_cassian`), fantasy
 
 Batches 2-7 (84 left) follow in this file once batch 1 is seen on the phone.
 

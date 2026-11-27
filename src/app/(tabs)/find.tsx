@@ -30,7 +30,7 @@ import { StoryChips, storiesFor, StorySheet, TROPE_SHELVES, type TropeShelf, use
 import { StoryHookCard } from '@/components/stories/story-hook-card';
 import { useTemplateStats } from '@/components/stories/use-template-stats';
 import { CharacterAvatar, EmptyState, NO_RESULTS, PressableScale, Screen, SearchBar, SFIcon, Sheet } from '@/components/ui';
-import { characterImage } from '@/components/ui/avatar';
+import { characterImage, portraitKey } from '@/components/ui/avatar';
 import { isReleased } from '@/economy/early-access';
 import { useDiscoveryWeights } from '@/hooks/use-discovery-rank';
 import { phrase } from '@/i18n';
@@ -67,7 +67,10 @@ const STORY_PAGE_SIZE = 20;
 const SEARCH_TEMPLATES_CAP = 24;
 const PICK_STORY_WIDTH = 268;
 
-const heroOf = (c: Character) => HEROES[c.id] ?? PORTRAITS[c.id] ?? characterImage(c);
+const heroOf = (c: Character) => {
+  const key = portraitKey(c);
+  return HEROES[c.id] ?? (key ? PORTRAITS[key] : undefined) ?? characterImage(c);
+};
 
 /**
  * Find v3: Apple editorial header with gender filter sheet + Create CTA, always-visible universal

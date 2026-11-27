@@ -1,6 +1,6 @@
 /**
  * Tall Cast 2.0 character scenes and group story covers (3:4), looked up by character id or
- * group story id for chat grounds, intro cards, Find cards, and Today. The paired square
+ * group story or story template id for chat grounds, intro cards, Find cards, and Today. The paired square
  * close-ups live in `assets/avatars`.
  */
 export const PORTRAITS: Record<string, number> = {
@@ -22,4 +22,21 @@ export const PORTRAITS: Record<string, number> = {
   g_haunted: require('./g_haunted.jpg'),
   g_villa: require('./g_villa.jpg'),
   g_santa: require('./g_santa.jpg'),
+  // Story templates (docs/nano-banana-story-templates.md), keyed by template id.
+  t_noah: require('./t_noah.jpg'),
+  t_maya: require('./t_maya.jpg'),
+  t_lucas: require('./t_lucas.jpg'),
+  t_ivy: require('./t_ivy.jpg'),
+  t_adrian: require('./t_adrian.jpg'),
+  t_kira: require('./t_kira.jpg'),
+  t_aurora: require('./t_aurora.jpg'),
+  t_alexander: require('./t_alexander.jpg'),
+  t_isabella: require('./t_isabella.jpg'),
+  t_kane: require('./t_kane.jpg'),
+  t_raven: require('./t_raven.jpg'),
+  t_elliot: require('./t_elliot.jpg'),
+  t_camille: require('./t_camille.jpg'),
+  t_scarlett: require('./t_scarlett.jpg'),
+  t_oliver: require('./t_oliver.jpg'),
+  t_cassian: require('./t_cassian.jpg'),
 };

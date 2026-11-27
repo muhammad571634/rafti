@@ -7,7 +7,7 @@ import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { HEROES } from '@/assets/heroes/registry';
 import { PORTRAITS } from '@/assets/portraits/registry';
-import { characterImage, PressableScale, SFIcon, Txt } from '@/components/ui';
+import { characterImage, portraitKey, PressableScale, SFIcon, Txt } from '@/components/ui';
 import { phrase } from '@/i18n';
 import { localCharacter } from '@/i18n/content';
 import { heightLabel } from '@/lib/character-facts';
@@ -53,7 +53,8 @@ export function IntroCard({
   const shown = localCharacter(character);
   const scene = HEROES[character.id];
   // The tall scenes (owner's art, 2026-11-03) stand in for a wide one, framed from the top.
-  const tall = scene == null ? PORTRAITS[character.id] : undefined;
+  const key = portraitKey(character);
+  const tall = scene == null && key ? PORTRAITS[key] : undefined;
   const photo = scene ?? tall ?? characterImage(character);
   const who: Fact[] = [];
   const role = shown.relation ?? shown.worldRole;

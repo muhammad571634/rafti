@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
+import { AVATARS } from '@/assets/avatars/registry';
 import { InkText } from '@/components/ink';
 import { Avatar, PressableScale } from '@/components/ui';
 import { localTemplate } from '@/i18n/content';
@@ -54,7 +55,7 @@ export const StoryHookCard = memo(function StoryHookCard({
         style={styles.main}>
         <View style={styles.headerRow}>
           <View style={styles.identity}>
-            <Avatar source={own?.avatarUri} name={name} accentIndex={card.accentIndex ?? 0} size={32} />
+            <Avatar source={own?.avatarUri ?? AVATARS[written.id]} name={name} accentIndex={card.accentIndex ?? 0} size={32} />
             <InkText variant="bodyStrong" color={ink.text} lines={1} style={styles.name}>
               {name}
             </InkText>

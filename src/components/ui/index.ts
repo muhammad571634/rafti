@@ -1,6 +1,6 @@
 export { Anim } from './anim';
 export type { AnimProps } from './anim';
-export { Avatar, CharacterAvatar, UserAvatar, characterImage } from './avatar';
+export { Avatar, CharacterAvatar, UserAvatar, characterImage, portraitKey, templatePortrait } from './avatar';
 export { BlurBackdrop } from './backdrop';
 export { Button } from './button';
 export type { ButtonSize, ButtonVariant } from './button';
